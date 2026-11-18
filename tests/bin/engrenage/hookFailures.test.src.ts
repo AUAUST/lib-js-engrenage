@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { afterEach, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
@@ -36,15 +37,19 @@ afterEach(() => {
   vi.doUnmock("#bin/engrenage/agents/claude/hook/actions/dispatch");
 });
 
-function runDispatch() {
-  return runProgram(createProgram("engrenage", engrenage), [
-    "node",
-    "engrenage",
-    "agents",
-    "claude",
-    "hook",
-    "dispatch",
-  ]);
+async function runDispatch() {
+  const reporter = createTestReporter();
+
+  await runProgram(
+    createProgram("engrenage", engrenage),
+    ["node", "engrenage", "agents", "claude", "hook", "dispatch"],
+    { reporter },
+  );
+
+  return reporter.messages
+    .filter(({ level }) => level === "error")
+    .map(({ text }) => text)
+    .join("\n");
 }
 
 test.each(["claude", "codex"])(
@@ -87,38 +92,26 @@ test("invalid consumer config exits 2 after hook startup", () => {
 });
 
 test("a GitHub failure after dispatch startup exits 2", async () => {
-  const stderr = vi
-    .spyOn(process.stderr, "write")
-    .mockImplementation(() => true);
-
   vi.mocked(readHookPayload).mockResolvedValue({
     tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
   });
 
-  await runDispatch();
+  const errors = await runDispatch();
 
   expect(checkIssue).toHaveBeenCalled();
   expect(process.exitCode).toBe(2);
 
-  expect(stderr.mock.calls.map(String).join("")).toContain(
-    "GitHub request failed with 503",
-  );
+  expect(errors).toContain("GitHub request failed with 503");
 });
 
 test("a hook whose action fails to load exits 2", async () => {
-  const stderr = vi
-    .spyOn(process.stderr, "write")
-    .mockImplementation(() => true);
-
   vi.doMock("#bin/engrenage/agents/claude/hook/actions/dispatch", () => {
     throw new Error("action failed to load");
   });
 
-  await runDispatch();
+  const errors = await runDispatch();
 
   expect(process.exitCode).toBe(2);
 
-  expect(stderr.mock.calls.map(String).join("")).toContain(
-    "action failed to load",
-  );
+  expect(errors).toContain("action failed to load");
 });

@@ -6,10 +6,13 @@ import {
   createAgentFillers,
   getMissingRuleTemplates,
 } from "#tools/agents/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (name?: string): Promise<void> {
-  const config = await loadValidatedConfig();
+  const config = await loadValidatedConfig(undefined, {
+    reporter: getRunContext().reporter,
+  });
 
   const fillers = await createAgentFillers(config);
 
@@ -24,7 +27,7 @@ export default async function (name?: string): Promise<void> {
     });
 
     if (missing.length === 0) {
-      return void console.info(
+      return void getRunContext().reporter.log(
         "All available agent rules are already installed.",
       );
     }

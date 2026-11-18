@@ -10,6 +10,7 @@ import {
   settleChanges,
 } from "#project/sync/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import type { Invocation, Prompter } from "#project/steps/index";
@@ -37,6 +38,7 @@ async function readPackage(
 ): Promise<LoadedConfig | undefined> {
   const config = await loadValidatedConfig(process.cwd(), {
     searchParents: false,
+    reporter: getRunContext().reporter,
   });
 
   if ((await config.resolve("packageJsonPath")) !== undefined) {
@@ -60,6 +62,7 @@ async function readPackage(
 
   return loadValidatedConfig(config.context.root, {
     searchParents: false,
+    reporter: getRunContext().reporter,
   });
 }
 
@@ -95,7 +98,9 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
 
   for (const invocation of invocations) {
     if (yes && invocation.interactive) {
-      console.info(`Run ${describe(invocation)} to finish the setup.`);
+      getRunContext().reporter.log(
+        `Run ${describe(invocation)} to finish the setup.`,
+      );
     } else {
       await invokeCommand(config.context.root, invocation);
     }
@@ -105,6 +110,7 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
 
   const installed = await loadValidatedConfig(config.context.root, {
     searchParents: false,
+    reporter: getRunContext().reporter,
   });
 
   const failures = await runSync(installed);

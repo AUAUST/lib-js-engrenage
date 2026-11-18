@@ -1,15 +1,12 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import config from "#scripts/codegen/actions/config";
+import config from "#scripts/codegen/config";
 
 const file = "src/workflows/config/types/ConfigInput.ts";
-
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-});
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -18,7 +15,7 @@ afterEach(() => {
 
 describe("support codegen config", () => {
   test("passes the check on the committed interface", async () => {
-    await config({ check: true });
+    await runDefinition(config, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -31,7 +28,7 @@ describe("support codegen config", () => {
 
     mockCwd(project.root);
 
-    await config({ check: true });
+    await runDefinition(config, "--check");
 
     expect(process.exitCode).toBe(1);
 

@@ -10,18 +10,21 @@ import {
   resolvePnpmRangeStatus,
   upgradePnpmManifest,
 } from "#tools/pnpm/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter } from "#workflows/init/index";
 
 export default async function ({ yes }: { yes: boolean }): Promise<void> {
-  const config = await loadValidatedConfig();
+  const config = await loadValidatedConfig(undefined, {
+    reporter: getRunContext().reporter,
+  });
 
   const { range } = readSharedPnpmRange();
 
   const version = await resolveLatestPnpm(config.context.root, range);
 
   if (resolvePnpmRangeStatus(await config.resolve("packageJson")) === "above") {
-    console.warn(
+    getRunContext().reporter.warn(
       `pnpm ${readProjectPnpmVersion(await config.resolve("packageJson"))} is above engrenage's pnpm ${range}: update engrenage to support it`,
     );
 
@@ -51,7 +54,7 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
   );
 
   if (upgraded === content) {
-    return void console.info(`Already on pnpm ${version}.`);
+    return void getRunContext().reporter.log(`Already on pnpm ${version}.`);
   }
 
   await filesystem.write(packageJsonFile, upgraded);

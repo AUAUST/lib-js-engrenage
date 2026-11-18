@@ -7,6 +7,7 @@ import {
   reportBudgetFindings,
 } from "#tools/agents/index";
 import { checkGithubWrite } from "#tools/github/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
@@ -22,7 +23,9 @@ export default async function (): Promise<void> {
     tool_input: { command: shellCommand },
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  const config = await loadValidatedConfig(cwd);
+  const config = await loadValidatedConfig(cwd, {
+    reporter: getRunContext().reporter,
+  });
 
   const { repositories, protocol } = await config.resolve("github");
 

@@ -1,4 +1,5 @@
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 import type { LoadedConfig } from "#project/config/index";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 
@@ -15,8 +16,8 @@ export async function reportAgentChecks(config: LoadedConfig) {
 
   const { reporter } = config.context;
 
-  for (const { agent, status, message } of findings) {
-    reporter[levels[status]](`${agent} · ${status} · ${message}`);
+  for (const finding of findings) {
+    reporter[levels[finding.status]](formatAgentCheck(finding));
   }
 
   return findings;

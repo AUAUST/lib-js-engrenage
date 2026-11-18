@@ -4,11 +4,13 @@ import {
   readAgentRuns,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (requested?: string): Promise<void> {
   const config = await loadValidatedConfig(
     await resolveMainWorktree(process.cwd()),
+    { reporter: getRunContext().reporter },
   );
 
   const resources = await config.resolve("resources");
@@ -33,5 +35,7 @@ export default async function (requested?: string): Promise<void> {
     );
   }
 
-  process.stdout.write(`Session ${session}\n\n${formatAgentRuns(selected)}\n`);
+  getRunContext().reporter.log(
+    `Session ${session}\n\n${formatAgentRuns(selected)}`,
+  );
 }

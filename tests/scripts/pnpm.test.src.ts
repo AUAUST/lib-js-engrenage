@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 
-import pnpm from "#scripts/actions/pnpm";
+import pnpm from "#scripts/pnpm";
 
 vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 
@@ -39,15 +40,9 @@ describe("support pnpm", () => {
     async (_gap, newest, level, fails) => {
       vi.mocked(resolveLatestPnpm).mockResolvedValue(newest);
 
-      const logs = {
-        info: vi.spyOn(console, "info").mockImplementation(() => {}),
-        warn: vi.spyOn(console, "warn").mockImplementation(() => {}),
-        error: vi.spyOn(console, "error").mockImplementation(() => {}),
-      };
+      const { messages } = await runDefinition(pnpm, "--check");
 
-      await pnpm({ check: true });
-
-      expect(logs[level]).toHaveBeenCalledOnce();
+      expect(messages.map((message) => message.level)).toStrictEqual([level]);
       expect(process.exitCode === 1).toBe(fails);
     },
   );

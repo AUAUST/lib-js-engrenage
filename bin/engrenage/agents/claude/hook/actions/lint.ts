@@ -3,6 +3,7 @@ import { object, string } from "valibot";
 import { readHookPayload, writeHookContext } from "#tools/agents/index";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import { formatInfoMessages, listInfoMessages } from "#tools/eslint/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
@@ -20,7 +21,10 @@ async function reportInfoMessages() {
 
   const context = formatInfoMessages(
     file,
-    await listInfoMessages(await loadValidatedConfig(cwd), file),
+    await listInfoMessages(
+      await loadValidatedConfig(cwd, { reporter: getRunContext().reporter }),
+      file,
+    ),
   );
 
   if (context !== undefined) {

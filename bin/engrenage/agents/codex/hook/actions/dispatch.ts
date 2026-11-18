@@ -7,6 +7,7 @@ import {
   denyToolUse,
   readHookPayload,
 } from "#tools/agents/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
@@ -26,7 +27,9 @@ export default async function (): Promise<void> {
     tool_input: input,
   } = await readHookPayload(payloadSchema, "Codex");
 
-  const config = await loadValidatedConfig(cwd);
+  const config = await loadValidatedConfig(cwd, {
+    reporter: getRunContext().reporter,
+  });
 
   const profile = await resolveCodexProfile(
     {

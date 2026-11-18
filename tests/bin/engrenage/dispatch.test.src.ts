@@ -2,14 +2,15 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 
-import dispatch from "#bin/engrenage/agents/claude/hook/actions/dispatch";
-import codexDispatch from "#bin/engrenage/agents/codex/hook/actions/dispatch";
+import dispatch from "#bin/engrenage/agents/claude/hook/dispatch";
+import codexDispatch from "#bin/engrenage/agents/codex/hook/dispatch";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return {
@@ -52,7 +53,7 @@ test.each(["implement it", "Context\nIssue: o/r#1"])(
       tool_input: { subagent_type: "worker", prompt },
     });
 
-    await dispatch();
+    await runDefinition(dispatch);
 
     expect(process.stdout.write).toHaveBeenCalledWith(
       expect.stringContaining(
@@ -77,7 +78,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     },
   });
 
-  await dispatch();
+  await runDefinition(dispatch);
 
   expect(checkIssue).toHaveBeenCalledWith(
     {
@@ -100,7 +101,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     },
   });
 
-  await dispatch();
+  await runDefinition(dispatch);
 
   expect(checkIssue).toHaveBeenCalledTimes(1);
   expect(process.stdout.write).not.toHaveBeenCalled();
@@ -150,7 +151,7 @@ test.each([
     },
   });
 
-  await codexDispatch();
+  await runDefinition(codexDispatch);
 
   expect(checkIssue).toHaveBeenCalledWith(
     expect.anything(),

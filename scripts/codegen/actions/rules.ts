@@ -1,8 +1,11 @@
 import { generateRuleTypes } from "#scripts/codegen/operations/generateRuleTypes";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {
-  const config = await loadValidatedConfig();
+  const config = await loadValidatedConfig(undefined, {
+    reporter: getRunContext().reporter,
+  });
 
   const outdated = await generateRuleTypes({
     config,
@@ -10,7 +13,9 @@ export default async function ({ check }: { check: boolean }): Promise<void> {
   });
 
   for (const file of outdated) {
-    console.info(check ? `outdated: ${file}` : `synced: ${file}`);
+    getRunContext().reporter.log(
+      check ? `outdated: ${file}` : `synced: ${file}`,
+    );
   }
 
   if (check && outdated.length > 0) {

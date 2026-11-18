@@ -2,8 +2,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import structure from "#bin/engrenage/actions/structure";
+import structure from "#bin/engrenage/structure";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -23,8 +24,6 @@ function createProject(config: string, extra: Record<string, string> = {}) {
 }
 
 beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-  vi.spyOn(console, "warn").mockImplementation(() => {});
   process.exitCode = undefined;
 });
 
@@ -39,25 +38,37 @@ describe("engrenage structure", () => {
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." } } } } }',
     );
 
-    await structure({ check: false });
+    const { messages } = await runDefinition(structure);
 
-    expect(vi.mocked(console.info).mock.calls.flat().slice(0, 3)).toStrictEqual(
-      [
-        "src/  [config]  (loose)",
-        "├─ feature  #feature/…  domain  [config]  A configured feature.",
-        "└─ mystery  #mystery/…  domain  [inferred]",
-      ],
-    );
+    expect(messages.slice(0, 3)).toStrictEqual([
+      {
+        level: "log",
+        text: "src/  [config]  (loose)",
+        data: undefined,
+      },
+      {
+        level: "log",
+        text: "├─ feature  #feature/…  domain  [config]  A configured feature.",
+        data: undefined,
+      },
+      {
+        level: "log",
+        text: "└─ mystery  #mystery/…  domain  [inferred]",
+        data: undefined,
+      },
+    ]);
   });
 
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await structure({ check: true });
+    const { messages } = await runDefinition(structure, "--check");
 
-    expect(console.warn).toHaveBeenCalledWith(
-      "src/feature has no purpose: set one on its `domains` entry.",
-    );
+    expect(messages).toContainEqual({
+      level: "warn",
+      text: "src/feature has no purpose: set one on its `domains` entry.",
+      data: undefined,
+    });
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -67,15 +78,15 @@ describe("engrenage structure", () => {
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',
     );
 
-    await structure({ check: true });
+    const { messages } = await runDefinition(structure, "--check");
 
-    expect(console.warn).not.toHaveBeenCalled();
+    expect(messages.filter(({ level }) => level === "warn")).toStrictEqual([]);
   });
 
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 
-    await structure({ check: true });
+    await runDefinition(structure, "--check");
 
     expect(process.exitCode).toBe(1);
   });
@@ -83,7 +94,7 @@ describe("engrenage structure", () => {
   test("passes the check on the same directory under loose", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await structure({ check: true });
+    await runDefinition(structure, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -100,7 +111,7 @@ describe("engrenage structure", () => {
         ...extra,
       });
 
-      await structure({ check: true });
+      await runDefinition(structure, "--check");
 
       expect(process.exitCode).toBe(exitCode);
     },
@@ -112,7 +123,7 @@ describe("engrenage structure", () => {
       "tests/src/ghost/y.test.ts": "",
     });
 
-    await structure({ check: true });
+    await runDefinition(structure, "--check");
 
     expect(process.exitCode).toBe(1);
   });

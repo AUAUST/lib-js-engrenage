@@ -24,8 +24,6 @@ function createProject() {
 
   mockCwd(project.root);
 
-  vi.spyOn(console, "info").mockImplementation(() => {});
-
   return project;
 }
 

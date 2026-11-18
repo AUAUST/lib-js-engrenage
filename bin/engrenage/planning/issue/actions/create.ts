@@ -1,5 +1,6 @@
 import { settleChanges } from "#project/sync/index";
 import { createDraft } from "#tools/github/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
@@ -11,7 +12,9 @@ export default async function (
     after?: string | undefined;
   },
 ): Promise<void> {
-  const config = await loadValidatedConfig(process.cwd());
+  const config = await loadValidatedConfig(process.cwd(), {
+    reporter: getRunContext().reporter,
+  });
 
   await createDraft(config, type, options);
 

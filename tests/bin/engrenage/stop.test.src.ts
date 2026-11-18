@@ -6,9 +6,10 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 
-import stop from "#bin/engrenage/agents/claude/hook/actions/stop";
+import stop from "#bin/engrenage/agents/claude/hook/stop";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return { readHookPayload: vi.fn() };
@@ -46,7 +47,7 @@ async function runStop() {
 
   const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
-  await stop();
+  await runDefinition(stop);
 
   const exitCode = process.exitCode ?? 0;
 

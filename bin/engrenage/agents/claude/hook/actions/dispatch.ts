@@ -5,6 +5,7 @@ import {
   denyToolUse,
   readHookPayload,
 } from "#tools/agents/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
@@ -21,7 +22,9 @@ export default async function (): Promise<void> {
 
   const root = process.cwd();
 
-  const config = await loadValidatedConfig(root);
+  const config = await loadValidatedConfig(root, {
+    reporter: getRunContext().reporter,
+  });
 
   const { protocol } = await config.resolve("github");
 

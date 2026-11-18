@@ -1,6 +1,7 @@
 import { object, string } from "valibot";
 
 import { readHookPayload } from "#tools/agents/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -17,7 +18,9 @@ export default async function (): Promise<void> {
     cwd,
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  const config = await loadValidatedConfig(cwd);
+  const config = await loadValidatedConfig(cwd, {
+    reporter: getRunContext().reporter,
+  });
 
   const reason = await checkAgentStop(config, {
     runtime: "claude",

@@ -1,10 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import apis from "#scripts/codegen/actions/apis";
+import apis from "#scripts/codegen/apis";
 
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
@@ -17,10 +18,6 @@ function createProject(files: Record<string, string> = {}) {
   return project;
 }
 
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-});
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -29,7 +26,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the timers group from the declarations of the DOM lib", async () => {
     const project = createProject();
 
-    await apis(["timers"], { check: false });
+    await runDefinition(apis, "timers");
 
     const content = project.read("data/apis/timers.d.ts");
 
@@ -47,7 +44,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
       "data/apis/timers.d.ts": "declare const edited: 1;\n",
     });
 
-    await apis(["timers"], { check: true });
+    await runDefinition(apis, "timers", "--check");
 
     expect(process.exitCode).toBe(1);
 

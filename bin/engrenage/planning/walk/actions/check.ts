@@ -4,6 +4,7 @@ import {
   formatIssueTreeCheck,
   resolveRepository,
 } from "#tools/github/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
@@ -12,7 +13,9 @@ export default async function (
 ): Promise<void> {
   const root = process.cwd();
 
-  const config = await loadValidatedConfig(root);
+  const config = await loadValidatedConfig(root, {
+    reporter: getRunContext().reporter,
+  });
 
   const { repositories, protocol } = await config.resolve("github");
 
@@ -30,7 +33,7 @@ export default async function (
   );
 
   for (const line of formatIssueTreeCheck(check)) {
-    console.log(line);
+    getRunContext().reporter.log(line);
   }
 
   if (check.ready.length === 0) {

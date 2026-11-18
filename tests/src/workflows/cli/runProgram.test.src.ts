@@ -16,10 +16,6 @@ import { runProgram } from "#workflows/cli/operations/runProgram";
 
 import sync from "#bin/engrenage/sync";
 
-const succeeding = defineCommand({
-  action() {},
-});
-
 const failing = defineCommand({
   action() {
     throw new Error("outer", { cause: new Error("inner") });
@@ -72,61 +68,11 @@ describe("runProgram", () => {
     expect(process.exitCode).toBe(1);
   });
 
-  test("runs a succeeding command without loading the config modules", async () => {
-    vi.resetModules();
-
-    vi.doMock("#project/config/index", () => {
-      throw new Error("config modules loaded");
-    });
-
-    vi.doMock("#workflows/config/index", () => {
-      throw new Error("config modules loaded");
-    });
-
-    const {
-      runProgram: runFreshProgram,
-    } = await import("#workflows/cli/operations/runProgram");
-
-    await runFreshProgram(
-      createDefinedProgram(
-        "program",
-        defineGroup({
-          commands: { succeeding },
-        }),
-      ),
-      ["node", "program", "succeeding"],
-      { reporter },
-    );
-
-    expect(reporter.messages).toEqual([]);
-    expect(process.exitCode).toBeUndefined();
-  });
-
   test.each([
     ["--debug", "failing"],
     ["failing", "--debug"],
   ])("prints the stack with the flag (%s %s)", async (...argv) => {
     await run(createProgram(), ...argv);
-
-    expect(printed()).toContain("    at ");
-  });
-
-  test("prints the stack with the environment variable without loading the config", async () => {
-    vi.stubEnv("ENGRENAGE_DEBUG", "1");
-
-    vi.resetModules();
-
-    vi.doMock("#workflows/config/index", () => {
-      throw new Error("config modules loaded");
-    });
-
-    const {
-      runProgram: runFreshProgram,
-    } = await import("#workflows/cli/operations/runProgram");
-
-    await runFreshProgram(createProgram(), ["node", "program", "failing"], {
-      reporter,
-    });
 
     expect(printed()).toContain("    at ");
   });

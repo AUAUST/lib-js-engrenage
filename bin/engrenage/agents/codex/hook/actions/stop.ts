@@ -2,6 +2,7 @@ import { object, string } from "valibot";
 
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { createAgentFillers, readHookPayload } from "#tools/agents/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -20,7 +21,9 @@ export default async function (): Promise<void> {
     cwd,
   } = await readHookPayload(payloadSchema, "Codex");
 
-  const config = await loadValidatedConfig(cwd);
+  const config = await loadValidatedConfig(cwd, {
+    reporter: getRunContext().reporter,
+  });
 
   const profile = await resolveCodexProfile(
     {

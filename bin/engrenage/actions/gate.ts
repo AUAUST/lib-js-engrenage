@@ -1,3 +1,4 @@
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import {
   formatGateEntry,
@@ -17,18 +18,23 @@ export default async function ({
   const audience = everyone === true ? "everyone" : "agents";
 
   const { failures, warnings } = message === undefined
-    ? await runGate(await loadValidatedConfig(), {
-        mode: worktree === true ? "worktree" : "staged",
-        audience,
-      })
+    ? await runGate(
+        await loadValidatedConfig(undefined, {
+          reporter: getRunContext().reporter,
+        }),
+        {
+          mode: worktree === true ? "worktree" : "staged",
+          audience,
+        },
+      )
     : await runMessageGate(message, audience);
 
   for (const warning of warnings) {
-    console.warn(formatGateEntry(warning));
+    getRunContext().reporter.warn(formatGateEntry(warning));
   }
 
   for (const failure of failures) {
-    console.error(formatGateEntry(failure));
+    getRunContext().reporter.error(formatGateEntry(failure));
   }
 
   if (failures.length > 0) {

@@ -3,13 +3,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import debt from "#bin/engrenage/actions/debt";
+import debt from "#bin/engrenage/debt";
 
 beforeEach(() => {
   mockCwd(getFixture("debt"));
-
-  vi.spyOn(console, "info").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -18,21 +17,27 @@ afterEach(() => {
 
 describe("engrenage debt", { timeout: binaryTimeout }, () => {
   test("prints one line per marker, ignoring malformed markers", async () => {
-    await debt({ json: false });
+    const { messages } = await runDefinition(debt);
 
-    expect(console.info).toHaveBeenCalledExactlyOnceWith(
-      "src/marked.ts:1  first marker in a source file",
-    );
+    expect(messages).toStrictEqual([
+      {
+        level: "log",
+        text: "src/marked.ts:1  first marker in a source file",
+        data: undefined,
+      },
+    ]);
 
     expect(process.exitCode).toBeUndefined();
   });
 
   test("prints the markers as JSON", async () => {
-    await debt({ json: true });
+    const { messages } = await runDefinition(debt, "--json");
 
-    expect(
-      JSON.parse(String(vi.mocked(console.info).mock.calls[0]?.[0])),
-    ).toEqual([
+    expect(messages).toHaveLength(1);
+
+    expect(messages[0]?.level).toBe("log");
+
+    expect(JSON.parse(messages[0]?.text ?? "")).toEqual([
       {
         file: "src/marked.ts",
         line: 1,

@@ -33,7 +33,6 @@ function createProject(files: Record<string, string> = {}) {
   });
 
   mockCwd(project.root);
-  vi.spyOn(console, "info").mockImplementation(() => {});
 
   return project;
 }

@@ -1,12 +1,18 @@
 import { existsSync } from "node:fs";
 
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
+import { defineGroup } from "#workflows/cli/index";
 
-import sync from "#bin/engrenage/actions/sync";
+import sync from "#bin/engrenage/sync";
+
+const program = defineGroup({
+  commands: { sync },
+});
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -33,20 +39,6 @@ function createProject() {
   return project;
 }
 
-function printed() {
-  return [
-    ...vi.mocked(console.info).mock.calls.map(String),
-    ...vi.mocked(process.stdout.write).mock.calls.map((line) => {
-      return String(line).trimEnd();
-    }),
-  ];
-}
-
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-  vi.spyOn(process.stdout, "write").mockImplementation(() => true);
-});
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -55,10 +47,7 @@ describe("engrenage sync", () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
-    await sync([], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync");
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
 
@@ -66,30 +55,45 @@ describe("engrenage sync", () => {
       '"editor.formatOnSave": true',
     );
 
-    vi.mocked(console.info).mockClear();
-    vi.mocked(process.stdout.write).mockClear();
-
-    await sync([], {
-      check: true,
-      values: {},
-    });
+    const { messages } = await runDefinition(program, "sync", "--check");
 
     expect(process.exitCode).toBeUndefined();
 
-    expect(printed()).toEqual(["Checking synced files...", "All good!"]);
+    expect(messages.at(0)).toStrictEqual({
+      level: "info",
+      text: "Checking synced files...",
+      data: undefined,
+    });
+
+    expect(messages.at(-1)?.text).toBe("All good!");
+  });
+
+  test("reports the agent findings of a check to the run's reporter", async () => {
+    createProject();
+
+    await runDefinition(program, "sync");
+
+    const { messages } = await runDefinition(program, "sync", "--check");
+
+    const findings = messages.filter(({ text }) => {
+      return text.startsWith("claude · ");
+    });
+
+    expect(findings).not.toEqual([]);
+
+    expect(findings.some(({ level }) => level === "log")).toBe(false);
   });
 
   test("checks only the selected targets without writing", async () => {
     const project = createProject();
 
-    await sync(["vscode"], {
-      check: true,
-      values: {},
-    });
+    const {
+      messages,
+    } = await runDefinition(program, "sync", "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
 
-    expect(printed()).toEqual([
+    expect(messages.map(({ text }) => text)).toEqual([
       "Checking synced files...",
       "outdated: .vscode/settings.json",
     ]);
@@ -105,17 +109,11 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await sync(["vscode"], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync", "vscode");
 
     expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
 
-    await sync(["vscode"], {
-      check: false,
-      values: { vscodeSettings: true },
-    });
+    await runDefinition(program, "sync", "vscode", "--vscode-settings");
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
@@ -140,10 +138,7 @@ describe("engrenage sync", () => {
 
     mockCwd(project.root);
 
-    await sync([], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync");
 
     expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);
     expect(project.read(".gitignore")).toContain("/dist");

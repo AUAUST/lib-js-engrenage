@@ -4,6 +4,7 @@ import {
   runSync,
   settleChanges,
 } from "#project/sync/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
@@ -13,12 +14,14 @@ export default async function (
     values,
   }: { check: boolean; values: Readonly<Record<string, unknown>> },
 ): Promise<void> {
-  const config = await loadValidatedConfig();
+  const config = await loadValidatedConfig(undefined, {
+    reporter: getRunContext().reporter,
+  });
 
   const { options } = await listSyncOptions(config);
 
   if (check) {
-    console.info("Checking synced files...");
+    getRunContext().reporter.info("Checking synced files...");
   }
 
   const failures = await runSync(config, {

@@ -2,11 +2,12 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
 
-import stop from "#bin/engrenage/agents/codex/hook/actions/stop";
+import stop from "#bin/engrenage/agents/codex/hook/stop";
 
 vi.mock("#tools/agents/operations/readHookPayload", () => {
   return {
@@ -66,7 +67,7 @@ test.each([
 
     const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
-    await stop();
+    await runDefinition(stop);
 
     if (name !== "planner") {
       expect(checkAgentStop).toHaveBeenCalledWith(expect.anything(), {

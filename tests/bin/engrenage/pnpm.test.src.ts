@@ -40,8 +40,6 @@ describe("engrenage pnpm upgrade", () => {
       scripts: { preinstall: "npx only-allow pnpm", build: "tsdown" },
     });
 
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     await runDefinition(pnpm, "upgrade");
 
     const manifest = JSON.parse(project.read("package.json"));
@@ -68,8 +66,6 @@ describe("engrenage pnpm upgrade", () => {
         },
       },
     });
-
-    vi.spyOn(console, "info").mockImplementation(() => {});
 
     await runDefinition(pnpm, "upgrade");
 
@@ -98,14 +94,13 @@ describe("engrenage pnpm upgrade", () => {
       },
     });
 
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { messages } = await runDefinition(pnpm, "upgrade", "--yes");
 
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
-    await runDefinition(pnpm, "upgrade", "--yes");
-
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("update engrenage"),
+    expect(messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("update engrenage"),
+      }),
     );
 
     expect(resolveLatestPnpm).toHaveBeenCalledWith(

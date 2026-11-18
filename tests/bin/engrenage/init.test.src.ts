@@ -14,13 +14,15 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { scratchpadPlaceholder } from "#tools/agents/constants";
+import { defineGroup } from "#workflows/cli/index";
 import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/init/operations/createPrompter";
 
-import init from "#bin/engrenage/actions/init";
-import sync from "#bin/engrenage/actions/sync";
+import init from "#bin/engrenage/init";
+import sync from "#bin/engrenage/sync";
 import manifest from "#package.json" with { type: "json" };
 
 vi.mock(import("#foundation/processes/operations/spawnProcess"));
@@ -53,10 +55,30 @@ function createProject(files: Record<string, string>) {
   return project;
 }
 
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
+const program = defineGroup({
+  commands: { init, sync },
+});
 
-  vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+let messages: Awaited<
+  ReturnType<typeof runDefinition>
+>["messages"][number][] = [];
+
+async function run(...args: string[]) {
+  const reporter = await runDefinition(program, ...args);
+
+  messages.push(...reporter.messages);
+}
+
+function printed(level?: (typeof messages)[number]["level"]) {
+  return messages
+    .filter((message) => {
+      return level === undefined || message.level === level;
+    })
+    .map(({ text }) => text);
+}
+
+beforeEach(() => {
+  messages = [];
 
   vi.mocked(spawnProcess).mockResolvedValue({
     stdout: "",
@@ -91,7 +113,7 @@ describe("engrenage init", () => {
       confirm,
     });
 
-    await init({ yes: false });
+    await run("init");
 
     expect(confirm).toHaveBeenCalledExactlyOnceWith(
       expect.stringContaining("Review the missing setup"),
@@ -140,7 +162,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await init({ yes: false });
+      await run("init");
 
       expect(confirm).toHaveBeenNthCalledWith(
         1,
@@ -184,7 +206,7 @@ describe("engrenage init", () => {
       ".gitignore": "node_modules\n.DS_Store\n\n# Scratch\n/scratch\n",
     });
 
-    await init({ yes: true });
+    await run("init", "--yes");
 
     const packageJson: unknown = JSON.parse(project.read("package.json"));
 
@@ -272,9 +294,7 @@ describe("engrenage init", () => {
 
     expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");
 
-    expect(console.info).toHaveBeenCalledWith(
-      "Run pnpm changeset init to finish the setup.",
-    );
+    expect(printed()).toContain("Run pnpm changeset init to finish the setup.");
 
     expect(project.read("pnpm-workspace.yaml")).toBe(
       'allowBuilds:\n  "esbuild": true\n  "lefthook": false\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
@@ -321,7 +341,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await init({ yes: false });
+      await run("init");
 
       const packageJson: unknown = JSON.parse(project.read("package.json"));
 
@@ -352,7 +372,7 @@ describe("engrenage init", () => {
         ".changeset/config.json": "{}\n",
       });
 
-      await init({ yes: true });
+      await run("init", "--yes");
 
       const completed = JSON.parse(project.read("package.json"));
 
@@ -371,7 +391,7 @@ describe("engrenage init", () => {
         confirm,
       });
 
-      await init({ yes: false });
+      await run("init");
 
       expect(confirm).toHaveBeenCalledWith("Add the standard scripts?", true);
 
@@ -393,22 +413,22 @@ describe("engrenage init", () => {
       ".changeset/config.json": "{}\n",
     });
 
-    await init({ yes: true });
+    await run("init", "--yes");
 
     const completed = project.read("package.json");
     const scratchpad = project.read(".ai/scratchpad.md");
 
+    messages = [];
+
     vi.clearAllMocks();
 
-    await init({ yes: true });
+    await run("init", "--yes");
 
     expect(spawnProcess).not.toHaveBeenCalled();
 
-    expect(console.info).not.toHaveBeenCalled();
-
-    expect(process.stdout.write).toHaveBeenCalledExactlyOnceWith(
-      "Engrenage is set up, nothing is missing.\n",
-    );
+    expect(printed()).toStrictEqual([
+      "Engrenage is set up, nothing is missing.",
+    ]);
 
     expect(project.read("package.json")).toBe(completed);
     expect(project.read(".ai/scratchpad.md")).toBe(scratchpad);
@@ -445,8 +465,6 @@ describe("engrenage init", () => {
 
       mockCwd(project.root);
 
-      vi.spyOn(console, "warn").mockImplementation(() => {});
-
       vi.mocked(spawnProcess).mockImplementation((command, args) => {
         if (args?.[0] === "init") {
           project.write("package.json", '{\n  "type": "module"\n}\n');
@@ -473,7 +491,7 @@ describe("engrenage init", () => {
         });
       });
 
-      await init({ yes: true });
+      await run("init", "--yes");
 
       const name = basename(project.root);
 
@@ -583,16 +601,13 @@ describe("engrenage init", () => {
         false,
       );
 
-      vi.mocked(console.warn).mockClear();
+      messages = [];
 
-      await sync([], {
-        check: true,
-        values: {},
-      });
+      await run("sync", "--check");
 
       expect(process.exitCode ?? 0).toBe(0);
 
-      expect(console.warn).not.toHaveBeenCalled();
+      expect(printed("warn")).toStrictEqual([]);
 
       expect(
         JSON.parse(project.read("package.json")).devEngines.packageManager,
@@ -632,7 +647,7 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await init({ yes: true });
+    await run("init", "--yes");
 
     expect(select).toHaveBeenCalledWith(
       visibilityQuestion,
@@ -667,13 +682,9 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    const error = vi
-      .spyOn(process.stderr, "write")
-      .mockImplementation(() => true);
+    await run("init", "--yes");
 
-    await init({ yes: true });
-
-    expect(error).toHaveBeenCalledWith(
+    expect(printed("error")).toContainEqual(
       expect.stringContaining("the package library is unscoped"),
     );
 
@@ -708,7 +719,7 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    await init({ yes: true });
+    await run("init", "--yes");
 
     expect(select).not.toHaveBeenCalledWith(
       visibilityQuestion,
@@ -739,7 +750,7 @@ test("defaults an app's build tool to vite and its source host to the browser", 
 
   vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(select).toHaveBeenCalledWith(
     "Which build tool?",
@@ -761,7 +772,7 @@ test("writes an empty library's config without role lists", async () => {
     "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(project.read("engrenage.config.ts"))
     .toBe(`import { defineConfig } from "@auaust/engrenage/config";
@@ -791,7 +802,7 @@ test("ranks the operations role of an empty library's project map as effectful",
     },
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   const row = project
     .read(".claude/rules/project-map.md")
@@ -807,7 +818,7 @@ test("does not generate agent setup without selected agents", async () => {
     "engrenage.config.ts": "export default {};\n",
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
 
@@ -825,7 +836,7 @@ test("does not generate agent setup without selected agents", async () => {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
 
-  expect(process.stdout.write).toHaveBeenCalledWith(
+  expect(printed()).toContainEqual(
     expect.stringContaining("Add agents.preferred: []"),
   );
 });
@@ -838,7 +849,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "engrenage.config.ts": input,
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(project.read("engrenage.config.ts")).toBe(input);
 
@@ -892,7 +903,7 @@ test("uses an interactive selection for this init without rewriting an existing 
     },
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(project.read("engrenage.config.ts")).toBe("export default {};\n");
 
@@ -910,7 +921,7 @@ test("uses an interactive selection for this init without rewriting an existing 
     "engrenage agents codex hook github",
   );
 
-  expect(process.stdout.write).toHaveBeenCalledWith(
+  expect(printed()).toContainEqual(
     expect.stringContaining('Add agents.preferred: ["claude","codex"]'),
   );
 });
@@ -930,7 +941,7 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
     confirm,
   });
 
-  await init({ yes: false });
+  await run("init");
 
   expect(confirm).toHaveBeenCalledWith(
     expect.stringContaining("Set up the shared backlog"),
@@ -961,7 +972,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
     ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
   });
 
-  await init({ yes: true });
+  await run("init", "--yes");
 
   expect(project.read(".ai/scratchpad.md")).toContain(
     "<!-- scratchpad-placeholder -->",

@@ -3,11 +3,14 @@ import { join } from "node:path";
 
 import { settleChanges } from "#project/sync/index";
 import { generateConfigTypes } from "#scripts/codegen/operations/generateConfigTypes";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { File } from "#types/File";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {
-  const resolved = await loadValidatedConfig();
+  const resolved = await loadValidatedConfig(undefined, {
+    reporter: getRunContext().reporter,
+  });
 
   const modules = new Map<File, Record<string, unknown>>();
 

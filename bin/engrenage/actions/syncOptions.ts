@@ -1,6 +1,7 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { listSyncOptions } from "#project/sync/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (command: CommandUnknownOpts): Promise<void> {
@@ -12,10 +13,11 @@ export default async function (command: CommandUnknownOpts): Promise<void> {
     throw new Error(`The ${command.name()} command has no targets argument`);
   }
 
-  const {
-    targets,
-    options,
-  } = await listSyncOptions(await loadValidatedConfig());
+  const { targets, options } = await listSyncOptions(
+    await loadValidatedConfig(undefined, {
+      reporter: getRunContext().reporter,
+    }),
+  );
 
   argument.choices(targets);
 

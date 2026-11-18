@@ -6,11 +6,12 @@ import { describe, expect, test, vi } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
+import { runContext } from "#workflows/cli/operations/runContext";
 
 import tsc from "#bin/engrenage/actions/tsc";
-import tscDist from "#bin/engrenage/actions/tscDist";
 import engrenage from "#bin/engrenage/index";
 
 vi.mock(import("node:child_process"), { spy: true });
@@ -73,8 +74,6 @@ function createSolution(
 
 describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   test("checks every project referenced by a solution tsconfig", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     const output = await captureBinaryOutput();
 
     createSolution(
@@ -88,8 +87,6 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   });
 
   test("passes a solution whose references check", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
     );
@@ -100,8 +97,6 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   });
 
   test("reports a type error introduced after a passing incremental run", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     const output = await captureBinaryOutput();
 
     const project = createSolution(
@@ -126,7 +121,15 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
   test("builds a solution tsconfig without emitting", async () => {
     createSolution("export {};\n");
 
-    expect(await tsc(["--pretty"])).toEqual([
+    expect(
+      await runContext.run(
+        {
+          signal: new AbortController().signal,
+          reporter: createTestReporter(),
+        },
+        () => tsc(["--pretty"]),
+      ),
+    ).toEqual([
       "--build",
       expect.stringContaining("tsconfig.json"),
       "--pretty",
@@ -137,8 +140,6 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
 
 describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
   test("skips an environment with check: false", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       {
@@ -157,8 +158,6 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
   });
 
   test("passes when no environment is checked", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     createSolution("export {};\n", {
       "engrenage.config.ts": "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } }, tooling: false };\n",
       "tsconfig.json": JSON.stringify({
@@ -175,8 +174,6 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
 
 describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
   test("checks the tests.dist variant", async () => {
-    vi.spyOn(console, "info").mockImplementation(() => {});
-
     const output = await captureBinaryOutput();
 
     createSolution("export const text: string = 1;\n", {
@@ -198,6 +195,8 @@ describe("engrenage typecheck:dist", { timeout: binaryTimeout }, () => {
       "engrenage.config.ts": "export default { tests: { dist: { tsconfig: false } } };\n",
     });
 
-    await expect(tscDist([])).rejects.toThrow("dist tsconfig is disabled");
+    await expect(runDefinition(engrenage, "typecheck:dist")).rejects.toThrow(
+      "dist tsconfig is disabled",
+    );
   });
 });

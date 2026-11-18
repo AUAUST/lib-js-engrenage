@@ -6,6 +6,7 @@ import {
   readHookPayload,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
+import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
@@ -23,6 +24,7 @@ export default async function (): Promise<void> {
 
   const config = await loadValidatedConfig(
     await resolveMainWorktree(process.cwd()),
+    { reporter: getRunContext().reporter },
   );
 
   const reason = await checkAgentResume(config, { session, recipient });
