@@ -11,7 +11,7 @@ import type { ResolvedResources } from "#project/config/types/ResolvedResources"
 
 type ResourceFlags = Pick<
   LocatedResource,
-  "committed" | "generated" | "formatted" | "linted"
+  "committed" | "generated" | "formatted" | "linted" | "appendOnly" | "diffed"
 >;
 
 export const resourcesSection = declareSection({
@@ -39,6 +39,8 @@ export const resourcesSection = declareSection({
         generated,
         formatted: declaration.formatted ?? (committed && !generated),
         linted: declaration.linted ?? true,
+        appendOnly: declaration.appendOnly ?? false,
+        diffed: declaration.diffed ?? true,
       };
 
       if (location instanceof Error) {

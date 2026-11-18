@@ -42,6 +42,16 @@ export interface FileResource {
    */
   readonly linted?: boolean;
   /**
+   * Whether lines are only ever appended; `true` merges it with `merge=union` in
+   * `.gitattributes`. Defaults to `false`.
+   */
+  readonly appendOnly?: boolean;
+  /**
+   * Whether `git diff` shows its changes; `false` marks it `-diff` in
+   * `.gitattributes`. Defaults to `true`.
+   */
+  readonly diffed?: boolean;
+  /**
    * Whether other extensions may own parts of the resource, as `<resource>#<part>`
    * under `owns.parts`. Defaults to `false`.
    */

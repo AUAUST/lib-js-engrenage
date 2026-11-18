@@ -6,6 +6,8 @@ export interface ResolvedResources {
     readonly generated?: boolean;
     readonly formatted?: boolean;
     readonly linted?: boolean;
+    readonly appendOnly?: boolean;
+    readonly diffed?: boolean;
   }): readonly LocatedResource[];
   get(name: string): LocatedResource | undefined;
   path(name: string): string;

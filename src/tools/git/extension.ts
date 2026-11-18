@@ -1,11 +1,13 @@
-import { ignoreFileEntry } from "#tools/git/constants";
+import { gitattributesFile, ignoreFileEntry } from "#tools/git/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { File } from "#types/File";
 
 /**
- * Owns the `ignore.files` slot, the `git` config key, `.gitignore` and the
- * `ignore` directive, through which the `blocks` target fills the `@ignore`
- * blocks of every contributed ignore file, `.gitignore` included.
+ * Owns the `ignore.files` slot, the `git` config key, `.gitignore`,
+ * `.gitattributes`, the `ignore` directive, through which the `blocks` target
+ * fills the `@ignore` blocks of every contributed ignore file, `.gitignore`
+ * included, and the `attributes` directive, which fills the `@attributes` block
+ * of `.gitattributes` from resource flags.
  */
 export default {
   name: "tools/git",
@@ -31,6 +33,11 @@ export default {
           return file === undefined ? undefined : { file };
         },
       },
+      gitattributes: {
+        locate(): FileLocation {
+          return { file: gitattributesFile };
+        },
+      },
     },
     directives: {
       ignore: {
@@ -43,6 +50,14 @@ export default {
         },
         load() {
           return import("#tools/git/operations/fillIgnoreBlock");
+        },
+      },
+      attributes: {
+        files(): Promise<readonly File[]> {
+          return Promise.resolve([gitattributesFile]);
+        },
+        load() {
+          return import("#tools/git/operations/fillAttributesBlock");
         },
       },
     },
@@ -60,6 +75,13 @@ export default {
       {
         name: "gitignore",
         files: ["**/.gitignore"],
+        open: "# ",
+        close: "",
+        padding: "\n\n",
+      },
+      {
+        name: "gitattributes",
+        files: ["**/.gitattributes"],
         open: "# ",
         close: "",
         padding: "\n\n",

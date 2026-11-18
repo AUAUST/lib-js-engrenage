@@ -1,1 +1,41 @@
-.ai/discarded.md merge=union
+# @attributes
+
+/src/tools/eslint/types/Rules.ts linguist-generated
+/src/tools/eslint/types/rules/** linguist-generated
+/src/project/build/types/BuildInput.ts linguist-generated
+/src/project/cache/types/CacheInput.ts linguist-generated
+/src/project/docs/types/DocsInput.ts linguist-generated
+/src/project/environments/types/AliasesInput.ts linguist-generated
+/src/project/environments/types/BinInput.ts linguist-generated
+/src/project/environments/types/DataInput.ts linguist-generated
+/src/project/environments/types/DefineInput.ts linguist-generated
+/src/project/environments/types/DomainInput.ts linguist-generated
+/src/project/environments/types/NamespaceInput.ts linguist-generated
+/src/project/environments/types/RuntimeInput.ts linguist-generated
+/src/project/environments/types/ScriptsInput.ts linguist-generated
+/src/project/environments/types/SourceInput.ts linguist-generated
+/src/project/environments/types/TestsInput.ts linguist-generated
+/src/project/environments/types/ToolingInput.ts linguist-generated
+/src/project/format/types/FormatInput.ts linguist-generated
+/src/project/presets/types/TraitsInput.ts linguist-generated
+/src/project/roles/types/RoleInput.ts linguist-generated
+/src/project/structure/types/StructureInput.ts linguist-generated
+/src/project/tsconfig/types/TypescriptInput.ts linguist-generated
+/src/tools/agents/types/AgentsInput.ts linguist-generated
+/src/tools/git/types/GitInput.ts linguist-generated
+/src/tools/github/types/GithubInput.ts linguist-generated
+/src/tools/prettier/types/PrettierInput.ts linguist-generated
+/src/tools/vscode/types/VscodeInput.ts linguist-generated
+/src/workflows/config/types/ConfigInput.ts linguist-generated
+/.claude/rules/project-map.md linguist-generated
+/.claude/rules/project-map/*.md linguist-generated
+/.claude/rules/planning-sheet.md linguist-generated
+/.claude/rules/planning-sheet/*.md linguist-generated
+/AGENTS.override.md linguist-generated
+/**/CHANGELOG.md linguist-generated
+/.engrenage/github.json linguist-generated
+/pnpm-lock.yaml linguist-generated -diff
+/.ai/friction.md merge=union
+/.ai/discarded.md merge=union
+
+# @end

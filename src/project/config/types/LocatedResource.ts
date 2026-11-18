@@ -9,5 +9,7 @@ export interface LocatedResource {
   readonly generated: boolean;
   readonly formatted: boolean;
   readonly linted: boolean;
+  readonly appendOnly: boolean;
+  readonly diffed: boolean;
   readonly parts: boolean;
 }

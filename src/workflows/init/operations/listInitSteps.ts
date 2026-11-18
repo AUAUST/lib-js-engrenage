@@ -12,7 +12,7 @@ import {
 } from "#tools/agents/index";
 import { createChangesetConfigStep } from "#tools/changesets/index";
 import { createEslintConfigStep } from "#tools/eslint/index";
-import { createGitignoreStep } from "#tools/git/index";
+import { createGitattributesStep, createGitignoreStep } from "#tools/git/index";
 import { createWorkflowsStep } from "#tools/github/index";
 import { createJscpdStep } from "#tools/jscpd/index";
 import { createLefthookStep } from "#tools/lefthook/index";
@@ -62,6 +62,7 @@ export function listInitSteps(): Step[] {
     createPrettierStep(),
     createPrettierignoreStep(),
     createGitignoreStep(),
+    createGitattributesStep(),
     createEslintConfigStep(),
     createAgentsStep(),
     createAgentRulesStep(),

@@ -32,6 +32,7 @@ describe("loadConfig", () => {
 
     expect((await config.resolve("files")).generated).toEqual([
       ".engrenage/github.json",
+      "pnpm-lock.yaml",
     ]);
 
     expect(await config.resolve("packageJsonPath")).toBeUndefined();

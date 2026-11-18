@@ -1,19 +1,21 @@
 import {
   agentLoaderEntry,
+  agentLogFiles,
   agentRuntimeEntry,
   agentsTarget,
   agentStatsDirectory,
   markdownBlocks,
+  rulesDirectory,
 } from "#tools/agents/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { File } from "#types/File";
 
 /**
  * Owns the `agents` config key, the `agents.runtimes`, `agents.fillers` and
- * `agents.rules` slots, the `debt` line marker, the instruction files and
- * the agent stats directory and the `reference` directive, through which
- * the `blocks` target fills the `@reference` blocks of instruction files,
- * and syncs agent files.
+ * `agents.rules` slots, the `debt` line marker, the instruction files, the agent
+ * logs, the generated rules, the agent stats directory and the `reference`
+ * directive, through which the `blocks` target fills the `@reference` blocks of
+ * instruction files, and syncs agent files.
  */
 export default {
   name: "tools/agents",
@@ -47,6 +49,46 @@ export default {
           const { instructionFiles } = await config.resolve("agents");
 
           return { globs: instructionFiles };
+        },
+      },
+      "agents.logs": {
+        title: "Agent logs",
+        appendOnly: true,
+        async locate(config): Promise<FileLocation | undefined> {
+          const { preferred } = await config.resolve("agents");
+
+          return (preferred?.length ?? 0) === 0
+            ? undefined
+            : { globs: agentLogFiles };
+        },
+      },
+      "agents.generatedRules": {
+        title: "Agent rules",
+        generated: true,
+        async locate(config): Promise<FileLocation | undefined> {
+          const { preferred } = await config.resolve("agents");
+
+          if ((preferred?.length ?? 0) === 0) {
+            return;
+          }
+
+          const rules = await config.context.registry.contributions(
+            "agents.rules",
+            config,
+          );
+
+          if (rules.length === 0) {
+            return;
+          }
+
+          return {
+            globs: rules.flatMap(({ entry }) => {
+              return [
+                `${rulesDirectory}/${entry.name}.md`,
+                `${rulesDirectory}/${entry.name}/*.md`,
+              ];
+            }),
+          };
         },
       },
     },

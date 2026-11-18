@@ -117,6 +117,40 @@ describe("file resources", () => {
     ).not.toContain("broken");
   });
 
+  test("defaults the Git flags and lists the resources declaring them", async () => {
+    const config = createConfig([
+      {
+        name: "flags-fixture",
+        owns: {
+          files: {
+            plain: {
+              locate: () => {
+                return { file: "plain.txt" };
+              },
+            },
+            log: {
+              appendOnly: true,
+              locate: () => {
+                return { file: "log.md" };
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    const resources = await config.resolve("resources");
+
+    expect(resources.get("plain")).toMatchObject({
+      appendOnly: false,
+      diffed: true,
+    });
+
+    expect(
+      resources.list({ appendOnly: true }).map(({ name }) => name),
+    ).toEqual(["log"]);
+  });
+
   test("locates the resources of an owner its staged manifest activates", async () => {
     const config = createConfig([]);
 

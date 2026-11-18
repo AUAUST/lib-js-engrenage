@@ -20,6 +20,8 @@ function resource(
     generated: false,
     formatted: false,
     linted: true,
+    appendOnly: false,
+    diffed: true,
     parts: false,
   };
 }

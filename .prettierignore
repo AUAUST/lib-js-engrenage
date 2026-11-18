@@ -17,6 +17,12 @@ bun.lockb
 # Agent stats
 /.ai/stats
 
+# Agent rules
+/.claude/rules/project-map.md
+/.claude/rules/project-map/*.md
+/.claude/rules/planning-sheet.md
+/.claude/rules/planning-sheet/*.md
+
 # Codex
 /AGENTS.override.md
 

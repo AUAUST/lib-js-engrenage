@@ -48,6 +48,11 @@ export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 
 export const backlogTemplate = `${engrenage}/agents/templates/backlog.md`;
 
+export const agentLogFiles = freeze([
+  ".ai/friction.md",
+  ".ai/discarded.md",
+] as const) satisfies Globs;
+
 export const scratchpadFile = ".ai/scratchpad.md" satisfies File;
 
 export const scratchpadPlaceholder = "Write ideas, bugs and follow-ups here, one per line; the curator turns them into backlog entries and issues.";

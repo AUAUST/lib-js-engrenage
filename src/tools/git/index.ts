@@ -4,6 +4,7 @@ export { readCommitSubject } from "#tools/git/utils/readCommitSubject";
 // @end
 
 // @barrel setup
+export { createGitattributesStep } from "#tools/git/setup/createGitattributesStep";
 export { createGitignoreStep } from "#tools/git/setup/createGitignoreStep";
 // @end
 
@@ -13,6 +14,7 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 
 // @barrel operations
 export { createGitignorePresets } from "#tools/git/operations/createGitignorePresets";
+export { fillAttributesBlock } from "#tools/git/operations/fillAttributesBlock";
 export { fillIgnoreBlock } from "#tools/git/operations/fillIgnoreBlock";
 export { findHookBypass } from "#tools/git/operations/findHookBypass";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";

@@ -10,7 +10,9 @@ export default {
     files: {
       "pnpm-lock.yaml": {
         title: "pnpm",
+        generated: true,
         formatted: false,
+        diffed: false,
         locate(): FileLocation {
           return { file: lockfile };
         },
