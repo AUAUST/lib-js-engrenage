@@ -83,43 +83,37 @@ Project structure description, its report and the tooling generated from it.
 - why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use. Hand-listed constants subpaths: #495.
 - want: a decision on the role split (planning).
 
-## 14. Role presets sit among utils and rank wrongly
-
-- sites: `src/project/roles/utils/*.ts` (one preset per file, 25 markers), `engrenage.config.ts:91`, `src/project/docs/utils/*.ts` (tag presets, AUAUST/lib-js-engrenage#439: their default list sits in `utils/listConventionalTags.ts` since pure `constants` cannot import them)
-- why: each file is a role preset, not a utility; `adapters` is the only preset without an effect level, so projects override it; `schemas` is pure though `foundation/options` declarer schemas import confined utils; `testutils` should be observing once its type exists.
-- want: presets in their own role directory; `adapters` ranked by the preset (planning for the rest).
-
-## 15. Structure resolvers and index hold loose rules
+## 14. Structure resolvers and index hold loose rules
 
 - sites: `src/project/structure/operations/createStructureDomainResolver.ts:68`, `createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `:101`, `src/project/structure/operations/findImportCycles.ts:238`
 - why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
 - want: each rule fixed at its site.
 
-## 16. Structure boundary and layer rules miss cases
+## 15. Structure boundary and layer rules miss cases
 
 - sites: `src/project/structure/utils/checkBoundary.ts:47`, `:111`, `checkLayers.ts:7`, `checkSurfaces.ts:8`
 - why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind.
 - want: index specifier read directly; every environment file checked; rules split by broken relation.
 
-## 17. Structure reads tsconfig to find output directories
+## 16. Structure reads tsconfig to find output directories
 
 - sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `:26`, `entitiesSection.ts:16`
 - why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only.
 - want: output directory resolved without the tsconfig; aliases not keyed by one language name.
 
-## 18. Structure and map renderers are ad hoc
+## 17. Structure and map renderers are ad hoc
 
 - sites: `src/project/structure/utils/renderStructure.ts:55`, `:83`, `src/tools/agents/utils/renderEnvironmentMap.ts:15`
 - why: path segments recomposed by hand though the node provides them; map renderers repeat code.
 - want: segments from the node; one structured renderer shared by the map renderers.
 
-## 19. Namespaces declared under a domain glob are ignored
+## 18. Namespaces declared under a domain glob are ignored
 
 - sites: `src/project/structure/utils/flattenStructure.ts:75`, `src/project/structure/operations/createStructureDomainResolver.ts:38`
 - why: `flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches.
 - want: namespaces under globs matched like domains, or rejected by the schema.
 
-## 20. A domain's index drops a role's modules silently when it has no `@barrel <role>` marker
+## 19. A domain's index drops a role's modules silently when it has no `@barrel <role>` marker
 
 - why: `syncBarrelBlocks` (`src/tools/typescript/setup/syncBarrelBlocks.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #9 ("Markers fail silently").
 - want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.
