@@ -67,9 +67,12 @@ Decide it by the issues rule › Outcome: fixing every site that shares the caus
 
 ## Writing the issue
 
-- When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise draft a new one under the issues rule.
+- When the input is an issue whose fix the current repository owns, turn that issue into the task, condensing its original report into **Context**. Otherwise draft a new one under the issues rule.
 - Type it by the issues rule › Filing; a merger's improvement finding is accepted work, a `task`.
-- With a `Walk:` line, create each new issue the current repository owns in the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue. File the others under the issues rule › Repository.
+- With a `Walk:` line, create each new issue by the repository owning it:
+  - **The current repository.** In the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue.
+  - **Another repository with a linked checkout, one `pnpm engrenage link` lists.** A `problem`, `--repo <short name> --parent <issue>`, the issue being your brief's `Leaf:` issue, otherwise your input issue; never fix it in that checkout: the walker routes the `problem` there.
+  - **Any other.** Under the issues rule › Repository.
 
 ## Finishing
 
