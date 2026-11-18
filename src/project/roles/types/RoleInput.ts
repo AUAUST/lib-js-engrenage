@@ -86,6 +86,12 @@ export interface RoleInput {
    */
   collected?: (boolean | undefined)
   /**
+   * How other domains reach the role's modules: `barrel` through the domain's index, `modules` directly, each module public and listed by no index.
+   * Unset, `modules` in a project without the `published` trait for a role without `file` or `index`, `barrel` otherwise.
+   * @default none
+   */
+  surface?: (("barrel" | "modules") | undefined)
+  /**
    * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
    * @default false
    */

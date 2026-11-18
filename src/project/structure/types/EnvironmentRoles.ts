@@ -7,4 +7,5 @@ export interface EnvironmentRoles {
   readonly effects: RoleEffects;
   readonly defaultModules?: EffectModules;
   readonly verbatimModuleSyntax: boolean;
+  readonly published: boolean;
 }

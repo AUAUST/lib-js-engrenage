@@ -11,11 +11,13 @@ export function registerRoles({
   path,
   roles,
   registry,
+  published,
 }: {
   owner: string | undefined;
   path: string;
   roles: readonly (string | Role)[];
   registry: RoleRegistry;
+  published: boolean;
 }): string[] {
   const positions = new Map<string, number>();
 
@@ -57,14 +59,21 @@ export function registerRoles({
             path: `${path}[${position}].roles`,
             roles: declared.roles,
             registry,
+            published,
           }),
         );
 
-    registry.contracts[registered] = completeRole(registered, {
-      ...declared,
-      roles: nested,
-      scoped: owner === undefined ? declared.scoped : true,
-    });
+    registry.contracts[registered] = completeRole(
+      registered,
+      {
+        ...declared,
+        roles: nested,
+        scoped: owner === undefined ? declared.scoped : true,
+      },
+      {
+        published,
+      },
+    );
 
     for (const alias of declared.aliases ?? []) {
       const taken = registry.aliases[alias];

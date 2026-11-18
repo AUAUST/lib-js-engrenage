@@ -10,6 +10,7 @@ export interface RoleDefinition extends Omit<
   | "public"
   | "subpath"
   | "collected"
+  | "surface"
   | "discovered"
   | "scoped"
   | "strict"
@@ -24,6 +25,7 @@ export interface RoleDefinition extends Omit<
   readonly public: boolean | undefined;
   readonly subpath: ResolvedRoleContract["subpath"] | undefined;
   readonly collected: boolean | undefined;
+  readonly surface: ResolvedRoleContract["surface"] | undefined;
   readonly discovered: boolean | undefined;
   readonly scoped: boolean | undefined;
   readonly strict: boolean | undefined;

@@ -10,10 +10,12 @@ export async function readEnvironmentRoles(
     { effects },
     { verbatimModuleSyntax },
     defaultModules,
+    { published },
   ] = await Promise.all([
     config.resolve("structure.options"),
     config.resolve("typescript.options"),
     config.resolve("effectModules"),
+    config.resolve("traits"),
   ]);
 
   return {
@@ -21,5 +23,6 @@ export async function readEnvironmentRoles(
     effects,
     defaultModules,
     verbatimModuleSyntax,
+    published,
   };
 }

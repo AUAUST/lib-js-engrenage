@@ -3,6 +3,7 @@ import {
   boolean,
   literal,
   number,
+  picklist,
   pipe,
   readonly,
   string,
@@ -22,7 +23,7 @@ import { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleC
 import { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
 import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
 import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
-import { roleContractDefaults } from "#project/roles/constants";
+import { roleContractDefaults, roleSurfaces } from "#project/roles/constants";
 
 function describedDefault(value: unknown) {
   return unset(describeDefault({ value }));
@@ -94,6 +95,13 @@ export function declareRoleContractEntries<Nested>(
     collected: declare(boolean(), {
       description: "Whether its public modules stay importable inside sub-domains, without going through their parent domains' surfaces, so one module can collect them all.",
       optional: describedDefault(roleContractDefaults.collected),
+    }),
+    surface: declare(picklist(roleSurfaces), {
+      description: [
+        "How other domains reach the role's modules: `barrel` through the domain's index, `modules` directly, each module public and listed by no index.",
+        "Unset, `modules` in a project without the `published` trait for a role without `file` or `index`, `barrel` otherwise.",
+      ],
+      optional: { value: undefined },
     }),
     typeOnly: declare(boolean(), {
       description: "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",

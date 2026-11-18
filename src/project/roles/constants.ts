@@ -34,6 +34,8 @@ export const roleTypeExportStyles = freeze([
   "none",
 ] as const);
 
+export const roleSurfaces = freeze(["barrel", "modules"] as const);
+
 export const roleContractDefaults = freeze({
   nesting: 0,
   index: false,

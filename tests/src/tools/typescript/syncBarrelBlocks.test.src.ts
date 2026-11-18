@@ -7,6 +7,7 @@ import { createBarrelProject } from "#tests/utils/createBarrelProject";
 function createKit({
   files,
   isPublic = false,
+  published,
   roles = [
     utils({
       exports: { values: "named-match", types: "none" },
@@ -15,11 +16,13 @@ function createKit({
 }: {
   files: Record<string, string>;
   isPublic?: boolean;
+  published?: boolean;
   roles?: readonly Role[];
 }) {
   return createBarrelProject({
     files,
     roles,
+    ...(published === undefined ? {} : { published }),
     domains: {
       "*": { public: isPublic },
     },
@@ -91,6 +94,31 @@ export * from "#modules/object/schemas/shape";
 export type * from "#modules/object/types/Entry";
 // @end
 `,
+    );
+  });
+
+  test("fails on a barrel marker of a modules role in an unpublished index, filling it in a library", async () => {
+    const files = {
+      "src/modules/object/index.ts": "// @barrel utils\n// @end\n",
+      "src/modules/object/utils/keys.ts": "export function keys() {}\n",
+    };
+
+    await expect(
+      runSync(
+        createKit({
+          files,
+          roles: [utils()],
+          published: false,
+        }).config,
+      ),
+    ).rejects.toThrow('remove its "@barrel utils" marker');
+
+    const library = createKit({ files, roles: [utils()] });
+
+    await library.sync();
+
+    expect(library.project.read("src/modules/object/index.ts")).toContain(
+      'export { keys } from "#modules/object/utils/keys";',
     );
   });
 

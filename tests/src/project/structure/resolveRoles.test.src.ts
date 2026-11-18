@@ -19,10 +19,12 @@ function resolve({
   roles,
   effects = {},
   scopes,
+  published = true,
 }: {
   roles: readonly Role[];
   effects?: Partial<RoleEffects>;
   scopes?: readonly string[];
+  published?: boolean;
 }) {
   return resolveRoles({
     environment: "src",
@@ -34,11 +36,36 @@ function resolve({
       ...effects,
     },
     verbatimModuleSyntax: true,
+    published,
     ...(scopes === undefined ? {} : { scopes }),
   });
 }
 
 describe("resolveRoles", () => {
+  test("defaults a role's surface from the published trait", () => {
+    const app = resolve({ roles: [index(), utils()], published: false });
+
+    expect(app.roles.utils).toMatchObject({ surface: "modules", public: true });
+    expect(app.roles.index).toMatchObject({ surface: "barrel" });
+
+    expect(resolve({ roles: [utils()] }).roles.utils).toMatchObject({
+      surface: "barrel",
+      public: false,
+    });
+
+    expect(
+      resolve({ roles: [utils({ surface: "modules" })] }).roles.utils,
+    ).toMatchObject({ surface: "modules" });
+
+    expect(() => {
+      return resolve({ roles: [utils({ surface: "modules", index: true })] });
+    }).toThrow("`surface`");
+
+    expect(() => {
+      return resolve({ roles: [utils({ surface: "modules", public: false })] });
+    }).toThrow("`surface`");
+  });
+
   test("resolves only the listed roles, in their order", () => {
     const resolved = resolve({
       roles: [index(), constants(), utils({ nesting: "any" })],

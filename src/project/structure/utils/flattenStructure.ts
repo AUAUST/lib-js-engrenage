@@ -14,9 +14,11 @@ const environmentRoot = ".";
 export function flattenStructure({
   environment,
   structure,
+  published,
 }: {
   environment: string;
   structure: NamespaceDeclaration;
+  published: boolean;
 }): DeclaredStructure & { readonly defined: RoleRegistry } {
   const defined: RoleRegistry = {
     contracts: {},
@@ -81,6 +83,7 @@ export function flattenStructure({
       path: `${option}.roles.enable`,
       roles: namespace.roles.enable,
       registry: defined,
+      published,
     });
 
     namespaces[path] = freeze({

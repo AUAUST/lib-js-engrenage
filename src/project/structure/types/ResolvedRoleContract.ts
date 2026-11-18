@@ -1,4 +1,5 @@
 import type { DescribedResolver } from "#foundation/options/index";
+import type { roleSurfaces } from "#project/roles/constants";
 import type {
   ReexportMode,
   RoleCompanionResolver,
@@ -28,6 +29,7 @@ export interface ResolvedRoleContract {
   readonly subpath: boolean | "root";
   readonly reexport: readonly ReexportMode[] | undefined;
   readonly collected: boolean;
+  readonly surface: (typeof roleSurfaces)[number];
   readonly discovered: boolean;
   readonly scoped: boolean;
   readonly strict: boolean;

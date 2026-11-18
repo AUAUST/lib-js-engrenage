@@ -65,6 +65,7 @@ export function resolveRoles({
   effects,
   defaultModules,
   verbatimModuleSyntax,
+  published,
   defined,
   scopes = [],
 }: EnvironmentRoles & {
@@ -82,6 +83,7 @@ export function resolveRoles({
     path: `${environment}.roles`,
     roles,
     registry,
+    published,
   });
 
   for (const name of scopes) {

@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
-import { createRolePreset, entry } from "@auaust/engrenage/roles";
+import { createRolePreset, entry, operations } from "@auaust/engrenage/roles";
 import { assign } from "@auaust/toolkit/object";
 
 import { createBoundaryProject } from "#tests/utils/createBoundaryProject";
@@ -246,6 +246,31 @@ describe("structure boundaries", () => {
         'export { value } from "#project/feature/utils/own";\n',
       ),
     ).toEqual([]);
+  });
+
+  test("lets peers import a sub-domain's modules role directly in an app", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createBoundaryProject({
+        preset: "app",
+        roles: [operations({ surface: "barrel" })],
+        files: { "src/project/feature/inner/operations/run.ts": exported },
+      }),
+    );
+
+    expect(
+      await lint(
+        "src/project/other/index.ts",
+        'export { value } from "#project/feature/inner/utils/deep";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/project/other/index.ts",
+        'export { value } from "#project/feature/inner/operations/run";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
   });
 
   test("reaches a collected role inside a sub-domain past its parent's surface", async () => {

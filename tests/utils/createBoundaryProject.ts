@@ -1,11 +1,19 @@
-import { entry } from "@auaust/engrenage/roles";
+import { entry, type Role } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const exported = "export const value = 1;\n";
 
-export function createBoundaryProject() {
+export function createBoundaryProject({
+  preset = "library",
+  roles = [],
+  files = {},
+}: {
+  preset?: string;
+  roles?: readonly Role[];
+  files?: Readonly<Record<string, string>>;
+} = {}) {
   return createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
@@ -17,7 +25,7 @@ export function createBoundaryProject() {
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry())}, structure: { layers: ["foundation", "project"] } } };\n`,
+    "engrenage.config.ts": `export default { preset: "${preset}", src: { roles: ${renderCodeRoles(entry(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -38,5 +46,6 @@ export function createBoundaryProject() {
     "src/entry.ts": exported,
     "src/project/other/utils/priv.ts": exported,
     "src/project/other/constants.ts": exported,
+    ...files,
   });
 }

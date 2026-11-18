@@ -29,6 +29,7 @@ function resolveExports(
 export function completeRole(
   name: string,
   definition: Partial<RoleDefinition>,
+  { published }: { published: boolean },
 ): ResolvedRoleContract {
   const typeOnly = definition.typeOnly ?? roleContractDefaults.typeOnly;
 
@@ -40,9 +41,35 @@ export function completeRole(
     );
   }
 
-  const visible = definition.public ?? roleContractDefaults.public;
-  const subpath = definition.subpath ?? roleContractDefaults.subpath;
   const index = definition.index ?? roleContractDefaults.index;
+
+  if (
+    definition.surface === "modules" &&
+    (definition.file !== undefined || index !== false)
+  ) {
+    throw new Error(
+      `The role ${name} sets \`surface\` "modules" with \`file\` or \`index\`: only a directory role without its own barrel exposes its modules directly`,
+    );
+  }
+
+  const surface = (
+    definition.surface ??
+    (published || definition.file !== undefined || index !== false
+      ? "barrel"
+      : "modules")
+  );
+
+  if (surface === "modules" && definition.public === false) {
+    throw new Error(
+      `The role ${name} sets \`surface\` "modules" but \`public\` false: its modules are its domain's surface`,
+    );
+  }
+
+  const visible = (
+    definition.public ?? (surface === "modules" || roleContractDefaults.public)
+  );
+
+  const subpath = definition.subpath ?? roleContractDefaults.subpath;
 
   if (subpath !== false && listStaticFileGlobs(definition.file).length === 0) {
     if (index === false) {
@@ -91,6 +118,7 @@ export function completeRole(
       ? undefined
       : listReexportModes(definition.reexport),
     collected: definition.collected ?? roleContractDefaults.collected,
+    surface,
     discovered: definition.discovered ?? roleContractDefaults.discovered,
     scoped,
     strict: definition.strict ?? roleContractDefaults.strict,

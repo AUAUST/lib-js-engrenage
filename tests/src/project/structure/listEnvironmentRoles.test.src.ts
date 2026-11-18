@@ -22,6 +22,7 @@ describe("listEnvironmentRoles", () => {
         fallback: undefined,
       },
       verbatimModuleSyntax: true,
+      published: true,
     });
 
     expect(resolved.roles.index?.purpose).toBe("The group.");

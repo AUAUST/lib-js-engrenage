@@ -12,12 +12,14 @@ export function createBarrelProject({
   domains,
   namespaces = {},
   extensions = [],
+  published = true,
 }: {
   files: Record<string, string>;
   roles: readonly Role[];
   domains: Record<string, Record<string, unknown>>;
   namespaces?: Record<string, Record<string, unknown>>;
   extensions?: readonly unknown[];
+  published?: boolean;
 }) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "@fixture/kit", "type": "module" }',
@@ -31,6 +33,7 @@ export function createBarrelProject({
     root: project.root,
     raw: {
       preset: "library",
+      traits: published ? {} : { disable: ["published"] },
       agents: {
         preferred: ["claude"],
       },

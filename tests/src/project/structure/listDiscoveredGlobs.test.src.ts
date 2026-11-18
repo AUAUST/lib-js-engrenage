@@ -20,6 +20,7 @@ function contract(
     subpath: false,
     reexport: undefined,
     collected: false,
+    surface: "barrel",
     discovered: false,
     scoped: false,
     typeOnly: false,

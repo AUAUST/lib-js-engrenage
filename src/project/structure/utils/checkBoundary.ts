@@ -133,7 +133,9 @@ export function checkBoundary(
 
     if (
       exposer === undefined ||
-      ((exposer === targetOwner || target.contract?.collected === true) &&
+      ((exposer === targetOwner ||
+        target.contract?.collected === true ||
+        target.contract?.surface === "modules") &&
         isOnSurface(target))
     ) {
       return;

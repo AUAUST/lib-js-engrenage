@@ -105,6 +105,15 @@ export async function planBarrelBlock(
     );
   }
 
+  if (
+    basename(file) === environment.indexFile &&
+    contract.surface === "modules"
+  ) {
+    throw new Error(
+      `The role "${role}" has surface "modules": other domains import its modules directly, so ${file} lists none; remove its "@barrel ${role}" marker`,
+    );
+  }
+
   const directory = dirname(file);
 
   const owner = environment.dirs.includes(directory)

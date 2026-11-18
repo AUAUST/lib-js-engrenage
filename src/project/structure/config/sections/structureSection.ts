@@ -34,13 +34,17 @@ async function resolveStructure(
     return;
   }
 
-  const { internals } = await config.resolve("structure.options");
+  const [{ internals }, { published }] = await Promise.all([
+    config.resolve("structure.options"),
+    config.resolve("traits"),
+  ]);
 
   const roles = listEnvironmentRoles(option);
 
   const { defined, ...declared } = flattenStructure({
     environment: name,
     structure: option.structure,
+    published,
   });
 
   const metadata = await readStructureMetadata({
