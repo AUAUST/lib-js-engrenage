@@ -17,6 +17,7 @@ export function hasStructureViolations(structure: ResolvedStructure): boolean {
       environment !== undefined &&
       ((environment.strictness === "strict" &&
         environment.unclassified.length > 0) ||
+        environment.unreached.length > 0 ||
         holdsNodeViolation(environment.root))
     );
   });

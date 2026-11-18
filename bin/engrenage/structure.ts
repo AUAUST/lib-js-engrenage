@@ -6,7 +6,7 @@ export default defineLazyCommand({
       .description("Print how engrenage classifies the project directories.")
       .option(
         "--check",
-        "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation, a module beside the command group of its name or a runtime import cycle",
+        "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation, a namespace or domain declaration the walk never reaches, a module beside the command group of its name or a runtime import cycle",
         false,
       );
   },

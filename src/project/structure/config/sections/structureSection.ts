@@ -1,4 +1,6 @@
-import { freeze, record, values } from "@auaust/toolkit/object";
+import { matchesGlob, posix } from "node:path";
+
+import { freeze, hasOwn, keys, record, values } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import {
@@ -9,19 +11,80 @@ import { readEnvironmentRoles } from "#project/structure/operations/readEnvironm
 import { readStructureMetadata } from "#project/structure/operations/readStructureMetadata";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
+import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
 import { flattenStructure } from "#project/structure/utils/flattenStructure";
 import { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
+import type { DeclaredStructure } from "#project/structure/types/DeclaredStructure";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
+import type { StructureMetadata } from "#project/structure/types/StructureMetadata";
 import type { StructureNode } from "#project/structure/types/StructureNode";
+import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 
 interface StructuredEnvironment {
   readonly name: string;
   readonly environment: ResolvedEnvironment;
   readonly option: EnvironmentStructureOption;
+}
+
+function listUnreached({
+  structure,
+  declared,
+  merged,
+  metadata,
+}: {
+  structure: Omit<EnvironmentStructure, "unreached">;
+  declared: DeclaredStructure;
+  merged: Pick<StructureOptions, "namespaces" | "domains">;
+  metadata: readonly StructureMetadata[];
+}): EnvironmentStructure["unreached"] {
+  const walked = structure.dirs.filter((directory) => directory !== ".");
+
+  const subpaths = collectStructureNodes(structure.root).flatMap((node) => {
+    return walked
+      .map((directory) => posix.relative(directory, node.path))
+      .filter((subpath) => {
+        return subpath !== ".." && !subpath.startsWith("../");
+      })
+      .map((subpath) => {
+        return { subpath: subpath === "" ? "." : subpath, kind: node.kind };
+      });
+  });
+
+  const reached = new Set([".", ...subpaths.map(({ subpath }) => subpath)]);
+
+  const domainSubpaths = subpaths
+    .filter(({ kind }) => kind === "domain")
+    .map(({ subpath }) => subpath);
+
+  function entry(path: string, kind: "namespace" | "domain") {
+    return {
+      path,
+      kind,
+      config: hasOwn(
+        kind === "namespace" ? declared.namespaces : declared.domains,
+        path,
+      ),
+      files: metadata.find((located) => located.path === path)?.files ?? [],
+    };
+  }
+
+  return [
+    ...keys(merged.namespaces)
+      .filter((path) => !reached.has(path))
+      .map((path) => entry(path, "namespace")),
+    ...keys(merged.domains)
+      .filter((path) => {
+        return (
+          !reached.has(path) &&
+          !domainSubpaths.some((subpath) => matchesGlob(subpath, path))
+        );
+      })
+      .map((path) => entry(path, "domain")),
+  ].sort((left, right) => left.path.localeCompare(right.path));
 }
 
 async function resolveStructure(
@@ -57,13 +120,15 @@ async function resolveStructure(
     );
   }
 
-  const { namespaces, domains } = mergeStructureMetadata({
+  const merged = mergeStructureMetadata({
     environment: name,
     declared,
     metadata,
   });
 
-  return resolveEnvironmentStructure({
+  const { namespaces, domains } = merged;
+
+  const structure = await resolveEnvironmentStructure({
     name,
     filesystem: config.context.filesystem,
     dirs: environment.dirs,
@@ -79,6 +144,16 @@ async function resolveStructure(
     tree: option.tree,
     ...(tests === undefined ? {} : { tests }),
   });
+
+  return {
+    ...structure,
+    unreached: listUnreached({
+      structure,
+      declared,
+      merged,
+      metadata,
+    }),
+  };
 }
 
 function freezeNode(node: StructureNode): StructureNode {
@@ -136,6 +211,13 @@ function freezeEnvironment(
   freeze(structure.dirs);
   freeze(structure.unclassified);
   freeze(structure.roles);
+
+  for (const entry of structure.unreached) {
+    freeze(entry.files);
+    freeze(entry);
+  }
+
+  freeze(structure.unreached);
 
   return freeze(structure);
 }

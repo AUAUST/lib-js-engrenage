@@ -133,6 +133,45 @@ describe("structure", () => {
     ]);
   });
 
+  test("reports declarations the walk never reaches", async () => {
+    const { structure } = await describeSource(declaration, {
+      "src/feature/utils/x/.domain.json": "{}",
+    });
+
+    expect(structure.unreached).toEqual([
+      {
+        path: "feature/utils/x",
+        kind: "domain",
+        config: false,
+        files: ["src/feature/utils/x/.domain.json"],
+      },
+    ]);
+  });
+
+  test("reports a domain glob matching no node", async () => {
+    const { structure } = await describeSource(
+      declaration.replace(
+        'zone: { layers: ["base", "*", "top"] },',
+        'zone: { layers: ["base", "*", "top"], domains: { "none-*": {} } },',
+      ),
+    );
+
+    expect(structure.unreached).toEqual([
+      {
+        path: "zone/none-*",
+        kind: "domain",
+        config: true,
+        files: [],
+      },
+    ]);
+  });
+
+  test("reports no unreached declaration when every one is walked", async () => {
+    const { structure } = await describeSource(declaration);
+
+    expect(structure.unreached).toEqual([]);
+  });
+
   test("attaches layers and domain metadata", async () => {
     const { nodes } = await describeSource(declaration);
 
