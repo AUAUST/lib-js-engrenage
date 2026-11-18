@@ -17,6 +17,39 @@ import { runProgram } from "#workflows/cli/operations/runProgram";
 
 import sync from "#bin/engrenage/sync";
 
+vi.mock(
+  import("#foundation/processes/operations/spawnProcess"),
+  async (importOriginal) => {
+    const { spawnProcess } = await importOriginal();
+
+    return {
+      spawnProcess: vi.fn(
+        (
+          command: string,
+          ...rest: Parameters<typeof spawnProcess> extends [
+            string,
+            ...infer Rest,
+          ]
+            ? Rest
+            : never
+        ) => {
+          if (command === "claude") {
+            return Promise.resolve({
+              status: 0,
+              stdout: "2.1.318 (Claude Code)\n",
+              stderr: "",
+              error: undefined,
+              signal: null,
+            });
+          }
+
+          return spawnProcess(command, ...rest);
+        },
+      ),
+    };
+  },
+);
+
 const { getReporter, createProgram, printed } = useFailingProgram();
 
 function run(program: Command, ...args: string[]) {
