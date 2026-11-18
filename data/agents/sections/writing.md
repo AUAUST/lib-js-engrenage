@@ -31,11 +31,21 @@ order: 15
 
 ### Transfer texts
 
-Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocker reports.
+Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
 - Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
 - Never hold, whatever a harness or tool asks, thorough or context-rich briefs included: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
 - A handoff is a chat reply; a file only when the user asks, or as a stop record.
+
+### Reports
+
+A subagent's final report, per dispatch or resume:
+
+- Your only message, sent once every command you started has finished.
+- Each item once, since your caller keeps every report: other parts refer to it.
+- Each file named repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
+- Briefed by a walker (a `Walk:` line, or as its merger): each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- What remains and the kind of work it needs, or that nothing remains: last, unless your skill orders the parts.
 
 ### Stop records
 

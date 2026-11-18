@@ -31,7 +31,7 @@ The walk request sets them:
 walk check ──► route the ready set (§Handling table)
   │
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
-  │              ├─ blocker ──► consultant ──► resume the agent
+  │              ├─ blocked ──► consultant ──► resume the agent
   │              ├─ scope stop ──► consultant splits the issue ──► drop the leaf's work ──► walk check
   │              └─ completion
   │                   ▼
@@ -46,25 +46,25 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return and debugger write-up, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return and debugger write-up, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
 
-Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
+Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. A leaf is an issue a row dispatches to a worker or a debugger. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
 
-| Issue                                                                                               | Walker                                                                                                                                                      |
-| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Closed, or closed by an unpushed commit                                                             | Skip                                                                                                                                                        |
-| A nested `plan` past the plan depth                                                                 | Set aside: walked on its own                                                                                                                                |
-| Open sub-issues                                                                                     | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
-| `plan` or `segment` with no open sub-issue                                                          | Closes with its last leaf's commit; the walked issue with §Boundary reviews' walk-end commit instead                                                        |
-| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present                                       | Set aside: it is being planned                                                                                                                              |
-| `blockers` `drafting`, with no local draft                                                          | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows                 |
-| `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                               | Set aside and report                                                                                                                                        |
-| Open **Planning**, `blockers` `outdated`, findings for its structure, or a `task` without **Steps** | Set aside; send it to the consultant                                                                                                                        |
-| Open **Questions**                                                                                  | Set aside; batch the questions to the user                                                                                                                  |
-| `problem` without **Steps**                                                                         | Debugger                                                                                                                                                    |
-| `task` or `problem` with **Steps**                                                                  | Worker                                                                                                                                                      |
-| `complexity` set                                                                                    | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default    |
-| `resource` or `idea` in a tree                                                                      | Never dispatched; report it to the consultant                                                                                                               |
+| Issue                                                                                                     | Walker                                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Closed, or closed by an unpushed commit                                                                   | Skip                                                                                                                                                              |
+| A nested `plan` past the plan depth                                                                       | Set aside: walked on its own                                                                                                                                      |
+| Open sub-issues                                                                                           | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own check findings by the rows below without stopping the walk; then its own work |
+| `plan` or `segment` with no open sub-issue                                                                | Closes with its last leaf's commit; the walked issue with §Boundary reviews' walk-end commit instead                                                              |
+| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present                                             | Set aside: it is being planned                                                                                                                                    |
+| `blockers` `drafting`, with no local draft                                                                | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows                       |
+| `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                                     | Set aside and report                                                                                                                                              |
+| Open **Planning**, `blockers` `outdated`, check findings for its structure, or a `task` without **Steps** | Set aside; send it to the consultant                                                                                                                              |
+| Open **Questions**                                                                                        | Set aside; batch the questions to the user                                                                                                                        |
+| `problem` without **Steps**                                                                               | Debugger                                                                                                                                                          |
+| `task` or `problem` with **Steps**                                                                        | Worker                                                                                                                                                            |
+| `complexity` set                                                                                          | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default          |
+| `resource` or `idea` in a tree                                                                            | Never dispatched; report it to the consultant                                                                                                                     |
 
 `priority` never reorders a tree: order states dependencies.
 
@@ -75,10 +75,10 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` line, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
-- Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocker on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work under §Holding a leaf.
+- Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocked report on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work under §Holding a leaf.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under §Dropping a leaf's work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
-- Treat a report that leaves a light gap (an action the instructions already decide, such as a missing changeset; merging §Integration) as a completion, even when worded as a blocker or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
-- Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
+- Treat a report that leaves a light gap (an action the instructions already decide, such as a missing changeset; merging §Integration) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
+- Complete a leaf on the agent's final report, a completion or a blocked report; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
 ## Integration
@@ -146,9 +146,9 @@ When a segment or a nested plan closes and at the walk's end:
 ## Consultant
 
 - Start the `planner` subagent on first need, briefed `consultant` with the plan number, and `autonomous` in autonomous mode; resume it under §Resumed agents.
-- Call it only for a blocker the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, a plan your next commit closes, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
+- Call it only for a blocked report the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, a plan your next commit closes, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
 - Send it the issues the handling table routes to it, in tree order. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (planning §Consultant). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
-- Send a blocker arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
+- Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 
 ## Reshaping

@@ -4,8 +4,7 @@ description: Merger that rebases a walked leaf onto the walked branch and
   reviews it against its issue and its siblings, or reviews a closed segment
   against its siblings and the code around it, applying only mechanical fixes.
   Dispatch it only when a skill you follow or the user asks for a merger;
-  otherwise do the work yourself. Its report ends with what remains and the kind
-  of work it needs.
+  otherwise do the work yourself.
 model: opus
 effort: medium
 tools:
@@ -88,11 +87,10 @@ A finding is within the fix radius when its fix stays in the reviewed files, or 
 
 ## Report
 
-Send no message before your report for the run or the leaf, once every command you started has finished. Write each item once and in one line, since the walker keeps dozens of reports in its context: never a second copy under another part, which refers to it instead, nor the commands you ran, the checks that passed or commit hashes, which the gate and git record. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
+Report for the run or the leaf, under Writing › Reports:
 
 - The conflicts you resolved, each with its resolution, or the aborted rebase and the conflict that stopped it.
-- **Carry-over**, for the walker and the next run: the fixes you applied, light gaps included, the leaf findings or the findings, then the carry-over lines for the review run, each with its file, the defect or rule, and the expected change.
+- **Carry-over**, for the walker and the next run: the fixes you applied, light gaps included, the leaf findings (integration) or the findings (review), then the carry-over lines for the review run, each with its file, the defect or rule, and the expected change.
 - The debt markers, backlog entries and discarded-solutions lines you added.
-- What remains and the kind of work it needs; say so when nothing remains.
 
 <!-- @end -->

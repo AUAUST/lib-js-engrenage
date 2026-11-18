@@ -21,7 +21,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 - Read everything sharing the concern, not only what the request names: code, configuration, instructions, skills, issues, backlog and debt entries.
 - Look for conflicts, duplication and drift between the request and what it touches: sources contradicting each other, one fact stated in several places, copies that diverged.
 - Search beyond the current dependencies for libraries providing the capability, comparing their size, maintenance, adoption and maturity.
-- Read the discarded-solutions and agent-friction logs for every subject the analysis meets, and report the recurring ones as candidates.
+- Search the discarded-solutions and agent-friction logs for every subject the analysis meets, and report each recurring one as the agent-records rule states.
 
 ## Outcome
 
@@ -42,7 +42,5 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 
 - Drop a part when it would be empty.
 - Link each issue you created or edited, with the diff `publish` printed for it, or what it now records when you report no diff.
-- State each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-- End with what remains and the kind of work it needs. Say so when nothing remains.
 
 <!-- @end -->

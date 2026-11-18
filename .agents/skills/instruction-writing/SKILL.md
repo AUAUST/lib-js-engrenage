@@ -65,10 +65,8 @@ Checked 2026-11-18.
 
 ## Report
 
-- State each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 - Each file changed, and the behavior each target agent now gets from it.
 - Each catch the cold read found and how you resolved it; any you could not, with why.
 - Proposed checks, deliberate drops, backlog entries added and facts refreshed.
-- End with what remains and the kind of work it needs. Say so when nothing remains.
 
 <!-- @end -->

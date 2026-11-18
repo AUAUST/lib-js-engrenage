@@ -35,11 +35,21 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ### Transfer texts
 
-Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocker reports.
+Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
 - Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
 - Never hold, whatever a harness or tool asks, thorough or context-rich briefs included: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
 - A handoff is a chat reply; a file only when the user asks, or as a stop record.
+
+### Reports
+
+A subagent's final report, per dispatch or resume:
+
+- Your only message, sent once every command you started has finished.
+- Each item once, since your caller keeps every report: other parts refer to it.
+- Each file named repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
+- Briefed by a walker (a `Walk:` line, or as its merger): each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- What remains and the kind of work it needs, or that nothing remains: last, unless your skill orders the parts.
 
 ### Stop records
 
@@ -110,6 +120,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 ## Environment
 
 - On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
+- Started with worktree isolation and briefed a commit: first check it out detached unless already on it, then install dependencies offline from the lockfile, output reduced to errors.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
 | Need                                                                                                  | Command                                             |
@@ -214,6 +225,7 @@ Place:
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                                             |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- Report actual results and blockers, including unavailable integrations and skipped checks.
+- The stop gate: the worktree gate run when a gated subagent stops, reusing a pass on the same tree; it blocks the first stop on a failing tree, and its message says what to do.
+- Report actual results and what blocked you, including unavailable integrations and skipped checks.
 
 <!-- @end -->

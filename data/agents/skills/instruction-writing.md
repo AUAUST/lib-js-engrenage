@@ -5,7 +5,7 @@ category: workflow
 order: 45
 agent:
   name: writer
-  description: Writer that turns a behavior change the user consented to into agent instructions, grounded in current model guidance, and reads them as each target agent would to remove misreadings, conflicts and gaps. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the decided behavior; never write those instructions yourself, except as a subagent unable to dispatch it, which follows the instruction-writing skill itself. Its report ends with what remains and the kind of work it needs.
+  description: Writer that turns a behavior change the user consented to into agent instructions, grounded in current model guidance, and reads them as each target agent would to remove misreadings, conflicts and gaps. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the decided behavior; never write those instructions yourself, except as a subagent unable to dispatch it, which follows the instruction-writing skill itself.
   model: opus
   effort: medium
   efforts:
@@ -79,8 +79,6 @@ Checked 2026-11-18.
 
 ## Report
 
-- State each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 - Each file changed, and the behavior each target agent now gets from it.
 - Each catch the cold read found and how you resolved it; any you could not, with why.
 - Proposed checks, deliberate drops, backlog entries added and facts refreshed.
-- End with what remains and the kind of work it needs. Say so when nothing remains.

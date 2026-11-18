@@ -46,8 +46,6 @@ Edit nothing but issues, instruction or context files, the backlog and the agent
 
 Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
-Reporting or answering to the outer session or the walker, state each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-
 ## Decisions and questions
 
 An issue edit undoes a wrong guess before any worker builds on it, so your own questions get latitude. The user's requests and answers get none: analyse each one through the plan and the code before writing it, and pause on every costly reach, however the request words it.
@@ -76,14 +74,14 @@ An issue edit undoes a wrong guess before any worker builds on it, so your own q
 
 ## The tree
 
-| Issue     | What it is                                                             | Its sub-issues                                                                             |
-| --------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `plan`    | A standalone tree's root: goal, design and decisions                   | Its steps, in order                                                                        |
-| `segment` | A wrapper with no work of its own, grouping items that share a context | Its members, in any order, never another segment                                           |
-| `task`    | Item: positive work, one feature taken from nothing to finished        | When split, its inner steps in order, at any depth; segments group unrelated prerequisites |
-| `problem` | Item: negative work, something wrong to fix                            | When split, its inner steps in order, at any depth; segments group unrelated prerequisites |
+| Issue     | What it is                                                             | Its sub-issues                                                                                  |
+| --------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `plan`    | A standalone tree's root: goal, design and decisions                   | Its sequence                                                                                    |
+| `segment` | A wrapper with no work of its own, grouping items that share a context | Its members, in any order, never another segment                                                |
+| `task`    | Item: positive work, one feature taken from nothing to finished        | When split, a sequence of its inner parts, at any depth; segments group unrelated prerequisites |
+| `problem` | Item: negative work, something wrong to fix                            | When split, a sequence of its inner parts, at any depth; segments group unrelated prerequisites |
 
-An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
+A sequence: the ordered sub-issues of a plan or item, each an item, a segment or a nested plan. An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
 Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan or item closes, move the facts worth keeping to their owner, a `specification` or an `archive` the plan relates to.
 
@@ -96,7 +94,7 @@ Split only for foundational change: new architecture or a new design pattern, re
 | Extracted part                                                                                            | Becomes                                                    |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
 | Stands on its own: a new pattern, architecture other work builds on, a change meaningful beyond this task | Its own task earlier in the tree, listed as a prerequisite |
-| Only meaningful as a step toward this task's result                                                       | A sub-issue, split and grouped by the same rules           |
+| Only meaningful as a part of this task's result                                                           | A sub-issue, split and grouped by the same rules           |
 | Cannot be verified without another candidate task                                                         | Merged with it                                             |
 
 - Design the final shape before migrating to it, so each call site moves once.
@@ -108,12 +106,12 @@ Extract a part of a plan into its own plan when the Roadmap grows too long to sc
 
 - A nested plan works on its own: its goal, design and decisions cover its part without reading the plans that reference it.
 - Move into it every fact only its part uses; link with their gist the facts it shares with other plans.
-- Other plans treat it as a task: one Roadmap step, never expanded, with a gist stating what it contributes there.
-- Like any issue, it can be a step or segment member of another plan, a sub-issue of a task or a prerequisite.
+- Other plans treat it as a task: one Roadmap entry, never expanded, with a gist stating what it contributes there.
+- Like any issue, it can sit in another plan's sequence or segment, under a task as a sub-issue, or serve as a prerequisite.
 
 ## Ordering
 
-Order expresses urgency, not importance: a task comes first because later work stands on it. The walker runs a segment's members at once and a sequence's items one at a time, so place an item after another only for a dependency you can name.
+Order expresses urgency, not importance: a task comes first because later work stands on it. The walker runs a segment's members at once and a sequence's members one at a time, so place an item after another only for a dependency you can name.
 
 | Situation                                                                      | Placement                                                                                                      |
 | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
@@ -125,7 +123,7 @@ Order expresses urgency, not importance: a task comes first because later work s
 | Adjacent segments, the later one independent of the earlier                    | Merged, to keep the sequence short                                                                             |
 
 - Move a piece between tasks only when each stays one coherent feature, verifiable without the other.
-- Never add or split an item only to run work concurrently: each leaf adds a dispatch, a merge and a review.
+- Never add or split an item only to run work concurrently: each item adds a dispatch, a merge and a review.
 
 ## Outer pass
 
@@ -135,7 +133,7 @@ Lay the groundwork in breadth: the plan, the tree, and each item's context, vali
 2. **Load.** Write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository and keep in context only an index: number, title, labels, parent. Read the backlog categories, `@debt` markers and discarded solutions covering what the goal touches.
 3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
 4. **Design.** Write into the plan the model and **Decisions** several items share. A fact two items would each decide belongs here.
-5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach step 3 found, its **Prerequisites**, and under **Planning** the design its inner pass must settle.
+5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, and under **Planning** the design its inner pass must settle.
 6. **Reconcile.** Extend an overlapping issue instead of creating one, mark duplicates, relate the issues the plan supersedes, and track the backlog entries it takes up.
 
 Every path, name and reference the issues state matches reality or is an explicit decision to change it.
@@ -172,7 +170,7 @@ As an inner planner:
 An issue is ready for a worker when `pnpm engrenage planning issue check <n>` passes and, read with its ancestors as a worker reads it, it leaves no choice open:
 
 - each **Steps** item names the files, functions, types and options it changes or uses, as they exist or as the issue decides them;
-- no step leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
+- no **Steps** item leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
 - **Tests** hold what the issues rule › Bodies asks of them.
 
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
@@ -193,7 +191,7 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 | Shows the plan is wrong                                                                            | Ask                                                                                                                                                                 | Handle it as a question under §Latitude                   |
 
 - Handle the set-aside issues the walker sends in tree order, per run at most as many as the free slots named in the walker's latest message sending or resuming them, each counting once ready or left set aside, a split issue once its first sub-issue is ready. Return once that many are handled, at your first ready issue when that message says `no leaf in flight`, or once none is left, listing the rest as pending; continue them when resumed.
-- When the walker sends a blocker while you handle them, handle it first, then return with its answer or question, listing the issues not yet handled as pending.
+- When the walker sends a blocked report while you handle them, handle it first, then return with its answer or question, listing the issues not yet handled as pending.
 - On a plan the walker's next commit closes, move its facts worth keeping under §The tree, then return.
 - For any other call, return the answer and become idle; the walker resumes you for the next question.
 - End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history; the rest of the answer refers to its lines instead of restating them. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.

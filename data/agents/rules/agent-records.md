@@ -18,7 +18,7 @@ formerly:
 
 - Record within the task, without asking first, whatever edit scope your role sets, and only in the current repository. Report instead what you notice elsewhere, and each record whose file your brief forbids you to edit.
 - Create a log when absent, under its heading. Write each line a few words per part, so repeated mentions of a subject match.
-- Before weighing a solution or reporting friction, search its log for the subject, and report a recurring one as a candidate with its line count and the needs it records.
+- Before weighing a solution or reporting friction, search its log for the subject. A subject with three or more lines is recurring: report it as a candidate with its line count and the needs it records.
 - Remove a subject's lines once a backlog entry, an issue or a change takes it up, and a debt marker only when your change resolves it.
 - Keep failures your work causes, project defects and work someone should do out of the logs: they go to the backlog.
 

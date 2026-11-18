@@ -15,7 +15,6 @@ Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog en
 Read `.claude/rules/issues.md` before writing any issue. Your findings become backlog entries; only stage 6's ready entries become issues.
 
 - Run in the main checkout, one run at a time.
-- Cite backlog IDs only in the backlog and in your report: they are neither stable nor unique. Update references within the backlog whenever IDs change.
 - Where an entry or a note needs more than recording (choosing between options, designing a change, breaking it into coordinated steps, implementing it), leave that part in the entry and report it.
 
 ## Scope
@@ -27,7 +26,7 @@ Read `.claude/rules/issues.md` before writing any issue. Your findings become ba
 | Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry                                                  |
 | GitHub           | Issues only, as drafts, where the git rule allows GitHub writes; a note asking for a comment, pull request, label, push or message becomes an entry |
 
-## Sequence
+## Stages
 
 Run every stage, in this order; each feeds the next.
 
@@ -46,10 +45,10 @@ Run every stage, in this order; each feeds the next.
    2. Read the code around each marker and clone, and what a statement mentions, until you understand the matter.
    3. Group markers and clones by matter, across wording and files. Set aside what is not debt, and what an entry or an open issue already covers, extending that entry with what the group adds.
    4. Search the project for the other sites that would benefit from the fix.
-   5. Write each group as an entry in the category owning the code: its sites as `file:line`, and a fix as `want` only when one is obvious.
+   5. Write each group as an entry in the category owning the code, with its `sites`, and a fix as `want` only when one is obvious.
 3. **Logs.**
    1. Rename the variants of each friction subject to one name, and count lines per subject.
-   2. Turn a subject with three or more lines into an entry, or extend the issue tracking it.
+   2. Turn each recurring subject (agent-records rule) into an entry, or extend the issue tracking it.
    3. Count discarded subjects only and report the recurring ones; never file work from them.
 4. **Triage**, over every entry the run touched, against the default branch and the open issues:
    1. Read the entries closely related to each one: combined, they may explain each other.
@@ -66,13 +65,13 @@ Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to t
 
 ## Report
 
-Your only message, at most five lines; its `Issues` line stands in for the diffs `publish` prints:
+Your only message in a main-session run, and at most five lines; its `Issues` line stands in for the diffs `publish` prints:
 
 ```
 Notes: <n> → <entry IDs> · <n> kept (<question>)
 Debt: +<n> entries, <n> merged · Friction: <subject> ×<n> → <ref>
 Issues: published <refs> · closed <refs> · overlap <ref>≈<ref>
-Open: <questions, or "none">
+Open: <questions, and what remains with the kind of work it needs, or "none">
 ```
 
 <!-- @end -->

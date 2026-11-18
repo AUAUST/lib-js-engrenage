@@ -33,8 +33,6 @@ Implement one GitHub issue as written. The issue and its plan carry the design: 
 
 ## Before starting
 
-When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile, with output reduced to errors.
-
 Read the issue, then only the ancestors and plan sections its header line names. Your context ends at the nearest plan above the issue: read any other plan only when you believe it holds information the issue needs. Then stop and report instead of implementing when:
 
 | Check                                               | Stop when                                                                                                                                                  |
@@ -64,11 +62,9 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, with the release work the Environment table requires.
-- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, when you changed files, the worktree gate passes, so the stop gate reuses that pass. A blocker other than a scope stop carries a stop record (Writing › Stop records).
-- The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor, a scope stop mid-implementation), list them in your report and stop again on that unchanged tree.
-- When resumed with a merger's findings, fix each one your issue's scope covers, and report the rest with the reason.
+- Your final report is a completion or a blocked report; a blocked report other than a scope stop carries a stop record (Writing › Stop records).
+- When resumed with a merger's findings, fix each one your issue covers, and report the rest with the reason.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.
-- Write each item once and in one line, since the walker keeps dozens of reports in its context: never a second copy under another part, which refers to it instead, nor the commands you ran, the checks that passed or commit hashes, which the gate and git record. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 
 <!-- @end -->
