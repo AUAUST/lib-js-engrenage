@@ -11,6 +11,8 @@ description: Investigate a problem, fix it at its root when the fix is
 
 Understand a problem, decide its fix, then apply it or write it down for a worker. Unlike a worker, you design the fix; unlike a planner, you implement it yourself when it is contained. A fix is done when it is sound, not when the reported symptom disappears.
 
+Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
+
 ## Input
 
 When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile, with output reduced to errors.
@@ -40,100 +42,23 @@ When dispatched in a worktree, first check out the briefed commit, detached, whe
 
 Mark the debt you notice while diagnosing, on the execution path, its callers and every site in the reach, whether you fix, write up or are blocked.
 
-## Scope
+## Outcome
 
-| The sound fix                                                                                                                                     | You                                                                  |
-| ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Stays within a limited set of files in the owner's area, needs at most a minor refactor, and adds no new pattern, architecture or shared contract | Implement it                                                         |
-| Needs more: a larger refactor, a new pattern or contract, changes across several domains, or more than one reviewable pull request                | Write it into one `problem` issue and stop                           |
-| Needs several ordered tasks                                                                                                                       | Write the diagnosis into one issue and report that it needs planning |
+Decide it by the issues rule › Outcome: fixing every site that shares the cause stays within your input.
 
 ## Questions and answers
 
 - Ask under the project's decision protocol, batched, with the diagnosis so far.
 - Weigh each answer against your diagnosis as well as under the protocol, and report its consequences: sites affected, behavior changed, risks, conflicts with earlier answers or decisions.
 
-## Drafts
-
-Write and edit issues as local drafts in `.ai/issues/`, revise them as the diagnosis and the conversation settle things, and publish them together. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until they are published.
-
-| File             | Holds                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------- |
-| `<ref>.md`       | The issue as `claim` fetched it, never edited: the base `publish` merges against                            |
-| `<ref>.draft.md` | The manifest as frontmatter, then the body; `<ref>` is `123`, `toolkit.123`, `new-foo` or `toolkit.new-foo` |
-
-| Manifest key   | Holds                                                                                                        |
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `title`        | The issue title                                                                                              |
-| `type`         | A type's GitHub name                                                                                         |
-| `labels`       | Label names of the target repository                                                                         |
-| `<field name>` | For each field pinned to the type, under its GitHub name: an option name, or a list for a multi-select field |
-| `subIssues`    | The children in order; in a `plan`, `{ ref, gist, sections }` entries                                        |
-| `blockedBy`    | Prerequisites, as references                                                                                 |
-| `state`        | `open`, `completed`, `not planned` or `duplicate`                                                            |
-| `claim`        | `existing` when another maintainer held `drafting` at claim                                                  |
-
-| Reference            | Means                                                                                                  |
-| -------------------- | ------------------------------------------------------------------------------------------------------ |
-| `#123`               | Issue 123 of the current repository, only in a draft of that repository                                |
-| `#{toolkit.123}`     | Issue 123 of the registered `toolkit`, the current repository's included in another repository's draft |
-| `#{new-foo}`         | Local draft `new-foo`                                                                                  |
-| `#{toolkit.new-foo}` | Local draft created in `toolkit`                                                                       |
-
-- Write types, fields, options and labels by the GitHub names of the planning sheet, which loads with the first draft you read.
-- Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
-- Your drafts are those you created, claimed or resumed. Edit, check and publish only them, never another session's.
-- Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep diagnosing.
-- Fill or remove every section `create` writes: `check` fails on an empty one.
-- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
-- End each round with the drafts it changed and the changes waiting on each open question.
-- Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your final report.
-
 ## Writing the issue
 
-When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise search for an existing issue to reuse, then draft a new one. Write it as a `problem` meeting the issue contract that `pnpm engrenage planning issue check` enforces, complete through its ancestors, if any, for a worker who treats everything in it as binding and applies it without redesign:
-
-```markdown
-<sections>: <gist>
-
-## Context
-
-<The problem, its cause and reach, then the behavior decided, with exact paths and names.>
-
-## Prerequisites
-
-- #<n>: <what this task needs from it>.
-
-## Steps
-
-1. <Concrete change, naming the files, functions and helpers to use.>
-
-## Tests
-
-<The regression case, with how to reproduce it, and the edge case that prove the fix.>
-
-## Done when
-
-<Observable behavior beyond the Steps.>
-
-## Questions
-
-- <What investigation could not settle: the findings and the candidate answers.>
-```
-
-- Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
-- Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
-- Set the type `problem` with its `defect`, and the repository's labels whose description fits the issue. While **Questions** remain, set `blockers` to `questions`; clear it once they are gone.
-- Run `pnpm engrenage planning issue check <n>` on the issue, once published, before reporting it ready for a worker.
-- Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
-- Once an issue you create or edit tracks the work of a backlog entry, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
+- When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise draft a new one under the issues rule.
+- Type it by the issues rule › Filing.
 
 ## Finishing
 
-- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and `pnpm engrenage gate --worktree` passes, so the stop gate reuses that pass.
+- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, when you changed files, the worktree gate passes, so the stop gate reuses that pass.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your input's reach covers, and report the rest with the reason.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.

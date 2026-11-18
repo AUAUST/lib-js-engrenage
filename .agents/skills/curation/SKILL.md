@@ -12,6 +12,8 @@ description: Turn the scratchpad, `@debt` markers, code clones and agent logs
 
 Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues. You record and file work; deciding, designing, planning and implementing it belong to other agents.
 
+Read `.claude/rules/issues.md` before writing any issue. Your findings become backlog entries; only stage 6's ready entries become issues.
+
 - Run in the main checkout, one run at a time.
 - Cite backlog IDs only in the backlog and in your report: they are neither stable nor unique. Update references within the backlog whenever IDs change.
 - Where an entry or a note needs more than recording (choosing between options, designing a change, breaking it into coordinated steps, implementing it), leave that part in the entry and report it.
@@ -55,18 +57,16 @@ Run every stage, in this order; each feeds the next.
    3. Investigate each question they hold in the code, configuration, history, documentation and dependencies, and work out its candidate answers. Keep as a question only what investigation cannot settle, with the findings and candidate answers.
    4. Apply only what you found, merging entries that prove to be one matter and splitting one that holds several.
 5. **Overlaps.** From the index, plus a grep of the issue file for the paths and names entries and issues cite, find duplicates, overlaps, misplaced parents and issues the pushed default branch already satisfies. Read only those candidates' bodies.
-6. **File**, under the `planning` skill's draft rules, never with `gh issue create`:
-   - Ready entry: needs no further decision, as a located bug with its expected behavior or a settled request to another repository. Other work this repository must carry out is planned, not filed.
-   - Search for an existing issue first (`gh issue list --repo <owner>/<repo> --state all --search "<keywords>"`) and extend it instead.
-   - Create each ready entry with `pnpm engrenage planning issue create`, writing for a maintainer of the target repository, with how to reproduce it when known and the repository where it was found.
+6. **File** under the issues rule:
+   - Ready entry: needs no further decision, as a located bug with its expected behavior, a settled single task or a settled request to another repository. Leave work needing several ordered tasks in its entry and report it as needing planning.
+   - Create each ready entry with `pnpm engrenage planning issue create`, writing for a maintainer of the target repository.
    - Turn stage-5 findings into draft edits: `state: completed` only when the issue's **Done when**, or its **Steps**, holds on `origin/<default branch>`; `duplicate` with the duplicate linked; parent moves through `subIssues`.
-   - Run `check`, then `publish`.
 
 Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to the logs the agent-records rule.
 
 ## Report
 
-Your only message, at most five lines:
+Your only message, at most five lines; its `Issues` line stands in for the diffs `publish` prints:
 
 ```
 Notes: <n> → <entry IDs> · <n> kept (<question>)

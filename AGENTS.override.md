@@ -20,6 +20,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>.ai/backlog/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/instructions.md</code> |
+| <code>.ai/issues/**</code> | <code>.claude/rules/issues.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/planning-sheet.md</code> |
 | <code>.claude/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.codex/**</code> | <code>.claude/rules/instructions.md</code> |

@@ -2,7 +2,6 @@
 
 - skill traits (#277): share the analyser's depth with the debugger and planner — sync cannot add trait blocks yet; global `analysis` section instead
 - init step for `.ai/discarded.md`: create the log with the project — agents create it on first entry, no tooling needed
-- shared drafts fragment: one drafts protocol for planner, debugger and analyser — a `paths` rule loads too late, a default rule loads for every agent; copied until #277
 - structure nested walker: walker reading the nested declaration child by child (#322) — rewrites the walker and resolvers for no behavior change; flattening at the boundary keeps them
 - structure flat declarations: keeping `namespaces` and `domains` beside `structure` (#322) — two shapes for one concept and a merge check between them
 - lazy declaration declarer: recursive option declarations in `foundation/options` (#322) — one consumer; kept private in `declareStructureNodes`
@@ -112,3 +111,5 @@
 - dispatch during a segment's review run: concurrency at segment boundaries — the review fix may change what later work builds on
 - picomatch: dot-aware block syntax matching — needs separate `@types/picomatch`; `minimatch`, the engine behind `node:path` `matchesGlob`, ships types and keeps its semantics
 - environment role list config key: one load of default role presets — a new config key contract; a context-memoized `readEnvironmentRoles` operation suffices
+- sync include filler: inline the issues rule into each drafting skill — sync code beyond the writer's role; skills Read the `paths` rule explicitly until #277
+- issue-drafting skill: one filing and drafts source for four skills — no skill-to-skill install dependency, invocation model-driven; a default `paths` rule instead

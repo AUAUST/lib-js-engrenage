@@ -24,7 +24,7 @@ Turn a goal into a tree of GitHub issues that workers walk in order and implemen
 
 ## Role
 
-You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first.
+You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first. Read `.claude/rules/issues.md` before writing any issue.
 
 | Request                                                                                       | Handling                                                                                                                                                    |
 | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -32,13 +32,13 @@ You build and maintain the issue tree and never implement it. Create and edit is
 | Agent instructions or project context for the current structure                               | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                                     |
 | Instructions for a change not yet made ("once this is restructured, update the instructions") | Write into the **Steps** of the task making that change each rule's intent, constraints and target file, with proposed wording only for a one-sentence rule |
 
-Edit nothing but issues, instruction or context files and the agent records, apart from code the user explicitly asked you to implement.
+Edit nothing but issues, instruction or context files, the backlog and the agent records, apart from code the user explicitly asked you to implement.
 
 ## Modes
 
 | Mode       | Started by                                                                                 | Scope                               | Runs                                                                         | Asks through                      | Publishes                                                                                |
 | ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------- |
-| Single     | The user, by default                                                                       | The tree                            | §Outer pass and §Inner pass on each item, together, revisiting either freely | The user                          | When none of your drafts holds a change waiting on an open question, or on ask           |
+| Single     | The user, by default                                                                       | The tree                            | §Outer pass and §Inner pass on each item, together, revisiting either freely | The user                          | By the issues rule's default                                                             |
 | Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | §Outer pass, then §Inner dispatch                                            | The user                          | As single                                                                                |
 | Inner      | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                  | The outer session, in your report | Each issue once ready or left with only **Questions**: a stopped planner keeps it        |
 | Consultant | The walker; `autonomous` in its brief widens §Latitude                                     | The issues the walker sends         | §Consultant                                                                  | The walker                        | Each issue once ready or left set aside: the walker needs it on GitHub before it resumes |
@@ -47,45 +47,6 @@ Edit nothing but issues, instruction or context files and the agent records, apa
 Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
 Reporting or answering to the outer session or the walker, state each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-
-## Drafts
-
-Create and edit issues as local drafts in `.ai/issues/` and publish them when §Modes says. A draft edit costs a diff instead of a full body, survives a stopped session and shows the user each change. Everything this skill says about creating and editing issues applies to the drafts until they are published.
-
-| File             | Holds                                                                                                       |
-| ---------------- | ----------------------------------------------------------------------------------------------------------- |
-| `<ref>.md`       | The issue as `claim` fetched it, never edited: the base `publish` merges against                            |
-| `<ref>.draft.md` | The manifest as frontmatter, then the body; `<ref>` is `123`, `toolkit.123`, `new-foo` or `toolkit.new-foo` |
-
-| Manifest key   | Holds                                                                                                        |
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `title`        | The issue title                                                                                              |
-| `type`         | A type's GitHub name                                                                                         |
-| `labels`       | Label names of the target repository                                                                         |
-| `<field name>` | For each field pinned to the type, under its GitHub name: an option name, or a list for a multi-select field |
-| `subIssues`    | The children in order; in a `plan`, `{ ref, gist, sections }` entries                                        |
-| `blockedBy`    | Prerequisites, as references                                                                                 |
-| `state`        | `open`, `completed`, `not planned` or `duplicate`                                                            |
-| `claim`        | `existing` when another maintainer held `drafting` at claim                                                  |
-
-| Reference            | Means                                                                                                  |
-| -------------------- | ------------------------------------------------------------------------------------------------------ |
-| `#123`               | Issue 123 of the current repository, only in a draft of that repository                                |
-| `#{toolkit.123}`     | Issue 123 of the registered `toolkit`, the current repository's included in another repository's draft |
-| `#{new-foo}`         | Local draft `new-foo`                                                                                  |
-| `#{toolkit.new-foo}` | Local draft created in `toolkit`                                                                       |
-
-- Write types, fields, options and labels by the GitHub names of the planning sheet, which loads with the first draft you read.
-- Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
-- Your drafts are those you created, claimed or resumed. Edit, check and publish only them, never another session's.
-- Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep planning.
-- Fill or remove every section `create` writes: `check` fails on an empty one.
-- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
-- End each round with the drafts it changed and the changes waiting on each open question.
-- Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when your mode's row in §Modes says, with `pnpm engrenage planning issue publish <refs>` on every draft due then in one call. In single and outer mode, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; in the other modes, publish without reporting first and put the diffs `publish` prints in your next report.
 
 ## Decisions and questions
 
@@ -121,8 +82,6 @@ An issue edit undoes a wrong guess before any worker builds on it, so your own q
 | `segment` | A wrapper with no work of its own, grouping items that share a context | Its members, in any order, never another segment                                           |
 | `task`    | Item: positive work, one feature taken from nothing to finished        | When split, its inner steps in order, at any depth; segments group unrelated prerequisites |
 | `problem` | Item: negative work, something wrong to fix                            | When split, its inner steps in order, at any depth; segments group unrelated prerequisites |
-
-The issue type says what an issue is: titles carry no prefix, in sentence case without trailing punctuation. A `task` or `problem` title states its result.
 
 An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
@@ -214,7 +173,7 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 
 - each **Steps** item names the files, functions, types and options it changes or uses, as they exist or as the issue decides them;
 - no step leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
-- **Tests** name each case with its expected outcome.
+- **Tests** hold what the issues rule › Bodies asks of them.
 
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
 
@@ -252,122 +211,8 @@ You judge whether the walk can go on past issues nobody can settle yet. Read the
 
 Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
-## Templates
-
-**Planning** holds design you have not finished; **Questions** holds what the user owes. Both are the only places uncertainty lives: drop each once empty. **Steps** hold actionable work only.
-
-### `plan`
-
-```markdown
-## Goal
-
-<Why this work is needed and the target state.>
-
-## <Model sections>
-
-<Only the shapes at least two items use, as tables, trees and diagrams.>
-
-## Decisions
-
-- <Each choice spanning several items, with its reason in one clause.>
-
-## Done when
-
-<Observable end state of the whole plan.>
-
-## Planning
-
-- <Breakdown or design not finished yet.>
-
-## Questions
-
-- <What investigation could not settle for the whole plan: the findings and the candidate answers.>
-```
-
-### `segment`
-
-```markdown
-<sections>: <gist>
-
-## Context
-
-<What this segment adds.>
-
-## Prerequisites
-
-- #<n>: <what this segment needs from it>.
-
-## Done when
-
-<Observable state once the segment is closed.>
-
-## Planning
-
-- <Breakdown or design not finished yet.>
-
-## Questions
-
-- <What investigation could not settle: the findings and the candidate answers.>
-```
-
-### `task` and `problem`
-
-```markdown
-<sections>: <gist>
-
-## Context
-
-<The problem, then what is decided for this item only, with exact paths and names.>
-
-## Prerequisites
-
-- #<n>: <what this item needs from it>.
-
-## Steps
-
-1. <Concrete change, naming the files, models or helpers to use. When split, the work left after the sub-issues.>
-
-## Tests
-
-<The cases that prove it: usually one expected case and one meaningful edge case.>
-
-## Done when
-
-<Observable behavior beyond the Steps.>
-
-## Planning
-
-- <Design the inner pass must settle.>
-
-## Questions
-
-- <What investigation could not settle: the findings and the candidate answers.>
-```
-
-A plan's body has no **Roadmap**: give each `subIssues` entry the gist of what the child delivers and the plan sections it builds on, and `publish` renders it.
-
-The header holds the plan sections the issue builds on and its gist; `publish` prefixes the ancestor chain. A plan has no header.
-
-While an issue's design is open, write what is settled and put the rest under **Planning** or **Questions**: an item after an outer pass has no **Steps** or **Tests** yet.
-
 ## Writing rules
 
 - Keep each fact in the issue that owns it: the plan for what several items share, the item for what only it needs. When a change surfaces, edit only that issue.
-- Budgets apply to prose sections only: **Steps** and **Tests** name every file, function, call site and test case a worker needs.
-- Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last step, and only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
-- List under **Prerequisites** only the issues tree order does not imply, and list each in `blockedBy`.
-- Drop **Done when** when it would only say the Steps are done and the checks pass.
-- Once an issue you create or edit tracks the work of a backlog entry, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
-- Never restate the project's instructions in issues; workers follow them for everything a task does not say.
-- Apply the protocol's types and fields and the repository's labels whose description fits the issue; invent none.
-
-## Fields
-
-| Field                   | Set when                                                                                  | Effect                         |
-| ----------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ |
-| `blockers` `questions`  | Written together with a **Planning** or **Questions** section; cleared once both are gone | The walker refuses the issue   |
-| `complexity` `complex`  | The work is broad or delicate                                                             | Higher dispatch effort         |
-| `complexity` `involved` | The work needs analysis but stays contained                                               | Higher worker dispatch effort  |
-| `complexity` `trivial`  | The work is small and mechanical                                                          | Lower debugger dispatch effort |
 
 <!-- @end -->
