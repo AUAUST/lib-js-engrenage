@@ -86,3 +86,4 @@
 - `claude -p --agent`: expected the agent's frontmatter `Stop` hook to fire — it fires only for subagents; probed the payloads in a scratch repository
 - `codex exec`: probed headless output — ChatGPT token expired, run failed after `thread.started`; Codex dispatch untested live
 - engrenage sync: imported a new barrel member from `bin/engrenage/executable.ts` before syncing — sync runs through that executable and fails on the missing export; added the barrel line by hand
+- Claude Stop hook: main-session stop in a worktree of an older branch — main checkout settings (a0bfdf6a) run `agents claude hook stop`, whose branch code accepts only SubagentStop payloads (agent_id required); resolved by rebasing onto main

@@ -121,6 +121,9 @@ export default defineConfig({
   visibility: "private",
   github: {
     testShards: 4,
+    repositories: {
+      interscript: "AUAUST/clients-intscr-shopify",
+    },
     labels: {
       Agents: "Agent runtimes: Claude and Codex settings, hooks, gates, dispatch, models, efforts.",
       CLI: "Commands, actions and process handling.",

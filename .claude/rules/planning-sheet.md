@@ -15,6 +15,7 @@ Skills and checks name issue types, fields, options and close reasons by their m
 | --- | --- |
 | `engrenage` | `AUAUST/lib-js-engrenage` |
 | `toolkit` | `AUAUST/lib-js-toolkit` |
+| `interscript` | `AUAUST/clients-intscr-shopify` |
 
 ## Labels
 
@@ -71,6 +72,33 @@ Labels are each repository's own: pick them by their description.
 | Structure | Namespaces, domains, roles, aliases, barrels, project maps and import boundaries. |
 | Tests | Test suites, their layout and fixtures. |
 | Typing | Type-level contracts and compiler settings: inference, precision, overloads, src/types and tsconfig. |
+
+### `interscript`
+
+| Label | Description |
+| --- | --- |
+| Admin | The admin UI framework the extensions build on: routing, loaders, operations and their hooks. |
+| Build | Vite and Shopify CLI builds, bundles and their outputs. |
+| Content | Store records moved between stores: export, transfer and seeding of genuine content. |
+| Definitions | Metaobject and metafield definitions, namespaces, their repair and the parsers reading them. |
+| Delivery | CI workflows, app deploys and releases, theme pushes. |
+| Dependencies | Dependencies and their upgrades, @auaust libraries and @auaust/engrenage included. |
+| Extensions | Admin UI extensions: App Home and collection actions, their pages, components and manifests. |
+| Frontend | The theme's client code: Vue applications, custom elements, composables, services and Turbo. |
+| Functions | Shopify Functions, today the cart transform: input queries, Wasm limits and generated types. |
+| GraphQL | GraphQL documents, fragments, clients, schemas and codegen for every Shopify API. |
+| Licensing | License tiers, the license configurator and how licenses reach the cart and its pricing. |
+| Linting | Lint and formatting rules and conventions, other than structure boundaries. |
+| Localization | Locales and translations of the theme and the extensions. |
+| Metalbrain | Instruction content and agent records: AGENTS.md sections, rule files, skills, backlog and logs. |
+| Platform | App and extension TOMLs, API versions, scopes, access tokens, app versions, stores and distribution. |
+| Scripts | Node store scripts and config sync run against a store with client credentials. |
+| Structure | Namespaces, domains, roles, workspaces, aliases, barrels, project maps and import boundaries. |
+| Styles | CSS, the UnoCSS configuration and design tokens. |
+| Tests | Test suites, their layout, fixtures and runner configuration. |
+| Theme | Liquid layouts, templates, sections, blocks, snippets, theme settings and theme CLI workflow. |
+| Typefaces | Typefaces, families, superfamilies, contributors and the collections and products holding them. |
+| Typing | tsconfig composition, type checking of TypeScript and Vue, and declarations. |
 
 ## Types: AUAUST
 
