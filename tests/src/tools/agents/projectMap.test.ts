@@ -154,7 +154,9 @@ describe("project map", () => {
       "| `config/definers` |  | `define<Domain>Config.ts` |  |  | effectful |",
     );
 
-    expect(project.read(sourceFile)).toContain("(global roles: constants.ts)");
+    expect(project.read(sourceFile)).toContain(
+      "(global roles: *.d.ts constants.ts)",
+    );
 
     expect(project.read(".claude/rules/project-map/tooling.md")).toContain(
       "  - engrenage.config.ts",

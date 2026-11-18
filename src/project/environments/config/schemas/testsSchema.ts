@@ -17,7 +17,7 @@ import {
   defaultTestsSuffix,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { rolesSchema } from "#project/roles/index";
+import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,
@@ -30,6 +30,7 @@ export const testsSchema = declareObject(
       defines: true,
     }),
     roles: rolesSchema,
+    omitRoles: omitRolesSchema,
     mirror: declare(boolean(), {
       description: [
         "Whether each directory below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) must exist in the structure of the environment it is named after.",

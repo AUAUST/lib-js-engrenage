@@ -8,6 +8,7 @@ export type EnvironmentStructureOption =
   | {
       readonly enabled: true;
       readonly roles?: readonly Role[];
+      readonly omitRoles?: readonly string[];
       readonly tree?: ProgramLayout;
       readonly mirror?: boolean;
       readonly structure: NamespaceDeclaration;

@@ -13,7 +13,7 @@ import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { rolesSchema } from "#project/roles/index";
+import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(
@@ -24,6 +24,7 @@ export const binSchema = declareObject(
     }),
     tree: declareProgramLayout(),
     roles: rolesSchema,
+    omitRoles: omitRolesSchema,
     entries: declare(record(string(), fileSchema), {
       description: [
         "Commands the package exposes, mapped to their entry file.",

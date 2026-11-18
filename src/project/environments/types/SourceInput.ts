@@ -114,11 +114,15 @@ export interface SourceInput {
     check?: (boolean | undefined)
   }) | undefined)
   /**
-   * Roles of the directories and files whose names carry a fixed meaning, each built by a role preset of `@auaust/engrenage/roles` or `createRolePreset`.
-   * Only listed roles exist.
+   * Roles added to the environment's default roles, a role replacing the default of its name.
    * @default none
    */
   roles?: (RoleInput[] | undefined)
+  /**
+   * Names of default roles the environment drops.
+   * @default none
+   */
+  omitRoles?: (string[] | undefined)
   /**
    * Aliases generated into `package.json#imports` (and, for bundled sources, the tsconfig `paths`) by `engrenage sync`, in one flat `#` namespace.
    * `false` turns them off.

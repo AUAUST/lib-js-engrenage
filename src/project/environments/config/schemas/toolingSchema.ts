@@ -9,7 +9,7 @@ import {
   defaultToolingDirectories,
   defaultToolingFiles,
 } from "#project/environments/constants";
-import { rolesSchema } from "#project/roles/index";
+import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,
@@ -27,6 +27,7 @@ export const toolingSchema = declareObject(
       optional: { value: defaultToolingFiles },
     }),
     roles: rolesSchema,
+    omitRoles: omitRolesSchema,
     tsconfig: declareEnvironmentTsconfig("tooling", {
       description: [
         "Options of the tsconfig that sync writes for the tooling files.",

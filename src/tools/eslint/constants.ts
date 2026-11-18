@@ -3,7 +3,6 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { engrenage } from "#constants";
 import type { BoundaryCause } from "#project/structure/index";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
@@ -14,8 +13,6 @@ import type { Glob } from "#types/Glob";
 export const anyFile = "**" satisfies Glob;
 
 export const typescriptLanguage = "typescript";
-
-export const rolePresetsEntry = `${engrenage}/eslint/roles`;
 
 export const pluginName = "auaust";
 

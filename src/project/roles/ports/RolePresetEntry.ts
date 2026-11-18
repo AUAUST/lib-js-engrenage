@@ -1,22 +1,23 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { Loadable } from "#foundation/modules/index";
 import type { Trait } from "#project/presets/index";
+import type { RolePreset } from "#project/roles/types/RolePreset";
 
 export interface RolePresetEntry extends EntryShape {
   /**
-   * The name `from` exports the preset under.
+   * The name of the role the preset creates.
    */
   readonly name: string;
   /**
-   * The module specifier the generated config imports the preset from.
+   * Loads the preset.
    */
-  readonly from: string;
+  load(): Promise<Loadable<RolePreset>>;
   /**
-   * The environments `init` adds the role to in the config file it writes; empty,
-   * it adds the role nowhere.
+   * The environments the role is a default role of.
    */
   readonly environments: readonly string[];
   /**
-   * Traits the project must all have for `init` to add the role.
+   * Traits the project must all have for the role to be a default.
    */
   readonly traits?: readonly Trait[];
 }

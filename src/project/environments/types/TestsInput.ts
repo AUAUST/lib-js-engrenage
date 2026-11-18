@@ -113,11 +113,15 @@ export interface TestsInput {
     check?: (boolean | undefined)
   }) | undefined)
   /**
-   * Roles of the directories and files whose names carry a fixed meaning, each built by a role preset of `@auaust/engrenage/roles` or `createRolePreset`.
-   * Only listed roles exist.
+   * Roles added to the environment's default roles, a role replacing the default of its name.
    * @default none
    */
   roles?: (RoleInput[] | undefined)
+  /**
+   * Names of default roles the environment drops.
+   * @default none
+   */
+  omitRoles?: (string[] | undefined)
   /**
    * Whether each directory below a tests root key (a directory named after a code environment: `src`, `bin`, `scripts`, `tooling`) must exist in the structure of the environment it is named after.
    * `false` accepts any directory there.

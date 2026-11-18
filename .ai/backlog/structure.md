@@ -117,3 +117,8 @@ Project structure description, its report and the tooling generated from it.
 
 - why: `fillBarrelBlock` (`src/tools/typescript/operations/fillBarrelBlock.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #9 ("Markers fail silently").
 - want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.
+
+## 20. Duplicate-role errors name merged positions, not the config's
+
+- why: since default roles (AUAUST/lib-js-engrenage#629), `listEnvironmentRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/project/structure/utils/registerRoles.ts`.
+- want: `resolveRoles` receives each role's own config position (or none for a default) and errors name it.

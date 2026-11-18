@@ -750,7 +750,7 @@ test("defaults an app's build tool to vite and its source host to the browser", 
   expect((await config.resolve("src")).host).toBe("browser");
 });
 
-test("renders the role presets of an empty library's config from their contributions", async () => {
+test("writes an empty library's config without role lists", async () => {
   const project = createProject({
     "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
   });
@@ -759,33 +759,11 @@ test("renders the role presets of an empty library's config from their contribut
 
   expect(project.read("engrenage.config.ts"))
     .toBe(`import { defineConfig } from "@auaust/engrenage/config";
-import {
-  adapters,
-  constants,
-  declarations,
-  entry,
-  enums,
-  errors,
-  fixtures,
-  index,
-  operations,
-  ports,
-  testsetup,
-  types,
-  utils,
-} from "@auaust/engrenage/roles";
-
-const roles = [index(), constants(), declarations(), types(), utils(), errors(), enums(), ports(), adapters(), operations()];
-
-const sourceRoles = [...roles, entry()];
 
 export default defineConfig({
   preset: "library",
   visibility: "public",
-  src: { baseline: "${findCurrentMonth()}", roles: sourceRoles },
-  tests: { roles: [...roles, fixtures(), testsetup()] },
-  scripts: { roles },
-  tooling: { roles },
+  src: { baseline: "${findCurrentMonth()}" },
   agents: { preferred: [], attribution: false },
 });
 `);

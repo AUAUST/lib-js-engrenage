@@ -1,24 +1,7 @@
 import { pascal } from "@auaust/toolkit";
 
-import {
-  adapters,
-  constants,
-  declarations,
-  entrypoint,
-  enums,
-  errors,
-  fixtures,
-  index,
-  operations,
-  ports,
-  role,
-  testsetup,
-  testutils,
-  types,
-  utils,
-  type RoleLocation,
-} from "#project/roles/index";
-import { apis, extension } from "#tools/eslint/roles/index";
+import { role, utils, type RoleLocation } from "#project/roles/index";
+import { extension } from "#tools/eslint/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
 function definerFile({ lineage }: RoleLocation): string {
@@ -129,27 +112,9 @@ const conventions = role({
   index: true,
 });
 
-// @debt scripts and tooling list the same roles as src, so their maps list setup, plugins, conventions and config roles none of their modules use
-const codeRoles = [
-  constants(),
-  declarations(),
-  types(),
-  utils({
-    exports: { values: "named-match", types: "none" },
-  }),
-  errors(),
-  enums(),
-  ports(),
-  apis(),
-  adapters(),
-  config,
-  setup,
-  plugins,
-  // @debt two contracts in one role: the identity definer `defineConfig` sits beside I/O, while lint ranks roles by imports only
-  operations(),
-  conventions,
-  rules,
-];
+const strictUtils = utils({
+  exports: { values: "named-match", types: "none" },
+});
 
 export default defineConfig({
   preset: "library",
@@ -169,24 +134,7 @@ export default defineConfig({
   },
   tests: {
     mirror: true,
-    roles: [
-      index(),
-      constants(),
-      declarations(),
-      types(),
-      testutils(),
-      errors(),
-      enums(),
-      ports(),
-      apis(),
-      adapters(),
-      fixtures(),
-      testsetup(),
-      config,
-      plugins,
-      operations(),
-      conventions,
-    ],
+    roles: [config, plugins, conventions],
     dist: {
       tsconfig: {
         compilerOptions: {
@@ -202,7 +150,16 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    roles: [index(), entrypoint(), extension(), ...codeRoles, presets],
+    roles: [
+      extension(),
+      strictUtils,
+      config,
+      setup,
+      plugins,
+      conventions,
+      rules,
+      presets,
+    ],
     // @debt `./config/constants` resolves to `project/config` while `./config` is `workflows/config`, and the constants of the internal domains jscpd, lefthook and shopify are hand-listed
     exports: {
       "./config/constants": "src/project/config/constants.ts",
@@ -242,10 +199,10 @@ export default defineConfig({
     ],
   },
   scripts: {
-    roles: codeRoles,
+    roles: [strictUtils],
   },
   tooling: {
-    roles: [index(), ...codeRoles],
+    roles: [strictUtils, rules],
   },
   data: {
     exports: {

@@ -355,7 +355,7 @@ describe("structure", () => {
   });
 
   test("reads role-named directories as domains and namespaces without roles", async () => {
-    const { nodes } = await describeSource("{}");
+    const { nodes } = await describeSource(`{ src: { omitRoles: ["utils"] } }`);
 
     expect(nodes.get("src/feature/utils")).toMatchObject({
       kind: "unclassified",
@@ -435,7 +435,7 @@ describe("structure", () => {
         "src/a/b/utils/x.ts": "",
         "tests/src/a/utils/x.test.ts": "",
         "tests/src/a/b/utils/y.test.ts": "",
-        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles} } };\n`,
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles}, omitRoles: ["testutils"] } };\n`,
       });
 
       const structure = await loadStructure(project.root);
@@ -565,7 +565,7 @@ describe("inline roles", () => {
     await expect(
       describeProject(`{ src: { roles: ${twice} } }`),
     ).rejects.toThrow(
-      "src.roles[9].roles[0] and src.roles[9].roles[1] are both named types",
+      "src.roles[10].roles[0] and src.roles[10].roles[1] are both named types",
     );
 
     const owners = renderCodeRoles(

@@ -16,7 +16,7 @@ function createProject(config: object) {
 }
 
 describe("roles", () => {
-  test("resolve the roles each environment lists, and only the layout's roles for a commands environment", async () => {
+  test("resolve each environment's default roles extended by its list, and only the layout's roles for a commands environment", async () => {
     const project = createProject({
       src: { roles: [utils({ nesting: 1 })] },
     });
@@ -25,11 +25,16 @@ describe("roles", () => {
 
     const roles = await config.resolve("environmentRoles");
 
-    expect(roles.src?.roles).toEqual({
+    expect(roles.src?.roles).toMatchObject({
+      index: expect.anything(),
       utils: expect.objectContaining({ nesting: 1 }),
     });
 
-    expect(roles.tests?.roles).toEqual({});
+    expect(keys(roles.tests?.roles ?? {})).toEqual(
+      expect.arrayContaining(["testutils", "fixtures", "testsetup"]),
+    );
+
+    expect(keys(roles.tests?.roles ?? {})).not.toContain("utils");
 
     expect(keys(roles.bin?.roles ?? {})).toEqual([
       "index",
@@ -54,7 +59,7 @@ describe("roles", () => {
 
     await expect(
       (await loadConfig(duplicated.root)).resolve("environmentRoles"),
-    ).rejects.toThrow("src.roles[0] and src.roles[1] are both named utils");
+    ).rejects.toThrow("src.roles[9] and src.roles[10] are both named utils");
 
     const helpers = createRolePreset({
       name: "helpers",

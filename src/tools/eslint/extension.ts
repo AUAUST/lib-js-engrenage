@@ -2,15 +2,13 @@ import {
   conventionEntry,
   defaultSuppressionsFile,
   eslint,
-  rolePresetsEntry,
 } from "#tools/eslint/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
 /**
- * Active when `eslint` is installed; owns the `eslint.conventions` slot and
- * the suppressions file, contributes the `apis` and `extension` roles and
- * runs ESLint in the gate.
+ * Active when `eslint` is installed; owns the `eslint.conventions` slot and the
+ * suppressions file, contributes the `apis` role and runs ESLint in the gate.
  */
 export default {
   name: "tools/eslint",
@@ -37,13 +35,12 @@ export default {
     "roles": [
       {
         name: "apis",
-        from: rolePresetsEntry,
+        async load() {
+          const { apis } = await import("#tools/eslint/roles/index");
+
+          return apis;
+        },
         environments: ["src", "tests", "scripts", "tooling"],
-      },
-      {
-        name: "extension",
-        from: rolePresetsEntry,
-        environments: [],
       },
     ],
     "gate.steps": [

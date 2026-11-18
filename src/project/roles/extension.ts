@@ -1,13 +1,11 @@
-import { rolePresetEntry, rolePresetsEntry } from "#project/roles/constants";
+import { rolePresetEntry } from "#project/roles/constants";
 import type { Extension } from "#project/config/index";
 
 const codeEnvironments = ["src", "tests", "scripts", "tooling"];
 
-const from = rolePresetsEntry;
-
 /**
- * Owns the `roles` slot and contributes the generic role presets of
- * `@auaust/engrenage/roles`, each with the environments it fits.
+ * Owns the `roles` slot and contributes the generic role presets, each a default
+ * role of the environments it lists.
  */
 export default {
   name: "project/roles",
@@ -20,67 +18,100 @@ export default {
     roles: [
       {
         name: "index",
-        from,
+        load() {
+          return import("#project/roles/presets/index");
+        },
         environments: codeEnvironments,
       },
       {
         name: "constants",
-        from,
+        load() {
+          return import("#project/roles/presets/constants");
+        },
         environments: codeEnvironments,
       },
       {
         name: "declarations",
-        from,
+        load() {
+          return import("#project/roles/presets/declarations");
+        },
         environments: codeEnvironments,
       },
       {
         name: "types",
-        from,
+        load() {
+          return import("#project/roles/presets/types");
+        },
         environments: codeEnvironments,
       },
       {
         name: "utils",
-        from,
-        environments: codeEnvironments,
+        load() {
+          return import("#project/roles/presets/utils");
+        },
+        environments: ["src", "scripts", "tooling"],
       },
       {
         name: "errors",
-        from,
+        load() {
+          return import("#project/roles/presets/errors");
+        },
         environments: codeEnvironments,
       },
       {
         name: "enums",
-        from,
+        load() {
+          return import("#project/roles/presets/enums");
+        },
         environments: codeEnvironments,
       },
       {
         name: "ports",
-        from,
+        load() {
+          return import("#project/roles/presets/ports");
+        },
         environments: codeEnvironments,
       },
       {
         name: "adapters",
-        from,
+        load() {
+          return import("#project/roles/presets/adapters");
+        },
         environments: codeEnvironments,
       },
       {
         name: "operations",
-        from,
+        load() {
+          return import("#project/roles/presets/operations");
+        },
         environments: codeEnvironments,
       },
       {
+        name: "testutils",
+        load() {
+          return import("#project/roles/presets/testutils");
+        },
+        environments: ["tests"],
+      },
+      {
         name: "fixtures",
-        from,
+        load() {
+          return import("#project/roles/presets/fixtures");
+        },
         environments: ["tests"],
       },
       {
         name: "testsetup",
-        from,
+        load() {
+          return import("#project/roles/presets/testsetup");
+        },
         environments: ["tests"],
       },
       {
         name: "entry",
-        from,
+        load() {
+          return import("#project/roles/presets/entrypoint");
+        },
         environments: ["src"],
         traits: ["published"],
       },

@@ -6,6 +6,7 @@ import { completeRole } from "#project/structure/utils/completeRole";
 import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 
+// @debt an environment's positions count its default roles before its listed ones, so an error names `src.roles[9]` for the config's `src.roles[0]`
 export function registerRoles({
   owner,
   path,

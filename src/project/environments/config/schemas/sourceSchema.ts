@@ -24,7 +24,7 @@ import {
   disabledCodeEnvironment,
 } from "#project/environments/constants";
 import { exposedFilesSchema } from "#project/package/index";
-import { rolesSchema } from "#project/roles/index";
+import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 
 function describeApiGroups(): string {
   const roots = iterable.map(entries(apiGroupRoots), ([group, globals]) => {
@@ -45,6 +45,7 @@ export const sourceSchema = declareObject(
       defines: true,
     }),
     roles: rolesSchema,
+    omitRoles: omitRolesSchema,
     aliases: aliasesSchema,
     bundled: declare(boolean(), {
       description: "Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",

@@ -119,9 +119,13 @@ export interface ScriptsInput {
    */
   tree?: (("commands" | "domains") | undefined)
   /**
-   * Roles of the directories and files whose names carry a fixed meaning, each built by a role preset of `@auaust/engrenage/roles` or `createRolePreset`.
-   * Only listed roles exist.
+   * Roles added to the environment's default roles, a role replacing the default of its name.
    * @default none
    */
   roles?: (RoleInput[] | undefined)
+  /**
+   * Names of default roles the environment drops.
+   * @default none
+   */
+  omitRoles?: (string[] | undefined)
 }

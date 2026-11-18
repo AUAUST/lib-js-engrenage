@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < project < tools < workflows  (global roles: types extension.ts constants.ts *.d.ts)
+src/  foundation < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
 ├─ foundation/  #foundation/…  Primitives without project knowledge.
 │  ├─ blocks  Composable content blocks for generated files.
 │  ├─ data  Resolve files shipped with the package.

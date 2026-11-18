@@ -72,6 +72,8 @@ describe("produceTsconfigInclude", () => {
       "spec/**/*.test.tsx",
       "spec/**/*.test.dist.ts",
       "spec/**/*.test.dist.tsx",
+      "spec/setup.ts",
+      "spec/*.d.ts",
       "env.d.ts",
     ]);
   });

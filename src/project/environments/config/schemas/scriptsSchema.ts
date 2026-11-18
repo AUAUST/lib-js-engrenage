@@ -5,7 +5,7 @@ import {
   defaultScriptsDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { rolesSchema } from "#project/roles/index";
+import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 
 export const scriptsSchema = declareObject(
   {
@@ -15,6 +15,7 @@ export const scriptsSchema = declareObject(
     }),
     tree: declareProgramLayout(),
     roles: rolesSchema,
+    omitRoles: omitRolesSchema,
   },
   {
     description: [

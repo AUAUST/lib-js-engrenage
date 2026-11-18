@@ -1,4 +1,5 @@
 // @barrel config/schemas
+export { omitRolesSchema } from "#project/roles/config/schemas/omitRolesSchema";
 export { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
 export { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleCompanionResolverSchema";
 export { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";

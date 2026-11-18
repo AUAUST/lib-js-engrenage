@@ -5,6 +5,7 @@ import {
   readEnvironment,
   type ResolvedEnvironment,
 } from "#project/environments/index";
+import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { readStructureMetadata } from "#project/structure/operations/readStructureMetadata";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
@@ -39,7 +40,11 @@ async function resolveStructure(
     config.resolve("traits"),
   ]);
 
-  const roles = listEnvironmentRoles(option);
+  const roles = listEnvironmentRoles({
+    ...option,
+    environment: name,
+    defaults: await listDefaultRoles(config, name),
+  });
 
   const { defined, ...declared } = flattenStructure({
     environment: name,
@@ -76,9 +81,7 @@ async function resolveStructure(
       optOut: option.optOut,
       strictness: option.strictness,
     },
-    ...(roles === undefined
-      ? {}
-      : { roles: await readEnvironmentRoles(config, roles) }),
+    roles: await readEnvironmentRoles(config, roles),
     defined,
     internals,
     tree: option.tree,
