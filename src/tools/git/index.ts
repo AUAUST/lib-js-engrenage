@@ -27,6 +27,7 @@ export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
 export { locateIgnoreFiles } from "#tools/git/operations/locateIgnoreFiles";
+export { readCommit } from "#tools/git/operations/readCommit";
 export { readHead } from "#tools/git/operations/readHead";
 export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { resolveMainWorktree } from "#tools/git/operations/resolveMainWorktree";

@@ -23,3 +23,9 @@ Agent runtime integrations: hooks and runtime names.
 
 - why: #654: walker context climbed 65k→214k, ~75% of its cost re-reading; `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is reported ignored in a `settings.json` `env` block, on recent versions and in bridge-attached sessions.
 - want: an enforceable compaction or relay point at each segment close, relying on walking §Context's rebuild from `walk check`.
+
+## 5. The worker dispatch hook reads only the current directory's commits
+
+- sites: `src/tools/agents/operations/checkAgentDispatch.ts:27`
+- why: the check commands take `--checkout` (#678); the hook has none, so a sub-issue or blocker closed only by another checkout's unpushed commit still refuses dispatch.
+- want: the hook reads the same checkouts as the walk, from a source both share.

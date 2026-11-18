@@ -8,6 +8,7 @@ export { launch } from "#workflows/cli/operations/launch";
 export { runProgram } from "#workflows/cli/operations/runProgram";
 
 // @barrel utils
+export { collectArgument } from "#workflows/cli/utils/collectArgument";
 export { collectListArgument } from "#workflows/cli/utils/collectListArgument";
 // @end
 

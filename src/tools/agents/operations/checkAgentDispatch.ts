@@ -2,6 +2,7 @@ import {
   checkIssue,
   createGithubClient,
   findBriefedIssue,
+  resolveLocalCheckout,
   type ContractNames,
 } from "#tools/github/index";
 import type { Directory } from "#types/Directory";
@@ -24,6 +25,8 @@ export async function checkAgentDispatch(
       : undefined;
   }
 
+  const local = await resolveLocalCheckout(root);
+
   const { findings } = await checkIssue(
     {
       repository: issue.repository,
@@ -34,7 +37,7 @@ export async function checkAgentDispatch(
     role,
     {
       dispatch: true,
-      root,
+      checkouts: local === undefined ? [] : [local],
     },
   );
 

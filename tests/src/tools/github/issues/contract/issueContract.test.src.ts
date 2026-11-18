@@ -847,6 +847,16 @@ describe("formatIssueCheck", () => {
     return project.root;
   }
 
+  function checkoutAt(root: string, repository = "o/r") {
+    return [
+      {
+        repository,
+        root,
+        ref: "HEAD",
+      },
+    ];
+  }
+
   test("reports related issues by state, counting local closes, and commits towards it", async () => {
     mockGithub({
       11: {
@@ -865,7 +875,7 @@ describe("formatIssueCheck", () => {
 
     const check = await checkIssue(access, 11, "worker", {
       dispatch: true,
-      root,
+      checkouts: checkoutAt(root),
     });
 
     const [closing, towards] = execFileSync(
@@ -899,7 +909,7 @@ describe("formatIssueCheck", () => {
     mockGithub({ 11: standalone, 13: standalone });
 
     const own = await checkIssue(access, 13, "worker", {
-      root: createWorkingCopy("o/r"),
+      checkouts: checkoutAt(createWorkingCopy("o/r")),
     });
 
     expect(own.findings).toMatchObject([
@@ -910,7 +920,7 @@ describe("formatIssueCheck", () => {
     ]);
 
     const foreign = await checkIssue(access, 13, "worker", {
-      root: createWorkingCopy("x/y"),
+      checkouts: checkoutAt(createWorkingCopy("x/y"), "x/y"),
     });
 
     expect(formatIssueCheck(13, foreign)).toEqual(["#13 ready"]);
@@ -931,7 +941,9 @@ describe("formatIssueCheck", () => {
       stdio: "pipe",
     });
 
-    const check = await checkIssue(access, 13, "worker", { root });
+    const check = await checkIssue(access, 13, "worker", {
+      checkouts: checkoutAt(root),
+    });
 
     expect(formatIssueCheck(13, check)).toEqual(["#13 ready"]);
   });

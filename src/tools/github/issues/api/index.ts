@@ -4,6 +4,7 @@ export { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGi
 export { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 export { readGithubSnapshot } from "#tools/github/issues/api/operations/readGithubSnapshot";
 export { readManifestRepository } from "#tools/github/issues/api/operations/readManifestRepository";
+export { readOriginRepository } from "#tools/github/issues/api/operations/readOriginRepository";
 export { resolveCurrentRepository } from "#tools/github/issues/api/operations/resolveCurrentRepository";
 export { resolveGithubToken } from "#tools/github/issues/api/operations/resolveGithubToken";
 export { resolveRegisteredRepositories } from "#tools/github/issues/api/operations/resolveRegisteredRepositories";

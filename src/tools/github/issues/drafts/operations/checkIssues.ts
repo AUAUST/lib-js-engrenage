@@ -7,7 +7,9 @@ import {
 import {
   checkIssue,
   formatIssueCheck,
+  resolveIssueCheckouts,
   type IssueAudience,
+  type IssueCheckout,
   type IssueLocation,
 } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
@@ -25,9 +27,8 @@ async function checkPublished(
   config: LoadedConfig,
   locations: readonly IssueLocation[],
   audience: IssueAudience,
+  checkouts: readonly IssueCheckout[],
 ) {
-  const { root } = config.context;
-
   const { contract: contractNames } = await config.resolve("github");
 
   const client = await createGithubClient();
@@ -46,7 +47,7 @@ async function checkPublished(
       number,
       audience,
       {
-        root,
+        checkouts,
       },
     );
 
@@ -82,12 +83,16 @@ export async function checkIssues(
   config: LoadedConfig,
   stems: readonly string[],
   audience: IssueAudience,
+  checkout: readonly string[] = [],
 ): Promise<IssuesCheck> {
+  const { root } = config.context;
+
   const { repositories } = await config.resolve("github");
 
-  const [repository, registry] = await Promise.all([
-    resolveCurrentRepository(config.context.root),
+  const [repository, registry, checkouts] = await Promise.all([
+    resolveCurrentRepository(root),
     repositories(),
+    resolveIssueCheckouts({ root, repositories }, checkout),
   ]);
 
   const drafts = new Map<string, Draft>();
@@ -127,7 +132,7 @@ export async function checkIssues(
   }
 
   if (published.length > 0) {
-    const check = await checkPublished(config, published, audience);
+    const check = await checkPublished(config, published, audience, checkouts);
 
     lines.push(...check.lines);
 

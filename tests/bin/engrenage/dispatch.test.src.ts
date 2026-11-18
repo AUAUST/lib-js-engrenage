@@ -92,7 +92,13 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     "worker",
     {
       dispatch: true,
-      root: process.cwd(),
+      checkouts: [
+        {
+          repository: expect.any(String),
+          root: process.cwd(),
+          ref: "HEAD",
+        },
+      ],
     },
   );
 
@@ -161,7 +167,7 @@ test.each([
     expect.anything(),
     1,
     name.startsWith("worker") ? "worker" : "debugger",
-    { dispatch: true, root: project.root },
+    { dispatch: true, checkouts: [] },
   );
 });
 

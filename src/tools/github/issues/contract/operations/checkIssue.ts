@@ -4,33 +4,27 @@ import { findMissingReferences } from "#tools/github/issues/contract/operations/
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
-import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
-import type { IssueCommit } from "#tools/git/index";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
+import type { IssueCheckout } from "#tools/github/issues/contract/types/IssueCheckout";
+import type { LocalCommits } from "#tools/github/issues/contract/types/LocalCommits";
 import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
-import type { Directory } from "#types/Directory";
 
 function relate(
   related: GithubIssue["subIssues"],
-  closes: ReadonlyMap<number, IssueCommit>,
-  repository: string,
+  commits: LocalCommits,
 ): readonly RelatedIssue[] {
   return related.map((issue) => {
-    const local = issue.repository.toLowerCase() === repository.toLowerCase();
-
     return {
       repository: issue.repository,
       number: issue.number,
       state: issue.state,
-      closedBy: issue.state === "open" && local
-        ? closes.get(issue.number)
-        : undefined,
+      closedBy: issue.state === "open" ? commits.closedBy(issue) : undefined,
     };
   });
 }
@@ -39,24 +33,25 @@ export async function checkIssue(
   access: IssueAccess,
   number: number,
   audience: IssueAudience = "worker",
-  { dispatch = false, root }: { dispatch?: boolean; root?: Directory } = {},
+  {
+    dispatch = false,
+    checkouts = [],
+  }: { dispatch?: boolean; checkouts?: readonly IssueCheckout[] } = {},
 ): Promise<IssueCheck> {
   const [issue, commits] = await Promise.all([
     fetchIssue(access, number),
-    root === undefined ? [] : listLocalCommits(root, access.repository),
+    listLocalCommits(checkouts),
   ]);
 
   const parsed = parseIssueBody(issue.body);
-
-  const closes = findClosingCommits(commits);
 
   const { repository } = access;
 
   const report = {
     repository,
-    subIssues: relate(issue.subIssues, closes, repository),
-    blockedBy: relate(issue.blockedBy, closes, repository),
-    towards: commits.filter(({ towards }) => towards.includes(number)),
+    subIssues: relate(issue.subIssues, commits),
+    blockedBy: relate(issue.blockedBy, commits),
+    towards: commits.towards({ repository, number }),
   };
 
   if (audience === "debugger" && !dispatch) {
@@ -64,12 +59,12 @@ export async function checkIssue(
       {
         issue,
         repository,
-        localRepository: repository,
+        currentRepository: repository,
         contractNames: access.contractNames,
         parsed,
         ancestors: [],
         missingReferences: [],
-        closes,
+        commits,
       },
       audience,
     );
@@ -96,12 +91,12 @@ export async function checkIssue(
       {
         issue,
         repository,
-        localRepository: repository,
+        currentRepository: repository,
         contractNames: access.contractNames,
         parsed,
         ancestors: chain,
         missingReferences,
-        closes,
+        commits,
         dispatch,
       },
       audience,
@@ -127,12 +122,12 @@ export async function checkIssue(
           {
             issue: ancestor,
             repository: ancestor.repository,
-            localRepository: repository,
+            currentRepository: repository,
             contractNames: access.contractNames,
             parsed: body,
             ancestors: chain.slice(0, index),
             missingReferences: missing,
-            closes,
+            commits,
             dispatch: true,
             ancestor: true,
           },

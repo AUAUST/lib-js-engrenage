@@ -1,20 +1,6 @@
-import { runGit } from "#tools/git/index";
 import { readManifestRepository } from "#tools/github/issues/api/operations/readManifestRepository";
-import { parseRepository } from "#tools/github/utils/parseRepository";
+import { readOriginRepository } from "#tools/github/issues/api/operations/readOriginRepository";
 import type { Directory } from "#types/Directory";
-
-async function readOriginRepository(root: Directory) {
-  let url: string;
-
-  try {
-    url = await runGit(root, ["remote", "get-url", "origin"]);
-  } catch {
-    // @debt treats any git failure as a missing `origin` remote instead of telling a missing remote from a git failure
-    return;
-  }
-
-  return parseRepository(url);
-}
 
 export async function resolveCurrentRepository(
   root: Directory,

@@ -13,23 +13,23 @@ import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
-import type { IssueCommit } from "#tools/git/index";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
+import type { LocalCommits } from "#tools/github/issues/contract/types/LocalCommits";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 interface ReadinessContext {
   readonly issue: GithubIssue;
   readonly repository: string;
-  readonly localRepository: string;
+  readonly currentRepository: string;
   readonly contractNames: ContractNames;
   readonly parsed: ParsedIssueBody;
   readonly ancestors: readonly IssueLocation[];
   readonly missingReferences: readonly number[];
-  readonly closes: ReadonlyMap<number, IssueCommit>;
+  readonly commits: LocalCommits;
   readonly dispatch?: boolean;
   readonly ancestor?: boolean;
 }
@@ -72,12 +72,12 @@ export function checkIssueReadiness(
   {
     issue,
     repository,
-    localRepository,
+    currentRepository,
     contractNames,
     parsed,
     ancestors,
     missingReferences,
-    closes,
+    commits,
     dispatch = false,
     ancestor = false,
   }: ReadinessContext,
@@ -85,18 +85,12 @@ export function checkIssueReadiness(
 ): IssueFinding[] {
   const findings: IssueFinding[] = [];
 
-  function findClosure(location: IssueLocation) {
-    return location.repository.toLowerCase() === localRepository.toLowerCase()
-      ? closes.get(location.number)
-      : undefined;
-  }
-
   const self = renderReference(
     { repository, number: issue.number },
-    localRepository,
+    currentRepository,
   );
 
-  const closedBy = findClosure({ repository, number: issue.number });
+  const closedBy = commits.closedBy({ repository, number: issue.number });
 
   if (issue.state !== "open") {
     findings.push({ rule: "state", message: `${self} is closed.` });
@@ -144,10 +138,10 @@ export function checkIssueReadiness(
     }
 
     for (const sub of issue.subIssues) {
-      if (sub.state === "open" && findClosure(sub) === undefined) {
+      if (sub.state === "open" && commits.closedBy(sub) === undefined) {
         findings.push({
           rule: "sub-issues",
-          message: `${self} has open sub-issue ${renderReference(sub, localRepository)}: finish it first.`,
+          message: `${self} has open sub-issue ${renderReference(sub, currentRepository)}: finish it first.`,
         });
       }
     }
@@ -205,10 +199,10 @@ export function checkIssueReadiness(
 
   if (audience === "worker" || dispatch) {
     for (const blocker of issue.blockedBy) {
-      if (blocker.state === "open" && findClosure(blocker) === undefined) {
+      if (blocker.state === "open" && commits.closedBy(blocker) === undefined) {
         findings.push({
           rule: "blocked-by",
-          message: `Blocked by the open ${renderReference(blocker, localRepository)}: settle it first.`,
+          message: `Blocked by the open ${renderReference(blocker, currentRepository)}: settle it first.`,
         });
       }
     }
@@ -238,7 +232,7 @@ export function checkIssueReadiness(
     for (const number of missingReferences) {
       findings.push({
         rule: "missing-reference",
-        message: `${renderReference({ repository, number }, localRepository)} does not exist: fix the reference.`,
+        message: `${renderReference({ repository, number }, currentRepository)} does not exist: fix the reference.`,
       });
     }
   }

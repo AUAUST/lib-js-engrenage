@@ -1,6 +1,6 @@
 import { InvalidArgumentError } from "commander";
 
-import { defineLazyCommand } from "#workflows/cli/index";
+import { collectArgument, defineLazyCommand } from "#workflows/cli/index";
 
 function parsePlanDepth(value: string) {
   if (value === "all") {
@@ -20,7 +20,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Report every issue of the tree from an issue down, each parent above its sub-issues, with its state counting local `Closes` commits, Blockers, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next one; exit 1 when the ready set is empty.",
+        "Report every issue of the tree from an issue down, each parent above its sub-issues, after one line per checkout read, with its state counting the unpushed `Closes` commits of its repository's checkout, Blockers, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next one; exit 1 when the ready set is empty.",
       )
       .argument("<number>", "issue number", Number)
       .option(
@@ -32,6 +32,12 @@ export default defineLazyCommand({
       .option(
         "--repo <repo>",
         "repository as `owner/repo` or a registered short name, else package.json or origin",
+      )
+      .option(
+        "--checkout <checkout>",
+        "checkout whose commits up to `<ref>`, `HEAD` by default, count for its repository's issues, as `<registered short name>=<directory>[@<ref>]`, repeatable; the current directory counts for its own repository unless a checkout names it; end with `@HEAD` when the directory holds an `@`",
+        collectArgument,
+        [],
       );
   },
   action() {

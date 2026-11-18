@@ -4,19 +4,17 @@ import { listLocalCommits } from "#tools/github/issues/contract/operations/listL
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
-import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
-import type { IssueCommit } from "#tools/git/index";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
+import type { IssueCheckout } from "#tools/github/issues/contract/types/IssueCheckout";
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssue";
-import type { Directory } from "#types/Directory";
 
 interface PlacedIssue {
   readonly tree: IssueTree;
@@ -139,34 +137,20 @@ async function findMissing(
 export async function checkIssueTree(
   access: IssueAccess,
   number: number,
-  { root, planDepth = 1 }: { root?: Directory; planDepth?: number } = {},
+  {
+    checkouts = [],
+    planDepth = 1,
+  }: { checkouts?: readonly IssueCheckout[]; planDepth?: number } = {},
 ): Promise<IssueTreeCheck> {
   const { repository } = access;
 
   const [{ tree, ancestors }, commits] = await Promise.all([
     fetchIssueTree(access, number),
-    root === undefined ? [] : listLocalCommits(root, repository),
+    listLocalCommits(checkouts),
   ]);
 
-  const closes = findClosingCommits(commits);
-
-  function isLocal(location: IssueLocation) {
-    return location.repository.toLowerCase() === repository.toLowerCase();
-  }
-
   function isClosed(issue: IssueLocation & { readonly state: string }) {
-    return (
-      issue.state === "closed" || (isLocal(issue) && closes.has(issue.number))
-    );
-  }
-
-  function listCommits(
-    location: IssueLocation,
-    relation: (commit: IssueCommit) => readonly number[],
-  ) {
-    return isLocal(location)
-      ? commits.filter((commit) => relation(commit).includes(location.number))
-      : [];
+    return issue.state === "closed" || commits.closedBy(issue) !== undefined;
   }
 
   const placed = placeInWalkOrder(tree, ancestors, {
@@ -200,8 +184,8 @@ export async function checkIssueTree(
     }) => {
       const closed = isClosed({ ...location, state: issue.state });
 
-      const closedBy = issue.state === "open" && isLocal(location)
-        ? closes.get(issue.number)
+      const closedBy = issue.state === "open"
+        ? commits.closedBy(location)
         : undefined;
 
       const report: WalkedIssue = {
@@ -227,7 +211,7 @@ export async function checkIssueTree(
                 {
                   issue,
                   repository: location.repository,
-                  localRepository: repository,
+                  currentRepository: repository,
                   contractNames: access.contractNames,
                   parsed,
                   ancestors: chain,
@@ -239,14 +223,14 @@ export async function checkIssueTree(
                       }),
                     );
                   }),
-                  closes,
+                  commits,
                 },
                 "worker",
               ),
             ],
         openSections: listOpenSections(parsed),
-        towards: listCommits(location, ({ towards }) => towards),
-        closes: listCommits(location, ({ closes: closed }) => closed),
+        towards: commits.towards(location),
+        closes: commits.closes(location),
       };
 
       const ready = (
@@ -262,6 +246,7 @@ export async function checkIssueTree(
 
   return {
     repository,
+    checkouts,
     issues: walked.map(({ report }) => report),
     ready: walked
       .filter(({ ready }) => ready)

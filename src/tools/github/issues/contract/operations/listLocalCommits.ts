@@ -1,14 +1,54 @@
 import { listIssueCommits, type IssueCommit } from "#tools/git/index";
-import { resolveCurrentRepository } from "#tools/github/issues/api/index";
-import type { Directory } from "#types/Directory";
+import { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
+import type { IssueCheckout } from "#tools/github/issues/contract/types/IssueCheckout";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
+import type { LocalCommits } from "#tools/github/issues/contract/types/LocalCommits";
 
 export async function listLocalCommits(
-  root: Directory,
-  repository: string,
-): Promise<readonly IssueCommit[]> {
-  const local = await resolveCurrentRepository(root);
+  checkouts: readonly IssueCheckout[],
+): Promise<LocalCommits> {
+  const commits = new Map(
+    await Promise.all(
+      checkouts.map(async ({ repository, root, ref }) => {
+        return [
+          repository.toLowerCase(),
+          await listIssueCommits(root, ref),
+        ] as const;
+      }),
+    ),
+  );
 
-  return local?.toLowerCase() === repository.toLowerCase()
-    ? listIssueCommits(root)
-    : [];
+  const closing = new Map(
+    [...commits].map(([repository, list]) => {
+      return [repository, findClosingCommits(list)] as const;
+    }),
+  );
+
+  function relate(
+    { repository, number }: IssueLocation,
+    relation: (commit: IssueCommit) => readonly number[],
+  ) {
+    return (commits.get(repository.toLowerCase()) ?? []).filter((commit) => {
+      return relation(commit).includes(number);
+    });
+  }
+
+  function closedBy({ repository, number }: IssueLocation) {
+    return closing.get(repository.toLowerCase())?.get(number);
+  }
+
+  function towards(issue: IssueLocation) {
+    return relate(issue, (commit) => commit.towards);
+  }
+
+  function closes(issue: IssueLocation) {
+    return relate(issue, (commit) => commit.closes);
+  }
+
+  return {
+    checkouts,
+    closedBy,
+    towards,
+    closes,
+  };
 }

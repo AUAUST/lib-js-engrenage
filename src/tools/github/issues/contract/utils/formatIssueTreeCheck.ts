@@ -52,12 +52,18 @@ function toTreeOrder(issues: readonly WalkedIssue[]): readonly WalkedIssue[] {
 
 export function formatIssueTreeCheck({
   repository,
+  checkouts,
   issues,
   ready,
 }: IssueTreeCheck): readonly string[] {
   const [next] = ready;
 
   return [
+    ...(checkouts.length === 0
+      ? ["Checkouts: none, no local commit read"]
+      : checkouts.map(({ repository: checkout, ref }) => {
+          return `Checkout: ${checkout} at ${ref}`;
+        })),
     ...toTreeOrder(issues).flatMap((issue) => formatIssue(issue, repository)),
     ...(next === undefined
       ? // @debt The none message omits the in-turn condition: an open issue with closed sub-issues and no finding can still be out of turn.

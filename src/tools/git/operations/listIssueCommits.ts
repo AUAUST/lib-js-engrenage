@@ -1,4 +1,4 @@
-import { readHead } from "#tools/git/operations/readHead";
+import { readCommit } from "#tools/git/operations/readCommit";
 import { runGit } from "#tools/git/operations/runGit";
 import type { IssueCommit } from "#tools/git/types/IssueCommit";
 import type { Directory } from "#types/Directory";
@@ -36,8 +36,11 @@ function parseCommit(
 
 export async function listIssueCommits(
   root: Directory,
+  reference = "HEAD",
 ): Promise<readonly IssueCommit[]> {
-  if ((await readHead(root)) === undefined) {
+  const commit = await readCommit(root, reference);
+
+  if (commit === undefined) {
     return [];
   }
 
@@ -48,13 +51,13 @@ export async function listIssueCommits(
       "-E",
       referenceGrep,
       "--format=%H%x1f%h%x1f%s%x1f%B",
-      "HEAD",
+      commit,
     ]),
     runGit(root, [
       "rev-list",
       "-E",
       referenceGrep,
-      "HEAD",
+      commit,
       "--not",
       "--remotes",
     ]),

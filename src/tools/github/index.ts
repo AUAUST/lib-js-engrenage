@@ -15,6 +15,8 @@ export {
   formatIssueTreeCheck,
   parseGithubCommand,
   parseIssueBody,
+  resolveIssueCheckouts,
+  resolveLocalCheckout,
   type ContractNames,
   type GithubWrite,
 } from "#tools/github/issues/contract/index";

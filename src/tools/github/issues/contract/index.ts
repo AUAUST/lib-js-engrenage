@@ -14,6 +14,8 @@ export { findMissingReferences } from "#tools/github/issues/contract/operations/
 export { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 export { parseGithubCommand } from "#tools/github/issues/contract/operations/parseGithubCommand";
 export { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
+export { resolveIssueCheckouts } from "#tools/github/issues/contract/operations/resolveIssueCheckouts";
+export { resolveLocalCheckout } from "#tools/github/issues/contract/operations/resolveLocalCheckout";
 // @end
 
 // @barrel utils
@@ -49,6 +51,7 @@ export type * from "#tools/github/issues/contract/types/GithubWrite";
 export type * from "#tools/github/issues/contract/types/IssueAccess";
 export type * from "#tools/github/issues/contract/types/IssueAudience";
 export type * from "#tools/github/issues/contract/types/IssueCheck";
+export type * from "#tools/github/issues/contract/types/IssueCheckout";
 export type * from "#tools/github/issues/contract/types/IssueContract";
 export type * from "#tools/github/issues/contract/types/IssueFinding";
 export type * from "#tools/github/issues/contract/types/IssueListItem";
@@ -56,6 +59,7 @@ export type * from "#tools/github/issues/contract/types/IssueLocation";
 export type * from "#tools/github/issues/contract/types/IssueTree";
 export type * from "#tools/github/issues/contract/types/IssueTreeCheck";
 export type * from "#tools/github/issues/contract/types/IssueType";
+export type * from "#tools/github/issues/contract/types/LocalCommits";
 export type * from "#tools/github/issues/contract/types/NamedMeaning";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";
 export type * from "#tools/github/issues/contract/types/RelatedIssue";

@@ -4,13 +4,19 @@ import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
   stems: readonly string[],
-  { for: audience }: { for: "worker" | "debugger" },
+  {
+    for: audience,
+    checkout,
+  }: { for: "worker" | "debugger"; checkout: readonly string[] },
 ): Promise<void> {
   const config = await loadValidatedConfig(process.cwd(), {
     reporter: getRunContext().reporter,
   });
 
-  const { lines, passed } = await checkIssues(config, stems, audience);
+  const {
+    lines,
+    passed,
+  } = await checkIssues(config, stems, audience, checkout);
 
   for (const line of lines) {
     getRunContext().reporter.log(line);

@@ -7,6 +7,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
 import { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
+import { resolveIssueCheckouts } from "#tools/github/issues/contract/operations/resolveIssueCheckouts";
 import { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 
 vi.stubEnv("GH_TOKEN", "t");
@@ -166,6 +167,16 @@ function createWorkingCopy(message?: string) {
   return root;
 }
 
+function checkoutAt(root: string) {
+  return [
+    {
+      repository: "o/r",
+      root,
+      ref: "HEAD",
+    },
+  ];
+}
+
 describe("checkIssueTree", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -175,7 +186,7 @@ describe("checkIssueTree", () => {
     mockGraphql();
 
     const check = await checkIssueTree(access, 10, {
-      root: createWorkingCopy(),
+      checkouts: checkoutAt(createWorkingCopy()),
     });
 
     expect(check.ready).toEqual([
@@ -189,13 +200,15 @@ describe("checkIssueTree", () => {
     mockGraphql();
 
     const open = await checkIssueTree(access, 20, {
-      root: createWorkingCopy(),
+      checkouts: checkoutAt(createWorkingCopy()),
     });
 
     expect(open.ready).toEqual([{ repository: "o/r", number: 21 }]);
 
     const closed = await checkIssueTree(access, 20, {
-      root: createWorkingCopy("feat: twenty-one\n\nCloses #21"),
+      checkouts: checkoutAt(
+        createWorkingCopy("feat: twenty-one\n\nCloses #21"),
+      ),
     });
 
     expect(closed.ready).toEqual([{ repository: "o/r", number: 22 }]);
@@ -204,11 +217,11 @@ describe("checkIssueTree", () => {
   test("walks a nested plan only within the plan depth", async () => {
     mockGraphql();
 
-    const root = createWorkingCopy();
+    const checkouts = checkoutAt(createWorkingCopy());
 
     const [shallow, nested] = await Promise.all([
-      checkIssueTree(access, 30, { root }),
-      checkIssueTree(access, 30, { root, planDepth: 2 }),
+      checkIssueTree(access, 30, { checkouts }),
+      checkIssueTree(access, 30, { checkouts, planDepth: 2 }),
     ]);
 
     expect(shallow.ready).toEqual([]);
@@ -220,10 +233,11 @@ describe("checkIssueTree", () => {
     mockGraphql();
 
     const check = await checkIssueTree(access, 10, {
-      root: createWorkingCopy(),
+      checkouts: checkoutAt(createWorkingCopy()),
     });
 
     expect(formatIssueTreeCheck(check)).toEqual([
+      "Checkout: o/r at HEAD",
       "#10 Plan: open",
       "  #11 Segment: open",
       "    #12 Task: open",
@@ -239,7 +253,9 @@ describe("checkIssueTree", () => {
 
     const root = createWorkingCopy("feat: twelve\n\nCloses #12");
 
-    const check = await checkIssueTree(access, 10, { root });
+    const check = await checkIssueTree(access, 10, {
+      checkouts: checkoutAt(root),
+    });
 
     const hash = execFileSync("git", ["log", "--format=%h", "-1"], {
       cwd: root,
@@ -247,7 +263,7 @@ describe("checkIssueTree", () => {
       stdio: "pipe",
     }).trim();
 
-    expect(formatIssueTreeCheck(check).slice(2, 5)).toEqual([
+    expect(formatIssueTreeCheck(check).slice(3, 6)).toEqual([
       `    #12 Task: closed by unpushed commit ${hash}`,
       `      Closes: ${hash} feat: twelve`,
       "    #13 Task: open",
@@ -269,9 +285,11 @@ describe("checkIssueTree", () => {
       stdio: "pipe",
     });
 
-    const check = await checkIssueTree(access, 10, { root });
+    const check = await checkIssueTree(access, 10, {
+      checkouts: checkoutAt(root),
+    });
 
-    expect(formatIssueTreeCheck(check)[2]).toBe("    #12 Task: open");
+    expect(formatIssueTreeCheck(check)[3]).toBe("    #12 Task: open");
 
     expect(check.ready).toContainEqual({ repository: "o/r", number: 12 });
   });
@@ -422,6 +440,7 @@ describe("checkIssueTree across repositories", () => {
     expect(queried).toContain(`${toolkit}#45`);
 
     expect(formatIssueTreeCheck(check)).toEqual([
+      "Checkouts: none, no local commit read",
       "#10 Plan: open",
       "  #11 Segment: open",
       "    #12 Task: open",
@@ -429,5 +448,135 @@ describe("checkIssueTree across repositories", () => {
       `Ready: #12, ${toolkit}#45`,
       "Next: #12",
     ]);
+  });
+});
+
+describe("checkIssueTree with another repository's checkout", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  function repositories() {
+    return Promise.resolve(
+      new Map([
+        ["engrenage", engrenage],
+        ["toolkit", toolkit],
+      ]),
+    );
+  }
+
+  function git(root: string, args: readonly string[]) {
+    return execFileSync(
+      "git",
+      ["-c", "user.name=Test", "-c", "user.email=test@example.com", ...args],
+      {
+        cwd: root,
+        encoding: "utf-8",
+        stdio: "pipe",
+      },
+    ).trim();
+  }
+
+  function createCheckout(origin: string) {
+    const { root } = createTemporaryProject();
+
+    git(root, ["init", "--quiet", "--initial-branch=main"]);
+
+    git(root, ["remote", "add", "origin", `git@github.com:${origin}.git`]);
+
+    git(root, ["commit", "--quiet", "--allow-empty", "-m", "chore: start"]);
+
+    return root;
+  }
+
+  async function checkWith(requested: readonly string[]) {
+    const checkouts = await resolveIssueCheckouts(
+      { root: createCheckout(engrenage), repositories },
+      requested,
+    );
+
+    return checkIssueTree(
+      {
+        ...access,
+        repository: engrenage,
+      },
+      10,
+      {
+        checkouts,
+      },
+    );
+  }
+
+  test("reports a toolkit sub-issue closed by the toolkit checkout's commit and leaves it out of the ready set", async () => {
+    mockCrossRepositoryGraphql();
+
+    const checkout = createCheckout(toolkit);
+
+    git(checkout, [
+      "commit",
+      "--quiet",
+      "--allow-empty",
+      "-m",
+      "feat: x\n\nCloses #45",
+    ]);
+
+    const check = await checkWith([`toolkit=${checkout}`]);
+
+    expect(
+      check.issues.find(({ number }) => {
+        return number === 45;
+      })?.closedBy,
+    ).toMatchObject({
+      hash: git(checkout, ["log", "--format=%h", "-1"]),
+    });
+
+    expect(check.ready).toEqual([{ repository: engrenage, number: 12 }]);
+
+    expect(formatIssueTreeCheck(check).slice(0, 2)).toEqual([
+      `Checkout: ${engrenage} at HEAD`,
+      `Checkout: ${toolkit} at HEAD`,
+    ]);
+  });
+
+  test("reads the named ref's commits instead of HEAD's", async () => {
+    mockCrossRepositoryGraphql();
+
+    const checkout = createCheckout(toolkit);
+
+    git(checkout, ["switch", "--quiet", "-c", "plan"]);
+
+    git(checkout, [
+      "commit",
+      "--quiet",
+      "--allow-empty",
+      "-m",
+      "feat: x\n\nCloses #45",
+    ]);
+
+    git(checkout, ["switch", "--quiet", "main"]);
+
+    const [head, branch] = await Promise.all([
+      checkWith([`toolkit=${checkout}`]),
+      checkWith([`toolkit=${checkout}@plan`]),
+    ]);
+
+    expect(head.ready).toContainEqual({ repository: toolkit, number: 45 });
+
+    expect(branch.ready).not.toContainEqual({
+      repository: toolkit,
+      number: 45,
+    });
+
+    expect(formatIssueTreeCheck(branch)[1]).toBe(
+      `Checkout: ${toolkit} at plan`,
+    );
+  });
+
+  test("fails on a checkout whose origin is another repository, naming both", async () => {
+    const checkout = createCheckout(engrenage);
+
+    await expect(checkWith([`toolkit=${checkout}`])).rejects.toThrow(
+      `The checkout ${checkout} for ${toolkit} has origin ${engrenage}`,
+    );
   });
 });

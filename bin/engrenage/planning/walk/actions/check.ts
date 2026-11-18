@@ -2,6 +2,7 @@ import {
   checkIssueTree,
   createGithubClient,
   formatIssueTreeCheck,
+  resolveIssueCheckouts,
   resolveRepository,
 } from "#tools/github/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -9,7 +10,11 @@ import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
   number: number,
-  { repo, depth }: { repo?: string | undefined; depth: number },
+  {
+    repo,
+    depth,
+    checkout,
+  }: { repo?: string | undefined; depth: number; checkout: readonly string[] },
 ): Promise<void> {
   const root = process.cwd();
 
@@ -22,15 +27,20 @@ export default async function (
     contract: contractNames,
   } = await config.resolve("github");
 
+  const [repository, checkouts] = await Promise.all([
+    resolveRepository({ root, repositories }, repo),
+    resolveIssueCheckouts({ root, repositories }, checkout),
+  ]);
+
   const check = await checkIssueTree(
     {
-      repository: await resolveRepository({ root, repositories }, repo),
+      repository,
       client: await createGithubClient(),
       contractNames,
     },
     number,
     {
-      root,
+      checkouts,
       planDepth: depth,
     },
   );
