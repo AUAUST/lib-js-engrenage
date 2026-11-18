@@ -38,6 +38,9 @@ bun.lockb
 # pnpm
 /pnpm-lock.yaml
 
+# Linked checkouts
+/.engrenage/links.json
+
 # Codegen
 /src/tools/eslint/types/Rules.ts
 /src/tools/eslint/types/rules/**

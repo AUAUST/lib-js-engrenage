@@ -1,7 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { lefthook, organization } from "#constants";
+import { stateDirectory } from "#project/config/constants";
 import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export const workspaceFile = "pnpm-workspace.yaml" satisfies File;
@@ -30,3 +32,13 @@ export const pnpmRunVariables = freeze({
   names: ["INIT_CWD", "PNPM_PACKAGE_NAME", "PNPM_SCRIPT_SRC_DIR"],
   binaries: ["node_modules", ".bin"],
 } as const);
+
+export const linksFile = `${stateDirectory}/links.json` satisfies File;
+
+export const modulesDirectory = "node_modules" satisfies Directory;
+
+export const linkedOutput = "dist" satisfies Directory;
+
+export const linkedExecutables = `${linkedOutput}/bin` satisfies Directory;
+
+export const restoreLinksCommand = "engrenage link --restore";

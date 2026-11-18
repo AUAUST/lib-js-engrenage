@@ -10,6 +10,7 @@ import github from "#bin/engrenage/github/index";
 import init from "#bin/engrenage/init";
 import jscpd from "#bin/engrenage/jscpd";
 import jscpdNew from "#bin/engrenage/jscpdNew";
+import link from "#bin/engrenage/link";
 import planning from "#bin/engrenage/planning/index";
 import pnpm from "#bin/engrenage/pnpm/index";
 import prettier from "#bin/engrenage/prettier";
@@ -44,6 +45,7 @@ export default defineGroup({
     "agents": agents,
     "github": github,
     "pnpm": pnpm,
+    "link": link,
     "tsc": {
       command: tsc,
       aliases: ["typecheck"],

@@ -55,4 +55,7 @@ ehthumbs.db
 # Agent stats
 /.ai/stats
 
+# Linked checkouts
+/.engrenage/links.json
+
 # @end

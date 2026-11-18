@@ -2,7 +2,9 @@
 export {
   createGithubClient,
   fetchGithubSnapshot,
+  findRegisteredRepository,
   readGithubSnapshot,
+  readOriginRepository,
   resolveRepository,
   type GithubSnapshot,
 } from "#tools/github/issues/api/index";

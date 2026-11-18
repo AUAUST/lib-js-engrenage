@@ -1,8 +1,9 @@
-import { lockfile, workspaceFile } from "#tools/pnpm/constants";
+import { linksFile, lockfile, workspaceFile } from "#tools/pnpm/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns the lockfile and `pnpm-workspace.yaml`, and syncs the workspace settings.
+ * Owns the lockfile, `pnpm-workspace.yaml` and the uncommitted record of linked
+ * checkouts, syncs the workspace settings and checks the linked symlinks.
  */
 export default {
   name: "tools/pnpm",
@@ -23,6 +24,13 @@ export default {
           return { file: workspaceFile };
         },
       },
+      "state.links": {
+        title: "Linked checkouts",
+        committed: false,
+        locate(): FileLocation {
+          return { file: linksFile };
+        },
+      },
     },
   },
   contributes: {
@@ -32,6 +40,13 @@ export default {
         stage: "write",
         load() {
           return import("#tools/pnpm/setup/syncWorkspaceFile");
+        },
+      },
+      {
+        name: "links",
+        stage: "check",
+        load() {
+          return import("#tools/pnpm/setup/checkLinks");
         },
       },
     ],
