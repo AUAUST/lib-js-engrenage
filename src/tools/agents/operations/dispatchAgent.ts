@@ -38,13 +38,16 @@ export async function dispatchAgent(
 
   if ("agent" in dispatch.run) {
     // @debt checks the brief against the caller's issue contract names, while the target checkout's own config may name them differently
-    const { contract } = await config.resolve("github");
+    const { contract, repositories } = await config.resolve("github");
 
     const reason = await checkAgentDispatch(
       dispatch.run.agent,
       dispatch.brief,
       dispatch.directory,
-      contract,
+      {
+        contractNames: contract,
+        repositories,
+      },
     );
 
     if (reason !== undefined) {

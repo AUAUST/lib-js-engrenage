@@ -4,6 +4,7 @@ import { enableCompileCache } from "node:module";
 
 import {
   createProgram,
+  enableLinkedSource,
   findSourceExecutable,
   launch,
   runProgram,
@@ -12,6 +13,8 @@ import {
 enableCompileCache();
 
 await launch(async () => {
+  await enableLinkedSource(import.meta.url);
+
   const source = await findSourceExecutable(
     import.meta,
     "#bin/engrenage/executable",

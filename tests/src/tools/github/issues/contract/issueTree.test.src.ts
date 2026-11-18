@@ -489,9 +489,16 @@ describe("checkIssueTree with another repository's checkout", () => {
     return root;
   }
 
-  async function checkWith(requested: readonly string[]) {
+  async function checkWith(
+    requested: readonly string[],
+    linked: Readonly<Record<string, { directory: string }>> = {},
+  ) {
     const checkouts = await resolveIssueCheckouts(
-      { root: createCheckout(engrenage), repositories },
+      {
+        root: createCheckout(engrenage),
+        repositories,
+        linked,
+      },
       requested,
     );
 
@@ -578,5 +585,39 @@ describe("checkIssueTree with another repository's checkout", () => {
     await expect(checkWith([`toolkit=${checkout}`])).rejects.toThrow(
       `The checkout ${checkout} for ${toolkit} has origin ${engrenage}`,
     );
+  });
+
+  function createClosingCheckout() {
+    const checkout = createCheckout(toolkit);
+
+    git(checkout, [
+      "commit",
+      "--quiet",
+      "--allow-empty",
+      "-m",
+      "feat: x\n\nCloses #45",
+    ]);
+
+    return checkout;
+  }
+
+  test("reads a linked checkout at HEAD when no explicit checkout names its repository", async () => {
+    mockCrossRepositoryGraphql();
+
+    const check = await checkWith([], {
+      toolkit: { directory: createClosingCheckout() },
+    });
+
+    expect(check.ready).toEqual([{ repository: engrenage, number: 12 }]);
+  });
+
+  test("prefers an explicit checkout over the linked one of the same repository", async () => {
+    mockCrossRepositoryGraphql();
+
+    const check = await checkWith([`toolkit=${createCheckout(toolkit)}`], {
+      toolkit: { directory: createClosingCheckout() },
+    });
+
+    expect(check.ready).toContainEqual({ repository: toolkit, number: 45 });
   });
 });

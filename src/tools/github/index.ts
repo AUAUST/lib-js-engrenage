@@ -21,6 +21,7 @@ export {
   resolveLocalCheckout,
   type ContractNames,
   type GithubWrite,
+  type LinkedCheckout,
 } from "#tools/github/issues/contract/index";
 export { issueDraftsDirectory } from "#tools/github/issues/drafts/constants";
 export {

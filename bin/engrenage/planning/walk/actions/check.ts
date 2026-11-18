@@ -5,6 +5,7 @@ import {
   resolveIssueCheckouts,
   resolveRepository,
 } from "#tools/github/index";
+import { readLinks } from "#tools/pnpm/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -29,7 +30,16 @@ export default async function (
 
   const [repository, checkouts] = await Promise.all([
     resolveRepository({ root, repositories }, repo),
-    resolveIssueCheckouts({ root, repositories }, checkout),
+    readLinks(root).then((linked) => {
+      return resolveIssueCheckouts(
+        {
+          root,
+          repositories,
+          linked,
+        },
+        checkout,
+      );
+    }),
   ]);
 
   const check = await checkIssueTree(

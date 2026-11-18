@@ -11,6 +11,7 @@ import {
   type IssueAudience,
   type IssueCheckout,
   type IssueLocation,
+  type LinkedCheckout,
 } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
@@ -83,7 +84,13 @@ export async function checkIssues(
   config: LoadedConfig,
   stems: readonly string[],
   audience: IssueAudience,
-  checkout: readonly string[] = [],
+  {
+    checkout = [],
+    linked,
+  }: {
+    checkout?: readonly string[];
+    linked?: Readonly<Record<string, LinkedCheckout>>;
+  } = {},
 ): Promise<IssuesCheck> {
   const { root } = config.context;
 
@@ -92,7 +99,14 @@ export async function checkIssues(
   const [repository, registry, checkouts] = await Promise.all([
     resolveCurrentRepository(root),
     repositories(),
-    resolveIssueCheckouts({ root, repositories }, checkout),
+    resolveIssueCheckouts(
+      {
+        root,
+        repositories,
+        linked,
+      },
+      checkout,
+    ),
   ]);
 
   const drafts = new Map<string, Draft>();

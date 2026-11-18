@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -115,10 +117,14 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
   expect(process.stdout.write).not.toHaveBeenCalled();
 });
 
-async function installed() {
+async function installed(
+  github = "{}",
+  files: Readonly<Record<string, string>> = {},
+) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
+    "engrenage.config.ts": `export default { agents: { preferred: ["codex"] }, github: ${github} };`,
+    ...files,
   });
 
   const config = await loadConfig(project.root);
@@ -169,6 +175,61 @@ test.each([
     name.startsWith("worker") ? "worker" : "debugger",
     { dispatch: true, checkouts: [] },
   );
+});
+
+test("passes the checkouts the project links with the local one", async () => {
+  const checkout = createTemporaryProject();
+
+  for (const args of [
+    ["init", "--quiet", "--initial-branch=main"],
+    ["remote", "add", "origin", "git@github.com:acme/tool.git"],
+    [
+      "-c",
+      "user.name=T",
+      "-c",
+      "user.email=t@example.com",
+      "commit",
+      "--quiet",
+      "--allow-empty",
+      "-m",
+      "start",
+    ],
+  ]) {
+    execFileSync("git", args, { cwd: checkout.root, stdio: "ignore" });
+  }
+
+  const {
+    project,
+    filesystem,
+  } = await installed('{ repositories: { tool: "acme/tool" } }', {
+    ".engrenage/links.json": JSON.stringify({
+      tool: { directory: checkout.root, installed: "../.pnpm/tool" },
+    }),
+  });
+
+  await filesystem.flush();
+
+  vi.mocked(readHookPayload).mockResolvedValue({
+    cwd: project.root,
+    tool_name: "spawn_agent",
+    tool_input: {
+      agent_type: "worker",
+      message: "Issue: o/r#1\nContext",
+    },
+  });
+
+  await runDefinition(codexDispatch);
+
+  expect(checkIssue).toHaveBeenCalledWith(expect.anything(), 1, "worker", {
+    dispatch: true,
+    checkouts: [
+      {
+        repository: "acme/tool",
+        root: checkout.root,
+        ref: "HEAD",
+      },
+    ],
+  });
 });
 
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {

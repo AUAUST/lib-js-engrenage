@@ -26,9 +26,15 @@ export default async function (): Promise<void> {
     reporter: getRunContext().reporter,
   });
 
-  const { contract: contractNames } = await config.resolve("github");
+  const {
+    contract: contractNames,
+    repositories,
+  } = await config.resolve("github");
 
-  const reason = await checkAgentDispatch(agent, prompt, root, contractNames);
+  const reason = await checkAgentDispatch(agent, prompt, root, {
+    contractNames,
+    repositories,
+  });
 
   if (reason !== undefined) {
     denyToolUse(reason);

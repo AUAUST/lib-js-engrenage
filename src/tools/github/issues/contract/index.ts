@@ -59,6 +59,7 @@ export type * from "#tools/github/issues/contract/types/IssueLocation";
 export type * from "#tools/github/issues/contract/types/IssueTree";
 export type * from "#tools/github/issues/contract/types/IssueTreeCheck";
 export type * from "#tools/github/issues/contract/types/IssueType";
+export type * from "#tools/github/issues/contract/types/LinkedCheckout";
 export type * from "#tools/github/issues/contract/types/LocalCommits";
 export type * from "#tools/github/issues/contract/types/NamedMeaning";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";

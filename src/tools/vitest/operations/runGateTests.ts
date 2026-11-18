@@ -9,6 +9,7 @@ import {
   collectStructureNodes,
   type EnvironmentStructure,
 } from "#project/structure/index";
+import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -117,19 +118,23 @@ export async function runGateTests(
   const runs = [
     owned.length === 0
       ? undefined
-      : runGateBinary(root, packages.vitest, [
-          "run",
-          "--passWithNoTests",
-          ...owned,
-        ]),
+      : runGateBinary(
+          root,
+          packages.vitest,
+          ensureSourceConfigLoader(["run", "--passWithNoTests", ...owned]),
+        ),
     related.length === 0
       ? undefined
-      : runGateBinary(root, packages.vitest, [
-          "related",
-          "--run",
-          "--passWithNoTests",
-          ...related,
-        ]),
+      : runGateBinary(
+          root,
+          packages.vitest,
+          ensureSourceConfigLoader([
+            "related",
+            "--run",
+            "--passWithNoTests",
+            ...related,
+          ]),
+        ),
   ];
 
   return mergeResults(

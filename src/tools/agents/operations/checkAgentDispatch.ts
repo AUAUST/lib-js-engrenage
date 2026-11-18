@@ -2,16 +2,23 @@ import {
   checkIssue,
   createGithubClient,
   findBriefedIssue,
-  resolveLocalCheckout,
+  resolveIssueCheckouts,
   type ContractNames,
 } from "#tools/github/index";
+import { readLinks } from "#tools/pnpm/index";
 import type { Directory } from "#types/Directory";
 
 export async function checkAgentDispatch(
   role: string,
   brief: string,
   root: Directory,
-  contractNames: ContractNames,
+  {
+    contractNames,
+    repositories,
+  }: {
+    contractNames: ContractNames;
+    repositories(): Promise<ReadonlyMap<string, string>>;
+  },
 ): Promise<string | undefined> {
   if (role !== "worker" && role !== "debugger") {
     return;
@@ -25,7 +32,16 @@ export async function checkAgentDispatch(
       : undefined;
   }
 
-  const local = await resolveLocalCheckout(root);
+  const linked = await readLinks(root);
+
+  const checkouts = await resolveIssueCheckouts(
+    {
+      root,
+      repositories,
+      linked,
+    },
+    [],
+  );
 
   const { findings } = await checkIssue(
     {
@@ -37,7 +53,7 @@ export async function checkAgentDispatch(
     role,
     {
       dispatch: true,
-      checkouts: local === undefined ? [] : [local],
+      checkouts,
     },
   );
 

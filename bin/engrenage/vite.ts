@@ -6,4 +6,7 @@ export default defineToolCommand({
   configure(command) {
     return command.description("Run Vite.");
   },
+  action() {
+    return import("#bin/engrenage/actions/vite");
+  },
 });
