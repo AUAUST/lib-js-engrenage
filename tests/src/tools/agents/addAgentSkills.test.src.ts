@@ -73,7 +73,7 @@ describe("addAgentSkills", () => {
     );
   });
 
-  test("lets the scratchpad skill be invoked implicitly", async () => {
+  test("lets the curation skill be invoked implicitly", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
@@ -87,22 +87,20 @@ describe("addAgentSkills", () => {
         agents: await config.resolve("agents"),
         fillers: {},
       },
-      ["scratchpad"],
+      ["curation"],
     );
 
     expect(
-      await config.context.filesystem.read(
-        ".claude/skills/scratchpad/SKILL.md",
-      ),
+      await config.context.filesystem.read(".claude/skills/curation/SKILL.md"),
     ).not.toContain("disable-model-invocation");
 
     expect(
-      await config.context.filesystem.read(".claude/agents/scratcher.md"),
-    ).toMatch(/name: scratcher[\s\S]*tools:[\s\S]*# Scratchpad/);
+      await config.context.filesystem.read(".claude/agents/curator.md"),
+    ).toMatch(/name: curator[\s\S]*tools:[\s\S]*# Curation/);
 
     expect(
       await config.context.filesystem.exists(
-        ".agents/skills/scratchpad/agents/openai.yaml",
+        ".agents/skills/curation/agents/openai.yaml",
       ),
     ).toBe(true);
   });
@@ -128,22 +126,14 @@ describe("addAgentSkills", () => {
       ".codex/agents/worker_medium.toml",
     ]);
 
-    await addAgentSkills(sections, [
-      "debugging",
-      "planning",
-      "backlog-handling",
-      "debt-harvesting",
-      "scratchpad",
-    ]);
+    await addAgentSkills(sections, ["debugging", "planning", "curation"]);
 
     expect(await sections.filesystem.glob(".codex/agents/*.toml")).toEqual([
-      ".codex/agents/backlogger.toml",
-      ".codex/agents/banker.toml",
+      ".codex/agents/curator.toml",
       ".codex/agents/debugger.toml",
       ".codex/agents/debugger_high.toml",
       ".codex/agents/debugger_low.toml",
       ".codex/agents/planner.toml",
-      ".codex/agents/scratcher.toml",
       ".codex/agents/worker.toml",
       ".codex/agents/worker_medium.toml",
     ]);
@@ -154,9 +144,7 @@ describe("addAgentSkills", () => {
       "issue-implementation",
       "debugging",
       "planning",
-      "backlog-handling",
-      "debt-harvesting",
-      "scratchpad",
+      "curation",
     ]);
 
     expect(sections.filesystem.changes()).toEqual([]);

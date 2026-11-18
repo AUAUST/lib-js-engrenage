@@ -113,14 +113,10 @@ export const agentsSchema = declareObject(
           description: "Words of one entry of `.ai/backlog/*.md`.",
           optional: { value: defaultBudgets.backlogEntry },
         }),
-        debtEntry: declare(budgetSchema, {
-          description: "Words of one entry of `.ai/debt.md`.",
-          optional: { value: defaultBudgets.debtEntry },
-        }),
       },
       {
         description: [
-          "Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog and debt entries.",
+          "Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog entries.",
           "Sections such as **Steps** and **Tests** have no budget.",
         ],
         optional: true,

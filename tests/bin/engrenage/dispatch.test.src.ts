@@ -8,8 +8,6 @@ import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 
-import * as definitions from "#tools/agents/operations/getSkillDefinitions";
-
 import dispatch from "#bin/engrenage/agents/claude/hook/actions/dispatch";
 import codexDispatch from "#bin/engrenage/agents/codex/hook/actions/dispatch";
 
@@ -210,39 +208,4 @@ test("rejects missing/conflicting generated output and ignores unowned custom na
       "worker_custom",
     ),
   ).resolves.toBeUndefined();
-});
-
-test("rejects an unsupported canonical gated role from exact metadata", async () => {
-  const { filesystem } = await installed();
-
-  const templates = await definitions.getSkillDefinitions({
-    fillers: {},
-  });
-
-  const template = templates.find(({ agent }) => agent?.name === "worker");
-
-  if (template?.agent === undefined) {
-    throw new Error("Worker template missing");
-  }
-
-  vi.spyOn(definitions, "getSkillDefinitions").mockResolvedValue([
-    {
-      ...template,
-      agent: {
-        ...template.agent,
-        name: "custom",
-        gate: true,
-      },
-    },
-  ]);
-
-  await expect(
-    resolveCodexProfile(
-      {
-        filesystem,
-        fillers: {},
-      },
-      "custom_medium",
-    ),
-  ).rejects.toThrow("Unsupported canonical gated Codex role custom");
 });

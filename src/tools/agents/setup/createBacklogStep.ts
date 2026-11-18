@@ -20,7 +20,7 @@ import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
-const skills = ["scratchpad", "backlog-handling", "debt-harvesting"];
+const skills = ["curation"];
 
 export function createBacklogStep(): Step {
   return {

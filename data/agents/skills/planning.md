@@ -292,7 +292,7 @@ While an issue's design is open, write what is settled and put the rest under **
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last step, and only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
 - List under **Prerequisites** only the issues tree order does not imply, and list each in `blockedBy`.
 - Drop **Done when** when it would only say the Steps are done and the checks pass.
-- Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
+- Once an issue you create or edit tracks the work of a backlog entry, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 - Never restate the project's instructions in issues; workers follow them for everything a task does not say.
 - Apply the protocol's types and fields and the repository's labels whose description fits the issue; invent none.
 

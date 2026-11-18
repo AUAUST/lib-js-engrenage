@@ -32,8 +32,16 @@ describe("budgets", () => {
       doneWhen: 60,
       comment: 150,
       backlogEntry: 60,
-      debtEntry: 60,
     });
+  });
+
+  test("rejects the removed debtEntry budget, naming the key", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": "export default { agents: { budgets: { debtEntry: 60 } } };\n",
+    });
+
+    await expect(loadBudgets(project.root)).rejects.toThrow("debtEntry");
   });
 
   test("warns on a backlog entry over budget and not on one within", async () => {

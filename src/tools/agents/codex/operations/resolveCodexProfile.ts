@@ -16,16 +16,6 @@ export async function resolveCodexProfile(
     return;
   }
 
-  if (
-    profile.gate &&
-    profile.role !== "worker" &&
-    profile.role !== "debugger"
-  ) {
-    throw new Error(
-      `Unsupported canonical gated Codex role ${profile.role} in profile ${name}`,
-    );
-  }
-
   const skill = await filesystem.read(profile.skillFile);
 
   if (!skill?.includes(`<!-- @reference ${profile.reference} -->`)) {

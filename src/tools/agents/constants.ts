@@ -92,15 +92,12 @@ export const attributionRules = freeze({
 
 export const rulesDirectory = ".claude/rules" satisfies Directory;
 
-export const debtFile = ".ai/debt.md" satisfies File;
-
 export const budgetKinds = freeze([
   "goal",
   "context",
   "doneWhen",
   "comment",
   "backlogEntry",
-  "debtEntry",
 ] as const);
 
 export const budgetModes = freeze(["warn", "deny"] as const);
@@ -113,7 +110,6 @@ export const defaultBudgets = freeze({
   doneWhen: 60,
   comment: 150,
   backlogEntry: 60,
-  debtEntry: 60,
 } as const);
 
 export const subagentCacheTtls = freeze(["5m", "1h"] as const);

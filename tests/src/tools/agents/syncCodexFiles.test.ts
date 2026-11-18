@@ -114,7 +114,7 @@ describe("syncCodexFiles", () => {
     );
 
     expect(await filesystem.read("AGENTS.override.md")).not.toContain(
-      "backlogger",
+      "curator",
     );
 
     await filesystem.flush();

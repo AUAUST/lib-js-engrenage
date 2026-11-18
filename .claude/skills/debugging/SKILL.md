@@ -20,7 +20,7 @@ When dispatched in a worktree, first check out the briefed commit, detached, whe
 | ------------------------------------------------------ | ---------------------------------------------------------------------- |
 | A GitHub issue                                         | Its body, comments, linked issues and ancestors up to the nearest plan |
 | A backlog entry                                        | The entry and the entries closely related to it                        |
-| A `@debt` marker or debt backlog entry                 | The marked code and its callers                                        |
+| A `@debt` marker                                       | The marked code and its callers                                        |
 | A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
 
 ## Diagnosis
@@ -130,7 +130,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - Set the type `problem` with its `defect`, and the repository's labels whose description fits the issue. While **Questions** remain, set `blockers` to `questions`; clear it once they are gone.
 - Run `pnpm engrenage planning issue check <n>` on the issue, once flushed, before reporting it ready for a worker.
 - Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
-- Once an issue you create or edit tracks the work of an entry in the backlog or the debt backlog, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
+- Once an issue you create or edit tracks the work of a backlog entry, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 
 ## Finishing
 
@@ -138,7 +138,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your input's reach covers, and report the rest with the reason.
 - When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
-- After a fix, remove the backlog entries, debt backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
+- After a fix, remove the backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report by outcome:
 
   | Outcome    | Report                                                                                     |

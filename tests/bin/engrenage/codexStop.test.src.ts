@@ -35,9 +35,7 @@ test.each([
   "debugger_low",
   "debugger_high",
   "planner",
-  "banker",
-  "scratcher",
-  "backlogger",
+  "curator",
 ])(
   "stops the generated %s profile with its canonical gate policy",
   async (name) => {
@@ -54,14 +52,7 @@ test.each([
         agents: await config.resolve("agents"),
         fillers: {},
       },
-      [
-        "issue-implementation",
-        "debugging",
-        "planning",
-        "debt-harvesting",
-        "scratchpad",
-        "backlog-handling",
-      ],
+      ["issue-implementation", "debugging", "planning", "curation"],
     );
 
     await config.context.filesystem.flush();
@@ -77,7 +68,7 @@ test.each([
 
     await stop();
 
-    if (name.startsWith("worker") || name.startsWith("debugger")) {
+    if (name !== "planner") {
       expect(checkAgentStop).toHaveBeenCalledWith(expect.anything(), {
         runtime: "codex",
         session: "session",

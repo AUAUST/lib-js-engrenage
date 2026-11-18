@@ -15,7 +15,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Writing
 
-- Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog and debt entries, instructions.
+- Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog entries, instructions.
 - Before writing agent instructions, wherever they go, read `.claude/rules/instructions.md`: it refines these rules for them.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State the core idea exactly, with its reason in one clause; never hedge it or blur it into vague wording.

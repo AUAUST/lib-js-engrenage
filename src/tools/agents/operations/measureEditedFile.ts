@@ -5,8 +5,8 @@ import {
   pathExists,
   relativeWithin,
 } from "#foundation/filesystem/index";
-import { getEntryBudgetKind } from "#tools/agents/utils/getEntryBudgetKind";
 import { getOverBudgetEntries } from "#tools/agents/utils/getOverBudgetEntries";
+import { isBacklogEntryFile } from "#tools/agents/utils/isBacklogEntryFile";
 import type { BudgetFinding } from "#tools/agents/types/BudgetFinding";
 import type { Budgets } from "#tools/agents/types/Budgets";
 import type { Directory } from "#types/Directory";
@@ -17,18 +17,16 @@ export async function measureEditedFile(
   file: File,
   budgets: Budgets,
 ): Promise<BudgetFinding[]> {
-  if (!isWithin(root, file) || !(await pathExists(file))) {
-    return [];
-  }
-
-  const kind = getEntryBudgetKind(relativeWithin(root, file));
-
-  if (kind === undefined) {
+  if (
+    !isWithin(root, file) ||
+    !(await pathExists(file)) ||
+    !isBacklogEntryFile(relativeWithin(root, file))
+  ) {
     return [];
   }
 
   return getOverBudgetEntries(await readFile(file, "utf-8"), {
-    kind,
-    budget: budgets[kind],
+    kind: "backlogEntry",
+    budget: budgets.backlogEntry,
   });
 }

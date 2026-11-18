@@ -18,7 +18,6 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>.ai/backlog/*.md</code> | <code>.claude/rules/backlog.md</code> |
 | <code>.ai/backlog/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/backlog/**</code> | <code>.claude/rules/instructions.md</code> |
-| <code>.ai/debt.md</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/planning-sheet.md</code> |
@@ -70,9 +69,7 @@ Use the installed workflows below when their descriptions match the request.
 | `issue-implementation` | Delegate to `worker`. Worker that implements one GitHub issue as written and stops to report what the issue leaves unclear. Dispatch it only when a skill you follow or the user asks for a worker; otherwise do the work yourself. |
 | `walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
 | `merging` | Delegate to `merger`. Merger that rebases a walked leaf onto the walked branch and reviews it lightly, or reviews a closed segment against its siblings and the code around it, applying only mechanical fixes. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
-| `scratchpad` | Delegate to `scratcher`. Scratcher that triages the user's notes in .ai/scratchpad.md into backlog entries and never implements them or acts outside the repository. Dispatch it only when a skill you follow or the user asks for a scratcher; otherwise do the work yourself. |
-| `backlog-handling` | Delegate to `backlogger`. Backlogger that brings backlog entries up to date with new findings, context or answers, and converts actionable ones to GitHub issues. Dispatch it only when a skill you follow or the user asks for a backlogger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
-| `debt-harvesting` | Delegate to `banker`. Banker that harvests in-code `@debt` markers into the debt backlog `.ai/debt.md`. Dispatch it only when a skill you follow or the user asks for a banker; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
+| `curation` | Delegate to `curator`. Curator that turns the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconciles them with the open issues. Dispatch it only when a skill you follow or the user asks for a curator; otherwise do the work yourself. |
 
 | Profile | Canonical role | Effort | Complexity |
 | --- | --- | --- | --- |
@@ -84,9 +81,7 @@ Use the installed workflows below when their descriptions match the request.
 | `worker` | `worker` | low | any other |
 | `worker_medium` | `worker` | medium | `involved`, `complex` |
 | `merger` | `merger` | medium | any other |
-| `scratcher` | `scratcher` | low | any other |
-| `backlogger` | `backlogger` | low | any other |
-| `banker` | `banker` | low | any other |
+| `curator` | `curator` | high | any other |
 
 Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf, select the role's profile whose Complexity lists the leaf's `complexity`; otherwise its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
 Spawn each leaf and the consultant with fork_turns: "none" and a brief containing only task references, relevant decisions and the requested outcome. Use send_input with its id to return questions, review gaps and gate failures to that same agent; use resume_agent first if it is closed. In clients exposing collaboration tools, use spawn_agent with the named role when supported, send_message for a running agent and followup_task for an idle agent. A client without named-profile selection cannot establish profile loading; report that unsupported path.

@@ -836,8 +836,7 @@ test("does not generate agent setup without selected agents", async () => {
     ".ai/backlog/index.md",
     ".ai/scratchpad.md",
     ".claude/rules/backlog.md",
-    ".claude/agents/scratcher.md",
-    ".claude/agents/backlogger.md",
+    ".claude/agents/curator.md",
   ]) {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
@@ -875,8 +874,8 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "engrenage agents codex hook github",
   );
 
-  expect(project.read(".agents/skills/scratchpad/SKILL.md")).toContain(
-    "# Scratchpad",
+  expect(project.read(".agents/skills/curation/SKILL.md")).toContain(
+    "# Curation",
   );
 
   expect(scratchpadPlaceholders).toContain(
@@ -963,7 +962,7 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 
   expect(existsSync(project.resolve(".ai/scratchpad.md"))).toBe(false);
 
-  expect(existsSync(project.resolve(".agents/skills/scratchpad"))).toBe(false);
+  expect(existsSync(project.resolve(".agents/skills/curation"))).toBe(false);
 
   expect(project.read("AGENTS.md")).not.toContain("## Backlog");
 
@@ -991,15 +990,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
     "# Backlog\n\nKeep project guidance.\n",
   );
 
-  expect(project.read(".agents/skills/scratchpad/SKILL.md")).toContain(
-    "# Scratchpad",
-  );
-
-  expect(project.read(".agents/skills/backlog-handling/SKILL.md")).toContain(
-    "# Backlog handling",
-  );
-
-  expect(project.read(".agents/skills/debt-harvesting/SKILL.md")).toContain(
-    "# Debt harvesting",
+  expect(project.read(".agents/skills/curation/SKILL.md")).toContain(
+    "# Curation",
   );
 });

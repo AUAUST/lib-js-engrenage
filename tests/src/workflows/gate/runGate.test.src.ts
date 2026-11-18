@@ -231,12 +231,12 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     );
   });
 
-  test("passes a changed debt entry over budget with a budget warning", async () => {
+  test("passes a changed backlog entry over budget with a budget warning", async () => {
     const { project } = await createGateRepository();
 
     project.write(
-      ".ai/debt.md",
-      `# Debt\n\n## Long entry\n\n${Array.from({ length: 80 }, () => {
+      ".ai/backlog/tools.md",
+      `# Tools\n\n## 1. Long entry\n\n${Array.from({ length: 80 }, () => {
         return "word";
       }).join(" ")}\n`,
     );
@@ -251,7 +251,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(warnings).toEqual([
       {
         step: "budgets",
-        output: expect.stringContaining("over the debtEntry budget of 60."),
+        output: expect.stringContaining("over the backlogEntry budget of 60."),
       },
     ]);
   });

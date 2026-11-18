@@ -135,8 +135,8 @@ describe("syncAgentFiles", () => {
         "false",
         "true",
       ),
-      ".agents/skills/scratchpad/SKILL.md": "User owned skill",
-      ".agents/skills/scratchpad/agents/openai.yaml": "keep: untouched\n",
+      ".agents/skills/notes/SKILL.md": "User owned skill",
+      ".agents/skills/notes/agents/openai.yaml": "keep: untouched\n",
     });
 
     const config = await loadConfig(project.root);
@@ -154,7 +154,7 @@ describe("syncAgentFiles", () => {
     ).toBe(metadata);
 
     expect(
-      await filesystem.read(".agents/skills/scratchpad/agents/openai.yaml"),
+      await filesystem.read(".agents/skills/notes/agents/openai.yaml"),
     ).toBe("keep: untouched\n");
 
     await filesystem.write(
@@ -179,13 +179,13 @@ describe("syncAgentFiles", () => {
   });
 
   describe("frontmatter", () => {
-    const staleScratchpad = [
+    const staleAnalysis = [
       "---",
-      "name: scratchpad",
+      "name: analysis",
       "description: Stale description.",
       "---",
       "",
-      "<!-- @reference @auaust/engrenage/agents/skills/scratchpad.md -->",
+      "<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->",
       "",
       "<!-- @end -->",
       "",
@@ -203,20 +203,20 @@ describe("syncAgentFiles", () => {
 
     test("updates a generated description and reports it as outdated", async () => {
       const config = await load({
-        ".claude/skills/scratchpad/SKILL.md": staleScratchpad,
+        ".claude/skills/analysis/SKILL.md": staleAnalysis,
       });
 
       await syncAgentFiles(config);
 
       expect(config.context.filesystem.changes()).toEqual([
         expect.objectContaining({
-          file: ".claude/skills/scratchpad/SKILL.md",
+          file: ".claude/skills/analysis/SKILL.md",
         }),
       ]);
 
       expect(
         await config.context.filesystem.read(
-          ".claude/skills/scratchpad/SKILL.md",
+          ".claude/skills/analysis/SKILL.md",
         ),
       ).not.toContain("Stale description");
     });
