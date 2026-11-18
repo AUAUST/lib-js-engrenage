@@ -2,3 +2,4 @@
 
 export { default as docTags } from "#tools/eslint/conventions/docs/docTags";
 export { default as documented } from "#tools/eslint/conventions/docs/documented";
+export { default as thrownErrors } from "#tools/eslint/conventions/docs/thrownErrors";

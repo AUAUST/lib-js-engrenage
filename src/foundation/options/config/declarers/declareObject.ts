@@ -15,13 +15,16 @@ import type { ObjectResolution } from "#foundation/options/types/ObjectResolutio
 
 /**
  * Declares an object option resolving each of `entries` from its key, and
- * rejecting unknown keys. A missing input throws at resolve unless `optional`
- * is set: `true` resolves the entries from an empty object, a default from
- * its value. With `disable`, a `false` input resolves to `disable.value` with
- * `enabled: false`, and any other input adds `enabled: true`. `assert` checks
- * the input before its entries resolve and throws to reject it; the unknown-key
- * error of a former key in `renamed` names the key replacing it.
+ * rejecting unknown keys. A missing input resolves, with `optional` `true`,
+ * the entries from an empty object, and with a default, from its value. With
+ * `disable`, a `false` input resolves to `disable.value` with `enabled: false`,
+ * and any other input adds `enabled: true`. `assert` checks the input before
+ * its entries resolve; the unknown-key error of a former key in `renamed` names
+ * the key replacing it.
  *
+ * @throws {Error} At resolve, when the input is missing and `optional` unset.
+ * @throws {TypeError} At resolve, when the input is no plain object.
+ * @throws At resolve, whatever `assert` throws to reject the input.
  * @stable
  */
 export function declareObject<

@@ -12,8 +12,10 @@ import type { Description } from "#foundation/options/types/Description";
 /**
  * Declares a record option whose keys `key` validates and whose members `value`
  * resolves, each with its key appended to the error path. A missing input resolves
- * to the `optional` default, and throws at resolve without one.
+ * to the `optional` default.
  *
+ * @throws {TypeError} At resolve, when the input, or its default, is no plain
+ * object, a missing input without `optional` included.
  * @stable
  */
 export function declareRecord<

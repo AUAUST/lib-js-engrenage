@@ -9,8 +9,8 @@ import type { TagDeclaration } from "#project/docs/types/TagDeclaration";
 export interface TagSetEntry
   extends EntryShape, Lazy<readonly TagDeclaration[]> {
   /**
-   * Names the set, with its extension's name, in the error raised when two sets
-   * declare the same tag.
+   * Names the set, with its extension's name, in the conflict reported when two
+   * sets declare the same tag.
    */
   readonly name: string;
 }

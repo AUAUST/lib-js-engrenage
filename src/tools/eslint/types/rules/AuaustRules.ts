@@ -544,6 +544,10 @@ export interface AuaustRules {
    */
   "auaust/text-encoding-identifier-case"?: Rule<AuaustTextEncodingIdentifierCase>;
   /**
+   * A JSDoc block stating a thrown error documents it in a `@throws` tag.
+   */
+  "auaust/thrown-errors"?: Rule<[]>;
+  /**
    * A module of a type-only role declares types only.
    */
   "auaust/type-only-roles"?: Rule<[]>;

@@ -12,7 +12,7 @@ export interface GateStep {
   readonly name: string;
   /**
    * Checks or fixes the changed `files`. A result with `ok` false fails the step
-   * with its `output`, a thrown error with its message; `GateStepEntry.stage`
+   * with its `output`, a throw with the thrown message; `GateStepEntry.stage`
    * states whether a failing step fails the gate or only warns.
    */
   run(files: Files): Promise<GateResult>;
