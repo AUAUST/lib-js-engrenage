@@ -205,7 +205,7 @@ function readWrite(command: ShellCommand): GithubWrite | undefined {
   };
 }
 
-// @debt the hook parses shell, through the shared `foundation/shell` parser, only because agents publish drafts through `gh`; a publishing command would remove it (#217).
+// @debt the hook parses shell, through the shared `foundation/shell` parser, because agents may still write issues through `gh` directly (#207 › Decisions).
 export function parseGithubCommand(command: string): readonly GithubWrite[] {
   return parseShell(command).flatMap((shellCommand) => {
     const write = readWrite(shellCommand);

@@ -1,6 +1,7 @@
 import { keys } from "@auaust/toolkit/object";
 
 import {
+  chainSeparator,
   debuggerBlockingOptions,
   issueContracts,
   planningSection,
@@ -38,7 +39,7 @@ function formatChain(chain: readonly IssueLocation[], repository: string) {
     ? "none"
     : chain
         .map((location) => renderReference(location, repository))
-        .join(" › ");
+        .join(chainSeparator);
 }
 
 function isSameChain(

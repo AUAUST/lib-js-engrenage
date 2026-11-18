@@ -12,7 +12,7 @@ export default defineLazyCommand({
       )
       .option(
         "--slug <slug>",
-        "draft slug; defaults to `<type>-<k>` with the first free `k`",
+        "a slug, with or without the `new-` prefix; defaults to `<type>-<k>` with the first free `k`",
       )
       .option(
         "--repo <repo>",
@@ -20,11 +20,11 @@ export default defineLazyCommand({
       )
       .option(
         "--parent <ref>",
-        "draft file stem of the parent, such as `new-plan` or `123`",
+        "the parent: a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`) or a draft stem (`123`, `new-plan`)",
       )
       .option(
         "--after <ref>",
-        "sibling in the parent's `subIssues` to place it after; defaults to last",
+        "sibling in the parent's `subIssues` to place it after, as a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`) or a draft stem (`123`, `new-plan`); defaults to last",
       );
   },
   action() {

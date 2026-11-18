@@ -1,8 +1,8 @@
+import type { RoadmapEntry } from "#tools/github/issues/contract/index";
 import type {
   claimStates,
   draftStates,
 } from "#tools/github/issues/drafts/constants";
-import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
 
 export interface DraftManifest {
   readonly title: string;

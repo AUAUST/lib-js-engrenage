@@ -251,3 +251,9 @@ export const issueContracts = freeze({
     subIssues: "roadmap",
   } as const),
 } as const) satisfies Partial<Record<IssueType, IssueContract>>;
+
+export const chainSeparator = " › ";
+
+export const partSeparator = " · ";
+
+export const qualifiedReferenceSource = String.raw`(?:([\w.-]+\/[\w.-]+))?#(\d+)`;

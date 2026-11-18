@@ -43,7 +43,3 @@ export const issueTypeMutation = `mutation($issueId: ID!, $issueTypeId: ID!) {
 }`;
 
 export const headerPlaceholder = "<sections>: <gist>";
-
-export const chainSeparator = " › ";
-
-export const headerSeparator = " · ";

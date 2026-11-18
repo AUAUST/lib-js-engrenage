@@ -42,13 +42,12 @@ export { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHead
 export { readIssueManifest } from "#tools/github/issues/drafts/utils/readIssueManifest";
 export { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 export { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
-export { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
-export { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
 export { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 export { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 export { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 export { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 export { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
+export { resolveStemArgument } from "#tools/github/issues/drafts/utils/resolveStemArgument";
 export { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 export { toDraftBody } from "#tools/github/issues/drafts/utils/toDraftBody";
 export { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
@@ -71,5 +70,4 @@ export type * from "#tools/github/issues/drafts/types/ManifestTarget";
 export type * from "#tools/github/issues/drafts/types/Publication";
 export type * from "#tools/github/issues/drafts/types/PublishedDraft";
 export type * from "#tools/github/issues/drafts/types/ReleasedIssue";
-export type * from "#tools/github/issues/drafts/types/RoadmapEntry";
 // @end

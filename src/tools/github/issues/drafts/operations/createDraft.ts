@@ -12,6 +12,7 @@ import {
   findContractMeaning,
   type IssueContract,
   type IssueProtocol,
+  type RoadmapEntry,
 } from "#tools/github/issues/contract/index";
 import {
   headerPlaceholder,
@@ -25,10 +26,11 @@ import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
+import { resolveStemArgument } from "#tools/github/issues/drafts/utils/resolveStemArgument";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
+import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { File } from "#types/File";
 
 interface Placement {
@@ -63,9 +65,13 @@ async function chooseSlug(
   filesystem: Filesystem,
   prefix: string,
   type: string,
-  slug: string | undefined,
+  given: string | undefined,
 ) {
-  if (slug !== undefined) {
+  if (given !== undefined) {
+    const slug = given.startsWith(newDraftPrefix)
+      ? given.slice(newDraftPrefix.length)
+      : given;
+
     if (!isSlug(slug)) {
       throw new Error(
         `Invalid slug \`${slug}\`: use lowercase letters and digits separated by single hyphens`,
@@ -100,12 +106,13 @@ function findInsertion(
   items: readonly unknown[],
   after: string | undefined,
   file: File,
+  context: Pick<DraftsContext, "repository" | "registry">,
 ) {
   if (after === undefined) {
     return items.length;
   }
 
-  const reference = toDraftReference(after);
+  const reference = toDraftReference(resolveStemArgument(after, context));
 
   const index = items.findIndex((item) => {
     return readEntryReference(item) === reference;
@@ -122,7 +129,7 @@ function findInsertion(
 
 async function listInParent(
   filesystem: Filesystem,
-  protocol: IssueProtocol,
+  context: Pick<DraftsContext, "protocol" | "repository" | "registry">,
   stem: string,
   { parent, after }: Placement,
 ) {
@@ -136,7 +143,7 @@ async function listInParent(
     return;
   }
 
-  const file = locateDraft(parent);
+  const file = locateDraft(resolveStemArgument(parent, context));
 
   const draft = await readDraft(filesystem, file);
 
@@ -151,7 +158,7 @@ async function listInParent(
   const type = manifest.get("type");
 
   const meaning = findContractMeaning(
-    protocol,
+    context.protocol,
     isString(type) ? type : undefined,
   );
 
@@ -178,7 +185,7 @@ async function listInParent(
   }
 
   subIssues.items.splice(
-    findInsertion(subIssues.items, after, file),
+    findInsertion(subIssues.items, after, file, context),
     0,
     manifest.createNode(entry),
   );
@@ -260,7 +267,7 @@ export async function createDraft(
       .map((section) => `## ${section}`),
   ].join("\n\n");
 
-  await listInParent(filesystem, protocol, stem, placement);
+  await listInParent(filesystem, context, stem, placement);
 
   const file = locateDraft(stem);
 

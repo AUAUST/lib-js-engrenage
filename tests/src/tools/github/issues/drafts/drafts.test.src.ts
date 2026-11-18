@@ -206,6 +206,39 @@ blockedBy: []
     expect(parent?.body).toContain("## Goal");
   });
 
+  test("takes references for the parent and sibling, and a prefixed slug", async () => {
+    const config = await createProject({
+      ".ai/issues/new-plan.draft.md": plan,
+    });
+
+    await expect(
+      createDraft(config, "task", {
+        parent: "#{new-plan}",
+        after: "#{new-first}",
+        slug: "new-foo",
+      }),
+    ).resolves.toBe(".ai/issues/new-foo.draft.md");
+
+    const parent = await readDraft(
+      config.context.filesystem,
+      ".ai/issues/new-plan.draft.md",
+    );
+
+    expect(parent?.manifest.toJS()).toMatchObject({
+      subIssues: [{ ref: "#{new-first}" }, { ref: "#{new-foo}" }],
+    });
+  });
+
+  test("rejects a parent that is neither a reference nor a draft stem", async () => {
+    const config = await createProject({
+      ".ai/issues/new-plan.draft.md": plan,
+    });
+
+    await expect(
+      createDraft(config, "task", { parent: "#{bad}" }),
+    ).rejects.toThrow("`#{bad}` is neither a reference");
+  });
+
   test("resolves a type by its meaning or its GitHub name, in any case", async () => {
     const config = await createProject({
       "engrenage.config.ts": `export default ${JSON.stringify({

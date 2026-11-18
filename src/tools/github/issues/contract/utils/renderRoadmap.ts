@@ -1,4 +1,5 @@
-import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
+import { partSeparator } from "#tools/github/issues/contract/constants";
+import type { RoadmapEntry } from "#tools/github/issues/contract/types/RoadmapEntry";
 
 // @debt GitHub suffixes the anchor of a repeated heading with `-<k>`, which links to a repeated plan heading miss
 function toAnchor(heading: string) {
@@ -29,7 +30,7 @@ export function renderRoadmap(
         .map((section) => renderSection(section, linked))
         .join(", ");
 
-      const line = `${marker}${ref}: ${gist}${sectionList === "" ? "" : ` · ${sectionList}`}`;
+      const line = `${marker}${ref}: ${gist}${sectionList === "" ? "" : `${partSeparator}${sectionList}`}`;
 
       return [
         line,

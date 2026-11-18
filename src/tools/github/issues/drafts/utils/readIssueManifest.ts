@@ -7,13 +7,13 @@ import {
   parseIssueBody,
   type FetchedIssue,
   type IssueContract,
+  type RoadmapEntry,
 } from "#tools/github/issues/contract/index";
 import { closeReasonParameters } from "#tools/github/issues/drafts/constants";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 import type { ManifestTarget } from "#tools/github/issues/drafts/types/ManifestTarget";
-import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
 
 function readState({ state, stateReason }: FetchedIssue) {
   if (state === "open") {

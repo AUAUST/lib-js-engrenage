@@ -41,7 +41,6 @@
 - pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
 - npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
 - repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.
-- engrenage planning issue create: `--after "#532"` as written in subIssues — the flag takes the draft stem `532`, found from the error message
 - `engrenage gate --worktree`: gate and `pnpm test` while concurrent agents held load average near 40 — `listDebtMarkers` and `syncVscodeFiles` tests hit the 5s timeout; passed alone, reran the gate once load fell below 12
 - commit gate: committed while load averaged ~28 from parallel sessions — vitest 5s timeouts failed unrelated tests twice; they passed alone, retried the commit
 - `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
@@ -52,7 +51,6 @@
 - `pnpm lint`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path
 - scratchpad: wrote spec files under generic names in the session scratchpad — a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
 - pnpm format:all: rewrapped JSDoc after a layout change — generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen
-- engrenage planning issue create --slug: passed `new-module-loaders` — it prefixes `new-`, producing `new-new-module-loaders`; renamed the file
 - engrenage planning issue check: kept a **Planning** section holding a settled decision — check reads any Planning section as open and demands `Open questions`; moved the decision into Context
 - engrenage sync barrels: ran sync after declaring a new domain — it creates no `index.ts` barrel; seeded empty `@barrel` blocks and ran `sync barrel-blocks`
 - CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
@@ -61,7 +59,6 @@
 - ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
 - engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead
 - `engrenage gate --worktree`: ran while a parallel session published its `.ai/issues` drafts — Prettier failed on the vanished drafts; reran the gate once they were gone
-- engrenage planning issue create --parent: passed `#{new-downstream-defaults}` — expects the bare stem `new-downstream-defaults`; retried
 - Bash `cd` into `dist/`: ran a later command from there — the Claude git hook resolved `dist/package.json` as the project and failed; returned to the root
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead

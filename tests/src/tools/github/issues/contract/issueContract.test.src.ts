@@ -12,6 +12,8 @@ import { parseGithubCommand } from "#tools/github/issues/contract/operations/par
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import { renderHeader } from "#tools/github/issues/contract/utils/renderHeader";
+import { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeaderChain";
 
 vi.stubEnv("GH_TOKEN", "t");
 
@@ -63,6 +65,25 @@ Checkpoint: a exists.
 `;
 
 describe("parseIssueBody", () => {
+  test("parses a rendered header, which stripHeaderChain removes the chain of", () => {
+    const header = renderHeader(
+      ["#1", "AUAUST/lib-js-toolkit#2"],
+      "Goal: gist",
+    );
+
+    expect(parseIssueBody(header).header).toEqual({
+      ancestors: [
+        { repository: undefined, number: 1 },
+        { repository: "AUAUST/lib-js-toolkit", number: 2 },
+      ],
+      sections: ["Goal: gist"],
+    });
+
+    expect(stripHeaderChain(`${header}\n\n## Context`)).toBe(
+      "Goal: gist\n\n## Context",
+    );
+  });
+
   test("reads header, sections, steps and references outside code", () => {
     const parsed = parseIssueBody(`${task}\n\`#99\`\n`);
 

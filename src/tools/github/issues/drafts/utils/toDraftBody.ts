@@ -1,20 +1,13 @@
 import { replaceOutsideCode } from "#foundation/markdown/index";
 import {
-  chainSeparator,
-  headerSeparator,
-} from "#tools/github/issues/drafts/constants";
+  stripHeaderChain,
+  type IssueContract,
+} from "#tools/github/issues/contract/index";
 import { findShortName } from "#tools/github/issues/drafts/utils/findShortName";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
-import type { IssueContract } from "#tools/github/issues/contract/index";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
-
-const chainReference = String.raw`(?:[\w.-]+/[\w.-]+)?#\d+`;
-
-const chainPattern = new RegExp(
-  String.raw`^${chainReference}(?:${RegExp.escape(chainSeparator)}${chainReference})*(?:${RegExp.escape(headerSeparator)}|[ \t]*(?:\n|$))`,
-);
 
 const referencePattern = /(?<![\w/.&-])(?:https:\/\/github\.com\/([\w.-]+\/[\w.-]+)\/(?:issues|pull)\/(\d+)(?![\w#/-])|([\w.-]+\/[\w.-]+)#(\d+)(?![\w#/-])|#(\d+)\b)/gi;
 
@@ -80,9 +73,5 @@ export function toDraftBody(
     .flatMap(({ lines }) => lines)
     .join("\n");
 
-  return localizeReferences(
-    kept.trim().replace(chainPattern, "").trim(),
-    source,
-    context,
-  );
+  return localizeReferences(stripHeaderChain(kept), source, context);
 }

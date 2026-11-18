@@ -32,8 +32,11 @@ export { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+export { renderHeader } from "#tools/github/issues/contract/utils/renderHeader";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
 export { renderReference } from "#tools/github/issues/contract/utils/renderReference";
+export { renderRoadmap } from "#tools/github/issues/contract/utils/renderRoadmap";
+export { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeaderChain";
 // @end
 
 // @barrel types
@@ -56,5 +59,6 @@ export type * from "#tools/github/issues/contract/types/IssueType";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";
 export type * from "#tools/github/issues/contract/types/ProtocolMeaning";
 export type * from "#tools/github/issues/contract/types/RelatedIssue";
+export type * from "#tools/github/issues/contract/types/RoadmapEntry";
 export type * from "#tools/github/issues/contract/types/WalkedIssue";
 // @end

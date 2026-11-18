@@ -5,17 +5,18 @@ import {
 } from "#foundation/markdown/index";
 import {
   checkpointPrefix,
+  partSeparator,
+  qualifiedReferenceSource,
   roadmapSection,
   stepsSection,
 } from "#tools/github/issues/contract/constants";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
-const qualifiedReference = String.raw`(?:([\w.-]+\/[\w.-]+))?#(\d+)`;
-const headerPattern = new RegExp(`^${qualifiedReference}`);
-const chainPattern = new RegExp(qualifiedReference, "g");
+const headerPattern = new RegExp(`^${qualifiedReferenceSource}`);
+const chainPattern = new RegExp(qualifiedReferenceSource, "g");
 
 const roadmapReferencePattern = new RegExp(
-  String.raw`(?<![\w/&])${qualifiedReference}\b`,
+  String.raw`(?<![\w/&])${qualifiedReferenceSource}\b`,
   "g",
 );
 
@@ -23,18 +24,17 @@ const itemPattern = /^\d+\.\s+(.*)$/;
 const referencePattern = /(?<![\w/&])#(\d+)\b/g;
 
 const roadmapLinePattern = new RegExp(
-  String.raw`^${qualifiedReference}(?::\s*(.*))?$`,
+  String.raw`^${qualifiedReferenceSource}(?::\s*(.*))?$`,
 );
 
 const sectionLinkPattern = /^\[(.*)\]\(#[^)]*\)$/;
-const roadmapSeparator = " · ";
 
 function toLocation([, repository, number]: RegExpMatchArray) {
   return { repository, number: Number(number) };
 }
 
 function parseHeader(line: string): ParsedIssueBody["header"] {
-  const [ancestors = "", ...sections] = line.split(" · ");
+  const [ancestors = "", ...sections] = line.split(partSeparator);
 
   return {
     ancestors: [...ancestors.matchAll(chainPattern)].map(toLocation),
@@ -114,7 +114,7 @@ function parseRoadmapLine(text: string) {
 
   const rest = roadmapLinePattern.exec(first.trim())?.[3]?.trim() ?? "";
 
-  const separator = rest.lastIndexOf(roadmapSeparator);
+  const separator = rest.lastIndexOf(partSeparator);
 
   if (separator === -1) {
     return { gist: rest, sections: [] };
@@ -123,7 +123,7 @@ function parseRoadmapLine(text: string) {
   return {
     gist: rest.slice(0, separator).trim(),
     sections: rest
-      .slice(separator + roadmapSeparator.length)
+      .slice(separator + partSeparator.length)
       .split(",")
       .map((section) => {
         const name = section.trim();

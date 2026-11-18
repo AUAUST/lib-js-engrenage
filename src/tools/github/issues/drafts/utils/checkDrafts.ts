@@ -12,6 +12,7 @@ import {
   findContractMeaning,
   listOpenSections,
   parseIssueBody,
+  renderHeader,
   type ContractMeaning,
   type IssueContract,
   type IssueFinding,
@@ -241,7 +242,7 @@ function checkHeader(
     return [
       {
         rule: "header",
-        message: `The header starts with a reference: \`publish\` generates the ancestor chain \`#<plan> › … › #<parent> · \`, so keep only \`${headerPlaceholder}\`.`,
+        message: `The header starts with a reference: \`publish\` generates the ancestor chain \`${renderHeader(["#<plan>", "…", "#<parent>"], "")}\`, so keep only \`${headerPlaceholder}\`.`,
       },
     ];
   }
