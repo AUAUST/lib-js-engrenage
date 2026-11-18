@@ -12,12 +12,10 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 1. **Concern.** Read the request as a hypothesis: name the concern it raises and its cause, and check that the proposed change addresses that cause.
 2. **Ideal.** Work out the soundest solution to the cause as if time, scope and budget had no limit.
-3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log. Adopt it when the codebase already supports it.
-4. **Reach.** Otherwise trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
-5. **Outcome.** Adopt the ideal when your role allows its whole reach. Otherwise adopt what your role allows, and report the ideal, its reach and the alternative you chose.
+3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log.
+4. **Reach.** Trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
+5. **Outcome.** Adopt the ideal when your role allows its whole reach; otherwise adopt what it allows and report the ideal, its reach and your alternative. Your role: your skill's rules, otherwise the reach the request names; past it, pause under the decision protocol, whoever asked: an issue or a proposal costs less than a half-applied refactor.
 
-- Your role sets what you may adopt: your skill's rules, otherwise the reach the request names, pausing under the decision protocol before anything past it.
-- Never adopt a reach your role does not allow, whoever asked: an issue or a proposal costs less than a half-applied refactor.
 - Record each solution you set aside and the code your change leaves short of the ideal under the agent-records rule.
 
 ### Dependencies

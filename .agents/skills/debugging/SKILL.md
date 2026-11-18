@@ -144,7 +144,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
   | ---------- | ------------------------------------------------------------------------------------------ |
   | Fixed      | The cause, the reach the fix covers, the invariant now enforced, and the debt markers left |
   | Written up | The issue URL, ready for a worker or needing planning                                      |
-  | Blocked    | What is done, pending and blocked, and the batched questions                               |
+  | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
 
 - State each item once, since your caller keeps every report in its context: never a second copy under another part, which refers to it instead. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
 - With a `Walk:` line in your brief, commit nothing, since the walker commits your work, and write each item in one line: never the commands you ran, the checks that passed or commit hashes, which the gate and git record. Without one, commit under the git rules.

@@ -10,15 +10,15 @@ order: 10
 
 ## Commits
 
-| When                                                                    | Do                                                                                                   |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                     |
-| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report                               |
-| Your work covers several tasks                                          | One commit per task                                                                                  |
-| An issue marks a checkpoint                                             | Commit at it                                                                                         |
-| Staging                                                                 | Only your changes, by path, never `.ai/issues/`, whose drafts stay local                             |
-| `.ai/friction.md` or `.ai/discarded.md` has uncommitted changes         | Stage them in each commit, whoever wrote them; never name that staging in a commit message or report |
-| Any commit                                                              | Never push                                                                                           |
+| When                                                                    | Do                                                                                                            |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                              |
+| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies |
+| Your work covers several tasks                                          | One commit per task                                                                                           |
+| An issue marks a checkpoint                                             | Commit at it                                                                                                  |
+| Staging                                                                 | Only your changes, by path, never `.ai/issues/` or `.ai/handoffs/`, which stay local                          |
+| `.ai/friction.md` or `.ai/discarded.md` has uncommitted changes         | Stage them in each commit, whoever wrote them; never name that staging in a commit message or report          |
+| Any commit                                                              | Never push                                                                                                    |
 
 | Message part    | Form                                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -8,7 +8,7 @@ order: 35
 
 ## Environment
 
-- On a session's first request, and on any later one naming a repository, package, path or issue that may be another repository's, check that what it names belongs to the current repository. When it seems to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch instead.
+- On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
 | Need                                                                                                  | Command                                             |

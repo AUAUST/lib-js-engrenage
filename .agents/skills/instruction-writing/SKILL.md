@@ -22,7 +22,7 @@ Turn a decided behavior into instructions that make every agent reading them pro
 
 1. **Rules.** Read `.claude/rules/instructions.md`: its Form, Wording and Conflicts bind every line you write.
 2. **Inventory.** Search every source an agent reaches on the subject: `AGENTS.md` sections, rule files, skills, agent files, hook and lint messages. Note the owner of each fact you touch and every rule your text overlaps or contradicts.
-3. **Enforcement.** Where a lint rule, type, hook or test could enforce the rule, propose that check in your report; write prose only for what no check covers, or until the check exists.
+3. **Enforcement.** Apply `instructions.md` › Form to each rule a lint rule, type, hook or test could check, and list the proposed checks in your report.
 4. **Models.** Check §Model facts against the models the agent definitions and harnesses run. When it misses one of them or was checked over 90 days ago, look up those vendors' current prompting guidance for the exact versions, and refresh §Model facts where you can edit its source, otherwise report what you found. Draft only what those facts show produces the behavior.
 5. **Placement.** Put each rule with its owner, where every target agent has it loaded before the moment it must act. Claude Code loads a `paths` rule only when its Read tool opens a matching file, never on a Bash read or write; Codex reads one only when it follows its override's mapping. A rule an agent needs before touching such a file belongs in `AGENTS.md` or the agent's skill.
 6. **Draft.** Group the rules by shape, pick each group's form, write, then diff against the previous version: account for each removed rule as kept, merged, moved or dropped on purpose.

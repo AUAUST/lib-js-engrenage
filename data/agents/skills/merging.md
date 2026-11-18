@@ -71,7 +71,7 @@ The range base is the range's first parent.
 
 ## Findings
 
-- Leave to the commit gate whatever it enforces.
+- Leave to the commit gate whatever it enforces, and run no worktree gate: the walker's gates, its commit gate and the leaf's stop gate, check your fixes.
 - Base each finding on a defect or on a project rule no tool enforces, and name it.
 
 A finding is within the fix radius when its fix stays in the reviewed files, or extracts a helper they share into their domain, and changes no shared contract.

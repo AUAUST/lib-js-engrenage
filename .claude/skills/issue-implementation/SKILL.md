@@ -40,12 +40,12 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Commits
 
 - At each `Checkpoint:` line, check that its expected state holds, then commit. When it cannot be reached, stop and report: the Steps do not match the code.
-- With a `Walk:` line in your brief, commit nowhere else: the walker makes the closing commit. Without one, also commit your settled work under the git rules.
+- With a `Walk:` line in your brief, create no commit but the `Checkpoint:` ones: the walker makes the closing commit. Without one, also commit your settled work under the git rules.
 
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, with the release work the Environment table requires.
-- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, unless you stopped before changing any file, `pnpm engrenage gate --worktree` passes, so the stop gate reuses that pass.
+- Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, when you changed files, the worktree gate passes, so the stop gate reuses that pass. A blocker other than a scope stop carries a stop record (Writing › Stop records).
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor, a scope stop mid-implementation), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your issue's scope covers, and report the rest with the reason.
 - When asked for a branch, create `worker/issue-<n>` from the current commit.

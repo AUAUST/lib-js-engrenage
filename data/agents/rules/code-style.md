@@ -23,7 +23,6 @@ Write these correctly from the start, since no tool fixes them:
 - Await, return or `void` every promise, and never spread it or test it for truthiness.
 - Use `await` only on values that may be promises.
 - Put test files only under the test directories.
-- Write each `@debt` marker as `@debt <statement>` at the start of its own comment.
 
 ## Not checked by tools
 

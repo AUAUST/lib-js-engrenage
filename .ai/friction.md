@@ -1,6 +1,5 @@
 # Agent friction
 
-- PreToolUse Bash hook: run any command after changing the config schema before `engrenage.config.ts` — the hook loads the project config and blocked every Bash call; migrated the config with Edit first
 - git stash -u: stashing a tree with `git add -N` entries to test HEAD — stash refused, chained pop then half-applied an older stash's untracked files; removed them after cmp against stash^3, used a temporary worktree instead
 - node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory, not the cwd; imported `node_modules/prettier/index.mjs` by absolute path
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
@@ -14,20 +13,12 @@
 - `git ls-files --others --ignored --directory`: list ignored paths — skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
 - Agent worker brief: launched worker without an `Issue: <owner>/<repo>#<n>` first line — PreToolUse hook refused it; retried with that line
 - gh issue edit hook: piped the body from a scratch file, then a `.draft.md` file — hook demands a heredoc and rejects a Decisions section in a Task; used a heredoc and folded decisions into Steps
-- Claude PreToolUse Bash hook: ran eslint and the build while another session edited `src/tools/agents/constants.ts` — its missing export broke the hook for every pnpm call; stopped with lint and build unverified
-- Claude PreToolUse Bash hook: removed agents constants mid-refactor — the hook loads engrenage from source, so every Bash call failed until the importers were fixed with Write/Edit
 - pnpm test type checking: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones — `pnpm exec tsc -b` found them
 - Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
-- Claude PreToolUse Bash hook: removed contract constants mid-refactor — the hook runs engrenage from source, so a Bash call naming GitHub paths failed on the missing export; finished the importers with Write/Edit
 - `engrenage eslint:fix`: `auaust/name-replacements` autofix renamed `ref`/`refs` to `reference`/`references` — collided into `references_` and shadowed names; renamed by hand
 - `engrenage tsc`: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
-- `gh` PreToolUse hook: `gh issue edit --body-file 461.md` after `cd` to the scratchpad, then `cat file | gh issue edit --body-file -` — hook resolves relative paths from the project root and rejects piped files; passed an absolute `--body-file` path
 - issue-planning skill §GitHub mechanics: posted `"value":["Improvement"]` for single-select Nature as the example shows — GitHub answers 422 "must be a string option name"; posted a bare string
-- `gh` PreToolUse hook: wrote the body file and ran `gh issue create --body-file` in one command — hook checks the file before the command runs and denies it as missing; wrote the file in a separate call
-- `gh` PreToolUse hook: `--body-file $S/207.md` with a shell variable — hook reads the path unexpanded and denies it; passed the literal absolute path
-- PreToolUse git hook: deleted source modules mid-refactor — hook loads src and fails every Bash call; restored files via git checkout until consumers were rewritten
 - `git add` by path list: staged paths from `git status --porcelain` — a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`
-- engrenage agents claude hook git: moved a module with git mv — the PreToolUse hook loads src and failed on every Bash call until imports were fixed through Edit
 - `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
 - vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
 - engrenage planning CLI: pnpm exec engrenage in engrenage itself — binary not linked; pnpm engrenage (package script) works
@@ -59,7 +50,6 @@
 - ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
 - engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead
 - `engrenage gate --worktree`: ran while a parallel session published its `.ai/issues` drafts — Prettier failed on the vanished drafts; reran the gate once they were gone
-- Bash `cd` into `dist/`: ran a later command from there — the Claude git hook resolved `dist/package.json` as the project and failed; returned to the root
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
 - worktree isolation guard: Bash commands with a `github` path segment refused as git commands — worker edited via Python scripts
@@ -69,20 +59,16 @@
 - gh run view --log-failed: fetched logs of the latest run — returned empty/404 (repo renamed); got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
 - `engrenage planning issue create --repo`: draft an issue for a client repository — only repositories in the planning sheet are registered; kept the client report in chat
 - `prettier --experimental-cli`: checked the repository with engrenage's config — silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
-- PreToolUse Bash hook: ran any Bash command while the CLI failed to load — the hook runs engrenage itself and blocked every command; fixed the CLI via Edit first
-- PreToolUse Bash hook: regex import-insertion script broke two source files mid-batch — hook loads project source and blocked every Bash call; subagent repaired them through the user terminal tab
 - BSD sed -i: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
 - pnpm add in scratchpad: probing TypeScript 7 on the repo — auto mode classifier denied the install; relied on #558 measurements
 - dispatch hook Issue line: briefed `AUAUST/engrenage#555` — 404; repo is `AUAUST/lib-js-engrenage`, found via `gh repo view`
 - deny rule on .env*: moving and reading the Interscript theme .env/.env.example for #581 — blocked even outside the repo; left the move to the user
-- Claude PreToolUse Bash hook (github): zsh `${(f)…}` array expansion — hook shell parser failed with "Bad substitution" and blocked the call; used xargs instead
 - engrenage planning issue create: passed `report` as the type — it takes `resource`; the material is a field
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
 - `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the analysis fragment table, leaving `.codex/agents/analyser.toml` outdated for `sync --check`; reran `sync agents` then the gate
 - engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
-- Claude hook: a duplicate export in a barrel — every Bash command denied; fixed the file through the edit tool
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
 - `engrenage sync agents`: synced edited skill fragments — it rewrote `.codex/agents/*.toml` but left `.claude/skills`, `.claude/agents` and `.agents/skills` stale, reporting them conflicting; full `pnpm engrenage sync` refreshed them
 - walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
@@ -91,3 +77,4 @@
 - `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
+- `engrenage gate --worktree`: gated instruction-only edits — typecheck and codegen --check failed on `src/tools/github/types/GithubInput.ts` from concurrent commit 4b1a3d7e; left it, reported unverified

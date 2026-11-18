@@ -35,61 +35,50 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 7. Whether an issue's text counts as consent to change instructions is undecided
 
-- why: `instruction-maintenance.md` requires explicit user consent; `precedence.md` lets issues carry maintainers' decisions; walked workers get issues editing `data/agents/`, and the fallback skill's "Commit nothing" clashes with their checkpoints.
-- want: user decision; proposed: consent in the session or written by a maintainer into the issue; the fallback keeps the role's commit rules.
+- why: maintenance requires user consent, precedence lets issues carry maintainers' decisions; walked workers get issues editing `data/agents/`, and the writer skill's "Commit nothing" clashes with their checkpoints.
+- want: user decision; proposed: session or maintainer-issue consent; the fallback keeps the role's commit rules.
 
 ## 8. Skills have no rank against the project's own rules
 
 - why: `precedence.md` says a skill refines these instructions, but skills are shared text (rank 3) acting on project rules (rank 2).
 - want: user decision; proposed: a skill refines shared rules for its role; project rules still win.
 
-## 9. Dispatch briefs have no rank in the precedence list
+## 9. Always-loaded context carries rules only some edits need
 
-- why: a dispatcher's brief and its limits (read-only, no commit) have no stated priority over rules such as committing settled work.
-- want: a Source row for dispatch briefs: binding within the instructions, never granting consent the user did not give.
+- why: the TypeScript section and structure design rows (~110 words each) load for every agent; cold starts are a third of worker and planner cost (#654); a `paths` rule misses files written without a matching Read.
+- want: accept that leak or move them to `code-style.md` and a project-map rule.
 
-## 10. Always-loaded context carries rules only some edits need
+## 10. The planning sheet misses agents that write a draft before reading one
 
-- why: the TypeScript section and structure design rows (~110 words each) load for every agent; a `paths` rule misses a new file written without reading a matching one.
-- why: #654: cold starts at 22–38k context were a third of worker and planner units; the prefix, not reuse thresholds, is the lever.
-- want: accept that leak or not; if so, move TypeScript to `code-style.md` and the design rows to a project-map-generated rule.
-
-## 11. Long-cell tables break the writing rule they sit under
-
-- why: the Decision protocol, Implementation, Precedence source, Project structure and agent-records tables hold sentence cells; padding is ~12k of `AGENTS.md`'s 26k characters.
-- want: rewrite them as `**Trigger.** action` lists; a check flagging table cells over ~25 words in instruction sources.
-
-## 12. The planning sheet misses agents that write a draft before reading one
-
-- why: three skills say it "loads with the first draft you read"; with `.ai/issues/` empty or listed through Bash, the first draft is a Write, which loads no `paths` rule, against the discarded planning-sheet skill's premise.
+- why: three skills say it "loads with the first draft you read"; with `.ai/issues/` empty or listed through Bash, the first draft is a Write, which loads no `paths` rule.
 - want: drafting skills Read `.claude/rules/planning-sheet.md` before their first draft unless a draft read loaded it.
 
-## 13. Codex has no low-effort merger for integration
+## 11. Codex has no low-effort merger for integration
 
 - why: `walking.md` dispatches the integration merger with `effort: low`; `merging.md` declares no `efforts`, and a Codex profile's effort overrides the spawn's.
 - want: `efforts: { integration: low }` in the merging frontmatter, generating `merger_low`, routed by mode.
 
-## 14. A restarted walk re-dispatches leaves whose work sits in leftover worktrees
+## 12. A restarted walk re-dispatches leaves whose work sits in leftover worktrees
 
 - why: the walking skill's §Context covers compaction only; `walk check` lists such leaves as ready.
 - want: on start, route ready work found in worktrees and `worker/*`, `debugger/*` branches to §Integration or §Review; report the rest.
 
-## 15. The walker has no rule for colliding log appends or silent agents
+## 13. The walker has no rule for colliding log appends or silent agents
 
 - why: parallel leaves' `.ai/friction.md` appends conflict when applied; nothing follows 3 unanswered progress requests.
 - want: keep both sides of log conflicts; hold the leaf after 3 more silent timeouts.
 
-## 16. Gate failures outside an agent's change have no rule
+## 14. Gate failures outside an agent's change have no rule
 
 - why: the worker's and debugger's "fix them and stop again" is unbounded; load timeouts and other sessions' files fail the gate (friction ×3).
 - want: rerun once; still failing, report a blocker naming the files, editing none; the walker counts it as no resume cause.
 
-## 17. A question asked mid-task can end the task
+## 15. A question asked mid-task can end the task
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
 
-## 18. Skill terms are undefined or carry several meanings
+## 16. Skill terms are undefined or carry several meanings
 
 - why: "leaf" is never defined (walking, merging, Codex dispatch); the debugger's "reach" means sites sharing a cause, unlike AGENTS.md's; planning's "steps" means sub-issues, inner parts, Roadmap entries and the **Steps** section.
 - want: define leaf in walking §Handling; the debugger says "sites"; planning says items, parts and Roadmap entries.

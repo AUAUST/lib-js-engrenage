@@ -19,14 +19,14 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 
-| What                                                                     | Where                                                                                                                                                                                                                                |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Code                                                                     | The domain owning its concern, in the role whose contract fits it                                                                                                                                                                    |
-| A concern several domains share                                          | Its own domain, in the lowest layer holding everything it needs                                                                                                                                                                      |
-| Order between sub-domains                                                | A namespace with layers inserted above them; a domain never orders its children                                                                                                                                                      |
-| A concern with two engines, or whose intent a consumer needs without one | A contract domain: `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them                                                                  |
-| A generated module                                                       | Where a handwritten one would go, with a header naming its generator                                                                                                                                                                 |
-| A `bin` command's logic                                                  | The domain owning it; the command stays thin                                                                                                                                                                                         |
-| A structure change                                                       | Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`; a new layer, namespace, role or public domain is an architectural contract under the decision protocol |
-| An import                                                                | A generated `#…` alias, never a relative path                                                                                                                                                                                        |
-| A test of public behavior                                                | Through its public specifier; `.src` only to reach internals                                                                                                                                                                         |
+Place:
+
+- **Code.** The domain owning its concern, in the role whose contract fits it.
+- **A concern several domains share.** Its own domain, in the lowest layer holding everything it needs.
+- **Order between sub-domains.** A namespace with layers inserted above them; a domain never orders its children.
+- **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
+- **A generated module.** Where a handwritten one would go, with a header naming its generator.
+- **A `bin` command's logic.** The domain owning it; the command stays thin.
+- **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **An import.** A generated `#…` alias, never a relative path.
+- **A test of public behavior.** Through its public specifier; `.src` only to reach internals.

@@ -26,13 +26,14 @@ Refines the writing rules' structure table:
 | ------------------------------------------------------------- | ------------------------------------------------ |
 | Rules differing only by context, with the same kind of action | Table, context column first, one row per context |
 | A principle the other rules derive from                       | One or two sentences of prose, before the rules  |
-| A rule a tool can check                                       | A proposed check instead of prose                |
+
+- Such rules needing sentences, which the writing rules move to a list: one `**Context.** action` item per context.
+- A rule a tool can check: propose the check, and keep the rule as prose until the check exists. Then delete the prose, or keep it under "Enforced by tooling" when its fix is manual and it shapes how code is first written.
 
 ## Placement
 
 - A `<!-- @reference <reference> -->` marker opens a block that `pnpm engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - Put in AGENTS.md only rules every agent needs, and surface-specific detail in `.claude/rules/`, one file per surface. Keep feature documentation, file inventories, API details and records of recent changes out of both.
-- Keep a rule tooling enforces under "Enforced by tooling" only when its fix is manual and it shapes how code is first written; otherwise delete its prose.
 
 ## Wording
 

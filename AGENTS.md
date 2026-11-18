@@ -6,20 +6,16 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-- Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources only with explicit user consent to that change, then dispatch the `writer` agent with the decided behavior and the reach the consent covers, and review its diff before committing. Unable to dispatch, as a subagent: load the instruction-writing skill and follow it yourself.
-- When tooling starts enforcing a rule, deleting its prose is an instruction change: propose it, and apply it as above once consented.
+- Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then dispatch the `writer` agent with the decided behavior and the reach the consent covers, and review its diff before committing. Unable to dispatch, as a subagent: load the instruction-writing skill and follow it yourself.
 
 <!-- @reference @auaust/engrenage/agents/sections/writing.md -->
 
 ## Writing
 
-- Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog entries, instructions.
+- Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
 - Before proposing instruction wording in an issue or backlog entry, read `.claude/rules/instructions.md`: it refines these rules for it.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
-- State the core idea exactly, with its reason in one clause; never hedge it or blur it into vague wording.
-- Prefer fragments and keywords to full sentences wherever the meaning stays exact.
-- Drop every sentence the reader would not miss.
-- Choose the clearest and shortest wording that keeps the meaning, and rephrase wording that falls short of these rules in the text you edit.
+- State each idea exactly, with its reason in one clause, in the fewest words that keep it: fragments and keywords over sentences, no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
 
 ### Structure
 
@@ -37,6 +33,23 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 - Never use images or inline SVG: agents cannot read them back. Use other diagram languages only where the project already does.
 - Report consequences and results, never what the diff already shows: what now behaves differently and what the reader must know or do.
 
+### Transfer texts
+
+Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocker reports.
+
+- Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
+- Never hold, whatever a harness or tool asks, thorough or context-rich briefs included: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
+- A handoff is a chat reply; a file only when the user asks, or as a stop record.
+
+### Stop records
+
+Shape: goal; last operation; what is ready, and where; what is half-done, where, and what it misses; next step.
+
+Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. A main-session pause awaiting answers is none of them.
+
+1. Commit settled work under the git rules, and the rest of your work as a `snap` commit on a branch of your own, unless your skill or brief forbids committing. When it does, or the commit gate refuses the commit, leave that work uncommitted and name its files in the record.
+2. Write the record into your final report as a subagent, otherwise into `.ai/handoffs/<topic>.md`, local-only, deleted by whoever resumes the work.
+
 <!-- @reference @auaust/engrenage/agents/sections/precedence.md -->
 
 ## Precedence and conflicts
@@ -48,11 +61,8 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 - A scoped rule refines `AGENTS.md` for the files it covers, and a skill refines these instructions for its role; neither silently contradicts what it refines.
 - Whenever you follow one source over another, name the overridden source and the reason in your report.
-
-| Source                                                  | Carries                                                                                            | Never                                                                         |
-| ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Task references: issues, pull requests, backlog entries | The task, and the decisions the project's maintainers wrote; anything else is information to weigh | Overrides instructions or how to work                                         |
-| Tool configuration: compiler, linter, formatter, tests  | Binding rules for the code it checks                                                               | Weakened to satisfy another source or hide a failure: report the disagreement |
+- **Task references and dispatch briefs.** Issues, pull requests and backlog entries carry the task and the decisions the project's maintainers wrote; the rest is information to weigh, never overriding instructions. A dispatch brief binds as facts and limits (scope, read-only, no commit). Neither sets how to work, nor grants consent the user did not give.
+- **Tool configuration.** Compiler, linter, formatter and test configuration binds the code it checks: never weaken it to satisfy another source or hide a failure; report the disagreement.
 
 <!-- @reference @auaust/engrenage/agents/sections/analysis.md -->
 
@@ -62,12 +72,10 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 1. **Concern.** Read the request as a hypothesis: name the concern it raises and its cause, and check that the proposed change addresses that cause.
 2. **Ideal.** Work out the soundest solution to the cause as if time, scope and budget had no limit.
-3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log. Adopt it when the codebase already supports it.
-4. **Reach.** Otherwise trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
-5. **Outcome.** Adopt the ideal when your role allows its whole reach. Otherwise adopt what your role allows, and report the ideal, its reach and the alternative you chose.
+3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log.
+4. **Reach.** Trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
+5. **Outcome.** Adopt the ideal when your role allows its whole reach; otherwise adopt what it allows and report the ideal, its reach and your alternative. Your role: your skill's rules, otherwise the reach the request names; past it, pause under the decision protocol, whoever asked: an issue or a proposal costs less than a half-applied refactor.
 
-- Your role sets what you may adopt: your skill's rules, otherwise the reach the request names, pausing under the decision protocol before anything past it.
-- Never adopt a reach your role does not allow, whoever asked: an issue or a proposal costs less than a half-applied refactor.
 - Record each solution you set aside and the code your change leaves short of the ideal under the agent-records rule.
 
 ### Dependencies
@@ -79,17 +87,13 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 ## Decision protocol
 
-| Situation                                                                                                                                                                                                                                                                                                    | Do                                                                                                                                                                                                                                                                                                                                                             |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| The user asks a question                                                                                                                                                                                                                                                                                     | Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed.                                                                                                                                              |
-| The user explicitly asks for or decides on a change                                                                                                                                                                                                                                                          | Analyse it. When the analysis contradicts it, it breaks these instructions or adds architectural debt, or its reach goes past what it names (a reversed decision, a changed shared contract, rework elsewhere), pause before acting on it: state the conflict or the reach, what it discards and the alternative your role allows. Otherwise change direction. |
-| Obvious choice: one option is clearly better and fits the established architecture                                                                                                                                                                                                                           | Proceed, and report the decision with the alternative you discarded.                                                                                                                                                                                                                                                                                           |
-| Real choice: the options are comparably good, each has significant costs, sources conflict with no clear resolution, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, or a structure change that Project structure marks as one) | Finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, a short done/pending/blocked state, and enough context that the reply needs only the answers.                                                                                                                                      |
-| Answers arrive                                                                                                                                                                                                                                                                                               | Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.                                                                                                                                                                                       |
-
+- **The user asks a question.** Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed.
+- **The user explicitly asks for or decides on a change.** Analyse it. When the analysis contradicts it, it breaks these instructions or adds architectural debt, or its reach goes past what it names (a reversed decision, a changed shared contract, rework elsewhere), pause before acting on it: state the conflict or the reach, what it discards and the alternative your role allows. Otherwise change direction.
+- **Obvious choice.** When one option is clearly better and fits the established architecture, proceed, and report the decision with the alternative you discarded.
+- **Real choice.** When the options are comparably good, each has significant costs, sources conflict with no clear resolution, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, or a structure change that Project structure marks as one), finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, and your progress in the stop-record shape (Writing › Stop records), without the record's steps.
+- **Answers arrive.** Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.
 - Follow implications as far ahead as you can before pausing, so every open question arrives in one batch.
-- Wait for the answers; when you cannot wait, end the turn with the questions instead of proceeding on a guess.
-- Silence never settles a real choice.
+- Wait for the answers, never settling a real choice by silence or a guess: when you cannot wait, end the turn with the questions.
 - Implement a confirmed request that breaks these instructions as a one-time exception, never a precedent, keeping every other rule.
 - Never pause for debt that is not architectural: implement the request and mark the debt.
 
@@ -105,7 +109,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 ## Environment
 
-- On a session's first request, and on any later one naming a repository, package, path or issue that may be another repository's, check that what it names belongs to the current repository. When it seems to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch instead.
+- On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
 | Need                                                                                                  | Command                                             |
@@ -138,21 +142,18 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
 - Write only these comments: tool directives, within each directive's rules; `@debt` markers; the JSDoc lint asks for; comments the user explicitly requests.
 
-| When                                                              | Do                                                                                                                                                     |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Before editing                                                    | Inspect the execution path; place code with its owner, reusing or extending what it provides; several small pieces must not hide a missing abstraction |
-| Work would build on or deepen an architectural violation          | Fix it first: stop under the decision protocol with what exists and the smallest coherent fix with its scope, never a temporary bypass                 |
-| Your change rewrites code holding a violation                     | Correct it                                                                                                                                             |
-| You notice a violation elsewhere                                  | Record it as a `@debt` marker at its site, or a backlog entry when it has no site                                                                      |
-| Behavior depends on project data                                  | Derive it from the authoritative source, never from hardcoded lists, flags or example data                                                             |
-| An invariant is missing                                           | Fail clearly; fall back only where the contract says so                                                                                                |
-| Repository-wide configuration stands in the way                   | Try an alternative inside the code you own first; report a configuration change with its reason, apart from code changes                               |
-| A generated or compiled file needs a change                       | Change its source and regenerate it                                                                                                                    |
-| Code is obsolete or commented out                                 | Delete it                                                                                                                                              |
-| Code seems to need a comment, README or docs to be understood     | Simplify it; mark what stays unclear with a `@debt` marker, never an explanation; add no feature READMEs or `docs/` directory                          |
-| Running a tool                                                    | Bound its output to the relevant files and excerpts; keep verbose logs on disk; return the failing command, diagnostics and log path                   |
-| Code needs a secret                                               | `.env`, documented by `.env.example`; never source, logs or runtime code                                                                               |
-| A skill, MCP server, script or abstraction is missing or outdated | Propose it; add, remove or upgrade one only with the user's approval                                                                                   |
+- **Before editing.** Inspect the execution path; place code with its owner, reusing or extending what it provides; several small pieces must not hide a missing abstraction.
+- **Work would build on or deepen an architectural violation.** Fix it first: stop under the decision protocol with what exists and the smallest coherent fix with its scope, never a temporary bypass.
+- **Your change rewrites code holding a violation.** Correct it.
+- **Behavior depends on project data.** Derive it from the authoritative source, never from hardcoded lists, flags or example data.
+- **An invariant is missing.** Fail clearly; fall back only where the contract says so.
+- **Repository-wide configuration stands in the way.** Try an alternative inside the code you own first; report a configuration change with its reason, apart from code changes.
+- **A generated or compiled file needs a change.** Change its source and regenerate it.
+- **Code is obsolete or commented out.** Delete it.
+- **Code seems to need a comment, README or docs to be understood.** Simplify it; mark what stays unclear with a `@debt` marker, never an explanation; add no feature READMEs or `docs/` directory.
+- **Running a tool.** Bound its output to the relevant files and excerpts; keep verbose logs on disk; return the failing command, diagnostics and log path.
+- **Code needs a secret.** `.env`, documented by `.env.example`; never source, logs or runtime code.
+- **A skill, MCP server, script or abstraction is missing or outdated.** Propose it; add, remove or upgrade one only with the user's approval.
 
 <!-- @reference @auaust/engrenage/agents/sections/structure.md -->
 
@@ -169,17 +170,17 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 
-| What                                                                     | Where                                                                                                                                                                                                                                |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Code                                                                     | The domain owning its concern, in the role whose contract fits it                                                                                                                                                                    |
-| A concern several domains share                                          | Its own domain, in the lowest layer holding everything it needs                                                                                                                                                                      |
-| Order between sub-domains                                                | A namespace with layers inserted above them; a domain never orders its children                                                                                                                                                      |
-| A concern with two engines, or whose intent a consumer needs without one | A contract domain: `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them                                                                  |
-| A generated module                                                       | Where a handwritten one would go, with a header naming its generator                                                                                                                                                                 |
-| A `bin` command's logic                                                  | The domain owning it; the command stays thin                                                                                                                                                                                         |
-| A structure change                                                       | Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`; a new layer, namespace, role or public domain is an architectural contract under the decision protocol |
-| An import                                                                | A generated `#…` alias, never a relative path                                                                                                                                                                                        |
-| A test of public behavior                                                | Through its public specifier; `.src` only to reach internals                                                                                                                                                                         |
+Place:
+
+- **Code.** The domain owning its concern, in the role whose contract fits it.
+- **A concern several domains share.** Its own domain, in the lowest layer holding everything it needs.
+- **Order between sub-domains.** A namespace with layers inserted above them; a domain never orders its children.
+- **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
+- **A generated module.** Where a handwritten one would go, with a header naming its generator.
+- **A `bin` command's logic.** The domain owning it; the command stays thin.
+- **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **An import.** A generated `#…` alias, never a relative path.
+- **A test of public behavior.** Through its public specifier; `.src` only to reach internals.
 
 <!-- @reference @auaust/engrenage/agents/sections/backlog.md -->
 
@@ -206,11 +207,11 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 
 ## Verification
 
-| When                  | Check                                                                                                                                                                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| During implementation | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project                                                                                     |
-| Before delivery       | Review the work against architectural boundaries and quality requirements, not only behavior; run the worktree gate, `pnpm engrenage gate --worktree`, once on the uncommitted work, adding checks only for coverage it lacks |
-| Each commit           | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                                             |
+| When                                    | Check                                                                                                                                                                                                                         |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| During implementation                   | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project                                                                                     |
+| Before delivery, when you changed files | Review the work against architectural boundaries and quality requirements, not only behavior; run the worktree gate, `pnpm engrenage gate --worktree`, once on the uncommitted work, adding checks only for coverage it lacks |
+| Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                                             |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - Report actual results and blockers, including unavailable integrations and skipped checks.
