@@ -35,7 +35,7 @@ Apply the project's Analysis rules at full depth, record what they find in issue
 
 | The analysis                                                                         | You                                                                           |
 | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| Answers a question or a review                                                       | Record and report it; edit nothing but issues                                 |
+| Answers a question or a review                                                       | Record and report it; edit nothing but issues and the agent records           |
 | Supports the requested change within the reach it names, with no new shared contract | Apply it                                                                      |
 | Calls for a reach the request does not name                                          | Pause under the decision protocol with the ideal and the confined alternative |
 | Calls for several ordered tasks                                                      | Report that it needs planning, with the analysis the planner starts from      |
@@ -95,7 +95,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revise them as the analy
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or before your final report, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
+- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or before your final report, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your final report.
 
 ## Report
 
@@ -110,5 +110,5 @@ Write and edit issues as local drafts in `.ai/issues/`, revise them as the analy
 
 - Drop a part when it would be empty.
 - Link each issue you created or edited, with what it now records.
-- When you changed files, run `pnpm engrenage gate --worktree` before your report.
+- Run the worktree gate before your report only when you changed files.
 - End with what remains and the kind of work it needs. Say so when nothing remains.

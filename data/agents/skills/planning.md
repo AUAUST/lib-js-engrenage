@@ -34,7 +34,7 @@ You build and maintain the issue tree and never implement it. Create and edit is
 | Agent instructions or project context for the current structure                               | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                                     |
 | Instructions for a change not yet made ("once this is restructured, update the instructions") | Write into the **Steps** of the task making that change each rule's intent, constraints and target file, with proposed wording only for a one-sentence rule |
 
-Edit nothing but issues and instruction or context files, apart from code the user explicitly asked you to implement.
+Edit nothing but issues, instruction or context files and the agent records, apart from code the user explicitly asked you to implement.
 
 ## Modes
 

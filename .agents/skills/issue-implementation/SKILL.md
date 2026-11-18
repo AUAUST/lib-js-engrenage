@@ -1,7 +1,8 @@
 ---
 name: issue-implementation
 description: Implement one GitHub issue from a planned issue tree as written,
-  without redesigning it. Use only when the user asks for a worker.
+  without redesigning it. Use only when a skill you follow or the user asks for
+  a worker.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/issue-implementation.md -->

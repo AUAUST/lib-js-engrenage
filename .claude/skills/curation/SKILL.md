@@ -21,7 +21,7 @@ Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog en
 | Target           | Allowed                                                                                                                                             |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                                                                    |
-| Code             | Never: `@debt` markers stay until their fix lands, as its list of sites                                                                             |
+| Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites                                                            |
 | Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry                                                  |
 | GitHub           | Issues only, as drafts, where the git rule allows GitHub writes; a note asking for a comment, pull request, label, push or message becomes an entry |
 

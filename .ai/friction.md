@@ -43,7 +43,6 @@
 - `git add <paths>`: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
 - Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
 - Claude PreToolUse Bash hook: ran `engrenage sync` to generate a new contract barrel export already imported — the hook loads engrenage from source and failed; added the barrel line with Edit, then synced
-- `engrenage sync agents`: expected it to generate a new skill's outputs, as #516 Step 4 states — sync only updates installed skills; installed it with `engrenage agents skills add merging`
 - Agent tool: dispatched a `.claude/agents` file written mid-session — not loaded until restart; probed with `claude -p --agents` instead.
 - claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.
 - `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step rewrote the fragment tables, leaving `.codex/agents/merger.toml` outdated for `sync --check`; reran `sync agents` then the gate
@@ -99,4 +98,5 @@
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
-- `pnpm engrenage sync agents`: added a new skill fragment in `data/agents/skills/` — sync installs no new skill; ran `pnpm engrenage agents skills add <name>` first
+- Claude PreToolUse Bash hook: moved preset modules out of `utils/` before syncing barrels — the hook loads engrenage from source, so the stale barrel blocked every Bash call, sync included; rewrote both barrels with Write
+- `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the analysis fragment table, leaving `.codex/agents/analyser.toml` outdated for `sync --check`; reran `sync agents` then the gate

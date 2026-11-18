@@ -5,7 +5,7 @@ category: workflow
 order: 45
 agent:
   name: writer
-  description: Writer that turns a behavior change the user consented to into agent instructions, grounded in current model guidance, and reads them as each target agent would to remove misreadings, conflicts and gaps. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the decided behavior; never write those instructions yourself. Its report ends with what remains and the kind of work it needs.
+  description: Writer that turns a behavior change the user consented to into agent instructions, grounded in current model guidance, and reads them as each target agent would to remove misreadings, conflicts and gaps. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the decided behavior; never write those instructions yourself, except as a subagent unable to dispatch it, which follows the instruction-writing skill itself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: medium
   efforts:

@@ -8,12 +8,11 @@ order: 35
 
 ## Environment
 
-- On a session's first request only, check that the repository, package, paths and issues it names belong to the current repository; when they seem to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change.
+- On a session's first request, and on any later one naming a repository, package, path or issue that may be another repository's, check that what it names belongs to the current repository. When it seems to point to another and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch instead.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
 | Need                                                                                                  | Command                                             |
 | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Check uncommitted work before delivery                                                                | `pnpm engrenage gate --worktree`                    |
 | Run the tests and type checking                                                                       | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
 | Build and test the output, after changing entries, exports or bundling                                | `pnpm build`                                        |
 | Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs | `pnpm engrenage sync`                               |

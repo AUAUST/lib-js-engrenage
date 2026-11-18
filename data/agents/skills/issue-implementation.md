@@ -1,6 +1,6 @@
 ---
 title: Issue implementation
-description: Implement one GitHub issue from a planned issue tree as written, without redesigning it. Use only when the user asks for a worker.
+description: Implement one GitHub issue from a planned issue tree as written, without redesigning it. Use only when a skill you follow or the user asks for a worker.
 category: workflow
 order: 20
 invocation: explicit

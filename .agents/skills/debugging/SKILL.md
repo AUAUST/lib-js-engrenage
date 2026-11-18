@@ -2,7 +2,7 @@
 name: debugging
 description: Investigate a problem, fix it at its root when the fix is
   contained, and otherwise write the fix into a GitHub issue for a worker. Use
-  only when the user asks for a debugger.
+  only when a skill you follow or the user asks for a debugger.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
@@ -45,7 +45,7 @@ Mark the debt you notice while diagnosing, on the execution path, its callers an
 | The sound fix                                                                                                                                     | You                                                                  |
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | Stays within a limited set of files in the owner's area, needs at most a minor refactor, and adds no new pattern, architecture or shared contract | Implement it                                                         |
-| Needs more: a larger refactor, a new pattern or contract, changes across several domains, or more than one reviewable pull request                | Write it into one task issue and stop                                |
+| Needs more: a larger refactor, a new pattern or contract, changes across several domains, or more than one reviewable pull request                | Write it into one `problem` issue and stop                           |
 | Needs several ordered tasks                                                                                                                       | Write the diagnosis into one issue and report that it needs planning |
 
 ## Questions and answers
@@ -90,7 +90,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revise them as the diagn
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
+- Publish when none of your drafts holds a change waiting on an open question, when the user asks, or when someone else needs the issue's current state, such as a worker, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your final report.
 
 ## Writing the issue
 
@@ -127,7 +127,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
 - Write the header only for an issue inside a planned tree. List under **Prerequisites** only the issues tree order does not imply.
 - Drop **Prerequisites**, **Done when** or **Questions** when they would be empty, or when **Done when** would only say the Steps are done and the checks pass.
 - Set the type `problem` with its `defect`, and the repository's labels whose description fits the issue. While **Questions** remain, set `blockers` to `questions`; clear it once they are gone.
-- Run `pnpm engrenage planning issue check <n>` on the issue, once flushed, before reporting it ready for a worker.
+- Run `pnpm engrenage planning issue check <n>` on the issue, once published, before reporting it ready for a worker.
 - Start any worker brief you write with `Issue: <owner>/<repo>#<n>`.
 - Once an issue you create or edit tracks the work of a backlog entry, remove the entry in the same run, or reduce it to the work the issue leaves and link the issue from it.
 

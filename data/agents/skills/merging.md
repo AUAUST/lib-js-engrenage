@@ -1,6 +1,6 @@
 ---
 title: Merging
-description: Review what a walk landed for what per-leaf review cannot see, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when the user asks for a merger.
+description: Review what a walk landed for what per-leaf review cannot see, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger.
 category: workflow
 order: 27
 invocation: explicit
