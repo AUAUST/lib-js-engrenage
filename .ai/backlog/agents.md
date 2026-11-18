@@ -13,3 +13,8 @@ Agent runtime integrations: hooks and runtime names.
 - sites: `src/tools/agents/claude/constants.ts` (`PostToolUse` lint hook), `src/tools/agents/codex/`
 - why: Claude gets `info` lint messages after each edit (#526); Codex declares no `PostToolUse` hook.
 - want: check whether Codex hooks fire after file edits with an equivalent of `additionalContext`; if so, add the same lint hook for Codex.
+
+## 3. `sync --check` fails on a stale `AGENTS.override.md` after a rebase
+
+- why: Codex-generated override file goes stale when a rebase brings new instructions; out of the cleanup pass with Codex work (#613 › Decisions). Seen in AUAUST/lib-js-toolkit#325 › Gate.
+- want: sync regenerates it, or `--check` names the command that does.

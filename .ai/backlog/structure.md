@@ -45,7 +45,7 @@ Project structure description, its report and the tooling generated from it.
 ## 7. Generator wiring is hand-listed (#147)
 
 - why: the `generated` globs list `Rules.ts` and `rules/**` by hand while `ConfigInput.ts` and `editions/constants.ts` are generated but not listed (the generators format them); `scripts/codegen/index.ts` runs generators in a hard-coded order (`editions, apis, config, rules, barrels`) derived from nothing.
-- also: `engrenage.config.ts:214` generated-files list: a missing pattern for generated files, or unneeded once they are formatted.
+- also: `engrenage.config.ts:214` generated-files list (debt.2): it feeds `.prettierignore`, jscpd's exclusions and ESLint's `files.generated` scope, so formatting generated output does not make it unneeded.
 - want: derive the globs and the order from the generators.
 - done: adding a generator needs no second list.
 
