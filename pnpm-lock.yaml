@@ -217,6 +217,9 @@ importers:
       semver:
         specifier: ^7.8.5
         version: 7.8.5
+      sh-syntax:
+        specifier: ^0.8.7
+        version: 0.8.7
       ts-api-utils:
         specifier: ^2.5.0
         version: 2.5.0(typescript@6.0.3)
@@ -269,9 +272,6 @@ importers:
       '@types/semver':
         specifier: ^7.8.0
         version: 7.8.0
-      '@types/shell-quote':
-        specifier: ^1.7.5
-        version: 1.7.5
       '@valibot/to-json-schema':
         specifier: ^1.8.0
         version: 1.8.0(valibot@1.5.0(typescript@6.0.3))
@@ -314,9 +314,6 @@ importers:
       publint:
         specifier: ^0.3.25
         version: 0.3.25
-      shell-quote:
-        specifier: ^1.12.0
-        version: 1.12.0
       tsdown:
         specifier: ^0.23.1
         version: 0.23.1(@arethetypeswrong/core@0.18.5)(publint@0.3.25)(tsx@4.23.15)(typescript@6.0.3)
@@ -1224,9 +1221,6 @@ packages:
 
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
-
-  '@types/shell-quote@1.7.5':
-    resolution: {integrity: sha512-+UE8GAGRPbJVQDdxi16dgadcBfQ+KG2vgZhV1+3A1XmHbmwcdwhCUwIdy+d3pAGrbvgRoVSjeI9vOWyq376Yzw==}
 
   '@typescript-eslint/eslint-plugin@8.72.0':
     resolution: {integrity: sha512-aysKgysPX9XOv/dk95UkvUDe++Q3n3dJPG9CEWT3RUccxfkPJ+Qn6nhKPDhZXU6Ofo9kgwGWwKyQCnZIXTgngg==}
@@ -2712,6 +2706,10 @@ packages:
     resolution: {integrity: sha512-8I8TjW5KMOKsZQTvoxjuSIa7foAwPWGOts+6o7sgjz41/qMD9VQHEDxi6PBvK2l0MXUmqZyNpUK+T2tQaaElvw==}
     engines: {node: '>=10'}
 
+  sh-syntax@0.8.7:
+    resolution: {integrity: sha512-zaJUdXFCbDFgtREm3KiqvX3dBlngGY0tumPzHvC5RqX67UuaBLIIZqb16MCbYLGyk5rPYrM+5FlghF+w6WdVUw==}
+    engines: {node: '>=18.0.0'}
+
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -3794,8 +3792,6 @@ snapshots:
       undici-types: 8.9.0
 
   '@types/semver@7.8.0': {}
-
-  '@types/shell-quote@1.7.5': {}
 
   '@typescript-eslint/eslint-plugin@8.72.0(@typescript-eslint/parser@8.72.0(eslint@10.13.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.13.0(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3)':
     dependencies:
@@ -5251,6 +5247,8 @@ snapshots:
   serialize-error@7.0.1:
     dependencies:
       type-fest: 0.13.1
+
+  sh-syntax@0.8.7: {}
 
   shebang-command@2.0.0:
     dependencies:

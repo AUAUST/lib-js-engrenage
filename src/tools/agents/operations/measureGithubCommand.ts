@@ -1,3 +1,4 @@
+import { ShellSyntaxError } from "#foundation/shell/index";
 import { countWords } from "#tools/agents/utils/countWords";
 import {
   parseGithubCommand,
@@ -62,7 +63,19 @@ export function measureGithubCommand(
   command: string,
   budgets: Budgets,
 ): BudgetFinding[] {
-  return parseGithubCommand(command).flatMap((write) => {
+  let writes;
+
+  try {
+    writes = parseGithubCommand(command);
+  } catch (error) {
+    if (error instanceof ShellSyntaxError) {
+      return [];
+    }
+
+    throw error;
+  }
+
+  return writes.flatMap((write) => {
     return measureWrite(write, command, budgets);
   });
 }

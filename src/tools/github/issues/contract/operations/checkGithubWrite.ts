@@ -1,12 +1,13 @@
+import { ShellSyntaxError } from "#foundation/shell/index";
 import {
   createGithubClient,
   resolveRepository,
 } from "#tools/github/issues/api/index";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { parseGithubCommand } from "#tools/github/issues/contract/operations/parseGithubCommand";
 import { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
-import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
 import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { Directory } from "#types/Directory";
@@ -70,7 +71,17 @@ export async function checkGithubWrite(
   repositories: () => Promise<ReadonlyMap<string, string>>,
   protocol: IssueProtocol,
 ): Promise<string | undefined> {
-  const writes = parseGithubCommand(command);
+  let writes;
+
+  try {
+    writes = parseGithubCommand(command);
+  } catch (error) {
+    if (error instanceof ShellSyntaxError) {
+      return `the command is not valid shell: ${error.message}`;
+    }
+
+    throw error;
+  }
 
   const reasons = await Promise.all(
     writes.map(async (write) => {

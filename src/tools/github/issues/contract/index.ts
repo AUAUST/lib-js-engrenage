@@ -12,6 +12,7 @@ export { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIs
 export { findAncestors } from "#tools/github/issues/contract/operations/findAncestors";
 export { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 export { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
+export { parseGithubCommand } from "#tools/github/issues/contract/operations/parseGithubCommand";
 export { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
 // @end
 
@@ -30,10 +31,7 @@ export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/format
 export { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
-export { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
-export { parseShellPipelines } from "#tools/github/issues/contract/utils/parseShellPipelines";
-export { readShellOperator } from "#tools/github/issues/contract/utils/readShellOperator";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
 export { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 export { replaceOutsideCode } from "#tools/github/issues/contract/utils/replaceOutsideCode";
@@ -60,9 +58,5 @@ export type * from "#tools/github/issues/contract/types/IssueType";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";
 export type * from "#tools/github/issues/contract/types/ProtocolMeaning";
 export type * from "#tools/github/issues/contract/types/RelatedIssue";
-export type * from "#tools/github/issues/contract/types/ShellCommand";
-export type * from "#tools/github/issues/contract/types/ShellPipeline";
-export type * from "#tools/github/issues/contract/types/ShellToken";
-export type * from "#tools/github/issues/contract/types/ShellWord";
 export type * from "#tools/github/issues/contract/types/WalkedIssue";
 // @end

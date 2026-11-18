@@ -17,7 +17,8 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ modules  Load lazily imported modules and resolve their single export.
 │  ├─ options  Declare and validate configuration options.
 │  ├─ processes  Run external processes.
-│  └─ reports  Report typed messages to the handler the running context chooses.
+│  ├─ reports  Report typed messages to the handler the running context chooses.
+│  └─ shell  Parse shell commands into the simple commands they run.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.

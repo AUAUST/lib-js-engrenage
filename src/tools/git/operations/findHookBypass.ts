@@ -1,4 +1,8 @@
-import { max } from "@auaust/toolkit/math";
+import {
+  parseShell,
+  type ShellCommand,
+  type ShellWord,
+} from "#foundation/shell/index";
 
 const assignmentPattern = /^[A-Za-z_]\w*=/;
 
@@ -29,113 +33,6 @@ const globalValueFlags = new Set([
   "--super-prefix",
   "--config-env",
 ]);
-
-function parse(source: string, start: number, close?: ")" | "`") {
-  const commands: string[][] = [];
-
-  let words: string[] = [];
-  let word: string | undefined;
-  let quote: '"' | "'" | undefined;
-  let depth = 0;
-  let index = start;
-
-  function endWord() {
-    if (word !== undefined) {
-      words.push(word);
-    }
-
-    word = undefined;
-  }
-
-  function endCommand() {
-    endWord();
-
-    if (words.length > 0) {
-      commands.push(words);
-    }
-
-    words = [];
-  }
-
-  for (; index < source.length; index++) {
-    const char = source[index];
-
-    if (quote === "'") {
-      if (char === "'") {
-        quote = undefined;
-      } else {
-        word += char;
-      }
-
-      continue;
-    }
-
-    if (char === "\\") {
-      word = (word ?? "") + (source[++index] ?? "");
-
-      continue;
-    }
-
-    if (char === "`" && close === "`") {
-      break;
-    }
-
-    if (char === "`" || (char === "$" && source[index + 1] === "(")) {
-      const inner = parse(
-        source,
-        index + (char === "`" ? 1 : 2),
-        char === "`" ? "`" : ")",
-      );
-
-      commands.push(...inner.commands);
-      index = inner.end;
-
-      continue;
-    }
-
-    if (char === '"') {
-      quote = quote === '"' ? undefined : '"';
-      word ??= "";
-
-      continue;
-    }
-
-    if (char === "'" && quote === undefined) {
-      quote = "'";
-      word ??= "";
-
-      continue;
-    }
-
-    if (quote === '"') {
-      word = (word ?? "") + char;
-
-      continue;
-    }
-
-    if (char === "(") {
-      depth++;
-      endCommand();
-    } else if (char === ")") {
-      if (depth === 0 && close === ")") {
-        break;
-      }
-
-      depth = max(0, depth - 1);
-      endCommand();
-    } else if (char === ";" || char === "|" || char === "&" || char === "\n") {
-      endCommand();
-    } else if (char === " " || char === "\t") {
-      endWord();
-    } else {
-      word = (word ?? "") + char;
-    }
-  }
-
-  endCommand();
-
-  return { commands, end: index };
-}
 
 function findEnvironmentBypass(assignment: string) {
   const [name = "", value = ""] = assignment.split(/=(.*)/s);
@@ -224,7 +121,21 @@ function findGitBypass(words: readonly string[]) {
   }
 }
 
-function findCommandBypass(words: readonly string[]) {
+function readText(word: ShellWord) {
+  return word.kind === "literal" ? word.text : word.source;
+}
+
+function findCommandBypass({ assignments, words: shellWords }: ShellCommand) {
+  for (const { name, value } of assignments) {
+    const bypass = findEnvironmentBypass(`${name}=${readText(value)}`);
+
+    if (bypass !== undefined) {
+      return bypass;
+    }
+  }
+
+  const words = shellWords.map(readText);
+
   let index = 0;
 
   while (index < words.length) {
@@ -257,8 +168,8 @@ function findCommandBypass(words: readonly string[]) {
 }
 
 export function findHookBypass(command: string) {
-  for (const words of parse(command, 0).commands) {
-    const bypass = findCommandBypass(words);
+  for (const shellCommand of parseShell(command)) {
+    const bypass = findCommandBypass(shellCommand);
 
     if (bypass !== undefined) {
       return bypass;

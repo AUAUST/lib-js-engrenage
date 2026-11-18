@@ -1,5 +1,4 @@
 // @barrel utils
-export { findHookBypass } from "#tools/git/utils/findHookBypass";
 export { hasSeparatedIssueReferences } from "#tools/git/utils/hasSeparatedIssueReferences";
 export { readCommitSubject } from "#tools/git/utils/readCommitSubject";
 // @end
@@ -15,6 +14,7 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 // @barrel operations
 export { createGitignorePresets } from "#tools/git/operations/createGitignorePresets";
 export { fillIgnoreBlock } from "#tools/git/operations/fillIgnoreBlock";
+export { findHookBypass } from "#tools/git/operations/findHookBypass";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";

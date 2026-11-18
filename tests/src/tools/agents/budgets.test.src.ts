@@ -3,8 +3,8 @@ import { describe, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
+import { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
-import { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 
 const words = (count: number) => {
   return Array.from({ length: count }, () => "word").join(" ");

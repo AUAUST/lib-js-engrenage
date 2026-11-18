@@ -8,9 +8,9 @@ import { createGithubClient } from "#tools/github/issues/api/operations/createGi
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
+import { parseGithubCommand } from "#tools/github/issues/contract/operations/parseGithubCommand";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
-import { parseGithubCommand } from "#tools/github/issues/contract/utils/parseGithubCommand";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 
 vi.stubEnv("GH_TOKEN", "t");
@@ -714,6 +714,38 @@ describe("parseGithubCommand", () => {
         `gh issue create --title t --body-file - <<'EOF'\nRun gh issue edit 5 --body x.\nEOF`,
       ),
     ).toHaveLength(1);
+  });
+});
+
+describe("parseGithubCommand shell constructs", () => {
+  test.each([
+    "echo $(gh issue comment 5 --body x)",
+    "echo `gh issue comment 5 --body x`",
+    "true && A=0 gh issue comment 5 --body x",
+    "gh issue create --title t --body-file - <<'EOF'\nx\nEOF",
+  ])("reaches the write in %s", (command) => {
+    expect(parseGithubCommand(command)).toHaveLength(1);
+  });
+
+  test("keeps a quoted `;` inside its argument", () => {
+    expect(parseGithubCommand("gh issue comment 5 --body 'a; b'")).toEqual([
+      expect.objectContaining({
+        body: { kind: "text", text: "a; b" },
+      }),
+    ]);
+  });
+
+  test("checkGithubWrite denies an unterminated quote after a valid first line", async () => {
+    const project = createTemporaryProject({});
+
+    await expect(
+      checkGithubWrite(
+        "gh issue list\necho 'y",
+        project.root,
+        registry,
+        protocol,
+      ),
+    ).resolves.toContain("the command is not valid shell:");
   });
 });
 

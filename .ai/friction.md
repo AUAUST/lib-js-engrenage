@@ -83,3 +83,5 @@
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
 - `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the analysis fragment table, leaving `.codex/agents/analyser.toml` outdated for `sync --check`; reran `sync agents` then the gate
+- engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
+- Claude hook: a duplicate export in a barrel — every Bash command denied; fixed the file through the edit tool

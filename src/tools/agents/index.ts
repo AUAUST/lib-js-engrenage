@@ -16,7 +16,6 @@ export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 export { isHookCommand } from "#tools/agents/utils/isHookCommand";
-export { measureGithubCommand } from "#tools/agents/utils/measureGithubCommand";
 
 // @barrel setup
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
@@ -51,6 +50,7 @@ export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
+export { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
