@@ -87,3 +87,4 @@
 - engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
 - Claude hook: a duplicate export in a barrel — every Bash command denied; fixed the file through the edit tool
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
+- `engrenage sync agents`: synced edited skill fragments — it rewrote `.codex/agents/*.toml` but left `.claude/skills`, `.claude/agents` and `.agents/skills` stale, reporting them conflicting; full `pnpm engrenage sync` refreshed them
