@@ -70,6 +70,7 @@ Use the installed workflows below when their descriptions match the request.
 | `walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
 | `merging` | Delegate to `merger`. Merger that rebases a walked leaf onto the walked branch and reviews it against its issue and its siblings, or reviews a closed segment against its siblings and the code around it, applying only mechanical fixes. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
 | `curation` | Delegate to `curator`. Curator that turns the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconciles them with the open issues. Dispatch it only when a skill you follow or the user asks for a curator; otherwise do the work yourself. |
+| `instruction-writing` | Delegate to `writer`. Writer that turns a behavior change the user consented to into agent instructions, grounded in current model guidance, and reads them as each target agent would to remove misreadings, conflicts and gaps. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the decided behavior; never write those instructions yourself. Its report ends with what remains and the kind of work it needs. |
 
 | Profile | Canonical role | Effort | Complexity |
 | --- | --- | --- | --- |
@@ -82,6 +83,9 @@ Use the installed workflows below when their descriptions match the request.
 | `worker_medium` | `worker` | medium | `involved`, `complex` |
 | `merger` | `merger` | medium | any other |
 | `curator` | `curator` | high | any other |
+| `writer` | `writer` | medium | any other |
+| `writer_low` | `writer` | low | `trivial` |
+| `writer_high` | `writer` | high | `complex` |
 
 Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf, select the role's profile whose Complexity lists the leaf's `complexity`; otherwise its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
 Spawn each leaf and the consultant with fork_turns: "none" and a brief containing only task references, relevant decisions and the requested outcome. Use send_input with its id to return questions, review gaps and gate failures to that same agent; use resume_agent first if it is closed. In clients exposing collaboration tools, use spawn_agent with the named role when supported, send_message for a running agent and followup_task for an idle agent. A client without named-profile selection cannot establish profile loading; report that unsupported path.

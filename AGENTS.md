@@ -6,7 +6,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-- Change agent instructions or their sources only with explicit user consent to that change.
+- Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources only with explicit user consent to that change, then dispatch the `writer` agent with the decided behavior and the reach the consent covers, and review its diff before committing. Unable to dispatch, as a subagent: load the instruction-writing skill and follow it yourself.
 - A `<!-- @reference <reference> -->` marker opens a block that `pnpm engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
 - Put in AGENTS.md only rules every agent needs, and surface-specific detail in `.claude/rules/`, one file per surface. Keep feature documentation, file inventories, API details and records of recent changes out of both.
 - When tooling starts enforcing a rule, delete its prose. List it under "Enforced by tooling" only when its fix is manual and it shapes how code is first written.
@@ -16,7 +16,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 ## Writing
 
 - Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog entries, instructions.
-- Before writing agent instructions, wherever they go, read `.claude/rules/instructions.md`: it refines these rules for them.
+- Before proposing instruction wording in an issue or backlog entry, read `.claude/rules/instructions.md`: it refines these rules for it.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State the core idea exactly, with its reason in one clause; never hedge it or blur it into vague wording.
 - Prefer fragments and keywords to full sentences wherever the meaning stays exact.
@@ -136,7 +136,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 ## Implementation
 
-- Do the work a request asks of you yourself; dispatch an agent only when your skill directs it or the user asks for one.
+- Do the work a request asks of you yourself; dispatch an agent only when your skill or these instructions direct it, or the user asks for one.
 - Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
 - Write only these comments: tool directives, within each directive's rules; `@debt` markers; the JSDoc lint asks for; comments the user explicitly requests.
 

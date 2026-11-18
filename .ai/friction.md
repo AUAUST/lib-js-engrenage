@@ -99,3 +99,4 @@
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
+- `pnpm engrenage sync agents`: added a new skill fragment in `data/agents/skills/` — sync installs no new skill; ran `pnpm engrenage agents skills add <name>` first

@@ -9,7 +9,7 @@ order: 15
 ## Writing
 
 - Apply these rules to everything you write other than code: messages, reports, issues, comments, backlog entries, instructions.
-- Before writing agent instructions, wherever they go, read `.claude/rules/instructions.md`: it refines these rules for them.
+- Before proposing instruction wording in an issue or backlog entry, read `.claude/rules/instructions.md`: it refines these rules for it.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State the core idea exactly, with its reason in one clause; never hedge it or blur it into vague wording.
 - Prefer fragments and keywords to full sentences wherever the meaning stays exact.

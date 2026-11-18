@@ -8,7 +8,7 @@ order: 40
 
 ## Implementation
 
-- Do the work a request asks of you yourself; dispatch an agent only when your skill directs it or the user asks for one.
+- Do the work a request asks of you yourself; dispatch an agent only when your skill or these instructions direct it, or the user asks for one.
 - Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
 - Write only these comments: tool directives, within each directive's rules; `@debt` markers; the JSDoc lint asks for; comments the user explicitly requests.
 
