@@ -36,7 +36,7 @@ walk check ──► route the ready set (§Handling table)
   │                   ▼
   │             integration merger (§Integration), or your own review (§Review)
   │                   ▼
-  │             gaps and leaf findings ──► resume the agent once ──► check its fixes
+  │             gaps and leaf findings ──► resume the agent ──► check its fixes
   │                   ▼
   │             closing commit (§Commit) ──► report row ──► walk check
   │
@@ -71,9 +71,10 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 
 - Keep up to K leaves of the ready set in flight. At K = 1, dispatch in the main checkout. Past it, dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit.
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
-- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
-- Brief a debugger given a review merger's findings with those findings and no `Issue:` line: they belong to no single issue.
+- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
+- Brief a debugger given a review merger's findings with the `Walk:` line and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
+- Resume a leaf's agent at most twice for one gate failure, gap or leaf finding. Instead of a third resume, set the leaf aside with its worktree and report its state: to the user at once, who may say how to proceed, or in autonomous mode in your final report.
 - Send a blocker the issue's text does not answer to the consultant; resume the agent with what it settles.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
@@ -83,7 +84,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 Runs for each completed leaf at K > 1, and at K = 1 in autonomous mode; otherwise §Review applies.
 
 1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger with `effort: low` under §Resumed agents.
-2. When the merger reports leaf findings, resume the leaf's agent once with all of them, so its stop gate checks the worktree the merger left; then check only that each finding is fixed or declined with a reason.
+2. When the merger reports leaf findings, resume the leaf's agent with all of them in one message, so its stop gate checks the worktree the merger left; then check only that each finding is fixed or declined with a reason.
 3. Leave conflicts to the merger's rebase; when it reports one needing design, resume the leaf's agent to rebase its worktree onto the walked branch, then resume the merger.
 
 ## Review
@@ -93,7 +94,7 @@ When no integration merger runs:
 1. Read the leaf's diff from its dispatch base: `git diff --stat` first, then the hunks the issue's **Steps** and **Tests** name; skip generated files and lockfiles, and read no code beyond the diff.
 2. Review it against the issue's **Steps**, **Tests** and names. A worker commits at each `Checkpoint:` line of its issue: review those commits one by one, then the uncommitted rest, reading their messages only as a hint of how the worker read its Steps.
 3. Add the `@debt` markers the diff calls for and the agent missed.
-4. When you find gaps, resume the agent once with all of them; then check only its fixes.
+4. When you find gaps, resume the agent with all of them in one message; then check only its fixes.
 
 ## Commit
 
@@ -141,12 +142,11 @@ Reshape each held issue once per settlement attempt: run it again only after the
 
 The user delegated every decision the instructions let an agent settle and is not there to answer: never ask them or wait for them.
 
-| Instead of                                                       | Do                                                                                           |
-| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Batching questions to the user                                   | Send them to the consultant; the issues it cannot settle stay set aside and go to §Reshaping |
-| Asking to clear a `drafting` claim                               | Set the issue aside                                                                          |
-| Reporting a debugger written up for planning                     | Send it to the consultant, which plans it into the tree or leaves it set aside               |
-| Resuming a leaf's agent a third time for one gate failure or gap | Set the leaf aside with its worktree, and report its state                                   |
+| Instead of                                   | Do                                                                                           |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Batching questions to the user               | Send them to the consultant; the issues it cannot settle stay set aside and go to §Reshaping |
+| Asking to clear a `drafting` claim           | Set the issue aside                                                                          |
+| Reporting a debugger written up for planning | Send it to the consultant, which plans it into the tree or leaves it set aside               |
 
 ## Resumed agents
 

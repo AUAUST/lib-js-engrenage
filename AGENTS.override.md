@@ -21,7 +21,6 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/planning-sheet.md</code> |
-| <code>.changeset/**</code> | <code>.claude/rules/changesets.md</code> |
 | <code>.claude/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.codex/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>*.config.ts</code> | <code>.claude/rules/project-map.md</code> |
@@ -50,6 +49,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>tooling/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>tooling/**</code> | <code>.claude/rules/project-map/tooling.md</code> |
 | All files | <code>.claude/rules/agent-records.md</code> |
+| All files | <code>.claude/rules/changesets.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
 | All files | <code>.claude/rules/no-attribution.md</code> |
 
@@ -63,7 +63,7 @@ Use the installed workflows below when their descriptions match the request.
 
 | Skill | Handling |
 | --- | --- |
-| `analysis` | Delegate to `analyser`. Analyser that works out the concern behind a request, its ideal solution and its reach across the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Dispatch it only when a skill you follow or the user asks for an analyser; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
+| `analysis` | Delegate to `analyser`. Analyser that works out the cause, ideal solution and reach of a concern, design or part of the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Dispatch it only when a skill you follow or the user asks for an analyser; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
 | `planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session, or as the walker's consultant, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
 | `debugging` | Delegate to `debugger`. Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix into a GitHub issue for a worker. Dispatch it only when a skill you follow or the user asks for a debugger; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs. |
 | `issue-implementation` | Delegate to `worker`. Worker that implements one GitHub issue as written and stops to report what the issue leaves unclear. Dispatch it only when a skill you follow or the user asks for a worker; otherwise do the work yourself. |

@@ -1,8 +1,3 @@
----
-paths:
-  - ".changeset/**"
----
-
 <!-- @reference @auaust/engrenage/agents/rules/changesets.md -->
 
 # Changesets

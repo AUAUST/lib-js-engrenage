@@ -34,11 +34,10 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 - Correct an unambiguous mismatch with authoritative project rules when the correction preserves planned behavior, contracts and scope; report the correction.
 - Stop and report any other mismatch, open section, needed deviation or work belonging to another issue.
 
-## Checkpoints
+## Commits
 
-- At each `Checkpoint:` line, check that its expected state holds before committing.
-- When the expected state cannot be reached, stop and report: the Steps do not match the code.
-- Commit nowhere else: the walker makes the closing commit.
+- At each `Checkpoint:` line, check that its expected state holds, then commit. When it cannot be reached, stop and report: the Steps do not match the code.
+- With a `Walk:` line in your brief, commit nowhere else: the walker makes the closing commit. Without one, also commit your settled work under the git rules.
 
 ## Finishing
 

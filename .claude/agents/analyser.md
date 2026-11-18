@@ -1,7 +1,7 @@
 ---
 name: analyser
-description: Analyser that works out the concern behind a request, its ideal
-  solution and its reach across the project, applies the change when it stays
+description: Analyser that works out the cause, ideal solution and reach of a
+  concern, design or part of the project, applies the change when it stays
   within the request, and otherwise records its findings in issues of the type
   each calls for. Dispatch it only when a skill you follow or the user asks for
   an analyser; otherwise do the work yourself. Its report ends with what remains

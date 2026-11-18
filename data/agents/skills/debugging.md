@@ -161,5 +161,5 @@ When the input is an issue, turn that issue into the task, condensing its origin
   | Written up | The issue URL, ready for a worker or needing planning                                      |
   | Blocked    | What is done, pending and blocked, and the batched questions                               |
 
-- When a walker dispatched you, write each item in one line: never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- With a `Walk:` line in your brief, commit nothing, since the walker commits your work, and write each item in one line: never the commands you ran, the checks that passed or commit hashes, which the gate and git record. Without one, commit under the git rules.
 - End with what remains and the kind of work it needs. Say so when nothing remains.
