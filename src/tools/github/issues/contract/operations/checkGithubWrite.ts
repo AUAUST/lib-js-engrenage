@@ -29,11 +29,11 @@ async function checkWrite(
   const body = await readGithubBody(write.body, cwd);
 
   if (body === undefined && "path" in write.body) {
-    return `the body file \`${write.body.path}\` does not exist`;
+    return `the body file \`${write.body.path}\` does not exist when the hook runs, before the command: write it in an earlier call`;
   }
 
   if (body === undefined) {
-    return "pass the body with `--body`, `--body-file <file>`, or `--body-file -` and a heredoc";
+    return "the hook reads only a literal `--body`, a literal `--body-file` path (after literal `cd`s), or a heredoc, here-string or `cat` pipe into `--body-file -`; variables, substitutions and other pipes cannot be checked";
   }
 
   const issue = write.action === "edit" && write.number !== undefined

@@ -706,6 +706,28 @@ describe("parseGithubCommand", () => {
     ).toEqual({ kind: "unreadable" });
   });
 
+  test("resolves relative body files from literal `cd`s", () => {
+    expect(readBody("cd sub && gh issue edit 1 --body-file body.md")).toEqual({
+      kind: "file",
+      path: "sub/body.md",
+    });
+
+    expect(readBody("cd /abs && cd x && gh issue edit 1 -F b.md")).toEqual({
+      kind: "file",
+      path: "/abs/x/b.md",
+    });
+  });
+
+  test("makes relative body files after an unreadable `cd` unreadable", () => {
+    expect(readBody(`cd "$S" && gh issue edit 1 --body-file body.md`)).toEqual({
+      kind: "unreadable",
+    });
+
+    expect(
+      readBody(`cd "$S" && gh issue edit 1 --body-file /tmp/b.md`),
+    ).toEqual({ kind: "file", path: "/tmp/b.md" });
+  });
+
   test("reads every write of a command", () => {
     const writes = parseGithubCommand(
       [
@@ -968,6 +990,21 @@ describe("checkGithubWrite", () => {
         protocol,
       ),
     ).resolves.toContain("gh issue create:");
+  });
+
+  test("reads a body file relative to a literal `cd`", async () => {
+    mockProblem();
+
+    const project = createTemporaryProject({ "sub/body.md": task });
+
+    await expect(
+      checkGithubWrite(
+        "cd sub && gh issue edit 5 --repo o/r --body-file body.md",
+        project.root,
+        registry,
+        protocol,
+      ),
+    ).resolves.toBeUndefined();
   });
 
   test("names a missing draft", async () => {
