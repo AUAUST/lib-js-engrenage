@@ -7,11 +7,27 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { readRawConfig } from "#project/config/operations/readRawConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { getFixture } from "#tests/utils/getFixture";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
 describe("loadConfig", () => {
+  test("caches a config per reporter and reports through the load's reporter", async () => {
+    const { root } = createTemporaryProject({ "package.json": "{}" });
+
+    const first = createTestReporter();
+    const second = createTestReporter();
+
+    const firstConfig = await loadConfig(root, { reporter: first });
+
+    const secondConfig = await loadConfig(root, { reporter: second });
+
+    expect(firstConfig.context.reporter).toBe(first);
+    expect(secondConfig.context.reporter).toBe(second);
+    expect(await loadConfig(root, { reporter: first })).toBe(firstConfig);
+  });
+
   test("finds the config in .config/ and in parent directories, up to the nearest package file", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "outer", "type": "module" }',

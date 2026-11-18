@@ -1,12 +1,13 @@
 import type { Registry } from "#foundation/extensions/index";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { ReportingContext } from "#foundation/reports/index";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-export interface ConfigContext {
+export interface ConfigContext extends ReportingContext {
   readonly root: Directory;
   readonly filesystem: Filesystem;
   readonly configFile: File | undefined;

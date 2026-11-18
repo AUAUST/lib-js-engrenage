@@ -1,5 +1,9 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
+import {
+  createConsoleReporter,
+  type Reporter,
+} from "#foundation/reports/index";
 import { detectHookCommand } from "#workflows/cli/operations/detectHookCommand";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
@@ -7,9 +11,9 @@ import { runContext } from "#workflows/cli/operations/runContext";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
-function isDebugFlagSet(command: CommandUnknownOpts | null): boolean {
+function isFlagSet(command: CommandUnknownOpts | null, name: string): boolean {
   for (let current = command; current !== null; current = current.parent) {
-    if (current.getOptionValue("debug") === true) {
+    if (current.getOptionValue(name) === true) {
       return true;
     }
   }
@@ -37,13 +41,24 @@ async function isDebugConfigured(): Promise<boolean> {
 export async function runProgram(
   program: CommandUnknownOpts,
   argv?: readonly string[],
-  { signal }: { signal?: AbortSignal } = {},
+  { signal, reporter }: { signal?: AbortSignal; reporter?: Reporter } = {},
 ): Promise<void> {
   let running: CommandUnknownOpts | null = program;
+  let verbose = false;
 
   program.hook("preAction", (_command, action) => {
     running = action;
+    verbose = isFlagSet(action, "verbose");
   });
+
+  const runReporter = (
+    reporter ??
+    createConsoleReporter({
+      isVerbose: () => {
+        return verbose;
+      },
+    })
+  );
 
   const controller = new AbortController();
 
@@ -69,7 +84,9 @@ export async function runProgram(
   }
 
   try {
-    await runContext.run({ signal: runSignal }, () => program.parseAsync(argv));
+    await runContext.run({ signal: runSignal, reporter: runReporter }, () => {
+      return program.parseAsync(argv);
+    });
   } catch (error) {
     if (runSignal.aborted) {
       return;
@@ -77,7 +94,7 @@ export async function runProgram(
 
     const kind = await detectHookCommand(argv ?? process.argv);
 
-    const debug = isDebugFlagSet(running) || (await isDebugConfigured());
+    const debug = isFlagSet(running, "debug") || (await isDebugConfigured());
 
     console.error(formatCommandError(error, { debug }));
 

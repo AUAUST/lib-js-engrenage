@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 
 import { successMessage } from "#constants";
 import { resolveBinary } from "#foundation/processes/index";
-import { runContext } from "#workflows/cli/operations/runContext";
+import { getRunContext } from "#workflows/cli/operations/getRunContext";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
@@ -51,11 +51,7 @@ export async function runTool(
   },
   args: readonly string[],
 ): Promise<void> {
-  const context = runContext.getStore();
-
-  if (context === undefined) {
-    throw new Error("Tool commands run only within runProgram");
-  }
+  const context = getRunContext();
 
   const config = await loadValidatedConfig();
 

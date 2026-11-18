@@ -230,6 +230,7 @@ export async function createStepContext({
     getAgents,
     setAgents,
     filesystem,
+    reporter: config.context.reporter,
     getPreset,
     getTraits,
     setPreset,

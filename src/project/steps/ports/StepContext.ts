@@ -2,6 +2,7 @@ import type { JSONPath } from "jsonc-parser";
 
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { JsonValue } from "#foundation/json/index";
+import type { Reporter } from "#foundation/reports/index";
 import type {
   ConfigKey,
   ConfigSections,
@@ -24,6 +25,10 @@ export interface StepContext
    * writes earlier steps staged.
    */
   readonly filesystem: Filesystem;
+  /**
+   * The config's reporter.
+   */
+  readonly reporter: Reporter;
   /**
    * The preferred agents chosen so far, starting from the configured ones;
    * `undefined` while neither the config nor a step chose any.

@@ -23,6 +23,10 @@ import {
   validate,
   type KeyedSection,
 } from "#foundation/options/index";
+import {
+  createConsoleReporter,
+  type Reporter,
+} from "#foundation/reports/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 import { unpresettable } from "#project/config/constants";
 import { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
@@ -88,11 +92,13 @@ export function createProjectConfig({
   raw,
   configFile,
   filesystem = createFilesystem(root),
+  reporter = createConsoleReporter(),
 }: {
   root: Directory;
   raw: RawConfig;
   configFile: File | undefined;
   filesystem?: Filesystem;
+  reporter?: Reporter;
 }): LoadedConfig {
   const source = configFile ?? root;
 
@@ -244,6 +250,7 @@ export function createProjectConfig({
     {
       root,
       filesystem,
+      reporter,
       configFile,
       registry,
       path(...paths: string[]) {
@@ -254,6 +261,7 @@ export function createProjectConfig({
           root,
           raw,
           configFile,
+          reporter,
         });
       },
     },

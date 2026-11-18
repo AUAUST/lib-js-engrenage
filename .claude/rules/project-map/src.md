@@ -16,7 +16,8 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ json  Read and edit JSON while preserving its formatting.
 │  ├─ modules  Load lazily imported modules and resolve their single export.
 │  ├─ options  Declare and validate configuration options.
-│  └─ processes  Run external processes.
+│  ├─ processes  Run external processes.
+│  └─ reports  Report typed messages to the handler the running context chooses.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.

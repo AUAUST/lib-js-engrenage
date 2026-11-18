@@ -1,5 +1,6 @@
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
+import type { Reporter } from "#foundation/reports/index";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 
@@ -13,7 +14,7 @@ const validated = new WeakSet<LoadedConfig>();
  */
 export async function loadValidatedConfig(
   cwd?: Directory | URL,
-  options?: { searchParents?: boolean },
+  options?: { searchParents?: boolean; reporter?: Reporter },
 ): Promise<LoadedConfig> {
   const config = await loadConfig(cwd, options);
 

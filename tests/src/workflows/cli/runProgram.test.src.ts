@@ -7,6 +7,7 @@ import {
   createProgram as createDefinedProgram,
   defineCommand,
   defineGroup,
+  getRunContext,
 } from "#workflows/cli/index";
 import { runProgram } from "#workflows/cli/operations/runProgram";
 
@@ -153,5 +154,34 @@ describe("runProgram", () => {
     expect(printed()).toContain("Invalid");
     expect(printed()).not.toContain("    at ");
     expect(process.exitCode).toBe(1);
+  });
+
+  test("prints progress only with --verbose", async () => {
+    const stderr = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
+
+    const program = () => {
+      return createDefinedProgram(
+        "program",
+        defineGroup({
+          commands: {
+            progress: defineCommand({
+              action() {
+                getRunContext().reporter.info("progressing");
+              },
+            }),
+          },
+        }),
+      );
+    };
+
+    await run(program(), "progress");
+
+    expect(stderr.mock.calls.map(String).join("")).not.toContain("progressing");
+
+    await run(program(), "progress", "--verbose");
+
+    expect(stderr.mock.calls.map(String).join("")).toContain("progressing");
   });
 });
