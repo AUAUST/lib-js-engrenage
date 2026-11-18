@@ -3,7 +3,7 @@ import type { IssueProtocol } from "#tools/github/issues/contract/index";
 
 export interface DraftsContext {
   readonly snapshot: GithubSnapshot;
-  readonly repository: string;
+  readonly repository: string | undefined;
   readonly registry: ReadonlyMap<string, string>;
   readonly protocol: IssueProtocol;
 }

@@ -11,7 +11,6 @@ import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkNesting,
   findContractMeaning,
-  type IssueAccess,
   type IssueContract,
 } from "#tools/github/issues/contract/index";
 import { createIssueLookup } from "#tools/github/issues/drafts/operations/createIssueLookup";
@@ -210,16 +209,10 @@ export async function publishIssues(
     return failed(segments);
   }
 
-  const access: IssueAccess = {
-    repository: context.repository,
-    client,
-    protocol: context.protocol,
-  };
-
   const publication: Publication = {
     config,
     context,
-    access,
+    client,
     drafts,
     lookup: createIssueLookup(client),
     numbers: new Map(),
@@ -273,7 +266,7 @@ export async function publishIssues(
   }
 }
 
-function explainRefusal(error: unknown, current: string) {
+function explainRefusal(error: unknown, current: string | undefined) {
   if (!(error instanceof RequestError)) {
     return error;
   }
@@ -288,7 +281,7 @@ function explainRefusal(error: unknown, current: string) {
 
   if (
     (error.status === 403 || error.status === 404) &&
-    repository.toLowerCase() !== current.toLowerCase()
+    repository.toLowerCase() !== current?.toLowerCase()
   ) {
     return new Error(
       `${repository} refused the write (${error.status}): publishing there needs \`repo\` on a classic or \`gh\` token, or Issues read and write on ${repository} for a fine-grained token`,

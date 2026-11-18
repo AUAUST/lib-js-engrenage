@@ -444,3 +444,53 @@ o
     );
   });
 });
+
+describe("without a current repository", () => {
+  async function createDetachedProject(drafts: Record<string, string>) {
+    return createProject({
+      "package.json": JSON.stringify({ name: "@auaust/app", type: "module" }),
+      "engrenage.config.ts": `export default ${JSON.stringify({
+        github: {
+          repositories: { toolkit: "AUAUST/toolkit" },
+        },
+      })};`,
+      ".engrenage/github.json": JSON.stringify({
+        ...snapshot,
+        repositories: {
+          toolkit: {
+            ...snapshot.repositories.app,
+            repository: "AUAUST/toolkit",
+          },
+        },
+      }),
+      ...drafts,
+    });
+  }
+
+  test("creates a draft only in a named repository", async () => {
+    const config = await createDetachedProject({});
+
+    await expect(
+      createDraft(config, "task", { slug: "x", repo: "toolkit" }),
+    ).resolves.toBe(".ai/issues/toolkit.new-x.draft.md");
+
+    await expect(createDraft(config, "task", { slug: "y" })).rejects.toThrow(
+      "needs the current repository: set `repository` in package.json or add an `origin` remote",
+    );
+  });
+
+  test("checks a prefixed draft and rejects an unprefixed one for the missing current repository", async () => {
+    const config = await createDetachedProject({
+      ".ai/issues/toolkit.new-x.draft.md": first,
+      ".ai/issues/new-y.draft.md": first,
+    });
+
+    await expect(
+      checkIssues(config, ["toolkit.new-x"], "worker"),
+    ).resolves.toEqual({ lines: ["toolkit.new-x: ready"], passed: true });
+
+    await expect(checkIssues(config, ["new-y"], "worker")).rejects.toThrow(
+      "new-y needs the current repository",
+    );
+  });
+});

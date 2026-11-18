@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createProjectConfig } from "#project/config/index";
@@ -244,5 +246,29 @@ describe("fetchGithubSnapshot", () => {
     );
 
     expect(fetch.mock.calls.map(([url]) => url)).toEqual([`${api}/repos/o/b`]);
+  });
+
+  test("fails before any request when no repository is registered", async () => {
+    const fetch = vi.fn();
+
+    vi.stubGlobal("fetch", fetch);
+
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({}),
+    });
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: {},
+      configFile: undefined,
+    });
+
+    await expect(fetchGithubSnapshot(config, client)).rejects.toThrow(
+      "add `github.repositories`",
+    );
+
+    expect(fetch).not.toHaveBeenCalled();
+
+    expect(existsSync(project.resolve(".engrenage/github.json"))).toBe(false);
   });
 });

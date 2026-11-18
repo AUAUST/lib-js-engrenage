@@ -24,7 +24,7 @@ export async function resolveRepository(
 
   if (current === undefined) {
     throw new Error(
-      "Cannot tell the GitHub repository: pass --repo <owner/repo or short name>, or set `repository` in package.json",
+      "Cannot tell the GitHub repository: pass --repo <owner/repo or short name>, set `repository` in package.json or add an `origin` remote",
     );
   }
 

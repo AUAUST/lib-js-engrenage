@@ -2,7 +2,7 @@ import { isString } from "@auaust/toolkit";
 
 import {
   createGithubClient,
-  resolveRepository,
+  resolveCurrentRepository,
 } from "#tools/github/issues/api/index";
 import {
   checkIssue,
@@ -86,7 +86,7 @@ export async function checkIssues(
   const { repositories } = await config.resolve("github");
 
   const [repository, registry] = await Promise.all([
-    resolveRepository({ root: config.context.root, repositories }),
+    resolveCurrentRepository(config.context.root),
     repositories(),
   ]);
 

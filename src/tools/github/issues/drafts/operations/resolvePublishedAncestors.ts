@@ -25,7 +25,7 @@ async function listDescendants(
   publication: Publication,
   references: Iterable<string>,
 ) {
-  const { access, context, drafts } = publication;
+  const { client, context, drafts } = publication;
 
   const found = new Map<string, IssueLocation>();
 
@@ -55,7 +55,7 @@ async function listDescendants(
 
     found.set(stem, location);
 
-    const children = await access.client.paginate(
+    const children = await client.paginate(
       "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
       {
         ...splitRepository(location.repository),
@@ -90,7 +90,7 @@ async function findCurrentParent(
   publication: Publication,
   reference: string,
 ): Promise<IssueLocation | undefined> {
-  const { drafts, context, access, numbers } = publication;
+  const { drafts, context, client, numbers } = publication;
 
   const child = drafts.find(({ stem }) => {
     return toDraftReference(stem) === reference;
@@ -103,7 +103,7 @@ async function findCurrentParent(
   const location = resolveIssueLocation(reference, context, numbers);
 
   const parent = await fetchIssueParent(
-    { ...access, repository: location.repository },
+    { repository: location.repository, client },
     location.number,
   );
 
@@ -115,7 +115,7 @@ async function checkPlanParent(
   draft: PublishedDraft,
   reference: string,
 ): Promise<readonly string[]> {
-  const { drafts, context, access, lookup } = publication;
+  const { drafts, context, lookup } = publication;
 
   const parent = await findCurrentParent(publication, reference);
 
@@ -127,11 +127,11 @@ async function checkPlanParent(
 
   const { type } = await lookup.find(parent);
 
-  return type !== access.protocol.types.plan ||
+  return type !== context.protocol.types.plan ||
     drafts.some((candidate) => candidate.stem === stem)
     ? []
     : [
-        `${draft.stem}: moves ${reference} out of the Plan ${renderReference(parent, access.repository)}, outside the set, whose Roadmap would go stale: claim it with \`engrenage planning issue claim ${stem}\` and publish them together`,
+        `${draft.stem}: moves ${reference} out of the Plan ${renderReference(parent, draft.access.repository)}, outside the set, whose Roadmap would go stale: claim it with \`engrenage planning issue claim ${stem}\` and publish them together`,
       ];
 }
 

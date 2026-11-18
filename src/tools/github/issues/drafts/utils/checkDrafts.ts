@@ -23,6 +23,7 @@ import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraft
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
+import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
@@ -132,7 +133,7 @@ function findDraftRepository(stem: string, context: DraftsContext) {
   const parsed = parseStem(stem);
 
   return parsed === undefined
-    ? context.repository
+    ? requireCurrentRepository(context, stem)
     : resolveStem(parsed, context).repository;
 }
 

@@ -20,7 +20,7 @@ const referencePattern = /(?<![\w/.&-])(?:https:\/\/github\.com\/([\w.-]+\/[\w.-
 
 function localizeReferences(
   text: string,
-  source: string,
+  source: string | undefined,
   context: Pick<DraftsContext, "repository" | "registry">,
 ) {
   return replaceOutsideCode(
@@ -36,11 +36,16 @@ function localizeReferences(
     ) => {
       const repository = url || full || source;
 
-      const current = context.repository.toLowerCase();
+      if (repository === undefined) {
+        return match;
+      }
+
+      const current = context.repository?.toLowerCase();
 
       const known = (
-        (repository.toLowerCase() === current &&
-          source.toLowerCase() === current) ||
+        (current !== undefined &&
+          repository.toLowerCase() === current &&
+          source?.toLowerCase() === current) ||
         findShortName(repository, context) !== undefined
       );
 
@@ -62,7 +67,7 @@ function localizeReferences(
 
 export function toDraftBody(
   body: string,
-  source: string,
+  source: string | undefined,
   context: Pick<DraftsContext, "repository" | "registry">,
   contract: IssueContract | undefined,
 ): string {

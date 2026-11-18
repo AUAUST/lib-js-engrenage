@@ -69,6 +69,23 @@ describe("repository registry", () => {
     ).rejects.toThrow("registered: app, lib");
   });
 
+  test("fails without --repo or a current repository, naming both sources", async () => {
+    const { root } = createTemporaryProject({
+      "package.json": JSON.stringify({ name: "app" }),
+    });
+
+    await expect(
+      resolveRepository({
+        root,
+        repositories: async () => {
+          return new Map();
+        },
+      }),
+    ).rejects.toThrow(
+      "set `repository` in package.json or add an `origin` remote",
+    );
+  });
+
   test("resolves a full repository without building the registry", async () => {
     const { root } = createRegistry();
 

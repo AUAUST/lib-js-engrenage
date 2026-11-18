@@ -1296,7 +1296,7 @@ See #{unknown.1}.
     } = await publishIssues(await loadConfig(root), ["toolkit.45"]);
 
     expect({ last: lines.at(-1), passed }).toEqual({
-      last: "toolkit.45: published as AUAUST/toolkit#45",
+      last: "toolkit.45: published as #45",
       passed: true,
     });
 

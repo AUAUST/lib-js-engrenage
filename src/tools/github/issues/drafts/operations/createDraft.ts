@@ -23,6 +23,7 @@ import { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 import { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
+import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -208,7 +209,7 @@ export async function createDraft(
   const meaning = findMeaning(protocol, type);
 
   const repository = repo === undefined
-    ? context.repository
+    ? requireCurrentRepository(context, "A draft without --repo")
     : findRegisteredRepository(context.registry, repo);
 
   const prefix = `${repository === context.repository || repo === undefined ? "" : `${repo}.`}${newDraftPrefix}`;

@@ -100,6 +100,6 @@ export async function finishPublishedIssue(
 
   return {
     diff: diff === "" ? [] : diff.split("\n"),
-    summary: `${draft.origin}: published as ${renderReference(location, context.repository)}`,
+    summary: `${draft.origin}: published as ${renderReference(location, draft.access.repository)}`,
   };
 }

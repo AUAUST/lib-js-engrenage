@@ -44,6 +44,7 @@ export { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
 export { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
 export { renderHeader } from "#tools/github/issues/drafts/utils/renderHeader";
 export { renderRoadmap } from "#tools/github/issues/drafts/utils/renderRoadmap";
+export { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 export { resolveIssueLocation } from "#tools/github/issues/drafts/utils/resolveIssueLocation";
 export { resolveIssueStem } from "#tools/github/issues/drafts/utils/resolveIssueStem";
 export { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";

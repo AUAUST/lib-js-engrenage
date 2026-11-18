@@ -25,7 +25,7 @@ import type { PublishedDraft } from "#tools/github/issues/drafts/types/Published
 import type { RoadmapEntry } from "#tools/github/issues/drafts/types/RoadmapEntry";
 
 async function listMembers(
-  { context, access, lookup, drafts, numbers }: Publication,
+  { context, client, lookup, drafts, numbers }: Publication,
   location: IssueLocation,
 ): Promise<readonly IssueLocation[]> {
   const local = drafts.find((draft) => {
@@ -49,7 +49,7 @@ async function listMembers(
     return [];
   }
 
-  const children = await access.client.paginate(
+  const children = await client.paginate(
     "GET /repos/{owner}/{repo}/issues/{issue_number}/sub_issues",
     {
       ...splitRepository(location.repository),

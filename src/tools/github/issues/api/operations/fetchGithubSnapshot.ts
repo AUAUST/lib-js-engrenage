@@ -362,6 +362,12 @@ export async function fetchGithubSnapshot(
 
   const registered = [...(await repositories())];
 
+  if (registered.length === 0) {
+    throw new Error(
+      "No GitHub repository is registered: set `name` and `repository` in package.json, or add `github.repositories`",
+    );
+  }
+
   const opened = registered[0] === undefined
     ? undefined
     : await openReader(client, registered[0][1]);

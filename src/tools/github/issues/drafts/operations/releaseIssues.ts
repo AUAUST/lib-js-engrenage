@@ -8,6 +8,7 @@ import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
+import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { LoadedConfig } from "#project/config/index";
@@ -15,7 +16,11 @@ import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsCont
 import type { ReleasedIssue } from "#tools/github/issues/drafts/types/ReleasedIssue";
 
 // @debt duplicates `claimIssues`' stem resolution and existing-draft check, which already differ from `toClaimedIssue`'s; a shared resolver would own both.
-function toReleasedNumber(stem: string, context: DraftsContext) {
+function toReleasedNumber(
+  stem: string,
+  context: DraftsContext,
+  current: string,
+) {
   const parsed = parseStem(stem);
 
   if (parsed?.kind !== "issue") {
@@ -24,7 +29,7 @@ function toReleasedNumber(stem: string, context: DraftsContext) {
 
   const { repository } = resolveStem(parsed, context);
 
-  if (repository !== context.repository) {
+  if (repository !== current) {
     throw new Error(
       `${stem}: ${repository} is another repository, whose claims hold no \`drafting\` to release`,
     );
@@ -41,7 +46,9 @@ export async function releaseIssues(
 
   const context = await resolveDraftsContext(config);
 
-  const numbers = stems.map((stem) => toReleasedNumber(stem, context));
+  const current = requireCurrentRepository(context, "Release");
+
+  const numbers = stems.map((stem) => toReleasedNumber(stem, context, current));
 
   for (const number of numbers) {
     if (await filesystem.exists(locateDraft(String(number)))) {
@@ -52,12 +59,12 @@ export async function releaseIssues(
   }
 
   const access: IssueAccess = {
-    repository: context.repository,
+    repository: current,
     client: await createGithubClient(),
     protocol: context.protocol,
   };
 
-  const target = resolveManifestTarget(context.snapshot, context.repository);
+  const target = resolveManifestTarget(context.snapshot, current);
 
   const blockersField = findBlockersField(target, context.protocol);
 
