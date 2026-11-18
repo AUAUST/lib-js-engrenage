@@ -22,6 +22,7 @@ export type {
   FileLocation,
   FileResource,
   Filesystem,
+  GateCheck,
   GateResult,
   GateRun,
   GateStage,

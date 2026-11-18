@@ -1,4 +1,4 @@
-import { function_, looseObject, picklist, string } from "valibot";
+import { function_, looseObject, optional, picklist, string } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import type { PackageName } from "#types/PackageName";
@@ -11,4 +11,5 @@ export const gateStepEntry: StandardSchemaV1 = looseObject({
   stage: string(),
   audience: picklist(["everyone", "agents"]),
   load: function_(),
+  check: optional(looseObject({ load: function_() })),
 });

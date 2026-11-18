@@ -12,6 +12,7 @@ export { prettierSection } from "#tools/prettier/config/sections/prettierSection
 // @end
 
 // @barrel operations
+export { checkWithPrettier } from "#tools/prettier/operations/checkWithPrettier";
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 export { createPrettierignorePresets } from "#tools/prettier/operations/createPrettierignorePresets";
 export { fixWithPrettier } from "#tools/prettier/operations/fixWithPrettier";

@@ -15,6 +15,11 @@ export default {
         load() {
           return import("#workflows/sync/operations/runSyncCheck");
         },
+        check: {
+          load() {
+            return import("#workflows/sync/operations/runSyncCheck");
+          },
+        },
       },
     ],
     "sync.targets": [

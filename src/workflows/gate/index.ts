@@ -4,6 +4,7 @@ export { measureEntries } from "#workflows/gate/operations/measureEntries";
 export { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 export { runGate } from "#workflows/gate/operations/runGate";
 export { runMessageGate } from "#workflows/gate/operations/runMessageGate";
+export { runSteps } from "#workflows/gate/operations/runSteps";
 // @end
 
 // @barrel apis
@@ -12,8 +13,10 @@ export type * from "#workflows/gate/apis/GateStep";
 
 // @barrel types
 export type * from "#workflows/gate/types/GateFailure";
+export type * from "#workflows/gate/types/GateMode";
 export type * from "#workflows/gate/types/GateReport";
 export type * from "#workflows/gate/types/GateWarning";
+export type * from "#workflows/gate/types/StepsOutcome";
 export type * from "#workflows/gate/types/TreeIdentity";
 // @end
 

@@ -93,7 +93,7 @@ async function collectScripts({
       build && "pnpm run ci:build",
     ]),
     "ci:build": build && "pnpm run build",
-    "ci:check": chain(["engrenage sync --check", typecheck, lint]),
+    "ci:check": "engrenage gate --all",
     "ci:publish": publishes && "changeset publish",
     "ci:test": test,
     "coverage": (

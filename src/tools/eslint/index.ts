@@ -7,6 +7,7 @@ export { defineEslintConfig } from "#tools/eslint/config/defineEslintConfig";
 // @end
 
 // @barrel operations
+export { checkWithEslint } from "#tools/eslint/operations/checkWithEslint";
 export { createConventionRules } from "#tools/eslint/operations/createConventionRules";
 export { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";

@@ -51,6 +51,11 @@ export default {
         load() {
           return import("#tools/eslint/operations/fixWithEslint");
         },
+        check: {
+          load() {
+            return import("#tools/eslint/operations/checkWithEslint");
+          },
+        },
       },
     ],
   },

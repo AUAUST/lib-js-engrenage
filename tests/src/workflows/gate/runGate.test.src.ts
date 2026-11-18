@@ -136,6 +136,76 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(failures).toEqual([{ step: "fixture", output: "fixture failed" }]);
   });
 
+  test("checks the whole project without fixing an unformatted file", async () => {
+    const { project } = await createGateRepository();
+
+    project.write("src/index.ts", "export const value: number = 2\n");
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "all",
+    });
+
+    expect(failures.map(({ step }) => step)).toEqual(["prettier"]);
+
+    expect(project.read("src/index.ts")).toBe(
+      "export const value: number = 2\n",
+    );
+
+    expect(project.read(".runs")).toBe("run\n");
+  });
+
+  test("runs only the contributed steps declaring a check under --all", async () => {
+    const { project } = await createGateRepository();
+
+    project.write(
+      "engrenage.config.ts",
+      `export default {
+  src: { baseline: "2026-10" },
+  extensions: [
+    {
+      name: "gate-fixture",
+      contributes: {
+        "gate.steps": [
+          {
+            name: "fixture-run",
+            stage: "checks",
+            audience: "agents",
+            async load() {
+              return async () => ({ ok: false, output: "run failed" });
+            },
+          },
+          {
+            name: "fixture-check",
+            stage: "checks",
+            audience: "agents",
+            async load() {
+              return async () => ({ ok: true, output: "" });
+            },
+            check: {
+              async load() {
+                return async () => ({ ok: false, output: "fixture failed" });
+              },
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
+`,
+    );
+
+    loadConfig.refresh(project.root);
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "all",
+    });
+
+    expect(failures).toEqual([
+      { step: "fixture-check", output: "fixture failed" },
+    ]);
+  });
+
   test("reports a failing check before a failing command", async () => {
     const { project } = await createGateRepository(["exit 3"]);
 

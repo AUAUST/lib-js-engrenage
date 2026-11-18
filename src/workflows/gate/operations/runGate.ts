@@ -2,17 +2,13 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 import { iterable } from "@auaust/toolkit";
-import { filter, toArray } from "@auaust/toolkit/array";
+import { toArray } from "@auaust/toolkit/array";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
-import {
-  runGateProcess,
-  type GateResult,
-  type GateStage,
-} from "#project/gate/index";
+import { runGateProcess, type GateStage } from "#project/gate/index";
 import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   listChangedFiles,
@@ -23,13 +19,15 @@ import {
 } from "#tools/git/index";
 import { measureEntries } from "#workflows/gate/operations/measureEntries";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
+import { runSteps } from "#workflows/gate/operations/runSteps";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
+import type { GateMode } from "#workflows/gate/types/GateMode";
 import type { GateReport } from "#workflows/gate/types/GateReport";
-import type { GateWarning } from "#workflows/gate/types/GateWarning";
+import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
 const stampFile = "passed";
@@ -43,84 +41,17 @@ const lockTimeout = 5 * 60_000;
 const lockLabels = {
   staged: "staged gate",
   worktree: "worktree gate",
-} as const satisfies Record<ChangeMode, string>;
-
-interface StepOutcome {
-  readonly failure: GateFailure | undefined;
-  readonly warning: GateWarning | undefined;
-}
-
-interface StepsOutcome {
-  readonly failures: GateFailure[];
-  readonly warnings: GateWarning[];
-}
-
-async function runStep(step: GateStep, files: Files): Promise<StepOutcome> {
-  let result: GateResult;
-
-  try {
-    result = await step.run(files);
-  } catch (error) {
-    result = {
-      ok: false,
-      output: error instanceof Error ? error.message : String(error),
-    };
-  }
-
-  return {
-    failure: result.ok ? undefined : { step: step.name, output: result.output },
-    warning: result.warnings === undefined || result.warnings === ""
-      ? undefined
-      : { step: step.name, output: result.warnings },
-  };
-}
-
-function collectOutcomes(outcomes: readonly StepOutcome[]): StepsOutcome {
-  return {
-    failures: filter(
-      outcomes.map(({ failure }) => failure),
-      (failure) => failure !== undefined,
-    ),
-    warnings: filter(
-      outcomes.map(({ warning }) => warning),
-      (warning) => warning !== undefined,
-    ),
-  };
-}
-
-async function runSteps(
-  steps: readonly GateStep[],
-  files: Files,
-): Promise<StepsOutcome> {
-  const outcomes: StepOutcome[] = [];
-
-  for (const step of steps) {
-    outcomes.push(await runStep(step, files));
-  }
-
-  return collectOutcomes(outcomes);
-}
-
-async function runConcurrentSteps(
-  steps: readonly GateStep[],
-  files: Files,
-): Promise<StepsOutcome> {
-  const outcomes = await Promise.all(
-    iterable.map(steps, (step) => {
-      return runStep(step, files);
-    }),
-  );
-
-  return collectOutcomes(outcomes);
-}
+  all: "whole-project gate",
+} as const satisfies Record<GateMode, string>;
 
 async function listSteps(
   config: LoadedConfig,
   audience: GateStep["audience"],
 ): Promise<Record<GateStage, GateStep[]>> {
-  const { root, registry } = config.context;
-
-  const contributions = await registry.contributions("gate.steps", config);
+  const contributions = await config.context.registry.contributions(
+    "gate.steps",
+    config,
+  );
 
   const steps: Record<GateStage, GateStep[]> = {
     fixes: [],
@@ -149,19 +80,62 @@ async function listSteps(
     return steps;
   }
 
+  steps.commands.push(...(await listCommandSteps(config)));
+
+  return steps;
+}
+
+async function listCommandSteps(config: LoadedConfig): Promise<GateStep[]> {
   const { gate } = await config.resolve("agents");
 
-  for (const command of gate.commands) {
-    steps.commands.push({
+  return gate.commands.map((command) => {
+    return {
       audience: "agents",
       name: command,
       run() {
-        return runGateProcess(root, "sh", ["-c", command]);
+        return runGateProcess(config.context.root, "sh", ["-c", command]);
+      },
+    };
+  });
+}
+
+async function checkProject(config: LoadedConfig): Promise<GateReport> {
+  const contributions = await config.context.registry.contributions(
+    "gate.steps",
+    config,
+  );
+
+  const steps: GateStep[] = [];
+
+  for (const { entry } of contributions) {
+    const { check } = entry;
+
+    if (check === undefined) {
+      continue;
+    }
+
+    steps.push({
+      audience: entry.audience,
+      name: entry.name,
+      async run() {
+        const run = await loadLazy(check);
+
+        return run(config);
       },
     });
   }
 
-  return steps;
+  const commands = await listCommandSteps(config);
+
+  const [stepOutcome, commandOutcome] = await Promise.all([
+    runSteps(steps, [], { concurrent: true }),
+    runSteps(commands, [], { concurrent: false }),
+  ]);
+
+  return {
+    failures: [...stepOutcome.failures, ...commandOutcome.failures],
+    warnings: [],
+  };
 }
 
 async function readStamps(file: string): Promise<readonly string[]> {
@@ -264,10 +238,10 @@ async function checkLocalFiles(
     },
   };
 
-  return runSteps([local], files);
+  return runSteps([local], files, { concurrent: false });
 }
 
-// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until CI's full `lint`
+// @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until `gate --all`
 async function verify(
   config: LoadedConfig,
   mode: ChangeMode,
@@ -327,7 +301,7 @@ async function verify(
     warnings,
   } = await listSteps(config, audience);
 
-  const fixOutcome = await runSteps(fixes, files);
+  const fixOutcome = await runSteps(fixes, files, { concurrent: false });
 
   const failures = [...local.failures, ...fixOutcome.failures];
 
@@ -338,9 +312,9 @@ async function verify(
   const verified = await readTreeIdentity(config, mode);
 
   const [checkOutcome, commandOutcome, warningOutcome] = await Promise.all([
-    runConcurrentSteps(checks, files),
-    runSteps(commands, files),
-    runConcurrentSteps(warnings, files),
+    runSteps(checks, files, { concurrent: true }),
+    runSteps(commands, files, { concurrent: false }),
+    runSteps(warnings, files, { concurrent: true }),
   ]);
 
   failures.push(...checkOutcome.failures, ...commandOutcome.failures);
@@ -391,7 +365,7 @@ export async function runGate(
   {
     mode,
     audience = "agents",
-  }: { mode: ChangeMode; audience?: GateStep["audience"] },
+  }: { mode: GateMode; audience?: GateStep["audience"] },
 ): Promise<GateReport> {
   const resources = await config.resolve("resources");
 
@@ -412,7 +386,11 @@ export async function runGate(
           );
         },
       },
-      () => verify(config, mode, audience),
+      () => {
+        return mode === "all"
+          ? checkProject(config)
+          : verify(config, mode, audience);
+      },
     );
   } catch (error) {
     if (!(error instanceof LockTimeoutError)) {

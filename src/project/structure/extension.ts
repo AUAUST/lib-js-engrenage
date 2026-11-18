@@ -97,6 +97,11 @@ export default {
         load() {
           return import("#project/structure/operations/runStructureCheck");
         },
+        check: {
+          load() {
+            return import("#project/structure/operations/runStructureCheck");
+          },
+        },
       },
     ],
   },

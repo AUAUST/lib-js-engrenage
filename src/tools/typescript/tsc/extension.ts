@@ -18,6 +18,11 @@ export default {
         load() {
           return import("#tools/typescript/tsc/operations/checkTypes");
         },
+        check: {
+          load() {
+            return import("#tools/typescript/tsc/operations/checkTypes");
+          },
+        },
       },
     ],
   },

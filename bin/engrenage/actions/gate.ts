@@ -7,10 +7,12 @@ import {
 } from "#workflows/gate/index";
 
 export default async function ({
+  all,
   worktree,
   everyone,
   message,
 }: {
+  all?: true | undefined;
   worktree?: true | undefined;
   everyone?: true | undefined;
   message?: string | undefined;
@@ -23,7 +25,11 @@ export default async function ({
           reporter: getRunContext().reporter,
         }),
         {
-          mode: worktree === true ? "worktree" : "staged",
+          mode: all === true
+            ? "all"
+            : worktree === true
+              ? "worktree"
+              : "staged",
           audience,
         },
       )

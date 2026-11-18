@@ -55,6 +55,11 @@ export default {
         load() {
           return import("#tools/prettier/operations/fixWithPrettier");
         },
+        check: {
+          load() {
+            return import("#tools/prettier/operations/checkWithPrettier");
+          },
+        },
       },
     ],
     "ignore.files": [

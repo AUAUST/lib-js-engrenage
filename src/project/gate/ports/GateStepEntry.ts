@@ -1,5 +1,6 @@
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Lazy } from "#foundation/modules/index";
+import type { GateCheck } from "#project/gate/ports/GateCheck";
 import type { GateRun } from "#project/gate/ports/GateRun";
 import type { GateStage } from "#project/gate/ports/GateStage";
 
@@ -26,6 +27,11 @@ export interface GateStepEntry extends EntryShape, Lazy<GateRun> {
    * included; `agents` only in the agents' default run.
    */
   readonly audience: "everyone" | "agents";
+  /**
+   * The step's whole-project check, run by `gate --all`; a step without one is
+   * left out of that run.
+   */
+  readonly check?: Lazy<GateCheck>;
 }
 
 declare global {

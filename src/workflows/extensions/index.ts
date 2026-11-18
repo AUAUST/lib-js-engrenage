@@ -24,6 +24,7 @@ export type {
   LoadedConfig,
 } from "#project/config/index";
 export type {
+  GateCheck,
   GateResult,
   GateRun,
   GateStage,

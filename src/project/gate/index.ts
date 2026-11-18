@@ -1,4 +1,5 @@
 // @barrel ports
+export type * from "#project/gate/ports/GateCheck";
 export type * from "#project/gate/ports/GateResult";
 export type * from "#project/gate/ports/GateRun";
 export type * from "#project/gate/ports/GateStage";

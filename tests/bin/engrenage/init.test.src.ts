@@ -220,7 +220,7 @@ describe("engrenage init", () => {
       author: manifest.author,
       scripts: {
         "ci": "pnpm run ci:check && pnpm run ci:test",
-        "ci:check": "engrenage sync --check && engrenage typecheck && engrenage eslint",
+        "ci:check": "engrenage gate --all",
         "test": "engrenage vitest && engrenage typecheck",
         "typecheck": "engrenage typecheck",
         "coverage": "engrenage vitest:coverage",
