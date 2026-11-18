@@ -27,6 +27,7 @@ order: 15
 | Hierarchy, layout or layers            | ASCII tree or box diagram in a code block    |
 | Flow or dependency graph               | Mermaid, or an ASCII diagram in a code block |
 
+- Choose a table for the mapping it makes visible, never for density alone: rows that need sentences to read, or columns most rows leave empty, belong in a list.
 - Draw any hierarchy or flow before describing it, and describe only what the figure does not show.
 - Never use images or inline SVG: agents cannot read them back. Use other diagram languages only where the project already does.
 - Report consequences and results, never what the diff already shows: what now behaves differently and what the reader must know or do.

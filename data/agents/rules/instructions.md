@@ -29,8 +29,6 @@ Refines the writing rules' structure table:
 | A principle the other rules derive from                       | One or two sentences of prose, before the rules  |
 | A rule a tool can check                                       | A proposed check instead of prose                |
 
-- Choose a table for the mapping it makes visible, never for density alone: rows that need sentences to read, or columns most rows leave empty, belong in a list.
-
 ## Wording
 
 - Write each rule as its trigger and the behavior it must produce; cut connectives and subjects the rule's heading, column or list already states.
