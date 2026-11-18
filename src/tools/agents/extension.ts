@@ -85,7 +85,7 @@ export default {
             globs: rules.flatMap(({ entry }) => {
               return [
                 `${rulesDirectory}/${entry.name}.md`,
-                `${rulesDirectory}/${entry.name}/*.md`,
+                `${rulesDirectory}/${entry.name}/**/*.md`,
               ];
             }),
           };

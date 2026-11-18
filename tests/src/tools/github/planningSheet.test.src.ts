@@ -144,6 +144,25 @@ describe("planning sheet", () => {
     expect(content).not.toMatch(/"id"|nodeId/u);
   });
 
+  test("removes the stale rules below its own path and keeps the others", async () => {
+    const { project, config } = await createProject();
+
+    project.write(".claude/rules/planning-sheet/old/stale.md", "Stale.\n");
+    project.write(".claude/rules/handwritten.md", "Kept.\n");
+
+    await syncGeneratedRules(config);
+
+    const { filesystem } = config.context;
+
+    await expect(
+      filesystem.read(".claude/rules/planning-sheet/old/stale.md"),
+    ).resolves.toBeUndefined();
+
+    await expect(filesystem.read(".claude/rules/handwritten.md")).resolves.toBe(
+      "Kept.\n",
+    );
+  });
+
   test("fails on a mapped name missing from the snapshot, naming the meaning", async () => {
     const { config } = await createProject({
       github: {

@@ -63,6 +63,7 @@ export default {
       },
     ],
     "ignore.files": [
+      // @debt repeats the hash-comment syntax tools/git declares as `hashBlocks`; one shared ignore-file syntax would own it
       {
         name: "prettierignore",
         load() {
@@ -71,6 +72,7 @@ export default {
       },
     ],
     "blocks.syntaxes": [
+      // @debt repeats the hash-comment syntax tools/git declares as `hashBlocks`; one shared ignore-file syntax would own it
       {
         name: "prettierignore",
         files: ["**/.prettierignore"],

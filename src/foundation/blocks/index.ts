@@ -3,7 +3,7 @@ export { syncFiles } from "#foundation/blocks/operations/syncFiles";
 // @end
 
 // @barrel utils
-export { anchorGlob } from "#foundation/blocks/utils/anchorGlob";
+export { anchorGlobs } from "#foundation/blocks/utils/anchorGlobs";
 export { formatBlockMarker } from "#foundation/blocks/utils/formatBlockMarker";
 export { listBlockMarkers } from "#foundation/blocks/utils/listBlockMarkers";
 export { settlePreset } from "#foundation/blocks/utils/settlePreset";

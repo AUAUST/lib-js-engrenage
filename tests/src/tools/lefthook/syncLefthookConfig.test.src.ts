@@ -207,4 +207,64 @@ describe("syncLefthookConfig", () => {
 
     expect(config.context.filesystem.changes()).toEqual([]);
   });
+
+  test("copies an anchor of a rewritten command into the aliases outside it", async () => {
+    const project = createProject(
+      [
+        "pre-commit:",
+        "  commands:",
+        "    engrenage:",
+        "      only:",
+        "        - &agent",
+        '          run: test -n "$OTHER"',
+        "      run: pnpm --silent engrenage gate --staged",
+        "    lint:",
+        "      only:",
+        "        - *agent",
+        "      run: echo lint",
+        "",
+      ].join("\n"),
+    );
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+
+    await config.context.filesystem.flush();
+
+    const content = project.read("lefthook.yml");
+
+    expect(content).not.toMatch(/&agent|\*agent/);
+
+    expect(parse(content)["pre-commit"].commands.lint).toEqual({
+      only: [{ run: 'test -n "$OTHER"' }],
+      run: "echo lint",
+    });
+  });
+
+  test("copies an anchor of a removed command into the aliases outside it", async () => {
+    const project = createProject(
+      [
+        "pre-commit:",
+        "  commands:",
+        "    engrenage:",
+        "      run: &gate stale",
+        "    lint:",
+        "      run: *gate",
+        "",
+      ].join("\n"),
+      'export default { agents: { preferred: ["codex"] } };\n',
+    );
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+
+    await config.context.filesystem.flush();
+
+    const parsed = parse(project.read("lefthook.yml"));
+
+    expect(parsed["pre-commit"].commands.engrenage).toBeUndefined();
+    expect(parsed["pre-commit"].commands.lint).toEqual({ run: "stale" });
+  });
 });

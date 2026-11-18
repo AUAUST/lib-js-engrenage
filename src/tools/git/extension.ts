@@ -1,4 +1,8 @@
-import { gitattributesFile, ignoreFileEntry } from "#tools/git/constants";
+import {
+  gitattributesFile,
+  hashBlocks,
+  ignoreFileEntry,
+} from "#tools/git/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { File } from "#types/File";
 
@@ -75,16 +79,12 @@ export default {
       {
         name: "gitignore",
         files: ["**/.gitignore"],
-        open: "# ",
-        close: "",
-        padding: "\n\n",
+        ...hashBlocks,
       },
       {
         name: "gitattributes",
         files: ["**/.gitattributes"],
-        open: "# ",
-        close: "",
-        padding: "\n\n",
+        ...hashBlocks,
       },
     ],
   },

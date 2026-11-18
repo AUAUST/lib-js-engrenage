@@ -3,6 +3,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
+import type { BlockSyntax } from "#types/BlockSyntax";
 import type { File } from "#types/File";
 import type { GlobGroup } from "#types/GlobGroup";
 
@@ -76,6 +77,12 @@ export const defaultIgnores: readonly GlobGroup[] = freeze([
   logIgnores,
   editorIgnores,
 ] as const) satisfies readonly GlobGroup[];
+
+export const hashBlocks = freeze({
+  open: "# ",
+  close: "",
+  padding: "\n\n",
+} as const) satisfies BlockSyntax;
 
 export const ignoreBlocks = "# @ignore defaults\n\n# @ignore project\n\n# @end\n";
 

@@ -2,6 +2,7 @@ import { homedir } from "node:os";
 import { join, resolve } from "node:path";
 
 import { filter } from "@auaust/toolkit/array";
+import { map } from "@auaust/toolkit/iterable";
 
 import { pathExists } from "#foundation/filesystem/index";
 import { gitDirectory } from "#tools/git/constants";
@@ -45,7 +46,7 @@ export async function listExcludeFiles(root: Directory): Promise<Files> {
     configured === "" ? defaultExcludesFile() : resolve(root, configured),
   ];
 
-  const exists = await Promise.all(files.map((file) => pathExists(file)));
+  const exists = await Promise.all(map(files, (file) => pathExists(file)));
 
   return filter(files, (_, index) => exists[index]);
 }

@@ -1,14 +1,13 @@
 import { flat, pluck } from "@auaust/toolkit/array";
 
 import { gitignoreFile } from "#constants";
+import { listBlockMarkers } from "#foundation/blocks/index";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { defaultIgnores, ignoreBlocks } from "#tools/git/constants";
+import { defaultIgnores, hashBlocks, ignoreBlocks } from "#tools/git/constants";
 import type { Step } from "#project/steps/index";
 import type { ResolvedGit } from "#tools/git/types/ResolvedGit";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-
-const ignoreMarker = /^# @ignore /m;
 
 async function resolveFile(
   root: Directory,
@@ -50,7 +49,12 @@ export function createGitignoreStep(): Step {
         await resolveFile(context.root, await resolve("git")),
       );
 
-      return content === undefined || !ignoreMarker.test(content);
+      return (
+        content === undefined ||
+        !listBlockMarkers(content, hashBlocks).some(({ directive }) => {
+          return directive === "ignore";
+        })
+      );
     },
     async plan({ resolve, context, filesystem }) {
       const file = await resolveFile(context.root, await resolve("git"));

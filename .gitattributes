@@ -28,9 +28,9 @@
 /src/tools/vscode/types/VscodeInput.ts linguist-generated
 /src/workflows/config/types/ConfigInput.ts linguist-generated
 /.claude/rules/project-map.md linguist-generated
-/.claude/rules/project-map/*.md linguist-generated
+/.claude/rules/project-map/**/*.md linguist-generated
 /.claude/rules/planning-sheet.md linguist-generated
-/.claude/rules/planning-sheet/*.md linguist-generated
+/.claude/rules/planning-sheet/**/*.md linguist-generated
 /AGENTS.override.md linguist-generated
 /**/CHANGELOG.md linguist-generated
 /.engrenage/github.json linguist-generated

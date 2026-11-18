@@ -1,7 +1,10 @@
-import { attributesBlock, gitattributesFile } from "#tools/git/constants";
+import { listBlockMarkers } from "#foundation/blocks/index";
+import {
+  attributesBlock,
+  gitattributesFile,
+  hashBlocks,
+} from "#tools/git/constants";
 import type { Step } from "#project/steps/index";
-
-const attributesMarker = "# @attributes";
 
 export function createGitattributesStep(): Step {
   return {
@@ -10,9 +13,12 @@ export function createGitattributesStep(): Step {
     async isMissing({ filesystem }) {
       const content = await filesystem.read(gitattributesFile);
 
-      return !content
-        ?.split("\n")
-        .some((line) => line.startsWith(attributesMarker));
+      return (
+        content === undefined ||
+        !listBlockMarkers(content, hashBlocks).some(({ directive }) => {
+          return directive === "attributes";
+        })
+      );
     },
     async plan({ filesystem }) {
       const existing = (

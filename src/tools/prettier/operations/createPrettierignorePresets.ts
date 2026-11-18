@@ -1,6 +1,6 @@
-import { flatMap, includes, map } from "@auaust/toolkit/array";
+import { flatMap, includes } from "@auaust/toolkit/array";
 
-import { anchorGlob, settlePreset } from "#foundation/blocks/index";
+import { anchorGlobs, settlePreset } from "#foundation/blocks/index";
 import {
   createResourceIgnores,
   listLocationGlobs,
@@ -27,9 +27,9 @@ async function createProjectPrettierIgnores(
     ({ location }) => listLocationGlobs(location),
   );
 
-  const codegen = map(
+  const codegen = flatMap(
     files.generated.filter((glob) => !includes(generatedResources, glob)),
-    anchorGlob,
+    anchorGlobs,
   );
 
   return [

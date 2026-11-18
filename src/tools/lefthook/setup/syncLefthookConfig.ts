@@ -1,6 +1,13 @@
 import { isDeepStrictEqual } from "node:util";
 
-import { isMap, isNode, parseDocument, visit, type Node } from "yaml";
+import {
+  isMap,
+  isNode,
+  parseDocument,
+  visit,
+  type Document,
+  type Node,
+} from "yaml";
 
 import { entries } from "@auaust/toolkit/object";
 
@@ -14,20 +21,52 @@ import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
 import type { LoadedConfig } from "#project/config/index";
 
-function holdsAnchor(node: Node) {
-  let found = false;
+function listAnchored(node: unknown): Set<Node> {
+  const anchored = new Set<Node>();
 
+  if (isNode(node)) {
+    visit(node, (_key, child) => {
+      if (isNode(child) && child.anchor != null) {
+        anchored.add(child);
+      }
+    });
+  }
+
+  return anchored;
+}
+
+function dropAnchors(node: Node): Node {
   visit(node, (_key, child) => {
-    if (!isNode(child) || child.anchor == null) {
-      return;
+    if (isNode(child)) {
+      delete child.anchor;
     }
-
-    found = true;
-
-    return visit.BREAK;
   });
 
-  return found;
+  return node;
+}
+
+/**
+ * Replaces each alias of an anchored node with an anchorless copy of it, so
+ * rewriting or deleting that node leaves no alias unresolved.
+ */
+function inlineAliases(document: Document, sources: ReadonlySet<Node>): void {
+  visit(document, {
+    Alias(_key, alias) {
+      const source = alias.resolve(document);
+
+      if (source === undefined || !sources.has(source)) {
+        return;
+      }
+
+      const copy = source.clone();
+
+      if (!isNode(copy)) {
+        throw new Error(`Cannot copy the anchored node of ${alias.source}`);
+      }
+
+      return dropAnchors(copy);
+    },
+  });
 }
 
 export async function syncLefthookConfig(config: LoadedConfig) {
@@ -66,17 +105,21 @@ export async function syncLefthookConfig(config: LoadedConfig) {
 
   for (const [hook, name, command] of targets) {
     const path = [hook, "commands", name];
-    const current: unknown = document.getIn(path);
+    const current: unknown = document.getIn(path, true);
+
+    const anchored = listAnchored(current);
 
     if (
       isDeepStrictEqual(
         isNode(current) ? current.toJSON() : current,
         command,
       ) &&
-      !(isNode(current) && holdsAnchor(current))
+      anchored.size === 0
     ) {
       continue;
     }
+
+    inlineAliases(document, anchored);
 
     if (command === undefined) {
       document.deleteIn(path);
