@@ -16,6 +16,7 @@ import { record } from "@auaust/toolkit/object";
 import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { scopesHeader } from "#tools/github/issues/api/constants";
+import { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 import { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScopes";
 import { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
 import type { Reporter } from "#foundation/reports/index";
@@ -39,8 +40,6 @@ const entityInput = {
   name: string(),
   description: nullish(string(), null),
 };
-
-const labelsSchema = array(object(entityInput));
 
 const typesSchema = array(object({ ...entityInput, is_enabled: boolean() }));
 
@@ -198,8 +197,6 @@ async function readRepository(
   repository: string,
   data?: unknown,
 ) {
-  const route = splitRepository(repository);
-
   const [details, labels] = await Promise.all([
     data === undefined
       ? read(
@@ -208,7 +205,7 @@ async function readRepository(
           async () => {
             const response = await reader.client.request(
               "GET /repos/{owner}/{repo}",
-              route,
+              splitRepository(repository),
             );
 
             return response.data;
@@ -216,7 +213,7 @@ async function readRepository(
         )
       : data,
     read(reader, `the "Issues" repository permission on ${repository}`, () => {
-      return reader.client.paginate("GET /repos/{owner}/{repo}/labels", route);
+      return fetchRepositoryLabels(reader.client, repository);
     }),
   ]);
 
@@ -231,7 +228,7 @@ async function readRepository(
     id,
     nodeId: node_id,
     labels: sortByName(
-      map(validate(labelsSchema, labels, `labels of ${repository}`), toEntity),
+      map(labels, ({ color: _color, ...label }) => toEntity(label)),
     ),
   };
 
@@ -362,21 +359,19 @@ export async function fetchGithubSnapshot(
 
   const registered = [...(await repositories())];
 
-  if (registered.length === 0) {
+  const [first] = registered;
+
+  if (first === undefined) {
     throw new Error(
       "No GitHub repository is registered: set `name` and `repository` in package.json, or add `github.repositories`",
     );
   }
 
-  const opened = registered[0] === undefined
-    ? undefined
-    : await openReader(client, registered[0][1]);
-
-  const reader = opened?.reader ?? { client, fineGrained: false };
+  const { reader, data: firstData } = await openReader(client, first[1]);
 
   const fetched = await Promise.all(
     registered.map(async ([short, repository], index) => {
-      const data = index === 0 ? opened?.data : undefined;
+      const data = index === 0 ? firstData : undefined;
 
       return [short, await readRepository(reader, repository, data)] as const;
     }),

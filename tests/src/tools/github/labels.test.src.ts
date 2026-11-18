@@ -2,16 +2,13 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createProjectConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+import { createTestGithubClient } from "#tests/utils/createTestGithubClient";
+import { respondJson } from "#tests/utils/respondJson";
 import { pruneLabels } from "#tools/github/operations/pruneLabels";
 import { syncLabels } from "#tools/github/operations/syncLabels";
 import { diffLabels } from "#tools/github/utils/diffLabels";
 
-vi.stubEnv("GH_TOKEN", "t");
-
-const client = await createGithubClient();
-
-vi.unstubAllEnvs();
+const client = await createTestGithubClient();
 
 const color = "f1f3f6";
 
@@ -37,6 +34,8 @@ function stubFetch() {
     const body = init?.method === undefined || init.method === "GET"
       ? [
           {
+            id: 1,
+            node_id: "LA_1",
             name: "cli",
             description: "Commands.",
             color,
@@ -44,12 +43,7 @@ function stubFetch() {
         ]
       : {};
 
-    return Promise.resolve(
-      new Response(JSON.stringify(body), {
-        status: 200,
-        headers: { "content-type": "application/json" },
-      }),
-    );
+    return respondJson(body);
   });
 
   vi.stubGlobal("fetch", fetch);
@@ -129,13 +123,29 @@ describe("syncLabels", () => {
   test("creates and renames without deleting", async () => {
     const fetch = stubFetch();
 
-    await syncLabels(
+    const { refreshed } = await syncLabels(
       createLabelsProject({ CLI: "Commands.", New: "New." }),
       client,
       { check: false },
     );
 
     expect(methods(fetch).sort()).toEqual(["GET", "PATCH", "POST"]);
+
+    expect(refreshed).toBe(false);
+  });
+
+  test("rejects label names differing only by case before any request", async () => {
+    const fetch = stubFetch();
+
+    await expect(
+      syncLabels(
+        createLabelsProject({ CLI: "Commands.", cli: "Commands." }),
+        client,
+        { check: true },
+      ),
+    ).rejects.toThrow("Label names must differ beyond case");
+
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   test("rejects an empty github.labels before any request", async () => {

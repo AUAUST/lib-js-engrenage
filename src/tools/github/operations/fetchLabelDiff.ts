@@ -1,9 +1,8 @@
-import { array, nullish, object, string } from "valibot";
-
 import { keys } from "@auaust/toolkit/object";
 
-import { validate } from "#foundation/options/index";
 import {
+  fetchRepositoryLabels,
+  requireCurrentRepository,
   resolveCurrentRepository,
   splitRepository,
   type GithubClient,
@@ -11,14 +10,6 @@ import {
 import { diffLabels } from "#tools/github/utils/diffLabels";
 import type { LoadedConfig } from "#project/config/index";
 import type { LabelDiff } from "#tools/github/types/LabelDiff";
-
-const labelsSchema = array(
-  object({
-    name: string(),
-    description: nullish(string(), null),
-    color: string(),
-  }),
-);
 
 export async function fetchLabelDiff(
   config: LoadedConfig,
@@ -35,26 +26,15 @@ export async function fetchLabelDiff(
     );
   }
 
-  const repository = await resolveCurrentRepository(config.context.root);
-
-  if (repository === undefined) {
-    throw new Error(
-      "Labels need the current repository: set `repository` in package.json or add an `origin` remote",
-    );
-  }
-
-  const route = splitRepository(repository);
-
-  const existing = await client.paginate(
-    "GET /repos/{owner}/{repo}/labels",
-    route,
+  const repository = requireCurrentRepository(
+    await resolveCurrentRepository(config.context.root),
+    "Reading labels",
   );
 
+  const existing = await fetchRepositoryLabels(client, repository);
+
   return {
-    route,
-    diff: diffLabels(
-      labels,
-      validate(labelsSchema, existing, `labels of ${repository}`),
-    ),
+    route: splitRepository(repository),
+    diff: diffLabels(labels, existing),
   };
 }

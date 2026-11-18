@@ -1,10 +1,8 @@
-import type { Label } from "#tools/github/types/Label";
+import type { LabelUpdate } from "#tools/github/types/LabelUpdate";
+import type { NamedLabel } from "#tools/github/types/NamedLabel";
 
 export interface LabelDiff {
-  readonly create: readonly (Label & { readonly name: string })[];
-  readonly update: readonly (Label & {
-    readonly name: string;
-    readonly current: string;
-  })[];
+  readonly create: readonly NamedLabel[];
+  readonly update: readonly LabelUpdate[];
   readonly extra: readonly string[];
 }

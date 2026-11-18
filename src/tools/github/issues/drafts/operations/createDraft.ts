@@ -3,7 +3,10 @@ import { Document, isMap, isScalar, isSeq } from "yaml";
 import { isString } from "@auaust/toolkit";
 import { keys, record } from "@auaust/toolkit/object";
 
-import { findRegisteredRepository } from "#tools/github/issues/api/index";
+import {
+  findRegisteredRepository,
+  requireCurrentRepository,
+} from "#tools/github/issues/api/index";
 import {
   issueContracts,
   typeMeanings,
@@ -24,7 +27,6 @@ import { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 import { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { renderDraft } from "#tools/github/issues/drafts/utils/renderDraft";
-import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import { resolveStemArgument } from "#tools/github/issues/drafts/utils/resolveStemArgument";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
@@ -216,7 +218,7 @@ export async function createDraft(
   const meaning = findMeaning(protocol, type);
 
   const repository = repo === undefined
-    ? requireCurrentRepository(context, "A draft without --repo")
+    ? requireCurrentRepository(context.repository, "A draft without --repo")
     : findRegisteredRepository(context.registry, repo);
 
   const prefix = `${repository === context.repository || repo === undefined ? "" : `${repo}.`}${newDraftPrefix}`;

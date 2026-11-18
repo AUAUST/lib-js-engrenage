@@ -8,8 +8,12 @@ import type { LoadedConfig } from "#project/config/index";
 export async function refreshGithubSnapshot(
   config: LoadedConfig,
   client: GithubClient,
-): Promise<void> {
-  if ((await readGithubSnapshot(config)) !== undefined) {
-    await fetchGithubSnapshot(config, client);
+): Promise<boolean> {
+  if ((await readGithubSnapshot(config)) === undefined) {
+    return false;
   }
+
+  await fetchGithubSnapshot(config, client);
+
+  return true;
 }

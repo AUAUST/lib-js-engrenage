@@ -1,5 +1,7 @@
-import { findRegisteredRepository } from "#tools/github/issues/api/index";
-import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
+import {
+  findRegisteredRepository,
+  requireCurrentRepository,
+} from "#tools/github/issues/api/index";
 import type { DraftReference } from "#tools/github/issues/drafts/types/DraftReference";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
 
@@ -15,7 +17,7 @@ export function resolveStem(
     : reference.stem;
 
   const repository = reference.short === undefined
-    ? requireCurrentRepository({ repository: current }, target)
+    ? requireCurrentRepository(current, target)
     : findRegisteredRepository(registry, reference.short);
 
   return {

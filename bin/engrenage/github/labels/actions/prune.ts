@@ -8,11 +8,16 @@ export default async function (): Promise<void> {
 
   const config = await loadValidatedConfig(undefined, { reporter });
 
-  const deleted = await pruneLabels(config, await createGithubClient());
+  const {
+    deleted,
+    refreshed,
+  } = await pruneLabels(config, await createGithubClient());
 
   for (const name of deleted) {
     reporter.log(`deleted ${name}`);
   }
 
-  await settleChanges(config, { check: false });
+  if (refreshed) {
+    await settleChanges(config, { check: false });
+  }
 }

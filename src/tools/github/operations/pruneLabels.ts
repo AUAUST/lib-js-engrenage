@@ -6,11 +6,14 @@ import type { GithubClient } from "#tools/github/issues/api/index";
 export async function pruneLabels(
   config: LoadedConfig,
   client: GithubClient,
-): Promise<readonly string[]> {
+): Promise<{
+  readonly deleted: readonly string[];
+  readonly refreshed: boolean;
+}> {
   const { route, diff } = await fetchLabelDiff(config, client);
 
   if (diff.extra.length === 0) {
-    return diff.extra;
+    return { deleted: diff.extra, refreshed: false };
   }
 
   for (const name of diff.extra) {
@@ -20,7 +23,7 @@ export async function pruneLabels(
     });
   }
 
-  await refreshGithubSnapshot(config, client);
+  const refreshed = await refreshGithubSnapshot(config, client);
 
-  return diff.extra;
+  return { deleted: diff.extra, refreshed };
 }

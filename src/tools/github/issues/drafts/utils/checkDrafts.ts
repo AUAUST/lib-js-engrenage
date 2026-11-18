@@ -3,7 +3,10 @@ import { getDotPath, safeParse } from "valibot";
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 
 import { stripCode } from "#foundation/markdown/index";
-import { splitRepository } from "#tools/github/issues/api/index";
+import {
+  requireCurrentRepository,
+  splitRepository,
+} from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkBlockersField,
@@ -24,7 +27,6 @@ import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraft
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
-import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
@@ -134,7 +136,7 @@ function findDraftRepository(stem: string, context: DraftsContext) {
   const parsed = parseStem(stem);
 
   return parsed === undefined
-    ? requireCurrentRepository(context, stem)
+    ? requireCurrentRepository(context.repository, stem)
     : resolveStem(parsed, context).repository;
 }
 

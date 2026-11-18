@@ -64,6 +64,8 @@ export { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolS
 export type * from "#tools/github/types/GithubInput";
 export type * from "#tools/github/types/Label";
 export type * from "#tools/github/types/LabelDiff";
+export type * from "#tools/github/types/LabelUpdate";
+export type * from "#tools/github/types/NamedLabel";
 export type * from "#tools/github/types/ResolvedGithub";
 export type * from "#tools/github/types/WorkflowSet";
 export type * from "#tools/github/types/WorkflowSetName";

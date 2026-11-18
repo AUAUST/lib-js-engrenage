@@ -1,6 +1,7 @@
 // @barrel operations
 export { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
 export { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGithubSnapshot";
+export { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 export { readGithubSnapshot } from "#tools/github/issues/api/operations/readGithubSnapshot";
 export { readManifestRepository } from "#tools/github/issues/api/operations/readManifestRepository";
 export { resolveCurrentRepository } from "#tools/github/issues/api/operations/resolveCurrentRepository";
@@ -14,6 +15,7 @@ export { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScope
 export { findRegisteredRepository } from "#tools/github/issues/api/utils/findRegisteredRepository";
 export { isMissingResource } from "#tools/github/issues/api/utils/isMissingResource";
 export { readApiRepository } from "#tools/github/issues/api/utils/readApiRepository";
+export { requireCurrentRepository } from "#tools/github/issues/api/utils/requireCurrentRepository";
 export { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
 // @end
 
@@ -21,4 +23,5 @@ export { splitRepository } from "#tools/github/issues/api/utils/splitRepository"
 export type * from "#tools/github/issues/api/types/GithubAccess";
 export type * from "#tools/github/issues/api/types/GithubClient";
 export type * from "#tools/github/issues/api/types/GithubSnapshot";
+export type * from "#tools/github/issues/api/types/RepositoryLabel";
 // @end

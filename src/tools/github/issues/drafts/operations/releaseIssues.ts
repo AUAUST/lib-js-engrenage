@@ -1,4 +1,7 @@
-import { createGithubClient } from "#tools/github/issues/api/index";
+import {
+  createGithubClient,
+  requireCurrentRepository,
+} from "#tools/github/issues/api/index";
 import {
   fetchIssue,
   type IssueAccess,
@@ -8,7 +11,6 @@ import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 import { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
-import { requireCurrentRepository } from "#tools/github/issues/drafts/utils/requireCurrentRepository";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { LoadedConfig } from "#project/config/index";
@@ -46,7 +48,7 @@ export async function releaseIssues(
 
   const context = await resolveDraftsContext(config);
 
-  const current = requireCurrentRepository(context, "Release");
+  const current = requireCurrentRepository(context.repository, "Release");
 
   const numbers = stems.map((stem) => toReleasedNumber(stem, context, current));
 

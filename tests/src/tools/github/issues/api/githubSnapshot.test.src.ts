@@ -5,28 +5,17 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { createProjectConfig } from "#project/config/index";
 import { settleChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+import { createTestGithubClient } from "#tests/utils/createTestGithubClient";
+import { respondJson } from "#tests/utils/respondJson";
 import { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGithubSnapshot";
 import { readGithubSnapshot } from "#tools/github/issues/api/operations/readGithubSnapshot";
 
-vi.stubEnv("GH_TOKEN", "t");
-
-const client = await createGithubClient();
-
-vi.unstubAllEnvs();
+const client = await createTestGithubClient();
 
 const api = "https://api.github.com";
 
 function respond(json: unknown, scopes = "repo, read:org") {
-  return Promise.resolve(
-    new Response(JSON.stringify(json), {
-      status: 200,
-      headers: {
-        "content-type": "application/json",
-        "x-oauth-scopes": scopes,
-      },
-    }),
-  );
+  return respondJson(json, { "x-oauth-scopes": scopes });
 }
 
 function label(id: number, name: string) {
@@ -35,6 +24,7 @@ function label(id: number, name: string) {
     node_id: `LA_${id}`,
     name,
     description: `${name} label`,
+    color: "f1f3f6",
   };
 }
 

@@ -76,3 +76,4 @@
 - `engrenage gate --worktree`: gated instruction-only edits — typecheck and codegen --check failed on `src/tools/github/types/GithubInput.ts` from concurrent commit 4b1a3d7e; left it, reported unverified
 - `git commit`: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
 - `engrenage planning issue publish`: published new `subIssues` of a Segment without its Plan — refused as "plan holding it is outside the set"; claimed the Plan and published it with them
+- shared checkout: ran a node script through Bash while another session removed `requireCurrentRepository.ts` but not its barrel line — the Claude github Bash hook failed loading the drafts barrel and blocked the call; wrote the script with the edit tools and retried once the barrel was fixed

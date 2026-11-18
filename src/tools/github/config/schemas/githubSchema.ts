@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   integer,
   literal,
   minLength,
@@ -15,17 +16,22 @@ import {
   union,
 } from "valibot";
 
-import {
-  declare,
-  declareObject,
-  declareRecord,
-} from "#foundation/options/index";
+import { keys } from "@auaust/toolkit/object";
+
+import { declare, declareObject } from "#foundation/options/index";
 import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { workflowSetNames } from "#tools/github/constants";
 import { parseManifestRepository } from "#tools/github/utils/parseManifestRepository";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { PackageName } from "#types/PackageName";
+
+// @debt `declare` infers a `{}` default as its own type, which empties the record's member type in consumers; this constant only widens it
+const noLabels: Readonly<Record<string, string>> = {};
+
+function differBeyondCase(names: readonly string[]): boolean {
+  return new Set(names.map((name) => name.toLowerCase())).size === names.length;
+}
 
 export const githubSchema = declareObject(
   {
@@ -70,21 +76,26 @@ export const githubSchema = declareObject(
         },
       },
     ),
-    labels: declareRecord(
-      pipe(string(), minLength(1)),
-      declare(
-        union([
-          string(),
-          object({
-            description: string(),
-            color: optional(pipe(string(), regex(/^[\da-f]{6}$/iu))),
-          }),
-        ]),
+    labels: declare(
+      pipe(
+        record(
+          pipe(string(), minLength(1)),
+          union([
+            string(),
+            object({
+              description: string(),
+              color: optional(pipe(string(), regex(/^[\da-f]{6}$/iu))),
+            }),
+          ]),
+        ),
+        check((labels) => {
+          return differBeyondCase(keys(labels));
+        }, "Label names must differ beyond case, which GitHub ignores"),
       ),
       {
         description: "Labels of the current repository, by name: a description, or `{ description, color }`. `engrenage github labels sync` applies them.",
         optional: {
-          value: {},
+          value: noLabels,
         },
       },
     ),

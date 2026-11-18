@@ -9,9 +9,8 @@ export default async function ({ check }: { check: boolean }): Promise<void> {
   const config = await loadValidatedConfig(undefined, { reporter });
 
   const {
-    create,
-    update,
-    extra,
+    diff: { create, update, extra },
+    refreshed,
   } = await syncLabels(config, await createGithubClient(), { check });
 
   if (check) {
@@ -48,5 +47,7 @@ export default async function ({ check }: { check: boolean }): Promise<void> {
     );
   }
 
-  await settleChanges(config, { check: false });
+  if (refreshed) {
+    await settleChanges(config, { check: false });
+  }
 }

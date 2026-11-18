@@ -8,11 +8,11 @@ export async function syncLabels(
   config: LoadedConfig,
   client: GithubClient,
   { check }: { readonly check: boolean },
-): Promise<LabelDiff> {
+): Promise<{ readonly diff: LabelDiff; readonly refreshed: boolean }> {
   const { route, diff } = await fetchLabelDiff(config, client);
 
   if (check || (diff.create.length === 0 && diff.update.length === 0)) {
-    return diff;
+    return { diff, refreshed: false };
   }
 
   for (const { name, description, color } of diff.create) {
@@ -34,7 +34,7 @@ export async function syncLabels(
     });
   }
 
-  await refreshGithubSnapshot(config, client);
+  const refreshed = await refreshGithubSnapshot(config, client);
 
-  return diff;
+  return { diff, refreshed };
 }
