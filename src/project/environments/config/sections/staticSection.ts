@@ -13,7 +13,10 @@ export const staticSection = declareSection({
   async resolve(input, config: ConfigResolver): Promise<ResolvedStatic> {
     const option = staticSchema.resolve(
       input,
-      { traits: await config.resolve("traits") },
+      {
+        traits: await config.resolve("traits"),
+        reporter: config.context.reporter,
+      },
       "static",
     );
 

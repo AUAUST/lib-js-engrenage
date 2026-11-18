@@ -30,7 +30,11 @@ export const workspacesSection = declareSection({
     return resolveWorkspaces({
       root,
       filesystem,
-      options: workspacesSchema.resolve(input, undefined, "workspaces"),
+      options: workspacesSchema.resolve(
+        input,
+        { reporter: config.context.reporter },
+        "workspaces",
+      ),
       typescriptFiles: files,
       entryGlob: withExtensions(workspaceEntryStem, extensions),
     });

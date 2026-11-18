@@ -10,12 +10,17 @@ import { describe, expect, onTestFinished, test, vi } from "vitest";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
+import { listTsconfigTargets } from "#tools/typescript/operations/listTsconfigTargets";
+import { produceTsconfigLibrary } from "#tools/typescript/operations/produceTsconfigLibrary";
+import { produceTsconfigTypes } from "#tools/typescript/operations/produceTsconfigTypes";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 
 async function syncCompilerOptions(
   input: Record<string, unknown>,
   project = createTemporaryProject(),
+  reporter = createTestReporter(),
 ) {
   project.write("package.json", "{}");
   project.write("src/index.ts", "");
@@ -26,6 +31,7 @@ async function syncCompilerOptions(
     root: project.root,
     raw: withSourceRuntime(input),
     configFile: undefined,
+    reporter,
   });
 
   await syncTsconfigFiles(config);
@@ -146,27 +152,75 @@ describe("runtime tsconfig fields", () => {
     expect(options.types).toEqual([]);
   });
 
+  test("warns once about a lib exclusion read by both tsconfig producers", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "src/index.ts": "",
+    });
+
+    const reporter = createTestReporter();
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: withSourceRuntime({
+        src: {
+          tsconfig: {
+            lib: { exclude: "Absent" },
+          },
+        },
+      }),
+      configFile: undefined,
+      reporter,
+    });
+
+    const targets = await listTsconfigTargets(config);
+
+    const source = targets.find(({ key }) => key === "src");
+
+    if (source === undefined) {
+      throw new Error("No src tsconfig target");
+    }
+
+    await produceTsconfigLibrary(config, source);
+
+    await produceTsconfigTypes(config, source);
+
+    expect(
+      reporter.messages.filter(({ text }) => {
+        return (
+          text === "src.tsconfig.lib excludes Absent, absent from its defaults"
+        );
+      }),
+    ).toHaveLength(1);
+  });
+
   test("leaves a library group out when its lib is selected", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2027-11-15"));
 
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-
     onTestFinished(() => {
       vi.useRealTimers();
-      warn.mockRestore();
     });
 
-    const read = await syncCompilerOptions({
-      src: { baseline: "2027-11", apis: ["float16", "timers"] },
-    });
+    const reporter = createTestReporter();
+
+    const read = await syncCompilerOptions(
+      {
+        src: { baseline: "2027-11", apis: ["float16", "timers"] },
+      },
+      createTemporaryProject(),
+      reporter,
+    );
 
     expect(read("tsconfig.src.json").types).toEqual([
       "@auaust/engrenage/apis/timers",
     ]);
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("src.apis lists float16"),
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("src.apis lists float16"),
+      }),
     );
 
     const earlier = await syncCompilerOptions({

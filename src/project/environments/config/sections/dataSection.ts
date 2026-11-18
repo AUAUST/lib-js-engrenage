@@ -11,7 +11,11 @@ import type { ResolvedData } from "#project/environments/types/ResolvedData";
 export const dataSection = declareSection({
   declaration: dataSchema,
   async resolve(input, config: ConfigResolver): Promise<ResolvedData> {
-    const option = dataSchema.resolve(input, undefined, "data");
+    const option = dataSchema.resolve(
+      input,
+      { reporter: config.context.reporter },
+      "data",
+    );
 
     const dirs = await resolveEnvironmentDirs(config, "data", option.dirs);
 

@@ -49,6 +49,7 @@ async function readConfig(
 ): Promise<LoadedConfig> {
   const { root, configFile, raw } = await readRawConfig(start, {
     searchParents,
+    reporter,
   });
 
   roots.set(start, root);

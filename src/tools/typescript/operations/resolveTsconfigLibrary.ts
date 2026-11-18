@@ -1,10 +1,13 @@
 import { resolveListOption } from "#foundation/options/index";
+import { memoizeByContext, type LoadedConfig } from "#project/config/index";
 import { resolveTsconfigRuntime } from "#tools/typescript/operations/resolveTsconfigRuntime";
-import type { LoadedConfig } from "#project/config/index";
 import type { TsconfigTarget } from "#project/tsconfig/index";
 
-// @debt both tsconfig producers call this, so a warning raised by resolveListOption for `<env>.tsconfig.lib` can print twice
-export async function resolveTsconfigLibrary(
+const librariesOf = memoizeByContext(() => {
+  return new Map<string, Promise<readonly string[] | false>>();
+});
+
+async function computeTsconfigLibrary(
   config: LoadedConfig,
   target: TsconfigTarget,
 ): Promise<readonly string[] | false> {
@@ -32,5 +35,25 @@ export async function resolveTsconfigLibrary(
       return browser ? [...library, "DOM", "DOM.Iterable"] : library;
     },
     `${key}.tsconfig.lib`,
+    config.context.reporter,
   );
+}
+
+export function resolveTsconfigLibrary(
+  config: LoadedConfig,
+  target: TsconfigTarget,
+): Promise<readonly string[] | false> {
+  const libraries = librariesOf(config.context);
+
+  const known = libraries.get(target.key);
+
+  if (known !== undefined) {
+    return known;
+  }
+
+  const pending = computeTsconfigLibrary(config, target);
+
+  libraries.set(target.key, pending);
+
+  return pending;
 }

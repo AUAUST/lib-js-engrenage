@@ -1,11 +1,12 @@
 import { join } from "node:path";
 
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { testsetup } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 
 function createProject(config: string, files: Record<string, string> = {}) {
   return createTemporaryProject({
@@ -249,14 +250,14 @@ describe("environment tsconfigs", () => {
   });
 
   test("warn when the base tsconfig is not named tsconfig.json", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const reporter = createTestReporter();
 
     const project = createProject(
       '{ typescript: { tsconfig: { path: "tsconfig.base.json" } } }',
       { "tsconfig.base.json": "{}" },
     );
 
-    const config = await loadConfig(project.root);
+    const config = await loadConfig(project.root, { reporter });
 
     expect(await config.resolve("tsconfigPath")).toBe(
       join(project.root, "tsconfig.base.json"),
@@ -264,12 +265,11 @@ describe("environment tsconfigs", () => {
 
     void (await config.resolve("tsconfigPath"));
 
-    expect(warn).toHaveBeenCalledTimes(1);
-
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("tsconfig.base.json"),
-    );
-
-    warn.mockRestore();
+    expect(reporter.messages).toEqual([
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("tsconfig.base.json"),
+      }),
+    ]);
   });
 });

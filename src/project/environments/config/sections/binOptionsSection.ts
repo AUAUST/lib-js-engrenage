@@ -10,7 +10,10 @@ export const binOptionsSection = declareSection({
   ): Promise<OutputOf<typeof binSchema>> {
     return binSchema.resolve(
       input,
-      { runtime: await config.resolve("runtime") },
+      {
+        runtime: await config.resolve("runtime"),
+        reporter: config.context.reporter,
+      },
       "bin",
     );
   },

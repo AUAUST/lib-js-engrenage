@@ -94,6 +94,7 @@ export async function produceTsconfigInclude(
       ? await createDistTestsInclude(config, file)
       : await createDefaultInclude(config, key, file),
     `${key}.tsconfig.include`,
+    config.context.reporter,
   );
 
   return include === false ? [] : [{ path: ["include"], value: [...include] }];

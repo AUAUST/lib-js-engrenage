@@ -6,6 +6,7 @@ import { getOwn } from "@auaust/toolkit/object";
 import { declare } from "#foundation/options/config/declarers/declare";
 import { declareSection } from "#foundation/options/config/declarers/declareSection";
 import { createResolver } from "#foundation/options/utils/createResolver";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import type { Resolver } from "#foundation/options/apis/Resolver";
 import type { Section } from "#foundation/options/ports/Section";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
@@ -25,6 +26,7 @@ function createSource(
 function createSourceResolver(sections: Readonly<Record<string, Section>>) {
   return createResolver({}, undefined, {
     sections: createSource(sections),
+    reporter: createTestReporter(),
   });
 }
 
@@ -200,6 +202,7 @@ describe("createResolver", () => {
 
     const unset = createResolver({}, undefined, {
       sections: { load },
+      reporter: createTestReporter(),
     });
 
     const set = createResolver(
@@ -209,6 +212,7 @@ describe("createResolver", () => {
       undefined,
       {
         sections: { load },
+        reporter: createTestReporter(),
       },
     );
 

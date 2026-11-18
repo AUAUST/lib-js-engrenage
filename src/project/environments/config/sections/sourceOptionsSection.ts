@@ -13,6 +13,7 @@ export const sourceOptionsSection = declareSection({
         tool() {
           return config.resolve("build.tool");
         },
+        reporter: config.context.reporter,
       },
       "src",
     );

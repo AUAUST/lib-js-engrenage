@@ -7,13 +7,13 @@ import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 import type { ListOption } from "#foundation/options/types/ListOption";
+import type { ReportingContext } from "#foundation/reports/index";
 
-// @debt resolveListOption warns on the console, which a pure `utils/` function should not do
 /**
- * Declares a list option: a missing input resolves to the `optional` default,
- * an item or array replaces it, and `prepend`, `append` and `exclude` adjust
- * it. Warns on the console about duplicated items and excluded items absent
- * from the default.
+ * Declares a list option: a missing input resolves to the `optional` default, an
+ * item or array replaces it, and `prepend`, `append` and `exclude` adjust it.
+ * Reports through the context's reporter duplicated items and excluded items
+ * absent from the default.
  *
  * @stable
  */
@@ -23,11 +23,15 @@ export function declareList<Item extends string, Context = unknown>(
     description?: Description;
     optional: Default<readonly Item[], Context>;
   },
-): Declaration<ListOption<Item> | undefined, readonly Item[], Context> {
+): Declaration<
+  ListOption<Item> | undefined,
+  readonly Item[],
+  NoInfer<Context> & ReportingContext
+> {
   return declare(listOptionSchema(item), {
     ...options,
-    adjust(input, fallback, _context, path) {
-      return resolveListOption(input, fallback, path);
+    adjust(input, fallback, context: Context & ReportingContext, path) {
+      return resolveListOption(input, fallback, path, context.reporter);
     },
   });
 }

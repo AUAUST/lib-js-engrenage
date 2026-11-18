@@ -19,7 +19,7 @@ export const sourceSection = declareSection({
         (environment.active ||
           option.baseline !== undefined ||
           option.node !== undefined)
-        ? resolveSourceRuntime(option)
+        ? resolveSourceRuntime(option, config.context.reporter)
         : undefined;
     });
 

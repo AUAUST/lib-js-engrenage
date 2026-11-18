@@ -21,5 +21,6 @@ export async function listLocalFilePatterns(
     git.local.files,
     () => deduplicate([...ignored, issueDraftsDirectory]),
     "git.local.files",
+    config.context.reporter,
   );
 }

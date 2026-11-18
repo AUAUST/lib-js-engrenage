@@ -8,6 +8,7 @@ import type { Resolver } from "#foundation/options/apis/Resolver";
 import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { KeyedSection } from "#foundation/options/types/KeyedSection";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
+import type { Reporter } from "#foundation/reports/index";
 
 interface Reading {
   readonly value: unknown;
@@ -33,6 +34,7 @@ export function createResolver<
     sections,
     defaults,
     unknownNote,
+    reporter,
   }: {
     source?: string;
     sections: SectionSource<Context>;
@@ -41,6 +43,7 @@ export function createResolver<
       reader: Resolver<Context>,
     ): Promise<Readonly<Record<string, unknown>>>;
     unknownNote?: string;
+    reporter: Reporter;
   },
 ): InputResolver<Context, Sections> {
   const loaded = new Map<string, Promise<KeyedSection>>();
@@ -59,7 +62,12 @@ export function createResolver<
   ): Promise<unknown> {
     const value = defaults === undefined
       ? input[name]
-      : applyInputDefaults(input[name], name, await defaults(name, reader));
+      : applyInputDefaults(
+          input[name],
+          name,
+          await defaults(name, reader),
+          reporter,
+        );
 
     return validate(
       declaration.schema,

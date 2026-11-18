@@ -6,8 +6,11 @@ import { listOptionSchema } from "#foundation/options/config/schemas/listOptionS
 import { managedListOptionSchema } from "#foundation/options/config/schemas/managedListOptionSchema";
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import { validate } from "#foundation/options/utils/validate";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 
 const defaults = ["a", "b", "c"] as const;
+
+const reporter = createTestReporter();
 
 function getDefaults(): readonly string[] {
   return defaults;
@@ -15,17 +18,21 @@ function getDefaults(): readonly string[] {
 
 describe("resolveListOption", () => {
   test("returns the defaults when the option is omitted or true", () => {
-    expect(resolveListOption(undefined, getDefaults, "list")).toBe(defaults);
+    expect(resolveListOption(undefined, getDefaults, "list", reporter)).toBe(
+      defaults,
+    );
 
-    expect(resolveListOption(true, getDefaults, "list")).toBe(defaults);
+    expect(resolveListOption(true, getDefaults, "list", reporter)).toBe(
+      defaults,
+    );
   });
 
   test("replaces the defaults without computing them", () => {
     const compute = vi.fn(getDefaults);
 
-    expect(resolveListOption(["x"], compute, "list")).toEqual(["x"]);
-    expect(resolveListOption("y", compute, "list")).toEqual(["y"]);
-    expect(resolveListOption(false, compute, "list")).toBe(false);
+    expect(resolveListOption(["x"], compute, "list", reporter)).toEqual(["x"]);
+    expect(resolveListOption("y", compute, "list", reporter)).toEqual(["y"]);
+    expect(resolveListOption(false, compute, "list", reporter)).toBe(false);
     expect(compute).not.toHaveBeenCalled();
   });
 
@@ -39,14 +46,17 @@ describe("resolveListOption", () => {
         },
         getDefaults,
         "list",
+        reporter,
       ),
     ).toEqual(["x", "a", "c", "y", "z"]);
 
-    expect(resolveListOption({}, getDefaults, "list")).toEqual(defaults);
+    expect(resolveListOption({}, getDefaults, "list", reporter)).toEqual(
+      defaults,
+    );
   });
 
   test("warns about duplicates and unmatched exclusions without fixing them", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warnings = createTestReporter();
 
     expect(
       resolveListOption(
@@ -56,14 +66,22 @@ describe("resolveListOption", () => {
         },
         getDefaults,
         "code.files",
+        warnings,
       ),
     ).toEqual(["a", "b", "c", "a"]);
 
-    expect(warn).toHaveBeenCalledWith("code.files lists a more than once");
-
-    expect(warn).toHaveBeenCalledWith(
-      "code.files excludes d, absent from its defaults",
-    );
+    expect(warnings.messages).toEqual([
+      {
+        level: "warn",
+        text: "code.files excludes d, absent from its defaults",
+        data: undefined,
+      },
+      {
+        level: "warn",
+        text: "code.files lists a more than once",
+        data: undefined,
+      },
+    ]);
   });
 });
 

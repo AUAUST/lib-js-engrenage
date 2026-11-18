@@ -1,5 +1,3 @@
-import { basename } from "node:path";
-
 import { boolean, record, string, unknown } from "valibot";
 
 import { tsconfigFile } from "#constants";
@@ -26,13 +24,6 @@ export const typescriptSchema = declareObject(
           optional: {
             value: tsconfigFile,
             explain: `\`${tsconfigFile}\`, created by sync when missing; another name warns`,
-          },
-          assert(file) {
-            if (basename(file) !== tsconfigFile) {
-              console.warn(
-                `The base tsconfig ${file} is not named ${tsconfigFile}, the only name editors and typed lint discover`,
-              );
-            }
           },
         }),
         extends: declareManagedList(string(), {

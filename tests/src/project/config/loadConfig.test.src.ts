@@ -315,6 +315,7 @@ describe("loadConfig", () => {
 
     const { root, raw } = await readRawConfig(fixture, {
       searchParents: false,
+      reporter: createTestReporter(),
     });
 
     const invalid = createProjectConfig({

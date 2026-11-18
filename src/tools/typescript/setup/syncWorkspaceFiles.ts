@@ -105,6 +105,7 @@ async function createTsconfigEdits(
         listed,
         defaults,
         `workspaces tsconfig.${path.join(".")}`,
+        config.context.reporter,
       );
 
       if (items === false || (items.length === 0 && !isManaged(listed))) {

@@ -6,22 +6,27 @@ import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
 import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
+import type { Reporter } from "#foundation/reports/index";
 import type { Runtime } from "#project/baseline/types/Runtime";
 
-export function resolveSourceRuntime({
-  baseline,
-  node,
-}: {
-  baseline: string | undefined;
-  node: number | undefined;
-}): Runtime | undefined {
+export function resolveSourceRuntime(
+  {
+    baseline,
+    node,
+  }: {
+    baseline: string | undefined;
+    node: number | undefined;
+  },
+  reporter: Reporter,
+): Runtime | undefined {
   if (node !== undefined) {
     return resolveNodeRuntime(node, "src.node");
   }
 
   if (baseline === undefined) {
-    return void console.warn(
-      `src.baseline is not set, so the src tsconfig gets no baseline libraries or types and the build no target: set it to ${findCurrentMonth()}, the current month`,
+    return void reporter.warn(
+      "src.baseline is not set, so the src tsconfig gets no baseline libraries or types and the build no target",
+      { fix: `set it to ${findCurrentMonth()}, the current month` },
     );
   }
 

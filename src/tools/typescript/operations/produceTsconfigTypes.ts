@@ -12,6 +12,7 @@ import {
 import { resolveTsconfigLibrary } from "#tools/typescript/operations/resolveTsconfigLibrary";
 import { resolveTsconfigRuntime } from "#tools/typescript/operations/resolveTsconfigRuntime";
 import type { JsonEdit } from "#foundation/json/index";
+import type { Reporter } from "#foundation/reports/index";
 import type { LoadedConfig } from "#project/config/index";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
@@ -40,7 +41,10 @@ async function createDefaultTypes(
   const { apis } = await config.resolve("src");
 
   return () => {
-    return [...listBaselineTypes(target, apis, library), ...tool];
+    return [
+      ...listBaselineTypes(target, apis, library, config.context.reporter),
+      ...tool,
+    ];
   };
 }
 
@@ -61,6 +65,7 @@ function listBaselineTypes(
   target: TsconfigTarget,
   apis: readonly string[],
   library: readonly string[],
+  reporter: Reporter,
 ): readonly string[] {
   // @debt includesEsLibrary only knows the generated editions: a lib it does not know (`esnext.*`, `ESNext`, `DOM`) never counts as including a library group
   return toArray(
@@ -79,7 +84,7 @@ function listBaselineTypes(
           return true;
         }
 
-        console.warn(
+        reporter.warn(
           `src.apis lists ${api}, whose lib ${name} is already in the ${target.key} tsconfig lib: it is left out of types; remove it from src.apis`,
         );
 
@@ -144,6 +149,7 @@ export async function produceTsconfigTypes(
     option,
     await createDefaultTypes(config, target, runtime),
     `${key}.tsconfig.types`,
+    config.context.reporter,
   );
 
   return types === false

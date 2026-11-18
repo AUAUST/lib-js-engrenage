@@ -42,6 +42,7 @@ export async function produceTsconfigExtends(
     target.extends,
     await createDefaultExtends(config, target),
     `${target.key}.tsconfig.extends`,
+    config.context.reporter,
   );
 
   if (bases === false) {

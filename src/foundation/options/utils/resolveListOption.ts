@@ -5,6 +5,7 @@ import type { MaybeArray } from "@auaust/toolkit/types";
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
 import type { ListOption } from "#foundation/options/types/ListOption";
 import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
+import type { Reporter } from "#foundation/reports/index";
 
 function toItems<Item extends string>(
   value: MaybeArray<Item> | undefined,
@@ -40,11 +41,12 @@ function findDuplicates<Item extends string>(items: readonly Item[]): Item[] {
 function warnDuplicates<Item extends string>(
   items: readonly Item[],
   subject: string,
+  reporter: Reporter,
 ): readonly Item[] {
   const duplicates = findDuplicates(items);
 
   if (isNonEmptyArray(duplicates)) {
-    console.warn(`${subject} lists ${duplicates.join(", ")} more than once`);
+    reporter.warn(`${subject} lists ${duplicates.join(", ")} more than once`);
   }
 
   return items;
@@ -54,16 +56,19 @@ export function resolveListOption<Item extends string>(
   option: ListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
+  reporter: Reporter,
 ): readonly Item[];
 export function resolveListOption<Item extends string>(
   option: ManagedListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
+  reporter: Reporter,
 ): readonly Item[] | false;
 export function resolveListOption<Item extends string>(
   option: ManagedListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
+  reporter: Reporter,
 ): readonly Item[] | false {
   if (option === false) {
     return false;
@@ -74,7 +79,7 @@ export function resolveListOption<Item extends string>(
   }
 
   if (!isAdjustment(option)) {
-    return warnDuplicates(toItems(option), subject);
+    return warnDuplicates(toItems(option), subject, reporter);
   }
 
   const base = defaults();
@@ -83,7 +88,7 @@ export function resolveListOption<Item extends string>(
   const unmatched = difference(excluded, base);
 
   if (isNonEmptyArray(unmatched)) {
-    console.warn(
+    reporter.warn(
       `${subject} excludes ${unmatched.join(", ")}, absent from its defaults`,
     );
   }
@@ -95,5 +100,6 @@ export function resolveListOption<Item extends string>(
       ...toItems(option.append),
     ],
     subject,
+    reporter,
   );
 }

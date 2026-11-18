@@ -10,6 +10,10 @@ export const testsOptionsSection = declareSection({
   ): Promise<OutputOf<typeof testsSchema>> {
     const { published } = await config.resolve("traits");
 
-    return testsSchema.resolve(input, { published }, "tests");
+    return testsSchema.resolve(
+      input,
+      { published, reporter: config.context.reporter },
+      "tests",
+    );
   },
 });

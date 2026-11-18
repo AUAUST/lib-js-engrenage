@@ -39,6 +39,7 @@ export async function produceTsconfigExclude(
     option,
     await createDefaultExclude(config, key, file),
     `${key}.tsconfig.exclude`,
+    config.context.reporter,
   );
 
   const isDefault = option == null || option === true;

@@ -1,30 +1,24 @@
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-
-afterEach(() => {
-  vi.restoreAllMocks();
-});
+import { createTestReporter } from "#tests/utils/createTestReporter";
 
 describe("loadConfig", () => {
-  test("falls back to defaults and warns once without a config file or package file", async () => {
-    vi.resetModules();
-
-    const {
-      loadConfig: loadFreshConfig,
-    } = await import("#project/config/operations/loadConfig");
-
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  test("falls back to defaults and warns once per root without a config file or package file", async () => {
+    const reporter = createTestReporter();
 
     const first = createTemporaryProject().root;
+    const second = createTemporaryProject().root;
 
-    const config = await loadFreshConfig(first);
+    const config = await loadConfig(first, { reporter });
 
-    await loadFreshConfig(createTemporaryProject().root);
+    await loadConfig(second, { reporter });
 
-    expect(warn).toHaveBeenCalledExactlyOnceWith(
+    expect(reporter.messages.map(({ text }) => text)).toEqual([
       `No engrenage config found in ${first}, using defaults`,
-    );
+      `No engrenage config found in ${second}, using defaults`,
+    ]);
 
     expect(config.context.root).toBe(first);
 
@@ -55,5 +49,24 @@ describe("loadConfig", () => {
     expect((await config.resolve("environment")).hasDependency("valibot")).toBe(
       false,
     );
+  });
+
+  test("reports a duplicated tooling directory", async () => {
+    const reporter = createTestReporter();
+
+    const { root } = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": 'export default { tooling: { dirs: ["config", "config"] } };',
+    });
+
+    const config = await loadConfig(root, { reporter });
+
+    await config.resolve("tooling.options");
+
+    expect(reporter.messages).toContainEqual({
+      level: "warn",
+      text: "tooling.dirs lists config more than once",
+      data: undefined,
+    });
   });
 });

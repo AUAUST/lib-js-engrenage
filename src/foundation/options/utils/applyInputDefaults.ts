@@ -3,6 +3,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
+import type { Reporter } from "#foundation/reports/index";
 
 const adjustmentKeys = new Set(["prepend", "append", "exclude"]);
 
@@ -22,7 +23,12 @@ function isAdjustment(value: unknown): value is ListAdjustment<string> {
 }
 
 // @debt a list adjustment is recognized by its shape and the default's, not by the option declared at the path
-function combine(explicit: unknown, fallback: unknown, path: string): unknown {
+function combine(
+  explicit: unknown,
+  fallback: unknown,
+  path: string,
+  reporter: Reporter,
+): unknown {
   if (explicit === undefined) {
     return fallback;
   }
@@ -36,7 +42,7 @@ function combine(explicit: unknown, fallback: unknown, path: string): unknown {
   }
 
   return isAdjustment(explicit)
-    ? resolveListOption(explicit, () => fallback, path)
+    ? resolveListOption(explicit, () => fallback, path, reporter)
     : explicit;
 }
 
@@ -45,16 +51,17 @@ function place(
   segments: readonly string[],
   fallback: unknown,
   path: string,
+  reporter: Reporter,
 ): unknown {
   const [head, ...rest] = segments;
 
   if (head === undefined) {
-    return combine(current, fallback, path);
+    return combine(current, fallback, path, reporter);
   }
 
   // @debt creating the parent object skips the default an object option computes when its input is unset
   if (current === undefined) {
-    return { [head]: place(undefined, rest, fallback, path) };
+    return { [head]: place(undefined, rest, fallback, path, reporter) };
   }
 
   if (!isPlainObject(current)) {
@@ -63,7 +70,7 @@ function place(
 
   return {
     ...current,
-    [head]: place(current[head], rest, fallback, path),
+    [head]: place(current[head], rest, fallback, path, reporter),
   };
 }
 
@@ -71,6 +78,7 @@ export function applyInputDefaults(
   input: unknown,
   name: string,
   defaults: Readonly<Record<string, unknown>>,
+  reporter: Reporter,
 ): unknown {
   let applied = input;
 
@@ -83,7 +91,7 @@ export function applyInputDefaults(
       ? []
       : path.slice(name.length + 1).split(".");
 
-    applied = place(applied, segments, fallback, path);
+    applied = place(applied, segments, fallback, path, reporter);
   }
 
   return applied;

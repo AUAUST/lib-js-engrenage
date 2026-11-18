@@ -1,7 +1,6 @@
 import { dirname } from "node:path";
 
-import { constant, isPlainObject } from "@auaust/toolkit";
-import { memoize } from "@auaust/toolkit/function";
+import { isPlainObject } from "@auaust/toolkit";
 
 import { files } from "#constants";
 import {
@@ -9,6 +8,7 @@ import {
   pathExists,
   resolve,
 } from "#foundation/filesystem/index";
+import type { Reporter } from "#foundation/reports/index";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -18,10 +18,6 @@ interface FoundConfig {
   configFile: File | undefined;
   input: unknown;
 }
-
-const warnMissingConfig = memoize(function (root: Directory) {
-  console.warn(`No engrenage config found in ${root}, using defaults`);
-}, constant(true));
 
 async function findConfigFile(
   directory: Directory,
@@ -90,7 +86,10 @@ async function findConfig(
 
 export async function readRawConfig(
   start: Directory,
-  { searchParents = true }: { searchParents?: boolean } = {},
+  {
+    searchParents = true,
+    reporter,
+  }: { searchParents?: boolean; reporter: Reporter },
 ): Promise<{
   root: Directory;
   configFile: File | undefined;
@@ -103,7 +102,7 @@ export async function readRawConfig(
   } = searchParents ? await findConfig(start) : await findConfigIn(start);
 
   if (configFile === undefined) {
-    warnMissingConfig(root);
+    reporter.warn(`No engrenage config found in ${root}, using defaults`);
   }
 
   if (!isPlainObject(input)) {

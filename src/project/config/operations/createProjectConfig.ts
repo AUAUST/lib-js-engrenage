@@ -273,6 +273,7 @@ export function createProjectConfig({
       },
       defaults,
       unknownNote: `Registered extensions: ${names.join(", ")}`,
+      reporter,
     },
   );
 
