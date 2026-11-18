@@ -52,54 +52,198 @@
     "#workflows/*": "./src/workflows/*.ts"
   },
   "exports": {
-    ".": "./dist/index.mjs",
-    "./agents": "./dist/agents.mjs",
-    "./agents/claude": "./dist/agents/claude.mjs",
-    "./agents/claude/constants": "./dist/agents/claude/constants.mjs",
-    "./agents/codex": "./dist/agents/codex.mjs",
-    "./agents/codex/constants": "./dist/agents/codex/constants.mjs",
-    "./agents/constants": "./dist/agents/constants.mjs",
-    "./baseline": "./dist/baseline.mjs",
-    "./baseline/constants": "./dist/baseline/constants.mjs",
-    "./blocks/internals": "./dist/blocks/internals.mjs",
-    "./builtins": "./dist/builtins.mjs",
-    "./changesets": "./dist/changesets.mjs",
-    "./changesets/constants": "./dist/changesets/constants.mjs",
-    "./config": "./dist/config.mjs",
-    "./constants": "./dist/constants.mjs",
-    "./docs": "./dist/docs.mjs",
-    "./docs/constants": "./dist/docs/constants.mjs",
-    "./eslint": "./dist/eslint.mjs",
-    "./eslint/constants": "./dist/eslint/constants.mjs",
-    "./eslint/roles": "./dist/eslint/roles.mjs",
-    "./extensions": "./dist/extensions.mjs",
-    "./filesystem/internals": "./dist/filesystem/internals.mjs",
-    "./format": "./dist/format.mjs",
-    "./format/constants": "./dist/format/constants.mjs",
-    "./git": "./dist/git.mjs",
-    "./git/constants": "./dist/git/constants.mjs",
-    "./github": "./dist/github.mjs",
-    "./github/constants": "./dist/github/constants.mjs",
-    "./options/internals": "./dist/options/internals.mjs",
-    "./package": "./dist/package.mjs",
-    "./package/constants": "./dist/package/constants.mjs",
-    "./pnpm": "./dist/pnpm.mjs",
-    "./pnpm/constants": "./dist/pnpm/constants.mjs",
-    "./prettier": "./dist/prettier.mjs",
-    "./prettier/config": "./dist/prettier/config.mjs",
-    "./prettier/constants": "./dist/prettier/constants.mjs",
-    "./roles": "./dist/roles.mjs",
-    "./roles/constants": "./dist/roles/constants.mjs",
-    "./tsdown": "./dist/tsdown.mjs",
-    "./tsdown/constants": "./dist/tsdown/constants.mjs",
-    "./typescript": "./dist/typescript.mjs",
-    "./typescript/constants": "./dist/typescript/constants.mjs",
-    "./vite": "./dist/vite.mjs",
-    "./vite/constants": "./dist/vite/constants.mjs",
-    "./vitest": "./dist/vitest.mjs",
-    "./vitest/constants": "./dist/vitest/constants.mjs",
-    "./vscode": "./dist/vscode.mjs",
-    "./vscode/constants": "./dist/vscode/constants.mjs",
+    ".": {
+      "source": "./src/entry.ts",
+      "default": "./dist/index.mjs"
+    },
+    "./agents": {
+      "source": "./src/tools/agents/entry.ts",
+      "default": "./dist/agents.mjs"
+    },
+    "./agents/claude": {
+      "source": "./src/tools/agents/claude/entry.ts",
+      "default": "./dist/agents/claude.mjs"
+    },
+    "./agents/claude/constants": {
+      "source": "./src/tools/agents/claude/constants.ts",
+      "default": "./dist/agents/claude/constants.mjs"
+    },
+    "./agents/codex": {
+      "source": "./src/tools/agents/codex/entry.ts",
+      "default": "./dist/agents/codex.mjs"
+    },
+    "./agents/codex/constants": {
+      "source": "./src/tools/agents/codex/constants.ts",
+      "default": "./dist/agents/codex/constants.mjs"
+    },
+    "./agents/constants": {
+      "source": "./src/tools/agents/constants.ts",
+      "default": "./dist/agents/constants.mjs"
+    },
+    "./baseline": {
+      "source": "./src/project/baseline/entry.ts",
+      "default": "./dist/baseline.mjs"
+    },
+    "./baseline/constants": {
+      "source": "./src/project/baseline/constants.ts",
+      "default": "./dist/baseline/constants.mjs"
+    },
+    "./blocks/internals": {
+      "source": "./src/foundation/blocks/index.ts",
+      "default": "./dist/blocks/internals.mjs"
+    },
+    "./builtins": {
+      "source": "./src/workflows/builtins/entry.ts",
+      "default": "./dist/builtins.mjs"
+    },
+    "./changesets": {
+      "source": "./src/tools/changesets/entry.ts",
+      "default": "./dist/changesets.mjs"
+    },
+    "./changesets/constants": {
+      "source": "./src/tools/changesets/constants.ts",
+      "default": "./dist/changesets/constants.mjs"
+    },
+    "./config": {
+      "source": "./src/workflows/config/entry.ts",
+      "default": "./dist/config.mjs"
+    },
+    "./constants": {
+      "source": "./src/constants.ts",
+      "default": "./dist/constants.mjs"
+    },
+    "./docs": {
+      "source": "./src/project/docs/entry.ts",
+      "default": "./dist/docs.mjs"
+    },
+    "./docs/constants": {
+      "source": "./src/project/docs/constants.ts",
+      "default": "./dist/docs/constants.mjs"
+    },
+    "./eslint": {
+      "source": "./src/tools/eslint/entry.ts",
+      "default": "./dist/eslint.mjs"
+    },
+    "./eslint/constants": {
+      "source": "./src/tools/eslint/constants.ts",
+      "default": "./dist/eslint/constants.mjs"
+    },
+    "./eslint/roles": {
+      "source": "./src/tools/eslint/roles/entry.ts",
+      "default": "./dist/eslint/roles.mjs"
+    },
+    "./extensions": {
+      "source": "./src/workflows/extensions/entry.ts",
+      "default": "./dist/extensions.mjs"
+    },
+    "./filesystem/internals": {
+      "source": "./src/foundation/filesystem/index.ts",
+      "default": "./dist/filesystem/internals.mjs"
+    },
+    "./format": {
+      "source": "./src/project/format/entry.ts",
+      "default": "./dist/format.mjs"
+    },
+    "./format/constants": {
+      "source": "./src/project/format/constants.ts",
+      "default": "./dist/format/constants.mjs"
+    },
+    "./git": {
+      "source": "./src/tools/git/entry.ts",
+      "default": "./dist/git.mjs"
+    },
+    "./git/constants": {
+      "source": "./src/tools/git/constants.ts",
+      "default": "./dist/git/constants.mjs"
+    },
+    "./github": {
+      "source": "./src/tools/github/entry.ts",
+      "default": "./dist/github.mjs"
+    },
+    "./github/constants": {
+      "source": "./src/tools/github/constants.ts",
+      "default": "./dist/github/constants.mjs"
+    },
+    "./options/internals": {
+      "source": "./src/foundation/options/index.ts",
+      "default": "./dist/options/internals.mjs"
+    },
+    "./package": {
+      "source": "./src/project/package/entry.ts",
+      "default": "./dist/package.mjs"
+    },
+    "./package/constants": {
+      "source": "./src/project/package/constants.ts",
+      "default": "./dist/package/constants.mjs"
+    },
+    "./pnpm": {
+      "source": "./src/tools/pnpm/entry.ts",
+      "default": "./dist/pnpm.mjs"
+    },
+    "./pnpm/constants": {
+      "source": "./src/tools/pnpm/constants.ts",
+      "default": "./dist/pnpm/constants.mjs"
+    },
+    "./prettier": {
+      "source": "./src/tools/prettier/entry.ts",
+      "default": "./dist/prettier.mjs"
+    },
+    "./prettier/config": {
+      "source": "./src/tools/prettier/preset/entry.ts",
+      "default": "./dist/prettier/config.mjs"
+    },
+    "./prettier/constants": {
+      "source": "./src/tools/prettier/constants.ts",
+      "default": "./dist/prettier/constants.mjs"
+    },
+    "./roles": {
+      "source": "./src/project/roles/entry.ts",
+      "default": "./dist/roles.mjs"
+    },
+    "./roles/constants": {
+      "source": "./src/project/roles/constants.ts",
+      "default": "./dist/roles/constants.mjs"
+    },
+    "./tsdown": {
+      "source": "./src/tools/tsdown/entry.ts",
+      "default": "./dist/tsdown.mjs"
+    },
+    "./tsdown/constants": {
+      "source": "./src/tools/tsdown/constants.ts",
+      "default": "./dist/tsdown/constants.mjs"
+    },
+    "./typescript": {
+      "source": "./src/tools/typescript/entry.ts",
+      "default": "./dist/typescript.mjs"
+    },
+    "./typescript/constants": {
+      "source": "./src/tools/typescript/constants.ts",
+      "default": "./dist/typescript/constants.mjs"
+    },
+    "./vite": {
+      "source": "./src/tools/vite/entry.ts",
+      "default": "./dist/vite.mjs"
+    },
+    "./vite/constants": {
+      "source": "./src/tools/vite/constants.ts",
+      "default": "./dist/vite/constants.mjs"
+    },
+    "./vitest": {
+      "source": "./src/tools/vitest/entry.ts",
+      "default": "./dist/vitest.mjs"
+    },
+    "./vitest/constants": {
+      "source": "./src/tools/vitest/constants.ts",
+      "default": "./dist/vitest/constants.mjs"
+    },
+    "./vscode": {
+      "source": "./src/tools/vscode/entry.ts",
+      "default": "./dist/vscode.mjs"
+    },
+    "./vscode/constants": {
+      "source": "./src/tools/vscode/constants.ts",
+      "default": "./dist/vscode/constants.mjs"
+    },
     "./effects/*.json": "./data/effects/*.json",
     "./apis/*": "./data/apis/*.d.ts",
     "./agents/templates/*.md": "./data/agents/templates/*.md",
@@ -274,6 +418,67 @@
     }
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "restricted",
+    "exports": {
+      ".": "./dist/index.mjs",
+      "./agents": "./dist/agents.mjs",
+      "./agents/claude": "./dist/agents/claude.mjs",
+      "./agents/claude/constants": "./dist/agents/claude/constants.mjs",
+      "./agents/codex": "./dist/agents/codex.mjs",
+      "./agents/codex/constants": "./dist/agents/codex/constants.mjs",
+      "./agents/constants": "./dist/agents/constants.mjs",
+      "./baseline": "./dist/baseline.mjs",
+      "./baseline/constants": "./dist/baseline/constants.mjs",
+      "./blocks/internals": "./dist/blocks/internals.mjs",
+      "./builtins": "./dist/builtins.mjs",
+      "./changesets": "./dist/changesets.mjs",
+      "./changesets/constants": "./dist/changesets/constants.mjs",
+      "./config": "./dist/config.mjs",
+      "./constants": "./dist/constants.mjs",
+      "./docs": "./dist/docs.mjs",
+      "./docs/constants": "./dist/docs/constants.mjs",
+      "./eslint": "./dist/eslint.mjs",
+      "./eslint/constants": "./dist/eslint/constants.mjs",
+      "./eslint/roles": "./dist/eslint/roles.mjs",
+      "./extensions": "./dist/extensions.mjs",
+      "./filesystem/internals": "./dist/filesystem/internals.mjs",
+      "./format": "./dist/format.mjs",
+      "./format/constants": "./dist/format/constants.mjs",
+      "./git": "./dist/git.mjs",
+      "./git/constants": "./dist/git/constants.mjs",
+      "./github": "./dist/github.mjs",
+      "./github/constants": "./dist/github/constants.mjs",
+      "./options/internals": "./dist/options/internals.mjs",
+      "./package": "./dist/package.mjs",
+      "./package/constants": "./dist/package/constants.mjs",
+      "./pnpm": "./dist/pnpm.mjs",
+      "./pnpm/constants": "./dist/pnpm/constants.mjs",
+      "./prettier": "./dist/prettier.mjs",
+      "./prettier/config": "./dist/prettier/config.mjs",
+      "./prettier/constants": "./dist/prettier/constants.mjs",
+      "./roles": "./dist/roles.mjs",
+      "./roles/constants": "./dist/roles/constants.mjs",
+      "./tsdown": "./dist/tsdown.mjs",
+      "./tsdown/constants": "./dist/tsdown/constants.mjs",
+      "./typescript": "./dist/typescript.mjs",
+      "./typescript/constants": "./dist/typescript/constants.mjs",
+      "./vite": "./dist/vite.mjs",
+      "./vite/constants": "./dist/vite/constants.mjs",
+      "./vitest": "./dist/vitest.mjs",
+      "./vitest/constants": "./dist/vitest/constants.mjs",
+      "./vscode": "./dist/vscode.mjs",
+      "./vscode/constants": "./dist/vscode/constants.mjs",
+      "./effects/*.json": "./data/effects/*.json",
+      "./apis/*": "./data/apis/*.d.ts",
+      "./agents/templates/*.md": "./data/agents/templates/*.md",
+      "./agents/rules/*.md": "./data/agents/rules/*.md",
+      "./agents/sections/*.md": "./data/agents/sections/*.md",
+      "./agents/skills/*.md": "./data/agents/skills/*.md",
+      "./extensions/tools/github/issues/planning/agents/skills/*.md": "./data/extensions/tools/github/issues/planning/agents/skills/*.md",
+      "./package.json": "./package.json",
+      "./github/workflows/*.yml": "./data/github/workflows/*.yml",
+      "./tsconfig/*.json": "./data/tsconfig/*.json",
+      "./schemas/*.json": "./data/schemas/*.json"
+    }
   }
 }

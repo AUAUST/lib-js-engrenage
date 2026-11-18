@@ -159,6 +159,9 @@ export default defineConfig({
     mirror: true,
     roles: [config, plugins, conventions],
   },
+  build: {
+    sourceExports: true,
+  },
   typescript: {
     tsconfig: {
       extends: ["./data/tsconfig/library.json"],

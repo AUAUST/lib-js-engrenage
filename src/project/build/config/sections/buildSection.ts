@@ -25,6 +25,11 @@ export const buildSection = declareSection({
       ),
       minify: entries.minify.resolve(input?.minify, context, "build.minify"),
       typed: entries.typed.resolve(input?.typed, context, "build.typed"),
+      sourceExports: entries.sourceExports.resolve(
+        input?.sourceExports,
+        context,
+        "build.sourceExports",
+      ),
     });
   },
 });

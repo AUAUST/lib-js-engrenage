@@ -3,6 +3,7 @@ export { defineCommand } from "#workflows/cli/operations/defineCommand";
 export { defineGroup } from "#workflows/cli/operations/defineGroup";
 export { defineLazyCommand } from "#workflows/cli/operations/defineLazyCommand";
 export { defineToolCommand } from "#workflows/cli/operations/defineToolCommand";
+export { findSourceExecutable } from "#workflows/cli/operations/findSourceExecutable";
 export { getRunContext } from "#workflows/cli/operations/getRunContext";
 export { launch } from "#workflows/cli/operations/launch";
 export { runProgram } from "#workflows/cli/operations/runProgram";

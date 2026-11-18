@@ -13,6 +13,7 @@ import { validate } from "#foundation/options/index";
 import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
+import { sourceCondition } from "#project/package/constants";
 import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
@@ -146,7 +147,13 @@ export async function createTsdownConfig(
     );
   }
 
-  const { typed, sourcemap, clean, minify } = await config.resolve("build");
+  const {
+    typed,
+    sourcemap,
+    clean,
+    minify,
+    sourceExports,
+  } = await config.resolve("build");
 
   const outDir = await config.resolve("build.outDir");
 
@@ -225,6 +232,12 @@ export async function createTsdownConfig(
     },
     exports: {
       enabled: true,
+      ...(sourceExports
+        ? {
+            devExports: sourceCondition,
+            bin: false,
+          }
+        : {}),
       packageJson: false,
       exclude: [...keys(bins), ...keys(workspaceEntries)],
       customExports,

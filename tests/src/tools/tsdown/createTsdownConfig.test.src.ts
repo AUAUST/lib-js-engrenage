@@ -304,6 +304,39 @@ describe("createTsdownConfig", () => {
     });
   });
 
+  test("adds the source condition only when the project enables source exports", async () => {
+    const disabled = await createTsdownConfig(
+      await loadConfig(createProject().root),
+      {
+        ci: false,
+      },
+    );
+
+    expect(disabled.exports).not.toHaveProperty("devExports");
+
+    expect(disabled.exports).not.toHaveProperty("bin");
+
+    expect(
+      await createTsdownConfig(
+        await loadConfig(
+          createProject({
+            config: {
+              build: { sourceExports: true },
+            },
+          }).root,
+        ),
+        {
+          ci: false,
+        },
+      ),
+    ).toMatchObject({
+      exports: {
+        devExports: "source",
+        bin: false,
+      },
+    });
+  });
+
   test("drops JSDoc from JavaScript output only when shipping declarations", async () => {
     function createTypedProject(typed: boolean) {
       return createProject({

@@ -81,4 +81,6 @@ export const publishAccess = freeze(values(accessByVisibility));
 
 export const packageTypes = freeze(["module", "commonjs"] as const);
 
+export const sourceCondition = "source";
+
 export { packageJsonFile } from "#constants";

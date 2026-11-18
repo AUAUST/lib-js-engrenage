@@ -34,4 +34,10 @@ export interface BuildInput {
    * @default `define.types`
    */
   typed?: (boolean | undefined)
+  /**
+   * Whether tsdown adds a `source` export condition resolving each entry to its source file, and the `engrenage` command runs from its sources when Node runs with `--conditions=source`.
+   * The published manifest keeps only the built files, through `publishConfig.exports`, which pnpm honors and npm ignores.
+   * @default false
+   */
+  sourceExports?: (boolean | undefined)
 }

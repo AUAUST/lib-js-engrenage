@@ -6,4 +6,5 @@ export interface ResolvedBuild {
   readonly sourcemap: boolean;
   readonly minify: boolean | "keepNames";
   readonly typed: boolean;
+  readonly sourceExports: boolean;
 }
