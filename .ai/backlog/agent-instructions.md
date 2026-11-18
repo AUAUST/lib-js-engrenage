@@ -13,7 +13,17 @@ Shared agent instructions, skills and the backlog conventions.
 - why: since AUAUST/lib-js-engrenage#461, the Drafts sections of `debugging.md`, `planning.md` and `analysis.md` share their file, manifest and reference tables and their rules word for word; only the opening sentence differs, and every change must be made three times.
 - want: one source each skill opts into, per #277 (skill traits).
 
-## 4. The worker and debugger skills repeat their gated finishing lines word for word
+## 4. The walked agents' skills repeat their gated finishing lines word for word
 
-- why: the final-report, worktree-gate and stop-gate lines in the Finishing sections of `issue-implementation.md` and `debugging.md`, their worktree setup line and their merger-findings resume line, are near-identical and must change together.
+- why: `issue-implementation.md` and `debugging.md` share their final-report, gate, worktree setup and merger-findings lines; the one-line report rule also repeats in `merging.md`.
 - want: one source for agents with `gate: true`, generated into each, once the copies start to drift.
+
+## 5. Walked agents read whole plan issues for the sections their header names
+
+- why: over 20 walks, `gh issue view` was 14% of worker tool output, mostly whole plans re-read by each leaf.
+- want: a `planning issue` command printing an issue with only the ancestor sections its header names, for workers and debuggers.
+
+## 6. `walk check` reprints the whole tree after every commit
+
+- why: the walker runs it after each commit; closed subtrees and their `Closes` lines grow with the walk and stay in its context.
+- want: an option collapsing closed subtrees to one line, used by the walking skill once trees reach dozens of issues.

@@ -1,10 +1,11 @@
 ---
 name: merger
 description: Merger that rebases a walked leaf onto the walked branch and
-  reviews it lightly, or reviews a closed segment against its siblings and the
-  code around it, applying only mechanical fixes. Dispatch it only when a skill
-  you follow or the user asks for a merger; otherwise do the work yourself. Its
-  report ends with what remains and the kind of work it needs.
+  reviews it against its issue and its siblings, or reviews a closed segment
+  against its siblings and the code around it, applying only mechanical fixes.
+  Dispatch it only when a skill you follow or the user asks for a merger;
+  otherwise do the work yourself. Its report ends with what remains and the kind
+  of work it needs.
 model: opus
 effort: medium
 tools:
@@ -20,14 +21,14 @@ tools:
 
 # Merging
 
-Review what a walk landed for what per-leaf review cannot see: duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. The walker reviews each diff against its own issue; you review it against its siblings and its surroundings. You find and apply only mechanical fixes; the leaf's worker or a debugger fixes the rest, and the walker commits.
+Review what a walk landed for what the leaf's own agent cannot see: gaps against its issue, duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. You find and apply only mechanical fixes; the leaf's worker or a debugger fixes the rest, and the walker commits.
 
 ## Modes
 
-| Mode        | Runs                                                                                             | Its findings go to |
-| ----------- | ------------------------------------------------------------------------------------------------ | ------------------ |
-| Integration | Per leaf of a concurrent walk, resumed for each leaf of a segment: rebase, then a light review   | The leaf's agent   |
-| Review      | At each segment's close and at the walk's end, on the range landed since the previous review run | A debugger         |
+| Mode        | Runs                                                                                               | Its findings go to |
+| ----------- | -------------------------------------------------------------------------------------------------- | ------------------ |
+| Integration | Per leaf, resumed for each leaf of a segment: rebase, then a review against its issue and siblings | The leaf's agent   |
+| Review      | At each segment's close and at the walk's end, on the range landed since the previous review run   | A debugger         |
 
 ## Brief
 
@@ -53,6 +54,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 ## Integration
 
 - Read the leaf's diff against the briefed `HEAD` commit and the code around each hunk; leave twin searches, jscpd and whole-file reads to the review run.
+- Check the diff against the issue's **Steps**, **Tests** and names, its `Checkpoint:` commits one by one, then the uncommitted rest: each gap is a leaf finding.
 - Compare the leaf with the landed range and the leaves you integrated earlier in this run: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; release or project requirements a sibling meets and the leaf misses.
 - Apply a fix yourself when it is mechanical, stays in the leaf's diff and takes no choice its issue leaves open.
 
@@ -85,7 +87,7 @@ A finding is within the fix radius when its fix stays in the reviewed files, or 
 
 ## Report
 
-Send no message before your report for the run or the leaf, once every command you started has finished:
+Send no message before your report for the run or the leaf, once every command you started has finished. Write each item in one line, since the walker reads dozens of reports: never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
 
 - The conflicts you resolved, each with its resolution, or the aborted rebase and the conflict that stopped it.
 - The fixes you applied, then the leaf findings or the findings, each with its file, the defect or rule, and the expected change.

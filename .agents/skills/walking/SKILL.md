@@ -9,91 +9,152 @@ description: Walk a planned tree of GitHub issues in order, dispatching each
 
 # Walking
 
-Walk an issue tree in the main session: route each issue by the handling table, review each leaf's diff, commit it and report. You own sequencing, routing, review and commits; you design and implement nothing.
+Walk an issue tree in the main session: route each issue by the handling table, have each leaf implemented and reviewed, commit it and report. You own sequencing, routing and commits; you design and implement nothing. Every report, diff and file you read stays in your context for the rest of the walk, so read only what a step below names.
+
+## Modes
+
+The walk request sets them:
+
+| Request word              | Effect                                                             |
+| ------------------------- | ------------------------------------------------------------------ |
+| `pool <K>`                | K leaves in flight; 4 when unset, always 1 under Codex             |
+| `sequential` or `no pool` | K = 1                                                              |
+| `autonomous`              | No user to answer: §Autonomous replaces every question to the user |
+
+## Flow
+
+```
+walk check ──► route the ready set (§Handling table)
+  │
+  ├─ leaf ──► dispatch (§Dispatching) ──► agent report
+  │              ├─ blocker ──► consultant ──► resume the agent
+  │              └─ completion
+  │                   ▼
+  │             integration merger (§Integration), or your own review (§Review)
+  │                   ▼
+  │             gaps and leaf findings ──► resume the agent once ──► check its fixes
+  │                   ▼
+  │             closing commit (§Commit) ──► report row ──► walk check
+  │
+  └─ segment or walk closes ──► review merger ──► debugger ──► commit ──► walk check
+```
 
 ## Handling table
 
-Start at the issue the user names and run `pnpm engrenage planning walk check <n>` on it once per routing decision: it reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue. Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches.
+Run `pnpm engrenage planning walk check <n>` on the issue the user names: at the start, after each commit and after each consultant update, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next issue.
 
-| Issue                                                         | Walker                                                                                                                                                      |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Closed, or closed by a local commit                           | Skip                                                                                                                                                        |
-| A `plan` other than the one walked                            | Stop: walked on its own                                                                                                                                     |
-| Open sub-issues                                               | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
-| `plan` or `segment` with no open sub-issue                    | Closes with its last leaf's commit                                                                                                                          |
-| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present | Stop: it is being planned                                                                                                                                   |
-| `blockers` `drafting`, with no local draft                    | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows                 |
-| Any `blockers`, or an open blocked-by issue                   | Stop and report                                                                                                                                             |
-| Has findings for **Planning**, `outdated` or structure        | Stop; send it to the consultant                                                                                                                             |
-| Has **Questions** open                                        | Stop; batch the questions to the user                                                                                                                       |
-| `problem` without **Steps**                                   | Debugger                                                                                                                                                    |
-| `task` or `problem` with **Steps**                            | Worker                                                                                                                                                      |
-| `complexity` set                                              | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default    |
-| `resource` or `idea` in a tree                                | Never dispatched; report it to the consultant                                                                                                               |
+Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
+
+| Issue                                                                   | Walker                                                                                                                                                      |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Closed, or closed by a local commit                                     | Skip                                                                                                                                                        |
+| A `plan` other than the one walked                                      | Set aside: walked on its own                                                                                                                                |
+| Open sub-issues                                                         | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
+| `plan` or `segment` with no open sub-issue                              | Closes with its last leaf's commit                                                                                                                          |
+| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present           | Set aside: it is being planned                                                                                                                              |
+| `blockers` `drafting`, with no local draft                              | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows                 |
+| `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue   | Set aside and report                                                                                                                                        |
+| Open **Planning**, `blockers` `outdated`, or findings for its structure | Set aside; send it to the consultant                                                                                                                        |
+| Open **Questions**                                                      | Set aside; batch the questions to the user                                                                                                                  |
+| `problem` without **Steps**                                             | Debugger                                                                                                                                                    |
+| `task` or `problem` with **Steps**                                      | Worker                                                                                                                                                      |
+| `complexity` set                                                        | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default    |
+| `resource` or `idea` in a tree                                          | Never dispatched; report it to the consultant                                                                                                               |
 
 `priority` never reorders a tree: order states dependencies.
 
 ## Dispatching
 
+- Keep up to K leaves of the ready set in flight. At K = 1, dispatch in the main checkout. Past it, dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit.
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
-- Resume the same agent to answer its question, return review gaps and the failing commands and output from its stop or commit gate, or pass on a merger's findings.
-- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the header chain, the plan sections the issue names and the commits the check lists towards the issue, for reference. Never paste issue or plan content: the agent reads it itself.
+- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with those findings and no `Issue:` line: they belong to no single issue.
+- Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
+- Send a blocker the issue's text does not answer to the consultant; resume the agent with what it settles.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
 
-## Concurrency
+## Integration
 
-- Keep up to K leaves of the ready set in flight: K = 4 unless the walk request sets it ("pool 2"; "no pool" or "sequential" mean K = 1), and K = 1 under Codex.
-- At K = 1, dispatch in the main checkout, and finish review, repairs and the passing commit gate before dispatching the next leaf; past it, the rules below apply.
-- Dispatch each leaf in the background with `isolation: "worktree"`, briefing the walked branch's `HEAD` commit.
-- Integrate finished leaves one at a time, in report order. First pass the leaf to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode: resume the current one, or dispatch a new merger with `effort: low` under §Resumed agents. When it reports leaf findings, resume the leaf's agent with them, so its stop gate checks the worktree the merger left. Then review as §After each leaf and §Checkpoints, cherry-pick the checkpoint commits, apply the uncommitted rest, and make the closing commit.
-- Leave integration conflicts to the merger's rebase; when it reports a conflict needing design, resume the leaf's agent to rebase its worktree onto the walked branch, then resume the merger.
-- Remove a leaf's worktree after its closing commit, then refill the pool from a fresh `walk check`.
+Runs for each completed leaf at K > 1, and at K = 1 in autonomous mode; otherwise §Review applies.
+
+1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger with `effort: low` under §Resumed agents.
+2. When the merger reports leaf findings, resume the leaf's agent once with all of them, so its stop gate checks the worktree the merger left; then check only that each finding is fixed or declined with a reason.
+3. Leave conflicts to the merger's rebase; when it reports one needing design, resume the leaf's agent to rebase its worktree onto the walked branch, then resume the merger.
+
+## Review
+
+When no integration merger runs:
+
+1. Read the leaf's diff from its dispatch base: `git diff --stat` first, then the hunks the issue's **Steps** and **Tests** name; skip generated files and lockfiles, and read no code beyond the diff.
+2. Review it against the issue's **Steps**, **Tests** and names. A worker commits at each `Checkpoint:` line of its issue: review those commits one by one, then the uncommitted rest, reading their messages only as a hint of how the worker read its Steps.
+3. Add the `@debt` markers the diff calls for and the agent missed.
+4. When you find gaps, resume the agent once with all of them; then check only its fixes.
+
+## Commit
+
+1. At K > 1, cherry-pick the leaf's checkpoint commits, then apply its uncommitted rest; never rewrite a checkpoint.
+2. Make the closing commit under the project's git rules, closing the issue and every segment or parent it completes. Do not run the checks: the commit gate runs them.
+3. At K > 1, remove the leaf's worktree; then run `walk check` and refill the pool.
+4. Report one row to the user: issue · consequences · decisions and deviations.
 
 ## After a debugger
 
-| Its outcome                      | Next                                      |
-| -------------------------------- | ----------------------------------------- |
-| Fixed                            | Review and commit it as any leaf          |
-| Written up, ready for a worker   | Dispatch the written-up issue to a worker |
-| Written up for planning, Blocked | Stop and report it to the user            |
-
-## After each leaf
-
-1. Review only the diff against the issue's **Steps**, **Tests** and names; read no code beyond it. Send each gap back to the agent that did the work.
-2. Add the `@debt` markers the diff calls for and the agent missed.
-3. Commit under the project's git rules, closing the issue and every segment or parent it completes. Do not run the checks: the commit gate runs them.
-4. Report one row to the user: issue · consequences · decisions and deviations.
+| Its outcome                    | Next                                                                                      |
+| ------------------------------ | ----------------------------------------------------------------------------------------- |
+| Fixed                          | Integrate or review, then commit it as any leaf                                           |
+| Written up, ready for a worker | Dispatch the written-up issue to a worker                                                 |
+| Written up for planning        | Set it aside and report it to the user                                                    |
+| Blocked                        | Send its questions to the consultant when the plan may settle them, otherwise to the user |
 
 ## Boundary reviews
 
-- When a segment closes and at the walk's end, dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
-- Brief a new debugger with its findings and the leaf findings agents declined since the previous review run, when any, and handle the outcome by §After a debugger.
-- Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when there is none.
+When a segment closes and at the walk's end:
 
-## Checkpoints
-
-A worker commits at each `Checkpoint:` line of its issue; your final commit closes the issue.
-
-- Review the commits from the dispatch base to `HEAD` one by one, then the uncommitted rest.
-- Fix a gap in a new commit, never by rewriting a checkpoint.
-- Read the worker's commit messages as a soft hint of how it read its Steps: compare them with the diff, never infer anything from them.
+1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
+2. Brief a new debugger with its findings and the leaf findings agents declined since the previous review run, when any, and handle the outcome by §After a debugger.
+3. Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when there is none.
+4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
 
 ## Consultant
 
-- Start the `planner` subagent on first need with the plan number, and resume it under §Resumed agents.
-- Call it only for an unresolved worker stop, a deviation changing planned behavior, contracts, scope or tree order, or an issue fitting no handling row; answer nothing from code yourself.
-- Batch what it sends back to the user with its findings and recommendations; meanwhile walk only the leaves it does not affect.
+- Start the `planner` subagent on first need with the plan number, and `autonomous` in autonomous mode; resume it under §Resumed agents.
+- Call it only for a blocker the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, or an issue its row sends to it or no row fits; answer nothing from code yourself.
+- Batch what it sends back to the user with its findings and recommendations.
+
+## Autonomous
+
+The user delegated every decision the instructions let an agent settle and is not there to answer: never ask them or wait for them.
+
+| Instead of                                                       | Do                                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Batching questions to the user                                   | Send them to the consultant; the issues it cannot settle stay set aside        |
+| Asking to clear a `drafting` claim                               | Set the issue aside                                                            |
+| Reporting a debugger written up for planning                     | Send it to the consultant, which plans it into the tree or leaves it set aside |
+| Resuming a leaf's agent a third time for one gate failure or gap | Set the leaf aside with its worktree, and report its state                     |
 
 ## Resumed agents
 
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
 - Start a new one instead when a segment closes, when the current one has been idle longer than the prompt-cache lifetime, or, under Codex, once its reported context exceeds twice what it started with: past that, every resumed turn re-reads more history than a fresh start costs.
-- Brief a new consultant with the plan number and the previous one's last carry-over, a new integration merger as the first, with the previous one's carry-over.
+- Brief a new consultant with the plan number, the mode and the previous one's last carry-over, a new integration merger as the first, with the previous one's carry-over.
+
+## Context
+
+Every turn re-reads your whole context, and a long walk outgrows it.
+
+- Read only `walk check` output and agent reports, plus the issue and the diff §Review names; never plans or code beyond that diff.
+- Make the commands of one step one call: a leaf's cherry-picks, apply and commit; its worktree removal and the next `walk check`.
+- Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check` and the walk's commits.
 
 ## Report
 
-End at the end of the tree or at a stop, with the table of walked leaves, then each merger run's findings and where each went, then what is pending or blocked and why, then the walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
+End once no leaf is in flight and the ready set is empty, at the end of the tree or with every remaining issue set aside, with:
+
+1. The table of walked leaves, rebuilt from the walk's commits.
+2. Each merger run's findings and where each went.
+3. In autonomous mode, every decision the consultant settled, from its carry-over.
+4. What is set aside, pending or blocked, and why.
+5. The walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
 
 <!-- @end -->

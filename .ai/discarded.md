@@ -107,3 +107,6 @@
 - @auaust/codegen: barrels and block writers outside engrenage — never published, repository idle since 2026-09 (#51 closed)
 - SessionStart identity hook: wrong-location check (#462) — agents already know their directory; another hook able to lock agents out (#598)
 - Bash hook shell-trap warnings: zsh friction (#597) — a hook on every Bash call; hooks lock agents out (#598)
+- walk state file: walker state surviving compaction — `walk check` and the walk's commits already hold it
+- integration merger at K = 1 in interactive walks: walker context — a merger run per leaf while the user can steer; autonomous only
+- dispatch during a segment's review run: concurrency at segment boundaries — the review fix may change what later work builds on

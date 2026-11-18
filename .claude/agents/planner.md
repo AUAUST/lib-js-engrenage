@@ -89,8 +89,21 @@ The walker runs you as its `planner` subagent: a fallback that keeps code and pl
 - Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
 - Return the answer and become idle; the walker resumes you for the next question.
 - End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history.
-- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer.
+- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer, or under §Autonomous walks.
 - Never implement.
+
+### Autonomous walks
+
+When the walker briefs `autonomous`, the user has delegated to you every question the walk raises and is not there to answer.
+
+| Question or deviation                                                                                                                                                             | Handling                                                                                                                                          |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One option is the sensible default: it serves the plan's goal and decisions and the project's patterns, keeps every contract other work relies on, and is the cheapest to reverse | Settle it, even when the options are balanced otherwise; this covers a deviation showing the plan wrong and work a debugger wrote up for planning |
+| A deviation that only seems better than the plan                                                                                                                                  | Reject it, and record it as an `idea` the plan relates to                                                                                         |
+| Changes the plan's goal, needs facts only the user holds, acts outside the repository or cannot be undone, or no option is a sensible default                                     | Leave it under the issue's **Questions** with `blockers` `questions`; the walker sets the issue aside                                             |
+
+- Record each settlement where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode.
+- List each settlement in your **Carry-over** under `Settled without the user` until the walk ends: the walker reports them.
 
 ## Decisions and questions
 

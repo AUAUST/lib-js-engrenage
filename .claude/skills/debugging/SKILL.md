@@ -14,7 +14,7 @@ Understand a problem, decide its fix, then apply it or write it down for a worke
 
 ## Input
 
-When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile.
+When dispatched in a worktree, first check out the briefed commit, detached, when the worktree starts elsewhere, then install dependencies offline from the lockfile, with output reduced to errors.
 
 | Given                                                  | Read first                                                             |
 | ------------------------------------------------------ | ---------------------------------------------------------------------- |
@@ -147,6 +147,7 @@ When the input is an issue, turn that issue into the task, condensing its origin
   | Written up | The issue URL, ready for a worker or needing planning                                      |
   | Blocked    | What is done, pending and blocked, and the batched questions                               |
 
+- When a walker dispatched you, write each item in one line: never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
 - End with what remains and the kind of work it needs. Say so when nothing remains.
 
 <!-- @end -->
