@@ -8,11 +8,11 @@ order: 36
 
 ## Shell
 
-| Trap                                                                                      | Write                                                |
-| ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| zsh aborts on an unmatched glob                                                           | Quote every glob passed as an argument               |
-| zsh never splits an unquoted variable                                                     | Lists as arrays or through `xargs`                   |
-| zsh expands a word starting with `=` as a command path                                    | No word starting with `=`                            |
-| macOS has no `timeout`                                                                    | Each tool's own timeout                              |
-| BSD `sed` requires the in-place suffix                                                    | `sed -i ''`                                          |
-| In an agent worktree, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |
+| Trap                                                                                                              | Write                                                |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| zsh aborts on an unmatched glob                                                                                   | Quote every glob passed as an argument               |
+| zsh never splits an unquoted variable                                                                             | Lists as arrays or through `xargs`                   |
+| zsh expands a word starting with `=` as a command path                                                            | No word starting with `=`                            |
+| macOS has no `timeout`                                                                                            | Each tool's own timeout                              |
+| BSD `sed` requires the in-place suffix                                                                            | `sed -i ''`                                          |
+| In a session started with worktree isolation, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |

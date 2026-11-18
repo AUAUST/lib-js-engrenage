@@ -53,10 +53,10 @@ Shared agent instructions, skills and the backlog conventions.
 - why: `walking.md` dispatches the integration merger with `effort: low`; `merging.md` declares no `efforts`, and a Codex profile's effort overrides the spawn's.
 - want: `efforts: { integration: low }` in the merging frontmatter, generating `merger_low`, routed by mode.
 
-## 11. A restarted walk re-dispatches leaves whose work sits in leftover worktrees
+## 11. A restarted walk holds completed leaf work instead of integrating it
 
-- why: the walking skill's §Context covers compaction only; `walk check` lists such leaves as ready.
-- want: on start, route ready work found in worktrees and `worker/*`, `debugger/*` branches to §Integration or §Review; report the rest.
+- why: walking › Stops and restarts holds every leaf branch it finds; a completed leaf waits on the user, its agent gone.
+- want: route completed held work to §Integration or §Review with a new agent; its `snap` commit never lands as a checkpoint.
 
 ## 12. The walker has no rule for colliding log appends or silent agents
 

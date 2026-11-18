@@ -45,10 +45,11 @@ When dispatched in a worktree, first check out the briefed commit, detached, whe
 | A backlog entry                                        | The entry and the entries closely related to it                        |
 | A `@debt` marker                                       | The marked code and its callers                                        |
 | A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
+| A merger's findings                                    | Each finding's cited code                                              |
 
 ## Diagnosis
 
-1. **Reproduce.** Show the behavior with a failing test, command or minimal case. When it cannot be reproduced, report what you tried instead of fixing on a guess.
+1. **Reproduce.** Show the behavior with a failing test, command or minimal case, or a merger's finding in its cited code. When it cannot be shown, report what you tried instead of fixing on a guess.
 2. **Cause.** Follow the execution path to where behavior first departs from its contract. The site of the symptom is not the cause.
 3. **Reach.** Find every other site sharing the cause: the same assumption, pattern or caller. Fix the class of bug, not the reported instance.
 4. **Contract.** Take the expected behavior from authoritative sources: types, schemas, documentation, tests and recorded decisions. When the expected behavior is itself undecided, it is a question, not a choice for you.
@@ -76,14 +77,14 @@ Decide it by the issues rule › Outcome: fixing every site that shares the caus
 ## Writing the issue
 
 - When the input is an issue, turn that issue into the task, condensing its original report into **Context**. Otherwise draft a new one under the issues rule.
-- Type it by the issues rule › Filing.
+- Type it by the issues rule › Filing; a merger's improvement finding is accepted work, a `task`.
+- With a `Walk:` line, create each new issue the current repository owns in the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue. File the others under the issues rule › Repository.
 
 ## Finishing
 
 - Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, when you changed files, the worktree gate passes, so the stop gate reuses that pass.
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your input's reach covers, and report the rest with the reason.
-- When asked for a branch, create `debugger/<topic>` from the current commit, `debugger/issue-<n>` when the input is an issue.
 - After a fix, remove the backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report by outcome:
 

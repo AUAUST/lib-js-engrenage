@@ -21,10 +21,10 @@ Review what a walk landed for what the leaf's own agent cannot see: gaps against
 
 ## Brief
 
-| Mode        | Given                                                                                                                                                                                                                                                                                      |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Integration | The plan and segment, the leaf's issue, its worktree path, the walked branch's `HEAD` commit, the commit range landed since the leaf's base (empty when the branch did not move), the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over |
-| Review      | The plan and segment, the commit range landed since the previous review run, the carry-over of that run and of the integration runs since                                                                                                                                                  |
+| Mode        | Given                                                                                                                                                                                                                                                                                                                                                                  |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Integration | The plan and segment, the leaf's issue, its checkout (its worktree, or the main checkout), its dispatch base, the walked branch's `HEAD` commit, the commit range other leaves landed since the dispatch base (empty at K = 1 and when no other leaf landed), the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over |
+| Review      | The plan and segment, the commit range landed since the previous review run, the carry-over of that run and of the integration runs since                                                                                                                                                                                                                              |
 
 - Read the issues and plan sections the brief names, and the landed commits.
 - Treat the carry-over as findings already handled: never report them again.
@@ -42,7 +42,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 
 ## Integration
 
-- Read the leaf's diff against the briefed `HEAD` commit and the code around each hunk; leave twin searches, jscpd and whole-file reads to the review run.
+- Read the leaf's diff against its dispatch base, or the briefed `HEAD` commit after a rebase, and the code around each hunk; leave twin searches, jscpd and whole-file reads to the review run.
 - Check the diff against the issue's **Steps**, **Tests** and names, its `Checkpoint:` commits one by one, then the uncommitted rest: each gap is a leaf finding.
 - Compare the leaf with the landed range and the leaves you integrated earlier in this run: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; release or project requirements a sibling meets and the leaf misses.
 - Apply a fix yourself when it is mechanical, stays in the leaf's diff and takes no choice its issue leaves open.

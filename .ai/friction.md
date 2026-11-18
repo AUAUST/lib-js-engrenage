@@ -78,3 +78,5 @@
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
 - `engrenage gate --worktree`: gated instruction-only edits — typecheck and codegen --check failed on `src/tools/github/types/GithubInput.ts` from concurrent commit 4b1a3d7e; left it, reported unverified
+- `engrenage gate --worktree`: gate after `sync` on edited fragments — its format step realigned the walking and debugging fragment tables, leaving `.codex/agents/*.toml` outdated for `sync --check`; reran `sync agents` then the gate
+- `engrenage sync agents`: synced an edited walking fragment — it reported `.claude/skills/walking/SKILL.md` and `.agents/skills/walking/SKILL.md` conflicting and left them stale; full `pnpm engrenage sync` refreshed them

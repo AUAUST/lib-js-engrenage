@@ -62,7 +62,6 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 - Send no message before your final report, your only message: a completion or a blocker, sent once every command you started has finished and, when you changed files, the worktree gate passes, so the stop gate reuses that pass. A blocker other than a scope stop carries a stop record (Writing › Stop records).
 - The worker/debugger stop gate returns failing commands and output to the stopped agent: fix them and stop again. When you must stop with failures (a usage limit mid-refactor, a scope stop mid-implementation), list them in your report and stop again on that unchanged tree.
 - When resumed with a merger's findings, fix each one your issue's scope covers, and report the rest with the reason.
-- When asked for a branch, create `worker/issue-<n>` from the current commit.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.
 - Write each item once and in one line, since the walker keeps dozens of reports in its context: never a second copy under another part, which refers to it instead, nor the commands you ran, the checks that passed or commit hashes, which the gate and git record. Name each file repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
