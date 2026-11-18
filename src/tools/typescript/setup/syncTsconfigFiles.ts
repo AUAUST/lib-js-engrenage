@@ -11,9 +11,11 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { listTsconfigTargets } from "#tools/typescript/operations/listTsconfigTargets";
+import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { tsconfigProducers } from "#tools/typescript/operations/tsconfigProducers";
 import type { ManagedListOption } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { File } from "#types/File";
 
 function listPaths({
   extends: extended,
@@ -115,10 +117,54 @@ async function createEdits(
   return [...managed, ...custom];
 }
 
+async function listDeclaredTsconfigFiles(
+  config: LoadedConfig,
+): Promise<readonly File[]> {
+  const contributions = await config.context.registry.contributions(
+    "environments",
+    config,
+  );
+
+  const files: File[] = [];
+
+  for (const { entry } of contributions) {
+    if (entry.tsconfig !== true) {
+      continue;
+    }
+
+    const { tsconfig } = await resolveTsconfigEnvironment(config, entry.name);
+
+    if (tsconfig.owner === entry.name && tsconfig.file !== undefined) {
+      files.push(tsconfig.file);
+    }
+  }
+
+  const { dist } = await config.resolve("tests");
+
+  if (
+    dist.tsconfig.owner === "tests.dist" &&
+    dist.tsconfig.file !== undefined
+  ) {
+    files.push(dist.tsconfig.file);
+  }
+
+  return files;
+}
+
 export async function syncTsconfigFiles(config: LoadedConfig) {
   const filesystem = config.context.filesystem;
 
-  for (const target of await listTsconfigTargets(config)) {
+  const targets = await listTsconfigTargets(config);
+
+  const synced = new Set(targets.map(({ file }) => file));
+
+  for (const file of await listDeclaredTsconfigFiles(config)) {
+    if (!synced.has(file) && (await filesystem.exists(file))) {
+      await filesystem.remove(file);
+    }
+  }
+
+  for (const target of targets) {
     const current = await filesystem.read(target.file);
 
     await filesystem.write(

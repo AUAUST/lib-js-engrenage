@@ -75,8 +75,3 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - site: `src/tools/typescript/operations/produceTsconfigInclude.ts:64`
 - why: role files matched only at the root of tests directories, so deeper declarations miss the dist check.
 - want: nested role files included.
-
-## 14. Sync keeps a tsconfig file no active environment owns any more
-
-- why: `sync` writes `tsconfig.<environment>.json` only for owners `listTsconfigOwners` returns; once no active environment shares one (a removed `tests/`), the file stays on disk unreferenced and `sync --check` passes. Raised in #521, whose concern is fixed.
-- want: sync deletes a `tsconfig.<environment>.json` of a known environment that owns no target (recommended: the file name ties it to engrenage); alternatives: `--check` warns, or deletion stays manual.

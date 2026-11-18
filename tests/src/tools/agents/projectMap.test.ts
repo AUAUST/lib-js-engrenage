@@ -214,6 +214,24 @@ describe("project map", () => {
     );
   });
 
+  test("writes no map for an environment without files and removes a stale one", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default {
+        preset: "library", agents: { preferred: ["claude"] },
+        scripts: { roles: [] },
+      };`,
+      "src/feature/index.ts": "",
+      ".claude/rules/project-map/scripts.md": "stale\n",
+    });
+
+    await syncProject(project);
+
+    expect(
+      existsSync(project.resolve(".claude/rules/project-map/scripts.md")),
+    ).toBe(false);
+  });
+
   test.each([true, false])(
     "renders enforced grants for published=%s",
     async (published) => {

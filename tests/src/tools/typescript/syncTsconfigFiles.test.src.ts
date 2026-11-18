@@ -28,6 +28,7 @@ async function createProject(
 
 const files = {
   "src/index.ts": "",
+  "env.d.ts": "",
   "tsconfig.json": JSON.stringify({
     extends: "./base.json",
     compilerOptions: { strict: true },
@@ -142,10 +143,14 @@ describe("syncTsconfigFiles", () => {
   });
 
   test("creates the tsconfig of an active environment only", async () => {
-    const {
-      project,
-      config,
-    } = await createProject({}, { "src/index.ts": "", "tsconfig.json": "{}" });
+    const { project, config } = await createProject(
+      {},
+      {
+        "src/index.ts": "",
+        "env.d.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
 
     await config.context.filesystem.flush();
 
@@ -158,6 +163,32 @@ describe("syncTsconfigFiles", () => {
     expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");
 
     expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
+  });
+
+  test("removes the tsconfig of an environment without files", async () => {
+    const { project, config } = await createProject(
+      {
+        scripts: { roles: [] },
+      },
+      {
+        "src/index.ts": "",
+        "tsconfig.json": JSON.stringify({
+          references: [
+            { path: "./tsconfig.src.json" },
+            { path: "./tsconfig.scripts.json" },
+          ],
+        }),
+        "tsconfig.scripts.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
+
+    expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
+      { path: "./tsconfig.src.json" },
+    ]);
   });
 
   test("creates a shared tsconfig whose owner is inactive but an inheritor is active", async () => {

@@ -38,10 +38,14 @@ async function createDefaultInclude(
 
   const { envFile } = await config.resolve("typescript");
 
+  const hasEnvFile = await config.context.filesystem.exists(envFile);
+
   return () => {
     const globs = flatMap(resolved, ({ globs }) => globs);
 
-    const included = defines ? [...globs, relative(root, envFile)] : globs;
+    const included = defines && hasEnvFile
+      ? [...globs, relative(root, envFile)]
+      : globs;
 
     return toTsconfigGlobs(file, included);
   };
@@ -59,6 +63,8 @@ async function createDistTestsInclude(
 
   const root = config.context.root;
 
+  const hasEnvFile = await config.context.filesystem.exists(envFile);
+
   return () => {
     const { plain, dist } = tests.patterns;
 
@@ -72,7 +78,7 @@ async function createDistTestsInclude(
 
     const globs = filesIn(tests.dirs, [...plain, ...dist, ...roleFiles]);
 
-    const included = tests.defines
+    const included = tests.defines && hasEnvFile
       ? [...globs, relative(root, envFile)]
       : globs;
 

@@ -16,6 +16,7 @@ async function syncProject(
     "bin/index.ts": "",
     "scripts/index.ts": "",
     "tsconfig.json": "{}",
+    "env.d.ts": "",
     ...files,
   });
 
@@ -102,6 +103,38 @@ describe("produceTsconfigInclude", () => {
     ]);
 
     expect(() => read("tsconfig.scripts.json")).toThrow("ENOENT");
+  });
+
+  test("includes the env file only once it exists", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "src/index.ts": "",
+      "tsconfig.json": "{}",
+    });
+
+    async function readInclude() {
+      const config = createProjectConfig({
+        root: project.root,
+        raw: withSourceRuntime({}),
+        configFile: undefined,
+      });
+
+      await syncTsconfigFiles(config);
+
+      await config.context.filesystem.flush();
+
+      return JSON.parse(project.read("tsconfig.src.json")).include;
+    }
+
+    expect(await readInclude()).toEqual(["src/**/*.ts", "src/**/*.tsx"]);
+
+    project.write("env.d.ts", "");
+
+    expect(await readInclude()).toEqual([
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "env.d.ts",
+    ]);
   });
 
   test("adds the env file to an environment that defines", async () => {
