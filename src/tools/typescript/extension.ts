@@ -1,16 +1,19 @@
 import {
-  barrelBlocksTarget,
   barrelExportsEntry,
   barrelsTarget,
   typescript,
+  typescriptBlocks,
   typescriptExtensions,
 } from "#tools/typescript/constants";
 import type { Extension, FileLocation } from "#project/config/index";
+import type { File } from "#types/File";
 
 /**
  * Owns the `barrels.exports` slot, the `declarations` config key, the TypeScript
  * cache, env file, environment tsconfigs and barrels, contributes the TypeScript
- * language and syncs barrels, tsconfigs, aliases, globals and workspaces.
+ * language and block syntax, the `barrel` and `define` directives and the
+ * TypeScript comment directives as line markers, and syncs barrels, tsconfigs,
+ * aliases, globals and workspaces.
  */
 export default {
   name: "tools/typescript",
@@ -76,6 +79,38 @@ export default {
       "package.json#imports": true,
       "tsconfig#paths": true,
     },
+    markers: {
+      "ts-expect-error": true,
+      "ts-ignore": true,
+      "ts-nocheck": true,
+      "ts-check": true,
+    },
+    directives: {
+      barrel: {
+        async files(config): Promise<readonly File[]> {
+          const {
+            listBarrelCandidates,
+          } = await import("#tools/typescript/operations/listBarrelCandidates");
+
+          return listBarrelCandidates(config);
+        },
+        load() {
+          return import("#tools/typescript/operations/fillBarrelBlock");
+        },
+      },
+      define: {
+        async files(config): Promise<readonly File[]> {
+          const {
+            listDefineFiles,
+          } = await import("#tools/typescript/operations/listDefineFiles");
+
+          return listDefineFiles(config);
+        },
+        load() {
+          return import("#tools/typescript/operations/fillDefineBlock");
+        },
+      },
+    },
   },
   contributes: {
     "languages": [
@@ -86,6 +121,13 @@ export default {
         declarations: ".d.ts",
       },
     ],
+    "blocks.syntaxes": [
+      {
+        name: "typescript",
+        files: typescriptExtensions.map((extension) => `**/*${extension}`),
+        ...typescriptBlocks,
+      },
+    ],
     "sync.targets": [
       {
         name: barrelsTarget,
@@ -93,13 +135,6 @@ export default {
         produces: ["typescript.barrels"],
         load() {
           return import("#tools/typescript/setup/syncBarrelFiles");
-        },
-      },
-      {
-        name: barrelBlocksTarget,
-        stage: "write",
-        load() {
-          return import("#tools/typescript/setup/syncBarrelBlocks");
         },
       },
       {

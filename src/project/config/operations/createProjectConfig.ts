@@ -25,6 +25,7 @@ import {
 } from "#foundation/options/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 import { unpresettable } from "#project/config/constants";
+import { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
@@ -134,6 +135,8 @@ export function createProjectConfig({
   );
 
   checkFileParts(registry);
+
+  checkDirectiveNames(registry);
 
   function explainInactive({ when }: Extension): string | undefined {
     return when === undefined ? undefined : `install ${when.installed}`;

@@ -17,6 +17,7 @@ import {
 import { isFunction, isPlainObject } from "@auaust/toolkit";
 
 import type { SlotDeclaration } from "#foundation/extensions/index";
+import type { DirectiveDeclaration } from "#project/config/types/DirectiveDeclaration";
 import type { Extension } from "#project/config/types/Extension";
 import type { FileResource } from "#project/config/types/FileResource";
 import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
@@ -68,6 +69,22 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         literal(true),
       ),
     ),
+    directives: exactOptional(
+      record(
+        string(),
+        looseObject({
+          files: custom<DirectiveDeclaration["files"]>(
+            isFunction,
+            "Expected a files function",
+          ),
+          load: custom<DirectiveDeclaration["load"]>(
+            isFunction,
+            "Expected a load function",
+          ),
+        }),
+      ),
+    ),
+    markers: exactOptional(record(string(), literal(true))),
   },
   record(string(), objectSchema),
 );

@@ -7,7 +7,10 @@ export async function syncBlocks(
   content: string,
   { open, close, padding }: BlockSyntax,
   fillers: BlockFillers,
-  { markers: mode = "keep" }: { markers?: "keep" | "drop" } = {},
+  {
+    markers: mode = "keep",
+    known = new Set(),
+  }: { markers?: "keep" | "drop"; known?: ReadonlySet<string> } = {},
 ): Promise<string> {
   const marker = new RegExp(
     String.raw`^${RegExp.escape(open)}@([\w-]+)((?: \S+)*)${RegExp.escape(close)}$`,
@@ -23,9 +26,11 @@ export async function syncBlocks(
   for (const [index, match] of markers.entries()) {
     const [line, directive = "", argumentList = ""] = match;
 
+    const at = `line ${content.slice(0, match.index).split("\n").length}: `;
+
     if (directive === "end") {
       if (!isBlockOpen) {
-        throw new Error(`"${line}" closes no block`);
+        throw new Error(`${at}"${line}" closes no block`);
       }
 
       isBlockOpen = false;
@@ -37,8 +42,7 @@ export async function syncBlocks(
       continue;
     }
 
-    // @debt Temporary: skips `@debt` comments, which fd4f415 (debug: lazy CLI subcommand loading) places on lines the marker regex reads as directives. Remove once that commit is reverted or the parser tells block markers from other comments.
-    if (directive === "debt") {
+    if (known.has(directive)) {
       continue;
     }
 
@@ -46,17 +50,25 @@ export async function syncBlocks(
 
     if (fill === undefined) {
       throw new Error(
-        `Unknown directive in "${line}"; expected one of @${[...keys(fillers), "end"].join(", @")}`,
+        `${at}Unknown directive in "${line}"; expected one of @${[...keys(fillers), "end"].join(", @")}`,
       );
     }
 
     const next = markers[index + 1];
 
     if (next === undefined || (mode === "drop" && next[1] !== "end")) {
-      throw new Error(`Missing "@end" marker after "${line}"`);
+      throw new Error(`${at}Missing "@end" marker after "${line}"`);
     }
 
-    const returned = await fill(...argumentList.split(" ").slice(1));
+    let returned: string | undefined;
+
+    try {
+      returned = await fill(...argumentList.split(" ").slice(1));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      throw new Error(`${at}${message}`, { cause: error });
+    }
 
     const blockStart = match.index + line.length;
 
@@ -75,7 +87,7 @@ export async function syncBlocks(
     }
 
     if (filled.match(marker) !== null) {
-      throw new Error(`Content of "${line}" contains a block marker`);
+      throw new Error(`${at}Content of "${line}" contains a block marker`);
     }
 
     result += mode === "drop"

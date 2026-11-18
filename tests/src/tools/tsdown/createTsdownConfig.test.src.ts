@@ -6,6 +6,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createRolePreset, index } from "#project/roles/index";
+import { syncDirectiveBlocks } from "#project/sync/setup/syncDirectiveBlocks";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getFixture } from "#tests/utils/getFixture";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
@@ -93,6 +94,8 @@ describe("createTsdownConfig", () => {
     const config = await loadConfig(project.root);
 
     await syncEnvFile(config);
+
+    await syncDirectiveBlocks(config);
 
     await config.context.filesystem.flush();
 

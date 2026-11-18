@@ -29,7 +29,7 @@ function createKit({
   });
 }
 
-describe("barrel-blocks sync target", () => {
+describe("barrel directive", () => {
   test("keeps hand-written lines beside a role's modules, and sync --check reports a module added without sync", async () => {
     const { project, config, sync } = createKit({
       files: {

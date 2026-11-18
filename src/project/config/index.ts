@@ -6,6 +6,8 @@ export type * from "#project/config/types/ConfigSections";
 export type * from "#project/config/types/ConfigSlots";
 export type * from "#project/config/types/Definition";
 export type * from "#project/config/types/DefinitionOptions";
+export type * from "#project/config/types/DirectiveDeclaration";
+export type * from "#project/config/types/DirectiveFill";
 export type * from "#project/config/types/Environment";
 export type * from "#project/config/types/Extension";
 export type * from "#project/config/types/ExtensionOption";
@@ -35,6 +37,7 @@ export { validateConfig } from "#project/config/operations/validateConfig";
 
 // @barrel utils
 export { assertSerializable } from "#project/config/utils/assertSerializable";
+export { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 export { checkFileParts } from "#project/config/utils/checkFileParts";
 export { createResourceIgnores } from "#project/config/utils/createResourceIgnores";
 export { isDefinition } from "#project/config/utils/isDefinition";

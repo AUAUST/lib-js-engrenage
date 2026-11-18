@@ -1,4 +1,5 @@
 // @barrel ports
+export type * from "#project/sync/ports/BlockSyntaxEntry";
 export type * from "#project/sync/ports/SyncDone";
 export type * from "#project/sync/ports/SyncFlags";
 export type * from "#project/sync/ports/SyncRun";

@@ -132,4 +132,20 @@ describe("syncBlocks", () => {
       );
     }).rejects.toThrow('Missing "@end" marker');
   });
+
+  test("skips known line markers, and names the line of an unknown directive", async () => {
+    const content = "<!-- @reference ./first.md -->\n<!-- @end -->\n<!-- @debt note -->\n";
+
+    expect(
+      await syncBlocks(content, markdownBlocks, fillers, {
+        known: new Set(["debt"]),
+      }),
+    ).toBe(
+      "<!-- @reference ./first.md -->\n\n## ./first.md\n\n<!-- @end -->\n<!-- @debt note -->\n",
+    );
+
+    await expect(async () => {
+      return await syncBlocks(content, markdownBlocks, fillers);
+    }).rejects.toThrow(/^line 3: Unknown directive in "<!-- @debt note -->"/);
+  });
 });

@@ -1,4 +1,5 @@
 import {
+  blockSyntaxEntry,
   syncDoneEntry,
   syncStages,
   syncTargetEntry,
@@ -8,7 +9,8 @@ import type { Extension } from "#project/config/index";
 /**
  * Owns the `sync.targets` slot, ordered by stage then by the files and parts
  * its targets read and produce, and the `sync.done` hook, emitted once every
- * selected target ran.
+ * selected target ran, and the `blocks.syntaxes` slot, read by the `blocks`
+ * target filling every directive's blocks.
  */
 export default {
   name: "project/sync",
@@ -23,6 +25,20 @@ export default {
         kind: "hook",
         entry: syncDoneEntry,
       },
+      "blocks.syntaxes": {
+        entry: blockSyntaxEntry,
+      },
     },
+  },
+  contributes: {
+    "sync.targets": [
+      {
+        name: "blocks",
+        stage: "fill",
+        load() {
+          return import("#project/sync/setup/syncDirectiveBlocks");
+        },
+      },
+    ],
   },
 } satisfies Extension;

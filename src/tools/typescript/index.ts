@@ -3,7 +3,6 @@ export { createRuntimeDataStep } from "#tools/typescript/setup/createRuntimeData
 export { createSourceEntryStep } from "#tools/typescript/setup/createSourceEntryStep";
 export { createTypescriptStep } from "#tools/typescript/setup/createTypescriptStep";
 export { syncAliases } from "#tools/typescript/setup/syncAliases";
-export { syncBarrelBlocks } from "#tools/typescript/setup/syncBarrelBlocks";
 export { syncBarrelFiles } from "#tools/typescript/setup/syncBarrelFiles";
 export { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 export { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";

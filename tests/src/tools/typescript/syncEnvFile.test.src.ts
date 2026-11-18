@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
+import { syncDirectiveBlocks } from "#project/sync/setup/syncDirectiveBlocks";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 import { define } from "#workflows/config/index";
@@ -21,6 +22,8 @@ async function createProject(
   });
 
   await syncEnvFile(config);
+
+  await syncDirectiveBlocks(config);
 
   await config.context.filesystem.flush();
 
