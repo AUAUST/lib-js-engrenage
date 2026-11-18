@@ -34,7 +34,7 @@ function createTheme({ layout = true }: ThemeOptions = {}) {
     "package.json": JSON.stringify({
       name: "theme",
       type: "module",
-      prettier: "@auaust/engrenage/prettier",
+      prettier: "@auaust/engrenage/prettier/config",
       devDependencies: {
         "prettier": "*",
         "@shopify/prettier-plugin-liquid": "*",

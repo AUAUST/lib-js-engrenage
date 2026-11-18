@@ -3,6 +3,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { engrenage } from "#constants";
 import { lockfileIgnores } from "#tools/git/constants";
 import type { Options } from "#tools/prettier/types/Options";
 import type { GlobGroup } from "#types/GlobGroup";
@@ -24,6 +25,10 @@ export const fixedOptions = freeze({
   singleAttributePerLine: false,
   vueIndentScriptAndStyle: false,
 } as const satisfies Options);
+
+export const presetSpecifier = `${engrenage}/prettier/config` as const;
+
+export const replacedPresetSpecifier = `${engrenage}/prettier` as const;
 
 export const codegenTitle = "Codegen";
 

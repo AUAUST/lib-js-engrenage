@@ -86,6 +86,7 @@
     "./pnpm": "./dist/pnpm.mjs",
     "./pnpm/constants": "./dist/pnpm/constants.mjs",
     "./prettier": "./dist/prettier.mjs",
+    "./prettier/config": "./dist/prettier/config.mjs",
     "./prettier/constants": "./dist/prettier/constants.mjs",
     "./roles": "./dist/roles.mjs",
     "./roles/constants": "./dist/roles/constants.mjs",
@@ -252,7 +253,7 @@
     "universal-user-agent": "7.0.3"
   },
   "sideEffects": false,
-  "prettier": "#tools/prettier/entry",
+  "prettier": "#tools/prettier/preset/entry",
   "engines": {
     "node": ">=24"
   },

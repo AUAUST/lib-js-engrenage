@@ -56,6 +56,9 @@
       "@auaust/engrenage/prettier/constants": [
         "./src/tools/prettier/constants.ts"
       ],
+      "@auaust/engrenage/prettier/config": [
+        "./src/tools/prettier/preset/entry.ts"
+      ],
       "@auaust/engrenage/tsdown": ["./src/tools/tsdown/entry.ts"],
       "@auaust/engrenage/tsdown/constants": ["./src/tools/tsdown/constants.ts"],
       "@auaust/engrenage/typescript": ["./src/tools/typescript/entry.ts"],

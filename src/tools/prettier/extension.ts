@@ -2,10 +2,11 @@ import { prettier, prettierPluginEntry } from "#tools/prettier/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Active when `prettier` is installed; owns the `prettier.plugins` slot, the
- * `prettier` config key and `.prettierignore`, formats files, runs Prettier in
- * the gate and contributes `.prettierignore` to `ignore.files`, whose `@ignore`
- * blocks the `blocks` target fills.
+ * Active when `prettier` is installed; owns the `prettier.plugins` slot, points
+ * the `package.json` `prettier` key at the ready-made config, the `prettier`
+ * config key and `.prettierignore`, formats files, runs Prettier in the gate
+ * and contributes `.prettierignore` to `ignore.files`, whose `@ignore` blocks
+ * the `blocks` target fills.
  */
 export default {
   name: "tools/prettier",
@@ -37,6 +38,15 @@ export default {
     },
   },
   contributes: {
+    "sync.targets": [
+      {
+        name: "prettier",
+        stage: "write",
+        load() {
+          return import("#tools/prettier/setup/syncPrettierPreset");
+        },
+      },
+    ],
     "format.formatters": [
       {
         name: prettier,

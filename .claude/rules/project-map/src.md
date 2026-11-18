@@ -54,7 +54,8 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ jscpd  Detect duplicate code.
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ pnpm*  Configure package management and dependency policies.
-│  ├─ prettier*  Configure code formatting.
+│  ├─ prettier*{preset*}  Configure code formatting.
+│  │  └─ preset*  The ready-made Prettier config, for Prettier to load from `package.json`.
 │  ├─ shopify{theme}  Configure Shopify apps and themes.
 │  │  └─ theme  Format and ignore Shopify theme files.
 │  ├─ tsdown*  Configure package bundling and packaging validation.

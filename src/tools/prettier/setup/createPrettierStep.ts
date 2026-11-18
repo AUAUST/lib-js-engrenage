@@ -1,5 +1,6 @@
-import { engrenage, prettier } from "#constants";
+import { prettier } from "#constants";
 import { hasConfigFile, type Step } from "#project/steps/index";
+import { presetSpecifier } from "#tools/prettier/constants";
 
 export function createPrettierStep(): Step {
   return {
@@ -12,7 +13,7 @@ export function createPrettierStep(): Step {
       );
     },
     async plan({ writePackageJson, addDevDependency }) {
-      await writePackageJson([prettier], `${engrenage}/prettier`);
+      await writePackageJson([prettier], presetSpecifier);
 
       await addDevDependency(prettier);
     },

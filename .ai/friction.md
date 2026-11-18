@@ -93,3 +93,4 @@
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
 - `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
+- `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts

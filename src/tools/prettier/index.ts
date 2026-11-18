@@ -1,6 +1,7 @@
 // @barrel setup
 export { createPrettierignoreStep } from "#tools/prettier/setup/createPrettierignoreStep";
 export { createPrettierStep } from "#tools/prettier/setup/createPrettierStep";
+export { syncPrettierPreset } from "#tools/prettier/setup/syncPrettierPreset";
 // @end
 
 // @barrel config/definers

@@ -53,7 +53,7 @@ function createProject() {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       type: "module",
-      prettier: "@auaust/engrenage/prettier",
+      prettier: "@auaust/engrenage/prettier/config",
       devDependencies: { prettier: "*" },
     }),
     "engrenage.config.ts": fixtureConfig,

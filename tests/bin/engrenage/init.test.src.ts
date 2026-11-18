@@ -255,7 +255,7 @@ describe("engrenage init", () => {
 
     expect(packageJson).toHaveProperty(
       "prettier",
-      "@auaust/engrenage/prettier",
+      "@auaust/engrenage/prettier/config",
     );
 
     expect(existsSync(project.resolve("prettier.config.ts"))).toBe(false);
