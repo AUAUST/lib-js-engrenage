@@ -71,9 +71,9 @@ export function readIssueManifest(
     })?.fields ?? []
   );
 
-  const { protocol } = context;
+  const { contractNames } = context;
 
-  const meaning = findContractMeaning(protocol, issue.type);
+  const meaning = findContractMeaning(contractNames, issue.type);
 
   const contract:
     | IssueContract
@@ -96,7 +96,7 @@ export function readIssueManifest(
       return toDraftReference(toLocalStem(blocker, target.repository, context));
     }),
     state: readState(issue),
-    ...(issue.blockers.includes(protocol.options.drafting)
+    ...(issue.blockers.includes(contractNames.options.drafting)
       ? { claim: "existing" }
       : {}),
   };

@@ -7,7 +7,7 @@ import {
   typeMeanings,
 } from "#tools/github/issues/contract/constants";
 import type { GithubSnapshot } from "#tools/github/issues/api/index";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { File } from "#types/File";
 
 type Organization = GithubSnapshot["organizations"][string];
@@ -47,7 +47,7 @@ function renderRepositories(repositories: ReadonlyMap<string, string>) {
   ];
 }
 
-function renderCloseReasons(protocol: IssueProtocol) {
+function renderCloseReasons(contractNames: ContractNames) {
   return [
     "## Close reasons",
     table(
@@ -55,7 +55,7 @@ function renderCloseReasons(protocol: IssueProtocol) {
       keys(closeReasonMeanings).map((meaning) => {
         return [
           code(meaning),
-          protocol.closeReasons[meaning],
+          contractNames.closeReasons[meaning],
           closeReasonMeanings[meaning].intent,
         ];
       }),
@@ -97,23 +97,23 @@ function renderLabels(
 function renderOrganization(
   name: string,
   { types, fields }: Organization,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ) {
-  const mappedTypes = new Set(values(protocol.types));
-  const mappedFields = new Set(values(protocol.fields));
+  const mappedTypes = new Set(values(contractNames.types));
+  const mappedFields = new Set(values(contractNames.fields));
 
   const mappedOptions = new Set(
     keys(optionMeanings).map((meaning) => {
-      return `${protocol.fields[optionMeanings[meaning].field]}\0${protocol.options[meaning]}`;
+      return `${contractNames.fields[optionMeanings[meaning].field]}\0${contractNames.options[meaning]}`;
     }),
   );
 
   function findType(meaning: keyof typeof typeMeanings) {
-    return types.find((type) => type.name === protocol.types[meaning]);
+    return types.find((type) => type.name === contractNames.types[meaning]);
   }
 
   function findField(meaning: keyof typeof fieldMeanings) {
-    return fields.find((field) => field.name === protocol.fields[meaning]);
+    return fields.find((field) => field.name === contractNames.fields[meaning]);
   }
 
   const unmapped = [
@@ -146,7 +146,7 @@ function renderOrganization(
 
         return [
           code(meaning),
-          protocol.types[meaning],
+          contractNames.types[meaning],
           cell(type?.description ?? null),
           cell(type?.pinnedFields.join(", ") ?? null),
         ];
@@ -158,7 +158,7 @@ function renderOrganization(
       keys(fieldMeanings).map((meaning) => {
         return [
           code(meaning),
-          protocol.fields[meaning],
+          contractNames.fields[meaning],
           cell(findField(meaning)?.description ?? null),
         ];
       }),
@@ -170,13 +170,13 @@ function renderOrganization(
         const { field } = optionMeanings[meaning];
 
         const option = findField(field)?.options.find((candidate) => {
-          return candidate.name === protocol.options[meaning];
+          return candidate.name === contractNames.options[meaning];
         });
 
         return [
           code(field),
           code(meaning),
-          protocol.options[meaning],
+          contractNames.options[meaning],
           cell(option?.description ?? null),
         ];
       }),
@@ -217,12 +217,12 @@ function renderIntents() {
 }
 
 export function renderPlanningSheet({
-  protocol,
+  contractNames,
   snapshot,
   repositories,
   file,
 }: {
-  protocol: IssueProtocol;
+  contractNames: ContractNames;
   snapshot: GithubSnapshot | undefined;
   repositories: ReadonlyMap<string, string>;
   file: File;
@@ -244,13 +244,13 @@ export function renderPlanningSheet({
         ...renderRepositories(repositories),
         ...renderLabels(snapshot, repositories),
         ...entries(snapshot.organizations).flatMap(([name, organization]) => {
-          return renderOrganization(name, organization, protocol);
+          return renderOrganization(name, organization, contractNames);
         }),
       ];
 
   return [
     "# Planning sheet",
     ...sections,
-    ...renderCloseReasons(protocol),
+    ...renderCloseReasons(contractNames),
   ].join("\n\n");
 }

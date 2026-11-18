@@ -9,9 +9,9 @@ import { findContractMeaning } from "#tools/github/issues/contract/utils/findCon
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { IssueCommit } from "#tools/git/index";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
@@ -40,7 +40,7 @@ function placeInWalkOrder(
     isClosed,
     planDepth,
   }: {
-    types: IssueProtocol["types"];
+    types: ContractNames["types"];
     isClosed(issue: IssueLocation & { readonly state: string }): boolean;
     planDepth: number;
   },
@@ -170,7 +170,7 @@ export async function checkIssueTree(
   }
 
   const placed = placeInWalkOrder(tree, ancestors, {
-    types: access.protocol.types,
+    types: access.contractNames.types,
     isClosed,
     planDepth,
   });
@@ -215,20 +215,20 @@ export async function checkIssueTree(
           ? []
           : [
               ...checkNesting(
-                findContractMeaning(access.protocol, issue.type),
-                findContractMeaning(access.protocol, parentType),
+                findContractMeaning(access.contractNames, issue.type),
+                findContractMeaning(access.contractNames, parentType),
               ),
               ...checkIssueBody(
                 issue.body,
-                findContractMeaning(access.protocol, issue.type),
-                access.protocol,
+                findContractMeaning(access.contractNames, issue.type),
+                access.contractNames,
               ),
               ...checkIssueReadiness(
                 {
                   issue,
                   repository: location.repository,
                   localRepository: repository,
-                  protocol: access.protocol,
+                  contractNames: access.contractNames,
                   parsed,
                   ancestors: chain,
                   missingReferences: parsed.references.filter((reference) => {

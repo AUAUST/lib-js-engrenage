@@ -166,7 +166,7 @@ describe("planning sheet", () => {
   test("fails on a mapped name missing from the snapshot, naming the meaning", async () => {
     const { config } = await createProject({
       github: {
-        protocol: {
+        contract: {
           options: { drafting: "Work in progress" },
         },
       },
@@ -174,6 +174,32 @@ describe("planning sheet", () => {
 
     await expect(syncGeneratedRules(config)).rejects.toThrow(
       'option meaning `drafting` maps to "Work in progress"',
+    );
+  });
+
+  test("loads the contract from `github.contract`", async () => {
+    const { config } = await createProject({
+      github: {
+        contract: {
+          types: { plan: "Roadmap" },
+        },
+      },
+    });
+
+    const { contract } = await config.resolve("github");
+
+    expect(contract.types.plan).toBe("Roadmap");
+  });
+
+  test("rejects `github.protocol`, naming `contract`", async () => {
+    const { config } = await createProject({
+      github: {
+        protocol: {},
+      },
+    });
+
+    await expect(config.resolve("github")).rejects.toThrow(
+      'renamed "contract"',
     );
   });
 

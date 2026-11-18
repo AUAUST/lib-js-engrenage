@@ -1,4 +1,4 @@
-export interface ProtocolMeaning {
+export interface NamedMeaning {
   readonly name: string;
   readonly intent: string;
 }

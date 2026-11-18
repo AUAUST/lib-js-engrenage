@@ -84,7 +84,7 @@ export async function fetchIssue(
   access: IssueAccess,
   number: number,
 ): Promise<FetchedIssue> {
-  const { repository, client, protocol } = access;
+  const { repository, client, contractNames } = access;
 
   const route = {
     ...splitRepository(repository),
@@ -122,7 +122,7 @@ export async function fetchIssue(
     ),
   );
 
-  const blockers = values.get(protocol.fields.blockers);
+  const blockers = values.get(contractNames.fields.blockers);
 
   return {
     id: checked.id,

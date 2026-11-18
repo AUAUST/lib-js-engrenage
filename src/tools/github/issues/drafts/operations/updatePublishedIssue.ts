@@ -53,8 +53,9 @@ export async function updatePublishedIssue(
 
   const drafting = (
     access.repository === publication.context.repository ||
-    remote?.blockers.includes(publication.context.protocol.options.drafting) ===
-      true
+    remote?.blockers.includes(
+      publication.context.contractNames.options.drafting,
+    ) === true
   );
 
   for (const { field, value } of listPublishedFieldValues(

@@ -85,7 +85,7 @@ function toPublished(
   const type = draft.manifest.get("type");
 
   const meaning = findContractMeaning(
-    context.protocol,
+    context.contractNames,
     isString(type) ? type : undefined,
   );
 
@@ -106,10 +106,10 @@ function toPublished(
     access: {
       repository,
       client,
-      protocol: context.protocol,
+      contractNames: context.contractNames,
     },
     manifest: parse(
-      createManifestSchema(context.snapshot, repository, context.protocol),
+      createManifestSchema(context.snapshot, repository, context.contractNames),
       value,
     ),
   };
@@ -163,7 +163,7 @@ async function checkNestedSegments({ drafts, context, lookup }: Publication) {
 
         return types.flatMap((type) => {
           return checkNesting(
-            findContractMeaning(context.protocol, type),
+            findContractMeaning(context.contractNames, type),
             "segment",
           ).map(({ message }) => `${stem}: ${message}`);
         });

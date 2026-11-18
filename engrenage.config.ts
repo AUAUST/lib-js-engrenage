@@ -136,7 +136,7 @@ export default defineConfig({
       Linting: "Lint rules and conventions, other than structure boundaries.",
       Metalbrain: "Instruction content: AGENTS.md sections, rule files and skills.",
       Packaging: "Build outputs, entries and exports, the emitted manifest and bundling.",
-      Planning: "The issue protocol, drafts, planning commands and the GitHub snapshot.",
+      Planning: "The issue contract, drafts, planning commands and the GitHub snapshot.",
       Presets: "Project and platform presets.",
       Release: "Changesets, versions, changelogs and publishing workflows.",
       Structure: "Namespaces, domains, roles, aliases, barrels, project maps and import boundaries.",

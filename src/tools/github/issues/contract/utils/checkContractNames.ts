@@ -6,10 +6,10 @@ import {
   typeMeanings,
 } from "#tools/github/issues/contract/constants";
 import type { GithubSnapshot } from "#tools/github/issues/api/index";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 
-export function checkProtocolNames(
-  protocol: IssueProtocol,
+export function checkContractNames(
+  contractNames: ContractNames,
   snapshot: GithubSnapshot,
 ): string[] {
   const problems: string[] = [];
@@ -20,7 +20,7 @@ export function checkProtocolNames(
     const where = `the ${organization} organization of the snapshot`;
 
     for (const meaning of keys(typeMeanings)) {
-      const name = protocol.types[meaning];
+      const name = contractNames.types[meaning];
 
       if (!types.some((type) => type.name === name)) {
         problems.push(
@@ -30,7 +30,7 @@ export function checkProtocolNames(
     }
 
     for (const meaning of keys(fieldMeanings)) {
-      const name = protocol.fields[meaning];
+      const name = contractNames.fields[meaning];
 
       if (!fields.some((field) => field.name === name)) {
         problems.push(
@@ -40,9 +40,9 @@ export function checkProtocolNames(
     }
 
     for (const meaning of keys(optionMeanings)) {
-      const name = protocol.options[meaning];
+      const name = contractNames.options[meaning];
 
-      const fieldName = protocol.fields[optionMeanings[meaning].field];
+      const fieldName = contractNames.fields[optionMeanings[meaning].field];
 
       const field = fields.find((candidate) => candidate.name === fieldName);
 

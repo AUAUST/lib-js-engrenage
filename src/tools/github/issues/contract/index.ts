@@ -18,10 +18,10 @@ export { readGithubBody } from "#tools/github/issues/contract/operations/readGit
 
 // @barrel utils
 export { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
+export { checkContractNames } from "#tools/github/issues/contract/utils/checkContractNames";
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 export { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
-export { checkProtocolNames } from "#tools/github/issues/contract/utils/checkProtocolNames";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 export { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 export { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
@@ -41,6 +41,7 @@ export { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeade
 
 // @barrel types
 export type * from "#tools/github/issues/contract/types/ContractMeaning";
+export type * from "#tools/github/issues/contract/types/ContractNames";
 export type * from "#tools/github/issues/contract/types/FetchedIssue";
 export type * from "#tools/github/issues/contract/types/GithubBodySource";
 export type * from "#tools/github/issues/contract/types/GithubIssue";
@@ -52,12 +53,11 @@ export type * from "#tools/github/issues/contract/types/IssueContract";
 export type * from "#tools/github/issues/contract/types/IssueFinding";
 export type * from "#tools/github/issues/contract/types/IssueListItem";
 export type * from "#tools/github/issues/contract/types/IssueLocation";
-export type * from "#tools/github/issues/contract/types/IssueProtocol";
 export type * from "#tools/github/issues/contract/types/IssueTree";
 export type * from "#tools/github/issues/contract/types/IssueTreeCheck";
 export type * from "#tools/github/issues/contract/types/IssueType";
+export type * from "#tools/github/issues/contract/types/NamedMeaning";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";
-export type * from "#tools/github/issues/contract/types/ProtocolMeaning";
 export type * from "#tools/github/issues/contract/types/RelatedIssue";
 export type * from "#tools/github/issues/contract/types/RoadmapEntry";
 export type * from "#tools/github/issues/contract/types/WalkedIssue";

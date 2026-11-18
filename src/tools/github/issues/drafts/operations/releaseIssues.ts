@@ -63,14 +63,14 @@ export async function releaseIssues(
   const access: IssueAccess = {
     repository: current,
     client: await createGithubClient(),
-    protocol: context.protocol,
+    contractNames: context.contractNames,
   };
 
   const target = resolveManifestTarget(context.snapshot, current);
 
-  const blockersField = findBlockersField(target, context.protocol);
+  const blockersField = findBlockersField(target, context.contractNames);
 
-  const drafting = context.protocol.options.drafting;
+  const drafting = context.contractNames.options.drafting;
 
   const released: ReleasedIssue[] = [];
 

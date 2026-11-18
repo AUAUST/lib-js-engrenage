@@ -86,7 +86,7 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
     {
       repository: "o/r",
       client: expect.anything(),
-      protocol: expect.anything(),
+      contractNames: expect.anything(),
     },
     1,
     "worker",

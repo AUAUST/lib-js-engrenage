@@ -58,13 +58,13 @@ export async function claimIssues(
 
   const client = await createGithubClient();
 
-  const drafting = context.protocol.options.drafting;
+  const drafting = context.contractNames.options.drafting;
 
   for (const { repository, stem, number } of claimed) {
     const access: IssueAccess = {
       repository,
       client,
-      protocol: context.protocol,
+      contractNames: context.contractNames,
     };
 
     const target = resolveManifestTarget(context.snapshot, repository);
@@ -77,7 +77,7 @@ export async function claimIssues(
       })?.fields ?? []
     );
 
-    const meaning = findContractMeaning(context.protocol, issue.type);
+    const meaning = findContractMeaning(context.contractNames, issue.type);
 
     const contract:
       | IssueContract
@@ -106,7 +106,7 @@ export async function claimIssues(
       await writeFieldValue(
         access,
         number,
-        findBlockersField(target, context.protocol),
+        findBlockersField(target, context.contractNames),
         issue.blockers,
         [...issue.blockers, drafting],
       );

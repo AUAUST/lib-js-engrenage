@@ -106,7 +106,7 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 
 ## 19. Planning vocabulary restated by hand in schemas
 
-- sites: `src/tools/agents/config/schemas/skillSchema.ts:21`, `src/tools/github/config/schemas/issueProtocolSchema.ts:33`
+- sites: `src/tools/agents/config/schemas/skillSchema.ts:21`, `src/tools/github/config/schemas/contractNamesSchema.ts:33`
 - why: the complexity keys and the meaning keys of each group repeat the GitHub contract's meanings.
 - want: derive the entries from the meaning constants.
 

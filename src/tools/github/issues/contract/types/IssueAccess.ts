@@ -1,6 +1,6 @@
 import type { GithubAccess } from "#tools/github/issues/api/index";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 
 export interface IssueAccess extends GithubAccess {
-  readonly protocol: IssueProtocol;
+  readonly contractNames: ContractNames;
 }

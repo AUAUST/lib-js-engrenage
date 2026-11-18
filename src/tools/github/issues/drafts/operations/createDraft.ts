@@ -9,8 +9,8 @@ import {
 } from "#tools/github/issues/contract/constants";
 import {
   findContractMeaning,
+  type ContractNames,
   type IssueContract,
-  type IssueProtocol,
   type RoadmapEntry,
 } from "#tools/github/issues/contract/index";
 import {
@@ -37,7 +37,7 @@ interface Placement {
   readonly after?: string | undefined;
 }
 
-function findMeaning(protocol: IssueProtocol, type: string) {
+function findMeaning(contractNames: ContractNames, type: string) {
   const input = type.toLowerCase();
 
   const meanings = keys(typeMeanings);
@@ -45,14 +45,14 @@ function findMeaning(protocol: IssueProtocol, type: string) {
   const meaning = (
     meanings.find((candidate) => candidate.toLowerCase() === input) ??
     meanings.find((candidate) => {
-      return protocol.types[candidate].toLowerCase() === input;
+      return contractNames.types[candidate].toLowerCase() === input;
     })
   );
 
   if (meaning === undefined) {
     throw new Error(
       `Unknown issue type \`${type}\`: use a meaning or its GitHub name, ${meanings
-        .map((candidate) => `${candidate} (${protocol.types[candidate]})`)
+        .map((candidate) => `${candidate} (${contractNames.types[candidate]})`)
         .join(", ")}`,
     );
   }
@@ -128,7 +128,7 @@ function findInsertion(
 
 async function listInParent(
   filesystem: Filesystem,
-  context: Pick<DraftsContext, "protocol" | "repository" | "registry">,
+  context: Pick<DraftsContext, "contractNames" | "repository" | "registry">,
   stem: string,
   { parent, after }: Placement,
 ) {
@@ -157,7 +157,7 @@ async function listInParent(
   const type = manifest.get("type");
 
   const meaning = findContractMeaning(
-    context.protocol,
+    context.contractNames,
     isString(type) ? type : undefined,
   );
 
@@ -210,9 +210,9 @@ export async function createDraft(
 
   const context = await resolveDraftsContext(config);
 
-  const { snapshot, protocol } = context;
+  const { snapshot, contractNames } = context;
 
-  const meaning = findMeaning(protocol, type);
+  const meaning = findMeaning(contractNames, type);
 
   const repository = resolveDraftRepository(
     repo,
@@ -224,19 +224,19 @@ export async function createDraft(
 
   const target = resolveManifestTarget(snapshot, repository);
 
-  const typeName = protocol.types[meaning];
+  const typeName = contractNames.types[meaning];
 
   const fields = target.types.find(({ name }) => name === typeName)?.fields;
 
   if (fields === undefined) {
     throw new Error(
-      `The GitHub snapshot has no enabled type ${typeName}: map \`github.protocol.types.${meaning}\` or run \`engrenage github fetch\``,
+      `The GitHub snapshot has no enabled type ${typeName}: map \`github.contract.types.${meaning}\` or run \`engrenage github fetch\``,
     );
   }
 
   const stem = `${prefix}${await chooseSlug(filesystem, prefix, meaning, slug)}`;
 
-  const contractMeaning = findContractMeaning(protocol, typeName);
+  const contractMeaning = findContractMeaning(contractNames, typeName);
 
   const contract: IssueContract | undefined = contractMeaning === undefined
     ? undefined

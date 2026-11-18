@@ -232,7 +232,7 @@ async function buildTree(
 
   const blockers = fieldValues
     .map((value) => validate(fieldValueSchema, value, `fields of ${label}`))
-    .filter(({ field }) => field?.name === access.protocol.fields.blockers)
+    .filter(({ field }) => field?.name === access.contractNames.fields.blockers)
     .flatMap(({ options = [] }) => options.map(({ name }) => name));
 
   return {
@@ -341,7 +341,7 @@ export async function fetchIssueTree(
   const ancestors = readAncestors(
     raw.parent,
     label,
-    access.protocol.types.plan,
+    access.contractNames.types.plan,
   );
 
   return {

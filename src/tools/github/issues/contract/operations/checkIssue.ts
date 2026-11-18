@@ -65,7 +65,7 @@ export async function checkIssue(
         issue,
         repository,
         localRepository: repository,
-        protocol: access.protocol,
+        contractNames: access.contractNames,
         parsed,
         ancestors: [],
         missingReferences: [],
@@ -88,8 +88,8 @@ export async function checkIssue(
     ...(audience === "worker"
       ? checkIssueBody(
           issue.body,
-          findContractMeaning(access.protocol, issue.type),
-          access.protocol,
+          findContractMeaning(access.contractNames, issue.type),
+          access.contractNames,
         )
       : []),
     ...checkIssueReadiness(
@@ -97,7 +97,7 @@ export async function checkIssue(
         issue,
         repository,
         localRepository: repository,
-        protocol: access.protocol,
+        contractNames: access.contractNames,
         parsed,
         ancestors: chain,
         missingReferences,
@@ -120,15 +120,15 @@ export async function checkIssue(
       const blocked = [
         ...checkIssueBody(
           ancestor.body,
-          findContractMeaning(access.protocol, ancestor.type),
-          access.protocol,
+          findContractMeaning(access.contractNames, ancestor.type),
+          access.contractNames,
         ),
         ...checkIssueReadiness(
           {
             issue: ancestor,
             repository: ancestor.repository,
             localRepository: repository,
-            protocol: access.protocol,
+            contractNames: access.contractNames,
             parsed: body,
             ancestors: chain.slice(0, index),
             missingReferences: missing,

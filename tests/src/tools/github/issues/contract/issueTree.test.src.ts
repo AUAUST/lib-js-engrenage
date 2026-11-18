@@ -4,19 +4,19 @@ import { number, object, optional, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
+import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
 import { checkIssueTree } from "#tools/github/issues/contract/operations/checkIssueTree";
 import { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 
 vi.stubEnv("GH_TOKEN", "t");
 
-const protocol = issueProtocolSchema.resolve(undefined, {}, "protocol");
+const contractNames = contractNamesSchema.resolve(undefined, {}, "contract");
 
 const access = {
   repository: "o/r",
   client: await createGithubClient(),
-  protocol,
+  contractNames,
 };
 
 vi.unstubAllEnvs();

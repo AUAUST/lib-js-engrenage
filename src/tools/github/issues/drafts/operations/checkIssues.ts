@@ -28,7 +28,7 @@ async function checkPublished(
 ) {
   const { root } = config.context;
 
-  const { protocol } = await config.resolve("github");
+  const { contract: contractNames } = await config.resolve("github");
 
   const client = await createGithubClient();
 
@@ -41,7 +41,7 @@ async function checkPublished(
       {
         repository,
         client,
-        protocol,
+        contractNames,
       },
       number,
       audience,

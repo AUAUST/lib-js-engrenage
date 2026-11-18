@@ -1,4 +1,4 @@
-import type { IssueProtocol } from "#tools/github/issues/contract/index";
+import type { ContractNames } from "#tools/github/issues/contract/index";
 import type { Label } from "#tools/github/types/Label";
 import type { WorkflowSetName } from "#tools/github/types/WorkflowSetName";
 
@@ -12,7 +12,7 @@ export interface ResolvedGithub {
   readonly testShards: number;
   readonly planning: boolean;
   readonly workflowsConfigured: boolean;
-  readonly protocol: IssueProtocol;
+  readonly contract: ContractNames;
   readonly labels: Readonly<Record<string, Label>>;
   repositories(): Promise<ReadonlyMap<string, string>>;
 }

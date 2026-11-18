@@ -250,7 +250,7 @@ blockedBy: []
     const config = await createProject({
       "engrenage.config.ts": `export default ${JSON.stringify({
         github: {
-          protocol: {
+          contract: {
             types: { idea: "Suggestion" },
           },
         },

@@ -82,7 +82,7 @@ async function checkSegment(
   const { type } = await lookup.find(parent);
 
   const outside = (
-    type === context.protocol.types.plan &&
+    type === context.contractNames.types.plan &&
     !drafts.some(({ stem }) => {
       const parsed = parseStem(stem);
 
@@ -152,7 +152,7 @@ export async function fetchPublishedDraft(
       remote: readIssueManifest(remote, target, context),
       local: toManifest(draft.draft.manifest.toJS()),
     },
-    context.protocol,
+    context.contractNames,
   );
 
   const lines = [...(body === undefined ? ["body"] : []), ...conflicts].map(
@@ -172,7 +172,11 @@ export async function fetchPublishedDraft(
   }
 
   draft.manifest = validate(
-    createManifestSchema(context.snapshot, access.repository, context.protocol),
+    createManifestSchema(
+      context.snapshot,
+      access.repository,
+      context.contractNames,
+    ),
     manifest,
     `merged manifest of ${draft.stem}`,
   );

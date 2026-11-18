@@ -1,9 +1,9 @@
 import type { GithubSnapshot } from "#tools/github/issues/api/index";
-import type { IssueProtocol } from "#tools/github/issues/contract/index";
+import type { ContractNames } from "#tools/github/issues/contract/index";
 
 export interface DraftsContext {
   readonly snapshot: GithubSnapshot;
   readonly repository: string | undefined;
   readonly registry: ReadonlyMap<string, string>;
-  readonly protocol: IssueProtocol;
+  readonly contractNames: ContractNames;
 }

@@ -4,9 +4,9 @@ import {
 } from "#tools/github/issues/contract/constants";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 
 const pendingPlanningPatterns = [
   /^settle\b/i,
@@ -28,7 +28,7 @@ function getRank(contract: IssueContract, name: string) {
 export function checkIssueBody(
   body: string,
   meaning: ContractMeaning | undefined,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): IssueFinding[] {
   if (meaning === undefined) {
     return [];
@@ -37,7 +37,7 @@ export function checkIssueBody(
   const parsed = parseIssueBody(body);
   const names = parsed.sections.map(({ name }) => name);
   const contract: IssueContract = issueContracts[meaning];
-  const typeName = protocol.types[meaning];
+  const typeName = contractNames.types[meaning];
   const findings: IssueFinding[] = [];
 
   let highest: { rank: number; name: string } | undefined;

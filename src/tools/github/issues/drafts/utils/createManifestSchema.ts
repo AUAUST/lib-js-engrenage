@@ -21,7 +21,7 @@ import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   findContractMeaning,
   findTypeMeaning,
-  type IssueProtocol,
+  type ContractNames,
   type IssueType,
 } from "#tools/github/issues/contract/index";
 import {
@@ -37,7 +37,7 @@ import type { ManifestTarget } from "#tools/github/issues/drafts/types/ManifestT
 
 type ManifestField = ManifestTarget["types"][number]["fields"][number];
 
-type FieldMeaning = keyof IssueProtocol["fields"];
+type FieldMeaning = keyof ContractNames["fields"];
 
 const requiredFields = {
   task: ["nature", "complexity"],
@@ -49,7 +49,7 @@ const requiredFields = {
 } as const satisfies Record<IssueType, readonly FieldMeaning[]>;
 
 function listRequiredFields(
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
   meaning: IssueType | undefined,
 ): readonly string[] {
   if (meaning === undefined) {
@@ -57,7 +57,7 @@ function listRequiredFields(
   }
 
   return requiredFields[meaning].map((field: FieldMeaning) => {
-    return protocol.fields[field];
+    return contractNames.fields[field];
   });
 }
 
@@ -144,7 +144,7 @@ function createFieldSchema(
 export function createManifestSchema(
   snapshot: GithubSnapshot,
   repository: string,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): GenericSchema<unknown, DraftManifest> {
   const target = resolveManifestTarget(snapshot, repository);
 
@@ -175,11 +175,11 @@ export function createManifestSchema(
     "type",
     target.types.map(({ name, fields }) => {
       const required = listRequiredFields(
-        protocol,
-        findTypeMeaning(protocol, name),
+        contractNames,
+        findTypeMeaning(contractNames, name),
       );
 
-      const meaning = findContractMeaning(protocol, name);
+      const meaning = findContractMeaning(contractNames, name);
 
       return strictObject(
         {

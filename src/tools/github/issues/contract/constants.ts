@@ -2,7 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
 import type { IssueType } from "#tools/github/issues/contract/types/IssueType";
-import type { ProtocolMeaning } from "#tools/github/issues/contract/types/ProtocolMeaning";
+import type { NamedMeaning } from "#tools/github/issues/contract/types/NamedMeaning";
 
 export const typeMeanings = freeze({
   plan: freeze({
@@ -29,7 +29,7 @@ export const typeMeanings = freeze({
     name: "Idea",
     intent: "Something to consider, not specified or accepted yet.",
   }),
-} as const) satisfies Readonly<Record<string, ProtocolMeaning>>;
+} as const) satisfies Readonly<Record<string, NamedMeaning>>;
 
 export const fieldMeanings = freeze({
   nature: freeze({
@@ -56,7 +56,7 @@ export const fieldMeanings = freeze({
     name: "Blockers",
     intent: "Reasons not to start an issue, several at once; unset means actionable.",
   }),
-} as const) satisfies Readonly<Record<string, ProtocolMeaning>>;
+} as const) satisfies Readonly<Record<string, NamedMeaning>>;
 
 export const optionMeanings = freeze({
   feature: freeze({
@@ -164,7 +164,7 @@ export const optionMeanings = freeze({
     name: "Drafting",
     intent: "Claimed by a session drafting it locally.",
   }),
-} as const) satisfies Readonly<Record<string, ProtocolMeaning & { readonly field: keyof typeof fieldMeanings }>>;
+} as const) satisfies Readonly<Record<string, NamedMeaning & { readonly field: keyof typeof fieldMeanings }>>;
 
 export const closeReasonMeanings = freeze({
   completed: freeze({
@@ -179,7 +179,7 @@ export const closeReasonMeanings = freeze({
     name: "duplicate",
     intent: "Duplicate of another issue, linked as its duplicate-of.",
   }),
-} as const) satisfies Readonly<Record<string, ProtocolMeaning>>;
+} as const) satisfies Readonly<Record<string, NamedMeaning>>;
 
 export const debuggerBlockingOptions = freeze([
   "awaitingOthers",

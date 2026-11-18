@@ -1,14 +1,14 @@
 import { githubSnapshotFile } from "#tools/github/issues/api/constants";
 import { readGithubSnapshot } from "#tools/github/issues/api/index";
 import {
-  checkProtocolNames,
+  checkContractNames,
   renderPlanningSheet,
 } from "#tools/github/issues/contract/index";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function fillPlanningSheet(config: LoadedConfig): Promise<string> {
   const [
-    { protocol, repositories },
+    { contract: contractNames, repositories },
     snapshot,
   ] = await Promise.all([config.resolve("github"), readGithubSnapshot(config)]);
 
@@ -20,11 +20,11 @@ export async function fillPlanningSheet(config: LoadedConfig): Promise<string> {
       { fix: "run `engrenage github fetch`" },
     );
   } else {
-    const problems = checkProtocolNames(protocol, snapshot);
+    const problems = checkContractNames(contractNames, snapshot);
 
     if (problems.length > 0) {
       throw new Error(
-        `The issue protocol maps names missing from ${file} (fix \`github.protocol\` or run \`engrenage github fetch\`):\n${problems
+        `The issue contract maps names missing from ${file} (fix \`github.contract\` or run \`engrenage github fetch\`):\n${problems
           .map((problem) => `- ${problem}`)
           .join("\n")}`,
       );
@@ -32,7 +32,7 @@ export async function fillPlanningSheet(config: LoadedConfig): Promise<string> {
   }
 
   return renderPlanningSheet({
-    protocol,
+    contractNames,
     snapshot,
     repositories: await repositories(),
     file,

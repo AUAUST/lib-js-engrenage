@@ -29,13 +29,16 @@ export default async function (): Promise<void> {
     reporter: getRunContext().reporter,
   });
 
-  const { repositories, protocol } = await config.resolve("github");
+  const {
+    repositories,
+    contract: contractNames,
+  } = await config.resolve("github");
 
   const reason = await checkGithubWrite(
     shellCommand,
     cwd,
     repositories,
-    protocol,
+    contractNames,
   );
 
   if (reason !== undefined) {

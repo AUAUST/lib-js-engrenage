@@ -8,15 +8,15 @@ import { parseGithubCommand } from "#tools/github/issues/contract/operations/par
 import { readGithubBody } from "#tools/github/issues/contract/operations/readGithubBody";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { Directory } from "#types/Directory";
 
 async function checkWrite(
   write: GithubWrite,
   cwd: Directory,
   repositories: () => Promise<ReadonlyMap<string, string>>,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): Promise<string | undefined> {
   if (write.action === "create") {
     return "create issues as drafts with `pnpm engrenage planning issue create <type>` and publish them with `pnpm engrenage planning issue publish <refs>`, which set the type and fields";
@@ -44,7 +44,7 @@ async function checkWrite(
             write.repository,
           ),
           client: await createGithubClient(),
-          protocol,
+          contractNames,
         },
         write.number,
       )
@@ -52,8 +52,8 @@ async function checkWrite(
 
   const findings = checkIssueBody(
     body,
-    findContractMeaning(protocol, issue?.type),
-    protocol,
+    findContractMeaning(contractNames, issue?.type),
+    contractNames,
   );
 
   return findings.length === 0
@@ -69,7 +69,7 @@ export async function checkGithubWrite(
   command: string,
   cwd: Directory,
   repositories: () => Promise<ReadonlyMap<string, string>>,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): Promise<string | undefined> {
   let writes;
 
@@ -85,7 +85,7 @@ export async function checkGithubWrite(
 
   const reasons = await Promise.all(
     writes.map(async (write) => {
-      const reason = await checkWrite(write, cwd, repositories, protocol);
+      const reason = await checkWrite(write, cwd, repositories, contractNames);
 
       return reason === undefined
         ? undefined

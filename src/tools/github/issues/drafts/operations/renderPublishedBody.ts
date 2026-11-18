@@ -45,7 +45,7 @@ async function listMembers(
 
   const { type } = await lookup.find(location);
 
-  if (type !== context.protocol.types.segment) {
+  if (type !== context.contractNames.types.segment) {
     return [];
   }
 

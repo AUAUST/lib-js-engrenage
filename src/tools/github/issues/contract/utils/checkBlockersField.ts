@@ -2,16 +2,16 @@ import {
   planningSection,
   questionsSection,
 } from "#tools/github/issues/contract/constants";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 
 export function checkBlockersField(
   openSections: readonly string[],
   blockers: readonly string[],
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): IssueFinding[] {
-  const blockersField = protocol.fields.blockers;
-  const questionsOption = protocol.options.questions;
+  const blockersField = contractNames.fields.blockers;
+  const questionsOption = contractNames.options.questions;
   const asksQuestions = blockers.includes(questionsOption);
 
   if (openSections.length > 0 && !asksQuestions) {

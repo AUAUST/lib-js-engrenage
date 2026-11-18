@@ -14,9 +14,9 @@ import {
   parseIssueBody,
   renderHeader,
   type ContractMeaning,
+  type ContractNames,
   type IssueContract,
   type IssueFinding,
-  type IssueProtocol,
 } from "#tools/github/issues/contract/index";
 import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
@@ -161,12 +161,12 @@ function checkManifest(
   }
 
   const meaning = findContractMeaning(
-    context.protocol,
+    context.contractNames,
     isString(value.type) ? value.type : undefined,
   );
 
   const result = safeParse(
-    createManifestSchema(context.snapshot, repository, context.protocol),
+    createManifestSchema(context.snapshot, repository, context.contractNames),
     value,
   );
 
@@ -195,7 +195,7 @@ function checkBody(
   body: string,
   meaning: ContractMeaning | undefined,
   blockers: readonly string[],
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): IssueFinding[] {
   const contract:
     | IssueContract
@@ -208,8 +208,8 @@ function checkBody(
   const names = new Set(sections.map(({ name }) => name));
 
   return [
-    ...checkIssueBody(body, meaning, protocol),
-    ...checkBlockersField(listOpenSections(parsed), blockers, protocol),
+    ...checkIssueBody(body, meaning, contractNames),
+    ...checkBlockersField(listOpenSections(parsed), blockers, contractNames),
     ...sections
       .filter(({ content }) => content === "")
       .map(({ name }) => {
@@ -270,9 +270,9 @@ function checkHeader(
 
 function readBlockers(
   manifest: DraftManifest | undefined,
-  protocol: IssueProtocol,
+  contractNames: ContractNames,
 ): readonly string[] {
-  const value = manifest?.[protocol.fields.blockers];
+  const value = manifest?.[contractNames.fields.blockers];
 
   return isArray(value) ? value.filter(isString) : [];
 }
@@ -355,8 +355,8 @@ export function checkDrafts(
       ...checkBody(
         draft.body,
         meaning,
-        readBlockers(manifest, context.protocol),
-        context.protocol,
+        readBlockers(manifest, context.contractNames),
+        context.contractNames,
       ),
       ...checkNesting(meaning, checked.get(parents.get(stem) ?? "")?.meaning),
       ...checkHeader(

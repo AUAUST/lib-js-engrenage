@@ -15,8 +15,8 @@ export {
   formatIssueTreeCheck,
   parseGithubCommand,
   parseIssueBody,
+  type ContractNames,
   type GithubWrite,
-  type IssueProtocol,
 } from "#tools/github/issues/contract/index";
 export { issueDraftsDirectory } from "#tools/github/issues/drafts/constants";
 export {
@@ -54,8 +54,8 @@ export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
 // @barrel config/schemas
+export { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 export { githubSchema } from "#tools/github/config/schemas/githubSchema";
-export { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 // @end
 
 // @barrel types

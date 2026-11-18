@@ -9,7 +9,7 @@ export async function resolveDraftsContext(
   config: LoadedConfig,
 ): Promise<DraftsContext> {
   const [
-    { protocol, repositories },
+    { contract: contractNames, repositories },
     snapshot,
   ] = await Promise.all([config.resolve("github"), readGithubSnapshot(config)]);
 
@@ -26,7 +26,7 @@ export async function resolveDraftsContext(
 
   return {
     snapshot,
-    protocol,
+    contractNames,
     repository,
     registry,
   };

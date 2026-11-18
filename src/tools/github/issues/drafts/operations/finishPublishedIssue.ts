@@ -69,7 +69,7 @@ export async function finishPublishedIssue(
       draft,
       false,
     ).filter(({ field }) => {
-      return field.name === publication.context.protocol.fields.blockers;
+      return field.name === publication.context.contractNames.fields.blockers;
     });
 
     if (blockers !== undefined) {
@@ -79,7 +79,7 @@ export async function finishPublishedIssue(
         blockers.field,
         [
           ...(isArray(blockers.value) ? blockers.value : []),
-          publication.context.protocol.options.drafting,
+          publication.context.contractNames.options.drafting,
         ],
         blockers.value,
       );

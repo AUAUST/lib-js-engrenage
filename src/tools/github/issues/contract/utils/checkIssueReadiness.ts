@@ -14,18 +14,18 @@ import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCommit } from "#tools/git/index";
+import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { GithubIssue } from "#tools/github/issues/contract/types/GithubIssue";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
-import type { IssueProtocol } from "#tools/github/issues/contract/types/IssueProtocol";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 interface ReadinessContext {
   readonly issue: GithubIssue;
   readonly repository: string;
   readonly localRepository: string;
-  readonly protocol: IssueProtocol;
+  readonly contractNames: ContractNames;
   readonly parsed: ParsedIssueBody;
   readonly ancestors: readonly IssueLocation[];
   readonly missingReferences: readonly number[];
@@ -73,7 +73,7 @@ export function checkIssueReadiness(
     issue,
     repository,
     localRepository,
-    protocol,
+    contractNames,
     parsed,
     ancestors,
     missingReferences,
@@ -107,9 +107,9 @@ export function checkIssueReadiness(
     });
   }
 
-  const { types, fields, options } = protocol;
-  const type = findTypeMeaning(protocol, issue.type);
-  const contractMeaning = findContractMeaning(protocol, issue.type);
+  const { types, fields, options } = contractNames;
+  const type = findTypeMeaning(contractNames, issue.type);
+  const contractMeaning = findContractMeaning(contractNames, issue.type);
   const blockersField = fields.blockers;
   const questionsOption = options.questions;
 
@@ -184,7 +184,7 @@ export function checkIssueReadiness(
 
   if (audience === "worker" || dispatch) {
     findings.push(
-      ...checkBlockersField(openSections, issue.blockers, protocol),
+      ...checkBlockersField(openSections, issue.blockers, contractNames),
     );
   }
 

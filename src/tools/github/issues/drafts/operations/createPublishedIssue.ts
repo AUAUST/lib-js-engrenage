@@ -66,7 +66,7 @@ export async function createPublishedIssue(
 
   const { access, target } = draft;
 
-  const drafting = context.protocol.options.drafting;
+  const drafting = context.contractNames.options.drafting;
 
   const created = await access.client.request(
     "POST /repos/{owner}/{repo}/issues",
@@ -79,7 +79,7 @@ export async function createPublishedIssue(
 
   const data = validate(createdSchema, created.data, `issue ${draft.stem}`);
 
-  const blockers = findBlockersField(target, context.protocol);
+  const blockers = findBlockersField(target, context.contractNames);
 
   const body = data.body ?? "";
 

@@ -39,10 +39,10 @@ export interface GithubInput {
    */
   planning?: (boolean | undefined)
   /**
-   * GitHub names of the issue protocol's meanings, which skills and checks name instead.
+   * GitHub names of the issue contract's meanings, which skills and checks name instead.
    * `engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.
    */
-  protocol?: ({
+  contract?: ({
     /**
      * GitHub issue type of each type meaning.
      */

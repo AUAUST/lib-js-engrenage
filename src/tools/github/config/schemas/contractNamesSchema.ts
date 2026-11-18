@@ -10,20 +10,20 @@ import {
   optionMeanings,
   typeMeanings,
 } from "#tools/github/issues/contract/constants";
-import type { ProtocolMeaning } from "#tools/github/issues/contract/index";
+import type { NamedMeaning } from "#tools/github/issues/contract/index";
 
 const closeReasonSchema = picklist(
   map(values(closeReasonMeanings), ({ name }) => name),
 );
 
-function declareName({ name, intent }: ProtocolMeaning) {
+function declareName({ name, intent }: NamedMeaning) {
   return declare(string(), {
     description: intent,
     optional: { value: name },
   });
 }
 
-function declareCloseReason({ name, intent }: ProtocolMeaning) {
+function declareCloseReason({ name, intent }: NamedMeaning) {
   return declare(closeReasonSchema, {
     description: intent,
     optional: { value: name },
@@ -31,7 +31,7 @@ function declareCloseReason({ name, intent }: ProtocolMeaning) {
 }
 
 // @debt Each group re-lists its meaning keys by hand; derive the entries from the meaning constants once `declareObject` types a mapped record without a cast.
-export const issueProtocolSchema = declareObject(
+export const contractNamesSchema = declareObject(
   {
     types: declareObject(
       {
@@ -104,7 +104,7 @@ export const issueProtocolSchema = declareObject(
   },
   {
     description: [
-      "GitHub names of the issue protocol's meanings, which skills and checks name instead.",
+      "GitHub names of the issue contract's meanings, which skills and checks name instead.",
       "`engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.",
     ],
     optional: true,

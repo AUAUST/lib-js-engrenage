@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
+import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
@@ -17,14 +17,14 @@ import { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeade
 
 vi.stubEnv("GH_TOKEN", "t");
 
-const protocol = issueProtocolSchema.resolve(undefined, {}, "protocol");
+const contractNames = contractNamesSchema.resolve(undefined, {}, "contract");
 
 const repositoryUrl = "https://api.github.com/repos/o/r";
 
 const access = {
   repository: "o/r",
   client: await createGithubClient(),
-  protocol,
+  contractNames,
 };
 
 vi.unstubAllEnvs();
@@ -115,14 +115,14 @@ describe("parseIssueBody", () => {
 
 describe("checkIssueBody", () => {
   test("accepts a task", () => {
-    expect(checkIssueBody(task, "task", protocol)).toEqual([]);
+    expect(checkIssueBody(task, "task", contractNames)).toEqual([]);
   });
 
   test("rejects a Scope section on a task, naming it", () => {
     const findings = checkIssueBody(
       `${task}\n## Scope\n\nx\n`,
       "task",
-      protocol,
+      contractNames,
     );
 
     expect(findings).toMatchObject([
@@ -138,21 +138,21 @@ describe("checkIssueBody", () => {
       checkIssueBody(
         "## Context\n\nx\n\n## Steps\n\n1. Do.\n",
         "segment",
-        protocol,
+        contractNames,
       ),
     ).toMatchObject([{ rule: "segment-section" }]);
   });
 
   test("checks a body only against its declared type's contract, never a guessed one", () => {
     expect(
-      checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined, protocol),
+      checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined, contractNames),
     ).toEqual([]);
 
     expect(
       checkIssueBody(
         "## Context\n\nx\n\n## Direction\n\ny\n",
         "segment",
-        protocol,
+        contractNames,
       ),
     ).toMatchObject([
       {
@@ -166,7 +166,7 @@ describe("checkIssueBody", () => {
     const findings = checkIssueBody(
       "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",
       "task",
-      protocol,
+      contractNames,
     );
 
     expect(findings).toMatchObject([
@@ -794,7 +794,7 @@ describe("parseGithubCommand shell constructs", () => {
         "gh issue list\necho 'y",
         project.root,
         registry,
-        protocol,
+        contractNames,
       ),
     ).resolves.toContain("the command is not valid shell:");
   });
@@ -954,13 +954,13 @@ describe("checkGithubWrite", () => {
     });
 
     await expect(
-      checkGithubWrite(command, project.root, registry, protocol),
+      checkGithubWrite(command, project.root, registry, contractNames),
     ).resolves.toContain("Scope");
 
     project.write(draft, task);
 
     await expect(
-      checkGithubWrite(command, project.root, registry, protocol),
+      checkGithubWrite(command, project.root, registry, contractNames),
     ).resolves.toBeUndefined();
   });
 
@@ -973,7 +973,7 @@ describe("checkGithubWrite", () => {
       `gh issue create --title y --body '## Scope'`,
       project.root,
       registry,
-      protocol,
+      contractNames,
     );
 
     expect(reason).toContain("gh issue create:");
@@ -987,7 +987,7 @@ describe("checkGithubWrite", () => {
         `gh issue create --title y --body 'free'\n${command}`,
         project.root,
         registry,
-        protocol,
+        contractNames,
       ),
     ).resolves.toContain("gh issue create:");
   });
@@ -1002,7 +1002,7 @@ describe("checkGithubWrite", () => {
         "cd sub && gh issue edit 5 --repo o/r --body-file body.md",
         project.root,
         registry,
-        protocol,
+        contractNames,
       ),
     ).resolves.toBeUndefined();
   });
@@ -1013,7 +1013,7 @@ describe("checkGithubWrite", () => {
         command,
         createTemporaryProject().root,
         registry,
-        protocol,
+        contractNames,
       ),
     ).resolves.toContain(`\`${draft}\` does not exist`);
   });

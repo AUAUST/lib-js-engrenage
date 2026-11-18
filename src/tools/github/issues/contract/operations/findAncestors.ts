@@ -56,7 +56,7 @@ export async function findAncestors(
 
     chain.unshift({ ...ancestor, repository: parent.repository });
 
-    if (ancestor.type === access.protocol.types.plan) {
+    if (ancestor.type === access.contractNames.types.plan) {
       break;
     }
 

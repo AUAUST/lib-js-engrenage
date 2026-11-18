@@ -17,13 +17,16 @@ export default async function (
     reporter: getRunContext().reporter,
   });
 
-  const { repositories, protocol } = await config.resolve("github");
+  const {
+    repositories,
+    contract: contractNames,
+  } = await config.resolve("github");
 
   const check = await checkIssueTree(
     {
       repository: await resolveRepository({ root, repositories }, repo),
       client: await createGithubClient(),
-      protocol,
+      contractNames,
     },
     number,
     {

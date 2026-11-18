@@ -23,12 +23,12 @@ export function listPublishedFieldValues(
     })?.fields ?? []
   );
 
-  const option = context.protocol.options.drafting;
+  const option = context.contractNames.options.drafting;
 
   return fields.map((field) => {
     const value = readFieldValue(manifest[field.name]);
 
-    if (field.name !== context.protocol.fields.blockers) {
+    if (field.name !== context.contractNames.fields.blockers) {
       return { field, value };
     }
 

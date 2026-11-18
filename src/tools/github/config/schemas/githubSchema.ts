@@ -19,7 +19,7 @@ import {
 import { keys } from "@auaust/toolkit/object";
 
 import { declare, declareObject } from "#foundation/options/index";
-import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
+import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { workflowSetNames } from "#tools/github/constants";
 import { parseManifestRepository } from "#tools/github/utils/parseManifestRepository";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
@@ -110,9 +110,10 @@ export const githubSchema = declareObject(
         },
       },
     }),
-    protocol: issueProtocolSchema,
+    contract: contractNamesSchema,
   },
   {
     optional: true,
+    renamed: { protocol: "contract" },
   },
 );

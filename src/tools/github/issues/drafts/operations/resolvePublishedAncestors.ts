@@ -127,7 +127,7 @@ async function checkPlanParent(
 
   const { type } = await lookup.find(parent);
 
-  return type !== context.protocol.types.plan ||
+  return type !== context.contractNames.types.plan ||
     drafts.some((candidate) => candidate.stem === stem)
     ? []
     : [
