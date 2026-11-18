@@ -74,8 +74,19 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
     context.filesystem,
   ]);
 
+  const shipped = toArray(concat(data.dirs, sourcemap ? source.dirs : []));
+
+  const present = await Promise.all(
+    shipped.map((dir) => filesystem.isDirectory(dir)),
+  );
+
   const files = toArray(
-    unique(concat([directory], data.dirs, sourcemap ? source.dirs : [])),
+    unique(
+      concat(
+        [directory],
+        shipped.filter((_, index) => present[index]),
+      ),
+    ),
   );
 
   const commands = entries(

@@ -63,6 +63,7 @@ describe("syncPackageJson", () => {
       },
       {
         "bin/cli.ts": "",
+        "data/templates/readme.md": "",
       },
     );
 
@@ -88,6 +89,7 @@ describe("syncPackageJson", () => {
     const { manifest } = await sync(
       library.replace("data: {", 'data: { dirs: ["assets", "static"],'),
       {},
+      { "assets/a.txt": "", "static/a.txt": "" },
     );
 
     expect((await manifest()).files).toEqual([
@@ -96,6 +98,12 @@ describe("syncPackageJson", () => {
       "static",
       "src",
     ]);
+  });
+
+  test("lists only the data directories that exist in files", async () => {
+    const { manifest } = await sync(library, {});
+
+    expect((await manifest()).files).toEqual(["dist", "src"]);
   });
 
   test("keeps the other engines and devEngines keys and leaves bin alone without commands", async () => {
