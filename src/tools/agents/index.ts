@@ -50,6 +50,7 @@ export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
+export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
 export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";

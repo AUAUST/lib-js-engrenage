@@ -3,6 +3,7 @@ import {
   mkdir,
   readdir,
   rm,
+  rmdir,
   stat,
   writeFile,
 } from "node:fs/promises";
@@ -51,6 +52,32 @@ function isExcluded(file: File, exclude: Globs): boolean {
 
     return exclude.some((pattern) => matchesGlob(path, pattern));
   });
+}
+
+async function removeEmptyParents(root: Directory, file: File) {
+  for (
+    let directory = dirname(file);
+    directory !== "." && directory !== "";
+    directory = dirname(directory)
+  ) {
+    const path = resolveWithin(root, directory);
+
+    try {
+      const entries = await readdir(path);
+
+      if (entries.length > 0) {
+        return;
+      }
+    } catch (error) {
+      if (isMissingError(error)) {
+        return;
+      }
+
+      throw error;
+    }
+
+    await rmdir(path);
+  }
 }
 
 function isBelow(directory: File, file: File): boolean {
@@ -331,6 +358,12 @@ export function createFilesystem(root: Directory): Filesystem {
       }
 
       throw error;
+    }
+
+    for (const { file, status } of results) {
+      if (status === "deleted") {
+        await removeEmptyParents(root, file);
+      }
     }
 
     originals.clear();

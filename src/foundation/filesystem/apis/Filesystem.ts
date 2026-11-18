@@ -68,8 +68,8 @@ export interface Filesystem {
    */
   discard(): SyncResults;
   /**
-   * Writes the staged changes to disk, creating missing directories, then
-   * clears and returns them.
+   * Writes the staged changes to disk, creating missing directories and deleting
+   * those its removals leave empty, then clears and returns them.
    *
    * @throws When a write fails, after restoring the files already written; the
    * changes stay staged.
