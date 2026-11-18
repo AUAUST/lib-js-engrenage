@@ -13,8 +13,8 @@ commit-msg:
     engrenage:
       only:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --message {1}
+      run: pnpm --silent engrenage gate --message "{1}"
     engrenage-local:
       skip:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --message {1} --everyone
+      run: pnpm --silent engrenage gate --message "{1}" --everyone

@@ -16,8 +16,8 @@ export const gateHooks = freeze({
     everyone: "pnpm --silent engrenage gate --staged --everyone",
   }),
   "commit-msg": freeze({
-    agents: "pnpm --silent engrenage gate --message {1}",
-    everyone: "pnpm --silent engrenage gate --message {1} --everyone",
+    agents: 'pnpm --silent engrenage gate --message "{1}"',
+    everyone: 'pnpm --silent engrenage gate --message "{1}" --everyone',
   }),
 } as const);
 

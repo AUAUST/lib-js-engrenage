@@ -45,7 +45,7 @@ describe("syncLefthookConfig", () => {
         "commit-msg": {
           commands: {
             "engrenage-local": {
-              run: "pnpm --silent engrenage gate --message {1} --everyone",
+              run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
             },
           },
         },
@@ -82,11 +82,11 @@ describe("syncLefthookConfig", () => {
         commands: {
           "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --message {1}",
+            run: 'pnpm --silent engrenage gate --message "{1}"',
           },
           "engrenage-local": {
             skip: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --message {1} --everyone",
+            run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
           },
         },
       },
@@ -158,5 +158,53 @@ describe("syncLefthookConfig", () => {
 
     expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");
     expect(project.read("lefthook.yml")).not.toContain("$OTHER");
+  });
+
+  test("quotes a stale unquoted message path", async () => {
+    const project = createProject(
+      "commit-msg:\n  commands:\n    engrenage-local:\n      run: pnpm --silent engrenage gate --message {1} --everyone\n",
+    );
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+
+    await config.context.filesystem.flush();
+
+    expect(parse(project.read("lefthook.yml"))).toMatchObject({
+      "commit-msg": {
+        commands: {
+          "engrenage-local": {
+            run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
+          },
+        },
+      },
+    });
+  });
+
+  test("rewrites an equal command holding an anchor", async () => {
+    const project = createProject(
+      'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - &a1\n          run: test -n "$CLAUDECODE"\n      run: pnpm --silent engrenage gate --staged\n',
+    );
+
+    const before = parse(project.read("lefthook.yml"));
+
+    const config = await loadConfig(project.root);
+
+    await syncLefthookConfig(config);
+
+    await config.context.filesystem.flush();
+
+    const content = project.read("lefthook.yml");
+
+    expect(content).not.toContain("&a1");
+
+    expect(parse(content)["pre-commit"].commands.engrenage).toEqual(
+      before["pre-commit"].commands.engrenage,
+    );
+
+    await syncLefthookConfig(config);
+
+    expect(config.context.filesystem.changes()).toEqual([]);
   });
 });

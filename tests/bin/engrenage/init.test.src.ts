@@ -535,7 +535,7 @@ describe("engrenage init", () => {
         "commit-msg": {
           commands: {
             "engrenage-local": {
-              run: "pnpm --silent engrenage gate --message {1} --everyone",
+              run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
             },
           },
         },

@@ -1,6 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
 
-import { isMap, isNode, parseDocument } from "yaml";
+import { isMap, isNode, parseDocument, visit, type Node } from "yaml";
 
 import { entries } from "@auaust/toolkit/object";
 
@@ -13,6 +13,22 @@ import {
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";
 import type { LoadedConfig } from "#project/config/index";
+
+function holdsAnchor(node: Node) {
+  let found = false;
+
+  visit(node, (_key, child) => {
+    if (!isNode(child) || child.anchor == null) {
+      return;
+    }
+
+    found = true;
+
+    return visit.BREAK;
+  });
+
+  return found;
+}
 
 export async function syncLefthookConfig(config: LoadedConfig) {
   const { resolve, context } = config;
@@ -53,7 +69,11 @@ export async function syncLefthookConfig(config: LoadedConfig) {
     const current: unknown = document.getIn(path);
 
     if (
-      isDeepStrictEqual(isNode(current) ? current.toJSON() : current, command)
+      isDeepStrictEqual(
+        isNode(current) ? current.toJSON() : current,
+        command,
+      ) &&
+      !(isNode(current) && holdsAnchor(current))
     ) {
       continue;
     }
