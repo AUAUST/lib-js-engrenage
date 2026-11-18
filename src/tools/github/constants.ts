@@ -8,6 +8,8 @@ import type { File } from "#types/File";
 
 export const githubSnapshotFile = `${stateDirectory}/github.json` satisfies File;
 
+export const defaultLabelColor = "f1f3f6";
+
 export const planningSheetRule = "planning-sheet";
 
 export const workflowsDirectory = ".github/workflows" satisfies Directory;

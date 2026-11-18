@@ -1,3 +1,3 @@
 {
-  "purpose": "Snapshot GitHub metadata of the registered repositories."
+  "purpose": "Snapshot GitHub metadata and sync the current repository's labels."
 }

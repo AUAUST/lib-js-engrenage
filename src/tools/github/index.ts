@@ -37,14 +37,19 @@ export { githubSection } from "#tools/github/config/sections/githubSection";
 // @end
 
 // @barrel operations
+export { fetchLabelDiff } from "#tools/github/operations/fetchLabelDiff";
 export { fillPlanningSheet } from "#tools/github/operations/fillPlanningSheet";
 export { generatePlanningSheetRules } from "#tools/github/operations/generatePlanningSheetRules";
 export { locateWorkflowFiles } from "#tools/github/operations/locateWorkflowFiles";
+export { pruneLabels } from "#tools/github/operations/pruneLabels";
+export { refreshGithubSnapshot } from "#tools/github/operations/refreshGithubSnapshot";
 export { renderWorkflow } from "#tools/github/operations/renderWorkflow";
 export { renderWorkflowSet } from "#tools/github/operations/renderWorkflowSet";
+export { syncLabels } from "#tools/github/operations/syncLabels";
 // @end
 
 // @barrel utils
+export { diffLabels } from "#tools/github/utils/diffLabels";
 export { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
 // @end
 
@@ -55,6 +60,8 @@ export { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolS
 
 // @barrel types
 export type * from "#tools/github/types/GithubInput";
+export type * from "#tools/github/types/Label";
+export type * from "#tools/github/types/LabelDiff";
 export type * from "#tools/github/types/ResolvedGithub";
 export type * from "#tools/github/types/WorkflowSet";
 export type * from "#tools/github/types/WorkflowSetName";

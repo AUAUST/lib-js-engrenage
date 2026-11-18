@@ -1,8 +1,11 @@
 import {
   integer,
   literal,
+  minLength,
   minValue,
   number,
+  object,
+  optional,
   picklist,
   pipe,
   record,
@@ -11,7 +14,11 @@ import {
   union,
 } from "valibot";
 
-import { declare, declareObject } from "#foundation/options/index";
+import {
+  declare,
+  declareObject,
+  declareRecord,
+} from "#foundation/options/index";
 import { issueProtocolSchema } from "#tools/github/config/schemas/issueProtocolSchema";
 import { workflowSetNames } from "#tools/github/constants";
 import { resolveWorkflowSet } from "#tools/github/utils/resolveWorkflowSet";
@@ -56,6 +63,24 @@ export const githubSchema = declareObject(
           "Adds to or replaces the current package and its installed same-scope dependencies, each registered under its unscoped name.",
           "Every `--repo` option accepts a short name.",
         ],
+        optional: {
+          value: {},
+        },
+      },
+    ),
+    labels: declareRecord(
+      pipe(string(), minLength(1)),
+      declare(
+        union([
+          string(),
+          object({
+            description: string(),
+            color: optional(pipe(string(), regex(/^[\da-f]{6}$/iu))),
+          }),
+        ]),
+      ),
+      {
+        description: "Labels of the current repository, by name: a description, or `{ description, color }`. `engrenage github labels sync` applies them.",
         optional: {
           value: {},
         },
