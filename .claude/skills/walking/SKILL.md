@@ -74,14 +74,14 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` line and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
-- Resume a leaf's agent at most twice for one gate failure, gap or leaf finding. Instead of a third resume, set the leaf aside on its own branch, so the walk goes on from a clean tree:
-  1. Where the leaf works, its worktree or at K = 1 the main checkout, create `<agent>/issue-<n>` from the current commit, `<agent>` being `worker` or `debugger`, and commit the uncommitted rest there, when any, as `snap` under the git rules.
-  2. At K = 1, switch back to the walked branch and reset it to the leaf's dispatch base, dropping any checkpoint commit the leaf made on it; past it, remove the leaf's worktree.
-  3. Report the leaf's state and branch: to the user at once, who may say how to proceed, or in autonomous mode in your final report.
-  4. Until the user says how to proceed, dispatch neither the leaf nor the issues ordered after it, which `walk check` still reports ready; refill the pool with the rest.
+- Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocker on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work on its own branch, so the walk goes on from a clean tree:
+  1. Where the agent works, its worktree or the main checkout, create from the current commit `<agent>/issue-<n>` for a leaf, `<agent>` being `worker` or `debugger`, or `debugger/review-<walked issue>` for a boundary-review debugger; when that branch exists, append the first free suffix of `-2`, `-3`, …. Commit the uncommitted rest there, when any, as `snap` under the git rules.
+  2. In the main checkout, switch back to the walked branch and reset it to the agent's dispatch base, dropping any checkpoint commit it made there; in a worktree, remove the worktree.
+  3. Report the held work's state and branch: to the user at once, who may say how to proceed, or in autonomous mode in your final report.
+  4. Until the user says how to proceed, dispatch neither a held leaf nor the issues ordered after it, which `walk check` still reports ready, nor, for a held boundary-review debugger, anything ordered after its segment; refill the pool with the rest.
 - Send a blocker the issue's text does not answer to the consultant; resume the agent with what it settles.
 - Complete a leaf on the agent's final report, a completion or a blocker; never wait for a later agent-finished event, which may never wake you.
-- Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress only when a decision depends on it.
+- Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
 ## Integration
 
@@ -129,7 +129,8 @@ When a segment or a nested plan closes and at the walk's end:
 
 - Start the `planner` subagent on first need with the plan number, and `autonomous` in autonomous mode; resume it under §Resumed agents.
 - Call it only for a blocker the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, or an issue its row sends to it or no row fits; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, with the pool's free slots, at least one; it returns once that many are ready. Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Send it the issues the handling table routes to it, in tree order. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is: each run handles at most that many issues, ready or left set aside, and under `no leaf in flight` returns at its first ready one. Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Send a blocker arriving while the consultant runs to it at once where the client delivers messages to a running agent: it handles the blocker first and returns. Otherwise send it once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 
 ## Reshaping
