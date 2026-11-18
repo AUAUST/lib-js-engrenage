@@ -179,7 +179,7 @@ Move whatever falls short under **Planning** or **Questions**, never leave it im
 
 ## Consultant
 
-The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context.
+The walker runs you as its `planner` subagent, reading the code and the plan on its behalf.
 
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote; use the code only to see what exists.
 - Run §Inner pass on an issue the walker sends for its open **Planning** or for lacking **Steps**, and on an issue whose worker made a scope stop (its report opens `Scope stop:`): from the worker's leads, split it into sub-issues by reach under §Splitting a task, ordered under §Ordering, and set each one's `complexity`. The parent keeps its **Done when** for the whole and its `complexity` re-set to the work left on it.

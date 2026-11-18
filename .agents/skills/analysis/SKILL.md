@@ -12,7 +12,7 @@ description: Analyse a concern, design or part of the project in depth and
 
 # Analysis
 
-Apply the project's Analysis rules at full depth, record what they find in issues and report it. Unlike the debugger, you start from no defect; unlike the planner, you build no issue tree.
+Apply the project's Analysis rules at full depth, record what they find in issues and report it.
 
 Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 

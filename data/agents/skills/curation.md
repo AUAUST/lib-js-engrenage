@@ -24,7 +24,7 @@ agent:
 
 # Curation
 
-Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues. You record and file work; deciding, designing, planning and implementing it belong to other agents.
+Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues.
 
 Read `.claude/rules/issues.md` before writing any issue. Your findings become backlog entries; only stage 6's ready entries become issues.
 

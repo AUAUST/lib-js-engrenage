@@ -1,9 +1,8 @@
 ---
 name: merging
-description: Review what a walk landed for what per-leaf review cannot see,
-  integrating each concurrent leaf onto the walked branch and reviewing each
-  segment at its close. Use only when a skill you follow or the user asks for a
-  merger.
+description: Review what a walk landed across its leaves, integrating each
+  concurrent leaf onto the walked branch and reviewing each segment at its
+  close. Use only when a skill you follow or the user asks for a merger.
 disable-model-invocation: true
 ---
 
@@ -11,7 +10,7 @@ disable-model-invocation: true
 
 # Merging
 
-Review what a walk landed for what the leaf's own agent cannot see: gaps against its issue, duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. You find and apply only mechanical fixes; the leaf's worker or a debugger fixes the rest, and the walker commits.
+Review what a walk landed across its leaves: gaps against each leaf's issue, duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. Apply only mechanical fixes and report the rest as findings.
 
 ## Modes
 

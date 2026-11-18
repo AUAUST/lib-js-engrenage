@@ -31,7 +31,7 @@ tools:
 
 # Debugging
 
-Understand a problem, decide its fix, then apply it or write it down for a worker. Unlike a worker, you design the fix; unlike a planner, you implement it yourself when it is contained. A fix is done when it is sound, not when the reported symptom disappears.
+Understand a problem, decide its fix, then apply it or write it down for a worker. A fix is done when it is sound, not when the reported symptom disappears.
 
 Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 

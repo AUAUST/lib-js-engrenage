@@ -44,6 +44,7 @@ Refines the writing rules' structure table:
 - Phrase a rule so that applying it precisely produces the right outcome; add an example only when the rule cannot be stated without one.
 - Merge a rule into any rule sharing its trigger or its action instead of adding it alongside.
 - Name each concept by one term across every source.
+- Define a skill's role by what its agent does and the limits of its own scope, never by contrast with or exclusion of another role or skill: the agent may open the one named to learn the difference. A description's trigger exclusions and naming an agent to dispatch, route or hand work to are no contrast.
 
 ## Conflicts
 
