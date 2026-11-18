@@ -80,7 +80,7 @@ Project structure description, its report and the tooling generated from it.
 ## 13. Structure declaration in `engrenage.config.ts` mixes concerns
 
 - sites: `engrenage.config.ts:108`, `:135`
-- why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use. Hand-listed constants subpaths: #495.
+- why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use.
 - want: a decision on the role split (planning).
 
 ## 14. Structure resolvers and index hold loose rules

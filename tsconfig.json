@@ -2,16 +2,6 @@
   "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
-      "@auaust/engrenage/config/constants": [
-        "./src/project/config/constants.ts"
-      ],
-      "@auaust/engrenage/jscpd/constants": ["./src/tools/jscpd/constants.ts"],
-      "@auaust/engrenage/lefthook/constants": [
-        "./src/tools/lefthook/constants.ts"
-      ],
-      "@auaust/engrenage/shopify/constants": [
-        "./src/tools/shopify/constants.ts"
-      ],
       "@auaust/engrenage": ["./src/entry.ts"],
       "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage/blocks/internals": [

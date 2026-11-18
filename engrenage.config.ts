@@ -160,13 +160,6 @@ export default defineConfig({
       rules,
       presets,
     ],
-    // @debt `./config/constants` resolves to `project/config` while `./config` is `workflows/config`, and the constants of the internal domains jscpd, lefthook and shopify are hand-listed
-    exports: {
-      "./config/constants": "src/project/config/constants.ts",
-      "./jscpd/constants": "src/tools/jscpd/constants.ts",
-      "./lefthook/constants": "src/tools/lefthook/constants.ts",
-      "./shopify/constants": "src/tools/shopify/constants.ts",
-    },
     generated: [
       // @debt this list of generated files is a signal we miss a pattern to describe generated files, *or* that declaring them isn't necessary if the only effect is to disable prettier but we already generate them properly formatted.
       "tools/eslint/types/Rules.ts",
