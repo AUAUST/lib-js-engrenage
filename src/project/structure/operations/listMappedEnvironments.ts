@@ -1,7 +1,9 @@
 import { entries, freeze } from "@auaust/toolkit/object";
 
-import { findDirectories } from "#foundation/filesystem/index";
-import { readEnvironment } from "#project/environments/index";
+import {
+  findPopulatedDirectories,
+  readEnvironment,
+} from "#project/environments/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Globs } from "#types/Globs";
@@ -25,7 +27,10 @@ export async function listMappedEnvironments(config: LoadedConfig): Promise<{
 
     const { rootFiles: files = [] } = await readEnvironment(config, name);
 
-    const directories = await findDirectories(filesystem, environment.dirs);
+    const directories = await findPopulatedDirectories(
+      config,
+      environment.dirs,
+    );
 
     const matches = files.length === 0 ? [] : await filesystem.glob(files);
 

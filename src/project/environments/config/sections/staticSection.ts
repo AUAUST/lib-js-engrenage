@@ -1,9 +1,9 @@
 import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
-import { findDirectories } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import { staticSchema } from "#project/environments/config/schemas/staticSchema";
+import { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
 import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedStatic } from "#project/environments/types/ResolvedStatic";
@@ -23,9 +23,7 @@ export const staticSection = declareSection({
     const dirs = await resolveEnvironmentDirs(config, "static", option.dirs);
 
     return freeze({
-      active: isNonEmptyArray(
-        await findDirectories(config.context.filesystem, dirs),
-      ),
+      active: isNonEmptyArray(await findPopulatedDirectories(config, dirs)),
       dirs,
     });
   },

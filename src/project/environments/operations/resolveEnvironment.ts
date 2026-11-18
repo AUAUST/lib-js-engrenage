@@ -24,7 +24,7 @@ export async function resolveEnvironment(
       ...option,
       dirs: await resolveEnvironmentDirs(config, name, option.dirs),
       typescriptFiles: files,
-      filesystem: config.context.filesystem,
+      config,
     })),
     tsconfig: await resolveEnvironmentTsconfig(config, name),
   });

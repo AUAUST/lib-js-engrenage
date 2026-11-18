@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
@@ -164,6 +165,23 @@ describe("environments", () => {
 
     expect((await missing.resolve("src")).active).toBe(false);
     expect((await missing.resolve("src")).dirs).toEqual(["missing"]);
+  });
+
+  test("deactivate an environment whose dirs hold only files Git ignores", async () => {
+    const project = createProject("{}", {
+      ".gitignore": ".DS_Store\nscripts/cache/\n",
+      "scripts/make/.DS_Store": "",
+      "scripts/cache/out.ts": "",
+      "bin/.DS_Store": "",
+      "bin/run.ts": "",
+    });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+
+    const config = await loadConfig(project.root);
+
+    expect((await config.resolve("scripts")).active).toBe(false);
+    expect((await config.resolve("bin")).active).toBe(true);
   });
 
   test("adjust a default list and the TypeScript files", async () => {

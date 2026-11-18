@@ -1,11 +1,9 @@
 import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
-import {
-  filesIn,
-  findDirectories,
-  type Filesystem,
-} from "#foundation/filesystem/index";
+import { filesIn } from "#foundation/filesystem/index";
+import { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
+import type { ConfigResolver } from "#project/config/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
@@ -15,17 +13,17 @@ export async function resolveCodeEnvironment({
   discovered,
   defines,
   typescriptFiles,
-  filesystem,
+  config,
 }: {
   dirs: Directories;
   generated: Globs;
   discovered: Globs;
   defines: boolean;
   typescriptFiles: Globs;
-  filesystem: Filesystem;
+  config: ConfigResolver;
 }) {
   return freeze({
-    active: isNonEmptyArray(await findDirectories(filesystem, dirs)),
+    active: isNonEmptyArray(await findPopulatedDirectories(config, dirs)),
     dirs,
     generated,
     discovered,

@@ -27,7 +27,7 @@ export interface TestsInput {
   strictness?: (("strict" | "loose") | undefined)
   /**
    * Directories of the tests environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
-   * The environment is inactive when none exists.
+   * The environment is inactive when none holds a file Git does not ignore.
    * @default `tests`
    */
   dirs?: (ListOption<string> | undefined)

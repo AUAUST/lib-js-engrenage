@@ -2,9 +2,10 @@ import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
-import { filesIn, findDirectories } from "#foundation/filesystem/index";
+import { filesIn } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import { resolveNodeRuntime } from "#project/baseline/index";
+import { findPopulatedDirectories } from "#project/environments/operations/findPopulatedDirectories";
 import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import type { ConfigResolver } from "#project/config/index";
@@ -26,7 +27,7 @@ export const toolingSection = declareSection({
 
     const { filesystem } = config.context;
 
-    const existing = await findDirectories(filesystem, walked);
+    const existing = await findPopulatedDirectories(config, walked);
 
     const matched = isNonEmptyArray(rootFiles)
       ? await filesystem.glob(rootFiles)
