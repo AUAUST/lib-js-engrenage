@@ -1,11 +1,12 @@
 ---
 title: Analysis
-description: Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation in issues of the type each finding calls for. Use when the user asks to analyse, assess, rethink or review a concern, design or part of the project; never for implementation requests, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
+description: Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation in issues of the type each finding calls for. Use only when the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementation requests, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
 category: workflow
 order: 5
+invocation: explicit
 agent:
   name: analyser
-  description: Analyser that works out the cause, ideal solution and reach of a concern, design or part of the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Dispatch it only when a skill you follow or the user asks for an analyser; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
+  description: Analyser that works out the cause, ideal solution and reach of a concern, design or part of the project, applies the change when it stays within the request, and otherwise records its findings in issues of the type each calls for. Dispatch it only when the user asks for an analyser; otherwise do the work yourself. Its report ends with what remains and the kind of work it needs.
   model: opus
   effort: high
   tools:

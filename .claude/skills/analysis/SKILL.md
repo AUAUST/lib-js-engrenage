@@ -2,10 +2,11 @@
 name: analysis
 description: Analyse a concern, design or part of the project in depth and
   record its ideal solution, its reach and a recommendation in issues of the
-  type each finding calls for. Use when the user asks to analyse, assess,
-  rethink or review a concern, design or part of the project; never for
-  implementation requests, for reviewing a diff or pull request for bugs, or for
-  reviewing planned issues.
+  type each finding calls for. Use only when the user asks for an analyser to
+  analyse, assess, rethink or review a concern, design or part of the project;
+  never for implementation requests, for reviewing a diff or pull request for
+  bugs, or for reviewing planned issues.
+disable-model-invocation: true
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/analysis.md -->
