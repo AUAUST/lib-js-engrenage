@@ -42,21 +42,21 @@ The matrix states environment grants; domain and role boundaries still apply. No
 | `data`             | the data environment's files      |
 | `dist-artefacts`   | the build output                  |
 
-| from / to | public-entries | internal-aliases | tests | bin         | scripts | tooling | data  | dist-artefacts | map                                    |
-| --------- | -------------- | ---------------- | ----- | ----------- | ------- | ------- | ----- | -------------- | -------------------------------------- |
-| `src`     | yes            | yes              | never | never       | never   | never   | never | yes            | `.claude/rules/project-map/src.md`     |
-| `tests`   | per variant    | per variant      | yes   | per variant | yes     | yes     | yes   | yes            | `.claude/rules/project-map/tests.md`   |
-| `bin`     | yes            | yes              | never | yes         | never   | never   | never | yes            | `.claude/rules/project-map/bin.md`     |
-| `scripts` | yes            | yes              | never | never       | yes     | never   | yes   | yes            | `.claude/rules/project-map/scripts.md` |
-| `tooling` | yes            | yes              | never | never       | never   | yes     | never | yes            | `.claude/rules/project-map/tooling.md` |
+| from / to | public-entries | internal-aliases | tests | bin         | scripts     | tooling     | data  | dist-artefacts | map                                    |
+| --------- | -------------- | ---------------- | ----- | ----------- | ----------- | ----------- | ----- | -------------- | -------------------------------------- |
+| `src`     | yes            | yes              | never | never       | never       | never       | never | yes            | `.claude/rules/project-map/src.md`     |
+| `tests`   | per variant    | per variant      | yes   | per variant | per variant | per variant | yes   | yes            | `.claude/rules/project-map/tests.md`   |
+| `bin`     | yes            | yes              | never | yes         | never       | never       | never | yes            | `.claude/rules/project-map/bin.md`     |
+| `scripts` | yes            | yes              | never | never       | yes         | never       | yes   | yes            | `.claude/rules/project-map/scripts.md` |
+| `tooling` | yes            | yes              | never | never       | never       | yes         | never | yes            | `.claude/rules/project-map/tooling.md` |
 
 ## Test files
 
-| Files                     | Runs against    | May import                                                                         | Never                     |
-| ------------------------- | --------------- | ---------------------------------------------------------------------------------- | ------------------------- |
-| `**/*.test.{ts,tsx}`      | source and dist | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
-| `**/*.test.src.{ts,tsx}`  | source          | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `data`, `dist-artefacts` | `public-entries`          |
-| `**/*.test.dist.{ts,tsx}` | dist            | `public-entries`, `tests`, `scripts`, `tooling`, `data`, `dist-artefacts`          | `internal-aliases`, `bin` |
+| Files                     | Runs against    | May import                                                                         | Never                                           |
+| ------------------------- | --------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `**/*.test.{ts,tsx}`      | source and dist | `public-entries`, `tests`, `data`, `dist-artefacts`                                | `internal-aliases`, `bin`, `scripts`, `tooling` |
+| `**/*.test.src.{ts,tsx}`  | source          | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `data`, `dist-artefacts` | `public-entries`                                |
+| `**/*.test.dist.{ts,tsx}` | dist            | `public-entries`, `tests`, `data`, `dist-artefacts`                                | `internal-aliases`, `bin`, `scripts`, `tooling` |
 
 ## Roles
 

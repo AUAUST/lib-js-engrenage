@@ -172,13 +172,18 @@ function createConsumerProject() {
     "package.json": JSON.stringify({
       name: "library",
       type: "module",
-      imports: { "#workflows/*": "./src/workflows/*.ts" },
+      imports: {
+        "#workflows/*": "./src/workflows/*.ts",
+        "#tooling/*": "./tooling/*.ts",
+      },
     }),
     "engrenage.config.ts": `export default { preset: "library", src: { roles: ${renderCodeRoles(entry(), operations())}, structure: { layers: ["workflows"] } } };\n`,
     "tsconfig.json": "{}",
     "src/workflows/cli/index.ts": exported,
     "src/workflows/cli/operations/runProgram.ts": exported,
     "bin/command.ts": exported,
+    "tooling/helper.ts": exported,
+    "tests/a.test.ts": "",
   });
 }
 
@@ -493,6 +498,21 @@ describe("structure boundaries", () => {
     ).toEqual([]);
 
     expect(await lint("tests/a.test.src.ts", internal)).toEqual([]);
+
+    const tests = await createLinter(
+      "auaust/import-tests",
+      createConsumerProject(),
+    );
+
+    const tooling = 'export { value } from "#tooling/helper";\n';
+
+    for (const file of ["tests/a.test.ts", "tests/a.test.dist.ts"]) {
+      const [message] = await tests.messages(file, tooling);
+
+      expect(message).toContain("a source-only test");
+    }
+
+    expect(await tests("tests/a.test.src.ts", tooling)).toEqual([]);
   });
 
   test("keeps code from importing the static environment", async () => {

@@ -31,7 +31,7 @@ function labelCategory(category: ImportCategory): string {
 
 const variantGuidance = freeze({
   plain: {
-    reach: "a test of source and dist imports the package name",
+    reach: "a test of source and dist reaches source only through the package name",
     move: "a source-only test",
   },
   src: {
@@ -39,7 +39,7 @@ const variantGuidance = freeze({
     move: "a test of source and dist",
   },
   dist: {
-    reach: "a dist-only test imports the package name and the build output",
+    reach: "a dist-only test reaches source only through the package name and the build output",
     move: "a source-only test",
   },
 } as const satisfies Record<

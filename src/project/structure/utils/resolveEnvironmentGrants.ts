@@ -31,6 +31,12 @@ export function resolveEnvironmentGrants(
     ] as const;
   });
 
+  const consumers = freeze(
+    environments
+      .filter(({ consumesSource }) => consumesSource === true)
+      .map(({ name }) => name),
+  );
+
   return freeze({
     environments: freeze(
       record(
@@ -54,16 +60,12 @@ export function resolveEnvironmentGrants(
         .filter(({ structure }) => structure === "domains")
         .map(({ name }) => name),
     ),
-    consumers: freeze(
-      environments
-        .filter(({ consumesSource }) => consumesSource === true)
-        .map(({ name }) => name),
-    ),
+    consumers,
     variants: published
       ? freeze({
-          plain: freeze(["internal-aliases", "bin"] as const),
+          plain: freeze(["internal-aliases", ...consumers]),
           src: freeze(["public-entries"] as const),
-          dist: freeze(["internal-aliases", "bin"] as const),
+          dist: freeze(["internal-aliases", ...consumers]),
         })
       : freeze({}),
   });

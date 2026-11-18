@@ -238,6 +238,7 @@ describe("project map", () => {
       const project = createProject(0, published);
 
       project.write("data/.gitkeep", "");
+      project.write("scripts/run.ts", "");
 
       await syncProject(project);
 
@@ -271,6 +272,11 @@ describe("project map", () => {
       expect(overview).toContain("| source and dist |");
       expect(overview).toContain("| source |");
       expect(overview).toContain("| dist |");
+
+      const never = cells("| `**/*.test.{ts,tsx}` |")?.at(-2);
+
+      expect(never).toContain("`scripts`");
+      expect(never).toContain("`tooling`");
     },
   );
 
