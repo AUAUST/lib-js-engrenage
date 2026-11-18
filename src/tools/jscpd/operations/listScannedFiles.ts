@@ -1,12 +1,21 @@
 import { matchesGlob } from "node:path";
 
-import type { LoadedConfig } from "#project/config/index";
+import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import type { Files } from "#types/Files";
 
 export async function listScannedFiles(config: LoadedConfig): Promise<Files> {
-  const files = await config.resolve("files");
+  const [
+    files,
+    resources,
+  ] = await Promise.all([config.resolve("files"), config.resolve("resources")]);
 
-  const excluded = [...files.generated, ...files.fixtures];
+  const barrels = resources.get("typescript.barrels")?.location;
+
+  const excluded = [
+    ...files.generated,
+    ...files.fixtures,
+    ...(barrels == null ? [] : listLocationGlobs(barrels)),
+  ];
 
   const candidates = await config.context.filesystem.glob([
     ...files.published,

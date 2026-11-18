@@ -1,8 +1,11 @@
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { entrypoint, index, utils } from "#project/roles/index";
+import { runSync, settleChanges } from "#project/sync/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { reportClones } from "#tools/jscpd/operations/reportClones";
 
 function createSource(name: string): string {
@@ -80,6 +83,96 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
         files: ["tests/fixtures/third.ts"],
       }),
     ).toBeUndefined();
+  });
+
+  test("ignores generated barrels but not modules duplicating code", async () => {
+    const names = [
+      "alpha",
+      "beta",
+      "gamma",
+      "delta",
+      "epsilon",
+      "zeta",
+      "eta",
+      "theta",
+      "iota",
+      "kappa",
+      "lambda",
+      "mu",
+    ];
+
+    const modules = Object.fromEntries(
+      names.map((name) => {
+        return [
+          `src/modules/first/utils/${name}.ts`,
+          `export function ${name}() {}\n`,
+        ];
+      }),
+    );
+
+    const { project } = await createGitRepository(
+      {
+        "package.json": JSON.stringify({
+          name: "project",
+          type: "module",
+          devDependencies: { jscpd: "*" },
+        }),
+        "tsconfig.json": "{}",
+        "engrenage.config.ts": `export default ${JSON.stringify({
+          preset: "library",
+          src: {
+            roles: [
+              index(),
+              entrypoint(),
+              utils({ collected: true, public: true }),
+            ],
+            structure: {
+              namespaces: {
+                modules: {
+                  children: "domains",
+                  domains: {
+                    "*": { public: true },
+                    "second": { collects: ["utils"] },
+                  },
+                },
+              },
+            },
+          },
+        })};\n`,
+        "src/modules/first/utils/total.ts": createSource("total"),
+        "src/modules/second/utils/omega.ts": "export function omega() {}\n",
+      },
+      ["jscpd"],
+    );
+
+    for (const [file, content] of Object.entries(modules)) {
+      project.write(file, content);
+    }
+
+    const config = await loadConfig(project.root, {
+      reporter: createTestReporter(),
+    });
+
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
+
+    loadConfig.refresh(project.root);
+
+    expect(
+      await reportClones(await loadConfig(project.root), {
+        files: ["src/modules/first/entry.ts", "src/modules/second/entry.ts"],
+      }),
+    ).toBeUndefined();
+
+    project.write("src/modules/second/utils/copy.ts", createSource("copy"));
+
+    expect(
+      await reportClones(await loadConfig(project.root), {
+        files: ["src/modules/second/utils/copy.ts"],
+      }),
+    ).toMatch(/copy\.ts:1-15/);
   });
 
   test("reports only the gate's files among the new clones", async () => {
