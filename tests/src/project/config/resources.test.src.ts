@@ -5,7 +5,7 @@ import { describe, expect, test } from "vitest";
 import { stateDirectory } from "#project/config/constants";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
+import { fillBlocks } from "#tests/utils/fillBlocks";
 
 function createConfig(extensions: readonly unknown[]) {
   return createProjectConfig({
@@ -274,13 +274,7 @@ describe("state resources", () => {
   test("ignores the local-only artefacts only", async () => {
     const { config } = createStateProject();
 
-    await syncGitignoreFile(config);
-
-    const staged = await config.context.filesystem.read(".gitignore");
-
-    config.context.filesystem.discard();
-
-    expect(staged).toBe(
+    expect(await fillBlocks(config, ".gitignore")).toBe(
       [
         "# @ignore project",
         "",

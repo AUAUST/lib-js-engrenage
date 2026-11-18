@@ -10,7 +10,6 @@ export { definePrettierConfig } from "#tools/prettier/index";
 export {
   createPrettierConfig,
   formatWithPrettier,
-  syncPrettierignoreFile,
 } from "#tools/prettier/index";
 export type {
   Config,

@@ -1,8 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/extensions";
-import { syncPrettierignoreFile } from "@auaust/engrenage/prettier";
-
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 async function syncProjectGroup(engrenageConfig: string): Promise<string> {
@@ -17,14 +16,14 @@ async function syncProjectGroup(engrenageConfig: string): Promise<string> {
 
   const config = await loadConfig(project.root);
 
-  await syncPrettierignoreFile(config);
+  await runSync(config, { names: ["blocks"] });
 
   await config.context.filesystem.flush();
 
   return project.read(".prettierignore");
 }
 
-describe("syncPrettierignoreFile", () => {
+describe("ignore directive", () => {
   test("writes the default and project groups, with the changelog of changesets projects and the Codex instructions", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": 'export default { src: { generated: "generated/**" }, agents: { preferred: ["codex"] } };\n',
@@ -46,7 +45,7 @@ describe("syncPrettierignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    await syncPrettierignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     await config.context.filesystem.flush();
 
@@ -123,7 +122,7 @@ describe("syncPrettierignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    await syncPrettierignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     expect(config.context.filesystem.changes()).toEqual([]);
   });

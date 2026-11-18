@@ -1,11 +1,18 @@
+import { ignoreFileEntry } from "#tools/git/constants";
 import type { Extension, FileLocation } from "#project/config/index";
+import type { File } from "#types/File";
 
 /**
- * Owns the `git` config key and `.gitignore`, and syncs its `@ignore` blocks.
+ * Owns the `ignore.files` slot, the `git` config key, `.gitignore` and the
+ * `ignore` directive, through which the `blocks` target fills the `@ignore`
+ * blocks of every contributed ignore file, `.gitignore` included.
  */
 export default {
   name: "tools/git",
   owns: {
+    slots: {
+      "ignore.files": { entry: ignoreFileEntry },
+    },
     keys: {
       git: {
         input: "git",
@@ -25,17 +32,37 @@ export default {
         },
       },
     },
+    directives: {
+      ignore: {
+        async files(config): Promise<readonly File[]> {
+          const {
+            listIgnoreFiles,
+          } = await import("#tools/git/operations/listIgnoreFiles");
+
+          return listIgnoreFiles(config);
+        },
+        load() {
+          return import("#tools/git/operations/fillIgnoreBlock");
+        },
+      },
+    },
   },
   contributes: {
-    "sync.targets": [
+    "ignore.files": [
       {
         name: "gitignore",
-        stage: "write",
-        reads: ["tsconfig"],
-        produces: ["gitignore"],
         load() {
-          return import("#tools/git/setup/syncGitignoreFile");
+          return import("#tools/git/operations/createGitignorePresets");
         },
+      },
+    ],
+    "blocks.syntaxes": [
+      {
+        name: "gitignore",
+        files: ["**/.gitignore"],
+        open: "# ",
+        close: "",
+        padding: "\n\n",
       },
     ],
   },

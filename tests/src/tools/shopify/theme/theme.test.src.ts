@@ -9,6 +9,7 @@ import { flatMap } from "@auaust/toolkit/array";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readEnvironments } from "#project/environments/operations/readEnvironments";
+import { runSync } from "#project/sync/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
@@ -16,7 +17,6 @@ import { linkPrettier } from "#tests/utils/linkPrettier";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
-import { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 
 const run = promisify(execFile);
 
@@ -93,7 +93,7 @@ describe("shopify-theme", { timeout: binaryTimeout }, () => {
 
     const config = await loadConfig(project.root);
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     await config.context.filesystem.flush();
 
@@ -126,7 +126,7 @@ describe("shopify-theme", { timeout: binaryTimeout }, () => {
 
     const config = await loadConfig(project.root);
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     await config.context.filesystem.flush();
 

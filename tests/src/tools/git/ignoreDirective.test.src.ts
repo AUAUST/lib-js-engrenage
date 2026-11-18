@@ -1,14 +1,15 @@
 import { describe, expect, test } from "vitest";
 
-import { loadConfig } from "@auaust/engrenage/extensions";
-import { syncGitignoreFile } from "@auaust/engrenage/git";
-import { defaultIgnores } from "@auaust/engrenage/git/constants";
 import { map } from "@auaust/toolkit/array";
 
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { fillBlocks } from "#tests/utils/fillBlocks";
 import { getFixture } from "#tests/utils/getFixture";
+import { defaultIgnores } from "#tools/git/constants";
 
-describe("syncGitignoreFile", () => {
+describe("ignore directive", () => {
   test("writes each preset as a titled group and keeps the lines around the blocks", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
@@ -31,7 +32,7 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     expect(await config.context.filesystem.flush()).toEqual([
       {
@@ -67,7 +68,7 @@ describe("syncGitignoreFile", () => {
       ].join("\n"),
     );
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     expect(config.context.filesystem.discard()).toEqual([]);
   });
@@ -91,7 +92,7 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     await config.context.filesystem.flush();
 
@@ -122,13 +123,7 @@ describe("syncGitignoreFile", () => {
       searchParents: false,
     });
 
-    await syncGitignoreFile(config);
-
-    const staged = await config.context.filesystem.read(".gitignore");
-
-    config.context.filesystem.discard();
-
-    expect(staged).toBe(
+    expect(await fillBlocks(config, ".gitignore")).toBe(
       [
         "# @ignore project",
         "",
@@ -156,7 +151,7 @@ describe("syncGitignoreFile", () => {
 
     const config = await loadConfig(project.root);
 
-    await syncGitignoreFile(config);
+    await runSync(config, { names: ["blocks"] });
 
     await config.context.filesystem.flush();
 
@@ -191,7 +186,7 @@ describe("syncGitignoreFile", () => {
     const config = await loadConfig(project.root);
 
     await expect(async () => {
-      await syncGitignoreFile(config);
+      await runSync(config, { names: ["blocks"] });
     }).rejects.toThrow(
       'Unknown preset in "# @ignore python" of .gitignore, expected one of: javascript, lockfiles, os, env, logs, editors, defaults, project',
     );

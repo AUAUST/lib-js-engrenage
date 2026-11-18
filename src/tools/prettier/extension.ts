@@ -4,7 +4,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 /**
  * Active when `prettier` is installed; owns the `prettier.plugins` slot, the
  * `prettier` config key and `.prettierignore`, formats files, runs Prettier in
- * the gate and syncs `.prettierignore`.
+ * the gate and contributes `.prettierignore` to `ignore.files`, whose `@ignore`
+ * blocks the `blocks` target fills.
  */
 export default {
   name: "tools/prettier",
@@ -56,14 +57,21 @@ export default {
         },
       },
     ],
-    "sync.targets": [
+    "ignore.files": [
       {
         name: "prettierignore",
-        stage: "write",
-        reads: ["tsconfig"],
         load() {
-          return import("#tools/prettier/setup/syncPrettierignoreFile");
+          return import("#tools/prettier/operations/createPrettierignorePresets");
         },
+      },
+    ],
+    "blocks.syntaxes": [
+      {
+        name: "prettierignore",
+        files: ["**/.prettierignore"],
+        open: "# ",
+        close: "",
+        padding: "\n\n",
       },
     ],
   },

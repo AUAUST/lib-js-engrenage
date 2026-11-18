@@ -1,6 +1,5 @@
 // @barrel operations
 export { syncFiles } from "#foundation/blocks/operations/syncFiles";
-export { syncIgnoreFile } from "#foundation/blocks/operations/syncIgnoreFile";
 // @end
 
 // @barrel utils

@@ -1,10 +1,6 @@
 import { flatMap, includes, map } from "@auaust/toolkit/array";
 
-import {
-  anchorGlob,
-  settlePreset,
-  syncIgnoreFile,
-} from "#foundation/blocks/index";
+import { anchorGlob, settlePreset } from "#foundation/blocks/index";
 import {
   createResourceIgnores,
   listLocationGlobs,
@@ -16,6 +12,7 @@ import {
   prettierDefaultIgnores,
 } from "#tools/prettier/constants";
 import type { GlobGroup } from "#types/GlobGroup";
+import type { IgnorePresets } from "#types/IgnorePresets";
 
 async function createProjectPrettierIgnores(
   config: LoadedConfig,
@@ -44,35 +41,16 @@ async function createProjectPrettierIgnores(
 }
 
 /**
- * Fills each `# @ignore <preset>` block of the project's `.prettierignore`:
- * `defaults` with Prettier's usual ignores, `project` with unformatted resources
- * and generated files. Does nothing without the file.
- *
- * @throws {Error} A block names an unknown preset.
+ * The presets of `.prettierignore`'s `@ignore` blocks: `defaults` with Prettier's
+ * usual ignores, `project` with unformatted resources and generated files.
  */
-export async function syncPrettierignoreFile(config: LoadedConfig) {
-  const [root, filesystem, resolve, resources, project] = await Promise.all([
-    config.context.root,
-    config.context.filesystem,
-    config.context.path,
-    config.resolve("resources"),
-    settlePreset(createProjectPrettierIgnores(config)),
-  ]);
+export async function createPrettierignorePresets(
+  config: LoadedConfig,
+): Promise<IgnorePresets> {
+  const project = await settlePreset(createProjectPrettierIgnores(config));
 
-  await syncIgnoreFile(
-    {
-      root,
-      filesystem,
-      resolve,
-    },
-    {
-      path: resources.get("prettierignore") === undefined
-        ? undefined
-        : resources.path("prettierignore"),
-      presets: {
-        defaults: () => defaultIgnores,
-        project,
-      },
-    },
-  );
+  return {
+    defaults: () => defaultIgnores,
+    project,
+  };
 }

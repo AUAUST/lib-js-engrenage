@@ -21,7 +21,6 @@ export default {
       {
         name: "lefthook",
         stage: "write",
-        reads: ["gitignore"],
         load() {
           return import("#tools/lefthook/setup/syncLefthookConfig");
         },

@@ -1,3 +1,6 @@
+import { function_, looseObject, string } from "valibot";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+
 import { freeze } from "@auaust/toolkit/object";
 
 import type { GlobGroup } from "#types/GlobGroup";
@@ -78,3 +81,8 @@ export const ignoreBlocks = "# @ignore defaults\n\n# @ignore project\n\n# @end\n
 export const gitDirectory = ".git";
 
 export const commitSubjectLimit = 72;
+
+export const ignoreFileEntry: StandardSchemaV1 = looseObject({
+  name: string(),
+  load: function_(),
+});

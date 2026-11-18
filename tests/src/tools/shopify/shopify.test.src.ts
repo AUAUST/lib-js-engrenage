@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
 
 import sync from "#bin/engrenage/actions/sync";
 
@@ -54,7 +54,7 @@ function createApp({
 async function syncPrettierignore(project: ReturnType<typeof createApp>) {
   const config = await loadConfig(project.root);
 
-  await syncPrettierignoreFile(config);
+  await runSync(config, { names: ["blocks"] });
 
   await config.context.filesystem.flush();
 

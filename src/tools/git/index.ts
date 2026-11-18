@@ -6,7 +6,6 @@ export { readCommitSubject } from "#tools/git/utils/readCommitSubject";
 
 // @barrel setup
 export { createGitignoreStep } from "#tools/git/setup/createGitignoreStep";
-export { syncGitignoreFile } from "#tools/git/setup/syncGitignoreFile";
 // @end
 
 // @barrel config/sections
@@ -14,13 +13,17 @@ export { gitSection } from "#tools/git/config/sections/gitSection";
 // @end
 
 // @barrel operations
+export { createGitignorePresets } from "#tools/git/operations/createGitignorePresets";
+export { fillIgnoreBlock } from "#tools/git/operations/fillIgnoreBlock";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
 export { hashTree } from "#tools/git/operations/hashTree";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
 export { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
+export { listIgnoreFiles } from "#tools/git/operations/listIgnoreFiles";
 export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
+export { locateIgnoreFiles } from "#tools/git/operations/locateIgnoreFiles";
 export { readHead } from "#tools/git/operations/readHead";
 export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { resolveMainWorktree } from "#tools/git/operations/resolveMainWorktree";
@@ -29,6 +32,10 @@ export { runGit } from "#tools/git/operations/runGit";
 
 // @barrel config/schemas
 export { gitSchema } from "#tools/git/config/schemas/gitSchema";
+// @end
+
+// @barrel ports
+export type * from "#tools/git/ports/IgnoreFileEntry";
 // @end
 
 // @barrel types

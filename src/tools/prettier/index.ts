@@ -1,7 +1,6 @@
 // @barrel setup
 export { createPrettierignoreStep } from "#tools/prettier/setup/createPrettierignoreStep";
 export { createPrettierStep } from "#tools/prettier/setup/createPrettierStep";
-export { syncPrettierignoreFile } from "#tools/prettier/setup/syncPrettierignoreFile";
 // @end
 
 // @barrel config/definers
@@ -14,6 +13,7 @@ export { prettierSection } from "#tools/prettier/config/sections/prettierSection
 
 // @barrel operations
 export { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
+export { createPrettierignorePresets } from "#tools/prettier/operations/createPrettierignorePresets";
 export { fixWithPrettier } from "#tools/prettier/operations/fixWithPrettier";
 export { loadPrettier } from "#tools/prettier/operations/loadPrettier";
 export { resolvePrettierAllArguments } from "#tools/prettier/operations/resolvePrettierAllArguments";
