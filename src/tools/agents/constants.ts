@@ -27,6 +27,8 @@ export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;
 
 export const agentsTarget = "agents";
 
+export const agentLimitsFiller = "agent-limits";
+
 // @debt Codex has no shell detector here, so its commits select only local-file checks instead of the full agent gate
 export const agentShellVariables = freeze({
   claude: claudeShellVariable,

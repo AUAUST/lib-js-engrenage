@@ -1,4 +1,5 @@
 import {
+  agentLimitsFiller,
   agentLoaderEntry,
   agentLogFiles,
   agentRuntimeEntry,
@@ -15,7 +16,7 @@ import type { File } from "#types/File";
  * `agents.rules` slots, the `debt` line marker, the instruction files, the agent
  * logs, the generated rules, the agent stats directory and the `reference`
  * directive, through which the `blocks` target fills the `@reference` blocks of
- * instruction files, and syncs agent files.
+ * instruction files, and syncs agent files. Contributes the agent limits filler.
  */
 export default {
   name: "tools/agents",
@@ -116,6 +117,14 @@ export default {
     },
   },
   contributes: {
+    "agents.fillers": [
+      {
+        name: agentLimitsFiller,
+        load() {
+          return import("#tools/agents/operations/fillAgentLimits");
+        },
+      },
+    ],
     "blocks.syntaxes": [
       {
         name: "markdown",

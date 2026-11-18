@@ -27,8 +27,6 @@
 - Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
 - Agent tool: dispatched a `.claude/agents` file written mid-session — not loaded until restart; probed with `claude -p --agents` instead.
 - claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.
-- `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step rewrote the fragment tables, leaving `.codex/agents/merger.toml` outdated for `sync --check`; reran `sync agents` then the gate
-- `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the planning fragment table, leaving `.codex/agents/planner.toml` outdated for `sync --check`; reran `sync agents` then the gate
 - pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
 - npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
 - repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.
@@ -67,10 +65,8 @@
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
-- `engrenage gate --worktree`: gate after `sync agents` on edited fragments — its format step realigned the analysis fragment table, leaving `.codex/agents/analyser.toml` outdated for `sync --check`; reran `sync agents` then the gate
 - engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
-- `engrenage sync agents`: synced edited skill fragments — it rewrote `.codex/agents/*.toml` but left `.claude/skills`, `.claude/agents` and `.agents/skills` stale, reporting them conflicting; full `pnpm engrenage sync` refreshed them
 - walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
 - commit gate tests: init.test.src.ts "setup review is declined" timed out at 5000ms under the gate — passed on retry
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
@@ -78,6 +74,5 @@
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
 - `engrenage gate --worktree`: gated instruction-only edits — typecheck and codegen --check failed on `src/tools/github/types/GithubInput.ts` from concurrent commit 4b1a3d7e; left it, reported unverified
-- `engrenage gate --worktree`: gate after `sync` on edited fragments — its format step realigned the walking and debugging fragment tables, leaving `.codex/agents/*.toml` outdated for `sync --check`; reran `sync agents` then the gate
-- `engrenage sync agents`: synced an edited walking fragment — it reported `.claude/skills/walking/SKILL.md` and `.agents/skills/walking/SKILL.md` conflicting and left them stale; full `pnpm engrenage sync` refreshed them
-- `engrenage gate --worktree`: gate after `sync` on edited fragments — its format step realigned the planning and debugging fragment tables, leaving `.codex/agents/*.toml` outdated for `sync --check`; reran `sync` then the gate
+- `git commit`: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
+- `engrenage planning issue publish`: published new `subIssues` of a Segment without its Plan — refused as "plan holding it is outside the set"; claimed the Plan and published it with them

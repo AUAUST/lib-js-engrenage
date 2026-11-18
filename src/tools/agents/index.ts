@@ -41,6 +41,7 @@ export { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
+export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
