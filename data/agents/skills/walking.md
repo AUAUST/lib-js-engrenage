@@ -46,13 +46,13 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit and after each consultant return, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by a local commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit and after each consultant return, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
 
 Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
 
 | Issue                                                                   | Walker                                                                                                                                                      |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Closed, or closed by a local commit                                     | Skip                                                                                                                                                        |
+| Closed, or closed by an unpushed commit                                 | Skip                                                                                                                                                        |
 | A nested `plan` past the plan depth                                     | Set aside: walked on its own                                                                                                                                |
 | Open sub-issues                                                         | Walk them in order (a `segment`'s in any order), meanwhile handling the issue's own findings by the rows below without stopping the walk; then its own work |
 | `plan` or `segment` with no open sub-issue                              | Closes with its last leaf's commit                                                                                                                          |

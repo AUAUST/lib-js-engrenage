@@ -5,8 +5,18 @@ import type { Directory } from "#types/Directory";
 
 const referencePattern = /^(Closes|Towards) #(\d+)$/gmu;
 
-function parseCommit(record: string): IssueCommit {
-  const [hash = "", subject = "", message = ""] = record.split("\x1f");
+const referenceGrep = "--grep=^(Closes|Towards) #[0-9]+$";
+
+function parseCommit(
+  record: string,
+  unpushed: ReadonlySet<string>,
+): IssueCommit {
+  const [
+    fullHash = "",
+    hash = "",
+    subject = "",
+    message = "",
+  ] = record.split("\x1f");
 
   const closes: number[] = [];
   const towards: number[] = [];
@@ -20,6 +30,7 @@ function parseCommit(record: string): IssueCommit {
     subject,
     closes,
     towards,
+    pushed: !unpushed.has(fullHash),
   };
 }
 
@@ -30,17 +41,38 @@ export async function listIssueCommits(
     return [];
   }
 
-  const output = await runGit(root, [
-    "log",
-    "-z",
-    "-E",
-    "--grep=^(Closes|Towards) #[0-9]+$",
-    "--format=%h%x1f%s%x1f%B",
-    "HEAD",
+  const [output, unpushedOutput] = await Promise.all([
+    runGit(root, [
+      "log",
+      "-z",
+      "-E",
+      referenceGrep,
+      "--format=%H%x1f%h%x1f%s%x1f%B",
+      "HEAD",
+    ]),
+    runGit(root, [
+      "rev-list",
+      "-E",
+      referenceGrep,
+      "HEAD",
+      "--not",
+      "--remotes",
+    ]),
   ]);
+
+  const unpushed = new Set(
+    unpushedOutput
+      .split("\n")
+      .map((line) => {
+        return line.trim();
+      })
+      .filter((line) => {
+        return line !== "";
+      }),
+  );
 
   return output
     .split("\0")
     .filter((record) => record !== "")
-    .map(parseCommit);
+    .map((record) => parseCommit(record, unpushed));
 }

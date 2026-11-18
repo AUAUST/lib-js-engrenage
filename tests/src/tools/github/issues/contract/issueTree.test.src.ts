@@ -248,7 +248,7 @@ describe("checkIssueTree", () => {
     }).trim();
 
     expect(formatIssueTreeCheck(check).slice(2, 5)).toEqual([
-      `    #12 Task: closed by local commit ${hash}`,
+      `    #12 Task: closed by unpushed commit ${hash}`,
       `      Closes: ${hash} feat: twelve`,
       "    #13 Task: open",
     ]);
@@ -257,6 +257,23 @@ describe("checkIssueTree", () => {
       { repository: "o/r", number: 13 },
       { repository: "o/r", number: 14 },
     ]);
+  });
+
+  test("reads a task as open when its closing commit is pushed", async () => {
+    mockGraphql();
+
+    const root = createWorkingCopy("feat: twelve\n\nCloses #12");
+
+    execFileSync("git", ["update-ref", "refs/remotes/origin/main", "HEAD"], {
+      cwd: root,
+      stdio: "pipe",
+    });
+
+    const check = await checkIssueTree(access, 10, { root });
+
+    expect(formatIssueTreeCheck(check)[2]).toBe("    #12 Task: open");
+
+    expect(check.ready).toContainEqual({ repository: "o/r", number: 12 });
   });
 });
 

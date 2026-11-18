@@ -831,9 +831,9 @@ describe("formatIssueCheck", () => {
 
     expect(formatIssueCheck(11, check)).toEqual([
       "#11 has open sub-issues to walk first: #14",
-      `#11 has sub-issues closed by local commits: #13 (${closing})`,
+      `#11 has sub-issues closed by unpushed commits: #13 (${closing})`,
       "#11 has sub-issues closed on GitHub: #12",
-      `#11 was blocked by issues closed by local commits: #15 (${closing})`,
+      `#11 was blocked by issues closed by unpushed commits: #15 (${closing})`,
       `#11 has a commit towards it: ${towards} cq: b`,
       "#11 itself: #11 has open sub-issue #14: finish it first.",
     ]);
@@ -854,7 +854,7 @@ describe("formatIssueCheck", () => {
     expect(own.findings).toMatchObject([
       {
         rule: "state",
-        message: expect.stringContaining("closed by local commit"),
+        message: expect.stringContaining("closed by unpushed commit"),
       },
     ]);
 
@@ -863,6 +863,26 @@ describe("formatIssueCheck", () => {
     });
 
     expect(formatIssueCheck(13, foreign)).toEqual(["#13 ready"]);
+  });
+
+  test("reads the issue itself as open when its closing commit is pushed", async () => {
+    const standalone = {
+      body: task.replace("#10 ·", "Standalone"),
+      type: "Task",
+    };
+
+    mockGithub({ 11: standalone, 13: standalone });
+
+    const root = createWorkingCopy("o/r");
+
+    execFileSync("git", ["update-ref", "refs/remotes/origin/main", "HEAD"], {
+      cwd: root,
+      stdio: "pipe",
+    });
+
+    const check = await checkIssue(access, 13, "worker", { root });
+
+    expect(formatIssueCheck(13, check)).toEqual(["#13 ready"]);
   });
 });
 

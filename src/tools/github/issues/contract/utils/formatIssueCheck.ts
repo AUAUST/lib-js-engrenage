@@ -46,12 +46,12 @@ export function formatIssueCheck(
   const context = [
     ...formatRelated(number, repository, subIssues, {
       open: "has open sub-issues to walk first",
-      local: "has sub-issues closed by local commits",
+      local: "has sub-issues closed by unpushed commits",
       closed: "has sub-issues closed on GitHub",
     }),
     ...formatRelated(number, repository, blockedBy, {
       open: "is blocked by the open",
-      local: "was blocked by issues closed by local commits",
+      local: "was blocked by issues closed by unpushed commits",
       closed: "was blocked by issues closed on GitHub",
     }),
     ...towards.map(({ hash, subject }) => {

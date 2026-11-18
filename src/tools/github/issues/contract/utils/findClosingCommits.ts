@@ -6,6 +6,10 @@ export function findClosingCommits(
   const closes = new Map<number, IssueCommit>();
 
   for (const commit of commits) {
+    if (commit.pushed) {
+      continue;
+    }
+
     for (const number of commit.closes) {
       if (!closes.has(number)) {
         closes.set(number, commit);

@@ -5,7 +5,7 @@ import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssu
 function formatState({ state, closedBy }: WalkedIssue) {
   return closedBy === undefined
     ? state
-    : `closed by local commit ${closedBy.hash}`;
+    : `closed by unpushed commit ${closedBy.hash}`;
 }
 
 function formatIssue(

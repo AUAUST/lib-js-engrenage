@@ -102,7 +102,7 @@ export function checkIssueReadiness(
   } else if (closedBy !== undefined) {
     findings.push({
       rule: "state",
-      message: `${self} is closed by local commit ${closedBy.hash}.`,
+      message: `${self} is closed by unpushed commit ${closedBy.hash}.`,
     });
   }
 

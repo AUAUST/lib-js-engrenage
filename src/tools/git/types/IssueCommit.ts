@@ -3,4 +3,5 @@ export interface IssueCommit {
   readonly subject: string;
   readonly closes: readonly number[];
   readonly towards: readonly number[];
+  readonly pushed: boolean;
 }
