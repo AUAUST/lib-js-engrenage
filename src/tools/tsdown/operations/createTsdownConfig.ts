@@ -215,7 +215,9 @@ export async function createTsdownConfig(
         : {
             tsconfig: declarationsTsconfigPath,
           }),
-      eager: typed,
+      tsc: {
+        eager: typed,
+      },
       compilerOptions: {
         declaration: typed,
       },

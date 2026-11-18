@@ -205,7 +205,13 @@ describe("createTsdownConfig", () => {
       },
     );
 
-    expect(await tsdownConfig).toMatchObject({
+    const { typed } = await config.resolve("build");
+
+    const resolvedConfig = await tsdownConfig;
+
+    expect(resolvedConfig.dts).not.toHaveProperty("eager");
+
+    expect(resolvedConfig).toMatchObject({
       cwd: config.context.root,
       entry: {
         "index": "src/index.ts",
@@ -220,6 +226,11 @@ describe("createTsdownConfig", () => {
       },
       deps: {
         onlyBundle: ["@auaust/toolkit"],
+      },
+      dts: {
+        tsc: {
+          eager: typed,
+        },
       },
       failOnWarn: true,
       minify: true,
