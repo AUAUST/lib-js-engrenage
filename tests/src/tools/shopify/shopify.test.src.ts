@@ -1,11 +1,17 @@
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
+import { defineGroup } from "#workflows/cli/index";
 
-import sync from "#bin/engrenage/actions/sync";
+import sync from "#bin/engrenage/sync";
+
+const program = defineGroup({
+  commands: { sync },
+});
 
 const hostIgnores = [
   "/shopify.app*.toml",
@@ -61,10 +67,6 @@ async function syncPrettierignore(project: ReturnType<typeof createApp>) {
   return project.read(".prettierignore");
 }
 
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-});
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -73,10 +75,7 @@ describe("shopify-app", () => {
   test("syncs the extension workspaces with Preact and Polaris types", async () => {
     const project = createApp();
 
-    await sync(["workspaces", "pnpm"], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync", "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/*\n",
@@ -109,10 +108,7 @@ describe("shopify-app", () => {
 `,
     });
 
-    await sync(["workspaces", "pnpm"], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync", "workspaces", "pnpm");
 
     expect(JSON.parse(project.read("extensions/a/package.json")).name).toBe(
       "@scope/a",

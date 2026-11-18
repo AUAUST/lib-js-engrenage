@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -117,7 +119,6 @@ describe("syncWorkflowFiles", () => {
 
   test("writes the workflows under the repository root with the project as working directory", async () => {
     const project = createTemporaryProject({
-      ".git/HEAD": "",
       ".github/workflows/ci.yml": "",
       "packages/app/engrenage.config.ts": 'export default { preset: "library" };\n',
       "packages/app/package.json": JSON.stringify({
@@ -128,6 +129,8 @@ describe("syncWorkflowFiles", () => {
         },
       }),
     });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
 
     const config = await loadConfig(project.resolve("packages/app"));
 

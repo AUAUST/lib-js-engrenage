@@ -2,17 +2,23 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import { build } from "vite";
-import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { checkWorkspaces } from "#project/structure/index";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
+import { defineGroup } from "#workflows/cli/index";
 
-import sync from "#bin/engrenage/actions/sync";
+import sync from "#bin/engrenage/sync";
+
+const program = defineGroup({
+  commands: { sync },
+});
 
 const placeholder = "{dir}";
 
@@ -55,10 +61,6 @@ function createProject() {
   return project;
 }
 
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
-});
-
 afterEach(() => {
   vi.restoreAllMocks();
 });
@@ -67,10 +69,7 @@ describe("workspaces", () => {
   test("syncs the workspace files of two globs, and a check reports drift", async () => {
     const project = createProject();
 
-    await sync(["workspaces", "pnpm"], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync", "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/action-*\n  - extensions/functions-*\n",
@@ -113,12 +112,7 @@ describe("workspaces", () => {
         .compilerOptions,
     ).toEqual({ jsx: "preserve" });
 
-    vi.mocked(console.info).mockClear();
-
-    await sync(["workspaces", "pnpm"], {
-      check: true,
-      values: {},
-    });
+    await runDefinition(program, "sync", "workspaces", "pnpm", "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -134,10 +128,7 @@ describe("workspaces", () => {
       ),
     );
 
-    await sync(["workspaces"], {
-      check: false,
-      values: {},
-    });
+    await runDefinition(program, "sync", "workspaces");
 
     expect(
       JSON.parse(project.read("extensions/action-a/package.json"))
@@ -151,14 +142,13 @@ describe("workspaces", () => {
       JSON.stringify({ name: "wrong", private: true }),
     );
 
-    await sync(["workspaces"], {
-      check: true,
-      values: {},
-    });
+    const {
+      messages,
+    } = await runDefinition(program, "sync", "workspaces", "--check");
 
     expect(process.exitCode).toBe(1);
 
-    expect(vi.mocked(console.info).mock.calls.flat()).toContain(
+    expect(messages.map(({ text }) => text)).toContain(
       "outdated: extensions/action-b/package.json",
     );
 

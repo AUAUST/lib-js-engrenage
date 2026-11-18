@@ -1,13 +1,15 @@
-import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { parse } from "yaml";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { runDefinition } from "#tests/utils/runDefinition";
+import { defineGroup } from "#workflows/cli/index";
 
-import sync from "#bin/engrenage/actions/sync";
+import sync from "#bin/engrenage/sync";
 
-beforeEach(() => {
-  vi.spyOn(console, "info").mockImplementation(() => {});
+const program = defineGroup({
+  commands: { sync },
 });
 
 afterEach(() => {
@@ -24,19 +26,13 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
 
   mockCwd(project.root);
 
-  await sync(["pnpm"], {
-    check: true,
-    values: {},
-  });
+  await runDefinition(program, "sync", "pnpm", "--check");
 
   expect(process.exitCode).toBe(1);
 
   process.exitCode = undefined;
 
-  await sync(["pnpm"], {
-    check: false,
-    values: {},
-  });
+  await runDefinition(program, "sync", "pnpm");
 
   expect(parse(project.read("pnpm-workspace.yaml"))).toEqual({
     allowBuilds: {
@@ -47,10 +43,7 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
     minimumReleaseAgeExclude: ["@auaust/*"],
   });
 
-  await sync(["pnpm"], {
-    check: true,
-    values: {},
-  });
+  await runDefinition(program, "sync", "pnpm", "--check");
 
   expect(process.exitCode).toBeUndefined();
 });

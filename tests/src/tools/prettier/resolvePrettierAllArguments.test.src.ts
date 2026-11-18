@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
@@ -57,7 +57,7 @@ describe("resolvePrettierAllArguments", () => {
       ".github/workflows/publish.yml": "",
     });
 
-    mkdirSync(repository.resolve(".git"));
+    execFileSync("git", ["init", "--quiet"], { cwd: repository.root });
 
     for (const [path, content] of entries(files)) {
       repository.write(join("app", path), content);
