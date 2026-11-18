@@ -21,6 +21,7 @@ order: 15
 | -------------------------------------- | -------------------------------------------- |
 | A single point                         | Sentence                                     |
 | Independent points                     | List                                         |
+| Ordered steps                          | Numbered list                                |
 | Three or more facts sharing dimensions | Table                                        |
 | Hierarchy, layout or layers            | ASCII tree or box diagram in a code block    |
 | Flow or dependency graph               | Mermaid, or an ASCII diagram in a code block |

@@ -15,4 +15,4 @@ order: 70
 | Each commit           | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                         |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- Report actual results and blockers, including unavailable integrations and skipped checks. Never weaken compiler or lint settings to hide failures.
+- Report actual results and blockers, including unavailable integrations and skipped checks.
