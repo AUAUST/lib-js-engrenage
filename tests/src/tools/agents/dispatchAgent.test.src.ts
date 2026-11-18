@@ -219,25 +219,47 @@ describe("createDispatchEnvironment", () => {
 });
 
 describe("dispatchAgent", () => {
-  test("refuses a worker brief naming no issue before running anything", async () => {
+  test("runs the named client whatever agents.preferred lists, refusing a worker brief naming no issue before running anything", async () => {
     const caller = createTemporaryProject();
     const checkout = createTemporaryProject();
 
     const config = createProjectConfig({
       root: caller.root,
       raw: {
-        agents: { preferred: ["claude"] },
+        agents: { preferred: ["codex"] },
       },
       configFile: undefined,
     });
 
     await expect(
-      dispatchAgent(config, {
+      dispatchAgent(config, "claude", {
         directory: checkout.root,
         run: { agent: "worker" },
         brief: "Do the thing.",
         effort: undefined,
       }),
     ).rejects.toThrow("brief a worker with `Issue: <owner>/<repo>#<n>`");
+  });
+
+  test("refuses a client no active extension contributes, naming the runtimes it accepts", async () => {
+    const caller = createTemporaryProject();
+    const checkout = createTemporaryProject();
+
+    const config = createProjectConfig({
+      root: caller.root,
+      raw: {},
+      configFile: undefined,
+    });
+
+    await expect(
+      dispatchAgent(config, "gemini", {
+        directory: checkout.root,
+        run: { agent: "worker" },
+        brief: "Issue: AUAUST/repo#1",
+        effort: undefined,
+      }),
+    ).rejects.toThrow(
+      "No active extension contributes the gemini agent runtime; expected one of: claude, codex",
+    );
   });
 });

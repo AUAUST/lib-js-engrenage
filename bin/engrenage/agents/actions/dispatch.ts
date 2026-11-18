@@ -9,11 +9,13 @@ import { loadValidatedConfig } from "#workflows/config/index";
 export default async function (
   target: string,
   {
+    client,
     agent,
     resume,
     brief: briefFile,
     effort,
   }: {
+    client: string;
     agent?: string | undefined;
     resume?: string | undefined;
     brief: string;
@@ -50,7 +52,12 @@ export default async function (
 
   const config = await loadValidatedConfig(undefined, { reporter });
 
-  const { session, report, succeeded, denied } = await dispatchAgent(config, {
+  const {
+    session,
+    report,
+    succeeded,
+    denied,
+  } = await dispatchAgent(config, client, {
     directory,
     run,
     brief,
