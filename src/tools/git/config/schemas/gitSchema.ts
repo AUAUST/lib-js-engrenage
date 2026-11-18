@@ -25,7 +25,7 @@ export const gitSchema = declareObject(
         files: declare(listOptionSchema(globSchema), {
           description: "Local files protected from additions and modifications in commits, using project-root-relative .gitignore syntax. Append adds globs; exclude removes exact matches; an array replaces the defaults.",
           optional: unset(
-            "The .gitignore patterns when git.local.gitignore is true, followed by .ai/issues/, deduplicated.",
+            "The .gitignore patterns when git.local.gitignore is true, followed by .ai/issues/ and .ai/handoffs/, deduplicated.",
           ),
         }),
       },

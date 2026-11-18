@@ -53,6 +53,8 @@ export const agentLogFiles = freeze([
   ".ai/discarded.md",
 ] as const) satisfies Globs;
 
+export const handoffsDirectory = ".ai/handoffs/" satisfies Directory;
+
 export const scratchpadFile = ".ai/scratchpad.md" satisfies File;
 
 export const scratchpadPlaceholder = "Write ideas, bugs and follow-ups here, one per line; the curator turns them into backlog entries and issues.";

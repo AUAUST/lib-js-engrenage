@@ -1,6 +1,7 @@
 import { deduplicate } from "@auaust/toolkit/array";
 
 import { resolveListOption } from "#foundation/options/index";
+import { handoffsDirectory } from "#tools/agents/constants";
 import { readIgnorePatterns } from "#tools/git/index";
 import { issueDraftsDirectory } from "#tools/github/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -19,7 +20,7 @@ export async function listLocalFilePatterns(
 
   return resolveListOption(
     git.local.files,
-    () => deduplicate([...ignored, issueDraftsDirectory]),
+    () => deduplicate([...ignored, issueDraftsDirectory, handoffsDirectory]),
     "git.local.files",
     config.context.reporter,
   );
