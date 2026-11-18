@@ -28,7 +28,6 @@
     "format": "pnpm run engrenage prettier",
     "format:all": "pnpm run engrenage prettier:all",
     "lint": "pnpm run engrenage eslint",
-    "lint:check": "pnpm run engrenage eslint",
     "lint:fix": "pnpm run engrenage eslint:fix",
     "lint:suppress": "pnpm run engrenage eslint:suppress",
     "prepare": "lefthook install",

@@ -226,7 +226,6 @@ describe("engrenage init", () => {
         "coverage": "engrenage vitest:coverage",
         "format": "engrenage prettier",
         "lint": "engrenage eslint",
-        "lint:check": "engrenage eslint",
         "lint:fix": "engrenage eslint:fix",
         "lint:suppress": "engrenage eslint:suppress",
         "ready": "pnpm install --frozen-lockfile && engrenage sync && pnpm run ci",
@@ -246,6 +245,7 @@ describe("engrenage init", () => {
 
     expect(packageJson).not.toHaveProperty("scripts.build");
     expect(packageJson).not.toHaveProperty("scripts.ci:publish");
+    expect(packageJson).not.toHaveProperty(["scripts", "lint:check"]);
 
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",

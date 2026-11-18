@@ -103,7 +103,6 @@ async function collectScripts({
     ),
     "format": hasDependency(prettier) && "engrenage prettier",
     "lint": lint,
-    "lint:check": lint,
     "lint:fix": hasDependency(eslint) && "engrenage eslint:fix",
     "lint:suppress": hasDependency(eslint) && "engrenage eslint:suppress",
     "ready": chain([
