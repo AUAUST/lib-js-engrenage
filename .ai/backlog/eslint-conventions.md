@@ -28,7 +28,7 @@ ESLint rules and conventions engrenage ships.
 ## 5. The naming rule splits words by hand
 
 - site: `src/tools/eslint/conventions/stylistic/naming.ts:27`
-- want: primitive-kit `splitWords`.
+- want: toolkit `splitWords`.
 
 ## 6. `projectService` spends ~5 s of a full lint matching files to tsconfigs
 

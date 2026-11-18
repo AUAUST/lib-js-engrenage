@@ -291,11 +291,6 @@ export interface AuaustRules {
    */
   "auaust/no-pointless-dynamic-import"?: Rule<[]>;
   /**
-   * Use the `@auaust/primitive-kit/<domain>` subpath entries instead of
-   * `@auaust/primitive-kit`.
-   */
-  "auaust/no-primitive-kit-root"?: Rule<[]>;
-  /**
    * Disallow returning values from Promise executor functions
    *
    * @see https://eslint.org/docs/latest/rules/no-promise-executor-return

@@ -2,7 +2,6 @@
   "name": "eslint-fixture",
   "type": "module",
   "dependencies": {
-    "@auaust/primitive-kit": "*",
     "@auaust/toolkit": "*",
     "valibot": "*"
   },

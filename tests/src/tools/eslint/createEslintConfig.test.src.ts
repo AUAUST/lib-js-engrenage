@@ -86,12 +86,11 @@ const getLinter = memoize<
 const performanceSource = `import { string } from "zod";
 import z, { z as zod } from "zod/mini";
 
-import { identity } from "@auaust/primitive-kit";
 import { map } from "@auaust/toolkit/object";
 
 export { object } from "zod/mini";
 
-export const values = [identity, map, string, z.string, zod.string];
+export const values = [map, string, z.string, zod.string];
 `;
 
 async function lintedPerformanceRules(
@@ -473,7 +472,6 @@ export const values = [path, v, things, alias];
       "auaust/no-zod-classic",
       "auaust/no-zod-namespace",
       "auaust/no-zod-namespace",
-      "auaust/no-primitive-kit-root",
     ]);
   });
 
@@ -521,24 +519,32 @@ export const values = [path, v, things, alias];
       "auaust/no-zod-namespace",
     ]);
 
+    const noDependencies: Environment = {
+      hasDependency(name): name is never {
+        return false;
+      },
+    };
+
+    expect(
+      await lintedPerformanceRules({
+        traits: { published: true },
+        environment: noDependencies,
+      }),
+    ).toEqual([]);
+
     expect(
       await lintedPerformanceRules(
         {
           traits: { published: true },
-          environment: zodOnly,
+          environment: noDependencies,
         },
         {
           performance: {
-            noPrimitiveKitRoot: true,
+            noZodClassic: true,
           },
         },
       ),
-    ).toEqual([
-      "auaust/no-zod-classic",
-      "auaust/no-zod-namespace",
-      "auaust/no-zod-namespace",
-      "auaust/no-primitive-kit-root",
-    ]);
+    ).toEqual(["auaust/no-zod-classic"]);
   });
 
   test("reports test files outside the test directories", async () => {

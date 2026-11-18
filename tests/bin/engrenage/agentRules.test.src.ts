@@ -126,9 +126,6 @@ describe("agents rules", () => {
             value: "agent-records",
           }),
           expect.objectContaining({
-            value: "prefer-primitive-kit",
-          }),
-          expect.objectContaining({
             value: "prefer-toolkit",
           }),
         ],

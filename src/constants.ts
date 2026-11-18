@@ -31,8 +31,6 @@ export const nodeReleases = "node-releases";
 
 export const prettier = "prettier";
 
-export const primitiveKit = "@auaust/primitive-kit";
-
 export const publint = "publint";
 
 export const shopifyCli = "@shopify/cli";
@@ -69,7 +67,6 @@ export const packages = freeze({
   lefthook,
   nodeReleases,
   prettier,
-  primitiveKit,
   publint,
   shopifyCli,
   shopifyPrettierPluginLiquid,
