@@ -63,7 +63,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 | Open **Questions**                                                                                        | Set aside; batch the questions to the user                                                                                                                        |
 | `problem` without **Steps**                                                                               | Debugger                                                                                                                                                          |
 | `task` or `problem` with **Steps**                                                                        | Worker                                                                                                                                                            |
-| `complexity` set                                                                                          | Worker: `effort: medium` for `involved` or `complex`. Debugger: `effort: low` for `trivial`, `effort: high` for `complex`. Otherwise the agent's default          |
+| `complexity` set                                                                                          | Dispatch at the effort §Agent limits gives the agent for that `complexity`; with none given, pass no effort                                                       |
 | `resource` or `idea` in a tree                                                                            | Never dispatched; report it to the consultant                                                                                                                     |
 
 `priority` never reorders a tree: order states dependencies.
@@ -174,9 +174,21 @@ The user delegated every decision the instructions let an agent settle and is no
 ## Resumed agents
 
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
-- Start a new consultant or integration merger instead when a segment closes, or, under Codex, once its reported context exceeds twice what it started with: past that, every resumed turn re-reads more history than a fresh start costs.
+- Start a new consultant or integration merger instead when a segment closes, or, under Codex, once its reported context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs.
 - Under Claude Code, a hook refuses a resume past the growth the agent's definition allows: on a refusal, start a new one as below; never retry the resume.
 - Brief a new consultant or integration merger as the first one was briefed, adding the previous one's last carry-over.
+
+## Agent limits
+
+| Agent      | Default effort | Effort by complexity                  | Fresh up to             |
+| ---------- | -------------- | ------------------------------------- | ----------------------- |
+| `analyser` | high           | none                                  | no limit                |
+| `planner`  | medium         | none                                  | 2× its starting context |
+| `debugger` | medium         | `trivial`: low, `complex`: high       | no limit                |
+| `worker`   | low            | `involved`: medium, `complex`: medium | no limit                |
+| `merger`   | medium         | none                                  | 2× its starting context |
+| `curator`  | high           | none                                  | no limit                |
+| `writer`   | medium         | `trivial`: low, `complex`: high       | no limit                |
 
 ## Stops and restarts
 
