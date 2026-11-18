@@ -33,6 +33,7 @@ export interface GithubInput {
       color?: string
     })
   } | undefined)
+  /**
    * Turns GitHub planning on: the snapshot, the planning sheet and the issue skills.
    * @default whether `repository` in package.json names a GitHub repository
    */
