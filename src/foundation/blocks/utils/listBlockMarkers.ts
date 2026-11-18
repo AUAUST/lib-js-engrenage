@@ -14,7 +14,7 @@ export function listBlockMarkers(
   index: number;
 }[] {
   const marker = new RegExp(
-    String.raw`^${RegExp.escape(open)}@([\w-]+)((?: \S+)*)${RegExp.escape(close)}$`,
+    String.raw`^${RegExp.escape(open)}@([\w-]+)((?: \S+)*)${RegExp.escape(close)}\r?$`,
     "gm",
   );
 

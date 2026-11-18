@@ -19,3 +19,9 @@ The extension registry and extension declarations.
 - why: toolkit's `@native Array.prototype.map` targets must exist in the configured baseline's lib declarations (AUAUST/lib-js-toolkit#183, #221); tag value schemas (#439) are static and see no config.
 - want: a way for a tag's validation to resolve a global path against the baseline libs `createLibraryCompiler` loads.
 - done: toolkit's `@native` vocabulary is settled and a reference check is designed or rejected.
+
+## 4. Directive fills cache their per-run state in module-level maps
+
+- sites: `src/tools/git/operations/fillIgnoreBlock.ts`, `src/tools/agents/operations/fillReferenceBlock.ts`
+- why: `DirectiveFill` runs once per marker with no per-run setup, so each fill memoizes its presets or fillers in a `WeakMap` keyed by `LoadedConfig`, a lifetime `syncDirectiveBlocks` does not own; `memoizeByContext` keys by `ConfigContext` and fits neither.
+- want: `DirectiveDeclaration` loads a per-run fill factory (`(config) => fill`) that `syncDirectiveBlocks` calls once per run.

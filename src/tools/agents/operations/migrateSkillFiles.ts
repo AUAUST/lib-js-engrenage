@@ -1,7 +1,7 @@
 import { posix } from "node:path";
 
 import { engrenage } from "#constants";
-import { formatBlockMarker, listBlockMarkers } from "#foundation/blocks/index";
+import { listBlockMarkers } from "#foundation/blocks/index";
 import {
   claudeAgentsDir,
   claudeSkillsDir,
@@ -9,6 +9,7 @@ import {
 import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
 import { markdownBlocks } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
@@ -94,12 +95,8 @@ export async function migrateSkillFiles(config: {
         ? content
         : listFormerReferences(definition).reduce((current, former) => {
             return current
-              .split(formatBlockMarker(markdownBlocks, "reference", [former]))
-              .join(
-                formatBlockMarker(markdownBlocks, "reference", [
-                  definition.reference,
-                ]),
-              );
+              .split(formatReferenceMarker(former))
+              .join(formatReferenceMarker(definition.reference));
           }, content);
     };
   }
@@ -179,10 +176,8 @@ export async function migrateSkillFiles(config: {
   const renames = definitions.flatMap((definition) => {
     return listFormerReferences(definition).map((former) => {
       return {
-        from: formatBlockMarker(markdownBlocks, "reference", [former]),
-        to: formatBlockMarker(markdownBlocks, "reference", [
-          definition.reference,
-        ]),
+        from: formatReferenceMarker(former),
+        to: formatReferenceMarker(definition.reference),
       };
     });
   });

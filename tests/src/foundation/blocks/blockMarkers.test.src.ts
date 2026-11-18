@@ -2,7 +2,13 @@ import { describe, expect, test } from "vitest";
 
 import { formatBlockMarker } from "#foundation/blocks/utils/formatBlockMarker";
 import { listBlockMarkers } from "#foundation/blocks/utils/listBlockMarkers";
-import { markdownBlocks } from "#tools/agents/constants";
+import type { BlockSyntax } from "#types/BlockSyntax";
+
+const markdownBlocks: BlockSyntax = {
+  open: "<!-- ",
+  close: " -->",
+  padding: "\n\n",
+};
 
 describe("block markers", () => {
   test("formats a marker with its arguments", () => {
@@ -51,6 +57,25 @@ describe("block markers", () => {
         directive: "end",
         args: [],
         line: 6,
+      },
+    ]);
+  });
+
+  test("lists the marker lines of a content with CRLF line endings", () => {
+    const content = ["<!-- @reference a -->", "<!-- @end -->", ""].join("\r\n");
+
+    expect(
+      listBlockMarkers(content, markdownBlocks).map(({ directive, line }) => {
+        return { directive, line };
+      }),
+    ).toEqual([
+      {
+        directive: "reference",
+        line: 1,
+      },
+      {
+        directive: "end",
+        line: 2,
       },
     ]);
   });

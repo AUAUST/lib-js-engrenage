@@ -176,7 +176,7 @@ describe("ignore directive", () => {
     ).toContain(".claude/worktrees");
   });
 
-  test("rejects an unknown preset, naming the marker and the file", async () => {
+  test("rejects an unknown preset, naming the file and the line", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
       "package.json": '{ "type": "module" }',
@@ -188,7 +188,7 @@ describe("ignore directive", () => {
     await expect(async () => {
       await runSync(config, { names: ["blocks"] });
     }).rejects.toThrow(
-      'Unknown preset in "# @ignore python" of .gitignore, expected one of: javascript, lockfiles, os, env, logs, editors, defaults, project',
+      '.gitignore: line 1: Unknown preset "python", expected one of: javascript, lockfiles, os, env, logs, editors, defaults, project',
     );
   });
 });

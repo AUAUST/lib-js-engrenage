@@ -1,4 +1,4 @@
-import { matchesGlob } from "node:path";
+import { minimatch } from "minimatch";
 
 import { syncBlocks } from "#foundation/blocks/index";
 import { loadLazy } from "#foundation/modules/index";
@@ -75,7 +75,7 @@ export async function syncDirectiveBlocks(config: LoadedConfig) {
       }
 
       const syntax = syntaxes.find(({ entry }) => {
-        return entry.files.some((glob) => matchesGlob(file, glob));
+        return entry.files.some((glob) => minimatch(file, glob, { dot: true }));
       });
 
       if (syntax === undefined) {

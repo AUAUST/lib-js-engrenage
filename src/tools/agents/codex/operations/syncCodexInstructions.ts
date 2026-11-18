@@ -3,8 +3,9 @@ import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
 import { syncCodexSkill } from "#tools/agents/codex/operations/syncCodexSkill";
-import { markdownBlocks } from "#tools/agents/constants";
+import { endMarker, markdownBlocks } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
@@ -36,11 +37,7 @@ export async function syncCodexInstructions({
       `${codexSkillsDir}/${template.name}/SKILL.md`,
     );
 
-    if (
-      !skill?.includes(
-        formatBlockMarker(markdownBlocks, "reference", [template.reference]),
-      )
-    ) {
+    if (!skill?.includes(formatReferenceMarker(template.reference))) {
       continue;
     }
 
@@ -62,7 +59,7 @@ export async function syncCodexInstructions({
     await syncBlocks(
       content.includes(formatBlockMarker(markdownBlocks, "dispatch"))
         ? content
-        : `${content.trimEnd()}\n\n## Dispatch\n\n${formatBlockMarker(markdownBlocks, "dispatch")}\n${formatBlockMarker(markdownBlocks, "end")}\n`,
+        : `${content.trimEnd()}\n\n## Dispatch\n\n${formatBlockMarker(markdownBlocks, "dispatch")}\n${endMarker}\n`,
       markdownBlocks,
       {
         dispatch() {

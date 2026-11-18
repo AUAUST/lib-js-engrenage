@@ -18,6 +18,9 @@ export const markdownBlocks = freeze({
   padding: "\n\n",
 } as const) satisfies BlockSyntax;
 
+// @debt the marker repeats the form of `formatBlockMarker`, which this pure module cannot import from its confined role
+export const endMarker = `${markdownBlocks.open}@end${markdownBlocks.close}`;
+
 export const agentsFile = "AGENTS.md" satisfies File;
 
 export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;

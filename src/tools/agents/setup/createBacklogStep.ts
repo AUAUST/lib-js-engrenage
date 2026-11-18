@@ -1,13 +1,12 @@
 import { readFile } from "node:fs/promises";
 
 import { engrenage } from "#constants";
-import { formatBlockMarker } from "#foundation/blocks/index";
 import { resolveDataFile } from "#foundation/data/index";
 import {
   agentsFile,
   backlogIndex,
   backlogTemplate,
-  markdownBlocks,
+  endMarker,
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#tools/agents/constants";
@@ -17,6 +16,7 @@ import { createAgentFillers } from "#tools/agents/operations/createAgentFillers"
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Step } from "#project/steps/index";
 
 const sectionReference = `${engrenage}/agents/sections/backlog.md`;
@@ -94,7 +94,7 @@ export function createBacklogStep(): Step {
       if (!instructions.includes(sectionReference)) {
         await filesystem.write(
           agentsFile,
-          `${instructions.trimEnd()}\n\n${formatBlockMarker(markdownBlocks, "reference", [sectionReference])}\n${formatBlockMarker(markdownBlocks, "end")}\n`,
+          `${instructions.trimEnd()}\n\n${formatReferenceMarker(sectionReference)}\n${endMarker}\n`,
         );
       }
 

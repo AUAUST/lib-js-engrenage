@@ -82,6 +82,7 @@ export const gitDirectory = ".git";
 
 export const commitSubjectLimit = 72;
 
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const ignoreFileEntry: StandardSchemaV1 = looseObject({
   name: string(),
   load: function_(),

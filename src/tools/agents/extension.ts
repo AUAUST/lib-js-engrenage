@@ -77,8 +77,7 @@ export default {
     "blocks.syntaxes": [
       {
         name: "markdown",
-        // @debt the dot-directory glob works around `matchesGlob` in syncDirectiveBlocks skipping dot directories; matching syntaxes there would serve every syntax, `**/.gitignore` and `**/.prettierignore` included
-        files: ["**/*.md", "**/.*/**/*.md"],
+        files: ["**/*.md"],
         ...markdownBlocks,
       },
     ],

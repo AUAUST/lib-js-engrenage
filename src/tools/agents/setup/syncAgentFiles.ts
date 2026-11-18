@@ -1,6 +1,6 @@
-import { formatBlockMarker, syncFiles } from "#foundation/blocks/index";
+import { syncFiles } from "#foundation/blocks/index";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
-import { attributionRules, markdownBlocks } from "#tools/agents/constants";
+import { attributionRules } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
@@ -8,6 +8,7 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
@@ -76,10 +77,8 @@ async function migrateFormerRules(config: {
           await config.filesystem.write(
             file,
             content
-              .split(formatBlockMarker(markdownBlocks, "reference", [former]))
-              .join(
-                formatBlockMarker(markdownBlocks, "reference", [reference]),
-              ),
+              .split(formatReferenceMarker(former))
+              .join(formatReferenceMarker(reference)),
           );
         }
 
@@ -125,11 +124,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     generated.push({
       file,
       update(current, path) {
-        if (
-          !current.includes(
-            formatBlockMarker(markdownBlocks, "reference", [reference]),
-          )
-        ) {
+        if (!current.includes(formatReferenceMarker(reference))) {
           return current;
         }
 

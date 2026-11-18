@@ -2,10 +2,7 @@ import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { noRoles } from "#project/structure/constants";
-import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
-import { readStructureOption } from "#project/structure/operations/readStructureOption";
-import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -14,22 +11,11 @@ async function resolveEnvironmentRoles(
   config: ConfigResolver,
   name: string,
 ): Promise<ResolvedRoles> {
-  const option = await readStructureOption(config, name);
+  const roles = await readEnvironmentRoles(config, name);
 
-  if (!option.enabled) {
-    return noRoles;
-  }
-
-  const roles = listEnvironmentRoles({
-    ...option,
-    environment: name,
-    defaults: await listDefaultRoles(config, name),
-  });
-
-  return resolveRoles({
-    ...(await readEnvironmentRoles(config, roles)),
-    environment: name,
-  });
+  return roles === undefined
+    ? noRoles
+    : resolveRoles({ ...roles, environment: name });
 }
 
 export const environmentRolesSection = declareSection({

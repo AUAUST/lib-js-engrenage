@@ -110,3 +110,5 @@
 - walk state file: walker state surviving compaction — `walk check` and the walk's commits already hold it
 - integration merger at K = 1 in interactive walks: walker context — a merger run per leaf while the user can steer; autonomous only
 - dispatch during a segment's review run: concurrency at segment boundaries — the review fix may change what later work builds on
+- picomatch: dot-aware block syntax matching — needs separate `@types/picomatch`; `minimatch`, the engine behind `node:path` `matchesGlob`, ships types and keeps its semantics
+- environment role list config key: one load of default role presets — a new config key contract; a context-memoized `readEnvironmentRoles` operation suffices

@@ -1,9 +1,8 @@
 import { parseDocument } from "yaml";
 
-import { formatBlockMarker } from "#foundation/blocks/index";
 import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/operations/createCodexAgentProfiles";
-import { markdownBlocks } from "#tools/agents/constants";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
@@ -24,11 +23,7 @@ export async function syncCodexSkill(
 
   const skill = await filesystem.read(`${codexSkillsDir}/${name}/SKILL.md`);
 
-  if (
-    !skill?.includes(
-      formatBlockMarker(markdownBlocks, "reference", [reference]),
-    )
-  ) {
+  if (!skill?.includes(formatReferenceMarker(reference))) {
     return;
   }
 

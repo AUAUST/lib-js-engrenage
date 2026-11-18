@@ -5,13 +5,11 @@ import {
   readEnvironment,
   type ResolvedEnvironment,
 } from "#project/environments/index";
-import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { readStructureMetadata } from "#project/structure/operations/readStructureMetadata";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { flattenStructure } from "#project/structure/utils/flattenStructure";
-import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 import { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
@@ -39,12 +37,6 @@ async function resolveStructure(
     config.resolve("structure.options"),
     config.resolve("traits"),
   ]);
-
-  const roles = listEnvironmentRoles({
-    ...option,
-    environment: name,
-    defaults: await listDefaultRoles(config, name),
-  });
 
   const { defined, ...declared } = flattenStructure({
     environment: name,
@@ -81,7 +73,7 @@ async function resolveStructure(
       optOut: option.optOut,
       strictness: option.strictness,
     },
-    roles: await readEnvironmentRoles(config, roles),
+    roles: await readEnvironmentRoles(config, name),
     defined,
     internals,
     tree: option.tree,

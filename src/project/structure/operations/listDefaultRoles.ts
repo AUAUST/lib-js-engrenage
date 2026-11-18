@@ -24,7 +24,15 @@ export async function listDefaultRoles(
     entries.map(async (entry) => {
       const preset = await loadLazy(entry);
 
-      return preset();
+      const role = preset();
+
+      if (role.name !== entry.name) {
+        throw new Error(
+          `The "${entry.name}" roles contribution creates the "${role.name}" role; name the contribution after the role it creates`,
+        );
+      }
+
+      return role;
     }),
   );
 }

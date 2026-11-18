@@ -108,7 +108,7 @@ export default {
         environments: ["tests"],
       },
       {
-        name: "entry",
+        name: "entrypoint",
         load() {
           return import("#project/roles/presets/entrypoint");
         },

@@ -1,7 +1,7 @@
 import { stringify } from "yaml";
 
-import { formatBlockMarker } from "#foundation/blocks/index";
-import { markdownBlocks } from "#tools/agents/constants";
+import { endMarker } from "#tools/agents/constants";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 
 export function createInstructionFile({
   frontmatter,
@@ -16,5 +16,5 @@ export function createInstructionFile({
     ? ""
     : `---\n${stringify(frontmatter)}---\n\n`;
 
-  return `${header}${formatBlockMarker(markdownBlocks, "reference", [reference])}\n\n${body.trim()}\n\n${formatBlockMarker(markdownBlocks, "end")}\n`;
+  return `${header}${formatReferenceMarker(reference)}\n\n${body.trim()}\n\n${endMarker}\n`;
 }

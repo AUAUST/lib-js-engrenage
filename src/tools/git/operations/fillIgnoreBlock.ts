@@ -23,7 +23,7 @@ async function createPresets(
   const contribution = located.find((ignoreFile) => ignoreFile.file === file);
 
   if (contribution === undefined) {
-    throw new Error(`No ignore.files contribution declares ${file}`);
+    throw new Error("No ignore.files contribution declares the file");
   }
 
   const create = await loadLazy(contribution.entry);
@@ -62,12 +62,10 @@ export const fillIgnoreBlock: DirectiveFill = async ({
   file,
   config,
 }) => {
-  const marker = `# @ignore ${args.join(" ")}`;
-
   const [name, ...others] = args;
 
   if (name === undefined || others.length > 0) {
-    throw new Error(`Expected a single preset in "${marker}" of ${file}`);
+    throw new Error("Expected a single preset");
   }
 
   const presets = await loadPresets(config, file);
@@ -76,7 +74,7 @@ export const fillIgnoreBlock: DirectiveFill = async ({
 
   if (preset === undefined) {
     throw new Error(
-      `Unknown preset in "${marker}" of ${file}, expected one of: ${keys(presets).join(", ")}`,
+      `Unknown preset "${name}", expected one of: ${keys(presets).join(", ")}`,
     );
   }
 

@@ -1,6 +1,7 @@
 import { isNonEmptyArray } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 
+import { formatBlockMarker } from "#foundation/blocks/index";
 import { relativeWithin } from "#foundation/filesystem/index";
 import {
   identifierPattern,
@@ -8,12 +9,12 @@ import {
 } from "#tools/typescript/constants";
 import type { LoadedConfig } from "#project/config/index";
 
-const marker = `${typescriptBlocks.open}@define${typescriptBlocks.close}`;
+const marker = formatBlockMarker(typescriptBlocks, "define");
 
 const markerLine = new RegExp(`^${RegExp.escape(marker)}$`, "m");
 
 function appendBlock(content: string): string {
-  const block = `${marker}\n${typescriptBlocks.open}@end${typescriptBlocks.close}\n`;
+  const block = `${marker}\n${formatBlockMarker(typescriptBlocks, "end")}\n`;
 
   return content.trim() === "" ? block : `${content.trimEnd()}\n\n${block}`;
 }

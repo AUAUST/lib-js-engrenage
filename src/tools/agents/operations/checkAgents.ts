@@ -1,4 +1,3 @@
-import { formatBlockMarker } from "#foundation/blocks/index";
 import { spawnProcess } from "#foundation/processes/index";
 import {
   claudeAgentsDir,
@@ -7,11 +6,12 @@ import {
 } from "#tools/agents/claude/constants";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { agentsFile, markdownBlocks } from "#tools/agents/constants";
+import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { LoadedConfig } from "#project/config/index";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
@@ -83,9 +83,7 @@ export async function checkAgents(
       const installed = await filesystem.read(skillFile.file);
 
       let owned = (
-        installed?.includes(
-          formatBlockMarker(markdownBlocks, "reference", [template.reference]),
-        ) === true
+        installed?.includes(formatReferenceMarker(template.reference)) === true
       );
 
       if (!owned) {
@@ -103,13 +101,7 @@ export async function checkAgents(
 
           const current = await filesystem.read(output.file);
 
-          if (
-            current?.includes(
-              formatBlockMarker(markdownBlocks, "reference", [
-                template.reference,
-              ]),
-            )
-          ) {
+          if (current?.includes(formatReferenceMarker(template.reference))) {
             owned = true;
           }
         }
@@ -141,11 +133,7 @@ export async function checkAgents(
 
         const valid = (
           current !== undefined &&
-          current.includes(
-            formatBlockMarker(markdownBlocks, "reference", [
-              template.reference,
-            ]),
-          ) &&
+          current.includes(formatReferenceMarker(template.reference)) &&
           (output.frontmatter === undefined ||
             syncFrontmatter(current, output.frontmatter, output.file) ===
               current) &&

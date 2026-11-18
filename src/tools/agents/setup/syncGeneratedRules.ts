@@ -1,8 +1,12 @@
 import { stringify } from "yaml";
 
-import { syncBlocks } from "#foundation/blocks/index";
+import { formatBlockMarker, syncBlocks } from "#foundation/blocks/index";
 import { loadLazy } from "#foundation/modules/index";
-import { markdownBlocks, rulesDirectory } from "#tools/agents/constants";
+import {
+  endMarker,
+  markdownBlocks,
+  rulesDirectory,
+} from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import type { LoadedConfig } from "#project/config/index";
 import type { GeneratedRule } from "#tools/agents/ports/GeneratedRule";
@@ -11,7 +15,7 @@ import type { File } from "#types/File";
 function createFragment({ directives }: GeneratedRule): string {
   return directives
     .map((directive) => {
-      return `${markdownBlocks.open}@${directive}${markdownBlocks.close}\n${markdownBlocks.open}@end${markdownBlocks.close}`;
+      return `${formatBlockMarker(markdownBlocks, directive)}\n${endMarker}`;
     })
     .join("\n\n");
 }

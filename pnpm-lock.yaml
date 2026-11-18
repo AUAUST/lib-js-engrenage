@@ -211,6 +211,9 @@ importers:
       magic-string:
         specifier: ^1.4.3
         version: 1.4.3
+      minimatch:
+        specifier: ^10.2.6
+        version: 10.2.6
       semver:
         specifier: ^7.8.5
         version: 7.8.5

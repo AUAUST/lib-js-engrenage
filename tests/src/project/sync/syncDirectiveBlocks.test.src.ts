@@ -9,7 +9,7 @@ const extension = {
     directives: {
       greet: {
         files() {
-          return Promise.resolve(["src/a.ts"]);
+          return Promise.resolve(["src/a.ts", ".config/.cache/a.ts"]);
         },
         load() {
           return Promise.resolve(({ args }: { args: readonly string[] }) => {
@@ -49,6 +49,20 @@ describe("blocks sync target", () => {
 
     expect(project.read("src/a.ts")).toBe(
       "// @debt note\n// @greet x\nhello x\n// @end\n",
+    );
+  });
+
+  test("fills the blocks of a file inside dot directories", async () => {
+    const { project, sync } = createKit({
+      "src/a.ts": "",
+      "src/b.ts": "",
+      ".config/.cache/a.ts": "// @greet y\n// @end\n",
+    });
+
+    await sync();
+
+    expect(project.read(".config/.cache/a.ts")).toBe(
+      "// @greet y\nhello y\n// @end\n",
     );
   });
 

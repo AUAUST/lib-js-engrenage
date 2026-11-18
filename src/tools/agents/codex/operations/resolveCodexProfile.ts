@@ -1,8 +1,7 @@
 import { parseDocument } from "yaml";
 
-import { formatBlockMarker } from "#foundation/blocks/index";
 import { getCodexProfiles } from "#tools/agents/codex/operations/getCodexProfiles";
-import { markdownBlocks } from "#tools/agents/constants";
+import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
@@ -20,11 +19,7 @@ export async function resolveCodexProfile(
 
   const skill = await filesystem.read(profile.skillFile);
 
-  if (
-    !skill?.includes(
-      formatBlockMarker(markdownBlocks, "reference", [profile.reference]),
-    )
-  ) {
+  if (!skill?.includes(formatReferenceMarker(profile.reference))) {
     throw new Error(
       `Missing or conflicting generated skill ${profile.skillFile} for Codex profile ${name}`,
     );
