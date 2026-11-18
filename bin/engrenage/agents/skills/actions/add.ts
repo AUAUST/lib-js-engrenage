@@ -95,6 +95,7 @@ export default async function (name?: string): Promise<void> {
       agents: await config.resolve("agents"),
       extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
+      config,
     },
     names,
   );

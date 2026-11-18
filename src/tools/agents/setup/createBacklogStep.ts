@@ -112,6 +112,7 @@ export function createBacklogStep(): Step {
           filesystem,
           agents,
           fillers,
+          config: context,
         },
         ["backlog"],
       );
@@ -121,6 +122,7 @@ export function createBacklogStep(): Step {
           filesystem,
           agents,
           fillers,
+          config: context,
         },
         skills,
       );

@@ -34,6 +34,7 @@ export async function syncCodexFiles(
   await syncCodexInstructions({
     ...config,
     fillers: await createAgentFillers(loaded),
+    config: loaded,
   });
 
   const configured = config.agents.codexHooks;

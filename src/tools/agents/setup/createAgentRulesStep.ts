@@ -47,6 +47,7 @@ export function createAgentRulesStep(): Step {
           filesystem,
           agents: await resolve("agents"),
           fillers,
+          config: context,
         },
         names,
       );

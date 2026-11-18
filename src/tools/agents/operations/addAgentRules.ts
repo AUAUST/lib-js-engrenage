@@ -5,6 +5,7 @@ import { attributionRules } from "#tools/agents/constants";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { BlockFillers } from "#types/BlockFillers";
 
@@ -13,10 +14,12 @@ export async function addAgentRules(
     filesystem,
     agents,
     fillers,
+    config,
   }: {
     filesystem: Filesystem;
     agents: ResolvedAgents;
     fillers: BlockFillers;
+    config: LoadedConfig;
   },
   names: readonly string[],
 ) {
@@ -57,5 +60,6 @@ export async function addAgentRules(
     filesystem,
     agents,
     fillers,
+    config,
   });
 }

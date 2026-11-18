@@ -1,3 +1,7 @@
+import { mkdirSync, symlinkSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, test } from "vitest";
 
 import { syncAgentFiles } from "@auaust/engrenage/agents";
@@ -5,6 +9,37 @@ import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
 import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+
+const misaligned = "| Key | Value |\n| - | - |\n| a | longer value |\n";
+
+const aligned = "| Key | Value        |\n| --- | ------------ |\n| a   | longer value |\n";
+
+function createProfileProject(formatter: string) {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module","repository":"github:acme/consumer","devDependencies":{"prettier":"*"}}',
+    "engrenage.config.ts": `export default { agents: { preferred: ["codex"] }, format: { formatter: ${formatter} }, extensions: [{ name: "probe", title: "Probe", root: new URL("./probe/", import.meta.url) }] };`,
+    "probe/package.json": '{"name":"probe","exports":{"./agents/skills/*.md":"./skills/*.md"}}',
+    ".agents/skills/probe/SKILL.md": "<!-- @reference probe/agents/skills/probe.md -->\n<!-- @end -->\n",
+  });
+
+  const prettier = project.resolve("node_modules/prettier");
+
+  mkdirSync(dirname(prettier), { recursive: true });
+
+  symlinkSync(
+    dirname(fileURLToPath(import.meta.resolve("prettier/package.json"))),
+    prettier,
+  );
+
+  function writeFragment(table: string) {
+    project.write(
+      "probe/skills/probe.md",
+      `---\ntitle: Probe\ndescription: Probe skill\ncategory: workflow\norder: 1\nagent:\n  name: prober\n  description: Prober\n---\n\n# Probe\n\n${table}`,
+    );
+  }
+
+  return { project, writeFragment };
+}
 
 const override = "# Codex only\n\n<!-- @rules -->\n<!-- @end -->\n\nKeep this project note.\n";
 
@@ -135,6 +170,44 @@ describe("syncCodexFiles", () => {
     expect(await filesystem.read(".codex/agents/worker_medium.toml")).toBe(
       'name = "mine"\n',
     );
+  });
+
+  test("embeds the skill body formatted, so formatting the fragment keeps the profile synced", async () => {
+    const { project, writeFragment } = createProfileProject('"prettier"');
+
+    writeFragment(misaligned);
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncCodexFiles(config);
+
+    expect(await filesystem.read(".codex/agents/prober.toml")).toContain(
+      JSON.stringify(aligned).slice(1, -1),
+    );
+
+    await filesystem.flush();
+
+    writeFragment(aligned);
+
+    await syncCodexFiles(config);
+
+    expect(filesystem.changes()).toEqual([]);
+  });
+
+  test("embeds the skill body unchanged when format.formatter is false", async () => {
+    const { project, writeFragment } = createProfileProject("false");
+
+    writeFragment(misaligned);
+
+    const config = await loadConfig(project.root);
+
+    await syncCodexFiles(config);
+
+    expect(
+      await config.context.filesystem.read(".codex/agents/prober.toml"),
+    ).toContain(JSON.stringify(misaligned).slice(1, -1));
   });
 
   test("does nothing without selected agents, even with an explicit creation flag", async () => {

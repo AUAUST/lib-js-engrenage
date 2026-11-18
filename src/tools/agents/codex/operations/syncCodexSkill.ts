@@ -1,15 +1,21 @@
 import { parseDocument } from "yaml";
 
+import { formatContent, type Formatter } from "#project/format/index";
 import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/operations/createCodexAgentProfiles";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 
 export async function syncCodexSkill(
   filesystem: Filesystem,
   template: SkillDefinition,
+  {
+    config,
+    formatter,
+  }: { config: LoadedConfig; formatter: Formatter | undefined },
 ) {
   const { name, reference, invocation, agent, body } = template;
 
@@ -18,7 +24,13 @@ export async function syncCodexSkill(
     : createCodexAgentProfiles({
         agent,
         reference,
-        body,
+        body: formatter === undefined
+          ? body
+          : await formatContent(body, {
+              path: `${codexSkillsDir}/${name}/SKILL.md`,
+              config,
+              formatter,
+            }),
       });
 
   const skill = await filesystem.read(`${codexSkillsDir}/${name}/SKILL.md`);

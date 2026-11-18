@@ -1,7 +1,8 @@
+import { loadLazy } from "#foundation/modules/index";
 import { syncCodexSkill } from "#tools/agents/codex/index";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension } from "#project/config/index";
+import type { Extension, LoadedConfig } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { BlockFillers } from "#types/BlockFillers";
 
@@ -11,11 +12,13 @@ export async function addAgentSkills(
     agents,
     extensions,
     fillers,
+    config,
   }: {
     filesystem: Filesystem;
     agents: ResolvedAgents;
     extensions?: readonly Extension[] | undefined;
     fillers: BlockFillers;
+    config: LoadedConfig;
   },
   names: readonly string[],
 ) {
@@ -37,6 +40,10 @@ export async function addAgentSkills(
     }
   }
 
+  const selected = await config.resolve("format.formatter");
+
+  const formatter = selected === false ? undefined : await loadLazy(selected);
+
   for (const template of templates) {
     if (!names.includes(template.name)) {
       continue;
@@ -49,7 +56,7 @@ export async function addAgentSkills(
     }
 
     if (agents.preferred?.includes("codex") === true) {
-      await syncCodexSkill(filesystem, template);
+      await syncCodexSkill(filesystem, template, { config, formatter });
     }
   }
 }

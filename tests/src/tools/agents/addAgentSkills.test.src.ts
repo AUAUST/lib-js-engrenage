@@ -21,6 +21,7 @@ describe("addAgentSkills", () => {
         agents: await config.resolve("agents"),
         extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
+        config,
       },
       ["debugging"],
     );
@@ -66,6 +67,7 @@ describe("addAgentSkills", () => {
         agents: await config.resolve("agents"),
         extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
+        config,
       },
       ["issue-implementation"],
     );
@@ -91,6 +93,7 @@ describe("addAgentSkills", () => {
         agents: await config.resolve("agents"),
         extensions: await listActiveExtensions(config),
         fillers: await createAgentFillers(config),
+        config,
       },
       ["curation"],
     );
@@ -123,6 +126,7 @@ describe("addAgentSkills", () => {
       agents: await config.resolve("agents"),
       extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
+      config,
     };
 
     await addAgentSkills(sections, ["issue-implementation"]);
@@ -170,6 +174,7 @@ describe("addAgentSkills", () => {
       agents: await config.resolve("agents"),
       extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
+      config,
     };
 
     await expect(
@@ -194,6 +199,7 @@ describe("addAgentSkills", () => {
       agents: await config.resolve("agents"),
       extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
+      config,
     };
 
     await expect(addAgentSkills(sections, ["planning"])).rejects.toThrow(

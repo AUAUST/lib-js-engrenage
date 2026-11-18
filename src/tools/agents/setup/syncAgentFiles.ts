@@ -158,5 +158,5 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await syncFiles(config, generated);
 
-  await syncCodexInstructions(config);
+  await syncCodexInstructions({ ...config, config: loaded });
 }

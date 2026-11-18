@@ -72,6 +72,7 @@ export default async function (name?: string): Promise<void> {
       filesystem: config.context.filesystem,
       agents: await config.resolve("agents"),
       fillers,
+      config,
     },
     names,
   );

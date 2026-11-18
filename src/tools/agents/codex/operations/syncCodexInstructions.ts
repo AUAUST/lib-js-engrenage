@@ -1,4 +1,5 @@
 import { formatBlockMarker, syncBlocks } from "#foundation/blocks/index";
+import { loadLazy } from "#foundation/modules/index";
 import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexDispatch";
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
@@ -7,7 +8,7 @@ import { endMarker, markdownBlocks } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension } from "#project/config/index";
+import type { Extension, LoadedConfig } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { BlockFillers } from "#types/BlockFillers";
@@ -17,15 +18,21 @@ export async function syncCodexInstructions({
   agents,
   extensions,
   fillers,
+  config,
 }: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions?: readonly Extension[];
   fillers: BlockFillers;
+  config: LoadedConfig;
 }) {
   if (agents.preferred?.includes("codex") !== true) {
     return;
   }
+
+  const selected = await config.resolve("format.formatter");
+
+  const formatter = selected === false ? undefined : await loadLazy(selected);
 
   const installed: SkillDefinition[] = [];
 
@@ -41,7 +48,7 @@ export async function syncCodexInstructions({
       continue;
     }
 
-    await syncCodexSkill(filesystem, template);
+    await syncCodexSkill(filesystem, template, { config, formatter });
 
     installed.push(template);
   }

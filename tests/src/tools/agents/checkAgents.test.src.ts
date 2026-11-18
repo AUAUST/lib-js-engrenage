@@ -44,6 +44,7 @@ async function fixture() {
       agents: await config.resolve("agents"),
       extensions: await listActiveExtensions(config),
       fillers: await createAgentFillers(config),
+      config,
     },
     ["issue-implementation"],
   );
