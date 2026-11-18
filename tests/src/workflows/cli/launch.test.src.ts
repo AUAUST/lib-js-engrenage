@@ -68,7 +68,9 @@ describe("launch", () => {
   });
 
   test("a hook command that cannot load exits 2 with the message", async () => {
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const error = vi.spyOn(process.stderr, "write").mockImplementation(() => {
+      return true;
+    });
 
     await launch(run, [
       "node",
@@ -82,7 +84,7 @@ describe("launch", () => {
     expect(process.exitCode).toBe(2);
 
     expect(error).toHaveBeenCalledWith(
-      "engrenage cannot load: src is broken; this check fails until it runs",
+      "engrenage cannot load: src is broken; this check fails until it runs\n",
     );
   });
 
@@ -108,12 +110,15 @@ describe("launch", () => {
     const { load } = createStaleProject(barrel, files);
 
     const failed = load("src/main.ts");
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const error = vi.spyOn(process.stderr, "write").mockImplementation(() => {
+      return true;
+    });
 
     await launch(() => Promise.reject(failed), ["node", "engrenage", "sync"]);
 
     expect(process.exitCode).toBe(1);
-    expect(error.mock.calls[0]?.[0]).toContain(message);
+    expect(String(error.mock.calls[0]?.[0])).toContain(message);
   });
 
   test("a command failing on a missing module a hand-written file imports rethrows", async () => {
@@ -140,7 +145,7 @@ describe("launch", () => {
 test.each(["claude", "codex"])(
   "%s hook dependency/config loading failures stay blocking",
   async (provider) => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
 
     for (const message of [
       "Cannot find package required-dependency",

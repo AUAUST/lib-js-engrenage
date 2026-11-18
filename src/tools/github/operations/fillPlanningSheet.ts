@@ -15,8 +15,9 @@ export async function fillPlanningSheet(config: LoadedConfig): Promise<string> {
   const file = githubSnapshotFile;
 
   if (snapshot === undefined) {
-    console.warn(
-      `No GitHub snapshot at ${file}: the planning sheet describes meanings without their GitHub names; run \`engrenage github fetch\``,
+    config.context.reporter.warn(
+      `No GitHub snapshot at ${file}: the planning sheet describes meanings without their GitHub names`,
+      { fix: "run `engrenage github fetch`" },
     );
   } else {
     const problems = checkProtocolNames(protocol, snapshot);

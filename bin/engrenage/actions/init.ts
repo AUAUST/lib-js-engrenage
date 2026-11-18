@@ -90,6 +90,7 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
     flat(
       await Promise.all(filesystems.map((filesystem) => filesystem.flush())),
     ),
+    config.context.reporter,
   );
 
   for (const invocation of invocations) {

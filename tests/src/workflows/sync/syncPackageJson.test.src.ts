@@ -1,8 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 
+import { formatReport } from "#foundation/reports/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { syncPackageJson } from "#workflows/sync/setup/syncPackageJson";
 
@@ -16,6 +18,7 @@ async function sync(
   config: string,
   manifest: object,
   files: Record<string, string> = {},
+  reporter = createTestReporter(),
 ) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ type: "module", ...manifest }),
@@ -24,7 +27,7 @@ async function sync(
     ...files,
   });
 
-  const resolved = await loadConfig(project.root);
+  const resolved = await loadConfig(project.root, { reporter });
 
   await syncPackageJson(resolved);
 
@@ -183,7 +186,7 @@ describe("syncPackageJson", () => {
   });
 
   test("syncs an active src without src.baseline, warning and leaving engines out", async () => {
-    const warn = vi.spyOn(console, "warn");
+    const reporter = createTestReporter();
 
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ type: "module" }),
@@ -191,16 +194,20 @@ describe("syncPackageJson", () => {
       "src/index.ts": "",
     });
 
-    const resolved = await loadConfig(project.root);
+    const resolved = await loadConfig(project.root, { reporter });
 
     expect((await resolved.resolve("src")).runtime).toBeUndefined();
     expect((await resolved.resolve("src")).runtime).toBeUndefined();
 
-    expect(warn).toHaveBeenCalledOnce();
+    const warnings = reporter.messages
+      .filter(({ level }) => level === "warn")
+      .map(({ text, data }) => formatReport(text, data));
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringMatching(/src\.baseline is not set.*set it to \d{4}-\d{2}/),
-    );
+    expect(warnings).toEqual([
+      expect.stringMatching(
+        /src\.baseline is not set[^]*set it to \d{4}-\d{2}/,
+      ),
+    ]);
 
     await syncPackageJson(resolved);
 
@@ -226,20 +233,30 @@ describe("syncPackageJson pnpm warnings", () => {
   }
 
   async function warnings(manifest: object) {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const reporter = createTestReporter();
 
-    const { resolved } = await sync(library, manifest);
+    const { resolved } = await sync(library, manifest, {}, reporter);
 
-    const messages = warn.mock.calls.map(([message]) => String(message));
+    const messages = reporter.messages.map(({ text }) => text);
 
-    return { resolved, messages };
+    return {
+      resolved,
+      reporter,
+      messages,
+    };
   }
 
   test("suggests the upgrade command below the range without failing the check", async () => {
     const {
       resolved,
+      reporter,
       messages,
     } = await warnings(declare(`^${versions.previousMajor}`));
+
+    expect(reporter.messages[0]).toMatchObject({
+      level: "warn",
+      data: { source: "package.json" },
+    });
 
     expect(messages).toEqual([
       expect.stringContaining("engrenage pnpm upgrade"),

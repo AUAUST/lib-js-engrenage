@@ -56,6 +56,8 @@ function createProject(files: Record<string, string>) {
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
 
+  vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+
   vi.mocked(spawnProcess).mockResolvedValue({
     stdout: "",
     stderr: "",
@@ -402,8 +404,10 @@ describe("engrenage init", () => {
 
     expect(spawnProcess).not.toHaveBeenCalled();
 
-    expect(console.info).toHaveBeenCalledExactlyOnceWith(
-      "Engrenage is set up, nothing is missing.",
+    expect(console.info).not.toHaveBeenCalled();
+
+    expect(process.stdout.write).toHaveBeenCalledExactlyOnceWith(
+      "Engrenage is set up, nothing is missing.\n",
     );
 
     expect(project.read("package.json")).toBe(completed);
@@ -663,7 +667,9 @@ describe("engrenage init", () => {
 
     vi.spyOn(prompts, "createPrompter").mockReturnValue(prompter);
 
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    const error = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
 
     await init({ yes: true });
 
@@ -819,7 +825,7 @@ test("does not generate agent setup without selected agents", async () => {
     expect(existsSync(project.resolve(file))).toBe(false);
   }
 
-  expect(console.info).toHaveBeenCalledWith(
+  expect(process.stdout.write).toHaveBeenCalledWith(
     expect.stringContaining("Add agents.preferred: []"),
   );
 });
@@ -904,7 +910,7 @@ test("uses an interactive selection for this init without rewriting an existing 
     "engrenage agents codex hook github",
   );
 
-  expect(console.info).toHaveBeenCalledWith(
+  expect(process.stdout.write).toHaveBeenCalledWith(
     expect.stringContaining('Add agents.preferred: ["claude","codex"]'),
   );
 });

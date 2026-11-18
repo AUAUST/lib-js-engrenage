@@ -117,26 +117,34 @@ describe("defineToolCommand", () => {
     expect(readRecordedArgs(project)).toEqual(["--only"]);
   });
 
-  test("announces the command on stderr and reports success only when the binary passes", async () => {
+  test("announces the command and reports success only when the binary passes", async () => {
     createProject(fakeTool);
 
-    const info = vi.spyOn(console, "info");
+    const passing = await runDefinition(commands.fakeChecked, "--pass");
 
-    const stderr = vi.spyOn(process.stderr, "write").mockReturnValue(true);
-
-    await runDefinition(commands.fakeChecked, "--pass");
-
-    expect(stderr.mock.calls).toEqual([
-      ["Checking fakes...\n"],
-      ["All good!\n"],
+    expect(passing.messages).toEqual([
+      {
+        level: "info",
+        text: "Checking fakes...",
+        data: undefined,
+      },
+      {
+        level: "log",
+        text: "All good!",
+        data: undefined,
+      },
     ]);
 
-    stderr.mockClear();
+    const failing = await runDefinition(commands.fakeChecked);
 
-    await runDefinition(commands.fakeChecked);
+    expect(failing.messages).toEqual([
+      {
+        level: "info",
+        text: "Checking fakes...",
+        data: undefined,
+      },
+    ]);
 
-    expect(stderr.mock.calls).toEqual([["Checking fakes...\n"]]);
-    expect(info).not.toHaveBeenCalled();
     expect(process.exitCode).toBe(3);
   });
 

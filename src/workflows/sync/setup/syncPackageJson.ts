@@ -151,7 +151,7 @@ export async function syncPackageJson(config: LoadedConfig) {
           });
 
           for (const warning of listPnpmWarnings(packageJson)) {
-            console.warn(`${packageJsonFile}: ${warning}`);
+            context.reporter.warn(warning, { source: packageJsonFile });
           }
 
           return fields.reduce((current, { location, value }) => {

@@ -24,7 +24,7 @@ export function createPreferredAgentsStep(): Step {
       setAgents(chosen);
 
       if (context.configFile !== undefined) {
-        console.info(
+        context.reporter.log(
           `Add agents.preferred: ${JSON.stringify(chosen)} to ${context.configFile} to persist the preferences.`,
         );
       }

@@ -1,8 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Command } from "@commander-js/extra-typings";
 
+import { loadConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
+import { reportAgentChecks } from "#tools/agents/index";
 import {
   createProgram as createDefinedProgram,
   defineCommand,
@@ -32,16 +35,21 @@ function createProgram() {
   );
 }
 
+let reporter = createTestReporter();
+
 function run(program: Command, ...args: string[]) {
-  return runProgram(program, ["node", "program", ...args]);
+  return runProgram(program, ["node", "program", ...args], { reporter });
 }
 
 function printed() {
-  return vi.mocked(console.error).mock.calls.map(String).join("\n");
+  return reporter.messages
+    .filter(({ level }) => level === "error")
+    .map(({ text }) => text)
+    .join("\n");
 }
 
 beforeEach(() => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  reporter = createTestReporter();
 
   mockCwd(createTemporaryProject({ "package.json": "{}" }).root);
 });
@@ -87,9 +95,10 @@ describe("runProgram", () => {
         }),
       ),
       ["node", "program", "succeeding"],
+      { reporter },
     );
 
-    expect(console.error).not.toHaveBeenCalled();
+    expect(reporter.messages).toEqual([]);
     expect(process.exitCode).toBeUndefined();
   });
 
@@ -115,7 +124,9 @@ describe("runProgram", () => {
       runProgram: runFreshProgram,
     } = await import("#workflows/cli/operations/runProgram");
 
-    await runFreshProgram(createProgram(), ["node", "program", "failing"]);
+    await runFreshProgram(createProgram(), ["node", "program", "failing"], {
+      reporter,
+    });
 
     expect(printed()).toContain("    at ");
   });
@@ -176,12 +187,67 @@ describe("runProgram", () => {
       );
     };
 
-    await run(program(), "progress");
+    await runProgram(program(), ["node", "program", "progress"]);
 
     expect(stderr.mock.calls.map(String).join("")).not.toContain("progressing");
 
-    await run(program(), "progress", "--verbose");
+    await runProgram(program(), ["node", "program", "progress", "--verbose"]);
 
     expect(stderr.mock.calls.map(String).join("")).toContain("progressing");
+  });
+});
+
+describe("sync --check", () => {
+  test("prints no agent finding and reports each at info", async () => {
+    const project = createTemporaryProject({
+      "package.json": "{}",
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      "AGENTS.md": "",
+      "CLAUDE.md": "",
+      ".claude/settings.json": "{}",
+    });
+
+    mockCwd(project.root);
+
+    const stderr = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
+
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+
+    const program = () => {
+      return createDefinedProgram(
+        "program",
+        defineGroup({
+          commands: { sync },
+        }),
+      );
+    };
+
+    await runProgram(program(), ["node", "program", "sync"]);
+
+    stderr.mockClear();
+
+    await runProgram(program(), ["node", "program", "sync", "--check"]);
+
+    expect(stderr.mock.calls.map(String).join("")).not.toContain("claude · ");
+
+    const reporter = createTestReporter();
+
+    const findings = await reportAgentChecks(
+      await loadConfig(project.root, { reporter }),
+    );
+
+    expect(findings).not.toEqual([]);
+
+    expect(reporter.messages).toEqual(
+      findings.map(({ agent, status, message }) => {
+        return {
+          level: "info",
+          text: `${agent} · ${status} · ${message}`,
+          data: undefined,
+        };
+      }),
+    );
   });
 });

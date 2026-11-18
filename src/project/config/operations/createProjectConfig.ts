@@ -256,12 +256,12 @@ export function createProjectConfig({
       path(...paths: string[]) {
         return resolveWithin(root, ...paths);
       },
-      copy() {
+      copy({ reporter: copied = reporter } = {}) {
         return createProjectConfig({
           root,
           raw,
           configFile,
-          reporter,
+          reporter: copied,
         });
       },
     },

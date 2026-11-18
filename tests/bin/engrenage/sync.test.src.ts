@@ -33,8 +33,18 @@ function createProject() {
   return project;
 }
 
+function printed() {
+  return [
+    ...vi.mocked(console.info).mock.calls.map(String),
+    ...vi.mocked(process.stdout.write).mock.calls.map((line) => {
+      return String(line).trimEnd();
+    }),
+  ];
+}
+
 beforeEach(() => {
   vi.spyOn(console, "info").mockImplementation(() => {});
+  vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 });
 
 afterEach(() => {
@@ -57,6 +67,7 @@ describe("engrenage sync", () => {
     );
 
     vi.mocked(console.info).mockClear();
+    vi.mocked(process.stdout.write).mockClear();
 
     await sync([], {
       check: true,
@@ -65,13 +76,7 @@ describe("engrenage sync", () => {
 
     expect(process.exitCode).toBeUndefined();
 
-    expect(vi.mocked(console.info).mock.calls).toEqual(
-      expect.arrayContaining([["Checking synced files..."], ["All good!"]]),
-    );
-
-    expect(vi.mocked(console.info).mock.calls).toEqual(
-      expect.arrayContaining([[expect.stringContaining("runtime-unverified")]]),
-    );
+    expect(printed()).toEqual(["Checking synced files...", "All good!"]);
   });
 
   test("checks only the selected targets without writing", async () => {
@@ -84,9 +89,9 @@ describe("engrenage sync", () => {
 
     expect(process.exitCode).toBe(1);
 
-    expect(vi.mocked(console.info).mock.calls).toEqual([
-      ["Checking synced files..."],
-      ["outdated: .vscode/settings.json"],
+    expect(printed()).toEqual([
+      "Checking synced files...",
+      "outdated: .vscode/settings.json",
     ]);
 
     expect(project.read("AGENTS.md")).toBe(emptyBlock);

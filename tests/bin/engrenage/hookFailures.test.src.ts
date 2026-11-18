@@ -87,7 +87,9 @@ test("invalid consumer config exits 2 after hook startup", () => {
 });
 
 test("a GitHub failure after dispatch startup exits 2", async () => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  const stderr = vi
+    .spyOn(process.stderr, "write")
+    .mockImplementation(() => true);
 
   vi.mocked(readHookPayload).mockResolvedValue({
     tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
@@ -98,13 +100,15 @@ test("a GitHub failure after dispatch startup exits 2", async () => {
   expect(checkIssue).toHaveBeenCalled();
   expect(process.exitCode).toBe(2);
 
-  expect(console.error).toHaveBeenCalledWith(
-    expect.stringContaining("GitHub request failed with 503"),
+  expect(stderr.mock.calls.map(String).join("")).toContain(
+    "GitHub request failed with 503",
   );
 });
 
 test("a hook whose action fails to load exits 2", async () => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  const stderr = vi
+    .spyOn(process.stderr, "write")
+    .mockImplementation(() => true);
 
   vi.doMock("#bin/engrenage/agents/claude/hook/actions/dispatch", () => {
     throw new Error("action failed to load");
@@ -114,7 +118,7 @@ test("a hook whose action fails to load exits 2", async () => {
 
   expect(process.exitCode).toBe(2);
 
-  expect(console.error).toHaveBeenCalledWith(
-    expect.stringContaining("action failed to load"),
+  expect(stderr.mock.calls.map(String).join("")).toContain(
+    "action failed to load",
   );
 });

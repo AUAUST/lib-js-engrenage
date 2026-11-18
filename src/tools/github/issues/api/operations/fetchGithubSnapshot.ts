@@ -18,6 +18,7 @@ import { jsonIndentation } from "#project/format/constants";
 import { scopesHeader } from "#tools/github/issues/api/constants";
 import { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScopes";
 import { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
+import type { Reporter } from "#foundation/reports/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { GithubClient } from "#tools/github/issues/api/types/GithubClient";
 import type { GithubSnapshot } from "#tools/github/issues/api/types/GithubSnapshot";
@@ -331,6 +332,7 @@ async function readOrganization(
 
 async function readOrganizations(
   reader: Reader,
+  reporter: Reporter,
   owners: ReadonlyMap<string, string>,
 ) {
   const organizations = [...owners].filter(([login, type]) => {
@@ -338,7 +340,7 @@ async function readOrganizations(
       return true;
     }
 
-    console.info(
+    reporter.info(
       `${login} is a personal account: its repositories get no issue types or fields`,
     );
 
@@ -386,7 +388,9 @@ export async function fetchGithubSnapshot(
         return [short, repository] as const;
       }),
     ),
-    organizations: sortByKey(await readOrganizations(reader, owners)),
+    organizations: sortByKey(
+      await readOrganizations(reader, config.context.reporter, owners),
+    ),
   };
 
   const resources = await config.resolve("resources");

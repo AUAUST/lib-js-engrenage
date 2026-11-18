@@ -1,3 +1,4 @@
+import { createConsoleReporter } from "#foundation/reports/index";
 import { detectHookCommand } from "#workflows/cli/operations/detectHookCommand";
 import { explainStaleBarrel } from "#workflows/cli/operations/explainStaleBarrel";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
@@ -7,6 +8,8 @@ export async function launch(
   run: () => Promise<void>,
   argv: readonly string[] = process.argv,
 ): Promise<void> {
+  const reporter = createConsoleReporter();
+
   try {
     await run();
   } catch (error) {
@@ -19,7 +22,7 @@ export async function launch(
         explanation ?? (error instanceof Error ? error.message : String(error))
       );
 
-      console.error(
+      reporter.error(
         `engrenage cannot load: ${reason}; this check fails until it runs`,
       );
 
@@ -32,7 +35,7 @@ export async function launch(
       throw error;
     }
 
-    console.error(formatCommandError(error, { debug: isDebugEnvironment() }));
+    reporter.error(formatCommandError(error, { debug: isDebugEnvironment() }));
 
     process.exitCode = kind === "unknown" ? 2 : 1;
   }

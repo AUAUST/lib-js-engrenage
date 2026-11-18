@@ -22,7 +22,7 @@ function isFlagSet(command: CommandUnknownOpts | null, name: string): boolean {
 }
 
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
-async function isDebugConfigured(): Promise<boolean> {
+async function isDebugConfigured(reporter: Reporter): Promise<boolean> {
   try {
     if (isDebugEnvironment()) {
       return true;
@@ -30,7 +30,7 @@ async function isDebugConfigured(): Promise<boolean> {
 
     const { loadValidatedConfig } = await import("#workflows/config/index");
 
-    const config = await loadValidatedConfig();
+    const config = await loadValidatedConfig(undefined, { reporter });
 
     return await config.resolve("debug");
   } catch {
@@ -94,9 +94,11 @@ export async function runProgram(
 
     const kind = await detectHookCommand(argv ?? process.argv);
 
-    const debug = isFlagSet(running, "debug") || (await isDebugConfigured());
+    const debug = (
+      isFlagSet(running, "debug") || (await isDebugConfigured(runReporter))
+    );
 
-    console.error(formatCommandError(error, { debug }));
+    runReporter.error(formatCommandError(error, { debug }));
 
     process.exitCode = kind === "command" ? 1 : 2;
   } finally {

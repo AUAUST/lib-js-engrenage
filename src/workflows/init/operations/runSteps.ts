@@ -27,7 +27,9 @@ export async function runSteps({
   }
 
   if (gaps.length === 0) {
-    return void console.info("Engrenage is set up, nothing is missing.");
+    return void config.context.reporter.log(
+      "Engrenage is set up, nothing is missing.",
+    );
   }
 
   if (config.context.configFile !== undefined) {

@@ -1,9 +1,10 @@
 import { formatSyncResult } from "#project/sync/utils/formatSyncResult";
+import type { Reporter } from "#foundation/reports/index";
 import type { SyncResults } from "#types/SyncResults";
 
-export function reportSyncResults(results: SyncResults) {
+export function reportSyncResults(results: SyncResults, reporter: Reporter) {
   for (const result of results) {
-    console.info(formatSyncResult(result));
+    reporter.log(formatSyncResult(result));
   }
 
   if (results.some(({ status }) => status === "outdated")) {

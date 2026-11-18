@@ -1,10 +1,9 @@
+import { formatReport } from "#foundation/reports/utils/formatReport";
 import type { Reporter } from "#foundation/reports/ports/Reporter";
 import type { ReportData } from "#foundation/reports/types/ReportData";
 
-function render(text: string, { source, fix }: ReportData = {}): string {
-  const line = source === undefined ? text : `${source}: ${text}`;
-
-  return fix === undefined ? `${line}\n` : `${line}\n  ${fix}\n`;
+function render(text: string, data?: ReportData): string {
+  return `${formatReport(text, data)}\n`;
 }
 
 export function createConsoleReporter({

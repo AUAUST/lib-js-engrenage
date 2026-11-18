@@ -44,7 +44,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const config = await loadConfig(project.root);
 
-    const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
     try {
       const reports = await Promise.all([

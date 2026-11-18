@@ -21,7 +21,7 @@ export function createCodexHooksStep(): Step {
         hooks: true,
       });
 
-      console.info(
+      context.reporter.log(
         "Review and trust the project hooks in Codex with /hooks before using them.",
       );
     },

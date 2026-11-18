@@ -206,49 +206,43 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - why: a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
 - done: needs planning: whether a stamp replays its warnings.
 
-## 35. Sync and config code warns through console instead of returning results
-
-- sites: `src/workflows/sync/operations/runSyncCheck.ts:12`, `src/workflows/sync/setup/syncPackageJson.ts:155`, `src/project/config/operations/readRawConfig.ts:24`, `src/tools/typescript/operations/produceTsconfigTypes.ts:60`, `src/tools/agents/setup/syncAgentFiles.ts:110`, `src/project/baseline/operations/resolveSourceRuntime.ts:23`
-- why: warnings print beside the gate's output instead of being returned in the result.
-- want: return warnings in the result; the gate prints them.
-
-## 36. Barrel blocks and flat entries hide name collisions
+## 35. Barrel blocks and flat entries hide name collisions
 
 - sites: `src/tools/typescript/setup/syncBarrelBlocks.ts:8`, `src/tools/typescript/setup/syncBarrelFiles.ts:11`
 - why: a block cannot read the names a hand-written flat entry spreads, so collisions surface only in TypeScript.
 - done: needs planning: read names from the flat entry or forbid collisions.
 
-## 37. Role of each domain file re-derived from names
+## 36. Role of each domain file re-derived from names
 
 - sites: `src/tools/typescript/operations/listDomainModules.ts:20`
 - why: the structure walker already classifies each file; this re-derives roles from `fileNames`.
 - want: the resolved structure carries each role node's files with their roles.
 
-## 38. Test project builders repeated across lint tests
+## 37. Test project builders repeated across lint tests
 
 - sites: `tests/src/tools/eslint/boundaries.test.ts:141`, `tests/src/tools/eslint/noComplexConciseArrows.test.ts:11`
 - why: the boundary and concise-arrow tests clone the temporary project and ESLint setup of other tests.
 - want: one shared builder in test utilities.
 
-## 39. Agent fragments listed beside the template
+## 38. Agent fragments listed beside the template
 
 - sites: `src/tools/agents/operations/getInstructionTemplates.ts:36`
 - why: fragments are listed beside the AGENTS.md template instead of through `listDataFiles`, which needs a package root URL.
 - done: needs planning: how engrenage's own fragments get a package root.
 
-## 40. Agent rule fillers recomputed in plan
+## 39. Agent rule fillers recomputed in plan
 
 - sites: `src/tools/agents/setup/createAgentRulesStep.ts:21`
 - why: the fillers are recomputed on each `plan()`.
 - want: cache them.
 
-## 41. Readonly list in a schema is not readonly in its JSON Schema
+## 40. Readonly list in a schema is not readonly in its JSON Schema
 
 - sites: `src/project/roles/config/schemas/reexportSchema.ts:5`
 - why: the list lacks `readonly()` because the JSON Schema codegen cannot convert it, so the output is mutable and the types restate it as readonly.
 - done: needs the codegen to convert readonly lists, or a planned workaround.
 
-## 42. Local guard restates toolkit's isArray for readonly lists
+## 41. Local guard restates toolkit's isArray for readonly lists
 
 - sites: `src/project/config/operations/createProjectConfig.ts:42`
 - why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to.

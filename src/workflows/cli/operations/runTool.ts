@@ -62,12 +62,12 @@ export async function runTool(
   );
 
   if (message !== undefined) {
-    process.stderr.write(`${message}\n`);
+    reporter.info(message);
   }
 
   const exitCode = await runBinary(binaryPath, args, signal);
 
   if (message !== undefined && exitCode === 0) {
-    process.stderr.write(`${successMessage}\n`);
+    reporter.log(successMessage);
   }
 }

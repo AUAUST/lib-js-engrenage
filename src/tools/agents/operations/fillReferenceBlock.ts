@@ -41,7 +41,9 @@ async function findReference(
       throw error;
     }
 
-    console.warn(`${error.message}: its block is left untouched`);
+    config.context.reporter.warn(
+      `${error.message}: its block is left untouched`,
+    );
   }
 }
 

@@ -10,3 +10,7 @@ export type * from "#foundation/reports/types/ReportingContext";
 // @barrel operations
 export { createConsoleReporter } from "#foundation/reports/operations/createConsoleReporter";
 // @end
+
+// @barrel utils
+export { formatReport } from "#foundation/reports/utils/formatReport";
+// @end

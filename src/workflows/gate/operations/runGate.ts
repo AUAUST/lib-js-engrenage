@@ -403,8 +403,8 @@ export async function runGate(
         label,
         timeout: lockTimeout,
         onWait(holder) {
-          process.stderr.write(
-            `Waiting for the ${holder.label} of process ${holder.pid}, started ${holder.started}…\n`,
+          config.context.reporter.log(
+            `Waiting for the ${holder.label} of process ${holder.pid}, started ${holder.started}…`,
           );
         },
       },

@@ -82,9 +82,11 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       mode: "staged",
     });
 
-    expect(failures.find(({ step }) => step === "sync --check")?.output).toBe(
-      "outdated: tsconfig.src.json",
-    );
+    expect(
+      failures.find(({ step }) => {
+        return step === "sync --check";
+      })?.output,
+    ).toContain("outdated: tsconfig.src.json");
 
     expect(project.read("tsconfig.src.json")).toBe("{}\n");
 

@@ -12,6 +12,7 @@ import {
   type SyncDone,
 } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 function createTarget(
@@ -34,13 +35,17 @@ function createTarget(
   };
 }
 
-function createConfig(extensions: readonly unknown[]) {
+function createConfig(
+  extensions: readonly unknown[],
+  reporter = createTestReporter(),
+) {
   return createProjectConfig({
     root: createTemporaryProject({
       "package.json": JSON.stringify({ name: "sync-fixture" }),
     }).root,
     raw: { extensions },
     configFile: undefined,
+    reporter,
   });
 }
 
@@ -144,57 +149,61 @@ describe("runSync", () => {
   });
 
   test("flushes the written files when a check fails, then reports every failed check", async () => {
-    const config = createConfig([
-      {
-        name: "checked-fixture",
-        contributes: {
-          "sync.targets": [
-            ...["first", "second"].map((name) => {
-              return {
-                name,
-                stage: "check",
+    const reporter = createTestReporter();
+
+    const config = createConfig(
+      [
+        {
+          name: "checked-fixture",
+          contributes: {
+            "sync.targets": [
+              ...["first", "second"].map((name) => {
+                return {
+                  name,
+                  stage: "check",
+                  load() {
+                    return Promise.resolve(() => {
+                      throw new Error(`${name} violation`);
+                    });
+                  },
+                };
+              }),
+              {
+                name: "writer",
+                stage: "write",
                 load() {
-                  return Promise.resolve(() => {
-                    throw new Error(`${name} violation`);
+                  return Promise.resolve(async ({ context }: typeof config) => {
+                    await context.filesystem.write("written.txt", "content\n");
                   });
                 },
-              };
-            }),
-            {
-              name: "writer",
-              stage: "write",
-              load() {
-                return Promise.resolve(async ({ context }: typeof config) => {
-                  await context.filesystem.write("written.txt", "content\n");
-                });
               },
-            },
-          ],
+            ],
+          },
         },
-      },
-    ]);
+      ],
+      reporter,
+    );
 
     const failures = await runSync(config);
 
     expect(failures.map(({ target }) => target)).toEqual(["first", "second"]);
 
-    const error = vi.spyOn(console, "error").mockImplementation(() => {});
+    await settleChanges(config, { check: false, failures });
 
-    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    expect(reporter.messages.filter(({ level }) => level === "error")).toEqual([
+      {
+        level: "error",
+        text: "failed: first\nfirst violation",
+        data: undefined,
+      },
+      {
+        level: "error",
+        text: "failed: second\nsecond violation",
+        data: undefined,
+      },
+    ]);
 
-    try {
-      await settleChanges(config, { check: false, failures });
-
-      expect(error.mock.calls).toEqual([
-        ["failed: first\nfirst violation"],
-        ["failed: second\nsecond violation"],
-      ]);
-
-      expect(process.exitCode).toBe(1);
-    } finally {
-      error.mockRestore();
-      info.mockRestore();
-    }
+    expect(process.exitCode).toBe(1);
 
     expect(
       readFileSync(join(config.context.root, "written.txt"), "utf-8"),
@@ -303,7 +312,9 @@ describe("runSync with generated sources", () => {
       ],
     );
 
-    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    const stdout = vi
+      .spyOn(process.stdout, "write")
+      .mockImplementation(() => true);
 
     try {
       await settleChanges(config, {
@@ -334,7 +345,7 @@ describe("runSync with generated sources", () => {
       expect(await runSync(copy)).toEqual([]);
       expect(await collectChanges(copy, { check: true })).toEqual([]);
     } finally {
-      info.mockRestore();
+      stdout.mockRestore();
     }
   });
 

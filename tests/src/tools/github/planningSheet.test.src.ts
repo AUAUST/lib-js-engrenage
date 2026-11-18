@@ -1,7 +1,8 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { syncGeneratedRules } from "#tools/agents/index";
 
 const sheet = ".claude/rules/planning-sheet.md";
@@ -100,7 +101,13 @@ async function createProject({
       : {}),
   });
 
-  return { project, config: await loadConfig(project.root) };
+  const reporter = createTestReporter();
+
+  return {
+    project,
+    reporter,
+    config: await loadConfig(project.root, { reporter }),
+  };
 }
 
 describe("planning sheet", () => {
@@ -152,17 +159,17 @@ describe("planning sheet", () => {
   });
 
   test("warns and renders the nameless sheet without a snapshot", async () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-
-    const { config } = await createProject({ withSnapshot: false });
+    const { config, reporter } = await createProject({ withSnapshot: false });
 
     await syncGeneratedRules(config);
 
     const content = await config.context.filesystem.read(sheet);
 
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringContaining("No GitHub snapshot"),
-    );
+    expect(reporter.messages).toContainEqual({
+      level: "warn",
+      text: expect.stringContaining("No GitHub snapshot"),
+      data: { fix: "run `engrenage github fetch`" },
+    });
 
     expect(content).toContain(
       "identify the GitHub type, field, option or label",
@@ -173,7 +180,5 @@ describe("planning sheet", () => {
     );
 
     expect(content).not.toContain("Problem type.");
-
-    warn.mockRestore();
   });
 });

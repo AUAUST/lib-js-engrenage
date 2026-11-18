@@ -1,8 +1,9 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { fillBlocks } from "#tests/utils/fillBlocks";
 import { getFixture } from "#tests/utils/getFixture";
 
@@ -31,7 +32,7 @@ describe("reference directive", () => {
   });
 
   test("warns about an unresolvable reference and leaves its block untouched", async () => {
-    const warn = vi.spyOn(console, "warn");
+    const reporter = createTestReporter();
 
     const instructions = [
       "<!-- @reference ./missing.md -->",
@@ -42,13 +43,15 @@ describe("reference directive", () => {
 
     const project = createProject(instructions);
 
-    const config = await loadConfig(project.root);
+    const config = await loadConfig(project.root, { reporter });
 
     expect(await fillBlocks(config, "AGENTS.md")).toBe(instructions);
 
-    expect(warn).toHaveBeenCalledWith(
-      `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
-    );
+    expect(reporter.messages).toContainEqual({
+      level: "warn",
+      text: `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
+      data: undefined,
+    });
   });
 
   test("renders a filler directive inside the referenced fragment", async () => {
