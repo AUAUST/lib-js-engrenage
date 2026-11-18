@@ -43,5 +43,5 @@ export async function checkAgentStop(
 
   await writeFile(marker, `${tree}\n`);
 
-  return `${failures.map(formatGateEntry).join("\n")}\nFix them and stop again. If you must stop now, list these failures in your report and stop again: the commit gate still refuses this tree.\n`;
+  return `${failures.map(formatGateEntry).join("\n")}\nFix them and stop again. If you must stop now, list these failures in your report and stop again without changing any file: the commit gate still refuses this tree.\n`;
 }

@@ -79,7 +79,11 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
 
     expect(first.exitCode).toBe(2);
     expect(first.stderr).toContain("test ! -f fail");
-    expect(first.stderr).toContain("Fix them and stop again.");
+
+    expect(first.stderr).toContain(
+      "If you must stop now, list these failures in your report and stop again without changing any file:",
+    );
+
     expect(await hasMarker(project.root)).toBe(true);
 
     expect((await runStop()).exitCode).toBe(0);
