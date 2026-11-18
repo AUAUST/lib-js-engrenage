@@ -135,13 +135,6 @@ export default defineConfig({
   tests: {
     mirror: true,
     roles: [config, plugins, conventions],
-    dist: {
-      tsconfig: {
-        compilerOptions: {
-          exactOptionalPropertyTypes: false,
-        },
-      },
-    },
   },
   typescript: {
     tsconfig: {
