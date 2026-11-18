@@ -13,11 +13,7 @@ import {
   type GateResult,
   type GateStage,
 } from "#project/gate/index";
-import {
-  formatBudgetFinding,
-  listLocalFilePatterns,
-  measureEditedFile,
-} from "#tools/agents/index";
+import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   listChangedFiles,
   listLocalFiles,
@@ -25,6 +21,7 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
+import { measureEntries } from "#workflows/gate/operations/measureEntries";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -48,10 +45,17 @@ const lockLabels = {
   worktree: "worktree gate",
 } as const satisfies Record<ChangeMode, string>;
 
-async function runStep(
-  step: GateStep,
-  files: Files,
-): Promise<GateFailure | undefined> {
+interface StepOutcome {
+  readonly failure: GateFailure | undefined;
+  readonly warning: GateWarning | undefined;
+}
+
+interface StepsOutcome {
+  readonly failures: GateFailure[];
+  readonly warnings: GateWarning[];
+}
+
+async function runStep(step: GateStep, files: Files): Promise<StepOutcome> {
   let result: GateResult;
 
   try {
@@ -63,67 +67,51 @@ async function runStep(
     };
   }
 
-  return result.ok ? undefined : { step: step.name, output: result.output };
+  return {
+    failure: result.ok ? undefined : { step: step.name, output: result.output },
+    warning: result.warnings === undefined || result.warnings === ""
+      ? undefined
+      : { step: step.name, output: result.warnings },
+  };
+}
+
+function collectOutcomes(outcomes: readonly StepOutcome[]): StepsOutcome {
+  return {
+    failures: filter(
+      outcomes.map(({ failure }) => failure),
+      (failure) => failure !== undefined,
+    ),
+    warnings: filter(
+      outcomes.map(({ warning }) => warning),
+      (warning) => warning !== undefined,
+    ),
+  };
 }
 
 async function runSteps(
   steps: readonly GateStep[],
   files: Files,
-): Promise<GateFailure[]> {
-  const failures: GateFailure[] = [];
+): Promise<StepsOutcome> {
+  const outcomes: StepOutcome[] = [];
 
   for (const step of steps) {
-    const failure = await runStep(step, files);
-
-    if (failure !== undefined) {
-      failures.push(failure);
-    }
+    outcomes.push(await runStep(step, files));
   }
 
-  return failures;
+  return collectOutcomes(outcomes);
 }
 
 async function runConcurrentSteps(
   steps: readonly GateStep[],
   files: Files,
-): Promise<GateFailure[]> {
-  const results = await Promise.all(
+): Promise<StepsOutcome> {
+  const outcomes = await Promise.all(
     iterable.map(steps, (step) => {
       return runStep(step, files);
     }),
   );
 
-  return filter(results, (failure) => failure !== undefined);
-}
-
-// @debt in staged mode the entries are read from the worktree, not from the index the commit records.
-async function measureEntries(
-  config: LoadedConfig,
-  files: Files,
-): Promise<GateWarning[]> {
-  const { root } = config.context;
-
-  const { budgets } = await config.resolve("agents");
-
-  const findings = await Promise.all(
-    files.map((file) => {
-      return measureEditedFile(root, resolveWithin(root, file), budgets);
-    }),
-  );
-
-  const flattened = findings.flat();
-
-  return flattened.length === 0
-    ? []
-    : [
-        {
-          step: "budgets",
-          output: iterable.join(
-            iterable.map(flattened, formatBudgetFinding),
-            "\n",
-          ),
-        },
-      ];
+  return collectOutcomes(outcomes);
 }
 
 async function listSteps(
@@ -252,9 +240,9 @@ async function checkLocalFiles(
   config: LoadedConfig,
   mode: ChangeMode,
   files: Files,
-): Promise<GateFailure[]> {
+): Promise<StepsOutcome> {
   if (mode !== "staged") {
-    return [];
+    return { failures: [], warnings: [] };
   }
 
   const { root } = config.context;
@@ -289,10 +277,10 @@ async function verify(
 
   const files = await listChangedFiles(root, mode);
 
-  const localFailures = await checkLocalFiles(config, mode, files);
+  const local = await checkLocalFiles(config, mode, files);
 
-  if (localFailures.length > 0) {
-    return { failures: localFailures, warnings: [] };
+  if (local.failures.length > 0) {
+    return local;
   }
 
   if (mode === "staged") {
@@ -339,7 +327,9 @@ async function verify(
     warnings,
   } = await listSteps(config, audience);
 
-  const failures = await runSteps(fixes, files);
+  const fixOutcome = await runSteps(fixes, files);
+
+  const failures = [...local.failures, ...fixOutcome.failures];
 
   if (mode === "staged") {
     await runGit(root, ["add", "--", ...files]);
@@ -347,13 +337,23 @@ async function verify(
 
   const verified = await readTreeIdentity(config, mode);
 
-  const [checkFailures, commandFailures, duplicates] = await Promise.all([
+  const [checkOutcome, commandOutcome, warningOutcome] = await Promise.all([
     runConcurrentSteps(checks, files),
     runSteps(commands, files),
     runConcurrentSteps(warnings, files),
   ]);
 
-  failures.push(...checkFailures, ...commandFailures);
+  failures.push(...checkOutcome.failures, ...commandOutcome.failures);
+
+  const duplicates = warningOutcome.failures;
+
+  const stepWarnings = [
+    ...local.warnings,
+    ...fixOutcome.warnings,
+    ...checkOutcome.warnings,
+    ...commandOutcome.warnings,
+    ...warningOutcome.warnings,
+  ];
 
   const current = await readTreeIdentity(config, mode);
 
@@ -364,7 +364,7 @@ async function verify(
   }
 
   if (!agents) {
-    return { failures, warnings: duplicates };
+    return { failures, warnings: [...duplicates, ...stepWarnings] };
   }
 
   if (failures.length === 0) {
@@ -378,7 +378,11 @@ async function verify(
 
   return {
     failures,
-    warnings: [...(await measureEntries(config, files)), ...duplicates],
+    warnings: [
+      ...(await measureEntries(config, files)),
+      ...duplicates,
+      ...stepWarnings,
+    ],
   };
 }
 

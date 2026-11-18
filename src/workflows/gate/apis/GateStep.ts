@@ -13,7 +13,8 @@ export interface GateStep {
   /**
    * Checks or fixes the changed `files`. A result with `ok` false fails the step
    * with its `output`, an exception with its message; `GateStepEntry.stage`
-   * states whether a failing step fails the gate or only warns.
+   * states whether a failing step fails the gate or only warns. Its `warnings`
+   * are reported as a warning whether or not it passed.
    */
   run(files: Files): Promise<GateResult>;
 }

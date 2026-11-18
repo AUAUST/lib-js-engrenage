@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { runSync } from "#project/sync/index";
+import { settleChanges } from "#project/sync/operations/settleChanges";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
@@ -11,7 +13,7 @@ afterEach(() => {
 });
 
 describe("runSyncCheck", () => {
-  test("returns a pnpm warning in its output without writing to the console", async () => {
+  test("passes with a pnpm warning without writing to the console", async () => {
     const stderr = vi
       .spyOn(process.stderr, "write")
       .mockImplementation(() => true);
@@ -34,14 +36,21 @@ describe("runSyncCheck", () => {
       "engrenage.config.ts": "export default {};",
     });
 
-    const { output } = await runSyncCheck(
-      await loadConfig(project.root, {
-        reporter: createTestReporter(),
-      }),
-    );
+    const config = await loadConfig(project.root, {
+      reporter: createTestReporter(),
+    });
 
-    expect(output).toContain("package.json: ");
-    expect(output).toContain("engrenage pnpm upgrade");
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
+
+    const { ok, output, warnings } = await runSyncCheck(config);
+
+    expect(ok).toBe(true);
+    expect(output).toBe("");
+    expect(warnings).toContain("package.json: ");
+    expect(warnings).toContain("engrenage pnpm upgrade");
     expect(stderr).not.toHaveBeenCalled();
     expect(stdout).not.toHaveBeenCalled();
   });

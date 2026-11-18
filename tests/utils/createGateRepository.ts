@@ -2,6 +2,7 @@ import { map } from "@auaust/toolkit/iterable";
 import { record } from "@auaust/toolkit/object";
 
 import { createGitRepository } from "#tests/utils/createGitRepository";
+import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 
 export function createGateRepository(
   commands: readonly string[] = ["echo run >> .runs"],
@@ -13,6 +14,13 @@ export function createGateRepository(
         name: "project",
         type: "module",
         devDependencies: record(map(modules, (name) => [name, "*"])),
+        devEngines: {
+          packageManager: {
+            name: "pnpm",
+            version: `^${readTestPnpmVersions().floor}`,
+            onFail: "download",
+          },
+        },
       }),
       "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
       ".gitignore": "node_modules\n.runs*\n.env.*\n!.env.example\n",

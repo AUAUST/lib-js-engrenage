@@ -7,6 +7,7 @@ import { runSync } from "#project/sync/index";
 import { settleChanges } from "#project/sync/operations/settleChanges";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
+import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runGate } from "#workflows/gate/operations/runGate";
 
 describe("runGate", { timeout: binaryTimeout }, () => {
@@ -256,5 +257,49 @@ describe("runGate", { timeout: binaryTimeout }, () => {
         output: expect.stringContaining("over the backlogEntry budget of 60."),
       },
     ]);
+  });
+
+  test("passes a synced project with a pnpm warning under sync --check", async () => {
+    const { project } = await createGateRepository();
+
+    project.write(
+      "package.json",
+      JSON.stringify({
+        name: "project",
+        type: "module",
+        devDependencies: {
+          prettier: "*",
+          typescript: "*",
+        },
+        devEngines: {
+          packageManager: {
+            name: "pnpm",
+            version: `^${readTestPnpmVersions().previousMajor}`,
+            onFail: "download",
+          },
+        },
+      }),
+    );
+
+    const config = await loadConfig(project.root);
+
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
+
+    loadConfig.refresh(project.root);
+
+    const {
+      failures,
+      warnings,
+    } = await runGate(await loadConfig(project.root), { mode: "worktree" });
+
+    expect(failures).toEqual([]);
+
+    expect(warnings).toContainEqual({
+      step: "sync --check",
+      output: expect.stringContaining("engrenage pnpm upgrade"),
+    });
   });
 });
