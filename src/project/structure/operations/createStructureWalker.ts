@@ -117,6 +117,7 @@ export function createStructureWalker({
             scopes,
             owned,
             structured,
+            source,
             location,
             ...(mirrored === undefined ? {} : { mirrored }),
           }))
@@ -246,7 +247,7 @@ export function createStructureWalker({
     }
 
     if (declared || parent.childKind === "domains") {
-      return domain("config");
+      return domain(declared ? "config" : parent.source);
     }
 
     const probed = await walk(envDirectory, subpath, {
@@ -255,6 +256,7 @@ export function createStructureWalker({
       scopes: parent.scopes,
       owned: parent.owned,
       structured: false,
+      source: "inferred",
       location: locate("namespace"),
     });
 

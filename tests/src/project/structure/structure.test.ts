@@ -391,6 +391,22 @@ describe("structure", () => {
     expect(nodes.get("src/ui/bare")).toMatchObject({
       kind: "unclassified",
     });
+
+    const fromMetadata = await describeSource(declaration, {
+      "src/group/.namespace.json": '{ "children": "domains" }',
+      "src/group/bare/utils/isString.ts": "",
+    });
+
+    expect(fromMetadata.nodes.get("src/group")).toMatchObject({
+      kind: "namespace",
+      childKind: "domains",
+      source: "metadata",
+    });
+
+    expect(fromMetadata.nodes.get("src/group/bare")).toMatchObject({
+      kind: "domain",
+      source: "metadata",
+    });
   });
 
   test("reads role-named directories as domains and namespaces without roles", async () => {

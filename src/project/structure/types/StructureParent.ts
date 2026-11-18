@@ -1,5 +1,6 @@
 import type { RoleLocation } from "#project/roles/index";
 import type { StructureKind } from "#project/structure/types/StructureKind";
+import type { StructureSource } from "#project/structure/types/StructureSource";
 
 export interface StructureParent {
   readonly kind: StructureKind | "root";
@@ -8,6 +9,7 @@ export interface StructureParent {
   readonly scopes: readonly string[];
   readonly owned: readonly string[];
   readonly structured: boolean;
+  readonly source: StructureSource;
   readonly location: RoleLocation;
   readonly mirrored?: {
     readonly environment: string;

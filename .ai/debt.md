@@ -38,12 +38,6 @@ Intake queue of the debt found by `@debt` markers in the code, organised by kind
 - why: the root `structure` needs optionality, so child records also accept `undefined`, resolved as empty namespaces.
 - want: optional only at the root.
 
-## 7. .namespace.json lacks the children option the config accepts
-
-- sites: `src/project/environments/config/schemas/namespaceMetadataSchema.ts:7`
-- why: a namespace classifying its children as domains is declared only in the config.
-- want: accept `children` in `.namespace.json`.
-
 ## 8. Structure types restate schema vocabulary and field names
 
 - sites: `src/project/environments/types/NamespaceDeclaration.ts:6`, `src/project/structure/types/StructureNode.ts:22`, `src/project/structure/types/StructureOptions.ts:20`

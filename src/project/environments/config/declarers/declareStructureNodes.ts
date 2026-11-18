@@ -64,7 +64,11 @@ function declareChildren() {
   };
 }
 
-const fields = freeze({
+const $schema = declare(string(), {
+  optional: { value: undefined },
+});
+
+const namespaceFields = freeze({
   layers: declare(array(string()), {
     description: "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
     optional: { value: undefined },
@@ -77,16 +81,19 @@ const fields = freeze({
     description: "What every child directory of the namespace is: `domains` makes each one a domain, without an `index.ts` or a `domains` entry. Unset, children are classified from their contents.",
     optional: { value: undefined },
   }),
-  namespacePurpose: declare(string(), {
+  purpose: declare(string(), {
     description: "One line stating what the namespace groups.",
     optional: { value: undefined },
   }),
-  domainPurpose: declare(string(), {
-    description: "One line stating the domain's concern.",
-    optional: { value: undefined },
-  }),
+});
+
+const domainFields = freeze({
   specifier: declare(string(), {
     description: "Public specifier of the domain, overriding the one derived from its path.",
+    optional: { value: undefined },
+  }),
+  purpose: declare(string(), {
+    description: "One line stating the domain's concern.",
     optional: { value: undefined },
   }),
   internals: declare(boolean(), {
@@ -110,10 +117,7 @@ const fields = freeze({
 // @debt the root `structure` needs the optionality, so child records also accept `undefined` values, resolved as empty namespaces
 const namespaceNode = declareObject(
   {
-    layers: fields.layers,
-    relation: fields.relation,
-    children: fields.children,
-    purpose: fields.namespacePurpose,
+    ...namespaceFields,
     roles: declareObject(
       {
         enable: declare(array(union([string(), roleSchema.schema])), {
@@ -146,19 +150,17 @@ const namespaceNode = declareObject(
 );
 
 const domainNode = declareObject({
-  specifier: fields.specifier,
-  purpose: fields.domainPurpose,
-  internals: fields.internals,
-  reexport: fields.reexport,
-  collects: fields.collects,
-  public: fields.public,
+  ...domainFields,
   ...declareChildren(),
 });
 
 const nodes = freeze({
   namespace: namespaceNode,
   domain: domainNode,
-  fields,
+  metadata: freeze({
+    namespace: declareObject({ $schema, ...namespaceFields }),
+    domain: declareObject({ $schema, ...domainFields }),
+  }),
 });
 
 export function declareStructureNodes() {

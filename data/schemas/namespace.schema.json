@@ -3,11 +3,8 @@
   "type": "object",
   "properties": {
     "$schema": {
-      "type": "string"
-    },
-    "purpose": {
       "type": "string",
-      "description": "One line stating what the namespace groups.\n@default none"
+      "description": "@default none"
     },
     "layers": {
       "type": "array",
@@ -20,6 +17,15 @@
       "enum": ["peers", "isolated"],
       "type": "string",
       "description": "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.\n@default none"
+    },
+    "children": {
+      "enum": ["domains"],
+      "type": "string",
+      "description": "What every child directory of the namespace is: `domains` makes each one a domain, without an `index.ts` or a `domains` entry. Unset, children are classified from their contents.\n@default none"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "One line stating what the namespace groups.\n@default none"
     }
   },
   "required": [],

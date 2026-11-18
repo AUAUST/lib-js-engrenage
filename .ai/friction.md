@@ -89,3 +89,4 @@
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
 - `engrenage sync agents`: synced edited skill fragments — it rewrote `.codex/agents/*.toml` but left `.claude/skills`, `.claude/agents` and `.agents/skills` stale, reporting them conflicting; full `pnpm engrenage sync` refreshed them
 - walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
+- commit gate tests: init.test.src.ts "setup review is declined" timed out at 5000ms under the gate — passed on retry

@@ -104,6 +104,7 @@ export async function resolveEnvironmentStructure({
           scopes: rootScopes,
           owned: rootScopes,
           structured: false,
+          source: rootDeclaration?.source ?? "inferred",
           location: freeze({
             environment: name,
             lineage: freeze([

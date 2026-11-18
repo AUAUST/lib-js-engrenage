@@ -54,6 +54,7 @@ async function readFileMetadata(
       purpose,
       layers,
       relation,
+      children,
     } = validate(namespaceMetadataSchema, content, file);
 
     return {
@@ -63,6 +64,7 @@ async function readFileMetadata(
         purpose: locate(purpose, file),
         layers: locate(layers, file),
         relation: locate(relation, file),
+        children: locate(children, file),
         specifier: undefined,
         internals: undefined,
         reexport: undefined,
@@ -89,6 +91,7 @@ async function readFileMetadata(
       purpose: locate(purpose, file),
       layers: undefined,
       relation: undefined,
+      children: undefined,
       specifier: locate(specifier, file),
       internals: locate(internals, file),
       reexport: locate(reexport, file),
@@ -127,6 +130,7 @@ function mergeAtPath(
       purpose: fields.purpose ?? next.fields.purpose,
       layers: fields.layers ?? next.fields.layers,
       relation: fields.relation ?? next.fields.relation,
+      children: fields.children ?? next.fields.children,
       specifier: fields.specifier ?? next.fields.specifier,
       internals: fields.internals ?? next.fields.internals,
       reexport: fields.reexport ?? next.fields.reexport,
