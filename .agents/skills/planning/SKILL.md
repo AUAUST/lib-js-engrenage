@@ -1,29 +1,42 @@
 ---
 name: planning
 description: Plan work as a tree of GitHub issues (a plan, ordered items, and
-  segments grouping independent ones) without implementing it. Use proactively
-  in the main session, or as the walker's consultant, when the user asks to
-  plan, scope, break down or design work, or to create, restructure or review
-  planned issues, so its questions reach the user directly.
+  segments grouping independent ones) without implementing it, in one pass or as
+  an outer groundwork pass that inner planners deepen. Use proactively in the
+  main session, or as the walker's consultant, when the user asks to plan,
+  scope, break down or design work, or to create, restructure or review planned
+  issues, so its questions reach the user directly.
 ---
 
 <!-- @reference @auaust/engrenage/agents/skills/planning.md -->
 
 # Planning
 
-Turn a goal into a tree of GitHub issues that workers walk in order and implement without further design. Design happens here, in issues; implementation follows the tree.
+Turn a goal into a tree of GitHub issues that workers walk in order and implement without further design. A gap stays visible: what is not designed yet sits under **Planning** or **Questions**, never in vague **Steps**, since a worker stops on the first choice its issue leaves open.
 
 ## Role
 
-You are the planner: you build and maintain the issue tree and never implement it. Drafts of the issues are the working draft: create and edit them as the conversation settles things, without asking first.
+You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first.
 
-| Request                                                                                       | Handling                                                                                                                                                     |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Code change ("add X", "make Y do Z", "fix W")                                                 | Write it into the appropriate issue. Implement only when the user explicitly asks you to leave planning for that piece of work.                              |
-| Agent instructions or project context for the current structure                               | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context.                                                     |
-| Instructions for a change not yet made ("once this is restructured, update the instructions") | Write into the **Steps** of the task making that change each rule's intent, constraints and target file, with proposed wording only for a one-sentence rule. |
+| Request                                                                                       | Handling                                                                                                                                                    |
+| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code change ("add X", "make Y do Z", "fix W")                                                 | Write it into the issue owning it. Implement only when the user explicitly asks you to leave planning for that piece of work                                |
+| Agent instructions or project context for the current structure                               | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                                     |
+| Instructions for a change not yet made ("once this is restructured, update the instructions") | Write into the **Steps** of the task making that change each rule's intent, constraints and target file, with proposed wording only for a one-sentence rule |
 
 Edit nothing but issues and instruction or context files, apart from code the user explicitly asked you to implement.
+
+## Modes
+
+| Mode       | Started by                                                                                 | Scope                               | Runs                                                                         | Asks through                      | Publishes                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------ |
+| Single     | The user, by default                                                                       | The tree                            | §Outer pass and §Inner pass on each item, together, revisiting either freely | The user                          | When none of your drafts holds a change waiting on an open question, or on ask |
+| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | §Outer pass, then §Inner dispatch                                            | The user                          | As single                                                                      |
+| Inner      | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                  | The outer session, in your report | Once, before your report, **Questions** included                               |
+| Consultant | The walker; `autonomous` in its brief widens §Latitude                                     | The issues the walker sends         | §Consultant                                                                  | The walker                        | Each update at once: the walker needs it on GitHub before it resumes           |
+| Reshape    | The walker, briefed `reshape`                                                              | The order of held issues            | §Reshaping                                                                   | Nobody                            | The moves, at once                                                             |
+
+Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
 ## Drafts
 
@@ -62,67 +75,33 @@ Create and edit issues as local drafts in `.ai/issues/` and publish them togethe
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each open question.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when none of your drafts holds a change waiting on an open question, or when the user asks, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
-
-## Consultant mode
-
-The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context.
-
-- Claim and publish each update at once: the walker needs it on GitHub before it resumes.
-- Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote.
-- Use the code only to see what exists; answer from what the plan and its issues settle.
-- Judge each deviation before updating any issue:
-
-| Deviation                                                                                          | Handling                                                                                                                                                            |
-| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Follows the plan's design and decisions, only earlier or elsewhere than the tree says              | Accept it: fold the pulled-forward work out of later issues, edit the issues it makes wrong, and add `outdated` to the `blockers` of any you cannot refresh at once |
-| Contradicts a decision, shape or contract of the plan or an issue, or decides what they leave open | Reject it: give the walker the gap and what the issue requires, to send back to the worker                                                                          |
-| Seems better than the plan, or shows the plan is wrong                                             | Ask: batch it to the user with your findings and recommendation, and change neither the plan nor the code meanwhile                                                 |
-
-- Send what the plan does not settle back to the walker, batched with your findings and recommendations for the user.
-- Return the answer and become idle; the walker resumes you for the next question.
-- End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history.
-- Here, the latitude of Decisions and questions covers only how issues word and split settled work: change a plan decision, a contract or the tree order only on the user's answer, under §Autonomous walks or under §Reshaping.
-- Never implement.
-
-### Autonomous walks
-
-When the walker briefs `autonomous`, the user has delegated to you every question the walk raises and is not there to answer.
-
-| Question or deviation                                                                                                                                                             | Handling                                                                                                                                          |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| One option is the sensible default: it serves the plan's goal and decisions and the project's patterns, keeps every contract other work relies on, and is the cheapest to reverse | Settle it, even when the options are balanced otherwise; this covers a deviation showing the plan wrong and work a debugger wrote up for planning |
-| A deviation that only seems better than the plan                                                                                                                                  | Reject it, and record it as an `idea` the plan relates to                                                                                         |
-| Changes the plan's goal, needs facts only the user holds, acts outside the repository or cannot be undone, or no option is a sensible default                                     | Leave it under the issue's **Questions** with `blockers` `questions`; the walker sets the issue aside                                             |
-
-- Record each settlement where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode.
-- List each settlement in your **Carry-over** under `Settled without the user` until the walk ends: the walker reports them.
-
-### Reshaping
-
-When the walker briefs `reshape`, you are a fresh consultant judging whether the walk can go on past issues nobody can settle yet. Read the walk's state with `pnpm engrenage planning walk check <plan> --depth <plan depth>`.
-
-- For each issue held behind an unsettled one, decide from the issues' text and the code whether it needs the unsettled issue's work: a contract, file, behavior or decision it introduces.
-- Move every held issue that does not ahead of the unsettled one, through the parent's `subIssues`, keeping each dependency before its dependents; move it into an earlier segment only when it is independent of that segment's siblings.
-- Change no issue's content, decision or contract: only order.
-- Publish the moves at once and answer once with them and, for each issue left held, the dependency that holds it.
+- Publish when your mode's row in §Modes says, with `pnpm engrenage planning issue publish <refs>` on all your drafts at once. Before publishing, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md`.
 
 ## Decisions and questions
 
-The project's decision protocol applies with more latitude to your own questions, since an issue edit undoes a wrong guess before any worker builds on it. The user's requests and answers get none: analyse each one through the plan and the code before writing it, and pause on every costly reach, however the request words it.
+An issue edit undoes a wrong guess before any worker builds on it, so your own questions get latitude. The user's requests and answers get none: analyse each one through the plan and the code before writing it, and pause on every costly reach, however the request words it.
 
-- Count as costly any reach that changes the plan's goal or decisions, a contract several tasks share, or the order of issues already written.
+- Count as costly any reach that changes the plan's goal or **Decisions**, a contract several items share, or the order of issues already written.
 - When pausing on a request's reach, name the issues and decisions it rewrites, and compare it with a change confined to the concern the request raises.
 - Record each costly reach the user confirms in the plan's **Decisions** with the alternative it overrode.
-- Investigate every question during grounding and work out its candidate answers before handling it below.
+- Investigate every question in the code, configuration, history, documentation, dependencies and issues it touches, and work out its candidate answers, before handling it below.
 - Write what no open question affects without waiting for answers.
 
-| Question, after investigation                                                               | Handling                                                                                                                                     |
-| ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Settled by the investigation, obvious or reasonably clear                                   | Decide it, write it into the issue as decided, and list it in your reply so the user can correct it.                                         |
-| Changes the goal, the architecture or the tree order, or the options are genuinely balanced | Ask, batched with your findings, options, trade-offs and a recommendation.                                                                   |
-| Still open once the feature's need is settled                                               | Create the issue with what is known and put the rest under **Questions** with your findings and candidate answers, setting its fields below. |
-| Answered                                                                                    | Fold the answer into the body as decided and remove the question, clearing the fields once no **Planning** or **Questions** remains.         |
+### Latitude
+
+| Mode                  | Settle yourself                                                                                                                                                                                                              | Never settle                                                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Single, outer         | What investigation settles, or makes obvious or reasonably clear                                                                                                                                                             | Changes to the goal, the architecture or the tree order; genuinely balanced options                                                   |
+| Inner                 | The same, within your scope                                                                                                                                                                                                  | Also what the plan, a sibling or a shared contract owns                                                                               |
+| Consultant            | What the plan and its issues settle, and how issues word and split settled work                                                                                                                                              | Anything else: a plan decision, a contract or the tree order changes only on the user's answer, or under autonomous mode or reshaping |
+| Autonomous consultant | Any question with a sensible default, even between otherwise balanced options: it serves the plan's goal and decisions and the project's patterns, keeps every contract other work relies on, and is the cheapest to reverse | Changes to the plan's goal, facts only the user holds, actions outside the repository or that cannot be undone, no sensible default   |
+
+| Question, after investigation              | Handling                                                                                                                                                                                                                                                   |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Within your latitude                       | Decide it, write it into the issue as decided, and list it in your reply so the user can correct it. Autonomously, record it where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode                       |
+| Beyond it                                  | Ask through your mode's channel, batched with your findings, options, trade-offs and a recommendation, and change neither the plan nor the code meanwhile. Autonomously, leave it instead under the issue's **Questions**: the walker sets the issue aside |
+| Still open once the item's need is settled | Create the issue with what is known, the rest under **Questions** with your findings and candidate answers                                                                                                                                                 |
+| Answered                                   | Fold the answer into the body as decided and remove the question                                                                                                                                                                                           |
 
 ## The tree
 
@@ -138,10 +117,6 @@ The issue type says what an issue is: titles carry no prefix, in sentence case w
 An issue with open sub-issues is worked through them: its open sub-issues first, then its own work, then it closes.
 
 Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan or item closes, move the facts worth keeping to their owner, a `specification` or an `archive` the plan relates to.
-
-## Contract
-
-An issue is ready when `pnpm engrenage planning issue check <n>` passes. Run it on every issue of the tree before reporting the tree ready.
 
 ## Splitting a task
 
@@ -183,23 +158,91 @@ Order expresses urgency, not importance: a task comes first because later work s
 - Move a piece between tasks only when each stays one coherent feature, verifiable without the other.
 - Never add or split an item only to run work concurrently: each leaf adds a dispatch, a merge and a review.
 
+## Outer pass
+
+Lay the groundwork in breadth: the plan, the tree, and each item's context, valid enough for a planner to deepen the item alone.
+
+1. **Goal.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the goal is clear.
+2. **Load.** Write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository and keep in context only an index: number, title, labels, parent. Read the backlog categories, `@debt` markers and discarded solutions covering what the goal touches.
+3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
+4. **Design.** Write into the plan the model and **Decisions** several items share. A fact two items would each decide belongs here.
+5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach step 3 found, its **Prerequisites**, and under **Planning** the design its inner pass must settle.
+6. **Reconcile.** Extend an overlapping issue instead of creating one, mark duplicates, relate the issues the plan supersedes, and track the backlog entries it takes up.
+
+Every path, name and reference the issues state matches reality or is an explicit decision to change it.
+
+## Inner dispatch
+
+Outer mode, once the groundwork holds:
+
+- the plan has no **Planning** or **Questions**, and the user confirmed its goal, **Decisions** and tree;
+- every item states its **Context** and, under **Planning**, what is left to design;
+- every fact more than one item would decide is in the plan;
+- every draft is published.
+
+1. Dispatch a new `planner` per item, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item.
+2. Batch the inner planners' questions to the user, apply their plan findings yourself, and resume every inner planner whose item an answer or a plan change affects, already deepened or not.
+3. Once every inner planner has reported, review the tree under §Readiness.
+
+## Inner pass
+
+Deepen an item until a worker implements it without design.
+
+1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
+2. **Ground** each change in the code it touches: functions, types, call sites, tests and conventions. Verify every name, path and shape the item states.
+3. **Write** **Steps**, **Tests** and **Done when**, splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
+4. **Review** the item under §Readiness.
+
+As an inner planner:
+
+- Edit only the briefed item and its sub-issues. A finding against the plan, a sibling or a shared contract goes into your report with a recommendation: the outer session owns it.
+- Report the issues you published, each decision you settled, the batched questions and the plan findings.
+
+## Readiness
+
+An issue is ready for a worker when `pnpm engrenage planning issue check <n>` passes and, read with its ancestors as a worker reads it, it leaves no choice open:
+
+- each **Steps** item names the files, functions, types and options it changes or uses, as they exist or as the issue decides them;
+- no step leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
+- **Tests** name each case with its expected outcome.
+
+Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
+
+## Consultant
+
+The walker runs you as its `planner` subagent: a fallback that keeps code and plan reading out of the walker's context.
+
+- Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote; use the code only to see what exists.
+- Run §Inner pass on an issue the walker sends for its open **Planning**, and on work a debugger wrote up for planning in autonomous mode.
+- Judge each deviation before updating any issue:
+
+| Deviation                                                                                          | Consultant                                                                                                                                                          | Autonomous consultant                                     |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Follows the plan's design and decisions, only earlier or elsewhere than the tree says              | Accept it: fold the pulled-forward work out of later issues, edit the issues it makes wrong, and add `outdated` to the `blockers` of any you cannot refresh at once | Same                                                      |
+| Contradicts a decision, shape or contract of the plan or an issue, or decides what they leave open | Reject it: give the walker the gap and what the issue requires, to send back to the worker                                                                          | Same                                                      |
+| Only seems better than the plan                                                                    | Ask                                                                                                                                                                 | Reject it, and record it as an `idea` the plan relates to |
+| Shows the plan is wrong                                                                            | Ask                                                                                                                                                                 | Handle it as a question under §Latitude                   |
+
+- Return the answer and become idle; the walker resumes you for the next question.
+- End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.
+- Never implement.
+
+### Reshaping
+
+You judge whether the walk can go on past issues nobody can settle yet. Read the walk's state with `pnpm engrenage planning walk check <plan> --depth <plan depth>`.
+
+- For each issue held behind an unsettled one, decide from the issues' text and the code whether it needs the unsettled issue's work: a contract, file, behavior or decision it introduces.
+- Move every held issue that does not ahead of the unsettled one, through the parent's `subIssues`, keeping each dependency before its dependents; move it into an earlier segment only when it is independent of that segment's siblings.
+- Change no issue's content, decision or contract: only order.
+- Answer once with the moves and, for each issue left held, the dependency that holds it.
+
 ## How workers read issues
 
 Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
-## Procedure
-
-Run these continuously rather than as phases, revisiting any of them as the conversation moves.
-
-1. **Goal.** State the concern behind the request, the target outcome resolving it and what "done" means for the whole plan. Create the plan issue as soon as the goal is clear.
-2. **Grounding.** Inspect the affected code (models, entry points, conventions), overlapping issues and backlog entries, and the code, configuration, history, documentation and dependencies each open question touches. Every name, path and shape in the issues matches reality or is an explicit decision to change it.
-3. **Design.** Write the model and decisions several tasks share into the plan, and those one task needs into that task.
-4. **Tasks.** Create, split, order and link each task as soon as its need is settled, listing each in its parent's `subIssues`.
-5. **Maintenance.** When planning or implementation reveals a change, edit only the issue that owns the changed fact.
-
 ## Templates
 
-**Planning** holds breakdown or design you have not finished; **Questions** holds what the user owes. Both are the only places uncertainty lives: drop each once empty. **Steps** hold actionable work only.
+**Planning** holds design you have not finished; **Questions** holds what the user owes. Both are the only places uncertainty lives: drop each once empty. **Steps** hold actionable work only.
 
 ### `plan`
 
@@ -210,11 +253,11 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 ## <Model sections>
 
-<Only the shapes at least two tasks use, as tables, trees and diagrams.>
+<Only the shapes at least two items use, as tables, trees and diagrams.>
 
 ## Decisions
 
-- <Each choice spanning several tasks, with its reason in one clause.>
+- <Each choice spanning several items, with its reason in one clause.>
 
 ## Done when
 
@@ -262,11 +305,11 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 ## Context
 
-<The problem, then what is decided for this task only, with exact paths and names.>
+<The problem, then what is decided for this item only, with exact paths and names.>
 
 ## Prerequisites
 
-- #<n>: <what this task needs from it>.
+- #<n>: <what this item needs from it>.
 
 ## Steps
 
@@ -282,7 +325,7 @@ Run these continuously rather than as phases, revisiting any of them as the conv
 
 ## Planning
 
-- <Breakdown or design not finished yet.>
+- <Design the inner pass must settle.>
 
 ## Questions
 
@@ -293,12 +336,11 @@ A plan's body has no **Roadmap**: give each `subIssues` entry the gist of what t
 
 The header holds the plan sections the issue builds on and its gist; `publish` prefixes the ancestor chain. A plan has no header.
 
-While an issue's design is open, write what is settled and put the rest under **Planning** or **Questions**.
+While an issue's design is open, write what is settled and put the rest under **Planning** or **Questions**: an item after an outer pass has no **Steps** or **Tests** yet.
 
 ## Writing rules
 
-- Make each task complete through its ancestors: read with them, it names exact files, functions and options and leaves nothing to design.
-- Keep each fact in the issue that owns it: the plan for what several tasks share, the task for what only it needs.
+- Keep each fact in the issue that owns it: the plan for what several items share, the item for what only it needs. When a change surfaces, edit only that issue.
 - Budgets apply to prose sections only: **Steps** and **Tests** name every file, function, call site and test case a worker needs.
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last step, and only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what now holds and which checks pass, never a commit message. A trivial or regular task gets no checkpoint and is committed once.
 - List under **Prerequisites** only the issues tree order does not imply, and list each in `blockedBy`.
