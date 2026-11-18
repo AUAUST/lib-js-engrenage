@@ -370,6 +370,12 @@ export interface AuaustRules {
    */
   "auaust/no-useless-promise-resolve-reject"?: Rule<[]>;
   /**
+   * Disallow redundant return statements
+   *
+   * @see https://eslint.org/docs/latest/rules/no-useless-return
+   */
+  "auaust/no-useless-return"?: Rule<[]>;
+  /**
    * Disallow useless `undefined`.
    *
    * @see https://github.com/sindresorhus/eslint-plugin-unicorn/blob/v79.0.0/docs/rules/no-useless-undefined.md

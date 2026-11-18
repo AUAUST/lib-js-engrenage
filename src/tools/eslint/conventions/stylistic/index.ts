@@ -16,6 +16,7 @@ export { default as noIdenticalFunctions } from "#tools/eslint/conventions/styli
 export { default as noRedundantTypes } from "#tools/eslint/conventions/stylistic/noRedundantTypes";
 export { default as noReturnUndefined } from "#tools/eslint/conventions/stylistic/noReturnUndefined";
 export { default as noUnnecessaryTypeParameters } from "#tools/eslint/conventions/stylistic/noUnnecessaryTypeParameters";
+export { default as noUselessReturn } from "#tools/eslint/conventions/stylistic/noUselessReturn";
 export { default as noUselessUndefined } from "#tools/eslint/conventions/stylistic/noUselessUndefined";
 export { default as numericSeparators } from "#tools/eslint/conventions/stylistic/numericSeparators";
 export { default as objects } from "#tools/eslint/conventions/stylistic/objects";

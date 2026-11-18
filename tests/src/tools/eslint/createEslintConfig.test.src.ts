@@ -714,6 +714,22 @@ export function tail(ready: boolean, log: () => void) {
     ]);
   });
 
+  test("keeps a catch's only return and every return await inside try", async () => {
+    const eslint = await getLinter({ typeAware: true }, true);
+
+    const [result] = await eslint.lintFiles(["src/catches.ts"]);
+
+    const output = result?.output ?? "";
+
+    expect(output).toContain("} catch {\n    return;\n  }");
+
+    expect(output).toContain("return await (read() as unknown as string);");
+
+    expect(map(result?.messages ?? [], (message) => message.ruleId)).toEqual([
+      "auaust/await-thenable",
+    ]);
+  });
+
   test("reports unbraced case statements unless disabled", async () => {
     const source = `export function pick(value: string): number {
   switch (value) {

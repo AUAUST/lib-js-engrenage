@@ -56,7 +56,6 @@ export const coreRules = freeze({
   "no-unmodified-loop-condition": "error",
   "no-unreachable-loop": "error",
   "no-useless-rename": "error",
-  "no-useless-return": "error",
   "prefer-object-has-own": "error",
   "radix": "error",
 } as const satisfies CoreRules);
