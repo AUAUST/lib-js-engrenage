@@ -8,10 +8,10 @@ Shared agent instructions, skills and the backlog conventions.
 - why: `markdownBlocks` describes the syntax; a rule file at the wanted path without its reference silently drops the rule.
 - want: #442: one marker grammar owned by extensions; sync reports conflicts.
 
-## 2. The issue-drafts protocol is copied in three skills
+## 2. The issue-drafts rules have three diverging copies, and the curator loads the planner for them
 
-- why: since AUAUST/lib-js-engrenage#461, the Drafts sections of `debugging.md`, `planning.md` and `analysis.md` share their file, manifest and reference tables and their rules word for word; only the opening sentence differs, and every change must be made three times.
-- want: one source each skill opts into, per #277 (skill traits).
+- why: §Drafts of `analysis.md`, `debugging.md`, `planning.md` differ (publish trigger, "keep analysing"); `curation.md` › File cites the `planning` skill. A nested `@reference` ends the skill's block.
+- want: one source synced into every drafting skill, per #277; fallback: an always-loaded rule, ~35 lines per session.
 
 ## 3. The walked agents' skills repeat their gated finishing lines word for word
 
