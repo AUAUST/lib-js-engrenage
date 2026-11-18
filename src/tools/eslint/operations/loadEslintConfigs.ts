@@ -15,7 +15,6 @@ const loadedConfigsSchema = array(
   custom<Config>(isPlainObject, "Expected an ESLint config object"),
 );
 
-// @debt imports `eslint.config.ts` through c12 while ESLint itself now imports it with Node's native type stripping, so a config only one loader accepts behaves differently in the lint hook and in the CLI or editor
 /**
  * Loads the project's ESLint config array; without a config file, builds
  * engrenage's default config instead.

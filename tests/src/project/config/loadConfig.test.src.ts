@@ -230,6 +230,20 @@ describe("loadConfig", () => {
     );
   });
 
+  test("loads a TypeScript config importing a relative module with its extension", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "type": "module" }',
+      "helper.ts": 'export const preset: string = "library";\n',
+      "engrenage.config.ts": 'import { preset } from "./helper.ts";\n\nconst config: { preset: string } = { preset };\n\nexport default config;\n',
+    });
+
+    const config = await loadConfig(project.root);
+
+    expect(await config.resolve("preset")).toMatchObject({
+      name: "library",
+    });
+  });
+
   test("returns the same config until refreshed, then reads the edited config file", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "type": "module" }',
