@@ -33,29 +33,32 @@ export type * from "#project/roles/ports/RoleRuleModule";
 // @end
 
 // @barrel utils
-export { actions } from "#project/roles/utils/actions";
-export { adapters } from "#project/roles/utils/adapters";
-export { commands } from "#project/roles/utils/commands";
-export { components } from "#project/roles/utils/components";
-export { constants } from "#project/roles/utils/constants";
-export { contexts } from "#project/roles/utils/contexts";
 export { createRolePreset } from "#project/roles/utils/createRolePreset";
-export { declarations } from "#project/roles/utils/declarations";
-export { entrypoint } from "#project/roles/utils/entrypoint";
-export { enums } from "#project/roles/utils/enums";
-export { errors } from "#project/roles/utils/errors";
-export { executable } from "#project/roles/utils/executable";
-export { fixtures } from "#project/roles/utils/fixtures";
-export { hooks } from "#project/roles/utils/hooks";
-export { index } from "#project/roles/utils/index";
-export { operations } from "#project/roles/utils/operations";
-export { pages } from "#project/roles/utils/pages";
-export { ports } from "#project/roles/utils/ports";
 export { role } from "#project/roles/utils/role";
-export { schemas } from "#project/roles/utils/schemas";
-export { styles } from "#project/roles/utils/styles";
-export { testsetup } from "#project/roles/utils/testsetup";
-export { testutils } from "#project/roles/utils/testutils";
-export { types } from "#project/roles/utils/types";
-export { utils } from "#project/roles/utils/utils";
+// @end
+
+// @barrel presets
+export { actions } from "#project/roles/presets/actions";
+export { adapters } from "#project/roles/presets/adapters";
+export { commands } from "#project/roles/presets/commands";
+export { components } from "#project/roles/presets/components";
+export { constants } from "#project/roles/presets/constants";
+export { contexts } from "#project/roles/presets/contexts";
+export { declarations } from "#project/roles/presets/declarations";
+export { entrypoint } from "#project/roles/presets/entrypoint";
+export { enums } from "#project/roles/presets/enums";
+export { errors } from "#project/roles/presets/errors";
+export { executable } from "#project/roles/presets/executable";
+export { fixtures } from "#project/roles/presets/fixtures";
+export { hooks } from "#project/roles/presets/hooks";
+export { index } from "#project/roles/presets/index";
+export { operations } from "#project/roles/presets/operations";
+export { pages } from "#project/roles/presets/pages";
+export { ports } from "#project/roles/presets/ports";
+export { schemas } from "#project/roles/presets/schemas";
+export { styles } from "#project/roles/presets/styles";
+export { testsetup } from "#project/roles/presets/testsetup";
+export { testutils } from "#project/roles/presets/testutils";
+export { types } from "#project/roles/presets/types";
+export { utils } from "#project/roles/presets/utils";
 // @end

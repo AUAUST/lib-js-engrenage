@@ -1,7 +1,6 @@
 import { executableRoleName } from "#project/roles/constants";
 import { createRolePreset } from "#project/roles/utils/createRolePreset";
 
-// @debt a role preset, not a utility: it likely belongs in a role directory of its own rather than among `utils`
 /**
  * Preset of the role of `executable.ts` files; structure reads a program's
  * executable from it.

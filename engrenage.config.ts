@@ -89,14 +89,18 @@ const config = role({
   ],
 });
 
-// @debt redefined only to give `adapters` an effect level; the preset should carry it, as it does for every other role
-const rankedAdapters = role(adapters({ effects: "effectful" }));
-
 const setup = role({
   name: "setup",
   purpose: "Init steps and sync targets of the domain.",
   exports: "named-match",
   effects: "effectful",
+});
+
+const presets = role({
+  name: "presets",
+  purpose: "Presets of the domain's declarations, one per module.",
+  exports: { values: "named-match", types: "none" },
+  effects: "confined",
 });
 
 const plugins = role({
@@ -137,7 +141,7 @@ const codeRoles = [
   enums(),
   ports(),
   apis(),
-  rankedAdapters,
+  adapters(),
   config,
   setup,
   plugins,
@@ -175,7 +179,7 @@ export default defineConfig({
       enums(),
       ports(),
       apis(),
-      rankedAdapters,
+      adapters(),
       fixtures(),
       testsetup(),
       config,
@@ -198,7 +202,7 @@ export default defineConfig({
   },
   src: {
     node: 24,
-    roles: [index(), entrypoint(), extension(), ...codeRoles],
+    roles: [index(), entrypoint(), extension(), ...codeRoles, presets],
     // @debt `./config/constants` resolves to `project/config` while `./config` is `workflows/config`, and the constants of the internal domains jscpd, lefthook and shopify are hand-listed
     exports: {
       "./config/constants": "src/project/config/constants.ts",
