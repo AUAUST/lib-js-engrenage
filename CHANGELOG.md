@@ -1,5 +1,270 @@
 # @auaust/engrenage
 
+## 0.15.0
+
+### Minor Changes
+
+- [`e651b40`](https://github.com/AUAUST/lib-js-engrenage/commit/e651b40ab6a4d6331f42b4cb622174987a69b88d) Thanks [@apademide](https://github.com/apademide)! - - Rank the `adapters` role preset `effectful`, so projects drop their `adapters({ effects: … })` override
+  - Report runtime imports of unranked roles from adapters
+
+- [`cb0da4c`](https://github.com/AUAUST/lib-js-engrenage/commit/cb0da4c217e2bfafa13334381b44d6c864c5f848) Thanks [@apademide](https://github.com/apademide)! - - Add an `autonomous` walk mode: the consultant settles questions with a sensible default and the walker sets aside what it cannot settle, without asking the user
+  - Let the integration merger review each leaf against its issue, so the walker reads no diff when a merger runs
+  - Return a leaf's merger findings and review gaps in one resume, and keep walked agents' reports to one line per item
+  - Add `walk check --depth <n|all>`, holding nested plans past that depth out of the ready set, and a walk depth mode
+  - Default the walk pool to 3 leaves, also set by `K = <n>`
+  - Reshape the tree around an issue nobody can settle, through a fresh consultant moving independent issues ahead of it
+
+- [`aaec29b`](https://github.com/AUAUST/lib-js-engrenage/commit/aaec29bf00b31e40e2d0ee6ea5522ef742264a8e) Thanks [@apademide](https://github.com/apademide)! - - Merge the `agent-friction`, `debt-markers` and `discarded-solutions` rules into `agent-records`; sync migrates existing rule files
+  - Support `formerly` on agent rules, so sync renames and merges a project's former rule files
+  - Load the `project-map` rule only for files of the mapped environments
+  - Move the instruction-writing rules and the word budgets out of `AGENTS.md` into the path-scoped `instructions` and `budgets` rules
+  - Condense the Precedence, Decision protocol, Analysis and Implementation sections
+
+- [`d041a67`](https://github.com/AUAUST/lib-js-engrenage/commit/d041a6720e069d7b750a3c2f8b2b6288c33bafc6) Thanks [@apademide](https://github.com/apademide)! - - Replace the `scratchpad`, `debt-harvesting` and `backlog-handling` skills and their `scratcher`, `banker` and `backlogger` agents with one `curation` skill and its gated `curator` agent, which also harvests code clones and friction and reconciles the backlog with open issues
+  - Drop the debt backlog `.ai/debt.md` and the `budgets.debtEntry` config key: debt entries go to the backlog category owning the code
+  - Allow any gated agent role in Codex profiles
+
+- [`30bcc4d`](https://github.com/AUAUST/lib-js-engrenage/commit/30bcc4de53ac47b05b9f2d2ffba8f6ee72bacdd0) Thanks [@apademide](https://github.com/apademide)! - **Breaking:** primitive-kit support is removed. The `prefer-primitive-kit.md` agent rule leaves consumers' synced rules, `prefer-toolkit.md` no longer mentions primitive-kit, and the `noPrimitiveKitRoot` ESLint convention is gone: remove it from `performance` options.
+
+- [`f472e27`](https://github.com/AUAUST/lib-js-engrenage/commit/f472e27c175a38a6d96a4175f7e723a3424aaa53) Thanks [@apademide](https://github.com/apademide)! - - Require a reporter in the context of sections resolving list options
+  - Report config warnings through the config's reporter instead of the console
+  - Warn about a missing engrenage config on each read without a config file
+
+- [`57760a4`](https://github.com/AUAUST/lib-js-engrenage/commit/57760a4a21baf3fbbcf1f002087e6f5886c2e342) Thanks [@apademide](https://github.com/apademide)! - - Give each environment default roles, refined by the project's traits
+  - Extend the default roles with a config `roles` list, a listed role replacing the default of its name
+  - Add `omitRoles` to drop a default role of an environment
+  - Stop writing role lists in the config `init` creates
+
+- [`e7318fb`](https://github.com/AUAUST/lib-js-engrenage/commit/e7318fb9025212e3f6f08d7faa17fbf3fd560178) Thanks [@apademide](https://github.com/apademide)! - - Report JSDoc blocks that state a thrown error in prose without a `@throws` tag
+
+- [`7204d14`](https://github.com/AUAUST/lib-js-engrenage/commit/7204d14f959f1d970a1737a12be93bcc699fefe6) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage gate --all`, checking the whole project without fixing anything
+  - Write `engrenage gate --all` as the `ci:check` script on init; replace a hand-written `ci:check` with it, since init never overwrites an existing script
+  - Let extensions give a gate step a `check` run by `gate --all`
+
+- [`b0be187`](https://github.com/AUAUST/lib-js-engrenage/commit/b0be1877ed96822dc52db8b20bea0f06a629e0c2) Thanks [@apademide](https://github.com/apademide)! - - Rename `github.protocol` to `github.contract`
+  - Rename `issueProtocolSchema` to `contractNamesSchema` and the `IssueProtocol` type to `ContractNames`
+
+- [`74fac84`](https://github.com/AUAUST/lib-js-engrenage/commit/74fac844d702237b2b1a6eb8da52290c0579848e) Thanks [@apademide](https://github.com/apademide)! - - Deny agents' `gh issue create` in favor of planning drafts, which set the issue type and fields
+
+- [`690017e`](https://github.com/AUAUST/lib-js-engrenage/commit/690017ef9461dcbda2fb74577f1bcfc7d71057f8) Thanks [@apademide](https://github.com/apademide)! - - Add the `github.planning` option, on by default when `repository` in package.json names a GitHub repository
+  - Add `when: { config }` extension activation by a config key resolving to `true`
+  - Drop the GitHub snapshot, the planning sheet and the `planning`, `walking`, `issue-implementation` and `merging` skills from projects without GitHub planning
+
+- [`9a1d5d9`](https://github.com/AUAUST/lib-js-engrenage/commit/9a1d5d903747e24b4183a2167e99ed04427d0521) Thanks [@apademide](https://github.com/apademide)! - - Fill `.gitignore` and `.prettierignore` blocks through `engrenage sync blocks`, which replaces the `gitignore` and `prettierignore` targets
+  - Remove `syncGitignoreFile` and `syncPrettierignoreFile` exports
+
+- [`85a1e37`](https://github.com/AUAUST/lib-js-engrenage/commit/85a1e3757a41bde7319a7f66887d3ebf51f7036d) Thanks [@apademide](https://github.com/apademide)! - - Remove `./config/constants`, `./jscpd/constants`, `./lefthook/constants` and `./shopify/constants`, with no replacement: their values stay internal
+
+- [`7391443`](https://github.com/AUAUST/lib-js-engrenage/commit/739144363fcc4ca3aa7beab2e7b1eefa9d35a52c) Thanks [@apademide](https://github.com/apademide)! - - Move the ready-made Prettier config to `@auaust/engrenage/prettier/config`; `@auaust/engrenage/prettier` no longer has a default export
+  - Point a `package.json` `prettier` key set to `@auaust/engrenage/prettier` to the new subpath on sync
+
+- [`60f5951`](https://github.com/AUAUST/lib-js-engrenage/commit/60f5951bd3c9b80ac5830079d748cdba37cf2ede) Thanks [@apademide](https://github.com/apademide)! - Roles take `surface`: `barrel` reaches their modules through the domain index, `modules` lets other domains import them directly. Unset, a directory role without `file` or `index` defaults to `modules` in projects without the `published` trait, whose index files no longer list it.
+
+- [`5be8cb0`](https://github.com/AUAUST/lib-js-engrenage/commit/5be8cb008951834b279f8354d730f932c299686e) Thanks [@apademide](https://github.com/apademide)! - - Add `.at(root)` to every `define…Config` definer, loading the config of the project holding `root`, a directory or a file URL
+  - Root generated ESLint, tsdown, Vite and Vitest configs at their own file
+  - Migrate existing config files by hand: `defineEslintConfig(…)` → `defineEslintConfig.at(import.meta.url)(…)`
+
+- [`7417d73`](https://github.com/AUAUST/lib-js-engrenage/commit/7417d7302342eebf8f6b3951cd45d3c965b6334d) Thanks [@apademide](https://github.com/apademide)! - - Fail `engrenage structure --check` on namespace and domain declarations the walk never reaches
+
+- [`a027526`](https://github.com/AUAUST/lib-js-engrenage/commit/a02752613e946e3a98404f75247cbd4832dd78b8) Thanks [@apademide](https://github.com/apademide)! - - Let extensions declare block directives (`owns.directives`) and line markers (`owns.markers`), filled by the new `blocks` sync target, which replaces `barrel-blocks`
+  - Fail `sync` on an unknown `@` marker in a file a directive scans, naming the file and line
+  - Add a `fill` sync stage between `write` and `check`
+
+- [`51e6645`](https://github.com/AUAUST/lib-js-engrenage/commit/51e6645f5e566835a9cbe8afbdf18da59ecd65d2) Thanks [@apademide](https://github.com/apademide)! - - Forbid tests of dist from importing environments that consume source
+
+- [`89c9866`](https://github.com/AUAUST/lib-js-engrenage/commit/89c98660945ed31a884ae2646914cc1605519891) Thanks [@apademide](https://github.com/apademide)! - - Require tsdown `^0.23.5`: older releases lose eager declaration loading
+
+- [`d75cbcf`](https://github.com/AUAUST/lib-js-engrenage/commit/d75cbcfd68e03c2de5f98b5b25b8793b24d43328) Thanks [@apademide](https://github.com/apademide)! - - Default Vitest `isolate` to `true`
+  - Replace Vitest `guardOutDir` by `plugins`, switching each built-in plugin by name
+  - Add Vitest `setupFiles` to the discovered setup files
+  - Keep collecting Vitest's default test extensions in libraries
+
+### Patch Changes
+
+- [`d077473`](https://github.com/AUAUST/lib-js-engrenage/commit/d077473c8ddfb3d7491c33cb49a17f46ae2a9547) Thanks [@apademide](https://github.com/apademide)! - - Remove the tsconfig files of environments without files on sync
+  - Include `env.d.ts` in tsconfigs only when it exists
+
+- [`d55941f`](https://github.com/AUAUST/lib-js-engrenage/commit/d55941fb9bf90081b839fd2e7a3827b4ba19338a) Thanks [@apademide](https://github.com/apademide)! - - Add an `@agent-limits` filler rendering each agent's efforts and freshness from skill frontmatter
+
+- [`e146002`](https://github.com/AUAUST/lib-js-engrenage/commit/e146002df57c665c6c168064db5e73fd9769be7c) Thanks [@apademide](https://github.com/apademide)! - - Commit settled work by default in the `git` rule, leaving it uncommitted only while a question on it is pending
+  - Write the `git` commit rules, the Shell section and the Verification section as tables
+  - Leave JSDoc requirements to the `documented` lint rule, and drop the code-comment word budget
+  - Ask for the project maps when designing as well as editing
+  - Load the `instructions` rule for backlog entries and Codex files too
+
+- [`4e53a63`](https://github.com/AUAUST/lib-js-engrenage/commit/4e53a630f373168dc83dc6168a625f897d911255) Thanks [@apademide](https://github.com/apademide)! - - Add the Environment and Shell agent sections, with the commands agents run and the shell traits they hit
+  - Write engrenage commands as `pnpm engrenage <command>` in agent instructions
+  - Add the two sections to an existing `AGENTS.md` with `@reference` markers for `agents/sections/environment.md` and `agents/sections/shell.md`
+
+- [`b366aec`](https://github.com/AUAUST/lib-js-engrenage/commit/b366aec838b0039515dc5b1c036ac7f05ed4bc58) Thanks [@apademide](https://github.com/apademide)! - - Run the `analysis` skill and the analyser agent only when the user asks for them
+
+- [`58876fe`](https://github.com/AUAUST/lib-js-engrenage/commit/58876fe6a8d366623494bbda45986e5162a4f9bb) Thanks [@apademide](https://github.com/apademide)! - - Move a leaf the walker sets aside to its own `worker/issue-<n>` or `debugger/issue-<n>` branch, so the walk goes on from a clean tree
+  - Let the walker dispatch consultant-ready issues as they appear and count each inner planner resume against the planning pool
+  - Let inner, consultant and reshape planners publish without reporting each diff first
+
+- [`6c4dc44`](https://github.com/AUAUST/lib-js-engrenage/commit/6c4dc44bc862de503ad60846afec686511e31a47) Thanks [@apademide](https://github.com/apademide)! - - Load the `changesets` rule in every session, so its rules apply before an agent creates a changeset
+  - Let a worker or debugger dispatched without a walker commit its settled work, signalled by a `Walk:` brief line
+  - Cap a walker's resumes of a leaf's agent at two per gate failure, gap or finding in every mode
+  - Narrow the `analysis` skill's trigger to analysing, assessing, rethinking or reviewing a concern, design or part of the project
+
+- [`5a76b4e`](https://github.com/AUAUST/lib-js-engrenage/commit/5a76b4e3e4ae600d1f35716ad29de4f23548e0cb) Thanks [@apademide](https://github.com/apademide)! - - Point the Writing section to the `instructions` rule before any agent instructions are written
+  - Have the `instructions` rule bring instructions written before it was read up to its rules
+
+- [`f4e3c7e`](https://github.com/AUAUST/lib-js-engrenage/commit/f4e3c7e2ba963718c5432181c48f4ac51fb6d55d) Thanks [@apademide](https://github.com/apademide)! - - Write one neutral placeholder line into the initialized `.ai/scratchpad.md` instead of a random joke
+
+- [`5046e10`](https://github.com/AUAUST/lib-js-engrenage/commit/5046e1082a57cbfa523d5bcc18c2802ecee75bc0) Thanks [@apademide](https://github.com/apademide)! - - Define each skill's role by what its agent does, without contrast with other roles
+  - Require positive role definitions in the `instructions` rule
+
+- [`9e34844`](https://github.com/AUAUST/lib-js-engrenage/commit/9e34844be22c3f7a78115500fb1b61e07a1c4843) Thanks [@apademide](https://github.com/apademide)! - - Sync deletes the generated skill directories, agent files and Codex profiles of skills engrenage no longer ships, and merges those of renamed skills into the skill replacing them, creating its agent; skills and agents without an engrenage reference stay untouched
+  - Flushing staged changes deletes the directories its removals leave empty
+
+- [`5a7a361`](https://github.com/AUAUST/lib-js-engrenage/commit/5a7a361ae7465ae96e5afad721fa5002c4d7ab12) Thanks [@apademide](https://github.com/apademide)! - - Let curators, analysers and planners write agent records, and have an agent whose brief forbids a record's file report the record instead
+  - Keep the staging of agent logs out of commit messages and reports without silencing their recurring subjects
+  - Let the writer description match the subagent fallback for instruction changes
+  - Let a skill, not only the user, trigger the worker, debugger and merger skills
+  - Check the repository location on any later request naming another repository, and have a subagent stop and report a mismatch
+  - Name the worktree gate command in the delivery check
+  - Move the `@reference` block, AGENTS.md placement and "Enforced by tooling" rules to the `instructions` rule, and put deleting enforced prose under instruction consent
+  - State the `@debt` marker position in the agent records rule
+  - Record a violation noticed elsewhere as a debt marker at its site, or a backlog entry when it has none
+  - Point the decision protocol to the project structure for structural contracts
+  - Have debuggers and analysers running as subagents publish drafts and report their diffs in the final report
+  - Have debuggers write an uncontained fix into a `problem` issue
+
+- [`6f971d3`](https://github.com/AUAUST/lib-js-engrenage/commit/6f971d398b45981e2c970c5a54902b32898a5ce0) Thanks [@apademide](https://github.com/apademide)! - - Share subagent report and stop record rules across skills
+  - Define a recurring agent-record subject as three or more lines
+  - Allow a `sites` bullet in backlog entries
+  - Move the worktree checkout step to the Environment section
+
+- [`da80c37`](https://github.com/AUAUST/lib-js-engrenage/commit/da80c37c3b3593000f0fb618441ebcd9fa64d790) Thanks [@apademide](https://github.com/apademide)! - - Write the Implementation and Project structure sections as context-to-action tables, and Precedence as an ordered list with a table for task references and tool configuration
+  - Place skills and `@reference` blocks in the precedence order
+  - Treat code that needs documentation to be understood as code to simplify
+  - Make writing instructions a process: inventory of overlapping rules, enforcement over prose, form by content shape, validation against the previous version
+  - Word instruction rules as trigger and behavior instead of one sentence each
+
+- [`959d603`](https://github.com/AUAUST/lib-js-engrenage/commit/959d603f7b3faa5f4a8d8d65bee4b87a69846727) Thanks [@apademide](https://github.com/apademide)! - - Apply the table-or-list boundary to everything agents write, moving it from the `instructions` rule to the Writing section
+
+- [`53d75e0`](https://github.com/AUAUST/lib-js-engrenage/commit/53d75e034e7e417681e00de0f9c49a95d837dfb1) Thanks [@apademide](https://github.com/apademide)! - - Bound each consultant run by the walker's free slots, counting issues left set aside, and return at the first ready issue when no leaf is in flight
+  - Send a worker's blocker to a running consultant at once where the client allows it
+  - Cap resumes at two for repeated blockers, merger-reported conflicts and the boundary-review debugger, holding its work on a branch
+  - Request progress after 3 consecutive wait timeouts with no agent event
+  - Suffix a held branch name that already exists
+
+- [`c5eff43`](https://github.com/AUAUST/lib-js-engrenage/commit/c5eff4392c080c4c3c00244493a870bbe202cc45) Thanks [@apademide](https://github.com/apademide)! - - Have workers add the changeset of a user-facing change
+  - Have integration mergers close missing changesets, docs lines and decided mechanical actions
+  - Have workers stop on mis-scoped issues with split leads, and consultants split them
+  - Keep a leaf's worktree when its closing commit fails
+  - Cut walker status messages and per-commit lines in autonomous mode
+  - Skip the boundary-review debugger when the review finds nothing
+
+- [`40031e0`](https://github.com/AUAUST/lib-js-engrenage/commit/40031e047be8bd0be7ef2c6f147cca29469a6004) Thanks [@apademide](https://github.com/apademide)! - - Sync the backlog index instructions from their template
+
+- [`f190481`](https://github.com/AUAUST/lib-js-engrenage/commit/f190481caeaac8af4530f91325311d73402fba77) Thanks [@apademide](https://github.com/apademide)! - - Fail sync --check on a backlog sites bullet holding anything but file:line items
+
+- [`a3c1cde`](https://github.com/AUAUST/lib-js-engrenage/commit/a3c1cde606b78e5b70faea500dcc8209ce729bd2) Thanks [@apademide](https://github.com/apademide)! - - Explain a command that fails to load a stale generated barrel: name the barrel, the line to fix by hand and the `engrenage sync` to run after
+  - Exit 2 when a command cannot load and whether it is an agent hook cannot be told
+
+- [`9c420e7`](https://github.com/AUAUST/lib-js-engrenage/commit/9c420e7fcbaadde8bbdea2a262581cecfd78b6ac) Thanks [@apademide](https://github.com/apademide)! - - Expand brace globs into one line per alternative in generated ignore and attributes blocks
+  - Cover nested generated agent rule paths in ignore blocks and stale rule removal
+
+- [`74e4f0e`](https://github.com/AUAUST/lib-js-engrenage/commit/74e4f0ecdc88d0d5f90481ac906bb9c029afb285) Thanks [@apademide](https://github.com/apademide)! - - Embed formatted skill bodies in Codex agent profiles, so formatting a skill fragment keeps `sync --check` passing
+
+- [`276d810`](https://github.com/AUAUST/lib-js-engrenage/commit/276d8102f989c2c441e9eaa4aec600670b9a4d6b) Thanks [@apademide](https://github.com/apademide)! - - Print command results through the run's reporter, so `--verbose` shows the config's progress messages
+  - Show every finding of `engrenage agents check` without `--verbose`
+
+- [`572d16b`](https://github.com/AUAUST/lib-js-engrenage/commit/572d16b3a34a9577d35e188b4119e1ede6ef1cb7) Thanks [@apademide](https://github.com/apademide)! - - Accept block marker lines ending in CRLF
+  - Fill directive blocks of files inside dot directories
+  - Fail when a `roles` contribution is named after another role than its preset creates
+
+- [`912555f`](https://github.com/AUAUST/lib-js-engrenage/commit/912555f17b17b47e887863915cd3b6adcc2dc115) Thanks [@apademide](https://github.com/apademide)! - - Fail draft checks and publishing on a missing specializing field, Complexity or label
+
+- [`595d9e6`](https://github.com/AUAUST/lib-js-engrenage/commit/595d9e674c9434b584fa5551907fba52dd15c251) Thanks [@apademide](https://github.com/apademide)! - - Point drafting commands to a backlog entry when no GitHub repository applies
+
+- [`ac041a9`](https://github.com/AUAUST/lib-js-engrenage/commit/ac041a9737da4f840d31a2953ab67838401159a0) Thanks [@apademide](https://github.com/apademide)! - - Deactivate environments whose directories hold only files Git ignores
+  - Deactivate the tooling environment when Git ignores each root file it matches
+
+- [`e399602`](https://github.com/AUAUST/lib-js-engrenage/commit/e399602d849d379d86b6d1aa793304faae6ad7fa) Thanks [@apademide](https://github.com/apademide)! - - Keep a catch's only return and return await inside try in ESLint autofix
+
+- [`fc3bc04`](https://github.com/AUAUST/lib-js-engrenage/commit/fc3bc04e183abdc92437dc89b934d0f31e2d4819) Thanks [@apademide](https://github.com/apademide)! - - Report unused catch bindings once, through unicorn/prefer-optional-catch-binding
+
+- [`28cccea`](https://github.com/AUAUST/lib-js-engrenage/commit/28cccea9c696ea0afa368842c3217d819dd191a1) Thanks [@apademide](https://github.com/apademide)! - - Add `warnings` to `GateResult`, reported whether or not the step passes
+  - Report sync warnings under `sync --check` when the files are in sync
+
+- [`d80c9a8`](https://github.com/AUAUST/lib-js-engrenage/commit/d80c9a8cbd2428a47d8d10c9b6fb6041f222f7c1) Thanks [@apademide](https://github.com/apademide)! - - Resolve `gh issue` body files from literal `cd`s earlier in the command
+  - Name the body forms the `gh issue` hook reads when it denies a write
+
+- [`cee60c9`](https://github.com/AUAUST/lib-js-engrenage/commit/cee60c9a77147818c9f102d8ad240416c916c999) Thanks [@apademide](https://github.com/apademide)! - - Ignore Git's excludes files in whole-project ESLint
+
+- [`41e9932`](https://github.com/AUAUST/lib-js-engrenage/commit/41e99325c56b2a969f3a005b5b24b7bd7a036147) Thanks [@apademide](https://github.com/apademide)! - - Protect `.ai/handoffs/` as local files by default
+
+- [`4c1739c`](https://github.com/AUAUST/lib-js-engrenage/commit/4c1739c30bda3e2c6a78d3b5a229dce93ae0d0c7) Thanks [@apademide](https://github.com/apademide)! - - Add an `@attributes` block to `.gitattributes`, filled from file resources, and an init step creating it
+  - Add the `appendOnly` and `diffed` file resource flags
+  - Mark the lockfile and generated agent rules as generated
+
+- [`5740cf7`](https://github.com/AUAUST/lib-js-engrenage/commit/5740cf71b7ff158d28cd189f15db38572bd22a30) Thanks [@apademide](https://github.com/apademide)! - - Add `github.labels` to declare the current repository's labels
+  - Add `engrenage github labels sync`, with `--check`, and `engrenage github labels prune`
+
+- [`7c49fce`](https://github.com/AUAUST/lib-js-engrenage/commit/7c49fce0937610dc58c587dfa57d9fc6cac58d70) Thanks [@apademide](https://github.com/apademide)! - - Fail `github fetch` naming what to set when no repository is registered
+  - Allow drafts, claims and publishing in another repository without a current repository
+
+- [`7365111`](https://github.com/AUAUST/lib-js-engrenage/commit/736511128318e4638eb2bae7812b5cc27a6ff232) Thanks [@apademide](https://github.com/apademide)! - - Stop suggesting the `lint:check` script on init, a duplicate of `lint`
+
+- [`cd65edd`](https://github.com/AUAUST/lib-js-engrenage/commit/cd65eddab4aeb2c8dbc756e0d2f2553e979d07e4) Thanks [@apademide](https://github.com/apademide)! - - Fail sync --check on instruction table cells over 25 words
+
+- [`05c640f`](https://github.com/AUAUST/lib-js-engrenage/commit/05c640f2e26088b96795596705139efc4a8f387d) Thanks [@apademide](https://github.com/apademide)! - - Add the `instruction-writing` skill and its `writer` agent, which turn a consented behavior change into agent instructions and read them as each target agent would
+  - Delegate every consented change to agent instructions to the `writer` agent
+  - Move the instruction-writing process from the `instructions` rule into the skill
+
+- [`d3c4aa7`](https://github.com/AUAUST/lib-js-engrenage/commit/d3c4aa76793090eaedbc9db47dd8b83219e6609c) Thanks [@apademide](https://github.com/apademide)! - - Exclude generated barrels from clone detection
+
+- [`6c79c79`](https://github.com/AUAUST/lib-js-engrenage/commit/6c79c7905209fd0347cc57f96d3f02370724779f) Thanks [@apademide](https://github.com/apademide)! - - Quote the message path in generated `commit-msg` commands
+  - Drop stale anchors from the gate commands on sync, copying their nodes into the aliases elsewhere
+
+- [`bbab874`](https://github.com/AUAUST/lib-js-engrenage/commit/bbab874cc185880e3933408e2879b64b196b7e92) Thanks [@apademide](https://github.com/apademide)! - - Fix headings inside code fences splitting backlog entries and issue sections
+  - Fix `@reference` markers inside code counting as rule references
+
+- [`d4d2756`](https://github.com/AUAUST/lib-js-engrenage/commit/d4d27560c9dd1ce2658a7c51a42e61d6e2ab5734) Thanks [@apademide](https://github.com/apademide)! - - Accept `children` in `.namespace.json`
+
+- [`6dfbd12`](https://github.com/AUAUST/lib-js-engrenage/commit/6dfbd124d009eff71f18a6885fb0d50e19baa7df) Thanks [@apademide](https://github.com/apademide)! - - Load TypeScript configs with Node's type stripping instead of `jiti`
+  - Name the file and the type-stripping constraint when a config fails to import
+
+- [`2d63b11`](https://github.com/AUAUST/lib-js-engrenage/commit/2d63b111b10b680f43843aa0395fb1ed4b8a785b) Thanks [@apademide](https://github.com/apademide)! - - Accept issue references and `new-`-prefixed slugs in `planning issue create`
+
+- [`79b02de`](https://github.com/AUAUST/lib-js-engrenage/commit/79b02de904fb5902c521c36730f1549412e4c81e) Thanks [@apademide](https://github.com/apademide)! - - List only existing data and source directories in the synced `files` field
+
+- [`ed67113`](https://github.com/AUAUST/lib-js-engrenage/commit/ed6711321ebc51c5735a51c841cbf7f20a4404d0) Thanks [@apademide](https://github.com/apademide)! - - Fill `@reference` blocks of agent instruction files through `engrenage sync blocks`
+
+- [`ad5d0d3`](https://github.com/AUAUST/lib-js-engrenage/commit/ad5d0d3823b71efd22e21cf486f9220d2708eab6) Thanks [@apademide](https://github.com/apademide)! - - Name the replacement of each removed top-level config key
+  - Warn on sync when a package declaring `publishConfig` or `exports` resolves without the `published` trait
+
+- [`03a6c34`](https://github.com/AUAUST/lib-js-engrenage/commit/03a6c3481725c780e036ada8d87c96e8b8e363ce) Thanks [@apademide](https://github.com/apademide)! - - Add a `reporter` option to `loadConfig` and `loadValidatedConfig`
+  - Export the `Reporter`, `ReportData` and `ReportingContext` types for extensions
+  - Add a `--verbose` option to commands
+
+- [`7b959d3`](https://github.com/AUAUST/lib-js-engrenage/commit/7b959d361af7898abf8834425c84d352c82c1355) Thanks [@apademide](https://github.com/apademide)! - - Fix heredoc bodies read by agent hooks: keep a quoted delimiter's body raw, unescape only `\$`, `` \` ``, `\\` and line continuations otherwise, and strip leading tabs after `<<-`
+  - Fix shell syntax error columns counting bytes instead of characters
+
+- [`2e25194`](https://github.com/AUAUST/lib-js-engrenage/commit/2e25194f867d5bba64fe2e06e5b1f822d409cc9e) Thanks [@apademide](https://github.com/apademide)! - - Parse shell commands in the git and issue hooks with one Bash parser
+  - Deny hook commands that are not valid shell
+
+- [`6f1e0e6`](https://github.com/AUAUST/lib-js-engrenage/commit/6f1e0e629b9f7879277823f4aca99e631809d8f6) Thanks [@apademide](https://github.com/apademide)! - - Tell a blocked agent to stop again without changing any file
+
+- [`dcc67c3`](https://github.com/AUAUST/lib-js-engrenage/commit/dcc67c373162bbe60692abb2c9c8d97ddcc5bd6e) Thanks [@apademide](https://github.com/apademide)! - - Run every fill target in a sync naming targets
+
+- [`70e36f1`](https://github.com/AUAUST/lib-js-engrenage/commit/70e36f135d6768f49ef8f90886d7dfba43049898) Thanks [@apademide](https://github.com/apademide)! - - Report sync, init, gate and tool command messages through the config's reporter instead of the console
+  - Show the agent findings `sync` reports only with `--verbose`, unless they are conflicting, disabled or unsupported
+  - Show the progress lines of tool commands, such as `Linting...`, only with `--verbose`
+  - Show the `All good!` line of tool commands only with `--verbose`, on stderr, so their stdout holds only the tool's output
+  - Return sync target warnings in the gate's `sync --check` output instead of printing them
+
+- [`b4bd210`](https://github.com/AUAUST/lib-js-engrenage/commit/b4bd210ec296a47c82fc3c1fe2998b3544933c50) Thanks [@apademide](https://github.com/apademide)! - - Exclude fixtures and ignored files from Vitest type tests
+
+- [`e32a3bf`](https://github.com/AUAUST/lib-js-engrenage/commit/e32a3bf03045ff1092b0060f8c516cfffcf81a65) Thanks [@apademide](https://github.com/apademide)! - - Type-check assertions in every test file under `vitest --typecheck`
+
+- [`10ae98a`](https://github.com/AUAUST/lib-js-engrenage/commit/10ae98a61e44cb0c753e55019f7bb761f6d973d5) Thanks [@apademide](https://github.com/apademide)! - - Ignore pushed closing commits in `walk check` and the dispatch guard
+
+- [`3bb6a03`](https://github.com/AUAUST/lib-js-engrenage/commit/3bb6a0374742bf01fa09c234ca34991e65c49736) Thanks [@apademide](https://github.com/apademide)! - - Generate the walking skill's agent efforts and freshness from skill frontmatter
+
 ## 0.14.1
 
 ### Patch Changes
