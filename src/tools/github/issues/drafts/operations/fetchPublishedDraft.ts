@@ -172,7 +172,7 @@ export async function fetchPublishedDraft(
   }
 
   draft.manifest = validate(
-    createManifestSchema(context.snapshot, access.repository, draft.contract),
+    createManifestSchema(context.snapshot, access.repository, context.protocol),
     manifest,
     `merged manifest of ${draft.stem}`,
   );

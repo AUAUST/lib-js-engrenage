@@ -109,7 +109,7 @@ function toPublished(
       protocol: context.protocol,
     },
     manifest: parse(
-      createManifestSchema(context.snapshot, repository, contract),
+      createManifestSchema(context.snapshot, repository, context.protocol),
       value,
     ),
   };

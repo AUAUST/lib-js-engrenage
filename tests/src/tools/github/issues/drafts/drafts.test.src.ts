@@ -51,14 +51,15 @@ const snapshot = {
     AUAUST: {
       types: [
         type("Plan", ["Blockers"]),
-        type("Segment", ["Blockers"]),
-        type("Task", ["Blockers", "Nature"]),
+        type("Segment", ["Blockers", "Complexity"]),
+        type("Task", ["Blockers", "Nature", "Complexity"]),
         type("Problem", ["Blockers", "Defect"]),
         type("Resource", ["Blockers"]),
         type("Idea", ["Blockers"]),
       ],
       fields: [
         field("Blockers", "multi_select", ["Drafting", "Open questions"]),
+        field("Complexity", "single_select", ["Trivial", "Involved"]),
         field("Defect", "single_select", ["Bug", "Debt"]),
         field("Nature", "single_select", ["Chore", "Feature", "Improvement"]),
       ],
@@ -69,6 +70,7 @@ const snapshot = {
 const plan = `---
 title: Plan
 type: Plan
+labels: [Tooling]
 subIssues:
   - ref: "#{new-first}"
     gist: First step
@@ -87,6 +89,9 @@ d
 const first = `---
 title: First
 type: Task
+labels: [Tooling]
+Nature: Feature
+Complexity: Trivial
 ---
 
 Goal: the first step
@@ -162,6 +167,8 @@ labels: []
 Blockers: []
 # Options: Chore, Feature, Improvement
 Nature: null
+# Options: Trivial, Involved
+Complexity: null
 subIssues: []
 blockedBy: []
 ---
@@ -317,7 +324,7 @@ describe("checkIssues", () => {
   test("reports one line per manifest, contract and reference finding of a draft", async () => {
     const config = await createProject({
       ".ai/issues/new-x.draft.md": first
-        .replace("type: Task", "type: Task\nNature: Bogus\nDefect: Bug")
+        .replace("Nature: Feature", "Nature: Bogus\nDefect: Bug")
         .replace("1. Do.", "1. Do after #{new-missing}."),
     });
 
@@ -336,6 +343,42 @@ describe("checkIssues", () => {
         /^new-x: `#\{new-missing\}` names the draft `new-missing`, outside the checked drafts/,
       ),
     ]);
+  });
+
+  test("reports one finding per missing specializing field, complexity and label of a Task", async () => {
+    const config = await createProject({
+      ".ai/issues/new-x.draft.md": first
+        .replace("labels: [Tooling]", "labels: []")
+        .replace("Nature: Feature", "Nature: null")
+        .replace("Complexity: Trivial", "Complexity: null"),
+    });
+
+    await expect(checkIssues(config, ["new-x"], "worker")).resolves.toEqual({
+      lines: [
+        "new-x: labels: set at least one label: use Tests, Tooling",
+        "new-x: Nature: set Nature: use Chore, Feature, Improvement",
+        "new-x: Complexity: set Complexity: use Trivial, Involved",
+      ],
+      passed: false,
+    });
+  });
+
+  test("passes a Segment without Complexity", async () => {
+    const config = await createProject({
+      ".ai/issues/new-s.draft.md": `---
+title: Segment
+type: Segment
+labels: [Tooling]
+Complexity: null
+---
+
+Goal: the segment
+`,
+    });
+
+    const { lines } = await checkIssues(config, ["new-s"], "worker");
+
+    expect(lines.filter((line) => line.includes("Complexity"))).toEqual([]);
   });
 
   test("fails once per empty section of a fresh Task, and passes it filled without Planning and Questions", async () => {
@@ -369,7 +412,9 @@ describe("checkIssues", () => {
       file,
       content
         .replace('title: ""', "title: Fresh")
+        .replace("labels: []", "labels: [Tests]")
         .replace("Nature: null", "Nature: Chore")
+        .replace("Complexity: null", "Complexity: Involved")
         .replace("<sections>: <gist>", "Goal: fresh")
         .replace("## Context\n", "## Context\n\nc\n")
         .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
@@ -388,6 +433,7 @@ describe("checkIssues", () => {
     const idea = `---
 title: Idea
 type: Idea
+labels: [Tooling]
 Blockers:
   - Open questions
 ---

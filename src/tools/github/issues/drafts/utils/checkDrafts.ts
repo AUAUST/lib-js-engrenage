@@ -165,10 +165,8 @@ function checkManifest(
     isString(value.type) ? value.type : undefined,
   );
 
-  const contract = meaning === undefined ? undefined : issueContracts[meaning];
-
   const result = safeParse(
-    createManifestSchema(context.snapshot, repository, contract),
+    createManifestSchema(context.snapshot, repository, context.protocol),
     value,
   );
 

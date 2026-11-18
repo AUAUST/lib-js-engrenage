@@ -3,6 +3,7 @@ import {
   check,
   isoDate,
   literal,
+  minLength,
   nullable,
   number,
   optional,
@@ -16,6 +17,13 @@ import {
 
 import { record } from "@auaust/toolkit/object";
 
+import { issueContracts } from "#tools/github/issues/contract/constants";
+import {
+  findContractMeaning,
+  findTypeMeaning,
+  type IssueProtocol,
+  type IssueType,
+} from "#tools/github/issues/contract/index";
 import {
   claimStates,
   draftStates,
@@ -24,11 +32,34 @@ import {
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { resolveManifestTarget } from "#tools/github/issues/drafts/utils/resolveManifestTarget";
 import type { GithubSnapshot } from "#tools/github/issues/api/index";
-import type { IssueContract } from "#tools/github/issues/contract/index";
 import type { DraftManifest } from "#tools/github/issues/drafts/types/DraftManifest";
 import type { ManifestTarget } from "#tools/github/issues/drafts/types/ManifestTarget";
 
 type ManifestField = ManifestTarget["types"][number]["fields"][number];
+
+type FieldMeaning = keyof IssueProtocol["fields"];
+
+const requiredFields = {
+  task: ["nature", "complexity"],
+  problem: ["defect", "complexity"],
+  resource: ["material"],
+  plan: [],
+  segment: [],
+  idea: [],
+} as const satisfies Record<IssueType, readonly FieldMeaning[]>;
+
+function listRequiredFields(
+  protocol: IssueProtocol,
+  meaning: IssueType | undefined,
+): readonly string[] {
+  if (meaning === undefined) {
+    return [];
+  }
+
+  return requiredFields[meaning].map((field: FieldMeaning) => {
+    return protocol.fields[field];
+  });
+}
 
 function filled(message: string) {
   return pipe(
@@ -50,22 +81,40 @@ const roadmapEntrySchema = strictObject({
   sections: array(string()),
 });
 
+function listOptions(options: readonly string[]) {
+  return options.join(", ") || "none";
+}
+
 function choice(options: readonly string[], subject: string) {
   return picklist(options, (issue) => {
-    return `${issue.received} is not ${subject}: use ${options.join(", ") || "none"}`;
+    return `${issue.received} is not ${subject}: use ${listOptions(options)}`;
   });
 }
 
-function createFieldSchema({
-  name,
-  dataType,
-  options,
-}: ManifestField): GenericSchema {
+function createFieldSchema(
+  { name, dataType, options }: ManifestField,
+  required: boolean,
+): GenericSchema {
   const names = options.map((option) => option.name);
 
   switch (dataType) {
     case "single_select": {
-      return optional(nullable(choice(names, `an option of ${name}`)));
+      const option = nullable(choice(names, `an option of ${name}`));
+
+      return required
+        ? optional(
+            pipe(
+              option,
+              check(
+                (value) => {
+                  return value != null;
+                },
+                `set ${name}: use ${listOptions(names)}`,
+              ),
+            ),
+            null,
+          )
+        : optional(option);
     }
 
     case "multi_select": {
@@ -95,20 +144,26 @@ function createFieldSchema({
 export function createManifestSchema(
   snapshot: GithubSnapshot,
   repository: string,
-  contract: IssueContract | undefined,
+  protocol: IssueProtocol,
 ): GenericSchema<unknown, DraftManifest> {
   const target = resolveManifestTarget(snapshot, repository);
 
+  const label = choice(target.labels, `a label of ${repository}`);
+
   const common = {
     title: filled("write the issue title"),
-    labels: optional(array(choice(target.labels, `a label of ${repository}`))),
-    subIssues: optional(
-      array(
-        contract?.subIssues === "roadmap"
-          ? roadmapEntrySchema
-          : referenceSchema,
-      ),
-    ),
+    labels: target.labels.length > 0
+      ? optional(
+          pipe(
+            array(label),
+            minLength(
+              1,
+              `set at least one label: use ${listOptions(target.labels)}`,
+            ),
+          ),
+          [],
+        )
+      : optional(array(label)),
     blockedBy: optional(array(referenceSchema)),
     state: optional(picklist(draftStates)),
     claim: optional(picklist(claimStates)),
@@ -119,13 +174,31 @@ export function createManifestSchema(
   return variant(
     "type",
     target.types.map(({ name, fields }) => {
+      const required = listRequiredFields(
+        protocol,
+        findTypeMeaning(protocol, name),
+      );
+
+      const meaning = findContractMeaning(protocol, name);
+
       return strictObject(
         {
           ...common,
+          subIssues: optional(
+            array(
+              meaning !== undefined &&
+                issueContracts[meaning].subIssues === "roadmap"
+                ? roadmapEntrySchema
+                : referenceSchema,
+            ),
+          ),
           type: literal(name),
           ...record(
             fields.map((field) => {
-              return [field.name, createFieldSchema(field)] as const;
+              return [
+                field.name,
+                createFieldSchema(field, required.includes(field.name)),
+              ] as const;
             }),
           ),
         },

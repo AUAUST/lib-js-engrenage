@@ -69,13 +69,13 @@ const snapshot = {
       repository: "AUAUST/app",
       id: 3,
       nodeId: "R",
-      labels: [entity(4, "Tooling")],
+      labels: [],
     },
     toolkit: {
       repository: "AUAUST/toolkit",
       id: 5,
       nodeId: "R2",
-      labels: [entity(6, "Tests")],
+      labels: [],
     },
   },
   organizations: {
@@ -143,15 +143,17 @@ let links: Record<string, unknown>[];
 let failing: string | undefined;
 
 function createIssue(number: number, values: Partial<MockIssue>): MockIssue {
+  const type = values.type ?? "Task";
+
   return {
     repository: "app",
     number,
     title: `Issue ${number}`,
     body: taskBody,
-    type: "Task",
+    type,
     state: "open",
     labels: [],
-    fields: new Map(),
+    fields: new Map(type === "Task" ? [["Nature", "Feature"]] : []),
     subIssues: [],
     toolkitSubIssues: [],
     blockedBy: [],
