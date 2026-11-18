@@ -1,5 +1,6 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
+import { detectHookCommand } from "#workflows/cli/operations/detectHookCommand";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 import { runContext } from "#workflows/cli/operations/runContext";
@@ -74,13 +75,13 @@ export async function runProgram(
       return;
     }
 
-    const { isHookCommand } = await import("#tools/agents/index");
+    const kind = await detectHookCommand(argv ?? process.argv);
 
     const debug = isDebugFlagSet(running) || (await isDebugConfigured());
 
     console.error(formatCommandError(error, { debug }));
 
-    process.exitCode = isHookCommand(argv ?? process.argv) ? 2 : 1;
+    process.exitCode = kind === "command" ? 1 : 2;
   } finally {
     stopListening();
   }

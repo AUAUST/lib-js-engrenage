@@ -1,6 +1,7 @@
 import { join } from "@auaust/toolkit/array";
 
 import { debugEnvironmentVariable } from "#workflows/cli/constants";
+import { explainStaleBarrel } from "#workflows/cli/operations/explainStaleBarrel";
 
 function describe(value: unknown): string {
   return value instanceof Error ? value.message : String(value);
@@ -10,7 +11,11 @@ export function formatCommandError(
   error: unknown,
   { debug }: { debug: boolean },
 ): string {
-  const lines = [describe(error)];
+  const explanation = explainStaleBarrel(error);
+
+  const lines = explanation === undefined
+    ? [describe(error)]
+    : [explanation, `Caused by: ${describe(error)}`];
 
   const seen = new Set<unknown>([error]);
 

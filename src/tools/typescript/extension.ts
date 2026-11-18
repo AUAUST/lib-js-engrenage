@@ -1,4 +1,5 @@
 import {
+  barrelDirective,
   barrelExportsEntry,
   barrelsTarget,
   typescript,
@@ -86,7 +87,7 @@ export default {
       "ts-check": true,
     },
     directives: {
-      barrel: {
+      [barrelDirective]: {
         async files(config): Promise<readonly File[]> {
           const {
             listBarrelCandidates,
