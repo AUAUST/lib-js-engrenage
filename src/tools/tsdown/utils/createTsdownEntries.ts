@@ -5,7 +5,9 @@ import type { Entries } from "#tools/tsdown/types/Entries";
 
 /**
  * Merges package entries, command entries and workspace entries into one record.
- * Throws when a command or workspace entry takes the name of an entry before it.
+ *
+ * @throws {Error} A command or workspace entry takes the name of an
+ * entry before it.
  */
 export function createTsdownEntries(
   pathAliases: PathAliases,

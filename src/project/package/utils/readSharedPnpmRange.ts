@@ -4,8 +4,10 @@ import manifest from "#package.json" with { type: "json" };
 
 /**
  * Reads the pnpm range engrenage's own manifest requires, with the version it
- * starts from as `floor`. Throws when the range is not one version optionally
- * prefixed with `^`, `~` or `=`.
+ * starts from as `floor`.
+ *
+ * @throws {Error} The range is not one version optionally prefixed with
+ * `^`, `~` or `=`.
  */
 export function readSharedPnpmRange(): {
   range: string;

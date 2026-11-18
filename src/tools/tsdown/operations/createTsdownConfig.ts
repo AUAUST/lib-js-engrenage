@@ -106,10 +106,12 @@ function resolveMinify(minify: boolean | "keepNames") {
 
 /**
  * Builds the tsdown config of a loaded config: ESM entries from the package
- * exports, commands and workspaces, declarations, plugins and packaging checks of
- * the installed tools. Throws without a `package.json`, when it does not declare
- * `"type": "module"`, without an output directory, on invalid options or entry
- * conflicts; the build fails when it changes `package.json`.
+ * exports, commands and workspaces, declarations, plugins and packaging checks
+ * of the installed tools. The build fails when it changes `package.json`.
+ *
+ * @throws {Error} No `package.json` exists or it does not declare
+ * `"type": "module"`, no output directory is set, an option is invalid,
+ * or entries conflict.
  */
 export async function createTsdownConfig(
   config: LoadedConfig,

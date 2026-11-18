@@ -7,8 +7,9 @@ import type { Globs } from "#types/Globs";
 import type { SyncResults } from "#types/SyncResults";
 
 /**
- * Paths resolve against the project root; a path escaping it throws.
+ * Paths resolve against the project root.
  *
+ * @throws A method given a path escaping the project root.
  * @experimental
  */
 export interface Filesystem {

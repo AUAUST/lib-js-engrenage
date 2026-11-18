@@ -3,10 +3,8 @@ import { throws } from "#project/docs/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { isJsdocBlock } from "#tools/eslint/utils/isJsdocBlock";
 
-// @debt prose detection is heuristic: it misses errors stated in other words and flags prose that mentions an error without documenting one
-const throwing = /throw|raise|reject/i;
-
-const error = /error|exception/i;
+// @debt prose detection is heuristic: it misses errors stated in other words and flags prose that mentions throwing without documenting an error
+const throwing = /throw|raise/i;
 
 const throwsTag = throws().name;
 
@@ -36,7 +34,7 @@ export default defineConvention({
         function check(range: readonly [number, number]) {
           const text = sourceCode.text.slice(range[0], range[1]);
 
-          if (!throwing.test(text) || !error.test(text)) {
+          if (!throwing.test(text) && !text.includes("Error")) {
             return;
           }
 

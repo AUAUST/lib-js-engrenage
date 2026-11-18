@@ -7,9 +7,9 @@ import type { File } from "#types/File";
 
 /**
  * The project's tsconfig, parsed on first access with its `extends` chain read
- * through the staging filesystem. A field read directly throws when no tsconfig
+ * through the staging filesystem. A field read directly fails when no tsconfig
  * is found or it leaves the field unset; its counterpart under `optional` is
- * `undefined` instead. `outDir` is relative to the project root and throws when
+ * `undefined` instead. `outDir` is relative to the project root and fails when
  * it is the root itself; `references` lists the referenced projects' paths,
  * empty when there are none.
  */

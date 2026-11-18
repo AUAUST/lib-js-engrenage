@@ -6,8 +6,9 @@ import type { PackageName } from "#types/PackageName";
 
 /**
  * Maps each exposed subpath to the specifier consumers import it by, `.` to
- * `packageName` and `./sub` to `packageName/sub`, targeting its file. Throws
- * when a subpath is neither `.` nor starts with `./`.
+ * `packageName` and `./sub` to `packageName/sub`, targeting its file.
+ *
+ * @throws {Error} A subpath is neither `.` nor starts with `./`.
  */
 export function resolveExportPaths(
   packageName: PackageName,

@@ -3,7 +3,8 @@ import { parseVersion } from "#project/package/utils/parseVersion";
 /**
  * Compares the versions `parseVersion` reads from `a` and `b` by major, minor
  * then patch: negative when `a` is lower, zero when equal, positive when higher.
- * Throws when either holds no version.
+ *
+ * @throws {Error} Either holds no version.
  */
 export function compareVersions(a: string, b: string): number {
   const first = parseVersion(a);

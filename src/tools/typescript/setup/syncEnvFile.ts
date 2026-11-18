@@ -54,7 +54,9 @@ function appendBlock(content: string): string {
  * Fills the `@define` block of the TypeScript env file with a declaration of each
  * defined global named by a valid identifier, appending the block when absent.
  * Does nothing when defined globals are not typed, or when the file has no block
- * and no global to declare; throws when the block's marker has arguments.
+ * and no global to declare.
+ *
+ * @throws {Error} The block's marker has arguments.
  */
 export async function syncEnvFile(config: LoadedConfig) {
   const { types, values } = await config.resolve("define");

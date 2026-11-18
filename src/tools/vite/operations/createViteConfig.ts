@@ -51,12 +51,14 @@ function resolveViteRoot(
 
 /**
  * Builds the Vite config of a loaded config: root, tsconfig paths, defined
- * globals, public directory and build output, emptying the output directory only
- * when `build.clean` is `all`. The root is the src environment's only directory,
- * or the project root under tests or without an active src directory; several
- * src directories throw. The output and env directories are absolute from the
- * project root, so a native config setting `root` never moves them. `isTesting`
- * drops build-only globals instead of test-only ones.
+ * globals, public directory and build output, emptying the output directory
+ * only when `build.clean` is `all`. The root is the src environment's only
+ * directory, or the project root under tests or without an active src directory.
+ * The output and env directories are absolute from the project root, so a native
+ * config setting `root` never moves them. `isTesting` drops build-only globals
+ * instead of test-only ones.
+ *
+ * @throws {Error} The src environment has several directories.
  */
 export async function createViteConfig(
   config: LoadedConfig,

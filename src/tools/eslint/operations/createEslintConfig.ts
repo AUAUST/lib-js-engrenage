@@ -58,9 +58,10 @@ async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
 /**
  * Builds engrenage's ESLint config objects for a loaded config: ignores,
  * recommended rules, `package.json` rules, import presets, the selected
- * conventions and role rules, each group switched off by its option. Throws on
- * invalid options, unknown convention categories or names, and without an active
- * extension contributing the TypeScript language.
+ * conventions and role rules, each group switched off by its option.
+ *
+ * @throws {Error} An option is invalid, a convention category or name is unknown,
+ * or no active extension contributes the TypeScript language.
  */
 export async function createEslintConfig(
   config: LoadedConfig,

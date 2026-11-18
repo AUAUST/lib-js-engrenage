@@ -7,7 +7,7 @@ import type { Globs } from "#types/Globs";
 
 /**
  * The resolved `agents` config section. `preferred` is `undefined` when unset,
- * and resolution throws when it names a runtime no active extension registers.
+ * and resolution fails when it names a runtime no active extension registers.
  */
 export interface ResolvedAgents {
   readonly preferred: readonly Agent[] | undefined;

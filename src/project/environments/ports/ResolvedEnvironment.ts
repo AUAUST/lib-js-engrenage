@@ -3,7 +3,7 @@ import type { Globs } from "#types/Globs";
 
 /**
  * The shape the config key named after an environment resolves to; reading one
- * of another shape throws.
+ * of another shape fails.
  */
 export interface ResolvedEnvironment {
   /**

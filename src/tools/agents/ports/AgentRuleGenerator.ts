@@ -19,7 +19,7 @@ export interface AgentRuleGenerator
     > {
   /**
    * Rule files the generator owns in the rules directory: `<name>.md` and
-   * `<name>/*.md`. Sync removes those it no longer returns and throws on a
+   * `<name>/*.md`. Sync removes those it no longer returns and fails on a
    * rule outside them.
    */
   readonly name: string;

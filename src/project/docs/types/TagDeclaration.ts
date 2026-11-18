@@ -29,7 +29,7 @@ export interface TagDeclaration {
   readonly body: "none" | "inline" | "text" | "code";
   /**
    * Validates the body synchronously: its output becomes the read tag's value
-   * and its issues are reported. Reading the tag throws when it validates
+   * and its issues are reported. Reading the tag fails when it validates
    * asynchronously.
    */
   readonly schema?: StandardSchemaV1<string>;

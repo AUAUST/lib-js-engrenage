@@ -46,7 +46,9 @@ async function createProjectPrettierIgnores(
 /**
  * Fills each `# @ignore <preset>` block of the project's `.prettierignore`:
  * `defaults` with Prettier's usual ignores, `project` with unformatted resources
- * and generated files. Does nothing without the file; throws on an unknown preset.
+ * and generated files. Does nothing without the file.
+ *
+ * @throws {Error} A block names an unknown preset.
  */
 export async function syncPrettierignoreFile(config: LoadedConfig) {
   const [root, filesystem, resolve, resources, project] = await Promise.all([

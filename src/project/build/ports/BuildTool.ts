@@ -6,7 +6,7 @@ export interface BuildTool extends EntryShape {
   /**
    * The value of the `build.tool` option that selects the tool; with the option
    * unset, the active tool the preset prefers is selected, else the only active
-   * one, and several throw.
+   * one, and several are a config error.
    */
   readonly name: string;
   /**

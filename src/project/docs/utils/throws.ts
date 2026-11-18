@@ -1,7 +1,8 @@
 import { createTagPreset } from "#project/docs/utils/createTagPreset";
 
 /**
- * Declares `@throws`: an optional `{type}` and a text body, repeatable.
+ * Declares the tag documenting an exception: an optional `{type}` and a
+ * text body, repeatable.
  *
  * @experimental
  */

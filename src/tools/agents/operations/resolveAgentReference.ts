@@ -26,8 +26,9 @@ async function resolveSnippet(
 /**
  * Resolves the reference of an `@reference` marker found in `from` to a file: an
  * existing file of `agents.snippetsDir` for a non-relative reference, otherwise
- * the module the reference names, resolved from `from`. Throws when the module
- * cannot be resolved.
+ * the module the reference names, resolved from `from`.
+ *
+ * @throws {Error} The module cannot be resolved.
  */
 export async function resolveAgentReference(
   {

@@ -3,7 +3,7 @@ import type { EntryShape } from "#foundation/extensions/index";
 export interface LanguageEntry extends EntryShape {
   /**
    * Names the language; ESLint's files and the import aliases target the one
-   * named `typescript`, and throw when it is absent.
+   * named `typescript`, and fail when it is absent.
    */
   readonly name: string;
   /**

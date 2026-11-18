@@ -1,7 +1,7 @@
 /**
  * Named set of project files a convention applies to: `files.<environment>` for an
  * environment's globs, `dir.<environment>` for every file under its directories.
- * Naming an environment no active extension contributes throws.
+ * Naming an environment no active extension contributes fails.
  */
 export type ScopeReference =
   | "files.code"

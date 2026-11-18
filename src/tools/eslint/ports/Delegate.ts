@@ -18,7 +18,7 @@ export interface Delegate {
   options: readonly unknown[];
   /**
    * Message ids of the upstream rule whose reports are dropped; an id the upstream
-   * rule does not declare throws.
+   * rule does not declare fails.
    */
   ignoredMessages?: readonly string[];
   /**

@@ -15,7 +15,7 @@ export interface ConventionEntry extends EntryShape, Lazy<Convention> {
   readonly name: string;
   /**
    * Option key grouping the extension's conventions. A built-in category, or one
-   * another extension contributes to, throws.
+   * another extension contributes to, fails.
    */
   readonly category: string;
 }

@@ -3,7 +3,7 @@
  */
 export interface GateResult {
   /**
-   * Whether the step passed; a step that throws counts as not passing.
+   * Whether the step passed; a step that fails unexpectedly counts as not passing.
    */
   readonly ok: boolean;
   /**

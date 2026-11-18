@@ -11,7 +11,7 @@ import type { PackageNames } from "#types/PackageNames";
 
 /**
  * The project's package manifest, each field read and validated on first access
- * and throwing when invalid. A field read directly throws when the manifest is
+ * and failing when invalid. A field read directly fails when the manifest is
  * missing or leaves it unset; its counterpart under `optional` is `undefined`
  * instead. `dependencies` lists the names `dependencies`, `devDependencies`,
  * `optionalDependencies` and `peerDependencies` declare, and `inlinedDependencies`

@@ -14,7 +14,7 @@ describe("docs.thrownErrors", () => {
   test("reports blocks stating a thrown error without a @throws tag", async () => {
     const source = [
       "/**",
-      " * Parses the value. Throws a TypeError on invalid input.",
+      " * Parses the value; raises on invalid input.",
       " */",
       "export function a(value: string): string {",
       "  return value;",
@@ -22,7 +22,7 @@ describe("docs.thrownErrors", () => {
       "/**",
       " * Loads the file.",
       " *",
-      " * @returns A promise that REJECTS with the read EXCEPTION.",
+      " * @returns A promise rejecting with a `ReadError`.",
       " */",
       "export function b(): void {}",
       "",
@@ -31,7 +31,7 @@ describe("docs.thrownErrors", () => {
     expect(await lintThrownErrors(source)).toStrictEqual([1, 7]);
   });
 
-  test("skips blocks holding a @throws tag or naming no error", async () => {
+  test("skips blocks holding a @throws tag or naming no thrown error", async () => {
     const source = [
       "/**",
       " * Parses the value; throws an error on invalid input.",
@@ -42,7 +42,7 @@ describe("docs.thrownErrors", () => {
       "  return value;",
       "}",
       "/**",
-      " * Rejects empty values by returning `undefined`.",
+      " * Rejects empty values, logging an error.",
       " */",
       "export function b(): void {}",
       "",
