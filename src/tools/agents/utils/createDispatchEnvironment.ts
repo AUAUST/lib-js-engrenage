@@ -1,7 +1,10 @@
+import { entries, record } from "@auaust/toolkit/object";
+
 import { claudeVariables } from "#tools/agents/claude/constants";
 import { codexVariables } from "#tools/agents/codex/constants";
 import { removePnpmRunEnvironment } from "#tools/pnpm/index";
 
+// @debt lists the Claude and Codex variables by hand instead of reading each from its `agents.runtimes` contribution, so a contributed runtime's session variables leak into the run
 const clientVariables = [claudeVariables, codexVariables];
 
 /**
@@ -12,8 +15,8 @@ const clientVariables = [claudeVariables, codexVariables];
 export function createDispatchEnvironment(
   environment: NodeJS.ProcessEnv,
 ): NodeJS.ProcessEnv {
-  return Object.fromEntries(
-    Object.entries(removePnpmRunEnvironment(environment)).filter(([name]) => {
+  return record(
+    entries(removePnpmRunEnvironment(environment)).filter(([name]) => {
       return !clientVariables.some(({ prefix, kept }) => {
         return (
           name.startsWith(prefix) &&

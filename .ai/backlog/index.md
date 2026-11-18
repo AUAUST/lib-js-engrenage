@@ -58,3 +58,4 @@ Deferred questions, bugs, tasks and improvements.
 - [sync](sync.md): `project/sync` target ordering and sync products.
 - [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
 - [docs](docs.md): Doc tag declarations and the readers of tagged source.
+- [issues](issues.md): GitHub issue drafts, checks and planning commands.

@@ -1,12 +1,13 @@
-import { readFile } from "node:fs/promises";
 import { findPackageJSON } from "node:module";
 import { dirname, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-import { looseObject, optional, parse, string, union } from "valibot";
+import { looseObject, optional, string, union } from "valibot";
 
 import { isObject } from "@auaust/toolkit";
 
+import { readJsonFile } from "#foundation/filesystem/index";
+import { validate } from "#foundation/options/index";
 import { sourceCondition } from "#project/package/constants";
 
 const manifestSchema = looseObject({
@@ -33,7 +34,7 @@ async function resolveSourceRoot(url: string) {
   const {
     name,
     exports,
-  } = parse(manifestSchema, JSON.parse(await readFile(manifestPath, "utf-8")));
+  } = validate(manifestSchema, await readJsonFile(manifestPath), manifestPath);
 
   const root = exports?.["."];
 
