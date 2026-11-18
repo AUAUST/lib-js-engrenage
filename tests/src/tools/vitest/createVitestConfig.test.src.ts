@@ -23,6 +23,10 @@ const typescriptPackage = fileURLToPath(
   new URL("../../../../node_modules/typescript", import.meta.url),
 );
 
+const vitestPackage = fileURLToPath(
+  new URL("../../../../node_modules/vitest", import.meta.url),
+);
+
 describe("createVitestConfig", () => {
   test("returns only the test layer: sources through the tsconfig paths and the project tsconfig outside build mode", async () => {
     const config = await loadConfig(root);
@@ -208,13 +212,14 @@ describe("createVitestConfig", () => {
 });
 
 describe("createVitestConfig type checking", () => {
-  test("fails the Vitest type check on a type error in a test", async () => {
+  test("fails the Vitest type check on a wrong type assertion in a test file, running each test once", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
       "engrenage.config.ts": "export default {};\n",
       "tsconfig.json": '{ "files": [], "references": [{ "path": "./tsconfig.tests.json" }] }',
       "tsconfig.tests.json": '{ "compilerOptions": { "strict": true, "noEmit": true, "composite": true, "noEmitOnError": false, "types": [] }, "include": ["tests"] }',
-      "tests/example.test-d.ts": 'const value: number = "text";\nexport { value };\n',
+      "tests/failing.test.ts": 'import { expectTypeOf, test } from "vitest";\ntest("failing", () => {\n  expectTypeOf<string>().toEqualTypeOf<number>();\n});\n',
+      "tests/passing.test.ts": 'import { expectTypeOf, test } from "vitest";\ntest("passing", () => {\n  expectTypeOf<number>().toEqualTypeOf<number>();\n});\n',
     });
 
     mkdirSync(project.resolve("node_modules/.bin"), {
@@ -223,6 +228,8 @@ describe("createVitestConfig type checking", () => {
 
     symlinkSync(typescriptPackage, project.resolve("node_modules/typescript"));
 
+    symlinkSync(vitestPackage, project.resolve("node_modules/vitest"));
+
     symlinkSync(
       "../typescript/bin/tsc",
       project.resolve("node_modules/.bin/tsc"),
@@ -230,15 +237,13 @@ describe("createVitestConfig type checking", () => {
 
     const config = await loadConfig(project.root);
 
-    const vitestConfig = createVitestConfig(config, {
+    const vitestConfig = await createVitestConfig(config, {
       command: "serve",
       mode: "test",
     });
 
-    const typecheckTsconfig = project.resolve("tsconfig.tests.json");
-
-    expect((await vitestConfig).test?.typecheck?.tsconfig).toBe(
-      typecheckTsconfig,
+    expect(vitestConfig.test?.typecheck?.tsconfig).toBe(
+      project.resolve("tsconfig.tests.json"),
     );
 
     const vitest = await startVitest("test", [], {
@@ -248,19 +253,33 @@ describe("createVitestConfig type checking", () => {
       watch: false,
       reporters: [],
       typecheck: {
+        ...vitestConfig.test?.typecheck,
         enabled: true,
-        include: ["tests/**/*.test-d.ts"],
-        tsconfig: typecheckTsconfig,
       },
     });
 
     try {
-      const errors = flatMap(vitest.state.getFiles(), (file) => {
-        return file.result?.errors ?? [];
+      const files = vitest.state.getFiles();
+
+      expect(
+        map(files, ({ name, meta, result }) => {
+          return `${name} ${meta.typecheck === true ? "typecheck" : "runtime"} ${result?.state}`;
+        }).toSorted(),
+      ).toEqual([
+        "tests/failing.test.ts runtime pass",
+        "tests/failing.test.ts typecheck fail",
+        "tests/passing.test.ts runtime pass",
+        "tests/passing.test.ts typecheck pass",
+      ]);
+
+      const errors = flatMap(files, (file) => {
+        return flatMap(file.tasks, (task) => {
+          return task.result?.errors ?? [];
+        });
       });
 
-      expect(map(errors, ({ message }) => message)).toContain(
-        "Type 'string' is not assignable to type 'number'.",
+      expect(map(errors, ({ message }) => message).join("\n")).toContain(
+        "Expected number, Actual string",
       );
     } finally {
       await vitest.close();

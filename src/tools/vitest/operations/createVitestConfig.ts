@@ -75,16 +75,10 @@ async function createDistPlugins(
   ];
 }
 
-async function createTestsInclude(
+async function createTestsPatterns(
   config: LoadedConfig,
   testsBuild: boolean,
-): Promise<string[] | undefined> {
-  const traits = await config.resolve("traits");
-
-  if (!traits.published) {
-    return;
-  }
-
+): Promise<string[]> {
   const tests = await config.resolve("tests");
 
   const option = await config.resolve("tests.options");
@@ -163,7 +157,11 @@ export async function createVitestConfig(
     ? tests.dist.tsconfig.path
     : tests.tsconfig.path);
 
-  const include = await createTestsInclude(config, testsBuild);
+  const testsPatterns = await createTestsPatterns(config, testsBuild);
+
+  const { published } = await config.resolve("traits");
+
+  const include = published ? testsPatterns : undefined;
 
   const [
     { fixtures },
@@ -197,11 +195,14 @@ export async function createVitestConfig(
         ],
         reportsDirectory: tests.coverageDir,
       },
-      typecheck: typecheckTsconfig === undefined
-        ? {}
-        : {
-            tsconfig: typecheckTsconfig,
-          },
+      typecheck: {
+        include: [
+          ...unique([...configDefaults.typecheck.include, ...testsPatterns]),
+        ],
+        ...(typecheckTsconfig === undefined
+          ? {}
+          : { tsconfig: typecheckTsconfig }),
+      },
     },
   };
 }
