@@ -8,8 +8,10 @@ interface ReportedMessage {
 
 export function createTestReporter(): Reporter & {
   readonly messages: readonly ReportedMessage[];
+  readonly warnings: readonly string[];
 } {
   const messages: ReportedMessage[] = [];
+  const warnings: string[] = [];
 
   function record(level: keyof Reporter) {
     return (text: string, data?: ReportData) => {
@@ -18,11 +20,16 @@ export function createTestReporter(): Reporter & {
         text,
         data,
       });
+
+      if (level === "warn") {
+        warnings.push(text);
+      }
     };
   }
 
   return {
     messages,
+    warnings,
     error: record("error"),
     warn: record("warn"),
     info: record("info"),

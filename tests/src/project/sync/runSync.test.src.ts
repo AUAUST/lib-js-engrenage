@@ -5,14 +5,10 @@ import { describe, expect, test } from "vitest";
 
 import { createProjectConfig, type LoadedConfig } from "#project/config/index";
 import { entrypoint, index } from "#project/roles/index";
-import {
-  collectChanges,
-  runSync,
-  settleChanges,
-  type SyncDone,
-} from "#project/sync/index";
+import { runSync, settleChanges, type SyncDone } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
+import { expectSettledSync } from "#tests/utils/expectSettledSync";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 function createTarget(
@@ -336,10 +332,7 @@ describe("runSync with generated sources", () => {
       readFileSync(join(root, ".claude/rules/project-map/src.md"), "utf-8"),
     ).toContain("└─ modules/  #modules/…  a*");
 
-    const copy = config.context.copy();
-
-    expect(await runSync(copy)).toEqual([]);
-    expect(await collectChanges(copy, { check: true })).toEqual([]);
+    await expectSettledSync(config);
   });
 
   test("drops a domain whose last file a generator removes from the structure later targets read", async () => {

@@ -254,11 +254,8 @@ describe("contributed environments", () => {
       "# Project map: liquid",
     );
 
-    expect(reporter.messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: expect.stringContaining("No GitHub snapshot"),
-      }),
+    expect(reporter.warnings).toContainEqual(
+      expect.stringContaining("No GitHub snapshot"),
     );
   });
 

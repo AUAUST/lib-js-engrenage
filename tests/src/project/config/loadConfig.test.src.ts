@@ -158,17 +158,9 @@ describe("loadConfig", () => {
 
     expect((await missing.resolve("tsconfig")).outDir).toBe("build");
 
-    const misnamed = {
-      level: "warn",
-      text: "The base tsconfig tsconfig.app.json is not named tsconfig.json, the only name editors and typed lint discover",
-      data: undefined,
-    };
+    const misnamed = "The base tsconfig tsconfig.app.json is not named tsconfig.json, the only name editors and typed lint discover";
 
-    expect(
-      reporter.messages.filter(({ level }) => {
-        return level === "warn";
-      }),
-    ).toEqual([misnamed, misnamed]);
+    expect(reporter.warnings).toEqual([misnamed, misnamed]);
 
     const explicitDefault = await loadConfig(
       createTemporaryProject({

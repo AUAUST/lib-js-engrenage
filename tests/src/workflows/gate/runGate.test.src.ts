@@ -291,11 +291,8 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       failures: await runSync(config),
     });
 
-    expect(reporter.messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: expect.stringContaining("engrenage pnpm upgrade"),
-      }),
+    expect(reporter.warnings).toContainEqual(
+      expect.stringContaining("engrenage pnpm upgrade"),
     );
 
     loadConfig.refresh(project.root);

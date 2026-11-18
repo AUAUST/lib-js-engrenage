@@ -314,7 +314,7 @@ async function verify(
   if (stamps.length > 0) {
     const initial = await readTreeIdentity(config, mode);
 
-    // @debt a stamped tree reports no budget warnings, so the commit after a passing stop never shows them again.
+    // @debt a stamped tree reports no budget or step warnings, so the commit after a passing stop never shows them again.
     if (stamps.some((line) => isReusable(line, mode, initial))) {
       return { failures: [], warnings: [] };
     }

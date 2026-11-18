@@ -47,6 +47,8 @@ async function runStop() {
 
   const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
 
+  write.mockClear();
+
   await runDefinition(stop);
 
   const exitCode = process.exitCode ?? 0;

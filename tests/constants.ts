@@ -5,3 +5,11 @@ export const gateIdentity = freeze({
   session: "session",
   agent: "agent",
 });
+
+export const eslintPackageJson = JSON.stringify({
+  type: "module",
+  devDependencies: {
+    eslint: "*",
+    typescript: "*",
+  },
+});

@@ -5,6 +5,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
+import { findDirectories } from "#foundation/filesystem/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
@@ -74,20 +75,12 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
     context.filesystem,
   ]);
 
-  const shipped = toArray(concat(data.dirs, sourcemap ? source.dirs : []));
-
-  const present = await Promise.all(
-    shipped.map((dir) => filesystem.isDirectory(dir)),
+  const shipped = await findDirectories(
+    filesystem,
+    toArray(concat(data.dirs, sourcemap ? source.dirs : [])),
   );
 
-  const files = toArray(
-    unique(
-      concat(
-        [directory],
-        shipped.filter((_, index) => present[index]),
-      ),
-    ),
-  );
+  const files = toArray(unique(concat([directory], shipped)));
 
   const commands = entries(
     await resolveCommandFiles(

@@ -57,11 +57,8 @@ async function syncWithoutBaseline(
 
   await config.context.filesystem.flush();
 
-  expect(reporter.messages).toContainEqual(
-    expect.objectContaining({
-      level: "warn",
-      text: expect.stringContaining("src.baseline is not set"),
-    }),
+  expect(reporter.warnings).toContainEqual(
+    expect.stringContaining("src.baseline is not set"),
   );
 
   return JSON.parse(project.read("tsconfig.src.json")).compilerOptions;
@@ -242,11 +239,8 @@ describe("runtime tsconfig fields", () => {
       "@auaust/engrenage/apis/timers",
     ]);
 
-    expect(reporter.messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: expect.stringContaining("src.apis lists float16"),
-      }),
+    expect(reporter.warnings).toContainEqual(
+      expect.stringContaining("src.apis lists float16"),
     );
 
     const earlier = await syncCompilerOptions({

@@ -67,10 +67,8 @@ describe("loadConfig", () => {
 
     await config.resolve("tooling.options");
 
-    expect(reporter.messages).toContainEqual({
-      level: "warn",
-      text: "tooling.dirs lists config more than once",
-      data: undefined,
-    });
+    expect(reporter.warnings).toContain(
+      "tooling.dirs lists config more than once",
+    );
   });
 });

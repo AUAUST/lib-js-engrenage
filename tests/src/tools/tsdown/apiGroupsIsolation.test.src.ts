@@ -125,11 +125,8 @@ describe("api groups of a library", () => {
   test("never reach its published declarations nor its consumers", async () => {
     const { library, reporter } = await buildLibrary();
 
-    expect(reporter.messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: expect.stringContaining("src.baseline is not set"),
-      }),
+    expect(reporter.warnings).toContainEqual(
+      expect.stringContaining("src.baseline is not set"),
     );
 
     expect(runTsc(library.root)).toBe("");

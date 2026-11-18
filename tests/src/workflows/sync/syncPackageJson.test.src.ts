@@ -41,8 +41,8 @@ async function sync(
   };
 }
 
-function isPrivateWarning({ level, text }: { level: string; text: string }) {
-  return level === "warn" && text.includes("`published` trait");
+function isPrivateWarning(text: string) {
+  return text.includes("`published` trait");
 }
 
 const library = `{
@@ -161,7 +161,7 @@ describe("syncPackageJson", () => {
       manifest,
     } = await sync(`{ runtime: { node: 24 } }`, {}, {}, reporter);
 
-    expect(reporter.messages.filter(isPrivateWarning)).toEqual([]);
+    expect(reporter.warnings.filter(isPrivateWarning)).toEqual([]);
 
     expect(await manifest()).toEqual({
       type: "module",
@@ -186,10 +186,8 @@ describe("syncPackageJson", () => {
       reporter,
     );
 
-    expect(reporter.messages.filter(isPrivateWarning)).toEqual([
-      expect.objectContaining({
-        text: expect.stringMatching(/^package\.json: exports is set/),
-      }),
+    expect(reporter.warnings.filter(isPrivateWarning)).toEqual([
+      expect.stringMatching(/^package\.json: exports is set/),
     ]);
   });
 

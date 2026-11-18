@@ -11,8 +11,9 @@ import {
   utils,
   type Role,
 } from "#project/roles/index";
-import { collectChanges, runSync } from "#project/sync/index";
+import { runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
+import { expectSettledSync } from "#tests/utils/expectSettledSync";
 import { createEslintConfig } from "#tools/eslint/index";
 import { createBarrelRenderer } from "#tools/typescript/operations/createBarrelRenderer";
 import { planBarrels } from "#tools/typescript/operations/planBarrels";
@@ -75,10 +76,7 @@ export * as object from "#modules/object/entry";
 `,
     );
 
-    const copy = config.context.copy();
-
-    expect(await runSync(copy)).toEqual([]);
-    expect(await collectChanges(copy, { check: true })).toEqual([]);
+    await expectSettledSync(config);
   });
 
   test("orders a barrel mixing export groups as the export order lint wants", async () => {

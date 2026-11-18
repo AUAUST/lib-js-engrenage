@@ -60,11 +60,8 @@ async function buildProject(options?: Options) {
     logLevel: "silent",
   });
 
-  expect(reporter.messages).toContainEqual(
-    expect.objectContaining({
-      level: "warn",
-      text: expect.stringContaining("src.baseline is not set"),
-    }),
+  expect(reporter.warnings).toContainEqual(
+    expect.stringContaining("src.baseline is not set"),
   );
 
   return project;

@@ -94,13 +94,10 @@ describe("engrenage pnpm upgrade", () => {
       },
     });
 
-    const { messages } = await runDefinition(pnpm, "upgrade", "--yes");
+    const { warnings } = await runDefinition(pnpm, "upgrade", "--yes");
 
-    expect(messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: expect.stringContaining("update engrenage"),
-      }),
+    expect(warnings).toContainEqual(
+      expect.stringContaining("update engrenage"),
     );
 
     expect(resolveLatestPnpm).toHaveBeenCalledWith(

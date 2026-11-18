@@ -62,13 +62,11 @@ describe("engrenage structure", () => {
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    const { messages } = await runDefinition(structure, "--check");
+    const { warnings } = await runDefinition(structure, "--check");
 
-    expect(messages).toContainEqual({
-      level: "warn",
-      text: "src/feature has no purpose: set one on its `domains` entry.",
-      data: undefined,
-    });
+    expect(warnings).toContain(
+      "src/feature has no purpose: set one on its `domains` entry.",
+    );
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -78,9 +76,9 @@ describe("engrenage structure", () => {
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',
     );
 
-    const { messages } = await runDefinition(structure, "--check");
+    const { warnings } = await runDefinition(structure, "--check");
 
-    expect(messages.filter(({ level }) => level === "warn")).toStrictEqual([]);
+    expect(warnings).toStrictEqual([]);
   });
 
   test("fails the check on an unclassified directory of a strict environment", async () => {

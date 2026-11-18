@@ -8,6 +8,7 @@ import { loadConfig } from "@auaust/engrenage/extensions";
 import { validate } from "@auaust/engrenage/options/internals";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 
+import { eslintPackageJson } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 function schemaUrl(root: string, name: string): string {
@@ -35,14 +36,6 @@ async function syncSchemas(
   return settings["json.schemas"];
 }
 
-const packageJson = JSON.stringify({
-  type: "module",
-  devDependencies: {
-    eslint: "*",
-    typescript: "*",
-  },
-});
-
 const settings = `{
   // Kept by the project.
   "editor.codeActionsOnSave": {
@@ -58,7 +51,7 @@ describe("syncVscodeFiles", () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
       "eslint.config.ts": "export default [];\n",
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
       ".vscode/settings.json": settings,
     });
 
@@ -121,7 +114,7 @@ describe("syncVscodeFiles", () => {
 
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
       ".vscode/settings.json": JSON.stringify({
         "json.schemas": [own],
       }),
@@ -147,7 +140,7 @@ describe("syncVscodeFiles", () => {
 
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default {};\n",
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
     });
 
     project.write(
@@ -203,7 +196,7 @@ describe("syncVscodeFiles", () => {
   test("updates existing enabled files and skips disabled or missing ones", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": "export default { vscode: { settings: false } };\n",
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
       ".vscode/settings.json": settings,
       ".vscode/extensions.json": "{}\n",
     });

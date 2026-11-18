@@ -327,11 +327,8 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
       join(project.root, "tsconfig.base.json"),
     );
 
-    expect(reporter.messages).toContainEqual(
-      expect.objectContaining({
-        level: "warn",
-        text: "The base tsconfig tsconfig.base.json is not named tsconfig.json, the only name editors and typed lint discover",
-      }),
+    expect(reporter.warnings).toContain(
+      "The base tsconfig tsconfig.base.json is not named tsconfig.json, the only name editors and typed lint discover",
     );
   });
 });

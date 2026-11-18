@@ -47,11 +47,9 @@ describe("reference directive", () => {
 
     expect(await fillBlocks(config, "AGENTS.md")).toBe(instructions);
 
-    expect(reporter.messages).toContainEqual({
-      level: "warn",
-      text: `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
-      data: undefined,
-    });
+    expect(reporter.warnings).toContain(
+      `Cannot resolve reference "./missing.md" in ${project.resolve("AGENTS.md")}: its block is left untouched`,
+    );
   });
 
   test("renders a filler directive inside the referenced fragment", async () => {

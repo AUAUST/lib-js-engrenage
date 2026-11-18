@@ -7,6 +7,7 @@ import { map } from "@auaust/toolkit/array";
 
 import { validate } from "#foundation/options/index";
 import { loadConfig } from "#project/config/index";
+import { eslintPackageJson } from "#tests/constants";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -15,14 +16,6 @@ import { syncVscodeFiles } from "#tools/vscode/index";
 const eslintEntry = fileURLToPath(
   new URL("../../../../src/tools/eslint/index.ts", import.meta.url),
 );
-
-const packageJson = JSON.stringify({
-  type: "module",
-  devDependencies: {
-    eslint: "*",
-    typescript: "*",
-  },
-});
 
 describe("syncVscodeFiles", { timeout: binaryTimeout }, () => {
   test("shows the rules the ESLint config declares as info at info severity", async () => {
@@ -37,7 +30,7 @@ export default defineEslintConfig({}, {
   },
 });
 `,
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
     });
 
     mockCwd(project.root);
@@ -85,7 +78,7 @@ export default defineEslintConfig({}, {
   },
 });
 `,
-      "package.json": packageJson,
+      "package.json": eslintPackageJson,
       ".vscode/settings.json": `{
   "eslint.rules.customizations": [
     { "rule": "no-console", "severity": "warn" },
