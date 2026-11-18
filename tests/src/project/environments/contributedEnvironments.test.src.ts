@@ -20,6 +20,7 @@ import {
   resolveEnvironmentDirs,
 } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncAgents } from "#tools/agents/index";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
@@ -190,6 +191,8 @@ function createConfig(
     ...files,
   });
 
+  const reporter = createTestReporter();
+
   const config = createProjectConfig({
     root: project.root,
     raw: withSourceRuntime({
@@ -197,14 +200,19 @@ function createConfig(
       ...input,
     }),
     configFile: undefined,
+    reporter,
   });
 
-  return { project, config };
+  return {
+    project,
+    config,
+    reporter,
+  };
 }
 
 describe("contributed environments", () => {
   test("get a matrix row, a column no other environment imports and their own project map", async () => {
-    const { project, config } = createConfig(
+    const { project, config, reporter } = createConfig(
       {
         agents: { preferred: ["claude"] },
       },
@@ -244,6 +252,13 @@ describe("contributed environments", () => {
 
     expect(project.read(".claude/rules/project-map/liquid.md")).toContain(
       "# Project map: liquid",
+    );
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("No GitHub snapshot"),
+      }),
     );
   });
 

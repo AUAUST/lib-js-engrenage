@@ -143,7 +143,7 @@ function createWorkingCopy(message?: string) {
     "package.json": JSON.stringify({ repository: "o/r" }),
   });
 
-  execFileSync("git", ["init", "--quiet"], { cwd: root });
+  execFileSync("git", ["init", "--quiet"], { cwd: root, stdio: "pipe" });
 
   if (message !== undefined) {
     execFileSync(
@@ -159,7 +159,7 @@ function createWorkingCopy(message?: string) {
         "-m",
         message,
       ],
-      { cwd: root },
+      { cwd: root, stdio: "pipe" },
     );
   }
 
@@ -244,6 +244,7 @@ describe("checkIssueTree", () => {
     const hash = execFileSync("git", ["log", "--format=%h", "-1"], {
       cwd: root,
       encoding: "utf-8",
+      stdio: "pipe",
     }).trim();
 
     expect(formatIssueTreeCheck(check).slice(2, 5)).toEqual([

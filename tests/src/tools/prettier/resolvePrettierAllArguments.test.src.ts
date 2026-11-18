@@ -57,7 +57,10 @@ describe("resolvePrettierAllArguments", () => {
       ".github/workflows/publish.yml": "",
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: repository.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: repository.root,
+      stdio: "pipe",
+    });
 
     for (const [path, content] of entries(files)) {
       repository.write(join("app", path), content);

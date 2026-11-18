@@ -1,6 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
+import { Writable } from "node:stream";
 import { fileURLToPath } from "node:url";
 
 import { createServer, mergeConfig } from "vite";
@@ -13,6 +14,7 @@ import { flatMap, map } from "@auaust/toolkit/array";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { testsetup } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { getFixture } from "#tests/utils/getFixture";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
 import { createVitestConfig } from "#tools/vitest/operations/createVitestConfig";
@@ -248,18 +250,30 @@ describe("createVitestConfig type checking", () => {
       project.resolve("tsconfig.tests.json"),
     );
 
-    const vitest = await startVitest("test", [], {
-      root: project.root,
-      config: false,
-      run: true,
-      watch: false,
-      reporters: [],
-      exclude: vitestConfig.test?.exclude ?? [],
-      typecheck: {
-        ...vitestConfig.test?.typecheck,
-        enabled: true,
+    const vitest = await startVitest(
+      "test",
+      [],
+      {
+        root: project.root,
+        config: false,
+        run: true,
+        watch: false,
+        reporters: [],
+        exclude: vitestConfig.test?.exclude ?? [],
+        typecheck: {
+          ...vitestConfig.test?.typecheck,
+          enabled: true,
+        },
       },
-    });
+      {},
+      {
+        stderr: new Writable({
+          write(_chunk, _encoding, callback) {
+            callback();
+          },
+        }),
+      },
+    );
 
     try {
       const files = vitest.state.getFiles();
@@ -300,7 +314,9 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
       "tsconfig.base.json": "{}",
     });
 
-    const config = await loadConfig(project.root);
+    const reporter = createTestReporter();
+
+    const config = await loadConfig(project.root, { reporter });
 
     const vitestConfig = createVitestConfig(config, {
       command: "serve",
@@ -309,6 +325,13 @@ describe("createVitestConfig with a renamed base tsconfig", () => {
 
     expect((await vitestConfig).tsconfig).toBe(
       join(project.root, "tsconfig.base.json"),
+    );
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: "The base tsconfig tsconfig.base.json is not named tsconfig.json, the only name editors and typed lint discover",
+      }),
     );
   });
 });
@@ -322,7 +345,10 @@ describe("createVitestConfig in a Git repository", () => {
       "worktrees/copy/tests/a.test.ts": "\n",
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     project.write(".git/info/exclude", "worktrees/\n");
 

@@ -776,7 +776,7 @@ describe("formatIssueCheck", () => {
         "-m",
         message,
       ],
-      { cwd: root },
+      { cwd: root, stdio: "pipe" },
     );
   }
 
@@ -785,7 +785,10 @@ describe("formatIssueCheck", () => {
       "package.json": JSON.stringify({ repository }),
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     commitIn(project.root, "feat: a\n\nCloses #13\nCloses #15");
     commitIn(project.root, "cq: b\n\nTowards #11");
@@ -817,7 +820,11 @@ describe("formatIssueCheck", () => {
     const [closing, towards] = execFileSync(
       "git",
       ["log", "--format=%h", "--reverse"],
-      { cwd: root, encoding: "utf-8" },
+      {
+        cwd: root,
+        encoding: "utf-8",
+        stdio: "pipe",
+      },
     )
       .trim()
       .split("\n");

@@ -1,9 +1,8 @@
-import { vi } from "vitest";
-
 import { createProjectConfig } from "#project/config/index";
 import { entrypoint, index, type Role } from "#project/roles/index";
 import { runSync, settleChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 export function createBarrelProject({
@@ -53,19 +52,14 @@ export function createBarrelProject({
       extensions,
     },
     configFile: undefined,
+    reporter: createTestReporter(),
   });
 
   async function sync() {
-    const info = vi.spyOn(console, "info").mockImplementation(() => {});
-
-    try {
-      await settleChanges(config, {
-        check: false,
-        failures: await runSync(config),
-      });
-    } finally {
-      info.mockRestore();
-    }
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
   }
 
   return {

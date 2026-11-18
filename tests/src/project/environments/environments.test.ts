@@ -176,7 +176,10 @@ describe("environments", () => {
       "bin/run.ts": "",
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     const config = await loadConfig(project.root);
 
@@ -197,8 +200,12 @@ describe("environments", () => {
       "kept.config.ts": "",
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: ignored.root });
-    execFileSync("git", ["init", "--quiet"], { cwd: kept.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: ignored.root,
+      stdio: "pipe",
+    });
+
+    execFileSync("git", ["init", "--quiet"], { cwd: kept.root, stdio: "pipe" });
 
     const ignoredConfig = await loadConfig(ignored.root);
 

@@ -5,6 +5,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
 import type { Options } from "#tools/tsdown/types/Options";
 
@@ -49,13 +50,22 @@ async function buildProject(options?: Options) {
     "src/shared.ts": 'export const shared = "shared";',
   });
 
-  const config = await loadConfig(project.root);
+  const reporter = createTestReporter();
+
+  const config = await loadConfig(project.root, { reporter });
 
   await build({
     ...(await createTsdownConfig(config, { ci: false }, options)),
     config: false,
     logLevel: "silent",
   });
+
+  expect(reporter.messages).toContainEqual(
+    expect.objectContaining({
+      level: "warn",
+      text: expect.stringContaining("src.baseline is not set"),
+    }),
+  );
 
   return project;
 }

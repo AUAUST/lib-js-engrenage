@@ -69,6 +69,7 @@ function isGitIgnored(project: ReturnType<typeof createTheme>, path: string) {
   try {
     execFileSync("git", ["check-ignore", "--quiet", path], {
       cwd: project.root,
+      stdio: "pipe",
     });
 
     return true;
@@ -97,7 +98,10 @@ describe("shopify-theme", { timeout: binaryTimeout }, () => {
 
     await config.context.filesystem.flush();
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     expect(isGitIgnored(project, "assets/d-x.js")).toBe(true);
 

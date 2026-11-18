@@ -15,7 +15,10 @@ function createRepository() {
     "worktrees/copy/a.test.ts": "\n",
   });
 
-  execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+  execFileSync("git", ["init", "--quiet"], {
+    cwd: project.root,
+    stdio: "pipe",
+  });
 
   project.write(".git/info/exclude", "worktrees/\n");
 

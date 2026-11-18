@@ -35,7 +35,10 @@ describe("hashTree", () => {
   test("excludes files on an unborn branch", async () => {
     const project = createTemporaryProject({ "a.md": "a\n" });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     const tree = await hashTree(project.root, { mode: "worktree" });
 

@@ -130,7 +130,10 @@ describe("syncWorkflowFiles", () => {
       }),
     });
 
-    execFileSync("git", ["init", "--quiet"], { cwd: project.root });
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
 
     const config = await loadConfig(project.resolve("packages/app"));
 

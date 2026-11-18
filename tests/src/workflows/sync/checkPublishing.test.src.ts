@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 
 const placeholder = "{dir}";
 
@@ -27,7 +28,11 @@ async function check(
     ...files,
   });
 
-  const [failure] = await runSync(await loadConfig(project.root), {
+  const loaded = await loadConfig(project.root, {
+    reporter: createTestReporter(),
+  });
+
+  const [failure] = await runSync(loaded, {
     names: ["package", "publishing"],
   });
 

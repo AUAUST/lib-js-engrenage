@@ -8,6 +8,7 @@ import { describe, expect, test } from "vitest";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { createTsdownConfig } from "#tools/tsdown/operations/createTsdownConfig";
@@ -73,7 +74,9 @@ async function buildLibrary() {
 
   mockCwd(project.root);
 
-  const config = await loadConfig(project.root);
+  const reporter = createTestReporter();
+
+  const config = await loadConfig(project.root, { reporter });
 
   await build({
     ...(await createTsdownConfig(config, { ci: false })),
@@ -81,7 +84,7 @@ async function buildLibrary() {
     logLevel: "silent",
   });
 
-  return project;
+  return { library: project, reporter };
 }
 
 function createConsumer(
@@ -120,7 +123,14 @@ function createConsumer(
 
 describe("api groups of a library", () => {
   test("never reach its published declarations nor its consumers", async () => {
-    const library = await buildLibrary();
+    const { library, reporter } = await buildLibrary();
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("src.baseline is not set"),
+      }),
+    );
 
     expect(runTsc(library.root)).toBe("");
 

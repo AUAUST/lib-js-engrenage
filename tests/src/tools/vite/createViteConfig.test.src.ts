@@ -6,7 +6,9 @@ import { describe, expect, test } from "vitest";
 import { resolveBuildTarget } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
+import type { Reporter } from "#foundation/reports/index";
 
 const viteManifest = JSON.stringify({
   type: "module",
@@ -16,6 +18,7 @@ const viteManifest = JSON.stringify({
 async function loadProject(
   config: Record<string, unknown>,
   files: Record<string, string> = {},
+  reporter: Reporter = createTestReporter(),
 ) {
   const project = createTemporaryProject({
     "package.json": '{ "type": "module" }',
@@ -23,7 +26,7 @@ async function loadProject(
     ...files,
   });
 
-  return await loadConfig(project.root);
+  return await loadConfig(project.root, { reporter });
 }
 
 describe("createViteConfig", () => {
@@ -101,6 +104,8 @@ describe("createViteConfig", () => {
   );
 
   test("anchors root at src and the output at the project root", async () => {
+    const reporter = createTestReporter();
+
     const config = await loadProject(
       {
         build: { outDir: "dist" },
@@ -109,6 +114,7 @@ describe("createViteConfig", () => {
         "package.json": viteManifest,
         "src/index.html": "",
       },
+      reporter,
     );
 
     const { root } = config.context;
@@ -122,17 +128,34 @@ describe("createViteConfig", () => {
     });
 
     expect(mergeConfig(vite, { root }).build?.outDir).toBe(join(root, "dist"));
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("src.baseline is not set"),
+      }),
+    );
   });
 
   test("keeps the project root under tests", async () => {
+    const reporter = createTestReporter();
+
     const config = await loadProject(
       {},
       { "package.json": viteManifest, "src/index.html": "" },
+      reporter,
     );
 
     const vite = await createViteConfig(config, { isTesting: true });
 
     expect(vite.root).toBe(config.context.root);
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("src.baseline is not set"),
+      }),
+    );
   });
 
   test("fails outside tests with several src.dirs", async () => {

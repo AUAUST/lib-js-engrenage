@@ -119,7 +119,9 @@ describe("loadConfig", () => {
       "tsconfig.app.json": tsconfig,
     });
 
-    const config = await loadConfig(root);
+    const reporter = createTestReporter();
+
+    const config = await loadConfig(root, { reporter });
 
     expect((await config.resolve("tsconfig")).outDir).toBe("build");
     expect(await config.resolve("build.outDir")).toBe("build");
@@ -141,6 +143,7 @@ describe("loadConfig", () => {
       createTemporaryProject({
         "engrenage.config.ts": appConfig,
       }).root,
+      { reporter },
     );
 
     await expect(async () => missing.resolve("tsconfigPath")).rejects.toThrow(
@@ -154,6 +157,18 @@ describe("loadConfig", () => {
     );
 
     expect((await missing.resolve("tsconfig")).outDir).toBe("build");
+
+    const misnamed = {
+      level: "warn",
+      text: "The base tsconfig tsconfig.app.json is not named tsconfig.json, the only name editors and typed lint discover",
+      data: undefined,
+    };
+
+    expect(
+      reporter.messages.filter(({ level }) => {
+        return level === "warn";
+      }),
+    ).toEqual([misnamed, misnamed]);
 
     const explicitDefault = await loadConfig(
       createTemporaryProject({

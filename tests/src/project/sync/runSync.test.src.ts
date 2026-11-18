@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { createProjectConfig, type LoadedConfig } from "#project/config/index";
 import { entrypoint, index } from "#project/roles/index";
@@ -279,6 +279,7 @@ describe("runSync with generated sources", () => {
         ],
       },
       configFile: undefined,
+      reporter: createTestReporter(),
     });
   }
 
@@ -312,41 +313,33 @@ describe("runSync with generated sources", () => {
       ],
     );
 
-    const stdout = vi
-      .spyOn(process.stdout, "write")
-      .mockImplementation(() => true);
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
 
-    try {
-      await settleChanges(config, {
-        check: false,
-        failures: await runSync(config),
-      });
+    const { root } = config.context;
 
-      const { root } = config.context;
+    expect(readFileSync(join(root, "src/modules/a/entry.ts"), "utf-8")).toBe(
+      "export const a = 1;\n",
+    );
 
-      expect(readFileSync(join(root, "src/modules/a/entry.ts"), "utf-8")).toBe(
-        "export const a = 1;\n",
-      );
+    expect(
+      JSON.parse(readFileSync(join(root, "tsconfig.json"), "utf-8"))
+        .compilerOptions.paths,
+    ).toEqual({
+      "@fixture/project": ["./src/entry.ts"],
+      "@fixture/project/a": ["./src/modules/a/entry.ts"],
+    });
 
-      expect(
-        JSON.parse(readFileSync(join(root, "tsconfig.json"), "utf-8"))
-          .compilerOptions.paths,
-      ).toEqual({
-        "@fixture/project": ["./src/entry.ts"],
-        "@fixture/project/a": ["./src/modules/a/entry.ts"],
-      });
+    expect(
+      readFileSync(join(root, ".claude/rules/project-map/src.md"), "utf-8"),
+    ).toContain("└─ modules/  #modules/…  a*");
 
-      expect(
-        readFileSync(join(root, ".claude/rules/project-map/src.md"), "utf-8"),
-      ).toContain("└─ modules/  #modules/…  a*");
+    const copy = config.context.copy();
 
-      const copy = config.context.copy();
-
-      expect(await runSync(copy)).toEqual([]);
-      expect(await collectChanges(copy, { check: true })).toEqual([]);
-    } finally {
-      stdout.mockRestore();
-    }
+    expect(await runSync(copy)).toEqual([]);
+    expect(await collectChanges(copy, { check: true })).toEqual([]);
   });
 
   test("drops a domain whose last file a generator removes from the structure later targets read", async () => {

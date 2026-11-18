@@ -3,12 +3,11 @@ import { mkdirSync, symlinkSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { vi } from "vitest";
-
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { settleChanges } from "#project/sync/operations/settleChanges";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 const repositoryModules = fileURLToPath(
@@ -16,16 +15,13 @@ const repositoryModules = fileURLToPath(
 );
 
 async function syncProject(root: string) {
-  const config = await loadConfig(root);
-
-  const info = vi.spyOn(console, "info").mockImplementation(() => {});
+  const config = await loadConfig(root, { reporter: createTestReporter() });
 
   try {
     const failures = await runSync(config);
 
     await settleChanges(config, { check: false, failures });
   } finally {
-    info.mockRestore();
     loadConfig.refresh(root);
   }
 }
@@ -55,6 +51,7 @@ export async function createGitRepository(
     return execFileSync("git", args, {
       cwd: project.root,
       encoding: "utf-8",
+      stdio: "pipe",
     });
   }
 

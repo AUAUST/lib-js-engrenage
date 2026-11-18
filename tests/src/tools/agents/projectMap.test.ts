@@ -7,6 +7,7 @@ import { loadConfig } from "@auaust/engrenage/extensions";
 import { createRolePreset, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 
 const handlers = createRolePreset({
@@ -57,7 +58,9 @@ async function sync(peers?: number, published?: boolean) {
 }
 
 async function syncProject(project: ReturnType<typeof createTemporaryProject>) {
-  const config = await loadConfig(project.root);
+  const config = await loadConfig(project.root, {
+    reporter: createTestReporter(),
+  });
 
   await syncAgents(config);
 

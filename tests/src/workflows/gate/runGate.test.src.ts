@@ -7,6 +7,7 @@ import { runSync } from "#project/sync/index";
 import { settleChanges } from "#project/sync/operations/settleChanges";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGateRepository } from "#tests/utils/createGateRepository";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runGate } from "#workflows/gate/operations/runGate";
 
@@ -281,12 +282,21 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       }),
     );
 
-    const config = await loadConfig(project.root);
+    const reporter = createTestReporter();
+
+    const config = await loadConfig(project.root, { reporter });
 
     await settleChanges(config, {
       check: false,
       failures: await runSync(config),
     });
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "warn",
+        text: expect.stringContaining("engrenage pnpm upgrade"),
+      }),
+    );
 
     loadConfig.refresh(project.root);
 

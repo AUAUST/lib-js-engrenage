@@ -1,1 +1,4 @@
-export default { preset: "library" };
+export default {
+  preset: "library",
+  src: { node: 24 },
+};

@@ -41,6 +41,32 @@ async function syncCompilerOptions(
   return (file: string) => JSON.parse(project.read(file)).compilerOptions;
 }
 
+async function syncWithoutBaseline(
+  project: ReturnType<typeof createTemporaryProject>,
+) {
+  const reporter = createTestReporter();
+
+  const config = createProjectConfig({
+    root: project.root,
+    raw: {},
+    configFile: undefined,
+    reporter,
+  });
+
+  await syncTsconfigFiles(config);
+
+  await config.context.filesystem.flush();
+
+  expect(reporter.messages).toContainEqual(
+    expect.objectContaining({
+      level: "warn",
+      text: expect.stringContaining("src.baseline is not set"),
+    }),
+  );
+
+  return JSON.parse(project.read("tsconfig.src.json")).compilerOptions;
+}
+
 describe("runtime tsconfig fields", () => {
   test("writes the libs selected for a snapshot, without noLib", async () => {
     const read = await syncCompilerOptions({
@@ -247,19 +273,7 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createProjectConfig({
-      root: project.root,
-      raw: {},
-      configFile: undefined,
-    });
-
-    await syncTsconfigFiles(config);
-
-    await config.context.filesystem.flush();
-
-    const options = JSON.parse(
-      project.read("tsconfig.src.json"),
-    ).compilerOptions;
+    const options = await syncWithoutBaseline(project);
 
     expect(options.types).toEqual(["custom"]);
     expect(options).not.toHaveProperty("noLib");
@@ -341,19 +355,7 @@ describe("runtime tsconfig fields", () => {
       }),
     });
 
-    const config = createProjectConfig({
-      root: project.root,
-      raw: {},
-      configFile: undefined,
-    });
-
-    await syncTsconfigFiles(config);
-
-    await config.context.filesystem.flush();
-
-    const options = JSON.parse(
-      project.read("tsconfig.src.json"),
-    ).compilerOptions;
+    const options = await syncWithoutBaseline(project);
 
     expect(options.lib).toEqual(["ES2022"]);
     expect(options).not.toHaveProperty("noLib");
