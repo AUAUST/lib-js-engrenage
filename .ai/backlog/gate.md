@@ -23,3 +23,9 @@ The commit gate and its process locks.
 
 - why: it fixes files other sessions changed, and its lint output interleaves runs from other worktrees (6 friction lines; #615 › F25).
 - want: the gate limited to the session's own changes, and output kept per run.
+
+## 5. The commit gate refuses the `snap` commit setting aside a leaf held for a failing gate
+
+- why: `walking.md` §Dispatching commits its rest on `worker/issue-<n>` or `debugger/issue-<n>`; bypasses are denied; stopping ends the autonomous walk.
+- want: the gate exempting `snap` on `worker/*` and `debugger/*`; meanwhile, the skill leaving the rest uncommitted in a worktree on that branch, stashed there at K = 1.
+- done: such a leaf reaches its branch without a gate bypass.
