@@ -3,7 +3,7 @@ import { defineLazyCommand } from "#workflows/cli/index";
 export default defineLazyCommand({
   configure(command) {
     return command.description(
-      "Deny a `gh issue create|edit` body that breaks the issue contract, and warn or deny when a `gh issue create|edit|comment` body is over budget, reading Codex's PreToolUse payload from stdin.",
+      "Deny `gh issue create` and a `gh issue edit` body that breaks the issue contract, and warn or deny when a `gh issue edit|comment` body is over budget, reading Codex's PreToolUse payload from stdin.",
     );
   },
   action() {

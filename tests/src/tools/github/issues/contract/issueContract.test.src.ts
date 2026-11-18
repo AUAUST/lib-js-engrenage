@@ -854,21 +854,23 @@ describe("checkGithubWrite", () => {
     ).resolves.toBeUndefined();
   });
 
-  test("checks every write of a command, leaving a created body without a declared type unchecked", async () => {
-    mockProblem();
-
+  test("denies `gh issue create`, naming the planning commands", async () => {
     const project = createTemporaryProject({
       [draft]: `${task}\n## Scope\n\nx\n`,
     });
 
-    await expect(
-      checkGithubWrite(
-        `gh issue create --title y --body '## Scope'`,
-        project.root,
-        registry,
-        protocol,
-      ),
-    ).resolves.toBeUndefined();
+    const reason = await checkGithubWrite(
+      `gh issue create --title y --body '## Scope'`,
+      project.root,
+      registry,
+      protocol,
+    );
+
+    expect(reason).toContain("gh issue create:");
+
+    expect(reason).toContain("pnpm engrenage planning issue create");
+
+    mockProblem();
 
     await expect(
       checkGithubWrite(
@@ -877,7 +879,7 @@ describe("checkGithubWrite", () => {
         registry,
         protocol,
       ),
-    ).resolves.toContain("Scope");
+    ).resolves.toContain("gh issue create:");
   });
 
   test("names a missing draft", async () => {

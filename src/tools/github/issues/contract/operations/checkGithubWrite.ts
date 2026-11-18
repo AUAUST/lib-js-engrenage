@@ -17,6 +17,10 @@ async function checkWrite(
   repositories: () => Promise<ReadonlyMap<string, string>>,
   protocol: IssueProtocol,
 ): Promise<string | undefined> {
+  if (write.action === "create") {
+    return "create issues as drafts with `pnpm engrenage planning issue create <type>` and publish them with `pnpm engrenage planning issue publish <refs>`, which set the type and fields";
+  }
+
   if (write.action === "comment" || write.body === undefined) {
     return;
   }
@@ -31,28 +35,23 @@ async function checkWrite(
     return "pass the body with `--body`, `--body-file <file>`, or `--body-file -` and a heredoc";
   }
 
-  // @debt `gh issue create` declares no type, so its body is checked against no contract until the issue is edited or dispatched.
-  let type: string | undefined;
-
-  if (write.action === "edit" && write.number !== undefined) {
-    const issue = await fetchIssue(
-      {
-        repository: await resolveRepository(
-          { root: cwd, repositories },
-          write.repository,
-        ),
-        client: await createGithubClient(),
-        protocol,
-      },
-      write.number,
-    );
-
-    type = issue.type;
-  }
+  const issue = write.action === "edit" && write.number !== undefined
+    ? await fetchIssue(
+        {
+          repository: await resolveRepository(
+            { root: cwd, repositories },
+            write.repository,
+          ),
+          client: await createGithubClient(),
+          protocol,
+        },
+        write.number,
+      )
+    : undefined;
 
   const findings = checkIssueBody(
     body,
-    findContractMeaning(protocol, type),
+    findContractMeaning(protocol, issue?.type),
     protocol,
   );
 
