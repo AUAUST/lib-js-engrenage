@@ -9,6 +9,7 @@ import {
   commandRegistration,
 } from "#workflows/cli/constants";
 import { configureCommand } from "#workflows/cli/operations/configureCommand";
+import { runContext } from "#workflows/cli/operations/runContext";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
 
 async function loadFunction(
@@ -100,6 +101,10 @@ export function createCommandDefinition({
 
       command.action(async (...parameters) => {
         const action = await loadFunction(load, command.name(), "action");
+
+        // @debt Tests run commands outside runProgram, so the run context stays optional here instead of required through getRunContext.
+        // @debt Past this check, an aborted run stops only where its action checks the signal; prompts, config loads and writes ignore it.
+        runContext.getStore()?.signal.throwIfAborted();
 
         await action(...resolveParameters(parameters, { parse, bare }));
       });

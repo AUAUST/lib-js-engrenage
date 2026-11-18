@@ -1,12 +1,14 @@
 import { describe, expect, expectTypeOf, test, vi } from "vitest";
 import type { Command } from "@commander-js/extra-typings";
 
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import {
   createProgram,
   defineGroup,
   defineLazyCommand,
   type DefaultActionParameters,
 } from "#workflows/cli/index";
+import { runContext } from "#workflows/cli/operations/runContext";
 
 function run(command: Parameters<typeof createProgram>[1], ...args: string[]) {
   return createProgram(
@@ -62,6 +64,31 @@ describe("defineLazyCommand", () => {
     );
 
     expect(action).toHaveBeenCalledOnce();
+  });
+
+  test("never starts an action whose run was aborted while it loaded", async () => {
+    const controller = new AbortController();
+    const action = vi.fn();
+
+    const command = defineLazyCommand({
+      action() {
+        controller.abort(new Error("aborted"));
+
+        return Promise.resolve(action);
+      },
+    });
+
+    await expect(
+      runContext.run(
+        {
+          signal: controller.signal,
+          reporter: createTestReporter(),
+        },
+        () => run(command),
+      ),
+    ).rejects.toThrow("aborted");
+
+    expect(action).not.toHaveBeenCalled();
   });
 
   test("rejects a loader resolving to a plain object", async () => {

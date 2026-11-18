@@ -91,3 +91,4 @@
 - walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
 - commit gate tests: init.test.src.ts "setup review is declined" timed out at 5000ms under the gate — passed on retry
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
+- `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`

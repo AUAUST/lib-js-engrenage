@@ -1,3 +1,5 @@
+import "#bin/engrenage/actions/init";
+
 import { existsSync, readdirSync } from "node:fs";
 import { basename } from "node:path";
 
