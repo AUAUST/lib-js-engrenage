@@ -98,6 +98,32 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
     expect(await hasMarker(project.root)).toBe(false);
   });
 
+  test("gates the session's own stop only while it runs a gated agent", async () => {
+    const { project } = await createRepository();
+
+    project.write("fail", "content\n");
+
+    const session = { session_id: "session", cwd: project.root };
+
+    vi.mocked(readHookPayload).mockResolvedValue(session);
+
+    expect((await runStop()).exitCode).toBe(0);
+
+    vi.mocked(readHookPayload).mockResolvedValue({
+      ...session,
+      agent_type: "Explore",
+    });
+
+    expect((await runStop()).exitCode).toBe(0);
+
+    vi.mocked(readHookPayload).mockResolvedValue({
+      ...session,
+      agent_type: "debugger",
+    });
+
+    expect((await runStop()).exitCode).toBe(2);
+  });
+
   test("lets a passing tree stop at once", async () => {
     const { project } = await createRepository();
 

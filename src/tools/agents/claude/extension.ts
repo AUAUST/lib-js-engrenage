@@ -32,6 +32,11 @@ export default {
       {
         name: "claude",
         title: "Claude",
+        dispatcher: {
+          load() {
+            return import("#tools/agents/claude/adapters/dispatchClaudeAgent");
+          },
+        },
       },
     ],
     "sync.targets": [

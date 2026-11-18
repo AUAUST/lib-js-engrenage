@@ -23,3 +23,10 @@ export const workspaceSettings = freeze({
 export const upgradeCommand = "engrenage pnpm upgrade";
 
 export const onlyAllowScript = "npx only-allow pnpm";
+
+// @debt observed from pnpm 12 runs, not from a documented list of what pnpm sets for the binaries it runs
+export const pnpmRunVariables = freeze({
+  prefixes: ["npm_", "pnpm_"],
+  names: ["INIT_CWD", "PNPM_PACKAGE_NAME", "PNPM_SCRIPT_SRC_DIR"],
+  binaries: ["node_modules", ".bin"],
+} as const);

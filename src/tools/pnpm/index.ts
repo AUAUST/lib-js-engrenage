@@ -3,6 +3,7 @@ export { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
 export { createPnpmInvocation } from "#tools/pnpm/utils/createPnpmInvocation";
 export { listPnpmWarnings } from "#tools/pnpm/utils/listPnpmWarnings";
 export { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
+export { removePnpmRunEnvironment } from "#tools/pnpm/utils/removePnpmRunEnvironment";
 export { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus";
 // @end
 

@@ -1,4 +1,6 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { Lazy } from "#foundation/modules/index";
+import type { AgentDispatcher } from "#tools/agents/ports/AgentDispatcher";
 
 export interface AgentRuntime extends EntryShape {
   /**
@@ -6,8 +8,15 @@ export interface AgentRuntime extends EntryShape {
    * to type it.
    */
   readonly name: string;
-  // @debt nothing reads `title`, so a runtime's display name has no effect
+  /**
+   * Display name in messages about the runtime, `name` when absent.
+   */
   readonly title?: string;
+  /**
+   * Runs the runtime's agents headless; without it, `agents dispatch`
+   * refuses the runtime.
+   */
+  readonly dispatcher?: Lazy<AgentDispatcher>;
 }
 
 declare global {

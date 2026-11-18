@@ -45,6 +45,11 @@ export default {
       {
         name: "codex",
         title: "Codex",
+        dispatcher: {
+          load() {
+            return import("#tools/agents/codex/adapters/dispatchCodexAgent");
+          },
+        },
       },
     ],
     "sync.targets": [

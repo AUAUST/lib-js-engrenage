@@ -11,7 +11,9 @@ import {
   string,
 } from "valibot";
 
-const effortSchema = picklist(["low", "medium", "high", "xhigh", "max"]);
+import { efforts } from "#tools/agents/constants";
+
+const effortSchema = picklist(efforts);
 
 export const skillSchema = looseObject({
   invocation: optional(picklist(["explicit", "implicit"]), "implicit"),

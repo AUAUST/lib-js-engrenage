@@ -36,6 +36,7 @@ export const agentShellVariables = freeze({
 export const agentRuntimeEntry: StandardSchemaV1 = looseObject({
   name: string(),
   title: optional(string()),
+  dispatcher: optional(looseObject({ load: function_() })),
 });
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
@@ -112,6 +113,14 @@ export const defaultBudgets = freeze({
   comment: 150,
   backlogEntry: 60,
 } as const);
+
+export const efforts = freeze([
+  "low",
+  "medium",
+  "high",
+  "xhigh",
+  "max",
+] as const);
 
 export const subagentCacheTtls = freeze(["5m", "1h"] as const);
 

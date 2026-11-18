@@ -43,6 +43,7 @@ export { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
+export { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
@@ -72,6 +73,7 @@ export { writeHookContext } from "#tools/agents/operations/writeHookContext";
 // @end
 
 // @barrel ports
+export type * from "#tools/agents/ports/AgentDispatcher";
 export type * from "#tools/agents/ports/AgentFiller";
 export type * from "#tools/agents/ports/AgentRuleGenerator";
 export type * from "#tools/agents/ports/AgentRuntime";
@@ -88,6 +90,8 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @barrel types
 export type * from "#tools/agents/types/Agent";
 export type * from "#tools/agents/types/AgentCheckFinding";
+export type * from "#tools/agents/types/AgentDispatch";
+export type * from "#tools/agents/types/AgentReport";
 export type * from "#tools/agents/types/AgentRun";
 export type * from "#tools/agents/types/AgentSections";
 export type * from "#tools/agents/types/AgentsInput";
@@ -97,6 +101,7 @@ export type * from "#tools/agents/types/BudgetFinding";
 export type * from "#tools/agents/types/BudgetKind";
 export type * from "#tools/agents/types/BudgetMode";
 export type * from "#tools/agents/types/Budgets";
+export type * from "#tools/agents/types/Effort";
 export type * from "#tools/agents/types/Gate";
 export type * from "#tools/agents/types/GeneratedFrontmatter";
 export type * from "#tools/agents/types/HookDefinition";

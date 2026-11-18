@@ -1,11 +1,21 @@
 import { spawn, type SpawnOptions } from "node:child_process";
 
+import { get } from "@auaust/toolkit/object";
+
 import type { ProcessResult } from "#foundation/processes/types/ProcessResult";
 
 export function spawnProcess(
   command: string,
   args: readonly string[],
-  options: Pick<SpawnOptions, "cwd" | "env" | "signal" | "stdio">,
+  {
+    input,
+    ...options
+  }: Pick<SpawnOptions, "cwd" | "env" | "signal" | "stdio"> & {
+    /**
+     * Text written to the process's stdin, which `stdio` must leave piped.
+     */
+    input?: string;
+  },
 ): Promise<ProcessResult> {
   return new Promise((resolve) => {
     const child = spawn(command, args, options);
@@ -40,5 +50,25 @@ export function spawnProcess(
         error: undefined,
       });
     });
+
+    if (input === undefined) {
+      return;
+    }
+
+    if (child.stdin === null) {
+      child.kill();
+
+      throw new Error(
+        `Cannot write input to ${command}: its stdin is not piped`,
+      );
+    }
+
+    child.stdin.on("error", (error) => {
+      if (get(error, "code") !== "EPIPE") {
+        throw error;
+      }
+    });
+
+    child.stdin.end(input);
   });
 }

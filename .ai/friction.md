@@ -83,3 +83,5 @@
 - gh issue edit hook: `--body-file $S/…` with a variable path in a compound command — hook rejects variable paths and the whole command; edited the file in one call, published with a literal path in another
 - PreToolUse Bash hook: zsh `${=files}` word splitting in a lint command — the hook's shell parser rejects it as an invalid parameter name; wrote the list to a file and passed it through `xargs`
 - unicorn/no-incorrect-template-string-interpolation: git revision `${revision}^{commit}` in a template — flagged `^{commit}` as a missed interpolation; moved `^{commit}` into a constant
+- `claude -p --agent`: expected the agent's frontmatter `Stop` hook to fire — it fires only for subagents; probed the payloads in a scratch repository
+- `codex exec`: probed headless output — ChatGPT token expired, run failed after `thread.started`; Codex dispatch untested live

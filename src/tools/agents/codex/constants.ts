@@ -5,6 +5,14 @@ import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+export const codexBinary = "codex";
+
+// @debt the kept names guess which `CODEX` variables a user configures, as Codex documents no split from those it sets for its own session and the processes it starts
+export const codexVariables = freeze({
+  prefix: "CODEX",
+  kept: ["CODEX_HOME"],
+} as const);
+
 export const codexFile = "AGENTS.override.md" satisfies File;
 
 export const codexTemplate = `${engrenage}/agents/templates/${codexFile}`;

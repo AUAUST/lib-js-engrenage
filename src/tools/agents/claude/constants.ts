@@ -8,9 +8,23 @@ export const claudeFile = "CLAUDE.md" satisfies File;
 
 export const claudeSettingsFile = ".claude/settings.json" satisfies File;
 
+export const claudeBinary = "claude";
+
 export const claudeShellVariable = "CLAUDECODE";
 
 export const claudeSessionVariable = "CLAUDE_CODE_SESSION_ID";
+
+// @debt the kept names guess which `CLAUDE` variables a user configures, as Claude Code documents no split from those it sets for its own session and the processes it starts
+export const claudeVariables = freeze({
+  prefix: "CLAUDE",
+  kept: [
+    "CLAUDE_CONFIG_DIR",
+    "CLAUDE_CODE_OAUTH_TOKEN",
+    "CLAUDE_CODE_USE_BEDROCK",
+    "CLAUDE_CODE_USE_VERTEX",
+    "CLAUDE_CODE_USE_FOUNDRY",
+  ],
+} as const);
 
 export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
 
@@ -56,6 +70,11 @@ export const claudeHooks = freeze([
     matcher: "*",
     command: `${claudeHookPrefix}start`,
     async: true,
+  } as const satisfies HookDefinition,
+  {
+    event: "Stop",
+    matcher: "*",
+    command: `${claudeHookPrefix}stop`,
   } as const satisfies HookDefinition,
   ...(["Stop", "SubagentStop"] as const).map((event) => {
     return {
