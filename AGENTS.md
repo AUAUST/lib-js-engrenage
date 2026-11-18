@@ -137,7 +137,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 
 - Do the work a request asks of you yourself; dispatch an agent only when your skill directs it or the user asks for one.
 - Quality takes precedence over completion: a workaround that adds architectural debt is not done. Judge quality by clear ownership, authoritative definitions, explicit contracts, predictable execution and state lifetime, readability and minimal necessary complexity, not by line or abstraction count.
-- Write only these comments: tool directives, within each directive's rules; `@debt` markers; the JSDoc lint asks for, stating only the behavior its name and signature leave open; comments the user explicitly requests. Code that seems to need another comment is debt: mark what could be better, never explain the code.
+- Write only these comments: tool directives, within each directive's rules; `@debt` markers; the JSDoc lint asks for; comments the user explicitly requests.
 
 | When                                                              | Do                                                                                                                                                     |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -150,7 +150,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 | Repository-wide configuration stands in the way                   | Try an alternative inside the code you own first; report a configuration change with its reason, apart from code changes                               |
 | A generated or compiled file needs a change                       | Change its source and regenerate it                                                                                                                    |
 | Code is obsolete or commented out                                 | Delete it                                                                                                                                              |
-| Documentation seems needed                                        | No feature READMEs or `docs/` directory                                                                                                                |
+| Code seems to need a comment, README or docs to be understood     | Simplify it; mark what stays unclear with a `@debt` marker, never an explanation; add no feature READMEs or `docs/` directory                          |
 | Running a tool                                                    | Bound its output to the relevant files and excerpts; keep verbose logs on disk; return the failing command, diagnostics and log path                   |
 | Code needs a secret                                               | `.env`, documented by `.env.example`; never source, logs or runtime code                                                                               |
 | A skill, MCP server, script or abstraction is missing or outdated | Propose it; add, remove or upgrade one only with the user's approval                                                                                   |
