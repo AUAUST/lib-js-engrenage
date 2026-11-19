@@ -9,6 +9,8 @@ effort: low
 tools:
   - Read
   - Bash
+  - Edit
+  - Write
   - Grep
   - Glob
 ---

@@ -12,6 +12,8 @@ agent:
   tools:
     - Read
     - Bash
+    - Edit
+    - Write
     - Grep
     - Glob
 ---
