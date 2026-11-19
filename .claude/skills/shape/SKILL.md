@@ -80,10 +80,10 @@ Review each returned diff lightly against what you briefed: `git diff --stat` fr
 
 ## Commit
 
-Commit each agent's work by `worktree-dispatch.md` › Committing work, its step 2 being one commit under the git rules through the commit gate.
+Commit each agent's work by `worktree-dispatch.md` › Committing work, its step 3 being one commit under the git rules through the commit gate.
 
 - When the commit holds several agents' work, or an agent's work with your own edits, run `pnpm engrenage gate --worktree` before committing.
-- When the commit gate fails on what §Agents lets you change, fix it and commit again, in place of step 3; send any other failure back to the agent by step 3.
+- When the commit gate fails on what §Agents lets you change, fix it and commit again, in place of step 4; send any other failure back to the agent by step 4.
 - Tell the user each commit's consequences in one line once it lands.
 
 ## Holding

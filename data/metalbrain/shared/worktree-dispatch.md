@@ -17,10 +17,11 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 
 Each commit of an agent's work, made in the main checkout:
 
-1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest; never rewrite those commits.
-2. Make the commit your skill sets.
-3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
-4. Once the commit exists, remove the agent's worktree, when it has one.
+1. For an agent in a worktree, when the main checkout holds uncommitted records, the files the git rules' Commits table stages in each commit (agent-log changes, files changed only by debt markers), commit them alone first, as `brain` under the git rules: a cherry-pick refuses a dirty file it touches.
+2. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3.
+3. Make the commit your skill sets.
+4. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
+5. Once the commit exists, remove the agent's worktree, when it has one.
 
 ## Holding work
 

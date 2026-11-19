@@ -67,9 +67,3 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
-
-## 14. Agent records written in the main checkout can block applying worktree work
-
-- sites: `data/metalbrain/shared/worktree-dispatch.md:20`, `data/metalbrain/skills/shape.md:62`
-- why: read-only agents there now write records; cherry-pick refuses dirty files, apply conflicts on log lines.
-- want: Committing work handles uncommitted records before step 1.
