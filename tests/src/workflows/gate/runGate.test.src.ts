@@ -71,6 +71,24 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     ).toContain("import cycles (1)");
   });
 
+  test("fails the structure step with one line per unclassified directory under strict", async () => {
+    const { project, git } = await createGateRepository();
+
+    project.write("tests/nowhere/a.test.ts", "export {};\n");
+
+    git("add", "tests");
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "staged",
+    });
+
+    expect(
+      failures.find(({ step }) => step === "structure --check")?.output,
+    ).toBe(
+      "tests/nowhere  nowhere  unclassified (unknown root key)  [inferred]",
+    );
+  });
+
   test("fails a staged outdated synced file under sync --check without rewriting it", async () => {
     const { project, git } = await createGateRepository();
 

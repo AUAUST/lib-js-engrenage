@@ -2,6 +2,7 @@ import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import {
   formatGateEntry,
+  formatGateSummary,
   runGate,
   runMessageGate,
 } from "#workflows/gate/index";
@@ -35,12 +36,18 @@ export default async function ({
       )
     : await runMessageGate(message, audience);
 
-  for (const warning of warnings) {
-    getRunContext().reporter.warn(formatGateEntry(warning));
+  const { reporter } = getRunContext();
+
+  if (failures.length > 0) {
+    reporter.error(formatGateSummary(failures));
   }
 
   for (const failure of failures) {
-    getRunContext().reporter.error(formatGateEntry(failure));
+    reporter.error(formatGateEntry(failure));
+  }
+
+  for (const warning of warnings) {
+    reporter.warn(formatGateEntry(warning));
   }
 
   if (failures.length > 0) {

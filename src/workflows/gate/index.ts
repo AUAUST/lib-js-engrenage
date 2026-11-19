@@ -22,4 +22,5 @@ export type * from "#workflows/gate/types/TreeIdentity";
 
 // @barrel utils
 export { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
+export { formatGateSummary } from "#workflows/gate/utils/formatGateSummary";
 // @end

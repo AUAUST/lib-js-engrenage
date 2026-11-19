@@ -1,5 +1,8 @@
 import { flatMap } from "@auaust/toolkit/array";
 
+import { findStructureAliases } from "#project/structure/utils/findStructureAliases";
+import { listNodeViolations } from "#project/structure/utils/listNodeViolations";
+import { renderStructureLabel } from "#project/structure/utils/renderStructureLabel";
 import type { Alias } from "#project/structure/types/Alias";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { StructureNode } from "#project/structure/types/StructureNode";
@@ -15,101 +18,15 @@ interface TreeOptions {
   readonly detailed: boolean;
 }
 
-function members(node: StructureNode): StructureNode[] {
-  return node.children.filter(({ kind }) => {
-    return kind === "domain" || kind === "namespace";
-  });
-}
-
-function isPlain(node: StructureNode): boolean {
-  return node.kind === "domain" && node.purpose === undefined;
-}
-
-function renderName(node: StructureNode): string {
-  const collects = node.collects === undefined || node.collects.length === 0
-    ? ""
-    : `[collects: ${node.collects.join(" ")}]`;
-
-  const directory = node.kind === "namespace" || node.kind === "mirror";
-
-  return `${node.name}${directory ? "/" : ""}${node.public === true ? "*" : ""}${collects}`;
-}
-
-function inline(node: StructureNode): string {
-  const children = members(node);
-
-  return children.length === 0
-    ? renderName(node)
-    : `${renderName(node)}{${children.map(inline).join(" ")}}`;
-}
-
-function describeKind(
-  node: StructureNode,
-  detailed: boolean,
-): string | undefined {
-  const effects = node.effects === undefined ? "" : ` (${node.effects})`;
-
-  const kinds = {
-    namespace: undefined,
-    domain: node.commands === true ? "command group" : "domain",
-    role: node.role === undefined || node.role === node.name
-      ? `role${effects}`
-      : `role ${node.role}${effects}`,
-    mirror: `mirrors ${node.mirror === undefined ? node.name : node.mirror.path}`,
-    unclassified: node.reason === undefined
-      ? "unclassified"
-      : `unclassified (${node.reason})`,
-  } satisfies Record<StructureNode["kind"], string | undefined>;
-
-  return detailed || node.kind === "mirror" ? kinds[node.kind] : undefined;
-}
-
-function renderLabel(
-  node: StructureNode,
-  { aliases, detailed }: TreeOptions,
-  name: string,
-  extras: readonly string[] = [],
-): string {
-  const plain = detailed ? [] : members(node).filter(isPlain);
-
-  return [
-    name,
-    detailed || node.kind !== "domain" ? aliases.get(node.path) : undefined,
-    node.layers?.join(" < "),
-    node.relation === "isolated" ? "[isolated]" : undefined,
-    node.childKind === "domains" ? "[domains]" : undefined,
-    plain.length === 0 ? undefined : plain.map(inline).join(" "),
-    describeKind(node, detailed),
-    detailed ? `[${node.source}]` : undefined,
-    node.purpose,
-    ...extras,
-  ]
-    .filter((part) => part !== undefined)
-    .join("  ");
-}
-
 function listDiagnostics(node: StructureNode): TreeRow[] {
   return [
     ...(node.strays ?? []).map((file) => {
-      return {
-        line: `${file}  unclassified (file outside any role)`,
-      };
+      return `${file}  unclassified (file outside any role)`;
     }),
-    ...(node.cardinality ?? []).map(({ role, reason, files, globs }) => {
-      return {
-        line: reason === "unique"
-          ? `\`${role}\` holds at most one file here; found ${files.join(", ")}.`
-          : `\`${role}\` requires a file here; add one matching ${globs.join(", ")}.`,
-      };
-    }),
-    ...(node.twin === undefined
-      ? []
-      : [
-          {
-            line: `${node.twin} sits beside the command group ${node.path}; move it into the group or rename one of them.`,
-          },
-        ]),
-  ];
+    ...listNodeViolations(node),
+  ].map((line) => {
+    return { line };
+  });
 }
 
 function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
@@ -118,7 +35,7 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
       ...listDiagnostics(node),
       ...node.children.map((child) => {
         return {
-          line: renderLabel(child, options, renderName(child)),
+          line: renderStructureLabel({ node: child, ...options }),
           node: child,
         };
       }),
@@ -139,11 +56,11 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
     })
     .map((child) => {
       return {
-        line: renderLabel(
-          child,
-          options,
-          child.kind === "domain" ? inline(child) : renderName(child),
-        ),
+        line: renderStructureLabel({
+          node: child,
+          ...options,
+          inlined: child.kind === "domain",
+        }),
         node: child,
       };
     });
@@ -168,25 +85,6 @@ function renderRows(
   });
 }
 
-function findAliases(
-  { root }: EnvironmentStructure,
-  aliases: readonly Alias[],
-): Map<string, string> {
-  const found = new Map<string, string>();
-
-  for (const child of root.children) {
-    const alias = aliases.find(({ key, path }) => {
-      return key === `#${child.name}/*` && path === child.path;
-    });
-
-    if (alias !== undefined) {
-      found.set(child.path, `#${child.name}/…`);
-    }
-  }
-
-  return found;
-}
-
 export function renderStructureTree({
   environment,
   aliases,
@@ -201,17 +99,22 @@ export function renderStructureTree({
   const { root } = environment;
 
   const options = {
-    aliases: findAliases(environment, aliases),
+    aliases: findStructureAliases(environment, aliases),
     detailed,
   };
 
   return [
-    renderLabel(root, options, `${environment.dirs.join("/ ")}/`, [
-      ...(detailed ? [`(${environment.strictness})`] : []),
-      ...(globalRoles.length === 0
-        ? []
-        : [`(global roles: ${globalRoles.join(" ")})`]),
-    ]),
+    renderStructureLabel({
+      node: root,
+      ...options,
+      name: `${environment.dirs.join("/ ")}/`,
+      extras: [
+        ...(detailed ? [`(${environment.strictness})`] : []),
+        ...(globalRoles.length === 0
+          ? []
+          : [`(global roles: ${globalRoles.join(" ")})`]),
+      ],
+    }),
     ...renderRows(root, options, ""),
   ];
 }

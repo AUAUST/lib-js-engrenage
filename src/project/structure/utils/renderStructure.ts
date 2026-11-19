@@ -2,6 +2,7 @@ import { flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
+import { renderUnreachedNode } from "#project/structure/utils/renderUnreachedNode";
 import type { Alias } from "#project/structure/types/Alias";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
@@ -19,11 +20,7 @@ export function renderStructure(
             aliases,
             detailed: true,
           }),
-          ...environment.unreached.map(({ path, kind, config, files }) => {
-            const sources = [...(config ? ["the config"] : []), ...files];
-
-            return `${path}  unreached ${kind}, declared by ${sources.join(", ")}`;
-          }),
+          ...environment.unreached.map(renderUnreachedNode),
         ];
   });
 }

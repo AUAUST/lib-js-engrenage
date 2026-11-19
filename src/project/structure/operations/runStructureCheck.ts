@@ -5,10 +5,11 @@ import type { GateResult } from "#project/gate/index";
 export async function runStructureCheck(
   config: LoadedConfig,
 ): Promise<GateResult> {
-  const { lines, warnings, violated } = await checkStructure(config);
+  const { violations, warnings, violated } = await checkStructure(config);
 
   return {
     ok: !violated,
-    output: [...lines, ...warnings].join("\n"),
+    output: violations.join("\n"),
+    ...(warnings.length === 0 ? {} : { warnings: warnings.join("\n") }),
   };
 }

@@ -5,6 +5,7 @@ import { hasStructureViolations } from "#project/structure/utils/hasStructureVio
 import { listDomainsWithoutPurpose } from "#project/structure/utils/listDomainsWithoutPurpose";
 import { renderImportCycles } from "#project/structure/utils/renderImportCycles";
 import { renderStructure } from "#project/structure/utils/renderStructure";
+import { renderStructureViolations } from "#project/structure/utils/renderStructureViolations";
 import type { LoadedConfig } from "#project/config/index";
 import type { StructureCheck } from "#project/structure/types/StructureCheck";
 
@@ -29,10 +30,15 @@ export async function checkStructure(
     ),
   });
 
+  const scoped = [...aliases.global, ...aliases.src];
+
+  const renderedCycles = renderImportCycles(cycles);
+
   return {
-    lines: [
-      ...renderStructure(structure, [...aliases.global, ...aliases.src]),
-      ...renderImportCycles(cycles),
+    lines: [...renderStructure(structure, scoped), ...renderedCycles],
+    violations: [
+      ...renderStructureViolations(structure, scoped),
+      ...(cycles.length === 0 ? [] : renderedCycles),
     ],
     warnings: map(listDomainsWithoutPurpose(structure), (path) => {
       return `${path} has no purpose: set one on its \`domains\` entry.`;
