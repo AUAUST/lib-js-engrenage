@@ -88,3 +88,6 @@
 - commit gate tests: checkAgents.test.src.ts timed out at 5000ms while another agent ran tests — passed alone and on retry
 - worktree-isolated Bash: `sed -i ''` edits chained with `git diff` — refused as too complex to verify; edited through the edit tool
 - `engrenage gate --worktree`: init.test.src.ts, 4 tests timed out at 5000ms — passed alone; reran the gate
+- `loadConfig` in tests: rewrote `engrenage.config.ts` and removed a `src` directory between two loads of one root — the memoized config kept the old aliases; called `loadConfig.refresh(root)` before each load
+- `engrenage gate --worktree`: barrelDirective and syncDirectiveBlocks tests timed out at 5000ms — passed alone; reran the gate
+- gh api graphql: queried `AUAUST/engrenage` from the package name — repository not found; the repository is `AUAUST/lib-js-engrenage`

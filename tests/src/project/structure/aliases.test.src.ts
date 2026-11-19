@@ -33,6 +33,20 @@ async function sync(config: string, files: Record<string, string> = {}) {
 
 const source = "src: { node: 24 }";
 
+const bundled = (define: Record<string, string>) => {
+  return `{ src: { node: 24, bundled: true, aliases: { define: ${JSON.stringify(define)} } } }`;
+};
+
+async function syncOnDisk(root: string) {
+  loadConfig.refresh(root);
+
+  const resolved = await loadConfig(root);
+
+  await syncAliases(resolved);
+
+  await resolved.context.filesystem.flush();
+}
+
 describe("aliases", () => {
   test("generates namespace and global file aliases without source root aliases", async () => {
     const { read } = await sync(
@@ -120,5 +134,71 @@ describe("aliases", () => {
     const { read } = await sync(`{ ${source}, aliases: false }`);
 
     expect((await read("package.json")).imports).toBeUndefined();
+  });
+
+  test("keeps a hand-declared import and records only the generated keys", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "project",
+        type: "module",
+        imports: { "#config/*": "./config/*.ts" },
+      }),
+      "tsconfig.json": "{}",
+      "engrenage.config.ts": `export default { preset: "library", ${source} };\n`,
+      "src/constants.ts": "",
+    });
+
+    await syncOnDisk(project.root);
+
+    const imports = JSON.parse(project.read("package.json")).imports;
+
+    expect(imports).toMatchObject({
+      "#config/*": "./config/*.ts",
+      "#constants": "./src/constants.ts",
+    });
+
+    const record = JSON.parse(project.read(".engrenage/sync.json"));
+
+    expect(record["package.json#imports"]).toContain("#constants");
+    expect(record["package.json#imports"]).not.toContain("#config/*");
+  });
+
+  test("deletes the entries of an alias removed after a recorded sync", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "tsconfig.json": "{}",
+      "engrenage.config.ts": `export default ${bundled({ "#shop/*": "./shopify/*.ts", "$shopify/*": "./shopify/*.ts" })};\n`,
+      "src/constants.ts": "",
+    });
+
+    await syncOnDisk(project.root);
+
+    project.write("engrenage.config.ts", `export default ${bundled({})};\n`);
+
+    await syncOnDisk(project.root);
+
+    const imports = JSON.parse(project.read("package.json")).imports;
+
+    const paths = JSON.parse(project.read("tsconfig.json")).compilerOptions
+      .paths;
+
+    expect(imports).toHaveProperty("#constants");
+    expect(imports).not.toHaveProperty("#shop/*");
+    expect(paths).toHaveProperty("#constants");
+    expect(paths).not.toHaveProperty("#shop/*");
+    expect(paths).not.toHaveProperty("$shopify/*");
+  });
+
+  test("fails on a hand-declared import the aliases generate with another target", async () => {
+    await expect(
+      sync(`{ preset: "library", ${source} }`, {
+        "package.json": JSON.stringify({
+          name: "project",
+          type: "module",
+          imports: { "#config/*": "./config/*.ts" },
+        }),
+        "src/config/a.ts": "",
+      }),
+    ).rejects.toThrow(/#config\/\*/);
   });
 });

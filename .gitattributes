@@ -27,6 +27,7 @@
 /src/tools/prettier/types/PrettierInput.ts linguist-generated
 /src/tools/vscode/types/VscodeInput.ts linguist-generated
 /src/workflows/config/types/ConfigInput.ts linguist-generated
+/.engrenage/sync.json linguist-generated
 /.claude/rules/project-map.md linguist-generated
 /.claude/rules/project-map/**/*.md linguist-generated
 /.claude/rules/planning-sheet.md linguist-generated

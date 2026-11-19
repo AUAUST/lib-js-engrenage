@@ -11,9 +11,11 @@ export type * from "#project/sync/ports/SyncTarget";
 export { collectChanges } from "#project/sync/operations/collectChanges";
 export { formatChanges } from "#project/sync/operations/formatChanges";
 export { listSyncOptions } from "#project/sync/operations/listSyncOptions";
+export { readGeneratedKeys } from "#project/sync/operations/readGeneratedKeys";
 export { reportSyncResults } from "#project/sync/operations/reportSyncResults";
 export { runSync } from "#project/sync/operations/runSync";
 export { settleChanges } from "#project/sync/operations/settleChanges";
+export { writeGeneratedKeys } from "#project/sync/operations/writeGeneratedKeys";
 // @end
 
 // @barrel utils

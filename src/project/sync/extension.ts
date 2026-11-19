@@ -1,16 +1,18 @@
 import {
   blockSyntaxEntry,
   syncDoneEntry,
+  syncRecordFile,
   syncStages,
   syncTargetEntry,
 } from "#project/sync/constants";
-import type { Extension } from "#project/config/index";
+import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Owns the `sync.targets` slot, ordered by stage then by the files and parts its
  * targets read and produce, and the `sync.done` hook, emitted once every selected
  * target ran and their staged changes are formatted, and the `blocks.syntaxes`
- * slot, read by the `blocks` target filling every directive's blocks.
+ * slot, read by the `blocks` target filling every directive's blocks, and the
+ * committed record of the keys sync targets generated.
  */
 export default {
   name: "project/sync",
@@ -27,6 +29,15 @@ export default {
       },
       "blocks.syntaxes": {
         entry: blockSyntaxEntry,
+      },
+    },
+    files: {
+      "state.sync": {
+        title: "Sync record",
+        generated: true,
+        locate(): FileLocation {
+          return { file: syncRecordFile };
+        },
       },
     },
   },

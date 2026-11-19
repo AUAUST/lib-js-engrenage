@@ -1,0 +1,15 @@
+{
+  "package.json#imports": [
+    "#bin/*",
+    "#constants",
+    "#foundation/*",
+    "#package.json",
+    "#project/*",
+    "#scripts/*",
+    "#tests/*",
+    "#tooling/*",
+    "#tools/*",
+    "#types/*",
+    "#workflows/*"
+  ]
+}

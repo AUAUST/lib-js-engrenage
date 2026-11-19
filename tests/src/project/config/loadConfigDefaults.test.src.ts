@@ -31,6 +31,7 @@ describe("loadConfig", () => {
     ]);
 
     expect((await config.resolve("files")).generated).toEqual([
+      ".engrenage/sync.json",
       "pnpm-lock.yaml",
     ]);
 

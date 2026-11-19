@@ -9,6 +9,11 @@ import {
 } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
+import { stateDirectory } from "#project/config/constants";
+import type { File } from "#types/File";
+
+export const syncRecordFile = `${stateDirectory}/sync.json` satisfies File;
+
 export const syncStages = ["generate", "write", "fill", "check"] as const;
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type

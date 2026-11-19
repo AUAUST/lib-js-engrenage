@@ -14,6 +14,9 @@ bun.lockb
 # Coverage
 /coverage
 
+# Sync record
+/.engrenage/sync.json
+
 # Agent stats
 /.ai/stats
 
