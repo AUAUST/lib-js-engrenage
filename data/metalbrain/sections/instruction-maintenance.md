@@ -14,4 +14,9 @@ Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | `writer` agent you can dispatch                      | Dispatch it with the decided behavior and the reach the consent covers; review its diff before committing |
 | `writer` agent installed, but you cannot dispatch it | Load the instruction-writing skill and follow it yourself                                                 |
-| No `writer` agent                                    | Follow `.claude/rules/instructions.md` yourself                                                           |
+
+<!-- @file .claude/rules/instructions.md -->
+
+With no `writer` agent, follow `.claude/rules/instructions.md` yourself.
+
+<!-- @end -->

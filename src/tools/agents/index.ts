@@ -20,6 +20,7 @@ export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 
 // @barrel setup
 export { checkBacklogSites } from "#tools/agents/setup/checkBacklogSites";
+export { checkFragmentFiles } from "#tools/agents/setup/checkFragmentFiles";
 export { checkTableCells } from "#tools/agents/setup/checkTableCells";
 export { createAgentRulesStep } from "#tools/agents/setup/createAgentRulesStep";
 export { createAgentsStep } from "#tools/agents/setup/createAgentsStep";

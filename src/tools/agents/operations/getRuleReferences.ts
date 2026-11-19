@@ -1,5 +1,5 @@
 import { claudeRulesGlob } from "#tools/agents/claude/constants";
-import { listInstructionMarkers } from "#tools/agents/utils/listInstructionMarkers";
+import { listReferenceBlocks } from "#tools/agents/utils/listReferenceBlocks";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { File } from "#types/File";
 
@@ -13,14 +13,8 @@ export async function getRuleReferences({
   for (const file of await filesystem.glob(claudeRulesGlob)) {
     const content = (await filesystem.read(file)) ?? "";
 
-    const markers = listInstructionMarkers(content, ["reference"]);
-
-    for (const {
-      args: [reference],
-    } of markers) {
-      if (reference !== undefined) {
-        references.set(reference, [...(references.get(reference) ?? []), file]);
-      }
+    for (const { reference } of listReferenceBlocks(content)) {
+      references.set(reference, [...(references.get(reference) ?? []), file]);
     }
   }
 

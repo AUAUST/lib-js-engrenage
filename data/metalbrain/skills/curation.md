@@ -26,7 +26,13 @@ agent:
 
 Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues.
 
-Read `.claude/rules/issues.md` before writing anything up. Your findings become backlog entries; only stage 6's ready entries become issues, and only while `.claude/rules/issue-drafts.md` exists: without it, leave issues out of every stage and the report.
+Read `.claude/rules/issues.md` before writing anything up. Your findings become backlog entries.
+
+<!-- @extension tools/github/issues/planning -->
+
+Only stage 6's ready entries become issues.
+
+<!-- @end -->
 
 - Run in the main checkout, one run at a time.
 - Where an entry or a note needs more than recording (choosing between options, designing a change, breaking it into coordinated steps, implementing it), leave that part in the entry and report it.
@@ -45,8 +51,14 @@ Read `.claude/rules/issues.md` before writing anything up. Your findings become 
 Run every stage, in this order; each feeds the next.
 
 0. **Load.**
-   - Load the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
    - Read `.ai/backlog/index.md`, `.ai/friction.md`, `.ai/discarded.md`, `.ai/scratchpad.md` and `.ai/issues/`.
+
+<!-- @extension tools/github/issues/planning -->
+
+Stage 0 also loads the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
+
+<!-- @end -->
+
 1. **Notes.**
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.
    2. For each note, inspect the relevant project context and matching categories, and find the entries and issues covering or overlapping it.
@@ -69,21 +81,31 @@ Run every stage, in this order; each feeds the next.
    2. Check what the request and the project's current state add to them: answers, new context, work already done.
    3. Investigate each question they hold in the code, configuration, history, documentation and dependencies, and work out its candidate answers. Keep as a question only what investigation cannot settle, with the findings and candidate answers.
    4. Apply only what you found, merging entries that prove to be one matter and splitting one that holds several.
+
+<!-- @extension tools/github/issues/planning -->
+
 5. **Overlaps.** From the index, plus a grep of the issue file for the paths and names entries and issues cite, find duplicates, overlaps, misplaced parents and issues the pushed default branch already satisfies. Read only those candidates' bodies.
 6. **File** under the issues and issue-drafts rules:
    - Ready entry: needs no further decision, as a located bug with its expected behavior, a settled single task or a settled request to another repository. Leave work needing several ordered tasks in its entry and report it as needing planning.
    - Create an issue draft for each ready entry, writing for a maintainer of the target repository.
    - Turn stage-5 findings into draft edits: `state: completed` only when the issue's **Done when**, or its **Steps**, holds on `origin/<default branch>`; `duplicate` with the duplicate linked; parent moves through `subIssues`.
 
+<!-- @end -->
+
 Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to the logs the agent-records rule.
 
 ## Report
 
-Your only message in a main-session run, and at most five lines. Refines the issue-drafts rule's last Drafts bullet: a main-session run publishes without reporting each claimed issue's diff first, and its `Issues` line replaces both that report and the diffs `publish` prints:
+Your only message in a main-session run, and at most five lines:
 
 ```
 Notes: <n> → <entry IDs> · <n> kept (<question>)
 Debt: +<n> entries, <n> merged · Friction: <subject> ×<n> → <ref>
-Issues: published <refs> · closed <refs> · overlap <ref>≈<ref>
 Open: <questions, and what remains with the kind of work it needs, or "none">
 ```
+
+<!-- @extension tools/github/issues/planning -->
+
+Add `Issues: published <refs> · closed <refs> · overlap <ref>≈<ref>` before `Open`. Refines the issue-drafts rule's last Drafts bullet: a main-session run publishes without reporting each claimed issue's diff first, and its `Issues` line replaces both that report and the diffs `publish` prints.
+
+<!-- @end -->

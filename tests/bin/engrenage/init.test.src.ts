@@ -960,6 +960,34 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
   expect(project.read("AGENTS.override.md")).not.toContain(
     ".claude/rules/backlog.md",
   );
+
+  expect(printed().join("\n")).not.toContain("Instruction fragments reference");
+});
+
+test("declining the instructions rule leaves no fragment naming it", async () => {
+  const project = createProject({
+    "package.json": '{"name":"project","type":"module"}',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
+  });
+
+  vi.spyOn(prompts, "createPrompter").mockReturnValue({
+    ...prompts.createPrompter({ yes: true }),
+    multiselect: (message, _values, initial = []) => {
+      return Promise.resolve(
+        message === "Choose rules to add"
+          ? initial.filter((name) => name !== "instructions")
+          : [...initial],
+      );
+    },
+  });
+
+  await run("init");
+
+  expect(existsSync(project.resolve(".claude/rules/instructions.md"))).toBe(
+    false,
+  );
+
+  expect(printed().join("\n")).not.toContain("Instruction fragments reference");
 });
 
 test("adds a scratchpad to an existing backlog setup", async () => {

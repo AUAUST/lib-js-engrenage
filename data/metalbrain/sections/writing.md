@@ -9,7 +9,13 @@ order: 15
 ## Writing
 
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
+
+<!-- @file .claude/rules/instructions.md -->
+
 - Before proposing instruction wording in an issue or backlog entry, read `.claude/rules/instructions.md`: it refines these rules for it.
+
+<!-- @end -->
+
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State each idea exactly, with its reason in one clause, in the fewest words that keep it: fragments and keywords over sentences, no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
 

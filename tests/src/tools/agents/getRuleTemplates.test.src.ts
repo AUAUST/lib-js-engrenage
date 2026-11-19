@@ -4,6 +4,7 @@ import { describe, expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { filterConditionalBlocks } from "#tools/agents/utils/filterConditionalBlocks";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 
 describe("getRuleTemplates", () => {
@@ -31,8 +32,13 @@ describe("getRuleTemplates", () => {
 
     const templates = await getRuleTemplates({
       renderer: {
-        render(body, source) {
-          return renderFragment(body, source, {
+        async render(body, source) {
+          const kept = await filterConditionalBlocks(body, {
+            extensions: new Set(),
+            exists: () => Promise.resolve(false),
+          });
+
+          return await renderFragment(kept, source, {
             table: (...args) => `| ${args.join(" | ")} |`,
           });
         },

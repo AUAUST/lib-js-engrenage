@@ -9,7 +9,7 @@ paths:
 
 Applies to every finding you record under a skill sending you here or in an issue draft in `.ai/issues/`. Outcome binds only under a skill naming it, and the Recording bullet only under a skill sending you here; such a skill refines this rule for its role. For those roles, this rule refines the decision protocol, as a question's findings are still recorded.
 
-While `.claude/rules/issue-drafts.md` exists, read it too before writing any issue: it holds how issues are typed, written and filed.
+Read `.claude/rules/issue-drafts.md` too before writing any issue: it holds how issues are typed, written and filed.
 
 ## Outcome
 

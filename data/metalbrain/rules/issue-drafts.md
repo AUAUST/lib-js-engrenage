@@ -69,7 +69,12 @@ Items are `task` and `problem` issues. Write each complete, through its ancestor
 - Give the other sections no budget: make them as complete as a worker needs.
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
 - Never restate the project's instructions: workers follow them for everything an issue does not say.
+
+<!-- @file .ai/backlog/index.md -->
+
 - An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
+
+<!-- @end -->
 
 ## Drafts
 

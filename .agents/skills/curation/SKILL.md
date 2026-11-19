@@ -12,7 +12,9 @@ description: Turn the scratchpad, `@debt` markers, code clones and agent logs
 
 Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues.
 
-Read `.claude/rules/issues.md` before writing anything up. Your findings become backlog entries; only stage 6's ready entries become issues, and only while `.claude/rules/issue-drafts.md` exists: without it, leave issues out of every stage and the report.
+Read `.claude/rules/issues.md` before writing anything up. Your findings become backlog entries.
+
+Only stage 6's ready entries become issues.
 
 - Run in the main checkout, one run at a time.
 - Where an entry or a note needs more than recording (choosing between options, designing a change, breaking it into coordinated steps, implementing it), leave that part in the entry and report it.
@@ -31,8 +33,10 @@ Read `.claude/rules/issues.md` before writing anything up. Your findings become 
 Run every stage, in this order; each feeds the next.
 
 0. **Load.**
-   - Load the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
    - Read `.ai/backlog/index.md`, `.ai/friction.md`, `.ai/discarded.md`, `.ai/scratchpad.md` and `.ai/issues/`.
+
+Stage 0 also loads the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
+
 1. **Notes.**
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.
    2. For each note, inspect the relevant project context and matching categories, and find the entries and issues covering or overlapping it.
@@ -65,13 +69,14 @@ Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to t
 
 ## Report
 
-Your only message in a main-session run, and at most five lines. Refines the issue-drafts rule's last Drafts bullet: a main-session run publishes without reporting each claimed issue's diff first, and its `Issues` line replaces both that report and the diffs `publish` prints:
+Your only message in a main-session run, and at most five lines:
 
 ```
 Notes: <n> → <entry IDs> · <n> kept (<question>)
 Debt: +<n> entries, <n> merged · Friction: <subject> ×<n> → <ref>
-Issues: published <refs> · closed <refs> · overlap <ref>≈<ref>
 Open: <questions, and what remains with the kind of work it needs, or "none">
 ```
+
+Add `Issues: published <refs> · closed <refs> · overlap <ref>≈<ref>` before `Open`. Refines the issue-drafts rule's last Drafts bullet: a main-session run publishes without reporting each claimed issue's diff first, and its `Issues` line replaces both that report and the diffs `publish` prints.
 
 <!-- @end -->

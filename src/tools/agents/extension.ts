@@ -157,6 +157,14 @@ export default {
           return import("#tools/agents/setup/checkTableCells");
         },
       },
+      {
+        name: "fragment-files",
+        stage: "check",
+        reads: ["agents.instructions"],
+        load() {
+          return import("#tools/agents/setup/checkFragmentFiles");
+        },
+      },
     ],
     "sync.done": [
       {
