@@ -8,11 +8,39 @@ function formatState({ state, closedBy }: WalkedIssue) {
     : `closed by unpushed commit ${closedBy.hash}`;
 }
 
-function formatIssue(
-  issue: WalkedIssue,
-  repository: string,
-): readonly string[] {
+interface IssueNode {
+  readonly issue: WalkedIssue;
+  readonly children: readonly IssueNode[];
+}
+
+function isClosed({ state, closedBy }: WalkedIssue) {
+  return state === "closed" || closedBy !== undefined;
+}
+
+function listDescendants({ children }: IssueNode): readonly WalkedIssue[] {
+  return children.flatMap((child) => {
+    return [child.issue, ...listDescendants(child)];
+  });
+}
+
+function formatClosedDescendant(issue: WalkedIssue, repository: string) {
+  const reference = renderReference(issue, repository);
+
+  return issue.closedBy === undefined
+    ? reference
+    : `${reference} (unpushed ${issue.closedBy.hash})`;
+}
+
+function formatIssue(node: IssueNode, repository: string): readonly string[] {
+  const { issue } = node;
+
   const indent = "  ".repeat(issue.depth);
+
+  const descendants = isClosed(issue) ? listDescendants(node) : [];
+
+  const closed = descendants.filter(isClosed);
+
+  const open = descendants.filter((descendant) => !isClosed(descendant));
 
   const details = [
     ...(issue.blockers.length > 0
@@ -24,30 +52,46 @@ function formatIssue(
       : []),
     ...issue.towards.map(({ hash, subject }) => `Towards: ${hash} ${subject}`),
     ...issue.closes.map(({ hash, subject }) => `Closes: ${hash} ${subject}`),
+    ...(open.length > 0
+      ? [
+          `Warning: closed with open sub-issues ${open
+            .map((descendant) => renderReference(descendant, repository))
+            .join(", ")}`,
+        ]
+      : []),
+    ...(closed.length > 0
+      ? [
+          `Closed sub-issues: ${closed.length} (${closed
+            .map((descendant) => formatClosedDescendant(descendant, repository))
+            .join(", ")})`,
+        ]
+      : []),
   ];
 
   return [
     `${indent}${renderReference(issue, repository)} ${issue.type ?? "untyped"}: ${formatState(issue)}`,
     ...details.map((line) => `${indent}  ${line}`),
+    ...(isClosed(issue)
+      ? []
+      : node.children.flatMap((child) => formatIssue(child, repository))),
   ];
 }
 
-// @debt Rebuilds tree order from `depth` after `checkIssueTree` flattened the tree to walk order; the check could return both orders from the tree it holds.
-function toTreeOrder(issues: readonly WalkedIssue[]): readonly WalkedIssue[] {
-  const subtrees: { depth: number; issues: readonly WalkedIssue[] }[] = [];
+// @debt Rebuilds the tree from `depth` after `checkIssueTree` flattened it to walk order; the check could return the tree it holds.
+function toTree(issues: readonly WalkedIssue[]): readonly IssueNode[] {
+  const subtrees: IssueNode[] = [];
 
   for (const issue of issues) {
-    const start = subtrees.findIndex(({ depth }) => depth > issue.depth);
+    const start = subtrees.findIndex(({ issue: { depth } }) => {
+      return depth > issue.depth;
+    });
 
     const children = start === -1 ? [] : subtrees.splice(start);
 
-    subtrees.push({
-      depth: issue.depth,
-      issues: [issue, ...children.flatMap((child) => child.issues)],
-    });
+    subtrees.push({ issue, children });
   }
 
-  return subtrees.flatMap((subtree) => subtree.issues);
+  return subtrees;
 }
 
 export function formatIssueTreeCheck({
@@ -64,7 +108,7 @@ export function formatIssueTreeCheck({
       : checkouts.map(({ repository: checkout, ref }) => {
           return `Checkout: ${checkout} at ${ref}`;
         })),
-    ...toTreeOrder(issues).flatMap((issue) => formatIssue(issue, repository)),
+    ...toTree(issues).flatMap((node) => formatIssue(node, repository)),
     ...(next === undefined
       ? // @debt The none message omits the in-turn condition: an open issue with closed sub-issues and no finding can still be out of turn.
         ["Next: none, no open issue has its sub-issues closed and no finding"]

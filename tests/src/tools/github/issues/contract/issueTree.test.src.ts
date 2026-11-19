@@ -296,6 +296,54 @@ describe("checkIssueTree", () => {
   });
 });
 
+describe("formatIssueTreeCheck", () => {
+  const walked = (
+    number: number,
+    depth: number,
+    type: string,
+    state: "open" | "closed",
+  ) => {
+    return {
+      repository: "o/r",
+      number,
+      depth,
+      type,
+      state,
+      blockers: [],
+      findings: [],
+      openSections: [],
+      towards: [],
+      closes: [],
+    };
+  };
+
+  test("collapses a closed segment to one line, counting its closed sub-issues and warning of open ones", () => {
+    expect(
+      formatIssueTreeCheck({
+        repository: "o/r",
+        checkouts: [],
+        issues: [
+          walked(12, 2, "Task", "closed"),
+          walked(13, 2, "Task", "open"),
+          walked(11, 1, "Segment", "closed"),
+          walked(14, 1, "Task", "open"),
+          walked(10, 0, "Plan", "open"),
+        ],
+        ready: [{ repository: "o/r", number: 14 }],
+      }),
+    ).toEqual([
+      "Checkouts: none, no local commit read",
+      "#10 Plan: open",
+      "  #11 Segment: closed",
+      "    Warning: closed with open sub-issues #13",
+      "    Closed sub-issues: 1 (#12)",
+      "  #14 Task: open",
+      "Ready: #14",
+      "Next: #14",
+    ]);
+  });
+});
+
 const engrenage = "AUAUST/lib-js-engrenage";
 const toolkit = "AUAUST/lib-js-toolkit";
 
