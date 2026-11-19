@@ -861,7 +861,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
   );
 
   expect(project.read(".ai/backlog/index.md")).toContain(
-    "agents/templates/backlog.md -->\n\nDeferred questions, bugs, tasks and improvements.\n",
+    "metalbrain/templates/backlog.md -->\n\nDeferred questions, bugs, tasks and improvements.\n",
   );
 
   expect(project.read(".codex/hooks.json")).toContain(
@@ -966,9 +966,9 @@ test("adds a scratchpad to an existing backlog setup", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
-    "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/backlog.md -->\n<!-- @end -->\n",
+    "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/metalbrain/sections/backlog.md -->\n<!-- @end -->\n",
     ".ai/backlog/index.md": "# Backlog\n\nOutdated guidance.\n\n## Open categories\n\nNo open categories yet.\n",
-    ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->\n<!-- @end -->\n",
+    ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/metalbrain/rules/backlog.md -->\n<!-- @end -->\n",
   });
 
   await run("init", "--yes");
@@ -978,7 +978,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
   );
 
   expect(project.read(".ai/backlog/index.md")).toMatch(
-    /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/agents\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n\n## Open categories\n\nNo open categories yet\.\n$/,
+    /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/metalbrain\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n\n## Open categories\n\nNo open categories yet\.\n$/,
   );
 
   expect(project.read(".agents/skills/curation/SKILL.md")).toContain(

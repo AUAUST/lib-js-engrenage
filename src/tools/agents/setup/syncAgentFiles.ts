@@ -11,6 +11,7 @@ import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
@@ -139,6 +140,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   if (!hasPreferredAgents(config.agents)) {
     return;
   }
+
+  await migrateInstructionLocations(config);
 
   await migrateSkillFiles(config);
 

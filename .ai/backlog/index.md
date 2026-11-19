@@ -1,6 +1,6 @@
 # Backlog
 
-<!-- @reference @auaust/engrenage/agents/templates/backlog.md -->
+<!-- @reference @auaust/engrenage/metalbrain/templates/backlog.md -->
 
 Deferred questions, bugs, tasks and improvements.
 

@@ -6,12 +6,13 @@ import {
   claudeSkillsDir,
 } from "#tools/agents/claude/constants";
 import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
-import { skillFileName } from "#tools/agents/constants";
+import { metalbrain, skillFileName } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import { listReferences } from "#tools/agents/utils/listReferences";
+import { relocateInstructionReference } from "#tools/agents/utils/relocateInstructionReference";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
@@ -19,9 +20,8 @@ import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { Directory } from "#types/Directory";
 
 function isEngrenageSkillReference(reference: string): boolean {
-  return (
-    reference.startsWith(`${engrenage}/`) &&
-    reference.includes("/agents/skills/")
+  return relocateInstructionReference(reference).startsWith(
+    `${engrenage}/${metalbrain}/skills/`,
   );
 }
 

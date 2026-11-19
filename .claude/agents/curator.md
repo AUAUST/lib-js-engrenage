@@ -26,7 +26,7 @@ hooks:
             stop || exit 2
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/curation.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/curation.md -->
 
 # Curation
 

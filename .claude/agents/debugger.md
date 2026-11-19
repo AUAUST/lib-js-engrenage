@@ -27,7 +27,7 @@ tools:
   - ToolSearch
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/debugging.md -->
 
 # Debugging
 

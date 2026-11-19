@@ -2,6 +2,7 @@
 title: Planning
 description: Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session, or as the walker's consultant, when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
 category: workflow
+extension: tools/github/issues/planning
 order: 10
 formerly:
   - issue-planning

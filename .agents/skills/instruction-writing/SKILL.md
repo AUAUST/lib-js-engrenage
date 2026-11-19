@@ -6,7 +6,7 @@ description: Turn a behavior change the user consented to into agent
   determine agent behavior.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/instruction-writing.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/instruction-writing.md -->
 
 # Instruction writing
 

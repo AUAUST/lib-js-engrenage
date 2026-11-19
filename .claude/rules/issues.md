@@ -3,7 +3,7 @@ paths:
   - .ai/issues/**
 ---
 
-<!-- @reference @auaust/engrenage/agents/rules/issues.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/issues.md -->
 
 # Issues
 

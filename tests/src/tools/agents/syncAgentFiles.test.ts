@@ -40,10 +40,10 @@ describe("syncAgentFiles", () => {
     expect(
       await resolveAgentReference(
         references,
-        "@auaust/engrenage/agents/sections/precedence.md",
+        "@auaust/engrenage/metalbrain/sections/precedence.md",
         import.meta.filename,
       ),
-    ).toMatch(/\/data\/agents\/sections\/precedence\.md$/);
+    ).toMatch(/\/data\/metalbrain\/sections\/precedence\.md$/);
   });
 
   test("resolves package fragments exported only under the import condition", async () => {
@@ -79,8 +79,8 @@ describe("syncAgentFiles", () => {
   });
 
   test("repairs stale planning policy and toggles the owned YAML key while preserving metadata and comments", async () => {
-    const planning = "@auaust/engrenage/agents/skills/planning.md";
-    const debugging = "@auaust/engrenage/agents/skills/debugging.md";
+    const planning = "@auaust/engrenage/metalbrain/skills/planning.md";
+    const debugging = "@auaust/engrenage/metalbrain/skills/debugging.md";
 
     const metadata = "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
 
@@ -144,7 +144,7 @@ describe("syncAgentFiles", () => {
       "description: Stale description.",
       "---",
       "",
-      "<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->",
+      "<!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->",
       "",
       "<!-- @end -->",
       "",
@@ -191,7 +191,7 @@ describe("syncAgentFiles", () => {
           "extra: kept",
           "---",
           "",
-          "<!-- @reference @auaust/engrenage/agents/skills/issue-implementation.md -->",
+          "<!-- @reference @auaust/engrenage/metalbrain/skills/issue-implementation.md -->",
           "",
           "<!-- @end -->",
           "",
@@ -214,8 +214,8 @@ describe("syncAgentFiles", () => {
 
 describe("fragment fillers", () => {
   test("moves a former skill directory and rewrites references to its former fragment", async () => {
-    const former = "@auaust/engrenage/agents/skills/issue-planning.md";
-    const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
+    const former = "@auaust/engrenage/metalbrain/skills/issue-planning.md";
+    const current = "@auaust/engrenage/metalbrain/skills/planning.md";
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
@@ -270,13 +270,13 @@ describe("fragment fillers", () => {
     const merged = await filesystem.read(".claude/rules/agent-records.md");
 
     expect(merged).toBe(
-      `<!-- @reference ${rules}/agent-records.md -->\n<!-- @end -->\n`,
+      "<!-- @reference @auaust/engrenage/metalbrain/rules/agent-records.md -->\n<!-- @end -->\n",
     );
   });
 
   test("removes the generated files of a former skill directory when the new one exists", async () => {
-    const former = "@auaust/engrenage/agents/skills/issue-planning.md";
-    const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
+    const former = "@auaust/engrenage/metalbrain/skills/issue-planning.md";
+    const current = "@auaust/engrenage/metalbrain/skills/planning.md";
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
@@ -304,8 +304,8 @@ describe("fragment fillers", () => {
   test.each([true, false])(
     "carries skills synced before the planning data root moved, with github.planning %s",
     async (planning) => {
-      const former = "@auaust/engrenage/agents/skills/planning.md";
-      const current = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
+      const former = "@auaust/engrenage/metalbrain/skills/planning.md";
+      const current = "@auaust/engrenage/metalbrain/skills/planning.md";
 
       const project = createTemporaryProject({
         "package.json": '{"type":"module"}',
@@ -342,6 +342,29 @@ describe("fragment fillers", () => {
     },
   );
 
+  test("relocates references to the former instruction locations", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/writing.md -->\n<!-- @end -->\n\n<!-- @reference ./local.md -->\n<!-- @end -->\n",
+      ".claude/rules/git.md": "<!-- @reference @auaust/engrenage/agents/rules/git.md -->\n<!-- @end -->\n",
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(await filesystem.read("AGENTS.md")).toBe(
+      "# Agents\n\n<!-- @reference @auaust/engrenage/metalbrain/sections/writing.md -->\n<!-- @end -->\n\n<!-- @reference ./local.md -->\n<!-- @end -->\n",
+    );
+
+    expect(await filesystem.read(".claude/rules/git.md")).toBe(
+      "<!-- @reference @auaust/engrenage/metalbrain/rules/git.md -->\n<!-- @end -->\n",
+    );
+  });
+
   test("merges the skills a skill replaces into it, with its agent", async () => {
     const skills = "@auaust/engrenage/agents/skills";
 
@@ -368,12 +391,12 @@ describe("fragment fillers", () => {
     ]);
 
     expect(await filesystem.read(".claude/agents/curator.md")).toMatch(
-      /name: curator[\s\S]*model: opus[\s\S]*@reference @auaust\/engrenage\/agents\/skills\/curation\.md/,
+      /name: curator[\s\S]*model: opus[\s\S]*@reference @auaust\/engrenage\/metalbrain\/skills\/curation\.md/,
     );
   });
 
   test("removes the generated files of a skill no longer shipped, leaving the project's own skills", async () => {
-    const retired = "@auaust/engrenage/agents/skills/retired.md";
+    const retired = "@auaust/engrenage/metalbrain/skills/retired.md";
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',

@@ -18,7 +18,7 @@ tools:
   - WebFetch
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->
 
 # Analysis
 

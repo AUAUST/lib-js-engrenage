@@ -56,6 +56,7 @@ export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensi
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
+export { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";

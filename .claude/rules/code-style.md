@@ -3,7 +3,7 @@ paths:
   - "**/*.ts"
 ---
 
-<!-- @reference @auaust/engrenage/agents/rules/code-style.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/code-style.md -->
 
 # Code style
 

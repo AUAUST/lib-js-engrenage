@@ -1,4 +1,4 @@
-<!-- @reference @auaust/engrenage/agents/rules/git.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/git.md -->
 
 # Git and GitHub
 

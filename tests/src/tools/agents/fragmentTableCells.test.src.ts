@@ -13,10 +13,7 @@ const shippedData = fileURLToPath(
 
 describe("fragment table cells", () => {
   test("no cell of a shipped fragment exceeds the table cell limit", () => {
-    const fragments = globSync(
-      ["agents/*/*.md", "extensions/**/agents/*/*.md"],
-      { cwd: shippedData },
-    );
+    const fragments = globSync(["metalbrain/**/*.md"], { cwd: shippedData });
 
     const violations = fragments.flatMap((fragment) => {
       return listTableCells(readFileSync(`${shippedData}${fragment}`, "utf-8"))

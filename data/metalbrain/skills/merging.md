@@ -2,6 +2,7 @@
 title: Merging
 description: Review what a walk landed across its leaves, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger.
 category: workflow
+extension: tools/github/issues/planning
 order: 27
 invocation: explicit
 agent:

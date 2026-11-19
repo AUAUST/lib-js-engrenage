@@ -10,9 +10,9 @@ describe("getRuleTemplates", () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({
         name: "@fixtures/filled-rules",
-        exports: { "./agents/rules/*.md": "./agents/rules/*.md" },
+        exports: { "./metalbrain/rules/*.md": "./metalbrain/rules/*.md" },
       }),
-      "agents/rules/filled-rule.md": [
+      "metalbrain/rules/filled-rule.md": [
         "---",
         "title: Filled rule",
         "description: A rule holding a filler directive.",

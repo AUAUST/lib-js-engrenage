@@ -3,7 +3,7 @@ paths:
   - ".ai/backlog/*.md"
 ---
 
-<!-- @reference @auaust/engrenage/agents/rules/backlog.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/backlog.md -->
 
 # Backlog
 

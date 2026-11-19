@@ -46,7 +46,7 @@ describe("agents rules", () => {
     const installed = project.read(".claude/rules/code-style.md");
 
     expect(installed).toContain(
-      "@reference @auaust/engrenage/agents/rules/code-style.md",
+      "@reference @auaust/engrenage/metalbrain/rules/code-style.md",
     );
 
     expect(installed).toContain('"**/*.ts"');
@@ -82,7 +82,7 @@ describe("agents rules", () => {
 
   test("offers only missing rules, including non-default choices, and detects renamed references", async () => {
     const project = createProject({
-      ".claude/rules/renamed.md": "<!-- @reference @auaust/engrenage/agents/rules/code-style.md -->\n<!-- @end -->\n",
+      ".claude/rules/renamed.md": "<!-- @reference @auaust/engrenage/metalbrain/rules/code-style.md -->\n<!-- @end -->\n",
       ".claude/rules/changesets.md": "Project-owned rule\n",
     });
 

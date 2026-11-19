@@ -1,4 +1,4 @@
-<!-- @reference @auaust/engrenage/agents/rules/no-attribution.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/no-attribution.md -->
 
 # Attribution
 

@@ -6,7 +6,7 @@ description: Review what a walk landed across its leaves, integrating each
 disable-model-invocation: true
 ---
 
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/merging.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/merging.md -->
 
 # Merging
 

@@ -6,7 +6,7 @@ description: Turn the scratchpad, `@debt` markers, code clones and agent logs
   or update, settle or file backlog entries.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/curation.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/curation.md -->
 
 # Curation
 

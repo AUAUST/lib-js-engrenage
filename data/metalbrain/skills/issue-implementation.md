@@ -2,6 +2,7 @@
 title: Issue implementation
 description: Implement one GitHub issue from a planned issue tree as written, without redesigning it. Use only when a skill you follow or the user asks for a worker.
 category: workflow
+extension: tools/github/issues/planning
 order: 20
 invocation: explicit
 agent:

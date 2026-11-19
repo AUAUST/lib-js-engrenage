@@ -18,6 +18,7 @@ import { sort } from "@auaust/toolkit/array";
 import { engrenage } from "#constants";
 import { listDataFiles, resolveDataFile } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
+import { metalbrain } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Extension } from "#project/config/index";
@@ -31,6 +32,7 @@ const templateSchema = looseObject({
   category: string(),
   default: optional(boolean(), false),
   order: pipe(number(), integer()),
+  extension: optional(string()),
   formerly: optional(array(string())),
 });
 
@@ -52,18 +54,18 @@ export async function getInstructionTemplates(
     pathToFileURL(resolveDataFile(`${engrenage}/package.json`)),
   );
 
-  const origins: readonly {
-    root: URL;
-    subpath: `./${string}*${string}`;
-  }[] = [
-    { root: engrenageRoot, subpath: `./agents/${kind}/*.md` },
-    ...extensions.map(({ name, root }) => {
-      return root === undefined
-        ? {
-            root: engrenageRoot,
-            subpath: `./extensions/${name}/agents/${kind}/*.md` as const,
-          }
-        : { root, subpath: `./agents/${kind}/*.md` as const };
+  const active = new Set(
+    extensions.map(({ name }) => {
+      return name;
+    }),
+  );
+
+  const subpath = `./${metalbrain}/${kind}/*.md` as const;
+
+  const origins: readonly URL[] = [
+    engrenageRoot,
+    ...extensions.flatMap(({ root }) => {
+      return root === undefined ? [] : [root];
     }),
   ];
 
@@ -75,7 +77,7 @@ export async function getInstructionTemplates(
 
   const shipped = await Promise.all(
     origins.map(async (origin) => {
-      const files = await listDataFiles(origin.root, origin.subpath);
+      const files = await listDataFiles(origin, subpath);
 
       return files.map((file) => {
         return { ...file, origin };
@@ -96,36 +98,43 @@ export async function getInstructionTemplates(
         `${source} template metadata`,
       );
 
+      // @debt an `extension` naming no known extension hides the fragment silently instead of failing
+      if (metadata.extension !== undefined && !active.has(metadata.extension)) {
+        return [];
+      }
+
       const name = basename(source, ".md");
 
       const supportingFiles = supporting
-        ? await listDataFiles(origin.root, origin.subpath, { within: name })
+        ? await listDataFiles(origin, subpath, { within: name })
         : [];
 
-      return {
-        ...metadata,
-        name,
-        source,
-        reference: specifier,
-        body: await render(instruction.body, source),
-        paths: instruction.paths,
-        supporting: await Promise.all(
-          supportingFiles.map(async ({ file, specifier: reference }) => {
-            return {
-              name: basename(file),
-              source: file,
-              reference,
-              body: await render(await readFile(file, "utf-8"), file),
-            };
-          }),
-        ),
-      };
+      return [
+        {
+          ...metadata,
+          name,
+          source,
+          reference: specifier,
+          body: await render(instruction.body, source),
+          paths: instruction.paths,
+          supporting: await Promise.all(
+            supportingFiles.map(async ({ file, specifier: reference }) => {
+              return {
+                name: basename(file),
+                source: file,
+                reference,
+                body: await render(await readFile(file, "utf-8"), file),
+              };
+            }),
+          ),
+        },
+      ];
     }),
   );
 
   const sources = new Map<string, string>();
 
-  for (const { name, reference } of templates) {
+  for (const { name, reference } of templates.flat()) {
     const first = sources.get(name);
 
     if (first !== undefined) {
@@ -137,7 +146,7 @@ export async function getInstructionTemplates(
     sources.set(name, reference);
   }
 
-  return sort(templates, (left, right) => {
+  return sort(templates.flat(), (left, right) => {
     return left.order - right.order || left.name.localeCompare(right.name);
   });
 }

@@ -6,7 +6,7 @@ description: Walk a planned tree of GitHub issues in order, dispatching each
 disable-model-invocation: true
 ---
 
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/walking.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/walking.md -->
 
 # Walking
 

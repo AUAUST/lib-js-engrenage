@@ -24,7 +24,7 @@ vi.mock("#foundation/processes/operations/spawnProcess", () => {
   };
 });
 
-const reference = "@fixtures/skills/agents/skills/guide/notes.md";
+const reference = "@fixtures/skills/metalbrain/skills/guide/notes.md";
 
 const synced = [
   ".claude/skills/guide/notes.md",
@@ -43,9 +43,9 @@ function createProject(metadata = "") {
     "AGENTS.md": "Instructions\n",
     "skills/package.json": JSON.stringify({
       name: "@fixtures/skills",
-      exports: { "./agents/skills/*.md": "./agents/skills/*.md" },
+      exports: { "./metalbrain/skills/*.md": "./metalbrain/skills/*.md" },
     }),
-    "skills/agents/skills/guide.md": [
+    "skills/metalbrain/skills/guide.md": [
       "---",
       "title: Guide",
       "description: A skill with a supporting file.",
@@ -59,7 +59,7 @@ function createProject(metadata = "") {
       "Read `notes.md` beside this skill.",
       "",
     ].join("\n"),
-    "skills/agents/skills/guide/notes.md": "# Notes\n\nRead on demand.\n",
+    "skills/metalbrain/skills/guide/notes.md": "# Notes\n\nRead on demand.\n",
   });
 }
 
@@ -131,7 +131,7 @@ describe("skill supporting files", () => {
 
     const filesystem = await install(project);
 
-    rmSync(project.resolve("skills/agents/skills/guide/notes.md"));
+    rmSync(project.resolve("skills/metalbrain/skills/guide/notes.md"));
 
     await filesystem.write(".claude/skills/guide/other.md", "Project notes\n");
 

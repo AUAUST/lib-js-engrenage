@@ -389,7 +389,7 @@ describe("runSync with generated sources", () => {
       return createSourceProject(
         {
           [skill]: [
-            "<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->",
+            "<!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->",
             "Stale fragment.",
             "<!-- @end -->",
             "",
@@ -411,7 +411,10 @@ describe("runSync with generated sources", () => {
       });
 
       const fragment = readFileSync(
-        join(import.meta.dirname, "../../../../data/agents/skills/analysis.md"),
+        join(
+          import.meta.dirname,
+          "../../../../data/metalbrain/skills/analysis.md",
+        ),
         "utf-8",
       );
 

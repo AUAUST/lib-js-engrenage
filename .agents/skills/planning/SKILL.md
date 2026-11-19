@@ -8,7 +8,7 @@ description: Plan work as a tree of GitHub issues (a plan, ordered items, and
   issues, so its questions reach the user directly.
 ---
 
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/planning.md -->
 
 # Planning
 

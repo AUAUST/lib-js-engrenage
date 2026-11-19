@@ -6,7 +6,7 @@ description: Investigate a problem, fix it at its root when the fix is
 disable-model-invocation: true
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/debugging.md -->
 
 # Debugging
 

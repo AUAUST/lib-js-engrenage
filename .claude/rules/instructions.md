@@ -12,7 +12,7 @@ paths:
   - "data/agents/**"
 ---
 
-<!-- @reference @auaust/engrenage/agents/rules/instructions.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/instructions.md -->
 
 # Writing instructions
 

@@ -23,7 +23,9 @@ export const endMarker = `${markdownBlocks.open}@end${markdownBlocks.close}`;
 
 export const agentsFile = "AGENTS.md" satisfies File;
 
-export const agentsTemplate = `${engrenage}/agents/templates/${agentsFile}`;
+export const metalbrain = "metalbrain";
+
+export const agentsTemplate = `${engrenage}/${metalbrain}/templates/${agentsFile}`;
 
 export const agentsTarget = "agents";
 
@@ -49,7 +51,7 @@ export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 
 export const backlogCategoriesHeading = "## Open categories";
 
-export const backlogTemplate = `${engrenage}/agents/templates/backlog.md`;
+export const backlogTemplate = `${engrenage}/${metalbrain}/templates/backlog.md`;
 
 export const agentLogFiles = freeze([
   ".ai/friction.md",

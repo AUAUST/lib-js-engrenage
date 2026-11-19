@@ -20,7 +20,7 @@ tools:
   - WebFetch
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/instruction-writing.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/instruction-writing.md -->
 
 # Instruction writing
 

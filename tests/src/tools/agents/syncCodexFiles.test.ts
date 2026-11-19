@@ -18,8 +18,8 @@ function createProfileProject(formatter: string) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer","devDependencies":{"prettier":"*"}}',
     "engrenage.config.ts": `export default { agents: { preferred: ["codex"] }, format: { formatter: ${formatter} }, extensions: [{ name: "probe", title: "Probe", root: new URL("./probe/", import.meta.url) }] };`,
-    "probe/package.json": '{"name":"probe","exports":{"./agents/skills/*.md":"./skills/*.md"}}',
-    ".agents/skills/probe/SKILL.md": "<!-- @reference probe/agents/skills/probe.md -->\n<!-- @end -->\n",
+    "probe/package.json": '{"name":"probe","exports":{"./metalbrain/skills/*.md":"./skills/*.md"}}',
+    ".agents/skills/probe/SKILL.md": "<!-- @reference probe/metalbrain/skills/probe.md -->\n<!-- @end -->\n",
   });
 
   const prettier = project.resolve("node_modules/prettier");
@@ -103,7 +103,7 @@ describe("syncCodexFiles", () => {
   });
 
   test("refreshes only installed owned profiles, reports missing/outdated output and removes only owned obsolete variants", async () => {
-    const reference = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/issue-implementation.md";
+    const reference = "@auaust/engrenage/metalbrain/skills/issue-implementation.md";
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',

@@ -3,7 +3,7 @@ paths:
   - "**/*.ts"
 ---
 
-<!-- @reference @auaust/engrenage/agents/rules/prefer-toolkit.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/prefer-toolkit.md -->
 
 # Toolkit
 

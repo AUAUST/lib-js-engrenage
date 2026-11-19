@@ -6,7 +6,7 @@ description: Implement one GitHub issue from a planned issue tree as written,
 disable-model-invocation: true
 ---
 
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/issue-implementation.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/issue-implementation.md -->
 
 # Issue implementation
 

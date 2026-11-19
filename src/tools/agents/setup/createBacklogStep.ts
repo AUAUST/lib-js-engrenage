@@ -3,6 +3,7 @@ import {
   agentsFile,
   backlogIndex,
   endMarker,
+  metalbrain,
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#tools/agents/constants";
@@ -16,7 +17,7 @@ import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Step } from "#project/steps/index";
 
-const sectionReference = `${engrenage}/agents/sections/backlog.md`;
+const sectionReference = `${engrenage}/${metalbrain}/sections/backlog.md`;
 const skills = ["curation"];
 
 export function createBacklogStep(): Step {

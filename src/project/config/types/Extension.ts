@@ -31,8 +31,9 @@ export interface Extension extends ExtensionShape<
   { readonly installed: PackageName } | { readonly config: string }
 > {
   /**
-   * URL of the extension package's root directory, with a trailing slash: its
-   * `./agents/<kind>/*.md` package exports join the agent instruction templates.
+   * URL of the extension package's root directory, with a trailing
+   * slash: its `./metalbrain/<kind>/*.md` package exports join the agent
+   * instruction templates.
    */
   readonly root?: URL;
   /**

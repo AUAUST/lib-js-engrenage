@@ -5,7 +5,7 @@ description: Investigate a problem, fix it at its root when the fix is
   only when a skill you follow or the user asks for a debugger.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/debugging.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/debugging.md -->
 
 # Debugging
 

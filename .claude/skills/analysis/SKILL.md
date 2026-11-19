@@ -9,7 +9,7 @@ description: Analyse a concern, design or part of the project in depth and
 disable-model-invocation: true
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->
 
 # Analysis
 

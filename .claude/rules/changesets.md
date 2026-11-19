@@ -1,4 +1,4 @@
-<!-- @reference @auaust/engrenage/agents/rules/changesets.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/changesets.md -->
 
 # Changesets
 

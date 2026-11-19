@@ -1,4 +1,4 @@
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/walking/cross-repository.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/walking/cross-repository.md -->
 
 # Cross-repository walks
 

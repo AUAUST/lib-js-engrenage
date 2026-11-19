@@ -5,7 +5,7 @@ description: Review what a walk landed across its leaves, integrating each
   close. Use only when a skill you follow or the user asks for a merger.
 ---
 
-<!-- @reference @auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/merging.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/merging.md -->
 
 # Merging
 

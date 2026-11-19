@@ -8,7 +8,7 @@ description: Analyse a concern, design or part of the project in depth and
   for bugs, or for reviewing planned issues.
 ---
 
-<!-- @reference @auaust/engrenage/agents/skills/analysis.md -->
+<!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->
 
 # Analysis
 

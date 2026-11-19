@@ -1,4 +1,4 @@
-<!-- @reference @auaust/engrenage/agents/rules/agent-records.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/agent-records.md -->
 
 # Agent records
 
