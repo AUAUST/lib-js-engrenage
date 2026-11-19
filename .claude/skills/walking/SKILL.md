@@ -81,7 +81,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
 - Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocked report on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work under §Holding a leaf.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under §Dropping a leaf's work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
-- Treat a report that leaves a light gap (an action the instructions already decide, such as a missing changeset; merging §Integration) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
+- Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 - Complete a leaf on the agent's final report, a completion or a blocked report; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
@@ -172,7 +172,7 @@ Reshape around each set-aside issue once per settlement attempt: run it again on
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
 - Start a new consultant or integration merger instead when a segment closes, or, under Codex, once its reported context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs.
 - Under Claude Code, a hook refuses a resume past the growth the agent's definition allows: on a refusal, start a new one as below; never retry the resume.
-- Brief a new consultant or integration merger as the first one was briefed, adding the previous one's last carry-over.
+- Brief a new consultant as the first one was briefed, adding the previous one's last carry-over; a new integration merger as merging §Brief states.
 
 ## Agent limits
 

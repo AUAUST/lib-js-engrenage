@@ -34,7 +34,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 
 - Corrects the cause at its owner, at every site sharing it, with no special case for the reported input.
 - Makes the violated invariant explicit, through types, validation or a clear failure, so the same class of bug cannot return silently.
-- Adds a regression test that fails before the fix and passes after it, and the edge case the cause suggests.
+- Adds a regression test that fails before the fix and passes after it, counting towards the Verification test minimum (the fewest tests giving confidence).
 - Weakens no check and adds no assumption on code outside it. Mark whatever still falls short with debt markers.
 
 ## Debt

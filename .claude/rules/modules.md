@@ -18,4 +18,4 @@ paths:
 - Name types after their tool's concept, without a tool prefix. Use the global `Directory`, `File` and `Glob` for path-like values, adding `URL` where a URL is accepted.
 - Compose function arguments from those types inline; never pick them from a larger options type.
 - Export global types only from the root entry.
-- `@auaust/toolkit`, commander and Octokit are devDependencies bundled into `dist`, so engrenage never depends on them at install time. `c12` and `valibot` are runtime dependencies, never bundled. Tool packages consumers configure (`eslint`, `prettier`, `typescript`, `vite`) are optional peer dependencies.
+- `@auaust/toolkit`, commander and Octokit are devDependencies bundled into `dist`, so engrenage never depends on them at install time. Every other package it uses at runtime stays unbundled, as a dependency or a peer dependency: `package.json` lists both, with each peer's optionality.

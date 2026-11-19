@@ -8,6 +8,6 @@ paths:
 # Backlog
 
 - Open only categories whose indexed scope owns the work.
-- Keep category files, index links and entry references consistent after edits.
+- Keep index links, entry numbering and entry references as `.ai/backlog/index.md` sets them.
 
 <!-- @end -->

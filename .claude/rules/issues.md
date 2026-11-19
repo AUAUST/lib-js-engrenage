@@ -20,6 +20,7 @@ Write up one issue per independent change, and several ordered changes as one is
 
 - Record every finding worth keeping without being asked, so it outlives the session: findings on the concern the request names as issues; debt, friction and discarded solutions under the agent-records rule; other findings in the backlog. Answer in chat alone only a narrow question whose request expects a short answer. When the user asks a question, answer it, then record the findings it produced: recording is not acting on the question.
 - Search the target repository's issues for one on the concern, with `gh issue list --repo <owner>/<repo> --state all --search "<keywords>"`, and extend it before creating one.
+- Open-issue index, under a skill loading one: write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository, and keep in context only each issue's number, title, labels, parent and header gist.
 
 | Finding                                                                            | Type                                   |
 | ---------------------------------------------------------------------------------- | -------------------------------------- |
@@ -48,19 +49,19 @@ Write up one issue per independent change, and several ordered changes as one is
 
 Items are `task` and `problem` issues. Write each complete, through its ancestors, for a worker who treats everything in it as binding and applies it without redesign. Uncertainty lives only under **Planning**, design not finished, and **Questions**, what the user owes; never in vague **Steps**.
 
-| Section           | Types               | Holds                                                                                                                                            |
-| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                       |
-| **Goal**          | plan                | Why the work is needed and the target state                                                                                                      |
-| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                            |
-| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                                |
-| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing it, then its own decisions, with exact paths and names           |
-| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                             |
-| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                         |
-| **Tests**         | item                | Each case with its expected outcome, usually one expected case and one meaningful edge case; for a fix, the regression case and its reproduction |
-| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                                     |
-| **Planning**      | plan, segment, item | Design not finished yet                                                                                                                          |
-| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                                      |
+| Section           | Types               | Holds                                                                                                                                                               |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                                          |
+| **Goal**          | plan                | Why the work is needed and the target state                                                                                                                         |
+| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                                               |
+| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                                                   |
+| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing it, then its own decisions, with exact paths and names                              |
+| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                                                |
+| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                                            |
+| **Tests**         | item                | Each case with its expected outcome, within the Verification test minimum (the fewest tests giving confidence); for a fix, the regression case and its reproduction |
+| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                                                        |
+| **Planning**      | plan, segment, item | Design not finished yet                                                                                                                                             |
+| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                                                         |
 
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
 - Never restate the project's instructions: workers follow them for everything an issue does not say.

@@ -15,7 +15,7 @@ Handle each request of the user by its kind:
 Lay the groundwork in breadth: the plan, the tree, and each item's context, valid enough for a planner to deepen the item alone.
 
 1. **Goal.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the goal is clear.
-2. **Load.** Write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository and keep in context only an index: number, title, labels, parent. Read the backlog categories, `@debt` markers and discarded solutions covering what the goal touches.
+2. **Load.** Load the open-issue index as `.claude/rules/issues.md` › Filing states: the issues in a temporary file, only an index in context. Read the backlog categories, `@debt` markers and discarded solutions covering what the goal touches.
 3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
 4. **Design.** Write into the plan the model and **Decisions** several items share. A fact two items would each decide belongs here.
 5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, and under **Planning** the design its inner pass must settle.

@@ -51,7 +51,7 @@ Read `.claude/rules/issues.md` before writing any issue. Your findings become ba
 Run every stage, in this order; each feeds the next.
 
 0. **Load.**
-   - Write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository. Keep in context only an index: number, title, labels, parent and header gist.
+   - Load the open-issue index as `.claude/rules/issues.md` › Filing states: the issues in a temporary file, only an index in context.
    - Read `.ai/backlog/index.md`, `.ai/friction.md`, `.ai/discarded.md`, `.ai/scratchpad.md` and `.ai/issues/`.
 1. **Notes.**
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.
@@ -85,7 +85,7 @@ Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to t
 
 ## Report
 
-Your only message in a main-session run, and at most five lines; its `Issues` line stands in for the diffs `publish` prints:
+Your only message in a main-session run, and at most five lines. Refines the last `.claude/rules/issues.md` › Drafts bullet: a main-session run publishes without reporting each claimed issue's diff first, and its `Issues` line replaces both that report and the diffs `publish` prints:
 
 ```
 Notes: <n> → <entry IDs> · <n> kept (<question>)

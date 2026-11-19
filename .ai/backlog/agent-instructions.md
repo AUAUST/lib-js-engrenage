@@ -58,22 +58,22 @@ Shared agent instructions, skills and the backlog conventions.
 - why: parallel leaves' `.ai/friction.md` appends conflict when applied; nothing follows 3 unanswered progress requests.
 - want: keep both sides of log conflicts; hold the leaf after 3 more silent timeouts.
 
-## 12. Gate failures outside an agent's change have no rule
+## 12. Flaky gate failures and the walker's resume count have no rule
 
-- why: the stop gate's "fix them and stop again" is unbounded; load timeouts and other sessions' files fail the gate (friction ×3).
-- want: rerun once; still failing, send a blocked report naming the files, editing none; the walker counts it as no resume cause.
+- why: the stop gate blocks only the first stop and has failures listed without edits, but load timeouts fail it transiently and walking's resume limit counts any gate failure (friction ×3).
+- want: rerun the gate once before reporting; the walker counts failures outside the leaf's change as no resume cause.
 
 ## 13. A question asked mid-task can end the task
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
 
-## 18. Skill terms are undefined or carry several meanings
+## 14. The merging skill uses "leaf" without defining it
 
-- why: "leaf" is never defined (walking, merging, Codex dispatch); the debugger's "reach" means sites sharing a cause, unlike AGENTS.md's; planning's "steps" means sub-issues, inner parts, Roadmap entries and the **Steps** section.
-- want: define leaf in walking §Handling; the debugger says "sites"; planning says items, parts and Roadmap entries.
+- why: walking §Handling table defines a leaf; `merging.md` uses the term throughout, and a merger loads only its own skill.
+- want: merging defines leaf, or points to walking's definition with its gist.
 
-## 19. `agents check` flags a skill whose filled block renders a table as conflicting
+## 15. `agents check` flags a skill whose filled block renders a table as conflicting
 
 - sites: `src/tools/agents/operations/checkAgents.ts:151`
 - why: it matches the unformatted rendered body against the installed file, which sync formats; the `@agent-limits` table is padded on install, so both walking `SKILL.md` files report conflicting on a freshly synced tree.
