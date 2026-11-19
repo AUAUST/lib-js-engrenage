@@ -1,5 +1,105 @@
 # @auaust/engrenage
 
+## 0.16.0
+
+### Minor Changes
+
+- [`1773bd9`](https://github.com/AUAUST/lib-js-engrenage/commit/1773bd908f08bbac0785c7aa80f38857a2f3afb1) Thanks [@apademide](https://github.com/apademide)! - - Rename the `issue-implementation` skill to `implement`, migrating installed copies
+  - Let the worker implement a GitHub issue, a local issue draft, a caller's brief or a request the user invokes it with
+  - Install the `implement` skill without the GitHub planning extension
+  - Commit a user-invoked implementation at each coherent state, and leave a dispatched worker's work to its caller outside `Checkpoint:` lines
+
+- [`a195b5e`](https://github.com/AUAUST/lib-js-engrenage/commit/a195b5edaf29fce68e87f822b3ce625e437060fc) Thanks [@apademide](https://github.com/apademide)! - - Ship every agent instruction fragment under `@auaust/engrenage/metalbrain/<kind>/`, replacing `agents/<kind>/` and `extensions/<name>/agents/<kind>/`
+  - Rewrite `@reference` markers naming the former locations on sync
+  - Warn about each `agents.snippetsDir` snippet still at a former location
+  - Gate a shipped fragment on an active extension through its `extension` frontmatter key
+  - Read an extension package's fragments from its `./metalbrain/<kind>/*.md` exports
+
+### Patch Changes
+
+- [`bc78935`](https://github.com/AUAUST/lib-js-engrenage/commit/bc789358dc892281c9c0c7f7f544baa343ff498e) Thanks [@apademide](https://github.com/apademide)! - - Let agent skills ship supporting files, reached through a path rendered per runtime
+
+- [`a0bfdf6`](https://github.com/AUAUST/lib-js-engrenage/commit/a0bfdf6ae57e5aed8eac552f35ea17114461a91b) Thanks [@apademide](https://github.com/apademide)! - - Add `agents dispatch <directory> --client <runtime> --agent <name> --brief <file> [--effort <level>]`, running an agent headless in another checkout through the named runtime's client, under that checkout's own instructions, agents, hooks and settings, and printing its session id and final report
+  - Add `agents dispatch <directory> --client <runtime> --resume <session> --brief <file>` to resume a dispatched session
+  - Gate the stop of a Claude session running a gated agent, as a headless dispatch does, like a gated subagent's stop
+
+- [`f86c699`](https://github.com/AUAUST/lib-js-engrenage/commit/f86c699d5f708ccbd9cdf77aaf39928eaed5e710) Thanks [@apademide](https://github.com/apademide)! - - Have the analyser only report its findings under a read-only brief
+  - Lower the analyser's default effort to medium
+  - Let skills dispatch the analyser
+  - Write chat handoffs inside a Markdown code block
+
+- [`ea15629`](https://github.com/AUAUST/lib-js-engrenage/commit/ea1562917901b904a85ab6c164fd58a47e616365) Thanks [@apademide](https://github.com/apademide)! - - Fix Codex dispatch rows hiding the skill's trigger
+  - Fix Codex dispatch brief guidance contradicting the walking skill
+
+- [`1773bd9`](https://github.com/AUAUST/lib-js-engrenage/commit/1773bd908f08bbac0785c7aa80f38857a2f3afb1) Thanks [@apademide](https://github.com/apademide)! - - Check a worker or debugger brief whose first line is `Draft: <absolute path>` against that local draft in the dispatching checkout's `.ai/issues/`, as `planning issue check` checks drafts, and deny it listing the findings
+  - Allow a worker brief naming neither an issue nor a draft
+  - Deny a worker or debugger brief whose `Issue:` or `Draft:` line is not its first line
+
+- [`5ee878b`](https://github.com/AUAUST/lib-js-engrenage/commit/5ee878b61752fde9aaf67e1ae2e8e434aa717a4a) Thanks [@apademide](https://github.com/apademide)! - - Stop reinstalling extension default rules on every sync
+  - Remove an extension's rules when it turns off
+
+- [`17e6a3f`](https://github.com/AUAUST/lib-js-engrenage/commit/17e6a3fd155803d2a513fa86660214a18354ba3a) Thanks [@apademide](https://github.com/apademide)! - - Keep active extensions' skills in the Codex dispatch table after adding agent rules
+  - Drop the blank lines a removed extension rule block leaves behind
+
+- [`ae3e03c`](https://github.com/AUAUST/lib-js-engrenage/commit/ae3e03c4671ddbd7d0f370555ab15917c5867794) Thanks [@apademide](https://github.com/apademide)! - - Fix `agents check` and `sync` reporting a synced skill as conflicting when formatting changes its rendered body
+  - Format staged changes before the `sync.done` hook runs
+
+- [`62574c0`](https://github.com/AUAUST/lib-js-engrenage/commit/62574c0cda315012a3152705129adc9882c19ba3) Thanks [@apademide](https://github.com/apademide)! - - Fix former instruction references under an extension whose name holds an `agents` segment staying unrelocated
+
+- [`09db095`](https://github.com/AUAUST/lib-js-engrenage/commit/09db0958674512ab426f8359c4b79d7e8d92fa2d) Thanks [@apademide](https://github.com/apademide)! - - Add @extension and @file blocks gating instruction fragment text
+
+- [`10f2c3b`](https://github.com/AUAUST/lib-js-engrenage/commit/10f2c3b7201ec3da466997a582e846a7f82b6fc5) Thanks [@apademide](https://github.com/apademide)! - - Fail sync --check when an installed instruction fragment references a missing project file
+
+- [`2ebae13`](https://github.com/AUAUST/lib-js-engrenage/commit/2ebae136c3fefe0072cb9a522839016cd609734e) Thanks [@apademide](https://github.com/apademide)! - - Read agent runtime skill and agent directories from their runtime contribution
+  - Reject a contributed agent filler named after a built-in one
+
+- [`24389d3`](https://github.com/AUAUST/lib-js-engrenage/commit/24389d30f8e058455fc467e4892eec829dca1dc7) Thanks [@apademide](https://github.com/apademide)! - - Fix the issue tree check collapsing a closed issue whose subtree holds the next issue
+
+- [`efbc51f`](https://github.com/AUAUST/lib-js-engrenage/commit/efbc51f9356be5dbf936cbd8f58bfee0b8ed24e4) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage link` to link a registered repository's installed package to its local checkout without changing tracked files, with `--remove`, `--restore` and a listing of each link's state
+  - Fail the sync check when an install repoints a linked package away from its checkout
+  - Read linked checkouts at `HEAD` in `walk check`, `issue check` and the worker dispatch hook, an explicit `--checkout` winning
+  - Run engrenage, and the tools it starts, on a linked checkout's sources instead of its build
+
+- [`07486f9`](https://github.com/AUAUST/lib-js-engrenage/commit/07486f974cfd60b8b611ac61ff09c3832bd45e6b) Thanks [@apademide](https://github.com/apademide)! - - Load issue drafting, walk and planning-sheet instructions only while GitHub planning is active
+  - Fall back to the backlog in the issues rule and the debugging, analysis and curation skills without GitHub planning
+  - Fall back to the instructions rule when no `writer` agent is installed
+  - Install the default rules of active extensions on sync
+
+- [`9d3fc25`](https://github.com/AUAUST/lib-js-engrenage/commit/9d3fc256c98a4c16cb96fcaee48e5cad6f4cf2b6) Thanks [@apademide](https://github.com/apademide)! - - Add the `shape` skill, invoked by the user to shape an unclear idea in the main session while agents investigate it and implement what is settled
+
+- [`8bd9dde`](https://github.com/AUAUST/lib-js-engrenage/commit/8bd9dde1557d88caf561a6e77d04676d4c485f88) Thanks [@apademide](https://github.com/apademide)! - - Ship the `worktree-dispatch.md` and `linked-checkouts.md` shared skill files, holding the lifecycle of dispatched agents and the work in linked checkouts, including linking one
+  - Export shared skill files as `@auaust/engrenage/metalbrain/shared/*.md`
+  - Have the walking skill reference them instead of stating that lifecycle itself
+
+- [`5296f71`](https://github.com/AUAUST/lib-js-engrenage/commit/5296f718c22dfc045f7be12e62bfd0e469b30eb3) Thanks [@apademide](https://github.com/apademide)! - - Let agent skills reference shared files through `<!-- @shared-file <file>.md -->`, installed beside each skill referencing them
+  - Remove shared file copies a skill no longer references
+
+- [`ae0bdc4`](https://github.com/AUAUST/lib-js-engrenage/commit/ae0bdc445aca01ec4cde5f53db145d4d49cbcf23) Thanks [@apademide](https://github.com/apademide)! - - Fix `@skill-file` staying unfilled in a snippet overriding a skill fragment
+
+- [`244ec0a`](https://github.com/AUAUST/lib-js-engrenage/commit/244ec0af354f53b82c3f1f3053cfe12700fe3a9d) Thanks [@apademide](https://github.com/apademide)! - - Sync a skill's supporting files, shipped in a directory named after it, beside its `SKILL.md` for each preferred runtime, and remove those whose source is gone
+  - Report missing, drifted or stale supporting files in `agents check`
+  - Fail sync on supporting files of a skill declaring an agent
+  - Fill `@reference` blocks in every Markdown file of skill directories by default
+  - Move the cross-repository walk protocol into `walking/cross-repository.md`, read only when a walk meets a foreign leaf or a linked defect
+
+- [`843d000`](https://github.com/AUAUST/lib-js-engrenage/commit/843d0003387bd0f6740ec876c80af898c341ef3d) Thanks [@apademide](https://github.com/apademide)! - - Add a `build.sourceExports` option adding a `source` export condition that resolves each built entry to its source file, dropped from the published manifest
+  - Run the `engrenage` command from its sources when Node runs with `--conditions=source`
+
+- [`9ae757e`](https://github.com/AUAUST/lib-js-engrenage/commit/9ae757e99233fb3b1f134c9cd6f4c590c90739bc) Thanks [@apademide](https://github.com/apademide)! - - Skip the Claude session `Stop` hook without starting pnpm when no agent stops
+
+- [`6af9c79`](https://github.com/AUAUST/lib-js-engrenage/commit/6af9c79f26f1bb61f3ccaa22dd16a7f30cf18624) Thanks [@apademide](https://github.com/apademide)! - - Add `--checkout <repository>=<directory>[@<ref>]` to `planning walk check` and `planning issue check`, counting that checkout's unpushed `Closes` and `Towards` commits for its repository's issues
+  - Count the current directory's commits for its own repository's issues, whichever repository is walked
+  - List each checkout read, and its ref, at the top of `planning walk check`
+
+- [`e626d3b`](https://github.com/AUAUST/lib-js-engrenage/commit/e626d3b81e1b9c85f1cb2dfe80a3d8a8690ac290) Thanks [@apademide](https://github.com/apademide)! - - Print a closed issue in `planning walk check` as one line, counting its closed sub-issues instead of listing them, and warning of any open one
+
+- [`0086116`](https://github.com/AUAUST/lib-js-engrenage/commit/00861164c4bf2db008af59093cedb62e1b9a88a6) Thanks [@apademide](https://github.com/apademide)! - - Exit `planning walk check` with 0 and print `Next: none, walk finished` once the walked issue is closed, keeping exit 1 for a stuck walk
+
+- [`838ed23`](https://github.com/AUAUST/lib-js-engrenage/commit/838ed23fb628d1daa2c4e2fe3e0ad71eba24f92a) Thanks [@apademide](https://github.com/apademide)! - - Route walked leaves of another registered repository to its linked checkout, reviewed and committed there
+  - Stop workers on a defect in a linked repository's code and have debuggers file it there as a `problem` sub-issue
+
+- [`3fb205f`](https://github.com/AUAUST/lib-js-engrenage/commit/3fb205f9390724b74a39ea48dd11a4c3201a1d5b) Thanks [@apademide](https://github.com/apademide)! - - List only the agents the walker dispatches in the walking skill's agent limits
+
 ## 0.15.0
 
 ### Minor Changes
