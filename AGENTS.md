@@ -130,14 +130,14 @@ Analyse every request, suggestion and described fix before acting on it, within 
 - Started with worktree isolation and briefed a `Base: <sha>` line: first check out that commit detached unless already on it, then install dependencies offline from the lockfile, output reduced to errors.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
-| Need                                                                                                                                                     | Command                                             |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Run the tests and type checking                                                                                                                          | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
-| Build and test the output, after changing entries, exports or bundling                                                                                   | `pnpm build`                                        |
-| Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs                                                    | `pnpm engrenage sync`                               |
-| List `@debt` markers                                                                                                                                     | `pnpm engrenage debt --json`                        |
-| Make a user-facing change, one altering what a published package gives its users, shipped agent instructions included, where the project uses changesets | Add a changeset in `.changeset/` with it            |
-| Any other engrenage task                                                                                                                                 | `pnpm engrenage --help`                             |
+| Need                                                                                                                | Command                                             |
+| ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Run the tests and type checking                                                                                     | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
+| Build and test the output, after changing entries, exports or bundling                                              | `pnpm build`                                        |
+| Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs               | `pnpm engrenage sync`                               |
+| List `@debt` markers                                                                                                | `pnpm engrenage debt --json`                        |
+| Make a user-facing change, one altering what a published package gives its users, where the project uses changesets | Add a changeset in `.changeset/` with it            |
+| Any other engrenage task                                                                                            | `pnpm engrenage --help`                             |
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/shell.md -->
 
