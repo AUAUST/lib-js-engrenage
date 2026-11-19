@@ -6,7 +6,7 @@ import type { LoadedConfig } from "#project/config/index";
 export interface SyncDone {
   /**
    * The config the targets ran against, its sections forgotten since the last
-   * `generate` target ran.
+   * `generate` target ran, and its staged changes formatted as sync writes them.
    */
   readonly config: LoadedConfig;
   /**

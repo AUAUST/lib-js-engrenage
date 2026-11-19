@@ -9,6 +9,7 @@ import { runSync, settleChanges, type SyncDone } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { expectSettledSync } from "#tests/utils/expectSettledSync";
+import { linkPrettier } from "#tests/utils/linkPrettier";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 
 function createTarget(
@@ -98,6 +99,67 @@ describe("runSync", () => {
     expect(done.map(({ targets }) => targets)).toEqual([
       ["producer", "reader", "blocks"],
     ]);
+  });
+
+  test("formats the staged changes before emitting sync.done", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "sync-fixture",
+        devDependencies: { prettier: "*" },
+      }),
+    });
+
+    linkPrettier(project.resolve("node_modules/prettier"));
+
+    const seen: (string | undefined)[] = [];
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: {
+        extensions: [
+          {
+            name: "sync-fixture",
+            contributes: {
+              "sync.targets": [
+                {
+                  name: "writer",
+                  stage: "write",
+                  load() {
+                    return Promise.resolve(
+                      async ({ context }: LoadedConfig) => {
+                        await context.filesystem.write(
+                          "data.json",
+                          '{\n  "list": [\n    "a"\n  ]\n}\n',
+                        );
+                      },
+                    );
+                  },
+                },
+              ],
+              "sync.done": [
+                {
+                  load() {
+                    return Promise.resolve(
+                      async ({ config: done }: SyncDone) => {
+                        seen.push(
+                          await done.context.filesystem.read("data.json"),
+                        );
+                      },
+                    );
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      configFile: undefined,
+      reporter: createTestReporter(),
+    });
+
+    await runSync(config, { names: ["writer"] });
+
+    expect(seen).toEqual(['{\n  "list": ["a"]\n}\n']);
   });
 
   test("rejects an unknown target, listing the active ones", async () => {

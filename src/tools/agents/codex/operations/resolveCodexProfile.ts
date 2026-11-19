@@ -1,24 +1,21 @@
 import { parseDocument } from "yaml";
 
+import { loadFormatter } from "#project/format/index";
 import { getCodexProfiles } from "#tools/agents/codex/operations/getCodexProfiles";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
-import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
+import type { LoadedConfig } from "#project/config/index";
 
-export async function resolveCodexProfile(
-  {
-    filesystem,
-    extensions,
-    fillers,
-  }: {
-    filesystem: Filesystem;
-    extensions: readonly Extension[];
-    fillers: BlockFillers;
-  },
-  name: string,
-) {
-  const profiles = await getCodexProfiles({ extensions, fillers });
+export async function resolveCodexProfile(config: LoadedConfig, name: string) {
+  const { filesystem } = config.context;
+
+  const profiles = await getCodexProfiles({
+    extensions: await listActiveExtensions(config),
+    fillers: await createAgentFillers(config),
+    config,
+    formatter: await loadFormatter(config),
+  });
 
   const profile = profiles.find((candidate) => candidate.name === name);
 

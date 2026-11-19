@@ -3,11 +3,9 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
@@ -128,16 +126,7 @@ async function installed(
 
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(
-    {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    },
-    ["issue-implementation", "debugging"],
-  );
+  await installAgentSkills(config, ["issue-implementation", "debugging"]);
 
   return {
     project,
@@ -220,55 +209,25 @@ test("passes the checkouts the project links with the local one", async () => {
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
   const { config, filesystem } = await installed();
 
-  const extensions = await listActiveExtensions(config);
-
   await filesystem.remove(".codex/agents/worker_medium.toml");
 
-  await expect(
-    resolveCodexProfile(
-      {
-        filesystem,
-        extensions,
-        fillers: await createAgentFillers(config),
-      },
-      "worker_medium",
-    ),
-  ).rejects.toThrow(".codex/agents/worker_medium.toml");
+  await expect(resolveCodexProfile(config, "worker_medium")).rejects.toThrow(
+    ".codex/agents/worker_medium.toml",
+  );
 
   await filesystem.write(".codex/agents/worker.toml", 'name = "mine"');
 
-  await expect(
-    resolveCodexProfile(
-      {
-        filesystem,
-        extensions,
-        fillers: await createAgentFillers(config),
-      },
-      "worker",
-    ),
-  ).rejects.toThrow(".codex/agents/worker.toml");
+  await expect(resolveCodexProfile(config, "worker")).rejects.toThrow(
+    ".codex/agents/worker.toml",
+  );
 
   await filesystem.remove(".agents/skills/debugging/SKILL.md");
 
-  await expect(
-    resolveCodexProfile(
-      {
-        filesystem,
-        extensions,
-        fillers: await createAgentFillers(config),
-      },
-      "debugger",
-    ),
-  ).rejects.toThrow(".agents/skills/debugging/SKILL.md");
+  await expect(resolveCodexProfile(config, "debugger")).rejects.toThrow(
+    ".agents/skills/debugging/SKILL.md",
+  );
 
   await expect(
-    resolveCodexProfile(
-      {
-        filesystem,
-        extensions,
-        fillers: await createAgentFillers(config),
-      },
-      "worker_custom",
-    ),
+    resolveCodexProfile(config, "worker_custom"),
   ).resolves.toBeUndefined();
 });

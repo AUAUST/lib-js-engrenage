@@ -2,13 +2,13 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { spawnProcess } from "#foundation/processes/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { formatChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { installAgentSkills } from "#tests/utils/installAgentSkills";
+import { linkPrettier } from "#tests/utils/linkPrettier";
 import { syncClaudeSettings } from "#tools/agents/claude/index";
 import { syncCodexFiles } from "#tools/agents/codex/index";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
   return {
@@ -28,28 +28,23 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-async function fixture() {
+async function fixture(skills: readonly string[] = ["issue-implementation"]) {
   const project = createTemporaryProject({
-    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+    "package.json": '{"type":"module","repository":"github:acme/consumer","devDependencies":{"prettier":"*"}}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
     "AGENTS.md": "Instructions\n",
     "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
   });
 
+  linkPrettier(project.resolve("node_modules/prettier"));
+
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(
-    {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    },
-    ["issue-implementation"],
-  );
+  await installAgentSkills(config, skills);
 
   await syncCodexFiles(config);
+
+  await formatChanges(config);
 
   await config.context.filesystem.flush();
 
@@ -206,5 +201,18 @@ test("reports a missing installed skill when its owned profiles remain", async (
         ),
       }),
     ]),
+  );
+});
+
+test("accepts a skill whose rendered table sync formats", async () => {
+  const config = await fixture(["walking"]);
+
+  const findings = await checkAgents(config);
+
+  expect(findings).toContainEqual(
+    expect.objectContaining({
+      status: "configured",
+      message: expect.stringContaining(".agents/skills/walking/SKILL.md"),
+    }),
   );
 });

@@ -1,6 +1,7 @@
 import { includes, map } from "@auaust/toolkit/array";
 
 import { loadLazy } from "#foundation/modules/index";
+import { formatChanges } from "#project/sync/operations/formatChanges";
 import type { LoadedConfig } from "#project/config/index";
 import type { SyncFailure } from "#project/sync/types/SyncFailure";
 import type { SyncTargetFlags } from "#project/sync/types/SyncTargetFlags";
@@ -69,6 +70,8 @@ export async function runSync(
       config.forget();
     }
   }
+
+  await formatChanges(config);
 
   await registry.emit(
     "sync.done",

@@ -3,9 +3,7 @@ import { object, optional, picklist, string } from "valibot";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import {
   checkAgentDispatch,
-  createAgentFillers,
   denyToolUse,
-  listActiveExtensions,
   readHookPayload,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -33,11 +31,7 @@ export default async function (): Promise<void> {
   });
 
   const profile = await resolveCodexProfile(
-    {
-      filesystem: config.context.filesystem,
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-    },
+    config,
     input.agent_type ?? input.subagent_type ?? "default",
   );
 

@@ -2,10 +2,8 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -49,16 +47,12 @@ test.each([
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      {
-        filesystem: config.context.filesystem,
-        agents: await config.resolve("agents"),
-        extensions: await listActiveExtensions(config),
-        fillers: await createAgentFillers(config),
-        config,
-      },
-      ["issue-implementation", "debugging", "planning", "curation"],
-    );
+    await installAgentSkills(config, [
+      "issue-implementation",
+      "debugging",
+      "planning",
+      "curation",
+    ]);
 
     await config.context.filesystem.flush();
 

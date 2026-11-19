@@ -1,12 +1,13 @@
 import { parseDocument } from "yaml";
 
-import { formatContent, type Formatter } from "#project/format/index";
 import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/operations/createCodexAgentProfiles";
+import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { Formatter } from "#project/format/index";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 
 export async function syncCodexSkill(
@@ -49,13 +50,11 @@ export async function syncCodexSkill(
     : createCodexAgentProfiles({
         agent,
         reference,
-        body: formatter === undefined
-          ? body
-          : await formatContent(body, {
-              path: skillFile,
-              config,
-              formatter,
-            }),
+        body: await formatSkillBody(body, {
+          path: skillFile,
+          config,
+          formatter,
+        }),
       });
 
   // @debt The provenance line is built here and in `createCodexAgentProfiles`, and profile ownership is judged here and in `checkAgents`, which ignores former provenances; one owner of the provenance and its ownership test would keep them aligned.

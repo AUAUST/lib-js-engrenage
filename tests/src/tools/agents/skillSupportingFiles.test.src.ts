@@ -4,10 +4,8 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
@@ -70,16 +68,7 @@ function createProject({
 async function install(project: ReturnType<typeof createProject>) {
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(
-    {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    },
-    ["guide"],
-  );
+  await installAgentSkills(config, ["guide"]);
 
   await config.context.filesystem.flush();
 

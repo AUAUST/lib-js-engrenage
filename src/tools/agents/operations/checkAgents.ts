@@ -1,6 +1,7 @@
 import { posix } from "node:path";
 
 import { spawnProcess } from "#foundation/processes/index";
+import { loadFormatter } from "#project/format/index";
 import {
   claudeAgentsDir,
   claudeFile,
@@ -11,6 +12,7 @@ import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -51,6 +53,8 @@ export async function checkAgents(
   const fillers = await createAgentFillers(config);
 
   const extensions = await listActiveExtensions(config);
+
+  const formatter = await loadFormatter(config);
 
   const templates = await getSkillTemplates({
     agents,
@@ -142,13 +146,19 @@ export async function checkAgents(
       })) {
         const current = await filesystem.read(output.file);
 
+        const body = await formatSkillBody(output.body, {
+          path: output.file,
+          config,
+          formatter,
+        });
+
         const valid = (
           current !== undefined &&
           current.includes(formatReferenceMarker(output.reference)) &&
           (output.frontmatter === undefined ||
             syncFrontmatter(current, output.frontmatter, output.file) ===
               current) &&
-          current.includes(output.body.trim())
+          current.includes(body.trim())
         );
 
         add(
@@ -182,14 +192,7 @@ export async function checkAgents(
       if (agent === "codex") {
         for (const profile of template.profiles) {
           try {
-            await resolveCodexProfile(
-              {
-                filesystem,
-                extensions,
-                fillers,
-              },
-              profile.name,
-            );
+            await resolveCodexProfile(config, profile.name);
 
             add(
               agent,

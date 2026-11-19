@@ -67,14 +67,3 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
-
-## 14. The merging skill uses "leaf" without defining it
-
-- why: walking §Handling table defines a leaf; `merging.md` uses the term throughout, and a merger loads only its own skill.
-- want: merging defines leaf, or points to walking's definition with its gist.
-
-## 15. `agents check` flags a skill whose filled block renders a table as conflicting
-
-- sites: `src/tools/agents/operations/checkAgents.ts:151`
-- why: it matches the unformatted rendered body against the installed file, which sync formats; the `@agent-limits` table is padded on install, so both walking `SKILL.md` files report conflicting on a freshly synced tree.
-- want: compare against the body formatted as sync writes it.

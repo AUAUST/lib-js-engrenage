@@ -46,6 +46,7 @@ export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
+export { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 export { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
