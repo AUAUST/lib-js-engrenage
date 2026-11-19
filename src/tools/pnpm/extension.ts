@@ -1,4 +1,4 @@
-import { linksFile, lockfile, workspaceFile } from "#tools/pnpm/constants";
+import { linksFile, lockfile, pnpmWorkspaceFile } from "#tools/pnpm/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
@@ -21,7 +21,7 @@ export default {
       "pnpm-workspace.yaml": {
         title: "pnpm",
         locate(): FileLocation {
-          return { file: workspaceFile };
+          return { file: pnpmWorkspaceFile };
         },
       },
       "state.links": {

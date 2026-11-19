@@ -56,6 +56,42 @@ describe("loadConfig", () => {
     expect(await inner.resolve("preset")).toBe(false);
   });
 
+  test("finds the workspace root's config from a workspace package", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "outer", "type": "module" }',
+      "pnpm-workspace.yaml": "packages:\n  - packages/*\n",
+      "engrenage.config.ts": 'export default { preset: "library" };\n',
+      "packages/inner/package.json": '{ "name": "inner", "type": "module" }',
+      "packages/inner/src/.gitkeep": "",
+    });
+
+    const config = await loadConfig(project.resolve("packages/inner/src"));
+
+    expect(config.context.root).toBe(project.root);
+
+    expect(await config.resolve("preset")).toMatchObject({
+      name: "library",
+    });
+  });
+
+  test("keeps a package the workspace does not list as its own root", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "outer", "type": "module" }',
+      "pnpm-workspace.yaml": "packages:\n  - packages/*\n  - '!packages/excluded'\n",
+      "engrenage.config.ts": 'export default { preset: "library" };\n',
+      "fixtures/standalone/package.json": '{ "name": "standalone", "type": "module" }',
+      "packages/excluded/package.json": '{ "name": "excluded", "type": "module" }',
+    });
+
+    for (const path of ["fixtures/standalone", "packages/excluded"]) {
+      const config = await loadConfig(project.resolve(path));
+
+      expect(config.context.root).toBe(project.resolve(path));
+
+      expect(await config.resolve("preset")).toBe(false);
+    }
+  });
+
   test("resolves a callback config, replaces defaults, appends generated files and infers project values", async () => {
     const root = getFixture("config/custom");
 

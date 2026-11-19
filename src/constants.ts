@@ -87,6 +87,8 @@ export const gitignoreFile = ".gitignore" satisfies File;
 
 export const packageJsonFile = "package.json" satisfies File;
 
+export const pnpmWorkspaceFile = "pnpm-workspace.yaml" satisfies File;
+
 export const prettierignoreFile = ".prettierignore" satisfies File;
 
 export const tsconfigFile = "tsconfig.json" satisfies File;
@@ -95,6 +97,7 @@ export const files = freeze({
   engrenageConfig: engrenageConfigFile,
   gitignore: gitignoreFile,
   packageJson: packageJsonFile,
+  pnpmWorkspace: pnpmWorkspaceFile,
   prettierignore: prettierignoreFile,
   tsconfig: tsconfigFile,
 } as const);

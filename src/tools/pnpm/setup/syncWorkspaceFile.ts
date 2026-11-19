@@ -2,7 +2,7 @@ import { Document, isMap } from "yaml";
 
 import { map } from "@auaust/toolkit/array";
 
-import { workspaceFile } from "#tools/pnpm/constants";
+import { pnpmWorkspaceFile } from "#constants";
 import { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
 import type { LoadedConfig } from "#project/config/index";
@@ -13,7 +13,7 @@ export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
     filesystem,
   ] = await Promise.all([resolve("workspaces"), context.filesystem]);
 
-  const content = await filesystem.read(workspaceFile);
+  const content = await filesystem.read(pnpmWorkspaceFile);
 
   if (content === undefined && workspaces.length === 0) {
     return;
@@ -43,5 +43,5 @@ export async function syncWorkspaceFile({ resolve, context }: LoadedConfig) {
     return;
   }
 
-  await filesystem.write(workspaceFile, document.toString());
+  await filesystem.write(pnpmWorkspaceFile, document.toString());
 }

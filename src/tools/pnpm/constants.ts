@@ -6,8 +6,6 @@ import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-export const workspaceFile = "pnpm-workspace.yaml" satisfies File;
-
 export const npmrcFile = ".npmrc" satisfies File;
 
 export const lockfile = "pnpm-lock.yaml" satisfies File;
@@ -43,3 +41,5 @@ export const linkedExecutables = `${linkedOutput}/bin` satisfies Directory;
 
 export const restoreLinksCommand = "engrenage link --restore";
 export const unlinkCommand = "engrenage link --remove";
+
+export { pnpmWorkspaceFile } from "#constants";

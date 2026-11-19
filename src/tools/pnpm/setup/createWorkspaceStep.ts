@@ -1,6 +1,7 @@
 import { iterable, object } from "@auaust/toolkit";
 
-import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
+import { pnpmWorkspaceFile } from "#constants";
+import { workspaceSettings } from "#tools/pnpm/constants";
 import { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
 import { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
 import type { Step } from "#project/steps/index";
@@ -38,18 +39,18 @@ function addMissingSettings(content: string): string {
 
 export function createWorkspaceStep(): Step {
   return {
-    name: workspaceFile,
-    message: `Add missing install settings to ${workspaceFile}, preserving existing choices?`,
+    name: pnpmWorkspaceFile,
+    message: `Add missing install settings to ${pnpmWorkspaceFile}, preserving existing choices?`,
     async isMissing({ filesystem }) {
-      const content = await filesystem.read(workspaceFile);
+      const content = await filesystem.read(pnpmWorkspaceFile);
 
       return content === undefined || addMissingSettings(content) !== content;
     },
     async plan({ filesystem }) {
-      const content = await filesystem.read(workspaceFile);
+      const content = await filesystem.read(pnpmWorkspaceFile);
 
       await filesystem.write(
-        workspaceFile,
+        pnpmWorkspaceFile,
         content === undefined
           ? renderWorkspace(workspaceSettings)
           : addMissingSettings(content),

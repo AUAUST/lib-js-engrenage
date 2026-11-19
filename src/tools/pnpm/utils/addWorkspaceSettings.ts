@@ -3,20 +3,23 @@ import { isMap, isScalar, isSeq, type Document } from "yaml";
 import { filter } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
-import { workspaceFile, workspaceSettings } from "#tools/pnpm/constants";
+import { pnpmWorkspaceFile } from "#constants";
+import { workspaceSettings } from "#tools/pnpm/constants";
 
 export function addWorkspaceSettings(document: Document): boolean {
   const builds = document.get("allowBuilds", true);
 
   if (builds !== undefined && !isMap(builds)) {
-    throw new Error(`allowBuilds in ${workspaceFile} must be a YAML mapping`);
+    throw new Error(
+      `allowBuilds in ${pnpmWorkspaceFile} must be a YAML mapping`,
+    );
   }
 
   const excluded = document.get("minimumReleaseAgeExclude", true);
 
   if (excluded !== undefined && !isSeq(excluded)) {
     throw new Error(
-      `minimumReleaseAgeExclude in ${workspaceFile} must be a YAML sequence`,
+      `minimumReleaseAgeExclude in ${pnpmWorkspaceFile} must be a YAML sequence`,
     );
   }
 
