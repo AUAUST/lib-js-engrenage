@@ -1,12 +1,12 @@
 ---
 title: Debugging
-description: Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix into a GitHub issue for a worker. Use only when a skill you follow or the user asks for a debugger.
+description: Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger.
 category: workflow
 order: 15
 invocation: explicit
 agent:
   name: debugger
-  description: Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix into a GitHub issue for a worker. Dispatch it only when a skill you follow or the user asks for a debugger; otherwise do the work yourself.
+  description: Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix up as an issue or backlog entry. Dispatch it only when a skill you follow or the user asks for a debugger; otherwise do the work yourself.
   model: opus
   effort: medium
   efforts:
@@ -24,9 +24,9 @@ agent:
 
 # Debugging
 
-Understand a problem, decide its fix, then apply it or write it down for a worker. A fix is done when it is sound, not when the reported symptom disappears.
+Understand a problem, decide its fix, then apply it or write it up. A fix is done when it is sound, not when the reported symptom disappears.
 
-Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
+Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 
 ## Input
 
@@ -58,22 +58,12 @@ Mark the debt you notice while diagnosing, on the execution path, its callers an
 
 ## Outcome
 
-Decide it by the issues rule › Outcome: fixing every site that shares the cause stays within your input. With a `Leaf:` line in your brief, write the defect up, never fix it: the walker routes it before the leaf.
+Decide it by the issues rule › Outcome, and record any write-up under that rule: fixing every site that shares the cause stays within your input; a merger's improvement finding is accepted work. With a `Walk:` line in your brief, read `.claude/rules/issue-drafts.md` › Walks: it refines your outcome, where your issues go and your commits.
 
 ## Questions and answers
 
 - Ask under the project's decision protocol, batched, with the diagnosis so far.
 - Weigh each answer against your diagnosis as well as under the decision protocol, and report its consequences: sites affected, behavior changed, risks, conflicts with earlier answers or decisions.
-
-## Writing the issue
-
-- When the input is an issue whose fix the current repository owns, turn that issue into the task, condensing its original report into **Context**. Otherwise draft a new one under the issues rule.
-- Type it by the issues rule › Filing; a merger's improvement finding is accepted work, a `task`.
-- With a `Walk:` line, create each new issue by the first matching case:
-  - **A `Leaf:` line in your brief, the defect owned by the current repository or a registered one.** A `problem` in the repository owning the defect, `--parent <the Leaf: issue>`, adding `--repo <short name>` when it is not the current repository.
-  - **The current repository.** In the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue.
-  - **Another repository with a linked checkout, one `pnpm engrenage link` lists.** A `problem`, `--repo <short name> --parent <your input issue>`; never fix it in that checkout: the walker routes the `problem` there.
-  - **Any other.** Under the issues rule › Repository.
 
 ## Finishing
 
@@ -84,7 +74,7 @@ Decide it by the issues rule › Outcome: fixing every site that shares the caus
   | Outcome    | Report                                                                                     |
   | ---------- | ------------------------------------------------------------------------------------------ |
   | Fixed      | The cause, the sites the fix covers, the invariant now enforced, and the debt markers left |
-  | Written up | The issue URL, ready for a worker or needing planning                                      |
+  | Written up | The issue URL or backlog entry ID, ready to implement or needing planning                  |
   | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
 
-- With a `Walk:` line in your brief, commit nothing, since the walker commits your work. Without one, commit under the git rules.
+- Commit under the git rules.

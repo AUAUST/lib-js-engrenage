@@ -3,6 +3,7 @@ import { filterMap, pluck } from "@auaust/toolkit/array";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { Step } from "#project/steps/index";
 
@@ -19,6 +20,7 @@ export function createAgentRulesStep(): Step {
 
       const missing = await getMissingRuleTemplates({
         filesystem: context.filesystem,
+        extensions: await listActiveExtensions(context),
         // @debt consider caching the fillers to avoid recomputing them in plan()
         fillers: await createAgentFillers(context),
       });
@@ -32,6 +34,7 @@ export function createAgentRulesStep(): Step {
 
       const templates = await getMissingRuleTemplates({
         filesystem,
+        extensions: await listActiveExtensions(context),
         fillers,
       });
 

@@ -8,15 +8,9 @@ paths:
 
 # Writing budgets
 
-| Text          | Budget in words |
-| ------------- | --------------- |
-| Goal          | ~60             |
-| Context       | ~80             |
-| Done when     | ~60             |
-| Backlog entry | ~60             |
+Backlog entry budget: ~60 words.
 
-- Give **Steps**, **Tests**, **Planning**, **Questions**, model sections and **Decisions** no budget: make them as complete as a worker needs.
-- Treat a budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
+- Treat every word budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
 - Cut repetition to meet a budget, never decisions.
 
 <!-- @end -->

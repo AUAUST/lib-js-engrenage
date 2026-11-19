@@ -151,10 +151,10 @@ describe("syncAgentFiles", () => {
       "",
     ].join("\n");
 
-    async function load(files: Record<string, string>) {
+    async function load(files: Record<string, string>, planning = true) {
       const project = createTemporaryProject({
         "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-        "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], instructionFiles: [] } };',
+        "engrenage.config.ts": `export default { agents: { preferred: ["claude"], instructionFiles: [] }, github: { planning: ${planning} } };`,
         ...files,
       });
 
@@ -162,9 +162,10 @@ describe("syncAgentFiles", () => {
     }
 
     test("updates a generated description and reports it as outdated", async () => {
-      const config = await load({
-        ".claude/skills/analysis/SKILL.md": staleAnalysis,
-      });
+      const config = await load(
+        { ".claude/skills/analysis/SKILL.md": staleAnalysis },
+        false,
+      );
 
       await syncAgentFiles(config);
 
@@ -274,6 +275,31 @@ describe("fragment fillers", () => {
       "<!-- @reference @auaust/engrenage/metalbrain/rules/agent-records.md -->\n<!-- @end -->\n",
     );
   });
+
+  test.each([
+    { planning: true, installed: true },
+    { planning: false, installed: false },
+  ])(
+    "installs the default rules of active extensions (planning: $planning)",
+    async ({ planning, installed }) => {
+      const project = createTemporaryProject({
+        "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+        "engrenage.config.ts": `export default { agents: { preferred: ["claude"] }, github: { planning: ${planning} } };`,
+      });
+
+      const config = await loadConfig(project.root);
+
+      const { filesystem } = config.context;
+
+      await syncAgentFiles(config);
+
+      expect(await filesystem.exists(".claude/rules/issue-drafts.md")).toBe(
+        installed,
+      );
+
+      expect(await filesystem.exists(".claude/rules/budgets.md")).toBe(false);
+    },
+  );
 
   test("removes the generated files of a former skill directory when the new one exists", async () => {
     const former = "@auaust/engrenage/metalbrain/skills/issue-planning.md";

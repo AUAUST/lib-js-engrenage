@@ -5,6 +5,7 @@ import {
   addAgentRules,
   createAgentFillers,
   getMissingRuleTemplates,
+  listActiveExtensions,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -23,6 +24,7 @@ export default async function (name?: string): Promise<void> {
   } else {
     const missing = await getMissingRuleTemplates({
       filesystem: config.context.filesystem,
+      extensions: await listActiveExtensions(config),
       fillers,
     });
 

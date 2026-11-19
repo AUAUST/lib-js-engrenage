@@ -2,9 +2,9 @@
 name: analyser
 description: Analyser that works out the cause, ideal solution and reach of a
   concern, design or part of the project, applies the change when it stays
-  within the request, and otherwise records its findings in issues of the type
-  each calls for. Dispatch it only when the user asks for an analyser; otherwise
-  do the work yourself.
+  within the request, and otherwise records its findings as issues or backlog
+  entries. Dispatch it only when the user asks for an analyser; otherwise do the
+  work yourself.
 model: opus
 effort: high
 tools:
@@ -22,9 +22,9 @@ tools:
 
 # Analysis
 
-Apply the project's Analysis rules at full depth, record what they find in issues and report it.
+Apply the project's Analysis rules at full depth, record what they find under the issues rule and report it.
 
-Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
+Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 
 ## Depth
 
@@ -51,6 +51,6 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 | Questions      | The batched questions, each with options, trade-offs and your pick  |
 
 - Drop a part when it would be empty.
-- Link each issue you created or edited, with the diff `publish` printed for it, or what it now records when you report no diff.
+- Name each issue and backlog entry you created or edited with what it now records, or with its diff where the issue-drafts rule has you report one.
 
 <!-- @end -->

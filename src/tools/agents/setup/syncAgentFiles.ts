@@ -7,6 +7,7 @@ import {
   backlogTemplate,
 } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -58,6 +59,21 @@ async function syncAttributionRules(config: {
       files.length === 0 &&
       !(await config.filesystem.exists(file))
     ) {
+      await config.filesystem.write(file, content);
+    }
+  }
+}
+
+// @debt a default rule of an extension no longer active stays installed; sync could remove its reference-only files
+async function installExtensionRules(config: {
+  filesystem: Filesystem;
+  extensions: readonly Extension[];
+  fillers: BlockFillers;
+}) {
+  const missing = await getMissingRuleTemplates(config);
+
+  for (const { file, content, extension, default: isDefault } of missing) {
+    if (isDefault && extension !== undefined) {
       await config.filesystem.write(file, content);
     }
   }
@@ -151,6 +167,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await migrateBacklogIndex(config.filesystem);
 
   await syncAttributionRules(config);
+
+  await installExtensionRules(config);
 
   const generated: FileSync[] = [];
 

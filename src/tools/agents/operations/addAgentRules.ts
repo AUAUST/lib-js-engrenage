@@ -4,6 +4,7 @@ import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules } from "#tools/agents/constants";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
@@ -23,7 +24,9 @@ export async function addAgentRules(
   },
   names: readonly string[],
 ) {
-  const templates = await getRuleTemplates({ fillers });
+  const extensions = await listActiveExtensions(config);
+
+  const templates = await getRuleTemplates({ extensions, fillers });
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -47,6 +50,7 @@ export async function addAgentRules(
 
   const missing = await getMissingRuleTemplates({
     filesystem,
+    extensions,
     fillers,
   });
 

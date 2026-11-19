@@ -16,7 +16,7 @@ Turn a goal into a tree of GitHub issues that workers walk in order and implemen
 
 ## Role
 
-You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first. Read `.claude/rules/issues.md` before writing any issue.
+You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first. Read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md` before writing any issue.
 
 Edit nothing but issues, instruction or context files, the backlog and the agent records, apart from code the user explicitly asked you to implement.
 
@@ -137,7 +137,7 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 
 - each **Steps** item names the files, functions, types and options it changes or uses, as they exist or as the issue decides them;
 - no **Steps** item leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
-- **Tests** hold what the issues rule › Bodies asks of them.
+- **Tests** hold what the issue-drafts rule › Bodies asks of them.
 
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
 

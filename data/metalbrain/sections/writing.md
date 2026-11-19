@@ -44,7 +44,7 @@ A subagent's final report, per dispatch or resume:
 - Your only message, sent once every command you started has finished.
 - Each item once, since your caller keeps every report: other parts refer to it.
 - Each file named repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-- Briefed by a walker (a `Walk:` line, or as its merger): each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
 - What remains and the kind of work it needs, or that nothing remains: last, unless your skill orders the parts.
 
 ### Stop records

@@ -1,20 +1,20 @@
 ---
 name: analysis
 description: Analyse a concern, design or part of the project in depth and
-  record its ideal solution, its reach and a recommendation in issues of the
-  type each finding calls for. Use only when the user asks for an analyser to
-  analyse, assess, rethink or review a concern, design or part of the project;
-  never for implementing a decided change, for reviewing a diff or pull request
-  for bugs, or for reviewing planned issues.
+  record its ideal solution, its reach and a recommendation as issues or backlog
+  entries. Use only when the user asks for an analyser to analyse, assess,
+  rethink or review a concern, design or part of the project; never for
+  implementing a decided change, for reviewing a diff or pull request for bugs,
+  or for reviewing planned issues.
 ---
 
 <!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->
 
 # Analysis
 
-Apply the project's Analysis rules at full depth, record what they find in issues and report it.
+Apply the project's Analysis rules at full depth, record what they find under the issues rule and report it.
 
-Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
+Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 
 ## Depth
 
@@ -41,6 +41,6 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing any issue.
 | Questions      | The batched questions, each with options, trade-offs and your pick  |
 
 - Drop a part when it would be empty.
-- Link each issue you created or edited, with the diff `publish` printed for it, or what it now records when you report no diff.
+- Name each issue and backlog entry you created or edited with what it now records, or with its diff where the issue-drafts rule has you report one.
 
 <!-- @end -->

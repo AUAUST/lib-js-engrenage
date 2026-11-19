@@ -4,18 +4,21 @@ import { attributionRules } from "#tools/agents/constants";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { Extension } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
 
 export async function getMissingRuleTemplates({
   filesystem,
+  extensions,
   fillers,
 }: {
   filesystem: Filesystem;
+  extensions: readonly Extension[];
   fillers: BlockFillers;
 }) {
   const [references, templates] = await Promise.all([
     getRuleReferences({ filesystem }),
-    getRuleTemplates({ fillers }),
+    getRuleTemplates({ extensions, fillers }),
   ]);
 
   const owned = new Set<string>(values(attributionRules));

@@ -6,7 +6,13 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-- Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then dispatch the `writer` agent with the decided behavior and the reach the consent covers, and review its diff before committing. Unable to dispatch, as a subagent: load the instruction-writing skill and follow it yourself.
+Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then write it:
+
+| Context                                              | Write the change                                                                                          |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `writer` agent you can dispatch                      | Dispatch it with the decided behavior and the reach the consent covers; review its diff before committing |
+| `writer` agent installed, but you cannot dispatch it | Load the instruction-writing skill and follow it yourself                                                 |
+| No `writer` agent                                    | Follow `.claude/rules/instructions.md` yourself                                                           |
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/writing.md -->
 
@@ -48,7 +54,7 @@ A subagent's final report, per dispatch or resume:
 - Your only message, sent once every command you started has finished.
 - Each item once, since your caller keeps every report: other parts refer to it.
 - Each file named repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-- Briefed by a walker (a `Walk:` line, or as its merger): each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
 - What remains and the kind of work it needs, or that nothing remains: last, unless your skill orders the parts.
 
 ### Stop records

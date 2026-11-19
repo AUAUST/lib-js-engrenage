@@ -12,6 +12,7 @@ import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
@@ -48,8 +49,14 @@ export function createBacklogStep(): Step {
 
       const fillers = await createAgentFillers(context);
 
+      const extensions = await listActiveExtensions(context);
+
       const [missingRules, skillTemplates] = await Promise.all([
-        getMissingRuleTemplates({ filesystem, fillers }),
+        getMissingRuleTemplates({
+          filesystem,
+          extensions,
+          fillers,
+        }),
         getSkillTemplates({ agents, fillers }),
       ]);
 

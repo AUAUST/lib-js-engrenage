@@ -20,6 +20,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>.ai/backlog/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/instructions.md</code> |
+| <code>.ai/issues/**</code> | <code>.claude/rules/issue-drafts.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/issues.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/planning-sheet.md</code> |
 | <code>.claude/**</code> | <code>.claude/rules/instructions.md</code> |
@@ -52,6 +53,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | All files | <code>.claude/rules/agent-records.md</code> |
 | All files | <code>.claude/rules/changesets.md</code> |
 | All files | <code>.claude/rules/git.md</code> |
+| All files | <code>.claude/rules/github.md</code> |
 | All files | <code>.claude/rules/no-attribution.md</code> |
 
 <!-- @end -->
@@ -64,9 +66,9 @@ Use the installed workflows below when their descriptions match the request.
 
 | Skill | Handling |
 | --- | --- |
-| `analysis` | Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation in issues of the type each finding calls for. Use only when the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues. Delegate to `analyser` when its description allows; otherwise run the skill yourself. |
+| `analysis` | Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation as issues or backlog entries. Use only when the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues. Delegate to `analyser` when its description allows; otherwise run the skill yourself. |
 | `planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
-| `debugging` | Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix into a GitHub issue for a worker. Use only when a skill you follow or the user asks for a debugger. Delegate to `debugger` when its description allows; otherwise run the skill yourself. |
+| `debugging` | Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger. Delegate to `debugger` when its description allows; otherwise run the skill yourself. |
 | `issue-implementation` | Implement one GitHub issue from a planned issue tree as written, without redesigning it. Use only when a skill you follow or the user asks for a worker. Delegate to `worker` when its description allows; otherwise run the skill yourself. |
 | `walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
 | `merging` | Review what a walk landed across its leaves, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger. Delegate to `merger` when its description allows; otherwise run the skill yourself. |
