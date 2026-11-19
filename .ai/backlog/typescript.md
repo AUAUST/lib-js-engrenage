@@ -65,14 +65,8 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - why: most producers open with `key === "base"`; `tests.dist` does not fit the config shape, so it is special-cased in producers and `createResolvedConfig`; producers compute inherited `tests.dist` fields that sync then drops.
 - want: base and environment producers split, or declared targets; one tsconfig-key-to-config-path lookup; inherited fields skipped.
 
-## 12. Removed generated tsconfig keys stay in the files
+## 12. Removed compiler options stay in the generated tsconfig files
 
-- sites: `src/tools/typescript/setup/syncAliases.ts:114`, `src/tools/typescript/setup/syncTsconfigFiles.ts:206`
-- why: removed bundler aliases stay in `paths` (only `#` keys are known generated); a removed compiler option stays and `sync --check` passes.
-- want: generated keys recorded, so removals are deleted and checked.
-
-## 13. Tsconfig include misses nested role files
-
-- site: `src/tools/typescript/operations/produceTsconfigInclude.ts:64`
-- why: role files matched only at the root of tests directories, so deeper declarations miss the dist check.
-- want: nested role files included.
+- sites: `src/tools/typescript/setup/syncTsconfigFiles.ts:106`
+- why: configured `compilerOptions` are only ever set; one removed from the config stays and `sync --check` passes. #701 takes up the `paths` half.
+- want: the generated options recorded in `.engrenage/sync.json` (#701), so removals are deleted and checked.
