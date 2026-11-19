@@ -81,3 +81,4 @@
 - `loadConfig` in tests: deleted a synced file with `rmSync` between two loads of one root — the cached config's filesystem still held its content, so sync staged no write; deleted through `config.context.filesystem` instead
 - `engrenage sync` after moving `data.exports`: ran sync before the build — sync reads fragments through the stale `package.json` exports, which only `pnpm engrenage tsdown` regenerates, and deleted every generated skill and agent file; restored them, built, synced again
 - `loadConfig` in tests: rewrote `engrenage.config.ts` between two loads of one root — Node cached the first config module, so the new option was ignored; set the option at project creation
+- `engrenage planning issue check`: checked a parentless draft with a header line — passed, then `publish` refused it for having no ancestors; removed the header line and republished
