@@ -16,14 +16,12 @@ export function relocateInstructionReference(reference: string): string {
   }
 
   const segments = reference.slice(prefix.length).split("/");
-  const agents = segments.indexOf("agents");
-  const kind = segments[agents + 1];
 
-  const isFormer = (
-    (agents === 0 || (agents > 1 && segments[0] === "extensions")) &&
-    kind !== undefined &&
-    kinds.has(kind)
-  );
+  const agents = segments.findLastIndex((segment, index) => {
+    return segment === "agents" && kinds.has(segments[index + 1] ?? "");
+  });
+
+  const isFormer = agents === 0 || (agents > 1 && segments[0] === "extensions");
 
   return isFormer
     ? `${prefix}${[metalbrain, ...segments.slice(agents + 1)].join("/")}`
