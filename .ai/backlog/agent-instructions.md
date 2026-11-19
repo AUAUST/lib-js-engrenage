@@ -72,3 +72,9 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: "leaf" is never defined (walking, merging, Codex dispatch); the debugger's "reach" means sites sharing a cause, unlike AGENTS.md's; planning's "steps" means sub-issues, inner parts, Roadmap entries and the **Steps** section.
 - want: define leaf in walking §Handling; the debugger says "sites"; planning says items, parts and Roadmap entries.
+
+## 19. `agents check` flags a skill whose filled block renders a table as conflicting
+
+- sites: `src/tools/agents/operations/checkAgents.ts:151`
+- why: it matches the unformatted rendered body against the installed file, which sync formats; the `@agent-limits` table is padded on install, so both walking `SKILL.md` files report conflicting on a freshly synced tree.
+- want: compare against the body formatted as sync writes it.
