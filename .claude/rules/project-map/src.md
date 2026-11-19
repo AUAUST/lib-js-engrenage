@@ -51,7 +51,7 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  │     ├─ api  Reach GitHub's API: token, repositories and requests.
 │  │     ├─ contract  Parse, fetch and check issues against the issue contract, including direct `gh` writes.
 │  │     ├─ drafts  Read, check and publish local issue drafts.
-│  │     └─ planning  Activate GitHub planning: the snapshot, the planning sheet and the issue skills.
+│  │     └─ planning  Activate GitHub planning: the snapshot, the planning sheet and the skills gated on it.
 │  ├─ jscpd  Detect duplicate code.
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ pnpm*  Configure package management and dependency policies.
