@@ -1,14 +1,33 @@
-import { readFile } from "node:fs/promises";
+import { readFile, realpath } from "node:fs/promises";
 
+import {
+  claudeAgentsDir,
+  claudeSkillsDir,
+} from "#tools/agents/claude/constants";
+import { codexSkillsDir } from "#tools/agents/codex/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
+import { createSkillFileFiller } from "#tools/agents/utils/createSkillFileFiller";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
 import type { BlockFillers } from "#types/BlockFillers";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
+interface ShippedSkill {
+  readonly skill: string;
+  readonly files: readonly string[];
+}
+
 const loaded = new WeakMap<LoadedConfig, Promise<BlockFillers>>();
+
+const loadedSkills = new WeakMap<
+  LoadedConfig,
+  Promise<ReadonlyMap<File, ShippedSkill>>
+>();
 
 function loadFillers(config: LoadedConfig): Promise<BlockFillers> {
   let fillers = loaded.get(config);
@@ -20,6 +39,58 @@ function loadFillers(config: LoadedConfig): Promise<BlockFillers> {
   }
 
   return fillers;
+}
+
+async function indexSkills(
+  config: LoadedConfig,
+): Promise<ReadonlyMap<File, ShippedSkill>> {
+  const templates = await getInstructionTemplates("skills", {
+    extensions: await listActiveExtensions(config),
+    supporting: true,
+  });
+
+  const skills = new Map<File, ShippedSkill>();
+
+  for (const { name, source, supporting } of templates) {
+    const skill = {
+      skill: name,
+      files: supporting.map((supported) => supported.name),
+    };
+
+    for (const file of [source, ...supporting.map(({ source }) => source)]) {
+      skills.set(await realpath(file), skill);
+    }
+  }
+
+  return skills;
+}
+
+function loadSkills(
+  config: LoadedConfig,
+): Promise<ReadonlyMap<File, ShippedSkill>> {
+  let skills = loadedSkills.get(config);
+
+  if (skills === undefined) {
+    skills = indexSkills(config);
+
+    loadedSkills.set(config, skills);
+  }
+
+  return skills;
+}
+
+// @debt each runtime's skills and agents directories are matched by hand instead of declared by its `agents.runtimes` contribution
+function findSkillsDirectory(file: File): Directory | undefined {
+  if (
+    file.startsWith(`${claudeSkillsDir}/`) ||
+    file.startsWith(`${claudeAgentsDir}/`)
+  ) {
+    return claudeSkillsDir;
+  }
+
+  if (file.startsWith(`${codexSkillsDir}/`)) {
+    return codexSkillsDir;
+  }
 }
 
 async function findReference(
@@ -50,7 +121,8 @@ async function findReference(
 /**
  * Fills a `<!-- @reference <reference> -->` block with the rendered body of the
  * instruction fragment the reference resolves to. A reference that cannot be
- * resolved leaves its block untouched and logs a warning.
+ * resolved leaves its block untouched and logs a warning. A skill's fragments
+ * filled in a runtime's skills or agents directory also render `@skill-file`.
  *
  * @throws {Error} The marker names no single reference.
  */
@@ -73,9 +145,31 @@ export const fillReferenceBlock: DirectiveFill = async ({
 
   const content = await readFile(source, "utf-8");
 
+  const body = parseInstruction(content, source).body;
+
+  const fillers = await loadFillers(config);
+
+  const skillsDirectory = findSkillsDirectory(file);
+
+  if (skillsDirectory === undefined) {
+    return renderFragment(body, source, fillers);
+  }
+
+  const skills = await loadSkills(config);
+
+  const shipped = skills.get(await realpath(source));
+
   return renderFragment(
-    parseInstruction(content, source).body,
+    body,
     source,
-    await loadFillers(config),
+    shipped === undefined
+      ? fillers
+      : {
+          ...fillers,
+          "skill-file": createSkillFileFiller({
+            directory: skillsDirectory,
+            ...shipped,
+          }),
+        },
   );
 };

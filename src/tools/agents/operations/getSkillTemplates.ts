@@ -17,6 +17,7 @@ import { createInstructionFile } from "#tools/agents/utils/createInstructionFile
 import type { Extension } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
+import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { BlockFillers } from "#types/BlockFillers";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -37,21 +38,48 @@ export async function getSkillTemplates({
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  const templates = await getSkillDefinitions({
-    extensions,
-    fillers,
-  });
+  function render(skillsDirectory: Directory) {
+    return getSkillDefinitions({
+      extensions,
+      render: { fillers, skillsDirectory },
+    });
+  }
 
-  return templates.map((template) => {
-    const {
-      invocation,
-      agent,
-      name,
-      description,
-      reference,
-      body,
-      supporting,
-    } = template;
+  const claude = preferred.includes("claude")
+    ? await render(claudeSkillsDir)
+    : [];
+
+  const codex = preferred.includes("codex") ? await render(codexSkillsDir) : [];
+
+  const claudeByName = new Map(
+    claude.map((definition) => [definition.name, definition]),
+  );
+
+  const codexByName = new Map(
+    codex.map((definition) => [definition.name, definition]),
+  );
+
+  // @debt the entry's top-level `body` belongs to one runtime, Codex's when preferred since `addAgentSkills` hands the entry to `syncCodexSkill`; per-runtime renderings would belong in separate fields
+  const primary = preferred.includes("codex")
+    ? codex
+    : preferred.includes("claude")
+      ? claude
+      : await getSkillDefinitions({ extensions });
+
+  return primary.map((template) => {
+    const { invocation, agent, name, description } = template;
+
+    function findRendering(renderings: ReadonlyMap<string, SkillDefinition>) {
+      const rendering = renderings.get(name);
+
+      if (rendering === undefined) {
+        throw new Error(
+          `Skill "${name}" is missing from a runtime's rendering`,
+        );
+      }
+
+      return rendering;
+    }
 
     const isExplicit = invocation === "explicit";
 
@@ -64,7 +92,11 @@ export async function getSkillTemplates({
       skillFile?: File;
     }[] = [];
 
-    function addSkill(directory: Directory, frontmatter: GeneratedFrontmatter) {
+    function addSkill(
+      directory: Directory,
+      frontmatter: GeneratedFrontmatter,
+      { reference, body, supporting }: SkillDefinition,
+    ) {
       const skillFile = `${directory}/${name}/${skillFileName}`;
 
       files.push({
@@ -105,9 +137,13 @@ export async function getSkillTemplates({
         },
       };
 
-      addSkill(claudeSkillsDir, frontmatter);
+      const rendering = findRendering(claudeByName);
+
+      addSkill(claudeSkillsDir, frontmatter, rendering);
 
       if (agent !== undefined) {
+        const { reference, body } = rendering;
+
         const { gate, efforts: _efforts, ...definition } = agent;
 
         const values = {
@@ -154,7 +190,7 @@ export async function getSkillTemplates({
         },
       };
 
-      addSkill(codexSkillsDir, frontmatter);
+      addSkill(codexSkillsDir, frontmatter, findRendering(codexByName));
     }
 
     return {
@@ -164,8 +200,8 @@ export async function getSkillTemplates({
       profiles: preferred.includes("codex") && agent !== undefined
         ? createCodexAgentProfiles({
             agent,
-            reference,
-            body,
+            reference: template.reference,
+            body: findRendering(codexByName).body,
           })
         : [],
       files,

@@ -31,7 +31,11 @@ const synced = [
   ".agents/skills/guide/notes.md",
 ];
 
-function createProject(metadata = "") {
+function createProject({
+  metadata = "",
+  body = "Read `notes.md` beside this skill.",
+  supporting = "notes.md",
+}: { metadata?: string; body?: string; supporting?: string } = {}) {
   return createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": [
@@ -56,10 +60,10 @@ function createProject(metadata = "") {
       "",
       "# Guide",
       "",
-      "Read `notes.md` beside this skill.",
+      body,
       "",
     ].join("\n"),
-    "skills/metalbrain/skills/guide/notes.md": "# Notes\n\nRead on demand.\n",
+    [`skills/metalbrain/skills/guide/${supporting}`]: "# Notes\n\nRead on demand.\n",
   });
 }
 
@@ -147,13 +151,60 @@ describe("skill supporting files", () => {
     ]);
   });
 
-  test("fails on a supporting file of a skill declaring an agent, naming the skill", async () => {
-    const project = createProject(
-      "agent:\n  name: guider\n  description: Guider",
-    );
+  test("lets an agent skill reach its supporting file through a path rendered per runtime", async () => {
+    const project = createAgentProject("mode.md");
+
+    const filesystem = await install(project);
+
+    expect(await filesystem.exists(".claude/skills/guide/mode.md")).toBe(true);
+
+    expect(await filesystem.exists(".agents/skills/guide/mode.md")).toBe(true);
+
+    const config = await sync(project);
+
+    for (const file of [
+      ".claude/agents/guider.md",
+      ".claude/skills/guide/SKILL.md",
+    ]) {
+      expect(project.read(file)).toContain("`.claude/skills/guide/mode.md`");
+    }
+
+    for (const file of [
+      ".agents/skills/guide/SKILL.md",
+      ".codex/agents/guider.toml",
+    ]) {
+      expect(project.read(file)).toContain("`.agents/skills/guide/mode.md`");
+    }
+
+    const findings = await checkAgents(config);
+
+    expect(
+      findings
+        .filter(({ message }) => /guide\/|guider/.test(message))
+        .map(({ status, message }) => `${status} ${message.split(":")[0]}`),
+    ).toEqual([
+      "configured .claude/skills/guide/SKILL.md",
+      "configured .claude/skills/guide/mode.md",
+      "configured .claude/agents/guider.md",
+      "configured .agents/skills/guide/SKILL.md",
+      "configured .agents/skills/guide/mode.md",
+      "configured .codex/agents/guider.toml",
+    ]);
+  });
+
+  test("fails on a skill file naming no supporting file, listing the skill's", async () => {
+    const project = createAgentProject("missing.md");
 
     await expect(sync(project)).rejects.toThrow(
-      /Skill "guide" declares an agent/,
+      'Expected one supporting file of skill "guide": mode.md',
     );
   });
 });
+
+function createAgentProject(file: string) {
+  return createProject({
+    metadata: "agent:\n  name: guider\n  description: Guider",
+    body: `Read this file first:\n\n<!-- @skill-file ${file} -->\n<!-- @end -->`,
+    supporting: "mode.md",
+  });
+}

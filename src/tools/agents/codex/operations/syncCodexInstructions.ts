@@ -36,7 +36,7 @@ export async function syncCodexInstructions({
 
   for (const template of await getSkillDefinitions({
     extensions,
-    fillers,
+    render: { fillers, skillsDirectory: codexSkillsDir },
   })) {
     const skill = await filesystem.read(
       `${codexSkillsDir}/${template.name}/SKILL.md`,

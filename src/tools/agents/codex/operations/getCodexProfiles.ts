@@ -11,7 +11,10 @@ export async function getCodexProfiles({
   extensions: readonly Extension[];
   fillers: BlockFillers;
 }) {
-  const definitions = await getSkillDefinitions({ extensions, fillers });
+  const definitions = await getSkillDefinitions({
+    extensions,
+    render: { fillers, skillsDirectory: codexSkillsDir },
+  });
 
   return definitions.flatMap(({ name, reference, agent, body, invocation }) => {
     return agent === undefined
