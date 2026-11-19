@@ -17,14 +17,18 @@ Walk an issue tree in the main session: route each issue by the handling table, 
 
 The walk request sets them:
 
-| Request words                                                 | Effect                                                             |
-| ------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `pool <K>` or `K = <K>`                                       | K leaves in flight; 3 when unset, always 1 under Codex             |
-| `sequential` or `no pool`                                     | K = 1                                                              |
-| No depth, `depth 0` or `depth 1`                              | Plan depth 1: nested plans are set aside                           |
-| `depth <n>`; `and direct children` or `and child plans` for 2 | Plan depth n: the walked plan and the plans n − 1 levels below it  |
-| `deep`, `deeply` or `traverse`                                | Plan depth `all`: every plan below the walked one                  |
-| `autonomous`                                                  | No user to answer: §Autonomous replaces every question to the user |
+| Request words                                                 | Effect                                                            |
+| ------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `pool <K>` or `K = <K>`                                       | K leaves in flight; 3 when unset, always 1 under Codex            |
+| `sequential` or `no pool`                                     | K = 1                                                             |
+| No depth, `depth 0` or `depth 1`                              | Plan depth 1: nested plans are set aside                          |
+| `depth <n>`; `and direct children` or `and child plans` for 2 | Plan depth n: the walked plan and the plans n − 1 levels below it |
+| `deep`, `deeply` or `traverse`                                | Plan depth `all`: every plan below the walked one                 |
+
+With `autonomous` in the request, no user answers: read this file before the first `walk check` and again after each compaction:
+
+<!-- @skill-file autonomous.md -->
+<!-- @end -->
 
 ## Flow
 
@@ -85,7 +89,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 
 ## Integration
 
-Runs for each completed leaf at K > 1, and at K = 1 in autonomous mode; otherwise §Review applies.
+Runs for each completed leaf at K > 1; otherwise §Review applies.
 
 1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger with `effort: low` under §Resumed agents.
 2. When the merger reports leaf findings, resume the leaf's agent with all of them in one message, so its stop gate checks the tree the merger left; then check only that each finding is fixed or declined with a reason.
@@ -147,9 +151,9 @@ When a segment or a nested plan closes and at the walk's end:
 
 ## Consultant
 
-- Start the `planner` subagent on first need, briefed `consultant` with the plan number, and `autonomous` in autonomous mode; resume it under §Resumed agents.
+- Start the `planner` subagent on first need, briefed `consultant` with the plan number; resume it under §Resumed agents.
 - Call it only for a blocked report the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, a plan your next commit closes, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (planning §Consultant). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (`planning/consultant.md`). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 
@@ -162,16 +166,6 @@ When an issue stays set aside after the consultant or the user cannot settle it,
 3. Run `walk check` and refill the pool.
 
 Reshape each held issue once per settlement attempt: run it again only after the consultant or the user changed that issue.
-
-## Autonomous
-
-The user delegated every decision the instructions let an agent settle and is not there to answer: never ask them or wait for them.
-
-| Instead of                                                                   | Do                                                                                           |
-| ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| Batching questions to the user                                               | Send them to the consultant; the issues it cannot settle stay set aside and go to §Reshaping |
-| Asking to clear a `drafting` claim                                           | Set the issue aside                                                                          |
-| Messaging the user: commit lines, held work, light gaps a permission refuses | Put held work and refused light gaps in your final report; send no commit line               |
 
 ## Resumed agents
 
@@ -205,6 +199,5 @@ End once no leaf is in flight and the ready set is empty, at the end of the tree
 
 1. The table of walked leaves, rebuilt from the walk's commits.
 2. Each merger run's findings and where each went.
-3. In autonomous mode, every decision the consultant settled, from its carry-over.
-4. What is set aside, pending or blocked, and why, with each held leaf's branch and each reshape's moves.
-5. The walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
+3. What is set aside, pending or blocked, and why, with each held leaf's branch and each reshape's moves.
+4. The walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
