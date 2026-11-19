@@ -75,7 +75,7 @@ For work in another registered repository, once the user confirmed the location 
 
 Review each returned diff lightly against what you briefed: `git diff --stat` from its dispatch base, then the hunks your brief concerns, skipping generated files and lockfiles.
 
-- Look for gaps against the brief, duplication, missed reuse and debt; add the `@debt` markers the agent missed.
+- Look for gaps against the brief, duplication, missed reuse, debt and a missing changeset the Environment table requires; add the `@debt` markers and the changeset the agent missed.
 - Close a gap yourself when §Agents lets you make the change; resume the agent with every other gap in one message.
 
 ## Commit

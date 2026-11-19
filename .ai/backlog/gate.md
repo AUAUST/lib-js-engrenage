@@ -29,3 +29,9 @@ The commit gate and its process locks.
 - why: `walking.md` §Dispatching commits its rest on `worker/issue-<n>` or `debugger/issue-<n>`; bypasses are denied; stopping ends the autonomous walk.
 - want: the gate exempting `snap` on `worker/*` and `debugger/*`; meanwhile, the skill leaving the rest uncommitted in a worktree on that branch, stashed there at K = 1.
 - done: such a leaf reaches its branch without a gate bypass.
+
+## 6. No check warns when a commit changes shipped files without a changeset
+
+- why: reviewers miss the Environment table's changeset row; the `gatherer` fragments shipped unlisted.
+- want: where changesets are used, commit and worktree gates warn on changes to a published package's `files` adding no `.changeset/*.md`.
+- done: the warning exists; review checks keep only what it leaves manual.

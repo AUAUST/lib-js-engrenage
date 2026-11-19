@@ -106,7 +106,7 @@ Runs for each completed leaf at K > 1; otherwise §Review applies.
 When no integration merger runs:
 
 1. Read the leaf's diff from its dispatch base: `git diff --stat` first, then the hunks the issue's **Steps** and **Tests** name; skip generated files and lockfiles, and read no code beyond the diff.
-2. Review it against the issue's **Steps**, **Tests** and names. A worker commits at each `Checkpoint:` line of its issue: review those commits one by one, then the uncommitted rest, reading their messages only as a hint of how the worker read its Steps.
+2. Review it against the issue's **Steps**, **Tests** and names, and check it carries the changeset the Environment table requires: a missing one is a gap. A worker commits at each `Checkpoint:` line of its issue: review those commits one by one, then the uncommitted rest, reading their messages only as a hint of how the worker read its Steps.
 3. Add the `@debt` markers the diff calls for and the agent missed.
 4. When you find gaps, resume the agent with all of them in one message; then check only its fixes.
 

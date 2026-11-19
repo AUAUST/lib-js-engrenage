@@ -53,7 +53,7 @@ Turn a decided behavior into instructions that make every agent reading them pro
 
 ## Scope
 
-- Edit only the instruction sources the consent covers; record conflicts beyond them under `instructions.md` › Conflicts.
+- Edit only the instruction sources the consent covers, plus the changeset the Environment table requires for them; record conflicts beyond those sources under `instructions.md` › Conflicts.
 - Commit nothing: whoever dispatched you reviews your diff and commits it.
 
 ## Model facts
