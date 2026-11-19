@@ -1,4 +1,5 @@
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
+import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssue";
 
@@ -31,14 +32,31 @@ function formatClosedDescendant(issue: WalkedIssue, repository: string) {
     : `${reference} (unpushed ${issue.closedBy.hash})`;
 }
 
-function formatIssue(node: IssueNode, repository: string): readonly string[] {
+function isReady(issue: WalkedIssue, ready: readonly IssueLocation[]) {
+  return ready.some(({ repository, number }) => {
+    return repository === issue.repository && number === issue.number;
+  });
+}
+
+function formatIssue(
+  node: IssueNode,
+  repository: string,
+  ready: readonly IssueLocation[],
+): readonly string[] {
   const { issue } = node;
 
   const indent = "  ".repeat(issue.depth);
 
   const descendants = isClosed(issue) ? listDescendants(node) : [];
 
-  const closed = descendants.filter(isClosed);
+  const collapsed = (
+    isClosed(issue) &&
+    !descendants.some((descendant) => {
+      return isReady(descendant, ready);
+    })
+  );
+
+  const closed = collapsed ? descendants.filter(isClosed) : [];
 
   const open = descendants.filter((descendant) => !isClosed(descendant));
 
@@ -71,9 +89,11 @@ function formatIssue(node: IssueNode, repository: string): readonly string[] {
   return [
     `${indent}${renderReference(issue, repository)} ${issue.type ?? "untyped"}: ${formatState(issue)}`,
     ...details.map((line) => `${indent}  ${line}`),
-    ...(isClosed(issue)
+    ...(collapsed
       ? []
-      : node.children.flatMap((child) => formatIssue(child, repository))),
+      : node.children.flatMap((child) => {
+          return formatIssue(child, repository, ready);
+        })),
   ];
 }
 
@@ -108,7 +128,7 @@ export function formatIssueTreeCheck({
       : checkouts.map(({ repository: checkout, ref }) => {
           return `Checkout: ${checkout} at ${ref}`;
         })),
-    ...toTree(issues).flatMap((node) => formatIssue(node, repository)),
+    ...toTree(issues).flatMap((node) => formatIssue(node, repository, ready)),
     ...(next === undefined
       ? // @debt The none message omits the in-turn condition: an open issue with closed sub-issues and no finding can still be out of turn.
         ["Next: none, no open issue has its sub-issues closed and no finding"]

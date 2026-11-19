@@ -342,6 +342,31 @@ describe("formatIssueTreeCheck", () => {
       "Next: #14",
     ]);
   });
+
+  test("lists a closed segment's sub-issues when one of them is ready", () => {
+    expect(
+      formatIssueTreeCheck({
+        repository: "o/r",
+        checkouts: [],
+        issues: [
+          walked(12, 2, "Task", "closed"),
+          walked(13, 2, "Task", "open"),
+          walked(11, 1, "Segment", "closed"),
+          walked(10, 0, "Plan", "open"),
+        ],
+        ready: [{ repository: "o/r", number: 13 }],
+      }),
+    ).toEqual([
+      "Checkouts: none, no local commit read",
+      "#10 Plan: open",
+      "  #11 Segment: closed",
+      "    Warning: closed with open sub-issues #13",
+      "    #12 Task: closed",
+      "    #13 Task: open",
+      "Ready: #13",
+      "Next: #13",
+    ]);
+  });
 });
 
 const engrenage = "AUAUST/lib-js-engrenage";
