@@ -91,3 +91,4 @@
 - `loadConfig` in tests: rewrote `engrenage.config.ts` and removed a `src` directory between two loads of one root — the memoized config kept the old aliases; called `loadConfig.refresh(root)` before each load
 - `engrenage gate --worktree`: barrelDirective and syncDirectiveBlocks tests timed out at 5000ms — passed alone; reran the gate
 - gh api graphql: queried `AUAUST/engrenage` from the package name — repository not found; the repository is `AUAUST/lib-js-engrenage`
+- tool extension in temporary-project tests: symlinked `node_modules/eslint` alone — `resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`

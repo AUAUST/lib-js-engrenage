@@ -5,21 +5,20 @@ import { defineLazyCommand } from "#workflows/cli/operations/defineLazyCommand";
 import { forwardingCommands } from "#workflows/cli/operations/forwardingCommands";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
-
-type ToolAction = (
-  args: string[],
-) => readonly string[] | undefined | Promise<readonly string[] | undefined>;
+import type { ToolAction } from "#workflows/cli/types/ToolAction";
 
 export function defineToolCommand({
   packageName,
   binary = packageName,
   message,
+  root = false,
   configure,
   action,
 }: {
   packageName: KnownPackageName;
   binary?: string;
   message?: string;
+  root?: boolean;
   configure?(command: Command): Command;
   action?(): Promise<Loadable<ToolAction>>;
 }): CommandDefinition {
@@ -42,19 +41,15 @@ export function defineToolCommand({
       ]);
 
       return async (args: string[]) => {
-        const resolved = loaded === undefined ? args : await loaded(args);
-
-        if (resolved === undefined) {
-          return;
-        }
-
         await runTool(
           {
             packageName,
             binary,
             message,
+            root,
+            action: loaded,
           },
-          resolved,
+          args,
         );
       };
     },

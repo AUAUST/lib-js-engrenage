@@ -24,6 +24,7 @@ export type * from "#workflows/cli/types/CommandParameters";
 export type * from "#workflows/cli/types/DefaultActionParameters";
 export type * from "#workflows/cli/types/ExtendCommand";
 export type * from "#workflows/cli/types/RunContext";
+export type * from "#workflows/cli/types/ToolAction";
 // @end
 
 // @barrel config/sections

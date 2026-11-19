@@ -4,6 +4,7 @@ import { defineToolCommand } from "#workflows/cli/index";
 export default defineToolCommand({
   packageName: packages.eslint,
   message: "Fixing lint errors...",
+  root: true,
   configure(command) {
     return command.description(
       "Fix lint errors and prune unused suppressions.",

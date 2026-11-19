@@ -1,14 +1,5 @@
-import { mkdirSync, symlinkSync } from "node:fs";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { linkPackage } from "#tests/utils/linkPackage";
 
 export function linkPrettier(target: string) {
-  mkdirSync(dirname(target), {
-    recursive: true,
-  });
-
-  symlinkSync(
-    dirname(fileURLToPath(import.meta.resolve("prettier/package.json"))),
-    target,
-  );
+  linkPackage("prettier", target);
 }

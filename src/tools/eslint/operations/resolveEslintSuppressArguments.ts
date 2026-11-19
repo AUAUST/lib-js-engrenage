@@ -8,7 +8,7 @@ export function resolveEslintSuppressArguments(
 
   ensureAnyOf(
     resolved,
-    ["--suppress-all", "--suppress-rule"],
+    ["--suppress-all", "--suppress-rule", "--prune-suppressions"],
     "--suppress-all",
   );
 
