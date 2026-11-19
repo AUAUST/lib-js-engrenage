@@ -94,3 +94,4 @@
 - `engrenage sync` after moving `data.exports`: ran sync before the build — sync reads fragments through the stale `package.json` exports, which only `pnpm engrenage tsdown` regenerates, and deleted every generated skill and agent file; restored them, built, synced again
 - `loadConfig` in tests: rewrote `engrenage.config.ts` between two loads of one root — Node cached the first config module, so the new option was ignored; set the option at project creation
 - worktree isolation guard: `pnpm engrenage sync agents` chained with `git status` refused as a complex git command — ran each in its own call
+- commit gate: cherry-picked agent work while a worker ran in its worktree — vitest 5s timeouts failed `checkAgents`, `skillSupportingFiles`, `init` and `hookFailures` tests; passed alone, retried the commit (twice this session)
