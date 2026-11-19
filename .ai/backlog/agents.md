@@ -32,7 +32,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 6. Nothing flags a bare `§Name` in a supporting file pointing to its main skill
 
-- why: supporting files name their own sections bare and the main skill's as `<skill> §Name`; a bare `§Name` matching only a main-skill section reads as a missing section of the file.
+- why: supporting files name the main skill's sections as `<skill> §Name`; a bare one reads as a missing section of the file.
 - want: a check flags a bare `§Name` in a supporting file that names no section of that file.
 
 ## 7. Codex cannot dispatch the analyser at a requested effort
@@ -44,3 +44,20 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: renaming `issue-implementation` to `implement` left references in `walking.md` and `planning.md` that only a grep caught.
 - want: sync fails on a fragment naming a skill that does not exist or appears only in a `formerly` list.
+
+## 9. The debugger commits its own work unless a `Walk:` line says otherwise
+
+- sites: `data/metalbrain/skills/debugging.md:103`
+- why: `shape` reviews and commits its agents' work, so it must brief debuggers "commit nothing"; the worker already leaves commits to any caller as a subagent.
+- want: the debugger, as a subagent, leaves its work uncommitted for its caller, as the worker does.
+
+## 10. Nothing checks references between shared skill files
+
+- why: `linked-checkouts.md` relies on `worktree-dispatch.md`, and `.claude/rules/agent-fragments.md` asks every skill referencing the first to reference the second; `<file>.md › <Section>` references are unchecked too.
+- want: sync fails on a shared file naming one its referencing skill lacks, and on a section reference to a missing section.
+
+## 11. The resume hook names the walking skill
+
+- sites: `src/tools/agents/operations/checkAgentResume.ts:107`
+- why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
+- want: a message naming the dispatching skill generically once another skill resumes such agents.
