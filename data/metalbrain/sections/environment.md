@@ -9,7 +9,7 @@ order: 35
 ## Environment
 
 - On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
-- Started with worktree isolation and briefed a commit: first check it out detached unless already on it, then install dependencies offline from the lockfile, output reduced to errors.
+- Started with worktree isolation and briefed a `Base: <sha>` line: first check out that commit detached unless already on it, then install dependencies offline from the lockfile, output reduced to errors.
 - Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`; never `npx` or `npm`, which the package-manager policy rejects.
 
 | Need                                                                                                  | Command                                             |

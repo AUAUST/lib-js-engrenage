@@ -33,8 +33,8 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 - Decide only local choices no other code, contract or issue can observe: local names, how a private function is split, fixture data.
 - Correct an unambiguous mismatch with authoritative project rules when the correction preserves planned behavior, contracts and scope; report the correction.
 - Stop and report any other mismatch, open section, needed deviation or work belonging to another issue.
-- Stop as soon as the work clearly exceeds what the **Steps** and the issue's `complexity` describe, before implementing past the **Steps**, whether before starting or mid-implementation. Keep the **Steps** already applied and revert nothing: the walker drops the work. Open the report with `Scope stop:`, then give the planner, which re-scopes the issue from it, how you found the larger scope, what you found (sites, domains, counts) and the splits you see as valid.
-- Stop as soon as a defect in the code of another repository, one `pnpm engrenage link` lists or the one your `Walk:` line names, blocks the issue, never working around it. Keep the **Steps** already applied: the walker drops the work. Open the report with `Linked defect: <short name>`, the repository's short name, then the defect, where it shows and your leads to its cause.
+- Stop as soon as the work clearly exceeds what the **Steps** and the issue's `complexity` describe, before implementing past the **Steps**, whether before starting or mid-implementation. With a `Walk:` line in your brief, keep the **Steps** already applied and revert nothing: the walker drops the work. Open the report with `Scope stop:`, then give the planner, which re-scopes the issue from it, how you found the larger scope, what you found (sites, domains, counts) and the splits you see as valid.
+- Stop as soon as a defect in the code of another repository, one `pnpm engrenage link` lists or the one your `Walk:` line names, blocks the issue, never working around it. With a `Walk:` line in your brief, keep the **Steps** already applied: the walker drops the work. Open the report with `Linked defect: <short name>`, the repository's short name, then the defect, where it shows and your leads to its cause.
 
 ## Commits
 
@@ -44,7 +44,7 @@ Everything in the issue binds you: follow the **Steps** in order and write the l
 ## Finishing
 
 - The issue is done when its **Done when** holds, or its **Steps** are done when it has none, with the release work the Environment table requires.
-- Your final report is a completion or a blocked report; a blocked report other than a scope stop or a linked defect carries a stop record (Writing › Stop records).
+- Your final report is a completion or a blocked report; a blocked report carries a stop record (Writing › Stop records), except a scope stop or a linked defect with a `Walk:` line in your brief.
 - When resumed with a merger's findings, fix each one your issue covers, and report the rest with the reason.
 - Never edit, comment on, set types or fields on, or close issues.
 - Report whether **Done when** holds, each deviation from the issue with its reason, each local choice you made, and what the issue tree needs updated.

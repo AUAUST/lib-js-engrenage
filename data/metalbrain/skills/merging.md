@@ -33,7 +33,7 @@ Review what a walk landed across its leaves: gaps against each leaf's issue, dup
 
 ## Brief
 
-- **Integration**: the plan and segment; the leaf's issue; its checkout (its worktree, or the main checkout); its dispatch base; the walked branch's `HEAD` commit; the commit range other leaves landed since the dispatch base (empty at K = 1 and when no other leaf landed); the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over.
+- **Integration**: the plan and segment; the leaf's issue; its checkout (its worktree, or the main checkout); its dispatch base, on a `Base: <sha>` line; the walked branch's `HEAD` commit; the commit range other leaves landed since the dispatch base (empty at K = 1 and when no other leaf landed); the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over.
 - **Review**: the plan and segment, the commit range landed since the previous review run, the carry-over of that run and of the integration runs since.
 
 - Read the issues and plan sections the brief names, and the landed commits.

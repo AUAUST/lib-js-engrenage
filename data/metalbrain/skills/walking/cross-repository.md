@@ -15,7 +15,7 @@ Before the first foreign dispatch, extending walking §Stops and restarts:
 ## Dispatch
 
 - **Pool.** Foreign leaves count towards K; at most one agent in flight per linked checkout, mergers and debuggers included: `agents dispatch` has no worktree isolation.
-- **Dispatch base.** The linked checkout's `HEAD` commit when you dispatch, recorded per leaf.
+- **Dispatch base.** The linked checkout's `HEAD` commit when you dispatch, recorded per leaf and briefed on the `Base:` line.
 - **Start.** Write the brief walking §Dispatching or the merging skill's §Brief sets to a file outside both checkouts, then run in the background, or in the foreground under a client without background commands, `pnpm engrenage agents dispatch <checkout> --client <your runtime: claude or codex> --agent <worker|debugger|merger> --brief <file>`, adding `--effort <level>` when the `complexity` row gives one. Its output holds a `Session:` line, a `Denied:` line when tools were denied, and the agent's final report.
 - **Resume.** Write the message to a file, then run `pnpm engrenage agents dispatch <checkout> --client <your runtime> --resume <session> --brief <file>`.
 - **Denied tools.** Treat each tool on the `Denied:` line as an action a permission refused (walking §Dispatching, light gap): name it in the commit line.
@@ -37,8 +37,8 @@ Before the first foreign dispatch, extending walking §Stops and restarts:
 On a worker report opening with `Linked defect:`, from any leaf:
 
 1. Drop the leaf's work under walking §Dropping a leaf's work, through §Holding and dropping when the leaf is foreign.
-2. Dispatch a new debugger in the walked checkout, as a walked-repository leaf's agent, never through §Dispatch, the leaf foreign or not. Brief it with the `Walk:` line, then `Leaf: <owner>/<repo>#<n>` naming the leaf, then the worker's report, and no `Issue:` line.
-3. Handle its outcome by walking §After a debugger: `walk check` routes the sub-issue it files before the leaf.
+2. Dispatch a new debugger in the walked checkout, as a walked-repository leaf's agent, never through §Dispatch, the leaf foreign or not. Brief it with the `Walk:` and `Base:` lines, then `Leaf: <owner>/<repo>#<n>` naming the leaf, then the worker's report, and no `Issue:` line.
+3. Handle its outcome by walking §After a debugger: `walk check` routes the sub-issue it files before the leaf. When it filed none, the defect lying in a repository neither current nor registered, set the leaf aside instead of dispatching it again, and report it with the backlog entry the debugger wrote.
 
 ## Boundary reviews
 

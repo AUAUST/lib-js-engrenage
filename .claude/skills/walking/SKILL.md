@@ -74,10 +74,10 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 
 ## Dispatching
 
-- Keep up to K leaves of the ready set in flight. Dispatch every agent from the walked branch's `HEAD` commit, its dispatch base: at K = 1 in the main checkout; past it, each leaf in the background with `isolation: "worktree"`, briefing that commit.
+- Keep up to K leaves of the ready set in flight. Dispatch every agent from the walked branch's `HEAD` commit, its dispatch base: at K = 1 in the main checkout; past it, each leaf in the background with `isolation: "worktree"`, briefing that commit on its `Base:` line.
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
-- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
-- Brief a debugger given a review merger's findings with the `Walk:` line, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
+- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then the checkpoint commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
+- Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
 - Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocked report on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work under §Holding a leaf.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under §Dropping a leaf's work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
