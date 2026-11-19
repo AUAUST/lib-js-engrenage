@@ -26,7 +26,7 @@ Leave the checkout on that branch, never its default branch.
 
 ## Dispatch
 
-- **Pool.** At most one agent in flight per linked checkout, whatever its role: `agents dispatch` has no worktree isolation. Each counts towards K.
+- **Pool.** At most one agent in flight per linked checkout, whatever its role: `agents dispatch` has no worktree isolation. Each counts towards its pool's K.
 - **Dispatch base.** The linked checkout's `HEAD` commit when you dispatch, recorded per agent and briefed on the `Base:` line.
 - **Start.** Write the brief your skill sets to a file outside both checkouts, then run in the background, or in the foreground under a client without background commands, `pnpm engrenage agents dispatch <checkout> --client <your runtime: claude or codex> --agent <name> --brief <file>`, adding `--effort <level>` when your skill gives one. Its output holds a `Session:` line, a `Denied:` line when tools were denied, and the agent's final report.
 - **Resume.** Write the message to a file, then run `pnpm engrenage agents dispatch <checkout> --client <your runtime> --resume <session> --brief <file>`.

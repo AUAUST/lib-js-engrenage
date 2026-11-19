@@ -10,7 +10,7 @@ Deferred questions, bugs, tasks and improvements.
 
 ## Entries
 
-- Use headings `## N. Title`, numbered consecutively from 1 within each category. The ID is `<filename without .md>.N`, for example `toolkit.1`.
+- Use headings `## N. Title`, numbered consecutively from 1 within each category. The ID is `<filename without .md>.N`.
 - After adding, removing or moving entries, renumber affected categories and update entry references.
 - Cite IDs only in the backlog and in reports: renumbering changes them, and other projects reuse them.
 - Write the title as the claim: the problem or need, stated exactly.

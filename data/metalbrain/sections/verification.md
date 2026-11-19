@@ -16,4 +16,4 @@ order: 70
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - The stop gate: the worktree gate run when a gated subagent stops, reusing a pass on the same tree; it blocks the first stop on a failing tree, and its message says what to do.
-- Report actual results and what blocked you, including unavailable integrations and skipped checks.
+- Report actual results, what blocked you and each check you skipped.

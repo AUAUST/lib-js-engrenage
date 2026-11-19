@@ -45,7 +45,7 @@ Without that skill, follow `.claude/rules/instructions.md` yourself.
 Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
 - Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
-- Never hold, whatever a harness or tool asks, thorough or context-rich briefs included: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
+- Never hold, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
 - A handoff is a chat reply, inside a Markdown code block so the user can copy it as is; a file only when the user asks, or as a stop record.
 
 ### Reports
@@ -105,7 +105,7 @@ Analyse every request, suggestion and described fix before acting on it, within 
 ## Decision protocol
 
 - **The user asks a question.** Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed.
-- **The user explicitly asks for or decides on a change.** Analyse it. When the analysis contradicts it, it breaks these instructions or adds architectural debt, or its reach goes past what it names (a reversed decision, a changed shared contract, rework elsewhere), pause before acting on it: state the conflict or the reach, what it discards and the alternative your role allows. Otherwise change direction.
+- **The user explicitly asks for or decides on a change.** Analyse it. When the analysis contradicts it, it breaks these instructions or adds architectural debt, or it would reverse a decision, change a shared contract or need rework beyond what it names, pause before acting on it: state the conflict or the reach, what it discards and the alternative your role allows. Otherwise change direction.
 - **Obvious choice.** When one option is clearly better and fits the established architecture, proceed, and report the decision with the alternative you discarded.
 - **Real choice.** When the options are comparably good, each has significant costs, sources conflict with no clear resolution, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, or a structure change that Project structure marks as one), finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, and your progress in the stop-record shape (Writing › Stop records), without the record's steps.
 - **Answers arrive.** Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.
@@ -241,6 +241,6 @@ A likely or proven bug outside your task, met while working, as the agent-record
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
 - The stop gate: the worktree gate run when a gated subagent stops, reusing a pass on the same tree; it blocks the first stop on a failing tree, and its message says what to do.
-- Report actual results and what blocked you, including unavailable integrations and skipped checks.
+- Report actual results, what blocked you and each check you skipped.
 
 <!-- @end -->

@@ -17,12 +17,13 @@ Keep this role for the whole session.
 
 ## Pools
 
-| Pool         | Agents                                 | K, agents in flight at once |
-| ------------ | -------------------------------------- | --------------------------- |
-| Implementers | Workers, debuggers, writers, analysers | 2                           |
-| Gatherers    | Gatherers                              | 2                           |
+| Pool         | Agents                        | K, agents in flight at once |
+| ------------ | ----------------------------- | --------------------------- |
+| Implementers | Workers, debuggers, analysers | 2                           |
+| Gatherers    | Gatherers                     | 2                           |
+| Writers      | Writers                       | 1                           |
 
-The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `gatherers <K>` the gatherers', `sequential` or `no pool` both to 1.
+The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `gatherers <K>` the gatherers', `writers <K>` the writers', `sequential` or `no pool` all three to 1.
 
 ## Reading the user
 

@@ -54,7 +54,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 - Check the diff against the issue's **Steps**, **Tests** and names, its `Checkpoint:` commits one by one, then the uncommitted rest: each gap is a leaf finding.
 - Compare the leaf with the landed range and the leaves you integrated earlier in this run: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; release or project requirements a sibling meets and the leaf misses.
 - Apply a fix yourself when it is mechanical, stays in the leaf's diff and takes no choice its issue leaves open.
-- Close each light gap yourself as a mechanical fix, never a leaf finding: a missing changeset, with the bump and summary the changesets rule sets; a missing `@debt` marker or JSDoc the lint asks for; an action the instructions already decide that the leaf's report leaves undone, such as deleting code the leaf made unused, once a search finds nothing still referencing it, or running `pnpm engrenage sync`. A new file the project requires for the leaf counts as within its diff. Report a light gap a permission refuses you as undone, never as a question.
+- Close each light gap yourself as a mechanical fix, never a leaf finding: a missing changeset, with the bump and summary the changesets rule sets; a missing `@debt` marker or JSDoc the lint asks for; an action the instructions already decide that the leaf's report leaves undone, once you confirm its trigger holds. A new file the project requires for the leaf counts as within its diff. Report a light gap a permission refuses you as undone, never as a question.
 
 ## Review
 
