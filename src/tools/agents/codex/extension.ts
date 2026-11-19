@@ -2,6 +2,7 @@ import {
   codexAgentsDir,
   codexFile,
   codexHooksFile,
+  codexSkillsDir,
   codexTarget,
 } from "#tools/agents/codex/constants";
 import type { Extension, FileLocation } from "#project/config/index";
@@ -45,6 +46,8 @@ export default {
       {
         name: "codex",
         title: "Codex",
+        skills: codexSkillsDir,
+        agents: codexAgentsDir,
         dispatcher: {
           load() {
             return import("#tools/agents/codex/adapters/dispatchCodexAgent");

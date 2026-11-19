@@ -39,6 +39,8 @@ export const agentRuntimeEntry: StandardSchemaV1 = looseObject({
   name: string(),
   title: optional(string()),
   dispatcher: optional(looseObject({ load: function_() })),
+  skills: optional(string()),
+  agents: optional(string()),
 });
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
@@ -46,6 +48,8 @@ export const agentLoaderEntry: StandardSchemaV1 = looseObject({
   name: string(),
   load: function_(),
 });
+
+export const builtInFillers = freeze(["skill-file"] as const);
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 

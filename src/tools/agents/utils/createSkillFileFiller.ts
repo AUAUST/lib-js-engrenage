@@ -1,5 +1,5 @@
+import type { SkillRendering } from "#tools/agents/types/SkillRendering";
 import type { BlockFillers } from "#types/BlockFillers";
-import type { Directory } from "#types/Directory";
 
 /**
  * Fills a `<!-- @skill-file <file> -->` block with the repository-relative path
@@ -9,11 +9,7 @@ export function createSkillFileFiller({
   directory,
   skill,
   files,
-}: {
-  directory: Directory;
-  skill: string;
-  files: readonly string[];
-}): BlockFillers[string] {
+}: SkillRendering): BlockFillers[string] {
   return (...args) => {
     const [file, ...others] = args;
 

@@ -1,6 +1,8 @@
 import {
+  claudeAgentsDir,
   claudeFile,
   claudeSettingsFile,
+  claudeSkillsDir,
   claudeTarget,
 } from "#tools/agents/claude/constants";
 import type { Extension, FileLocation } from "#project/config/index";
@@ -32,6 +34,8 @@ export default {
       {
         name: "claude",
         title: "Claude",
+        skills: claudeSkillsDir,
+        agents: claudeAgentsDir,
         dispatcher: {
           load() {
             return import("#tools/agents/claude/adapters/dispatchClaudeAgent");

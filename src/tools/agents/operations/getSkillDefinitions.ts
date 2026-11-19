@@ -14,12 +14,6 @@ export async function getSkillDefinitions(config: {
 }) {
   const { render } = config;
 
-  if (render !== undefined && "skill-file" in render.fillers) {
-    throw new Error(
-      'Agent filler "@skill-file" is built in and cannot be contributed',
-    );
-  }
-
   const templates = await getInstructionTemplates("skills", {
     extensions: config.extensions,
     supporting: true,

@@ -1,6 +1,7 @@
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Lazy } from "#foundation/modules/index";
 import type { AgentDispatcher } from "#tools/agents/ports/AgentDispatcher";
+import type { Directory } from "#types/Directory";
 
 export interface AgentRuntime extends EntryShape {
   /**
@@ -17,6 +18,16 @@ export interface AgentRuntime extends EntryShape {
    * refuses the runtime.
    */
   readonly dispatcher?: Lazy<AgentDispatcher>;
+  /**
+   * Directory holding one directory per installed skill; without it, the
+   * runtime gets no skills.
+   */
+  readonly skills?: Directory;
+  /**
+   * Directory of agent files embedding skill bodies, rendered with the
+   * paths of `skills`.
+   */
+  readonly agents?: Directory;
 }
 
 declare global {
