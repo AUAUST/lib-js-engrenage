@@ -1,3 +1,5 @@
+import { posix } from "node:path";
+
 import { spawnProcess } from "#foundation/processes/index";
 import {
   claudeAgentsDir,
@@ -13,6 +15,8 @@ import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
+import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
+import { listReferences } from "#tools/agents/utils/listReferences";
 import type { LoadedConfig } from "#project/config/index";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
@@ -140,11 +144,11 @@ export async function checkAgents(
 
         const valid = (
           current !== undefined &&
-          current.includes(formatReferenceMarker(template.reference)) &&
+          current.includes(formatReferenceMarker(output.reference)) &&
           (output.frontmatter === undefined ||
             syncFrontmatter(current, output.frontmatter, output.file) ===
               current) &&
-          current.includes(template.body.trim())
+          current.includes(output.body.trim())
         );
 
         add(
@@ -152,6 +156,27 @@ export async function checkAgents(
           valid ? "configured" : "conflicting",
           `${output.file}: ${valid ? "generated output current" : "missing or conflicting generated output; sync agents"}`,
         );
+      }
+
+      for (const file of await filesystem.glob(
+        `${posix.dirname(skillFile.file)}/*.md`,
+      )) {
+        const content = (await filesystem.read(file)) ?? "";
+
+        const isStale = (
+          !template.files.some((output) => output.file === file) &&
+          listReferences(content).some((reference) => {
+            return isSupportingReference(reference, template.reference);
+          })
+        );
+
+        if (isStale) {
+          add(
+            agent,
+            "conflicting",
+            `${file}: stale supporting file of a shipped skill; sync agents`,
+          );
+        }
       }
 
       if (agent === "codex") {

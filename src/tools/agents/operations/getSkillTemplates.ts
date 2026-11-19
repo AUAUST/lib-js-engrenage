@@ -9,6 +9,7 @@ import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,
   codexSkillFrontmatterKeys,
+  skillFileName,
 } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
@@ -17,6 +18,7 @@ import type { Extension } from "#project/config/index";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { BlockFillers } from "#types/BlockFillers";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 // @debt callers pass any filler set, so one missing a directive a shipped skill uses fails only at render; deriving the fillers from the loaded config here would remove the parameter
@@ -41,15 +43,55 @@ export async function getSkillTemplates({
   });
 
   return templates.map((template) => {
-    const { invocation, agent, name, description, reference, body } = template;
+    const {
+      invocation,
+      agent,
+      name,
+      description,
+      reference,
+      body,
+      supporting,
+    } = template;
 
     const isExplicit = invocation === "explicit";
 
     const files: {
       file: File;
       content: string;
+      reference: string;
+      body: string;
       frontmatter?: GeneratedFrontmatter;
+      skillFile?: File;
     }[] = [];
+
+    function addSkill(directory: Directory, frontmatter: GeneratedFrontmatter) {
+      const skillFile = `${directory}/${name}/${skillFileName}`;
+
+      files.push({
+        file: skillFile,
+        content: createInstructionFile({
+          frontmatter: frontmatter.values,
+          reference,
+          body,
+        }),
+        reference,
+        body,
+        frontmatter,
+      });
+
+      for (const supported of supporting) {
+        files.push({
+          file: `${directory}/${name}/${supported.name}`,
+          content: createInstructionFile({
+            reference: supported.reference,
+            body: supported.body,
+          }),
+          reference: supported.reference,
+          body: supported.body,
+          skillFile,
+        });
+      }
+    }
 
     if (preferred.includes("claude")) {
       const frontmatter = {
@@ -63,15 +105,7 @@ export async function getSkillTemplates({
         },
       };
 
-      files.push({
-        file: `${claudeSkillsDir}/${name}/SKILL.md`,
-        content: createInstructionFile({
-          frontmatter: frontmatter.values,
-          reference,
-          body,
-        }),
-        frontmatter,
-      });
+      addSkill(claudeSkillsDir, frontmatter);
 
       if (agent !== undefined) {
         const { gate, efforts: _efforts, ...definition } = agent;
@@ -101,6 +135,8 @@ export async function getSkillTemplates({
             reference,
             body,
           }),
+          reference,
+          body,
           frontmatter: {
             keys: claudeAgentFrontmatterKeys,
             values,
@@ -118,15 +154,7 @@ export async function getSkillTemplates({
         },
       };
 
-      files.push({
-        file: `${codexSkillsDir}/${name}/SKILL.md`,
-        content: createInstructionFile({
-          frontmatter: frontmatter.values,
-          reference,
-          body,
-        }),
-        frontmatter,
-      });
+      addSkill(codexSkillsDir, frontmatter);
     }
 
     return {

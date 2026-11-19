@@ -89,3 +89,5 @@
 - Claude Stop hook: main-session stop in a worktree of an older branch — main checkout settings (a0bfdf6a) run `agents claude hook stop`, whose branch code accepts only SubagentStop payloads (agent_id required); resolved by rebasing onto main
 - engrenage-backed Bash hooks: removed a module its barrel still exported — every Bash call failed loading engrenage; fixed the barrel with the edit tool, then ran sync
 - `engrenage sync` barrels: imported a new cli operation from `bin/engrenage/executable.ts` before syncing — sync runs through that executable and failed to load; stashed the executable edit, synced, restored it
+- engrenage-backed Bash hooks: checkAgents imported a module not yet written — every Bash call failed loading engrenage; wrote the module with the edit tool
+- `loadConfig` in tests: deleted a synced file with `rmSync` between two loads of one root — the cached config's filesystem still held its content, so sync staged no write; deleted through `config.context.filesystem` instead

@@ -1,0 +1,159 @@
+import { rmSync } from "node:fs";
+
+import { describe, expect, test, vi } from "vitest";
+
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+
+vi.mock("#foundation/processes/operations/spawnProcess", () => {
+  return {
+    spawnProcess: vi.fn(() => {
+      return Promise.resolve({
+        status: 0,
+        stdout: "2.1.318 (Claude Code)\n",
+        stderr: "",
+        error: undefined,
+        signal: null,
+      });
+    }),
+  };
+});
+
+const reference = "@fixtures/skills/agents/skills/guide/notes.md";
+
+const synced = [
+  ".claude/skills/guide/notes.md",
+  ".agents/skills/guide/notes.md",
+];
+
+function createProject(metadata = "") {
+  return createTemporaryProject({
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+    "engrenage.config.ts": [
+      "export default {",
+      '  agents: { preferred: ["claude", "codex"] },',
+      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
+      "};",
+    ].join("\n"),
+    "AGENTS.md": "Instructions\n",
+    "skills/package.json": JSON.stringify({
+      name: "@fixtures/skills",
+      exports: { "./agents/skills/*.md": "./agents/skills/*.md" },
+    }),
+    "skills/agents/skills/guide.md": [
+      "---",
+      "title: Guide",
+      "description: A skill with a supporting file.",
+      "category: fixture",
+      "order: 1",
+      metadata,
+      "---",
+      "",
+      "# Guide",
+      "",
+      "Read `notes.md` beside this skill.",
+      "",
+    ].join("\n"),
+    "skills/agents/skills/guide/notes.md": "# Notes\n\nRead on demand.\n",
+  });
+}
+
+async function install(project: ReturnType<typeof createProject>) {
+  const config = await loadConfig(project.root);
+
+  await addAgentSkills(
+    {
+      filesystem: config.context.filesystem,
+      agents: await config.resolve("agents"),
+      extensions: await listActiveExtensions(config),
+      fillers: await createAgentFillers(config),
+      config,
+    },
+    ["guide"],
+  );
+
+  await config.context.filesystem.flush();
+
+  return config.context.filesystem;
+}
+
+async function sync(project: ReturnType<typeof createProject>) {
+  const config = await loadConfig(project.root);
+
+  await syncAgentFiles(config);
+
+  await config.context.filesystem.flush();
+
+  return config;
+}
+
+describe("skill supporting files", () => {
+  test("syncs beside each runtime's SKILL.md, filled through its reference marker, and checks current", async () => {
+    const project = createProject();
+
+    const filesystem = await install(project);
+
+    for (const file of synced) {
+      await filesystem.remove(file);
+    }
+
+    await filesystem.flush();
+
+    const config = await sync(project);
+
+    for (const file of synced) {
+      expect(project.read(file)).toBe(
+        `<!-- @reference ${reference} -->\n\n# Notes\n\nRead on demand.\n\n<!-- @end -->\n`,
+      );
+    }
+
+    const findings = await checkAgents(config);
+
+    expect(
+      findings
+        .filter(({ message }) => message.includes("skills/guide/"))
+        .map(({ status, message }) => `${status} ${message.split(":")[0]}`),
+    ).toEqual([
+      "configured .claude/skills/guide/SKILL.md",
+      "configured .claude/skills/guide/notes.md",
+      "configured .agents/skills/guide/SKILL.md",
+      "configured .agents/skills/guide/notes.md",
+    ]);
+  });
+
+  test("removes the synced copies once their source is gone, keeping the skill", async () => {
+    const project = createProject();
+
+    const filesystem = await install(project);
+
+    rmSync(project.resolve("skills/agents/skills/guide/notes.md"));
+
+    await filesystem.write(".claude/skills/guide/other.md", "Project notes\n");
+
+    await sync(project);
+
+    expect(
+      await filesystem.glob([".claude/skills/**/*.*", ".agents/skills/**/*.*"]),
+    ).toEqual([
+      ".agents/skills/guide/SKILL.md",
+      ".agents/skills/guide/agents/openai.yaml",
+      ".claude/skills/guide/SKILL.md",
+      ".claude/skills/guide/other.md",
+    ]);
+  });
+
+  test("fails on a supporting file of a skill declaring an agent, naming the skill", async () => {
+    const project = createProject(
+      "agent:\n  name: guider\n  description: Guider",
+    );
+
+    await expect(sync(project)).rejects.toThrow(
+      /Skill "guide" declares an agent/,
+    );
+  });
+});

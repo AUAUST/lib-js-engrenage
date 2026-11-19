@@ -170,8 +170,14 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   for (const template of await getSkillTemplates(config)) {
     const { reference, files: skillFiles } = template;
 
-    for (const { file, content, frontmatter } of skillFiles) {
-      if (frontmatter === undefined) {
+    for (const { file, content, frontmatter, skillFile } of skillFiles) {
+      if (skillFile !== undefined) {
+        const installed = await config.filesystem.read(skillFile);
+
+        if (installed?.includes(formatReferenceMarker(reference)) === true) {
+          await config.filesystem.write(file, content);
+        }
+      } else if (frontmatter === undefined) {
         generated.push({
           file,
           update() {

@@ -29,6 +29,7 @@ vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
           reference: `@auaust/engrenage/agents/skills/${skill.name}.md`,
           body: `# ${skill.name}`,
           paths: undefined,
+          supporting: [],
           agent: skill.agent,
         },
       ]);

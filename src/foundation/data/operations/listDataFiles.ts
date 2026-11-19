@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
@@ -26,6 +27,7 @@ function splitPattern(pattern: string, owner: string): [string, string] {
 export async function listDataFiles(
   root: URL,
   subpath: `./${string}*${string}`,
+  { within }: { within?: string } = {},
 ): Promise<readonly { readonly file: File; readonly specifier: string }[]> {
   const manifestUrl = new URL("package.json", root);
   const manifestFile = fileURLToPath(manifestUrl);
@@ -52,12 +54,18 @@ export async function listDataFiles(
 
   const [targetPrefix, targetSuffix] = splitPattern(target, manifestFile);
 
-  const directoryUrl = new URL(targetPrefix, root);
-
   if (!targetPrefix.endsWith("/") || !subpathPrefix.endsWith("/")) {
     throw new Error(
       `${manifestFile}: the "${subpath}" export must match whole file names`,
     );
+  }
+
+  const nested = within === undefined ? "" : `${within}/`;
+
+  const directoryUrl = new URL(`${targetPrefix}${nested}`, root);
+
+  if (within !== undefined && !existsSync(directoryUrl)) {
+    return [];
   }
 
   const entries = await readdir(directoryUrl, {
@@ -73,7 +81,7 @@ export async function listDataFiles(
 
       return {
         file: fileURLToPath(new URL(file, directoryUrl)),
-        specifier: `${name}/${subpathPrefix.slice(2)}${stem}${subpathSuffix}`,
+        specifier: `${name}/${subpathPrefix.slice(2)}${nested}${stem}${subpathSuffix}`,
       };
     });
 }

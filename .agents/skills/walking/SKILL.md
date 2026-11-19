@@ -32,7 +32,6 @@ walk check ──► route the ready set (§Handling table)
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
   │              ├─ blocked ──► consultant ──► resume the agent
   │              ├─ scope stop ──► consultant splits the issue ──► drop the leaf's work ──► walk check
-  │              ├─ linked defect ──► drop the leaf's work ──► debugger files it ──► walk check
   │              └─ completion
   │                   ▼
   │             integration merger (§Integration), or your own review (§Review)
@@ -48,7 +47,7 @@ walk check ──► route the ready set (§Handling table)
 
 Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return and debugger write-up, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
 
-Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. A leaf is an issue a row dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. A repository's linked checkout is the directory `pnpm engrenage link` lists for it. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
+Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. A leaf is an issue a row dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. A repository's linked checkout is the directory `pnpm engrenage link` lists for it. On a foreign leaf or a worker report opening with `Linked defect:`, read `cross-repository.md` beside this skill first: where it covers a step of this skill, it replaces that step. Setting an issue aside also holds every issue ordered after it, which the ready set already leaves out: keep walking the rest.
 
 | Issue                                                                                                     | Walker                                                                                                                                      |
 | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -62,8 +61,8 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 | Open **Planning**, `blockers` `outdated`, check findings for its structure, or a `task` without **Steps** | Set aside; send it to the consultant                                                                                                        |
 | Open **Questions**                                                                                        | Set aside; batch the questions to the user                                                                                                  |
 | Foreign `task` or `problem` whose repository has no linked checkout                                       | Set aside and report                                                                                                                        |
-| `problem` without **Steps**                                                                               | Debugger; foreign, through §Foreign leaves                                                                                                  |
-| `task` or `problem` with **Steps**                                                                        | Worker; foreign, through §Foreign leaves                                                                                                    |
+| `problem` without **Steps**                                                                               | Debugger; foreign, through `cross-repository.md`                                                                                            |
+| `task` or `problem` with **Steps**                                                                        | Worker; foreign, through `cross-repository.md`                                                                                              |
 | `complexity` set                                                                                          | Dispatch at the effort §Agent limits gives the agent for that `complexity`; with none given, pass no effort                                 |
 | `resource` or `idea` in a tree                                                                            | Never dispatched; report it to the consultant                                                                                               |
 
@@ -71,21 +70,20 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 
 ## Dispatching
 
-- Keep up to K leaves of the ready set in flight, foreign leaves included. Dispatch every agent but a foreign leaf's (§Foreign leaves) from the walked branch's `HEAD` commit, its dispatch base: at K = 1 in the main checkout; past it, each leaf in the background with `isolation: "worktree"`, briefing that commit.
+- Keep up to K leaves of the ready set in flight. Dispatch every agent from the walked branch's `HEAD` commit, its dispatch base: at K = 1 in the main checkout; past it, each leaf in the background with `isolation: "worktree"`, briefing that commit.
 - Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then the commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` line, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.
 - Resume a leaf's agent or a boundary-review debugger at most twice for one cause: a gate failure, gap or leaf finding, a blocked report on the same question, or a conflict a merger reports as needing design. Instead of a third resume, hold its work under §Holding a leaf.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under §Dropping a leaf's work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
-- On a linked defect, a worker report opening with `Linked defect:`, drop the leaf's work under §Dropping a leaf's work, then dispatch a new debugger in the walked checkout, as a walked-repository leaf's agent, never through §Foreign leaves, the leaf foreign or not, briefed with the `Walk:` line, then `Leaf: <owner>/<repo>#<n>` naming the leaf, then the worker's report, and no `Issue:` line, and handle its outcome by §After a debugger: `walk check` routes the sub-issue it files before the leaf.
 - Treat a report that leaves a light gap (an action the instructions already decide, such as a missing changeset; merging §Integration) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 - Complete a leaf on the agent's final report, a completion or a blocked report; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
 ## Integration
 
-Runs for each completed leaf but a foreign one at K > 1, and at K = 1 in autonomous mode; otherwise §Review applies.
+Runs for each completed leaf at K > 1, and at K = 1 in autonomous mode; otherwise §Review applies.
 
 1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger with `effort: low` under §Resumed agents.
 2. When the merger reports leaf findings, resume the leaf's agent with all of them in one message, so its stop gate checks the tree the merger left; then check only that each finding is fixed or declined with a reason.
@@ -100,32 +98,20 @@ When no integration merger runs:
 3. Add the `@debt` markers the diff calls for and the agent missed.
 4. When you find gaps, resume the agent with all of them in one message; then check only its fixes.
 
-## Foreign leaves
-
-A foreign leaf runs, is reviewed and is committed in its linked checkout, under that repository's instructions and gates:
-
-- **Dispatch.** Write the brief §Dispatching or the merging skill's §Brief sets to a file outside both checkouts; record the checkout's `HEAD` commit as the leaf's dispatch base; then run in the background, or in the foreground under a client without background commands, `pnpm engrenage agents dispatch <checkout> --client <your runtime: claude or codex> --agent <worker|debugger|merger> --brief <file>`, adding `--effort <level>` when the `complexity` row gives one. Its output holds a `Session:` line, a `Denied:` line when tools were denied, and the agent's final report.
-- **Resume.** Write the message to a file, then run `pnpm engrenage agents dispatch <checkout> --client <your runtime> --resume <session> --brief <file>`.
-- **Pool.** At most one agent in flight per linked checkout, mergers and debuggers included: `agents dispatch` has no worktree isolation.
-- **Denied tools.** Treat each tool on the `Denied:` line as an action a permission refused (§Dispatching, light gap): name it in the commit line.
-- **Review.** By §Review at any K, never through an integration merger, reading the diff with `git -C <checkout> diff` against the dispatch base.
-- **Commit.** Run every git command with `git -C <checkout>`, staging by path; the closing commit closes only that repository's issues. A walked-repository parent the commit leaves with no open sub-issue closes with the next commit in the walked checkout: when no walked-repository leaf commits before that parent's boundary review, an empty commit made before that review.
-- **Branch.** Leave the checkout on the branch the walk works on there (§Stops and restarts), never its default branch.
-
 ## Commit
 
 1. When the closing commit will close a nested plan, first send that plan to the consultant to move its facts worth keeping (planning §The tree), and go on once it returns.
-2. At K > 1, for a leaf other than a foreign one, cherry-pick the leaf's checkpoint commits, then apply its uncommitted rest; never rewrite a checkpoint.
-3. Make the closing commit under the project's git rules, closing the issue and every segment or parent it completes but the walked issue; a foreign leaf's as §Foreign leaves states. Do not run the checks: the commit gate runs them.
-4. When the commit fails, at K > 1 and for a leaf other than a foreign one undo the leaf in the main checkout as §Dropping a leaf's work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
-5. Once the closing commit exists, at K > 1, remove the leaf's worktree, when any. Then run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first and holds what is ordered after it.
+2. At K > 1, cherry-pick the leaf's checkpoint commits, then apply its uncommitted rest; never rewrite a checkpoint.
+3. Make the closing commit under the project's git rules, closing the issue and every segment or parent it completes but the walked issue. Do not run the checks: the commit gate runs them.
+4. When the commit fails, at K > 1 undo the leaf in the main checkout as §Dropping a leaf's work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
+5. Once the closing commit exists, at K > 1, remove the leaf's worktree. Then run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first and holds what is ordered after it.
 6. Send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
 
 ## Holding a leaf
 
 Moves the work of a leaf's agent or a boundary-review debugger, the leaf here and in §Dropping a leaf's work, onto its own branch, so the walk goes on from a clean tree:
 
-1. In the leaf's checkout, its worktree, the main checkout or its linked checkout, create from the current commit and switch to `<agent>/issue-<n>` for a leaf, `<agent>` being `worker` or `debugger`, or `debugger/review-<walked issue>` for a boundary-review debugger; when that branch exists, append the first free suffix of `-2`, `-3`, …. Commit there yourself, when any, the uncommitted files the leaf changed or added, staged by path, as `snap` under the git rules.
+1. In the leaf's checkout, its worktree or the main checkout, create from the current commit and switch to `<agent>/issue-<n>` for a leaf, `<agent>` being `worker` or `debugger`, or `debugger/review-<walked issue>` for a boundary-review debugger; when that branch exists, append the first free suffix of `-2`, `-3`, …. Commit there yourself, when any, the uncommitted files the leaf changed or added, staged by path, as `snap` under the git rules.
 2. Drop the leaf's work under §Dropping a leaf's work.
 3. Report the held work's state and branch to the user at once, who may say how to proceed.
 4. Until the user says how to proceed, dispatch neither a held leaf nor the issues ordered after it, which `walk check` still reports ready, nor, for a held boundary-review debugger, anything ordered after its segment; refill the pool with the rest.
@@ -137,9 +123,8 @@ Takes a leaf's work off the walked branch, keeping its lines in `.ai/friction.md
 1. Copy the lines the leaf added to those logs since its dispatch base, from its hold branch when held, otherwise from its checkout.
 2. Return the main checkout to the walked branch as it stood before the leaf:
    - **Leaf in the main checkout.** Switch back to the walked branch when on another one, reset it to the leaf's dispatch base, dropping the leaf's checkpoint commits, and discard the files the leaf changed or added.
-   - **Foreign leaf.** In its linked checkout, switch back to the branch the walk works on there when on another one, reset it to the leaf's dispatch base and discard the files the leaf changed or added.
    - **Leaf in a worktree.** Undo the leaf's cherry-picks and apply in the main checkout, when any, discarding only the files they changed; then remove the leaf's worktree with `--force`, since it may hold uncommitted work.
-3. Append the copied lines the logs of the checkout you returned lack, left uncommitted for its next commit.
+3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit.
 
 ## After a debugger
 
@@ -157,8 +142,6 @@ When a segment or a nested plan closes and at the walk's end:
 2. When the merger reports findings or agents declined leaf findings since the previous review run, brief a new debugger with them and handle the outcome by §After a debugger; otherwise dispatch no debugger.
 3. Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when no debugger ran or it fixed nothing. At the walk's end, unless the debugger wrote an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
 4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
-
-For each linked checkout holding foreign leaves committed since its previous review run or the walk's start, run steps 1–3 there as well, through §Foreign leaves: the merger and its debugger dispatched in that checkout, the merger briefed with that checkout's range since its previous review run, and the commit made there.
 
 ## Consultant
 
@@ -186,7 +169,6 @@ The user delegated every decision the instructions let an agent settle and is no
 | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Batching questions to the user                                               | Send them to the consultant; the issues it cannot settle stay set aside and go to §Reshaping |
 | Asking to clear a `drafting` claim                                           | Set the issue aside                                                                          |
-| Asking for a linked checkout's branch                                        | Set that repository's leaves aside                                                           |
 | Messaging the user: commit lines, held work, light gaps a permission refuses | Put held work and refused light gaps in your final report; send no commit line               |
 
 ## Resumed agents
@@ -212,7 +194,6 @@ The user delegated every decision the instructions let an agent settle and is no
 
 - Stopping with leaves not committed (Writing › Stop records): stop each agent in flight, having a merger abort its rebase, then hold each leaf under §Holding a leaf, steps 1–2, instead of a `snap` commit on the walked branch, which leaf work reaches only through §Commit. The stop record names each held branch and whether its agent had completed.
 - Starting a walk, before the first dispatch: list the `worker/issue-*`, `debugger/issue-*` and `debugger/review-*` branches, the git worktrees other than the main checkout, and a leaf's work in the main checkout: checkpoint commits `walk check` lists, or uncommitted changes a stop record ties to a leaf. Hold such main-checkout work under §Holding a leaf, steps 1–2. Handle a branch for an issue `walk check` reports ready, a review branch, and the work just held as held leaves, by §Holding a leaf, steps 3–4. Report each worktree holding commits or changes beyond the walked branch with its path, as held work, and leave it in place.
-- Starting a walk, before the first foreign dispatch: report the branch and uncommitted files of each linked checkout of a repository holding a leaf of the tree, and list its `worker/issue-*`, `debugger/issue-*` and `debugger/review-*` branches as above. On its default branch, ask the user for the branch to work on, and switch the checkout to it, creating it from the current commit when absent. Its `HEAD` then starts its first review range.
 
 ## Context
 

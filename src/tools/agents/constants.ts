@@ -64,6 +64,8 @@ export const scratchpadPlaceholder = "Write ideas, bugs and follow-ups here, one
 
 export const preserveDirective = "@preserve";
 
+export const skillFileName = "SKILL.md" satisfies File;
+
 export const claudeSkillFrontmatterKeys = freeze([
   "name",
   "description",
@@ -149,9 +151,9 @@ export const tokenWeights = freeze({
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
   ".claude/rules/**/*.md",
-  ".claude/skills/*/SKILL.md",
+  ".claude/skills/*/*.md",
   ".claude/agents/*.md",
-  ".agents/skills/*/SKILL.md",
+  ".agents/skills/*/*.md",
 ] as const) satisfies Globs;
 
 export const tableCellWords = 25;

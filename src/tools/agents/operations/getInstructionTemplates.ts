@@ -40,9 +40,11 @@ export async function getInstructionTemplates(
   {
     extensions = [],
     fillers,
+    supporting = false,
   }: {
     extensions?: readonly Extension[] | undefined;
     fillers?: BlockFillers;
+    supporting?: boolean;
   } = {},
 ) {
   const engrenageRoot = new URL(
@@ -50,20 +52,39 @@ export async function getInstructionTemplates(
     pathToFileURL(resolveDataFile(`${engrenage}/package.json`)),
   );
 
-  const shipped = await Promise.all([
-    listDataFiles(engrenageRoot, `./agents/${kind}/*.md`),
+  const origins: readonly {
+    root: URL;
+    subpath: `./${string}*${string}`;
+  }[] = [
+    { root: engrenageRoot, subpath: `./agents/${kind}/*.md` },
     ...extensions.map(({ name, root }) => {
       return root === undefined
-        ? listDataFiles(
-            engrenageRoot,
-            `./extensions/${name}/agents/${kind}/*.md`,
-          )
-        : listDataFiles(root, `./agents/${kind}/*.md`);
+        ? {
+            root: engrenageRoot,
+            subpath: `./extensions/${name}/agents/${kind}/*.md` as const,
+          }
+        : { root, subpath: `./agents/${kind}/*.md` as const };
     }),
-  ]);
+  ];
+
+  async function render(content: string, source: string) {
+    return fillers === undefined
+      ? content
+      : await renderFragment(content, source, fillers);
+  }
+
+  const shipped = await Promise.all(
+    origins.map(async (origin) => {
+      const files = await listDataFiles(origin.root, origin.subpath);
+
+      return files.map((file) => {
+        return { ...file, origin };
+      });
+    }),
+  );
 
   const templates = await Promise.all(
-    shipped.flat().map(async ({ file: source, specifier }) => {
+    shipped.flat().map(async ({ file: source, specifier, origin }) => {
       const instruction = parseInstruction(
         await readFile(source, "utf-8"),
         source,
@@ -75,15 +96,29 @@ export async function getInstructionTemplates(
         `${source} template metadata`,
       );
 
+      const name = basename(source, ".md");
+
+      const supportingFiles = supporting
+        ? await listDataFiles(origin.root, origin.subpath, { within: name })
+        : [];
+
       return {
         ...metadata,
-        name: basename(source, ".md"),
+        name,
         source,
         reference: specifier,
-        body: fillers === undefined
-          ? instruction.body
-          : await renderFragment(instruction.body, source, fillers),
+        body: await render(instruction.body, source),
         paths: instruction.paths,
+        supporting: await Promise.all(
+          supportingFiles.map(async ({ file, specifier: reference }) => {
+            return {
+              name: basename(file),
+              source: file,
+              reference,
+              body: await render(await readFile(file, "utf-8"), file),
+            };
+          }),
+        ),
       };
     }),
   );
