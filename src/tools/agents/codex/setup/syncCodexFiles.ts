@@ -4,7 +4,6 @@ import {
   codexHooksFile,
 } from "#tools/agents/codex/constants";
 import { syncCodexInstructions } from "#tools/agents/codex/operations/syncCodexInstructions";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { LoadedConfig } from "#project/config/index";
@@ -33,7 +32,6 @@ export async function syncCodexFiles(
 
   await syncCodexInstructions({
     ...config,
-    fillers: await createAgentFillers(loaded),
     config: loaded,
   });
 

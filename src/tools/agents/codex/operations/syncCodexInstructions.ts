@@ -5,25 +5,23 @@ import { createCodexDispatch } from "#tools/agents/codex/operations/createCodexD
 import { createCodexRuleMapping } from "#tools/agents/codex/operations/createCodexRuleMapping";
 import { syncCodexSkill } from "#tools/agents/codex/operations/syncCodexSkill";
 import { endMarker, markdownBlocks } from "#tools/agents/constants";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
-import type { BlockFillers } from "#types/BlockFillers";
 
 export async function syncCodexInstructions({
   filesystem,
   agents,
   extensions,
-  fillers,
   config,
 }: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
   config: LoadedConfig;
 }) {
   if (agents.preferred?.includes("codex") !== true) {
@@ -36,7 +34,10 @@ export async function syncCodexInstructions({
 
   for (const template of await getSkillDefinitions({
     extensions,
-    render: { fillers, skillsDirectory: codexSkillsDir },
+    render: {
+      renderer: await createFragmentRenderer(config),
+      skillsDirectory: codexSkillsDir,
+    },
   })) {
     const skill = await filesystem.read(
       `${codexSkillsDir}/${template.name}/SKILL.md`,

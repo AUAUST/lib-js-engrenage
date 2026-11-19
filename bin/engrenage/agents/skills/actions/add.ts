@@ -5,7 +5,8 @@ import { empty } from "@auaust/toolkit";
 import { settleChanges } from "#project/sync/index";
 import {
   addAgentSkills,
-  createAgentFillers,
+  createFragmentRenderer,
+  getAgentRuntimes,
   getSkillTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
@@ -27,7 +28,8 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
   const templates = await getSkillTemplates({
     agents,
     extensions: await listActiveExtensions(config),
-    fillers: await createAgentFillers(config),
+    renderer: await createFragmentRenderer(config),
+    runtimes: await getAgentRuntimes(config),
   });
 
   const installed = await Promise.all(

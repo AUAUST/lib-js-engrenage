@@ -20,9 +20,8 @@ import { listDataFiles, resolveDataFile } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
 import { metalbrain } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Extension } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 type InstructionKind = "rules" | "sections" | "skills";
 
@@ -41,12 +40,12 @@ export async function getInstructionTemplates(
   kind: InstructionKind,
   {
     extensions = [],
-    fillers,
+    renderer,
     inactive = false,
     supporting = false,
   }: {
     extensions?: readonly Extension[] | undefined;
-    fillers?: BlockFillers;
+    renderer?: FragmentRenderer;
     inactive?: boolean;
     supporting?: boolean;
   } = {},
@@ -72,9 +71,9 @@ export async function getInstructionTemplates(
   ];
 
   async function render(content: string, source: string) {
-    return fillers === undefined
+    return renderer === undefined
       ? content
-      : await renderFragment(content, source, fillers);
+      : await renderer.render(content, source);
   }
 
   const shipped = await Promise.all(

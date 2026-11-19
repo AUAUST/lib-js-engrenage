@@ -2,10 +2,10 @@ import { ruleFrontmatterKeys, rulesDirectory } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import type { Extension } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 export async function getRuleTemplates(config: {
-  fillers: BlockFillers;
+  renderer: FragmentRenderer;
   extensions: readonly Extension[];
 }) {
   const templates = await getInstructionTemplates("rules", config);

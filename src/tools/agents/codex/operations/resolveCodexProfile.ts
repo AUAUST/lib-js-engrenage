@@ -2,7 +2,6 @@ import { parseDocument } from "yaml";
 
 import { loadFormatter } from "#project/format/index";
 import { getCodexProfiles } from "#tools/agents/codex/operations/getCodexProfiles";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { LoadedConfig } from "#project/config/index";
@@ -12,7 +11,6 @@ export async function resolveCodexProfile(config: LoadedConfig, name: string) {
 
   const profiles = await getCodexProfiles({
     extensions: await listActiveExtensions(config),
-    fillers: await createAgentFillers(config),
     config,
     formatter: await loadFormatter(config),
   });

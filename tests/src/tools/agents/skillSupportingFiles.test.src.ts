@@ -35,18 +35,22 @@ function createProject({
   body = "Read `notes.md` beside this skill.",
   supporting = "notes.md",
   agents = "",
+  preferred = ["claude", "codex"],
+  contributes = "",
 }: {
   metadata?: string;
   body?: string;
   supporting?: string;
   agents?: string | undefined;
+  preferred?: readonly string[];
+  contributes?: string;
 } = {}) {
   return createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": [
       "export default {",
-      `  agents: { preferred: ["claude", "codex"], ${agents} },`,
-      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
+      `  agents: { preferred: ${JSON.stringify(preferred)}, ${agents} },`,
+      `  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { ${contributes} } }],`,
       "};",
     ].join("\n"),
     "AGENTS.md": "Instructions\n",
@@ -209,6 +213,38 @@ describe("skill supporting files", () => {
     expect(skill).toContain("Overridden:");
 
     expect(skill).toContain("`.claude/skills/guide/mode.md`");
+  });
+
+  test("installs skills in a contributed runtime's directories, rendering its skill file paths", async () => {
+    const project = createProject({
+      preferred: ["fixture"],
+      contributes: '"agents.runtimes": [{ name: "fixture", skills: ".fixture/skills", agents: ".fixture/agents" }]',
+      metadata: "agent:\n  name: guider\n  description: Guider",
+      body: "Read this file first:\n\n<!-- @skill-file mode.md -->\n<!-- @end -->",
+      supporting: "mode.md",
+    });
+
+    await install(project);
+
+    await sync(project);
+
+    expect(project.read(".fixture/skills/guide/mode.md")).toContain(
+      "Read on demand.",
+    );
+
+    expect(project.read(".fixture/skills/guide/SKILL.md")).toContain(
+      "`.fixture/skills/guide/mode.md`",
+    );
+  });
+
+  test("fails on a contributed filler named after a built-in one, naming its extension", async () => {
+    const project = createProject({
+      contributes: '"agents.fillers": [{ name: "skill-file", load: () => Promise.resolve({ default: () => "" }) }]',
+    });
+
+    await expect(sync(project)).rejects.toThrow(
+      'Agent filler "@skill-file" is built in and cannot be contributed, by fixture-skills',
+    );
   });
 
   test("fails on a skill file naming no supporting file, listing the skill's", async () => {

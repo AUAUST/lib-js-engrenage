@@ -1,11 +1,6 @@
 import { posix } from "node:path";
 
 import { engrenage } from "#constants";
-import {
-  claudeAgentsDir,
-  claudeSkillsDir,
-} from "#tools/agents/claude/constants";
-import { codexAgentsDir, codexSkillsDir } from "#tools/agents/codex/constants";
 import { metalbrain, skillFileName } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
@@ -15,6 +10,7 @@ import { listReferences } from "#tools/agents/utils/listReferences";
 import { relocateInstructionReference } from "#tools/agents/utils/relocateInstructionReference";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
+import type { AgentRuntime } from "#tools/agents/ports/AgentRuntime";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { Directory } from "#types/Directory";
@@ -98,8 +94,15 @@ export async function migrateSkillFiles(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions: readonly Extension[];
+  runtimes: readonly AgentRuntime[];
 }) {
   const { filesystem } = config;
+
+  const preferred = config.agents.preferred ?? [];
+
+  const runtimes = config.runtimes.filter(({ name }) => {
+    return preferred.some((agent) => agent === name);
+  });
 
   const definitions = await getSkillDefinitions({
     extensions: config.extensions,
@@ -166,7 +169,11 @@ export async function migrateSkillFiles(config: {
     };
   }
 
-  for (const directory of [claudeSkillsDir, codexSkillsDir]) {
+  for (const { skills: directory } of runtimes) {
+    if (directory === undefined) {
+      continue;
+    }
+
     for (const file of await filesystem.glob(
       `${directory}/*/${skillFileName}`,
     )) {
@@ -214,59 +221,73 @@ export async function migrateSkillFiles(config: {
     }
   }
 
-  for (const file of await filesystem.glob(`${claudeAgentsDir}/*.md`)) {
-    const content = (await filesystem.read(file)) ?? "";
-    const reference = findOwned(content);
-
-    if (reference === undefined) {
+  for (const { name, agents: directory } of runtimes) {
+    if (directory === undefined) {
       continue;
     }
 
-    const definition = findDefinition(reference);
+    if (name === "claude") {
+      for (const file of await filesystem.glob(`${directory}/*.md`)) {
+        const content = (await filesystem.read(file)) ?? "";
+        const reference = findOwned(content);
 
-    const target = definition?.agent === undefined
-      ? undefined
-      : `${claudeAgentsDir}/${definition.agent.name}.md`;
+        if (reference === undefined) {
+          continue;
+        }
 
-    if (definition !== undefined && file === target) {
-      if (reference !== definition.reference) {
-        await filesystem.write(file, rewriteTo(definition, reference)(content));
+        const definition = findDefinition(reference);
+
+        const target = definition?.agent === undefined
+          ? undefined
+          : `${directory}/${definition.agent.name}.md`;
+
+        if (definition !== undefined && file === target) {
+          if (reference !== definition.reference) {
+            await filesystem.write(
+              file,
+              rewriteTo(definition, reference)(content),
+            );
+          }
+
+          continue;
+        }
+
+        if (
+          definition !== undefined &&
+          target !== undefined &&
+          !(await filesystem.exists(target))
+        ) {
+          await filesystem.write(
+            target,
+            rewriteTo(definition, reference)(content),
+          );
+        }
+
+        await filesystem.remove(file);
       }
+    } else if (name === "codex") {
+      for (const file of await filesystem.glob(`${directory}/*.toml`)) {
+        const content = (await filesystem.read(file)) ?? "";
 
-      continue;
-    }
+        if (!content.startsWith(codexProvenancePrefix)) {
+          continue;
+        }
 
-    if (
-      definition !== undefined &&
-      target !== undefined &&
-      !(await filesystem.exists(target))
-    ) {
-      await filesystem.write(target, rewriteTo(definition, reference)(content));
-    }
+        const reference = content
+          .slice(codexProvenancePrefix.length, content.indexOf("\n"))
+          .trim();
 
-    await filesystem.remove(file);
-  }
+        const isCurrent = definitions.some((definition) => {
+          return definition.reference === reference;
+        });
 
-  for (const file of await filesystem.glob(`${codexAgentsDir}/*.toml`)) {
-    const content = (await filesystem.read(file)) ?? "";
-
-    if (!content.startsWith(codexProvenancePrefix)) {
-      continue;
-    }
-
-    const reference = content
-      .slice(codexProvenancePrefix.length, content.indexOf("\n"))
-      .trim();
-
-    const isCurrent = definitions.some((definition) => {
-      return definition.reference === reference;
-    });
-
-    if (
-      !isCurrent &&
-      (owners.has(reference) || isEngrenageSkillReference(reference))
-    ) {
-      await filesystem.remove(file);
+        if (
+          !isCurrent &&
+          (owners.has(reference) || isEngrenageSkillReference(reference))
+        ) {
+          await filesystem.remove(file);
+        }
+      }
     }
   }
 

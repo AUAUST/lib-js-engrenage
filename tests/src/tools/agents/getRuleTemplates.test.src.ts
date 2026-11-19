@@ -4,6 +4,7 @@ import { describe, expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { renderFragment } from "#tools/agents/utils/renderFragment";
 
 describe("getRuleTemplates", () => {
   test("renders filler directives into the rule file it creates", async () => {
@@ -29,9 +30,18 @@ describe("getRuleTemplates", () => {
     });
 
     const templates = await getRuleTemplates({
-      fillers: { table: (...args) => `| ${args.join(" | ")} |` },
+      renderer: {
+        render(body, source) {
+          return renderFragment(body, source, {
+            table: (...args) => `| ${args.join(" | ")} |`,
+          });
+        },
+      },
       extensions: [
-        { name: "fixture", root: pathToFileURL(`${project.root}/`) },
+        {
+          name: "fixture",
+          root: pathToFileURL(`${project.root}/`),
+        },
       ],
     });
 

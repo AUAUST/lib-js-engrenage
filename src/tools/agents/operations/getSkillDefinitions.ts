@@ -2,14 +2,12 @@ import { validate } from "#foundation/options/index";
 import { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 import { skillFileName } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import { createSkillFileFiller } from "#tools/agents/utils/createSkillFileFiller";
-import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { Extension } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 import type { Directory } from "#types/Directory";
 
 export async function getSkillDefinitions(config: {
-  render?: { fillers: BlockFillers; skillsDirectory: Directory };
+  render?: { renderer: FragmentRenderer; skillsDirectory: Directory };
   extensions?: readonly Extension[] | undefined;
 }) {
   const { render } = config;
@@ -39,23 +37,22 @@ export async function getSkillDefinitions(config: {
         return { ...template, ...metadata };
       }
 
-      const fillers = {
-        ...render.fillers,
-        "skill-file": createSkillFileFiller({
-          directory: render.skillsDirectory,
-          skill: template.name,
-          files: template.supporting.map(({ name }) => name),
-        }),
+      const { renderer, skillsDirectory } = render;
+
+      const skill = {
+        directory: skillsDirectory,
+        skill: template.name,
+        files: template.supporting.map(({ name }) => name),
       };
 
       const supporting = await Promise.all(
         template.supporting.map(async (supported) => {
           return {
             ...supported,
-            body: await renderFragment(
+            body: await renderer.render(
               supported.body,
               supported.source,
-              fillers,
+              skill,
             ),
           };
         }),
@@ -64,7 +61,7 @@ export async function getSkillDefinitions(config: {
       return {
         ...template,
         ...metadata,
-        body: await renderFragment(template.body, template.source, fillers),
+        body: await renderer.render(template.body, template.source, skill),
         supporting,
       };
     }),

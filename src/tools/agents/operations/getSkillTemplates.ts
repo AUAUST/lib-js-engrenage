@@ -1,9 +1,4 @@
-import {
-  claudeAgentsDir,
-  claudeSkillsDir,
-  claudeStopHook,
-} from "#tools/agents/claude/constants";
-import { codexSkillsDir } from "#tools/agents/codex/constants";
+import { claudeStopHook } from "#tools/agents/claude/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/index";
 import {
   claudeAgentFrontmatterKeys,
@@ -15,22 +10,24 @@ import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinition
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import type { Extension } from "#project/config/index";
+import type { AgentRuntime } from "#tools/agents/ports/AgentRuntime";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
-import type { BlockFillers } from "#types/BlockFillers";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-// @debt callers pass any filler set, so one missing a directive a shipped skill uses fails only at render; deriving the fillers from the loaded config here would remove the parameter
 export async function getSkillTemplates({
   agents,
   extensions,
-  fillers,
+  renderer,
+  runtimes,
 }: {
   agents: ResolvedAgents;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
+  renderer: FragmentRenderer;
+  runtimes: readonly AgentRuntime[];
 }) {
   const preferred = agents.preferred ?? [];
 
@@ -38,39 +35,48 @@ export async function getSkillTemplates({
     throw new Error("Skills need agents.preferred in engrenage.config.ts");
   }
 
-  function render(skillsDirectory: Directory) {
-    return getSkillDefinitions({
+  const renderings: {
+    runtime: AgentRuntime;
+    skills: Directory;
+    byName: ReadonlyMap<string, SkillDefinition>;
+    definitions: readonly SkillDefinition[];
+  }[] = [];
+
+  for (const runtime of runtimes) {
+    const { name, skills } = runtime;
+
+    if (skills === undefined || !preferred.some((agent) => agent === name)) {
+      continue;
+    }
+
+    const definitions = await getSkillDefinitions({
       extensions,
-      render: { fillers, skillsDirectory },
+      render: { renderer, skillsDirectory: skills },
+    });
+
+    renderings.push({
+      runtime,
+      skills,
+      byName: new Map(
+        definitions.map((definition) => [definition.name, definition]),
+      ),
+      definitions,
     });
   }
 
-  const claude = preferred.includes("claude")
-    ? await render(claudeSkillsDir)
-    : [];
-
-  const codex = preferred.includes("codex") ? await render(codexSkillsDir) : [];
-
-  const claudeByName = new Map(
-    claude.map((definition) => [definition.name, definition]),
-  );
-
-  const codexByName = new Map(
-    codex.map((definition) => [definition.name, definition]),
-  );
+  const codex = renderings.find(({ runtime }) => runtime.name === "codex");
 
   // @debt the entry's top-level `body` belongs to one runtime, Codex's when preferred since `addAgentSkills` hands the entry to `syncCodexSkill`; per-runtime renderings would belong in separate fields
-  const primary = preferred.includes("codex")
-    ? codex
-    : preferred.includes("claude")
-      ? claude
-      : await getSkillDefinitions({ extensions });
+  const primary = (
+    (codex ?? renderings[0])?.definitions ??
+    (await getSkillDefinitions({ extensions }))
+  );
 
   return primary.map((template) => {
     const { invocation, agent, name, description } = template;
 
-    function findRendering(renderings: ReadonlyMap<string, SkillDefinition>) {
-      const rendering = renderings.get(name);
+    function findRendering(byName: ReadonlyMap<string, SkillDefinition>) {
+      const rendering = byName.get(name);
 
       if (rendering === undefined) {
         throw new Error(
@@ -125,7 +131,22 @@ export async function getSkillTemplates({
       }
     }
 
-    if (preferred.includes("claude")) {
+    for (const { runtime, skills: directory, byName } of renderings) {
+      const rendering = findRendering(byName);
+
+      if (runtime.name !== "claude") {
+        addSkill(
+          directory,
+          {
+            keys: codexSkillFrontmatterKeys,
+            values: { name, description },
+          },
+          rendering,
+        );
+
+        continue;
+      }
+
       const frontmatter = {
         keys: claudeSkillFrontmatterKeys,
         values: {
@@ -137,71 +158,59 @@ export async function getSkillTemplates({
         },
       };
 
-      const rendering = findRendering(claudeByName);
+      addSkill(directory, frontmatter, rendering);
 
-      addSkill(claudeSkillsDir, frontmatter, rendering);
-
-      if (agent !== undefined) {
-        const { reference, body } = rendering;
-
-        const { gate, efforts: _efforts, ...definition } = agent;
-
-        const values = {
-          ...definition,
-          ...(gate === true && {
-            hooks: {
-              Stop: [
-                {
-                  hooks: [
-                    {
-                      type: "command",
-                      command: createHookCommand(claudeStopHook.command),
-                    },
-                  ],
-                },
-              ],
-            },
-          }),
-        };
-
-        files.push({
-          file: `${claudeAgentsDir}/${agent.name}.md`,
-          content: createInstructionFile({
-            frontmatter: values,
-            reference,
-            body,
-          }),
-          reference,
-          body,
-          frontmatter: {
-            keys: claudeAgentFrontmatterKeys,
-            values,
-          },
-        });
+      if (agent === undefined || runtime.agents === undefined) {
+        continue;
       }
-    }
 
-    if (preferred.includes("codex")) {
-      const frontmatter = {
-        keys: codexSkillFrontmatterKeys,
-        values: {
-          name,
-          description,
-        },
+      const { reference, body } = rendering;
+
+      const { gate, efforts: _efforts, ...definition } = agent;
+
+      const values = {
+        ...definition,
+        ...(gate === true && {
+          hooks: {
+            Stop: [
+              {
+                hooks: [
+                  {
+                    type: "command",
+                    command: createHookCommand(claudeStopHook.command),
+                  },
+                ],
+              },
+            ],
+          },
+        }),
       };
 
-      addSkill(codexSkillsDir, frontmatter, findRendering(codexByName));
+      files.push({
+        file: `${runtime.agents}/${agent.name}.md`,
+        content: createInstructionFile({
+          frontmatter: values,
+          reference,
+          body,
+        }),
+        reference,
+        body,
+        frontmatter: {
+          keys: claudeAgentFrontmatterKeys,
+          values,
+        },
+      });
     }
 
     return {
       ...template,
       invocation,
       agent,
-      profiles: preferred.includes("codex") && agent !== undefined
+      profiles: codex !== undefined && agent !== undefined
         ? createCodexAgentProfiles({
             agent,
             reference: template.reference,
-            body: findRendering(codexByName).body,
+            body: findRendering(codex.byName).body,
           })
         : [],
       files,

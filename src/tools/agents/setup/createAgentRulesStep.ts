@@ -1,7 +1,7 @@
 import { filterMap, pluck } from "@auaust/toolkit/array";
 
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
@@ -21,8 +21,7 @@ export function createAgentRulesStep(): Step {
       const missing = await getMissingRuleTemplates({
         filesystem: context.filesystem,
         extensions: await listActiveExtensions(context),
-        // @debt consider caching the fillers to avoid recomputing them in plan()
-        fillers: await createAgentFillers(context),
+        renderer: await createFragmentRenderer(context),
       });
 
       return missing.some((template) => template.default);
@@ -30,12 +29,10 @@ export function createAgentRulesStep(): Step {
     async plan(context) {
       const { filesystem, multiselect } = context;
 
-      const fillers = await createAgentFillers(context);
-
       const templates = await getMissingRuleTemplates({
         filesystem,
         extensions: await listActiveExtensions(context),
-        fillers,
+        renderer: await createFragmentRenderer(context),
       });
 
       const missing = templates.filter(({ name }) => name !== "backlog");

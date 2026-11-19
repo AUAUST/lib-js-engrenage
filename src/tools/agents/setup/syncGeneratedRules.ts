@@ -1,6 +1,6 @@
 import { stringify } from "yaml";
 
-import { formatBlockMarker, syncBlocks } from "#foundation/blocks/index";
+import { formatBlockMarker } from "#foundation/blocks/index";
 import { loadLazy } from "#foundation/modules/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import {
@@ -8,7 +8,7 @@ import {
   markdownBlocks,
   rulesDirectory,
 } from "#tools/agents/constants";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { GeneratedRule } from "#tools/agents/ports/GeneratedRule";
 import type { File } from "#types/File";
@@ -34,9 +34,9 @@ export async function syncGeneratedRules(config: LoadedConfig) {
     return;
   }
 
-  const [generators, fillers] = await Promise.all([
+  const [generators, renderer] = await Promise.all([
     context.registry.contributions("agents.rules", config),
-    createAgentFillers(config),
+    createFragmentRenderer(config),
   ]);
 
   const written = new Set<File>();
@@ -55,12 +55,7 @@ export async function syncGeneratedRules(config: LoadedConfig) {
 
       const file = `${rulesDirectory}/${rule.name}.md`;
 
-      const body = await syncBlocks(
-        createFragment(rule),
-        markdownBlocks,
-        fillers,
-        { markers: "drop" },
-      );
+      const body = await renderer.render(createFragment(rule), file);
 
       const header = rule.paths === undefined
         ? ""

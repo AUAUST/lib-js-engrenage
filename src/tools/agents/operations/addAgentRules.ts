@@ -2,7 +2,7 @@ import { values } from "@auaust/toolkit/object";
 
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import { attributionRules } from "#tools/agents/constants";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
@@ -14,13 +14,13 @@ export async function addAgentRules(
 ) {
   const { filesystem } = config.context;
 
-  const [agents, extensions, fillers] = await Promise.all([
+  const [agents, extensions, renderer] = await Promise.all([
     config.resolve("agents"),
     listActiveExtensions(config),
-    createAgentFillers(config),
+    createFragmentRenderer(config),
   ]);
 
-  const templates = await getRuleTemplates({ extensions, fillers });
+  const templates = await getRuleTemplates({ extensions, renderer });
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -45,7 +45,7 @@ export async function addAgentRules(
   const missing = await getMissingRuleTemplates({
     filesystem,
     extensions,
-    fillers,
+    renderer,
   });
 
   for (const { name, file, content } of missing) {
@@ -58,7 +58,6 @@ export async function addAgentRules(
     filesystem,
     agents,
     extensions,
-    fillers,
     config,
   });
 }

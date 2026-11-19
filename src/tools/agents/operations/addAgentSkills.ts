@@ -1,6 +1,7 @@
 import { loadFormatter } from "#project/format/index";
 import { syncCodexSkill } from "#tools/agents/codex/index";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
+import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import type { LoadedConfig } from "#project/config/index";
@@ -16,7 +17,8 @@ export async function addAgentSkills(
   const templates = await getSkillTemplates({
     agents,
     extensions: await listActiveExtensions(config),
-    fillers: await createAgentFillers(config),
+    renderer: await createFragmentRenderer(config),
+    runtimes: await getAgentRuntimes(config),
   });
 
   for (const name of names) {

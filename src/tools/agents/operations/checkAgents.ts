@@ -11,8 +11,9 @@ import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
+import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -23,6 +24,7 @@ import type { LoadedConfig } from "#project/config/index";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 
+// @debt matches each runtime's skills and agents directories by hand instead of reading them from its `agents.runtimes` contribution
 export async function checkAgents(
   config: LoadedConfig,
 ): Promise<AgentCheckFinding[]> {
@@ -50,8 +52,6 @@ export async function checkAgents(
 
   const { filesystem, root } = config.context;
 
-  const fillers = await createAgentFillers(config);
-
   const extensions = await listActiveExtensions(config);
 
   const formatter = await loadFormatter(config);
@@ -59,7 +59,8 @@ export async function checkAgents(
   const templates = await getSkillTemplates({
     agents,
     extensions,
-    fillers,
+    renderer: await createFragmentRenderer(config),
+    runtimes: await getAgentRuntimes(config),
   });
 
   for (const agent of preferred) {

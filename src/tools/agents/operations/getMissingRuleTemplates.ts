@@ -5,20 +5,20 @@ import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 export async function getMissingRuleTemplates({
   filesystem,
   extensions,
-  fillers,
+  renderer,
 }: {
   filesystem: Filesystem;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
+  renderer: FragmentRenderer;
 }) {
   const [references, templates] = await Promise.all([
     getRuleReferences({ filesystem }),
-    getRuleTemplates({ extensions, fillers }),
+    getRuleTemplates({ extensions, renderer }),
   ]);
 
   const owned = new Set<string>(values(attributionRules));

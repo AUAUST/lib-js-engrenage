@@ -6,7 +6,8 @@ import {
   backlogIndex,
   backlogTemplate,
 } from "#tools/agents/constants";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
+import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
@@ -22,9 +23,9 @@ import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
+import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
-import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
@@ -32,7 +33,7 @@ async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
+  renderer: FragmentRenderer;
 }) {
   const { attribution } = config.agents;
 
@@ -109,7 +110,7 @@ async function removeInactiveExtensionRules(config: {
 async function migrateFormerRules(config: {
   filesystem: Filesystem;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
+  renderer: FragmentRenderer;
 }) {
   const [
     references,
@@ -178,7 +179,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     resolve: context.path,
     agents: await resolve("agents"),
     extensions: await listActiveExtensions(loaded),
-    fillers: await createAgentFillers(loaded),
+    renderer: await createFragmentRenderer(loaded),
+    runtimes: await getAgentRuntimes(loaded),
   };
 
   if (!hasPreferredAgents(config.agents)) {

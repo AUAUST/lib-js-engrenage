@@ -3,7 +3,7 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 import { settleChanges } from "#project/sync/index";
 import {
   addAgentRules,
-  createAgentFillers,
+  createFragmentRenderer,
   getMissingRuleTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
@@ -15,8 +15,6 @@ export default async function (name?: string): Promise<void> {
     reporter: getRunContext().reporter,
   });
 
-  const fillers = await createAgentFillers(config);
-
   let names: string[];
 
   if (name !== undefined) {
@@ -25,7 +23,7 @@ export default async function (name?: string): Promise<void> {
     const missing = await getMissingRuleTemplates({
       filesystem: config.context.filesystem,
       extensions: await listActiveExtensions(config),
-      fillers,
+      renderer: await createFragmentRenderer(config),
     });
 
     if (missing.length === 0) {

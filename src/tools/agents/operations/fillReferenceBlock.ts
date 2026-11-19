@@ -1,19 +1,12 @@
 import { readFile } from "node:fs/promises";
 
-import {
-  claudeAgentsDir,
-  claudeSkillsDir,
-} from "#tools/agents/claude/constants";
-import { codexSkillsDir } from "#tools/agents/codex/constants";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
+import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
-import { createSkillFileFiller } from "#tools/agents/utils/createSkillFileFiller";
-import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
-import type { BlockFillers } from "#types/BlockFillers";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -22,24 +15,10 @@ interface ShippedSkill {
   readonly files: readonly string[];
 }
 
-const loaded = new WeakMap<LoadedConfig, Promise<BlockFillers>>();
-
 const loadedSkills = new WeakMap<
   LoadedConfig,
   Promise<ReadonlyMap<string, ShippedSkill>>
 >();
-
-function loadFillers(config: LoadedConfig): Promise<BlockFillers> {
-  let fillers = loaded.get(config);
-
-  if (fillers === undefined) {
-    fillers = createAgentFillers(config);
-
-    loaded.set(config, fillers);
-  }
-
-  return fillers;
-}
 
 async function indexSkills(
   config: LoadedConfig,
@@ -82,18 +61,17 @@ function loadSkills(
   return skills;
 }
 
-// @debt each runtime's skills and agents directories are matched by hand instead of declared by its `agents.runtimes` contribution
-function findSkillsDirectory(file: File): Directory | undefined {
-  if (
-    file.startsWith(`${claudeSkillsDir}/`) ||
-    file.startsWith(`${claudeAgentsDir}/`)
-  ) {
-    return claudeSkillsDir;
-  }
+async function findRuntimeSkills(
+  config: LoadedConfig,
+  file: File,
+): Promise<Directory | undefined> {
+  const runtimes = await getAgentRuntimes(config);
 
-  if (file.startsWith(`${codexSkillsDir}/`)) {
-    return codexSkillsDir;
-  }
+  return runtimes.find(({ skills, agents }) => {
+    return [skills, agents].some((directory) => {
+      return directory !== undefined && file.startsWith(`${directory}/`);
+    });
+  })?.skills;
 }
 
 async function findReference(
@@ -151,29 +129,21 @@ export const fillReferenceBlock: DirectiveFill = async ({
 
   const body = parseInstruction(content, source).body;
 
-  const fillers = await loadFillers(config);
+  const renderer = await createFragmentRenderer(config);
 
-  const skillsDirectory = findSkillsDirectory(file);
+  const skillsDirectory = await findRuntimeSkills(config, file);
 
-  if (skillsDirectory === undefined) {
-    return renderFragment(body, source, fillers);
-  }
+  const skills = skillsDirectory === undefined
+    ? undefined
+    : await loadSkills(config);
 
-  const skills = await loadSkills(config);
+  const shipped = skills?.get(reference);
 
-  const shipped = skills.get(reference);
-
-  return renderFragment(
+  return renderer.render(
     body,
     source,
-    shipped === undefined
-      ? fillers
-      : {
-          ...fillers,
-          "skill-file": createSkillFileFiller({
-            directory: skillsDirectory,
-            ...shipped,
-          }),
-        },
+    skillsDirectory === undefined || shipped === undefined
+      ? undefined
+      : { directory: skillsDirectory, ...shipped },
   );
 };
