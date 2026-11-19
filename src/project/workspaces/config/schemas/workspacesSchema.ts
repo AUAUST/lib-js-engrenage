@@ -97,7 +97,7 @@ export const workspacesSchema = declareRecord(string(), workspaceSchema, {
   optional: {
     value: {},
   },
-  assert(workspaces, path) {
+  assertResolved(workspaces, path) {
     for (const [glob, { name }] of entries(workspaces)) {
       if (
         new Minimatch(glob).hasMagic() &&

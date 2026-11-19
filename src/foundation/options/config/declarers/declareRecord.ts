@@ -12,11 +12,11 @@ import type { Description } from "#foundation/options/types/Description";
 /**
  * Declares a record option whose keys `key` validates and whose members `value`
  * resolves, each with its key appended to the error path. A missing input resolves
- * to the `optional` default. `assert` checks the resolved record.
+ * to the `optional` default. `assertResolved` checks the resolved record.
  *
  * @throws {TypeError} At resolve, when the input, or its default, is no plain
  * object, a missing input without `optional` included.
- * @throws At resolve, whatever `assert` throws to reject the record.
+ * @throws At resolve, whatever `assertResolved` throws to reject the record.
  * @stable
  */
 export function declareRecord<
@@ -30,7 +30,10 @@ export function declareRecord<
   options?: {
     description?: Description;
     optional?: Default<Fallback, Context>;
-    assert?(output: Readonly<Record<string, Output>>, path: string): void;
+    assertResolved?(
+      output: Readonly<Record<string, Output>>,
+      path: string,
+    ): void;
   },
 ): Declaration<
   | Readonly<Record<string, Input>>
@@ -44,10 +47,13 @@ export function declareRecord(
   options: {
     description?: Description;
     optional?: Default<unknown, unknown>;
-    assert?(output: Readonly<Record<string, unknown>>, path: string): void;
+    assertResolved?(
+      output: Readonly<Record<string, unknown>>,
+      path: string,
+    ): void;
   } = {},
 ): Declaration<unknown, unknown, unknown> {
-  const { optional, assert } = options;
+  const { optional, assertResolved } = options;
 
   const schema = createOptionSchema(record(key, value.schema), {
     description: options.description,
@@ -71,7 +77,7 @@ export function declareRecord(
       resolved[name] = value.resolve(member, context, `${path}.${name}`);
     }
 
-    assert?.(resolved, path);
+    assertResolved?.(resolved, path);
 
     return freeze(resolved);
   }

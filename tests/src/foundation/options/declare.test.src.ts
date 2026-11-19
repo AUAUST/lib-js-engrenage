@@ -1,9 +1,10 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
-import { boolean, maxValue, number, pipe, safeParse } from "valibot";
+import { boolean, maxValue, number, pipe, safeParse, string } from "valibot";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { declare } from "#foundation/options/config/declarers/declare";
 import { declareObject } from "#foundation/options/config/declarers/declareObject";
+import { declareRecord } from "#foundation/options/config/declarers/declareRecord";
 import { gitSchema } from "#tools/git/config/schemas/gitSchema";
 
 describe("declare", () => {
@@ -121,5 +122,38 @@ describe("declare", () => {
     expect(limited.resolve(5, { max: 9 }, "n")).toBe(5);
 
     expect(() => limited.resolve(5, { max: 3 }, "n")).toThrow("Invalid n");
+  });
+});
+
+describe("declareRecord", () => {
+  test("checks the resolved record with `assertResolved`", () => {
+    const seen: unknown[] = [];
+
+    const lengths = declareRecord(
+      string(),
+      declare(string(), {
+        optional: { value: 0 },
+        adjust(input) {
+          return input.length;
+        },
+      }),
+      {
+        assertResolved(output, path) {
+          seen.push(output);
+
+          if (output.b === 0) {
+            throw new Error(`${path}.b must not be empty`);
+          }
+        },
+      },
+    );
+
+    expect(lengths.resolve({ a: "xy" }, undefined, "r")).toEqual({ a: 2 });
+
+    expect(seen).toEqual([{ a: 2 }]);
+
+    expect(() => lengths.resolve({ b: "" }, undefined, "r")).toThrow(
+      "r.b must not be empty",
+    );
   });
 });
