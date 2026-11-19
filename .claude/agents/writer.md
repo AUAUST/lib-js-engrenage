@@ -5,7 +5,7 @@ description: Writer that turns a behavior change the user consented to into
   target agent would to remove misreadings, conflicts and gaps. Dispatch it for
   every change to instructions that determine agent behavior, once the user
   consented, with the decided behavior; never write those instructions yourself,
-  beyond the subagent exception Instruction maintenance sets.
+  beyond the self-writing cases Instruction maintenance sets.
 model: opus
 effort: medium
 tools:

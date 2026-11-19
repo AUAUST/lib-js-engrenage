@@ -11,7 +11,7 @@ Applies, on top of the issues rule, to every issue you file or draft.
 
 ## Filing
 
-- Search the target repository's issues for one on the concern, with `gh issue list --repo <owner>/<repo> --state all --search "<keywords>"`, and extend it before creating one.
+- Search the target repository's issues for one on the concern, with `gh issue list --state all --search "<keywords>"` (`--repo` as the git and github rules set), and extend it before creating one.
 - Input issue whose fix the current repository owns: write the fix into that issue, condensing its original report into **Context**, instead of filing a new one.
 - Open-issue index, under a skill loading one: write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository, and keep in context only each issue's number, title, labels, parent and header gist.
 
@@ -42,19 +42,19 @@ Applies, on top of the issues rule, to every issue you file or draft.
 
 Items are `task` and `problem` issues. Write each complete, through its ancestors, for a worker who treats everything in it as binding and applies it without redesign. Uncertainty lives only under **Planning**, design not finished, and **Questions**, what the user owes; never in vague **Steps**.
 
-| Section           | Types               | Holds                                                                                                                                                               |
-| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                                          |
-| **Goal**          | plan                | Why the work is needed and the target state                                                                                                                         |
-| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                                               |
-| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                                                   |
-| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing it, then its own decisions, with exact paths and names                              |
-| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                                                |
-| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                                            |
-| **Tests**         | item                | Each case with its expected outcome, within the Verification test minimum (the fewest tests giving confidence); for a fix, the regression case and its reproduction |
-| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                                                        |
-| **Planning**      | plan, segment, item | Design not finished yet                                                                                                                                             |
-| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                                                         |
+| Section           | Types               | Holds                                                                                                                                  |
+| ----------------- | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Header line       | segment, item       | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                             |
+| **Goal**          | plan                | Why the work is needed and the target state                                                                                            |
+| Model sections    | plan                | Only the shapes at least two items use, as tables, trees and diagrams                                                                  |
+| **Decisions**     | plan                | Each choice spanning several items, with its reason in one clause                                                                      |
+| **Context**       | segment, item       | A segment: what it adds. An item: the problem, its cause and every site sharing it, then its own decisions, with exact paths and names |
+| **Prerequisites** | segment, item       | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                   |
+| **Steps**         | item                | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues               |
+| **Tests**         | item                | Each case with its expected outcome, within the Verification test minimum; for a fix, the regression case and its reproduction         |
+| **Done when**     | plan, segment, item | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                           |
+| **Planning**      | plan, segment, item | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                |
+| **Questions**     | plan, segment, item | What investigation could not settle: the findings and the candidate answers                                                            |
 
 | Section       | Budget in words |
 | ------------- | --------------- |
@@ -107,14 +107,11 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 
 ## Walks
 
-A debugger briefed with a `Walk:` line, on top of the debugging skill:
+A debugger briefed with a `Walk:` line creates each new issue by the first matching case:
 
-- With a `Leaf:` line too, write the defect up, never fix it: the walker routes it before the leaf.
-- Create each new issue by the first matching case:
-  - **A `Leaf:` line in your brief, the defect owned by the current repository or a registered one.** A `problem` in the repository owning the defect, `--parent <the Leaf: issue>`, adding `--repo <short name>` when it is not the current repository.
-  - **The current repository.** In the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue.
-  - **Another repository with a linked checkout, one `pnpm engrenage link` lists.** A `problem`, `--repo <short name> --parent <your input issue>`; never fix it in that checkout: the walker routes the `problem` there.
-  - **Any other.** Under §Repository.
-- Commit nothing: the walker commits your work.
+- **A `Leaf:` line in your brief, the defect owned by the current repository or a registered one.** A `problem` in the repository owning the defect, `--parent <the Leaf: issue>`, adding `--repo <short name>` when it is not the current repository.
+- **The current repository.** In the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue.
+- **Another repository with a linked checkout, one `pnpm engrenage link` lists.** A `problem`, `--repo <short name> --parent <your input issue>`; never fix it in that checkout: the walker routes the `problem` there.
+- **Any other.** Under §Repository.
 
 <!-- @end -->

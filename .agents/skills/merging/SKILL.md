@@ -9,7 +9,7 @@ description: Review what a walk landed across its leaves, integrating each
 
 # Merging
 
-Review what a walk landed across its leaves: gaps against each leaf's issue, duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. Apply only mechanical fixes and report the rest as findings.
+Review what a walk landed across its leaves, the issues the walker dispatched to a worker or a debugger: gaps against each leaf's issue, duplication across leaves, diverging choices, missed reuse, and bugs and improvements around the changed code. Apply only mechanical fixes and report the rest as findings.
 
 ## Modes
 

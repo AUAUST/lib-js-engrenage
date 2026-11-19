@@ -34,7 +34,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 
 - Corrects the cause at its owner, at every site sharing it, with no special case for the reported input.
 - Makes the violated invariant explicit, through types, validation or a clear failure, so the same class of bug cannot return silently.
-- Adds a regression test that fails before the fix and passes after it, counting towards the Verification test minimum (the fewest tests giving confidence).
+- Adds a regression test that fails before the fix and passes after it, and the edge case the cause suggests, counting towards the Verification test minimum.
 - Weakens no check and adds no assumption on code outside it. Mark whatever still falls short with debt markers.
 
 ## Debt
@@ -43,7 +43,10 @@ Mark the debt you notice while diagnosing, on the execution path, its callers an
 
 ## Outcome
 
-Decide it by the issues rule › Outcome, and record any write-up under that rule: fixing every site that shares the cause stays within your input; a merger's improvement finding is accepted work. With a `Walk:` line in your brief, read `.claude/rules/issue-drafts.md` › Walks: it refines your outcome, where your issues go and your commits.
+Decide it by the issues rule › Outcome, and record any write-up under that rule: fixing every site that shares the cause stays within your input; a merger's improvement finding is accepted work. With a `Walk:` line in your brief:
+
+- With a `Leaf:` line too, write the defect up, never fix it: the walker routes it before the leaf.
+- Place each new issue under `.claude/rules/issue-drafts.md` › Walks.
 
 ## Questions and answers
 
@@ -62,6 +65,6 @@ Decide it by the issues rule › Outcome, and record any write-up under that rul
   | Written up | The issue URL or backlog entry ID, ready to implement or needing planning                  |
   | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
 
-- Commit under the git rules.
+- Commit under the git rules; with a `Walk:` line in your brief, commit nothing: the walker commits your work.
 
 <!-- @end -->

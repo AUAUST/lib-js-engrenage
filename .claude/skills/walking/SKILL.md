@@ -49,9 +49,13 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return, reshaper return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return, reshape planner's return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, and the next issue.
 
-Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. A leaf is an issue a row dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. A repository's linked checkout is the directory `pnpm engrenage link` lists for it. On a foreign leaf or a worker report opening with `Linked defect:`, read `cross-repository.md` beside this skill first: where it covers a step of this skill, it replaces that step. Every issue ordered after a set-aside one waits, left out of the ready set: keep walking the rest.
+A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. A repository's linked checkout is the directory `pnpm engrenage link` lists for it. On a foreign leaf or a worker report opening with `Linked defect:`, first read this file, which replaces each step of this skill it covers:
+
+`.claude/skills/walking/cross-repository.md`
+
+Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Every issue ordered after a set-aside one waits, left out of the ready set: keep walking the rest.
 
 | Issue                                                                                                     | Walker                                                                                                                                      |
 | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -153,7 +157,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 - Start the `planner` subagent on first need, briefed `consultant` with the plan number; resume it under §Resumed agents.
 - Call it only for a blocked report the issue's text does not answer, a deviation changing planned behavior, contracts, scope or tree order, a plan your next commit closes, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (`planning/consultant.md`). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (the planning skill's consultant mode). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 

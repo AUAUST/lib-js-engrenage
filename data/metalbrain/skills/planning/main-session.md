@@ -1,5 +1,7 @@
 # Single and outer modes
 
+`planning §…` names the planning skill's sections, a bare `§…` this file's.
+
 ## Requests
 
 Handle each request of the user by its kind:
@@ -34,4 +36,4 @@ Outer mode, once the groundwork holds:
 
 1. Keep up to K inner planners in flight, K from `pool <K>` in the user's request, 2 when unset, dispatching the next item as each reports. Dispatch a new `planner` per item, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item; group no other items: every turn re-reads a planner's whole context, so its cost grows faster than its items.
 2. Batch the inner planners' questions to the user, apply their plan findings yourself, and resume every inner planner whose item an answer or a plan change affects, already deepened or not, each resume taking a slot of the K.
-3. Once every inner planner has reported, review the tree under §Readiness.
+3. Once every inner planner has reported, review the tree under planning §Readiness.
