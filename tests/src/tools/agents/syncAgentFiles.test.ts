@@ -193,7 +193,7 @@ describe("syncAgentFiles", () => {
           "extra: kept",
           "---",
           "",
-          "<!-- @reference @auaust/engrenage/metalbrain/skills/issue-implementation.md -->",
+          "<!-- @reference @auaust/engrenage/metalbrain/skills/implement.md -->",
           "",
           "<!-- @end -->",
           "",

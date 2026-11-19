@@ -59,12 +59,7 @@ async function describePlanning(config: ReturnType<typeof createConfig>) {
     skills: skills
       .map(({ name }) => name)
       .filter((name) => {
-        return [
-          "planning",
-          "walking",
-          "issue-implementation",
-          "merging",
-        ].includes(name);
+        return ["planning", "walking", "merging"].includes(name);
       })
       .toSorted(),
   };
@@ -79,7 +74,7 @@ const off = {
 const on = {
   snapshot: true,
   sheet: true,
-  skills: ["issue-implementation", "merging", "planning", "walking"],
+  skills: ["merging", "planning", "walking"],
 };
 
 describe("GitHub planning activation", () => {

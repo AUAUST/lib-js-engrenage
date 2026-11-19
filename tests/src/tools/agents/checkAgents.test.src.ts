@@ -28,7 +28,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-async function fixture(skills: readonly string[] = ["issue-implementation"]) {
+async function fixture(skills: readonly string[] = ["implement"]) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer","devDependencies":{"prettier":"*"}}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
@@ -188,17 +188,13 @@ test("recognizes inspected Claude capabilities while leaving effective overrides
 test("reports a missing installed skill when its owned profiles remain", async () => {
   const config = await fixture();
 
-  await config.context.filesystem.remove(
-    ".agents/skills/issue-implementation/SKILL.md",
-  );
+  await config.context.filesystem.remove(".agents/skills/implement/SKILL.md");
 
   expect(await checkAgents(config)).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         status: "conflicting",
-        message: expect.stringContaining(
-          ".agents/skills/issue-implementation/SKILL.md",
-        ),
+        message: expect.stringContaining(".agents/skills/implement/SKILL.md"),
       }),
     ]),
   );

@@ -78,7 +78,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 ## Dispatching
 
 - Keep up to K leaves of the ready set in flight. Dispatch every agent from the walked branch's `HEAD` commit, its dispatch base: at K = 1 in the main checkout; past it, each leaf in the background with `isolation: "worktree"`, briefing that commit on its `Base:` line.
-- Dispatch every leaf to a new agent: a worker under the issue-implementation skill, a debugger under the debugging skill.
+- Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then the checkpoint commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Resume the same agent to answer its question, return gaps and leaf findings, or return the failing commands and output from its stop or commit gate.

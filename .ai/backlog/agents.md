@@ -34,3 +34,13 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: supporting files name their own sections bare and the main skill's as `<skill> §Name`; a bare `§Name` matching only a main-skill section reads as a missing section of the file.
 - want: a check flags a bare `§Name` in a supporting file that names no section of that file.
+
+## 7. Codex cannot dispatch the analyser at a requested effort
+
+- why: Codex picks effort through profiles generated from `efforts:`, keyed by issue `complexity`; the analyser has only its `medium` default, so a user-requested high dispatch has no profile. Claude Code and `agents dispatch --effort` work.
+- want: an effort override on Codex dispatch, or profiles for requested efforts.
+
+## 8. Nothing checks that fragments name existing skills
+
+- why: renaming `issue-implementation` to `implement` left references in `walking.md` and `planning.md` that only a grep caught.
+- want: sync fails on a fragment naming a skill that does not exist or appears only in a `formerly` list.

@@ -1,4 +1,5 @@
 // @barrel operations
+export { checkDraftFile } from "#tools/github/issues/drafts/operations/checkDraftFile";
 export { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 export { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
 export { createDraft } from "#tools/github/issues/drafts/operations/createDraft";

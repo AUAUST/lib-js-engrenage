@@ -151,7 +151,7 @@ Move whatever falls short under **Planning** or **Questions**, never leave it im
 
 ## How workers read issues
 
-Workers implement one issue at a time under the issue-implementation skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
+Workers implement one issue at a time under the implement skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
 
 ## Writing rules
 

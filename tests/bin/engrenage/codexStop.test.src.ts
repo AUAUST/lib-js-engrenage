@@ -48,7 +48,7 @@ test.each([
     const config = await loadConfig(project.root);
 
     await addAgentSkills(config, [
-      "issue-implementation",
+      "implement",
       "debugging",
       "planning",
       "curation",

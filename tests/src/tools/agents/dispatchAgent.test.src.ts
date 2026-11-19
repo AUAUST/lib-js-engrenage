@@ -219,7 +219,7 @@ describe("createDispatchEnvironment", () => {
 });
 
 describe("dispatchAgent", () => {
-  test("runs the named client whatever agents.preferred lists, refusing a worker brief naming no issue before running anything", async () => {
+  test("runs the named client whatever agents.preferred lists, refusing a brief naming its issue past the first line before running anything", async () => {
     const caller = createTemporaryProject();
     const checkout = createTemporaryProject();
 
@@ -235,10 +235,10 @@ describe("dispatchAgent", () => {
       dispatchAgent(config, "claude", {
         directory: checkout.root,
         run: { agent: "worker" },
-        brief: "Do the thing.",
+        brief: "Do the thing.\nIssue: AUAUST/repo#1",
         effort: undefined,
       }),
-    ).rejects.toThrow("brief a worker with `Issue: <owner>/<repo>#<n>`");
+    ).rejects.toThrow("move the `Issue:` line to the first line");
   });
 
   test("refuses a client no active extension contributes, naming the runtimes it accepts", async () => {

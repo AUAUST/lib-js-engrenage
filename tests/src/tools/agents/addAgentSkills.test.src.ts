@@ -50,12 +50,12 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(config, ["issue-implementation"]);
+    await addAgentSkills(config, ["implement"]);
 
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
     ).toMatch(
-      /name: worker[\s\S]*model: opus\neffort: low[\s\S]*# Issue implementation/,
+      /name: worker[\s\S]*model: opus\neffort: low[\s\S]*# Implementation/,
     );
   });
 
@@ -92,7 +92,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(config, ["issue-implementation"]);
+    await addAgentSkills(config, ["implement"]);
 
     expect(
       await config.context.filesystem.glob(".codex/agents/*.toml"),
@@ -118,7 +118,7 @@ describe("addAgentSkills", () => {
     await config.context.filesystem.flush();
 
     await addAgentSkills(config, [
-      "issue-implementation",
+      "implement",
       "debugging",
       "planning",
       "curation",
@@ -136,9 +136,9 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await expect(
-      addAgentSkills(config, ["issue-implementation"]),
-    ).rejects.toThrow("Unowned Codex agent profile .codex/agents/worker.toml");
+    await expect(addAgentSkills(config, ["implement"])).rejects.toThrow(
+      "Unowned Codex agent profile .codex/agents/worker.toml",
+    );
 
     expect(
       await config.context.filesystem.read(".codex/agents/worker.toml"),

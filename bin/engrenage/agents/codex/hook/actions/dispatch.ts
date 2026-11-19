@@ -39,19 +39,11 @@ export default async function (): Promise<void> {
     return;
   }
 
-  const {
-    contract: contractNames,
-    repositories,
-  } = await config.resolve("github");
-
   const reason = await checkAgentDispatch(
+    config,
     profile.role,
     input.message ?? input.prompt ?? "",
     cwd,
-    {
-      contractNames,
-      repositories,
-    },
   );
 
   if (reason !== undefined) {

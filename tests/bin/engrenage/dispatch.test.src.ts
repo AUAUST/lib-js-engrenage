@@ -47,8 +47,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-test.each(["implement it", "Context\nIssue: o/r#1"])(
-  "denies a worker without a first-line Issue: %s",
+test.each(["Context\nIssue: o/r#1", "Context\nDraft: /x.draft.md"])(
+  "denies a brief naming its issue or draft past the first line: %s",
   async (prompt) => {
     vi.mocked(readHookPayload).mockResolvedValue({
       tool_input: { subagent_type: "worker", prompt },
@@ -57,8 +57,8 @@ test.each(["implement it", "Context\nIssue: o/r#1"])(
     await runDefinition(dispatch);
 
     expect(process.stdout.write).toHaveBeenCalledWith(
-      expect.stringContaining(
-        "brief a worker with `Issue: <owner>/<repo>#<n>`",
+      expect.stringMatching(
+        /move the `(?:Issue|Draft):` line to the first line/,
       ),
     );
 
@@ -66,7 +66,7 @@ test.each(["implement it", "Context\nIssue: o/r#1"])(
   },
 );
 
-test("accepts a first-line CRLF brief and direct debugger reports", async () => {
+test("accepts a first-line CRLF brief and bare requests", async () => {
   expect(findBriefedIssue("Issue: o/r#1\r\nContext")).toEqual({
     repository: "o/r",
     number: 1,
@@ -110,6 +110,15 @@ test("accepts a first-line CRLF brief and direct debugger reports", async () => 
 
   await runDefinition(dispatch);
 
+  vi.mocked(readHookPayload).mockResolvedValue({
+    tool_input: {
+      subagent_type: "worker",
+      prompt: "implement it",
+    },
+  });
+
+  await runDefinition(dispatch);
+
   expect(checkIssue).toHaveBeenCalledTimes(1);
   expect(process.stdout.write).not.toHaveBeenCalled();
 });
@@ -126,7 +135,7 @@ async function installed(
 
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(config, ["issue-implementation", "debugging"]);
+  await addAgentSkills(config, ["implement", "debugging"]);
 
   return {
     project,
@@ -204,6 +213,40 @@ test("passes the checkouts the project links with the local one", async () => {
       },
     ],
   });
+});
+
+test("checks a first-line draft of the checkout, denying its findings or another path", async () => {
+  const { project, filesystem } = await installed("{}", {
+    ".engrenage/github.json": '{"repositories":{},"organizations":{}}',
+    ".ai/issues/new-x.draft.md": "## Goal\n\ng\n",
+  });
+
+  await filesystem.flush();
+
+  for (const path of [".ai/issues/new-x.draft.md", "new-x.draft.md"]) {
+    vi.mocked(readHookPayload).mockResolvedValue({
+      cwd: project.root,
+      tool_name: "spawn_agent",
+      tool_input: {
+        agent_type: "worker",
+        message: `Draft: ${project.resolve(path)}\nContext`,
+      },
+    });
+
+    await runDefinition(codexDispatch);
+  }
+
+  expect(process.stdout.write).toHaveBeenNthCalledWith(
+    1,
+    expect.stringContaining("The draft has no manifest"),
+  );
+
+  expect(process.stdout.write).toHaveBeenNthCalledWith(
+    2,
+    expect.stringContaining("is not a draft of this checkout"),
+  );
+
+  expect(checkIssue).not.toHaveBeenCalled();
 });
 
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
