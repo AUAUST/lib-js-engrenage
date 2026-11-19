@@ -180,7 +180,7 @@ Reshape around each set-aside issue once per settlement attempt: run it again on
 
 Every turn re-reads your whole context, and a long walk outgrows it.
 
-- Read only `walk check` output and agent reports, plus the issue and the diff §Review names and the listings §Stops and restarts names; never plans or code beyond that diff.
+- Read only `walk check` output and agent reports, plus the issue and the diff §Review names, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
 - Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's records commit, cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.

@@ -67,6 +67,7 @@ Use the installed workflows below when their descriptions match the request.
 | Skill | Handling |
 | --- | --- |
 | `shape` | Run its skill in the main session. Shape, with the user, an idea whose definition or approach is not yet clear; settle its requirements while agents investigate and implement in the background, until it is implemented, planned, recorded in the backlog or dropped. Use only when the user invokes it. |
+| `gathering` | Locate strings and files and run searches scoped to some domains or files, read-only, reporting the facts found. Use only when a skill you follow or the user asks for a gatherer. Delegate to `gatherer` when its description allows; otherwise run the skill yourself. |
 | `analysis` | Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation as issues or backlog entries. Use only when a skill you follow or the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues. Delegate to `analyser` when its description allows; otherwise run the skill yourself. |
 | `planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
 | `debugging` | Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger. Delegate to `debugger` when its description allows; otherwise run the skill yourself. |
@@ -78,6 +79,7 @@ Use the installed workflows below when their descriptions match the request.
 
 | Profile | Canonical role | Effort | Complexity |
 | --- | --- | --- | --- |
+| `gatherer` | `gatherer` | low | any other |
 | `analyser` | `analyser` | medium | any other |
 | `planner` | `planner` | medium | any other |
 | `debugger` | `debugger` | medium | any other |

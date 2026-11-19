@@ -66,7 +66,8 @@ A finding is within the fix radius when its fix stays in the reviewed files, or 
 | ----------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------- |
 | Within the fix radius and the leaf's issue                        | Fix it when mechanical; otherwise a leaf finding | A finding                           |
 | Within the fix radius, outside the leaf's issue                   | A carry-over line for the review run             | A finding                           |
-| Located in the code, beyond the fix radius                        | A `@debt` marker at its site                     | A `@debt` marker at its site        |
+| A likely or proven bug beyond the fix radius                      | A backlog entry                                  | A backlog entry                     |
+| Any other finding located in the code, beyond the fix radius      | A `@debt` marker at its site                     | A `@debt` marker at its site        |
 | Not located: a missing abstraction, drift across domains, tooling | A backlog entry                                  | A backlog entry                     |
 | A solution you weighed and set aside                              | A line under the agent-records rule              | A line under the agent-records rule |
 

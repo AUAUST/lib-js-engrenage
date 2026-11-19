@@ -17,10 +17,10 @@ Keep this role for the whole session.
 
 ## Pools
 
-| Pool         | Agents                                         | K, agents in flight at once |
-| ------------ | ---------------------------------------------- | --------------------------- |
-| Implementers | Workers, debuggers, writers, analysers         | 2                           |
-| Gatherers    | General-purpose agents with no skill (§Agents) | 2                           |
+| Pool         | Agents                                 | K, agents in flight at once |
+| ------------ | -------------------------------------- | --------------------------- |
+| Implementers | Workers, debuggers, writers, analysers | 2                           |
+| Gatherers    | Gatherers                              | 2                           |
 
 The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `gatherers <K>` the gatherers', `sequential` or `no pool` both to 1.
 
@@ -33,26 +33,27 @@ The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `ga
 
 ## Agents
 
-You compare facts; agents do the scans and the changes. Beyond the diffs you review, read only what an agent's report points to, at the lines it names; send any wider reading to a gatherer.
+You compare facts; agents do the scans and the changes. Beyond the diffs you review and the backlog, read only what an agent's report points to, at the lines it names; send any wider reading to a gatherer.
 
-| Need                                                                                                       | Dispatch                                            |
-| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Locate strings or files                                                                                    | Gatherer on your runtime's smallest, fastest model  |
-| A search scoped to some domains or files                                                                   | Gatherer on a mid-tier model                        |
-| Connecting facts: causes, designs, reach                                                                   | Analyser briefed read-only, at low or medium effort |
-| A specified change                                                                                         | Worker                                              |
-| Wrong behavior                                                                                             | Debugger, at once, as soon as it is found           |
-| Agent instructions                                                                                         | Writer, under Instruction maintenance               |
-| A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                            |
+| Need                                                                                                       | Dispatch                                                            |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Locate strings or files                                                                                    | Gatherer, on the smallest, fastest model your runtime lets you pass |
+| A search scoped to some domains or files                                                                   | Gatherer                                                            |
+| Connecting facts: causes, designs, reach                                                                   | Analyser briefed read-only, at low or medium effort                 |
+| A specified change                                                                                         | Worker                                                              |
+| Wrong behavior within the current goal                                                                     | Debugger, at once, as soon as it is found                           |
+| A likely or proven bug outside the current goal, found by you or named in an agent's report                | Yourself, as Backlog states                                         |
+| Agent instructions                                                                                         | Writer, under Instruction maintenance                               |
+| A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                                            |
 
 - Choose the cheapest agent and effort that fits each need; raise a gatherer or analyser to high effort only on the user's request.
-- For a new idea, first have a gatherer search the backlog, `@debt` markers and the agent-friction and discarded-solutions logs for concerns the idea would ease or worsen.
+- For each new idea or topic, first read the backlog categories covering it for entries it would ease, worsen or take up; have a gatherer search the `@debt` markers and the agent-friction and discarded-solutions logs for the same.
 - Beyond backlog entries, agent-log lines and issue drafts, edit files only for the changes the last row names, and only while no agent changes files in the main checkout.
 - When a gatherer's report misses what you asked, dispatch one more with a narrowed prompt; past that, tell the user what is still unknown.
 
 ## Briefing
 
-Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for gatherers and analysers). Writing › Transfer texts owns the rest.
+Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for analysers). Writing › Transfer texts owns the rest.
 
 ## Dispatching
 
@@ -132,5 +133,6 @@ When the user asks to report back with split handoffs, write as chat handoffs:
 | `debugger` | medium         | `trivial`: low, `complex`: high       | no limit    |
 | `writer`   | medium         | `trivial`: low, `complex`: high       | no limit    |
 | `analyser` | medium         | none                                  | no limit    |
+| `gatherer` | low            | none                                  | no limit    |
 
 <!-- @end -->

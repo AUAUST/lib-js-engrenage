@@ -16,6 +16,7 @@
 
 - Debt is any gap between the code as it is and the code as it would be with complete knowledge and no limits of time, scope or instructions, including code that holds only while something outside it stays true and any change that makes a tool accept the code instead of making it right.
 - Judge against that ideal, never against the task: code following an issue, a decision, an instruction or the only option within your scope is still debt when it falls short. Doubt settles it: if you wonder, it is debt.
+- A likely or proven bug outside your task is no debt: it goes to the backlog. Code that may or may not be a bug is debt.
 - Mark debt wherever you notice it, in files you change or only read, as a backlog entry where it has no site, and even when you cannot say how to resolve it: a vague marker beats a dropped concern. Never search for it beyond what your task shows. Debt never fails a check.
 
 <!-- @end -->

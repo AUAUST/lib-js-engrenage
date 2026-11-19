@@ -67,3 +67,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: the decision protocol's question row stops at answering; a literal agent answers and leaves its work half done and uncommitted.
 - want: the row ends "then continue the task in progress".
+
+## 14. Concurrent worktree agents' backlog entries collide when applied
+
+- why: Backlog has editing agents record out-of-task bugs at once; two leaves numbering a new entry in one category conflict on cherry-pick or apply, and `worktree-dispatch.md` › Committing work keeps only the agent logs apart.
+- want: a rule or merge step for backlog appends, like the agent logs'.
