@@ -1,9 +1,7 @@
-import { listBlockMarkers } from "#foundation/blocks/index";
-import { listCodeRanges } from "#foundation/markdown/index";
-import { markdownBlocks } from "#tools/agents/constants";
+import { listInstructionMarkers } from "#tools/agents/utils/listInstructionMarkers";
 import type { FragmentConditions } from "#tools/agents/types/FragmentConditions";
 
-type Marker = ReturnType<typeof listBlockMarkers>[number];
+type Marker = ReturnType<typeof listInstructionMarkers>[number];
 
 const listItem = /^\s*(?:[-*+]|\d+\.)\s/u;
 
@@ -70,13 +68,7 @@ export async function filterConditionalBlocks(
   body: string,
   conditions: FragmentConditions,
 ): Promise<string> {
-  const code = listCodeRanges(body);
-
-  const markers = listBlockMarkers(body, markdownBlocks).filter(({ index }) => {
-    return !code.some(({ start, end }) => {
-      return index >= start && index < end;
-    });
-  });
+  const markers = listInstructionMarkers(body);
 
   const lines = body.split("\n");
   const dropped = new Set<number>();

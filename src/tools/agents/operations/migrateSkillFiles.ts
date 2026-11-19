@@ -221,6 +221,7 @@ export async function migrateSkillFiles(config: {
     }
   }
 
+  // @debt branches on the runtime's name for its agent file pattern and ownership test, so a contributed runtime's agent files are never migrated
   for (const { name, agents: directory } of runtimes) {
     if (directory === undefined) {
       continue;

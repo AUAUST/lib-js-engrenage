@@ -5,7 +5,9 @@ export function removeReferenceBlock(
   content: string,
   reference: string,
 ): string | undefined {
-  const markers = listInstructionMarkers(content, ["reference", "end"]);
+  const markers = listInstructionMarkers(content).filter(({ directive }) => {
+    return directive === "reference" || directive === "end";
+  });
 
   const lines = content.split("\n");
   const dropped = new Set<number>();

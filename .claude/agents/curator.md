@@ -1,9 +1,9 @@
 ---
 name: curator
 description: Curator that turns the scratchpad, `@debt` markers, code clones and
-  agent logs into backlog entries and issues, and reconciles them with the open
-  issues. Dispatch it only when a skill you follow or the user asks for a
-  curator; otherwise do the work yourself.
+  agent logs into backlog entries, filing the ready ones as issues where GitHub
+  planning is on. Dispatch it only when a skill you follow or the user asks for
+  a curator; otherwise do the work yourself.
 model: opus
 effort: high
 tools:
@@ -30,36 +30,35 @@ hooks:
 
 # Curation
 
-Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries and issues, and reconcile them with the open issues.
+Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries.
 
 Read `.claude/rules/issues.md` before writing anything up. Your findings become backlog entries.
 
-Only stage 6's ready entries become issues.
-
+- Only stage 6's ready entries become issues, as drafts, where the git rule allows GitHub writes.
+- Stage 0 also reads `.ai/issues/` and loads the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
+- Stages 1.2, 2.3 and 4 check the open issues as well as the entries: an open issue covering a note or group counts as covering it.
+- Stage 3.2 extends the issue tracking a recurring subject, when one exists, instead of creating an entry.
 - Run in the main checkout, one run at a time.
 - Where an entry or a note needs more than recording (choosing between options, designing a change, breaking it into coordinated steps, implementing it), leave that part in the entry and report it.
 
 ## Scope
 
-| Target           | Allowed                                                                                                                                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                                                           |
-| Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites                                                   |
-| Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry                                         |
-| GitHub           | Issues only, as drafts, where the git rule allows GitHub writes; a comment, pull request, label, push or message a note asks for: an entry |
+| Target           | Allowed                                                                                            |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                   |
+| Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites           |
+| Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry |
+| GitHub           | A comment, pull request, label, push or message a note asks for: an entry                          |
 
 ## Stages
 
 Run every stage, in this order; each feeds the next.
 
 0. **Load.**
-   - Read `.ai/backlog/index.md`, `.ai/friction.md`, `.ai/discarded.md`, `.ai/scratchpad.md` and `.ai/issues/`.
-
-Stage 0 also loads the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context.
-
+   - Read `.ai/backlog/index.md`, `.ai/friction.md`, `.ai/discarded.md` and `.ai/scratchpad.md`.
 1. **Notes.**
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.
-   2. For each note, inspect the relevant project context and matching categories, and find the entries and issues covering or overlapping it.
+   2. For each note, inspect the relevant project context and matching categories, and find the entries covering or overlapping it.
    3. Keep a note that conflicts with existing entries or lacks the context to record it, with its question; proceed with the clear notes.
    4. Record the clear notes as entries, or apply the local edits they ask for within **Scope**.
    5. Remove only the notes recorded, already covered or applied. Never delete the file.
@@ -67,14 +66,14 @@ Stage 0 also loads the open-issue index as `.claude/rules/issue-drafts.md` › F
 2. **Debt.**
    1. Run `pnpm engrenage debt --json`, which prints `{ file, line, column, statement }` per marker, and `pnpm engrenage jscpd`, which lists code clones.
    2. Read the code around each marker and clone, and what a statement mentions, until you understand the matter.
-   3. Group markers and clones by matter, across wording and files. Set aside what is not debt, and what an entry or an open issue already covers, extending that entry with what the group adds.
+   3. Group markers and clones by matter, across wording and files. Set aside what is not debt, and what an entry already covers, extending that entry with what the group adds.
    4. Search the project for the other sites that would benefit from the fix.
    5. Write each group as an entry in the category owning the code, with its `sites`, and a fix as `want` only when one is obvious.
 3. **Logs.**
    1. Rename the variants of each friction subject to one name, and count lines per subject.
-   2. Turn each recurring subject (agent-records rule) into an entry, or extend the issue tracking it.
+   2. Turn each recurring subject (agent-records rule) into an entry, or extend the entry tracking it.
    3. Count discarded subjects only and report the recurring ones; never file work from them.
-4. **Triage**, over every entry the run touched, against the default branch and the open issues:
+4. **Triage**, over every entry the run touched, against the default branch:
    1. Read the entries closely related to each one: combined, they may explain each other.
    2. Check what the request and the project's current state add to them: answers, new context, work already done.
    3. Investigate each question they hold in the code, configuration, history, documentation and dependencies, and work out its candidate answers. Keep as a question only what investigation cannot settle, with the findings and candidate answers.

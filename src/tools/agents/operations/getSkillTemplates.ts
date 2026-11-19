@@ -134,6 +134,7 @@ export async function getSkillTemplates({
     for (const { runtime, skills: directory, byName } of renderings) {
       const rendering = findRendering(byName);
 
+      // @debt branches on the runtime's name for its skill frontmatter keys and agent file format, so any contributed runtime gets Codex's frontmatter and no agent files; the `agents.runtimes` contribution could declare both
       if (runtime.name !== "claude") {
         addSkill(
           directory,
