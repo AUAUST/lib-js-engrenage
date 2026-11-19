@@ -1,6 +1,6 @@
 # agents
 
-Agent runtime integrations: hooks and runtime names.
+Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 1. Agent runtime names are checked only by type narrowing
 
@@ -23,3 +23,14 @@ Agent runtime integrations: hooks and runtime names.
 
 - why: #654: walker context climbed 65k→214k, ~75% of its cost re-reading; `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is reported ignored in a `settings.json` `env` block, on recent versions and in bridge-attached sessions.
 - want: an enforceable compaction or relay point at each segment close, relying on walking §Context's rebuild from `walk check`.
+
+## 5. Sync accepts a skill naming its supporting file by bare name
+
+- sites: `src/tools/agents/utils/createSkillFileFiller.ts:5`
+- why: a bare `consultant.md` outside a `<!-- @skill-file -->` block escapes the path sync renders and validates; `data/metalbrain/skills/planning.md` Modes table still does.
+- want: sync fails on a supporting file's name outside a `@skill-file` block of its skill.
+
+## 6. Nothing flags a bare `§Name` in a supporting file pointing to its main skill
+
+- why: supporting files name their own sections bare and the main skill's as `<skill> §Name`; a bare `§Name` matching only a main-skill section reads as a missing section of the file.
+- want: a check flags a bare `§Name` in a supporting file that names no section of that file.

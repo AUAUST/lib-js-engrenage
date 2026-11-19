@@ -50,7 +50,7 @@ Deferred questions, bugs, tasks and improvements.
 - [cli](cli.md): Command definitions, registration and program runs.
 - [tests](tests.md): Test infrastructure and coverage gaps.
 - [format](format.md): The `format` section, formatter selection and formatting vocabulary.
-- [agents](agents.md): Agent runtime integrations: hooks and runtime names.
+- [agents](agents.md): Agent runtime integrations: hooks, runtime names and skill rendering.
 - [vscode](vscode.md): Synced VS Code files.
 - [lefthook](lefthook.md): Lefthook integration.
 - [pnpm](pnpm.md): pnpm integration and package-manager scripts.
