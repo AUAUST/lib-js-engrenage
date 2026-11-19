@@ -3,8 +3,6 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 
 describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent for every preferred agent", async () => {
@@ -15,16 +13,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      {
-        filesystem: config.context.filesystem,
-        agents: await config.resolve("agents"),
-        extensions: await listActiveExtensions(config),
-        fillers: await createAgentFillers(config),
-        config,
-      },
-      ["debugging"],
-    );
+    await addAgentSkills(config, ["debugging"]);
 
     expect(config.context.filesystem.changes()).toEqual(
       [
@@ -61,16 +50,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      {
-        filesystem: config.context.filesystem,
-        agents: await config.resolve("agents"),
-        extensions: await listActiveExtensions(config),
-        fillers: await createAgentFillers(config),
-        config,
-      },
-      ["issue-implementation"],
-    );
+    await addAgentSkills(config, ["issue-implementation"]);
 
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
@@ -87,16 +67,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      {
-        filesystem: config.context.filesystem,
-        agents: await config.resolve("agents"),
-        extensions: await listActiveExtensions(config),
-        fillers: await createAgentFillers(config),
-        config,
-      },
-      ["curation"],
-    );
+    await addAgentSkills(config, ["curation"]);
 
     expect(
       await config.context.filesystem.read(".claude/skills/curation/SKILL.md"),
@@ -121,24 +92,20 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    const sections = {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    };
+    await addAgentSkills(config, ["issue-implementation"]);
 
-    await addAgentSkills(sections, ["issue-implementation"]);
-
-    expect(await sections.filesystem.glob(".codex/agents/*.toml")).toEqual([
+    expect(
+      await config.context.filesystem.glob(".codex/agents/*.toml"),
+    ).toEqual([
       ".codex/agents/worker.toml",
       ".codex/agents/worker_medium.toml",
     ]);
 
-    await addAgentSkills(sections, ["debugging", "planning", "curation"]);
+    await addAgentSkills(config, ["debugging", "planning", "curation"]);
 
-    expect(await sections.filesystem.glob(".codex/agents/*.toml")).toEqual([
+    expect(
+      await config.context.filesystem.glob(".codex/agents/*.toml"),
+    ).toEqual([
       ".codex/agents/curator.toml",
       ".codex/agents/debugger.toml",
       ".codex/agents/debugger_high.toml",
@@ -148,16 +115,16 @@ describe("addAgentSkills", () => {
       ".codex/agents/worker_medium.toml",
     ]);
 
-    await sections.filesystem.flush();
+    await config.context.filesystem.flush();
 
-    await addAgentSkills(sections, [
+    await addAgentSkills(config, [
       "issue-implementation",
       "debugging",
       "planning",
       "curation",
     ]);
 
-    expect(sections.filesystem.changes()).toEqual([]);
+    expect(config.context.filesystem.changes()).toEqual([]);
   });
 
   test("preserves and reports an unowned profile collision", async () => {
@@ -169,21 +136,13 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    const sections = {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    };
-
     await expect(
-      addAgentSkills(sections, ["issue-implementation"]),
+      addAgentSkills(config, ["issue-implementation"]),
     ).rejects.toThrow("Unowned Codex agent profile .codex/agents/worker.toml");
 
-    expect(await sections.filesystem.read(".codex/agents/worker.toml")).toBe(
-      'name = "custom"\n',
-    );
+    expect(
+      await config.context.filesystem.read(".codex/agents/worker.toml"),
+    ).toBe('name = "custom"\n');
   });
 
   test("requires preferred agents", async () => {
@@ -194,15 +153,7 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    const sections = {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    };
-
-    await expect(addAgentSkills(sections, ["planning"])).rejects.toThrow(
+    await expect(addAgentSkills(config, ["planning"])).rejects.toThrow(
       "agents.preferred",
     );
   });

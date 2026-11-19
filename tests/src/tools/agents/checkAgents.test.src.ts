@@ -4,10 +4,10 @@ import { spawnProcess } from "#foundation/processes/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { formatChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { linkPrettier } from "#tests/utils/linkPrettier";
 import { syncClaudeSettings } from "#tools/agents/claude/index";
 import { syncCodexFiles } from "#tools/agents/codex/index";
+import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
@@ -40,7 +40,7 @@ async function fixture(skills: readonly string[] = ["issue-implementation"]) {
 
   const config = await loadConfig(project.root);
 
-  await installAgentSkills(config, skills);
+  await addAgentSkills(config, skills);
 
   await syncCodexFiles(config);
 

@@ -122,15 +122,7 @@ export function createBacklogStep(): Step {
         ["backlog"],
       );
 
-      await addAgentSkills(
-        {
-          filesystem,
-          agents,
-          fillers,
-          config: context,
-        },
-        skills,
-      );
+      await addAgentSkills(context, skills);
 
       await syncAgentFiles(context);
     },

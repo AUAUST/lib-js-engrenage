@@ -89,16 +89,7 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentSkills(
-    {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      extensions: await listActiveExtensions(config),
-      fillers: await createAgentFillers(config),
-      config,
-    },
-    names,
-  );
+  await addAgentSkills(config, names);
 
   await settleChanges(config, {
     check: false,

@@ -3,9 +3,9 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
+import { addAgentSkills } from "#tools/agents/index";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
@@ -126,7 +126,7 @@ async function installed(
 
   const config = await loadConfig(project.root);
 
-  await installAgentSkills(config, ["issue-implementation", "debugging"]);
+  await addAgentSkills(config, ["issue-implementation", "debugging"]);
 
   return {
     project,

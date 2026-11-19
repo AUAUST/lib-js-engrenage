@@ -1,31 +1,22 @@
 import { loadFormatter } from "#project/format/index";
 import { syncCodexSkill } from "#tools/agents/codex/index";
+import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension, LoadedConfig } from "#project/config/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
-import type { BlockFillers } from "#types/BlockFillers";
+import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import type { LoadedConfig } from "#project/config/index";
 
 export async function addAgentSkills(
-  {
-    filesystem,
-    agents,
-    extensions,
-    fillers,
-    config,
-  }: {
-    filesystem: Filesystem;
-    agents: ResolvedAgents;
-    extensions?: readonly Extension[] | undefined;
-    fillers: BlockFillers;
-    config: LoadedConfig;
-  },
+  config: LoadedConfig,
   names: readonly string[],
 ) {
+  const { filesystem } = config.context;
+
+  const agents = await config.resolve("agents");
+
   const templates = await getSkillTemplates({
     agents,
-    extensions,
-    fillers,
+    extensions: await listActiveExtensions(config),
+    fillers: await createAgentFillers(config),
   });
 
   for (const name of names) {

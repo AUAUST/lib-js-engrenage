@@ -4,7 +4,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { installAgentSkills } from "#tests/utils/installAgentSkills";
+import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 import { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
@@ -75,7 +75,7 @@ function createProject({
 async function install(project: ReturnType<typeof createProject>) {
   const config = await loadConfig(project.root);
 
-  await installAgentSkills(config, ["guide"]);
+  await addAgentSkills(config, ["guide"]);
 
   await config.context.filesystem.flush();
 

@@ -2,8 +2,8 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { runDefinition } from "#tests/utils/runDefinition";
+import { addAgentSkills } from "#tools/agents/index";
 import { readHookPayload } from "#tools/agents/operations/readHookPayload";
 import { checkAgentStop } from "#workflows/gate/index";
 
@@ -47,7 +47,7 @@ test.each([
 
     const config = await loadConfig(project.root);
 
-    await installAgentSkills(config, [
+    await addAgentSkills(config, [
       "issue-implementation",
       "debugging",
       "planning",
