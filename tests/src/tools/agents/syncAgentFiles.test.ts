@@ -276,30 +276,43 @@ describe("fragment fillers", () => {
     );
   });
 
-  test.each([
-    { planning: true, installed: true },
-    { planning: false, installed: false },
-  ])(
-    "installs the default rules of active extensions (planning: $planning)",
-    async ({ planning, installed }) => {
-      const project = createTemporaryProject({
-        "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-        "engrenage.config.ts": `export default { agents: { preferred: ["claude"] }, github: { planning: ${planning} } };`,
-      });
+  test("keeps a deleted extension default rule out", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] }, github: { planning: true } };',
+    });
 
-      const config = await loadConfig(project.root);
+    const config = await loadConfig(project.root);
 
-      const { filesystem } = config.context;
+    await syncAgentFiles(config);
 
-      await syncAgentFiles(config);
+    expect(
+      await config.context.filesystem.exists(".claude/rules/github.md"),
+    ).toBe(false);
+  });
 
-      expect(await filesystem.exists(".claude/rules/issue-drafts.md")).toBe(
-        installed,
-      );
+  test("removes the rules of an extension turned off, keeping project lines", async () => {
+    const rules = "@auaust/engrenage/metalbrain/rules";
 
-      expect(await filesystem.exists(".claude/rules/budgets.md")).toBe(false);
-    },
-  );
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] }, github: { planning: false } };',
+      ".claude/rules/github.md": `<!-- @reference ${rules}/github.md -->\n<!-- @end -->\n`,
+      ".claude/rules/issue-drafts.md": `<!-- @reference ${rules}/issue-drafts.md -->\n<!-- @end -->\n\nProject line\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(await filesystem.exists(".claude/rules/github.md")).toBe(false);
+
+    expect(await filesystem.read(".claude/rules/issue-drafts.md")).toBe(
+      "\nProject line\n",
+    );
+  });
 
   test("removes the generated files of a former skill directory when the new one exists", async () => {
     const former = "@auaust/engrenage/metalbrain/skills/issue-planning.md";

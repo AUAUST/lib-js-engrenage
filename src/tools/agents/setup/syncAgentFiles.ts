@@ -7,13 +7,14 @@ import {
   backlogTemplate,
 } from "#tools/agents/constants";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
-import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
+import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
+import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
@@ -64,17 +65,41 @@ async function syncAttributionRules(config: {
   }
 }
 
-// @debt a default rule of an extension no longer active stays installed; sync could remove its reference-only files
-async function installExtensionRules(config: {
+async function removeInactiveExtensionRules(config: {
   filesystem: Filesystem;
   extensions: readonly Extension[];
-  fillers: BlockFillers;
 }) {
-  const missing = await getMissingRuleTemplates(config);
+  const active = new Set(
+    config.extensions.map(({ name }) => {
+      return name;
+    }),
+  );
 
-  for (const { file, content, extension, default: isDefault } of missing) {
-    if (isDefault && extension !== undefined) {
-      await config.filesystem.write(file, content);
+  const [references, templates] = await Promise.all([
+    getRuleReferences(config),
+    getInstructionTemplates("rules", {
+      extensions: config.extensions,
+      inactive: true,
+    }),
+  ]);
+
+  for (const { extension, reference } of templates) {
+    if (extension === undefined || active.has(extension)) {
+      continue;
+    }
+
+    for (const file of references.get(reference) ?? []) {
+      const content = await config.filesystem.read(file);
+
+      if (content === undefined) {
+        continue;
+      }
+
+      const remaining = removeReferenceBlock(content, reference);
+
+      await (remaining === undefined
+        ? config.filesystem.remove(file)
+        : config.filesystem.write(file, remaining));
     }
   }
 }
@@ -168,7 +193,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await syncAttributionRules(config);
 
-  await installExtensionRules(config);
+  await removeInactiveExtensionRules(config);
 
   const generated: FileSync[] = [];
 

@@ -42,10 +42,12 @@ export async function getInstructionTemplates(
   {
     extensions = [],
     fillers,
+    inactive = false,
     supporting = false,
   }: {
     extensions?: readonly Extension[] | undefined;
     fillers?: BlockFillers;
+    inactive?: boolean;
     supporting?: boolean;
   } = {},
 ) {
@@ -99,7 +101,11 @@ export async function getInstructionTemplates(
       );
 
       // @debt an `extension` naming no known extension hides the fragment silently instead of failing
-      if (metadata.extension !== undefined && !active.has(metadata.extension)) {
+      if (
+        !inactive &&
+        metadata.extension !== undefined &&
+        !active.has(metadata.extension)
+      ) {
         return [];
       }
 

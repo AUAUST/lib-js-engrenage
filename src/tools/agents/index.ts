@@ -64,6 +64,7 @@ export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
 export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
+export { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAgentChecks";
