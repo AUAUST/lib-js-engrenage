@@ -1,4 +1,4 @@
-import { readFile, realpath } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 
 import {
   claudeAgentsDir,
@@ -26,7 +26,7 @@ const loaded = new WeakMap<LoadedConfig, Promise<BlockFillers>>();
 
 const loadedSkills = new WeakMap<
   LoadedConfig,
-  Promise<ReadonlyMap<File, ShippedSkill>>
+  Promise<ReadonlyMap<string, ShippedSkill>>
 >();
 
 function loadFillers(config: LoadedConfig): Promise<BlockFillers> {
@@ -43,22 +43,25 @@ function loadFillers(config: LoadedConfig): Promise<BlockFillers> {
 
 async function indexSkills(
   config: LoadedConfig,
-): Promise<ReadonlyMap<File, ShippedSkill>> {
+): Promise<ReadonlyMap<string, ShippedSkill>> {
   const templates = await getInstructionTemplates("skills", {
     extensions: await listActiveExtensions(config),
     supporting: true,
   });
 
-  const skills = new Map<File, ShippedSkill>();
+  const skills = new Map<string, ShippedSkill>();
 
-  for (const { name, source, supporting } of templates) {
+  for (const { name, reference, supporting } of templates) {
     const skill = {
       skill: name,
       files: supporting.map((supported) => supported.name),
     };
 
-    for (const file of [source, ...supporting.map(({ source }) => source)]) {
-      skills.set(await realpath(file), skill);
+    for (const shipped of [
+      reference,
+      ...supporting.map((supported) => supported.reference),
+    ]) {
+      skills.set(shipped, skill);
     }
   }
 
@@ -67,7 +70,7 @@ async function indexSkills(
 
 function loadSkills(
   config: LoadedConfig,
-): Promise<ReadonlyMap<File, ShippedSkill>> {
+): Promise<ReadonlyMap<string, ShippedSkill>> {
   let skills = loadedSkills.get(config);
 
   if (skills === undefined) {
@@ -121,8 +124,9 @@ async function findReference(
 /**
  * Fills a `<!-- @reference <reference> -->` block with the rendered body of the
  * instruction fragment the reference resolves to. A reference that cannot be
- * resolved leaves its block untouched and logs a warning. A skill's fragments
- * filled in a runtime's skills or agents directory also render `@skill-file`.
+ * resolved leaves its block untouched and logs a warning. A skill's fragments, or
+ * the snippets overriding them, filled in a runtime's skills or agents directory
+ * also render `@skill-file`.
  *
  * @throws {Error} The marker names no single reference.
  */
@@ -157,7 +161,7 @@ export const fillReferenceBlock: DirectiveFill = async ({
 
   const skills = await loadSkills(config);
 
-  const shipped = skills.get(await realpath(source));
+  const shipped = skills.get(reference);
 
   return renderFragment(
     body,

@@ -6,6 +6,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { installAgentSkills } from "#tests/utils/installAgentSkills";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 
 vi.mock("#foundation/processes/operations/spawnProcess", () => {
@@ -33,12 +34,18 @@ function createProject({
   metadata = "",
   body = "Read `notes.md` beside this skill.",
   supporting = "notes.md",
-}: { metadata?: string; body?: string; supporting?: string } = {}) {
+  agents = "",
+}: {
+  metadata?: string;
+  body?: string;
+  supporting?: string;
+  agents?: string | undefined;
+} = {}) {
   return createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": [
       "export default {",
-      '  agents: { preferred: ["claude", "codex"] },',
+      `  agents: { preferred: ["claude", "codex"], ${agents} },`,
       '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
       "};",
     ].join("\n"),
@@ -181,6 +188,29 @@ describe("skill supporting files", () => {
     ]);
   });
 
+  test("renders a skill file in a snippet overriding the skill", async () => {
+    const project = createAgentProject("mode.md", 'snippetsDir: "snippets"');
+
+    const filesystem = await install(project);
+
+    await filesystem.write(
+      "snippets/@fixtures/skills/metalbrain/skills/guide.md",
+      "# Guide\n\nOverridden:\n\n<!-- @skill-file mode.md -->\n<!-- @end -->\n",
+    );
+
+    await filesystem.flush();
+
+    const skill = await fillReferenceBlock({
+      args: ["@fixtures/skills/metalbrain/skills/guide.md"],
+      file: ".claude/skills/guide/SKILL.md",
+      config: await loadConfig(project.root),
+    });
+
+    expect(skill).toContain("Overridden:");
+
+    expect(skill).toContain("`.claude/skills/guide/mode.md`");
+  });
+
   test("fails on a skill file naming no supporting file, listing the skill's", async () => {
     const project = createAgentProject("missing.md");
 
@@ -190,8 +220,9 @@ describe("skill supporting files", () => {
   });
 });
 
-function createAgentProject(file: string) {
+function createAgentProject(file: string, agents?: string) {
   return createProject({
+    agents,
     metadata: "agent:\n  name: guider\n  description: Guider",
     body: `Read this file first:\n\n<!-- @skill-file ${file} -->\n<!-- @end -->`,
     supporting: "mode.md",
