@@ -55,9 +55,3 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `src/tools/agents/operations/checkAgentResume.ts:107`
 - why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
 - want: a message naming the dispatching skill generically once another skill resumes such agents.
-
-## 11. Codex hooks root at the workspace they run from
-
-- sites: `src/tools/agents/utils/createHookCommand.ts:4`
-- why: without `CLAUDE_PROJECT_DIR`, the root is the nearest `package.json` outside `node_modules`; from a workspace such as `theme/` that is the workspace, not the project (AUAUST/clients-intscr-shopify#54 comment, row 32).
-- want: the root found as #713's config lookup finds it (question: reuse that lookup from the hook's `node:`-only executable).

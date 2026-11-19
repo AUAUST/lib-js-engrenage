@@ -133,3 +133,4 @@
 - tsconfig project references to `src` (#702): give compiling environments `src`'s ambient files — imports resolve to declaration output, which never carries `.d.ts` inputs; needs composite emit against #68's noEmit references
 - shared ambient tsconfig extended by environments (#702): one list of `src`'s ambient files — `include` never merges through `extends`; inherited `files` drops silently under any own `files`; a generated file more
 - ambient detection by missing imports and exports (#702): identify `src`'s ambient files — misses `declare global` augmentations, which import; the `declarations` role already names them
+- hook command workspace root: shell repeating the config lookup's `pnpm-workspace.yaml` globs — duplicates #713's lookup in sh; the shell finds the nearest installed engrenage-hook, the actions resolve the root from the payload `cwd`

@@ -12,10 +12,12 @@ hooks:
     - hooks:
         - type: command
           command: "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then
-            r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] &&
-            [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd --
-            \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then
-            exec node_modules/.bin/engrenage-hook claude Stop skill; fi; if [ -f
+            r=\"${PWD%%/node_modules/*}\"; while [ ! -x
+            \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f
+            \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do
+            r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [
+            -x node_modules/.bin/engrenage-hook ]; then exec
+            node_modules/.bin/engrenage-hook claude Stop skill; fi; if [ -f
             bin/engrenage-hook/executable.ts ]; then exec node
             bin/engrenage-hook/executable.ts claude Stop skill; fi; printf
             '%s\\n' '{\"systemMessage\":\"engrenage hooks are off:

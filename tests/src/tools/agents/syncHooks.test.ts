@@ -69,6 +69,20 @@ test("the generated command finds the root from a nested directory", async () =>
   expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
 });
 
+test("the generated command runs the root's program from a workspace", async () => {
+  const command = await createCommand();
+
+  const { project, root } = createConsumer({
+    "pnpm-workspace.yaml": "packages:\n  - theme\n",
+    "theme/package.json": "{}",
+  });
+
+  const result = run(command, project.resolve("theme"));
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+});
+
 test("the generated command skips a package inside node_modules", async () => {
   const command = await createCommand();
 
