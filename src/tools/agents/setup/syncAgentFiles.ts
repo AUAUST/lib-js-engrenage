@@ -219,6 +219,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await removeInactiveExtensionRules(config);
 
+  // @debt sync cannot tell a deleted extension default rule from one shipped after the project's init, so an upgrading project gets only a hint and installs the new rule by hand
   const generated: FileSync[] = [];
 
   function generate(

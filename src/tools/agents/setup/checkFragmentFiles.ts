@@ -1,3 +1,5 @@
+import { addRuleCommand } from "#tools/agents/constants";
+import { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { listMentionedFiles } from "#tools/agents/utils/listMentionedFiles";
 import { listReferenceBlocks } from "#tools/agents/utils/listReferenceBlocks";
@@ -44,11 +46,31 @@ export async function checkFragmentFiles(config: LoadedConfig): Promise<void> {
     }
   }
 
+  if (violations.size === 0) {
+    return;
+  }
+
+  const missingRules = await listMissingExtensionRules(config);
+
+  const rules = new Map(
+    missingRules.map(({ file, name }) => {
+      return [file, name];
+    }),
+  );
+
+  function describeMissing(path: File) {
+    const rule = rules.get(path);
+
+    return rule === undefined
+      ? path
+      : `${path}, the default rule ${addRuleCommand} ${rule} installs`;
+  }
+
   throwViolations(
     "Instruction fragments reference project files that do not exist; create each file or remove its fragment:",
     [...violations].flatMap(([reference, missing]) => {
       return [...missing].map(([path, file]) => {
-        return `${reference} (in ${file}): ${path}`;
+        return `${reference} (in ${file}): ${describeMissing(path)}`;
       });
     }),
   );

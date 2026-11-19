@@ -109,6 +109,8 @@ export const attributionRules = freeze({
 
 export const rulesDirectory = ".claude/rules" satisfies Directory;
 
+export const addRuleCommand = "pnpm engrenage agents rules add";
+
 export const budgetKinds = freeze([
   "goal",
   "context",

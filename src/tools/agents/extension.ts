@@ -172,6 +172,11 @@ export default {
           return import("#tools/agents/operations/reportSyncedAgentChecks");
         },
       },
+      {
+        load() {
+          return import("#tools/agents/operations/reportMissingExtensionRules");
+        },
+      },
     ],
   },
 } satisfies Extension;
