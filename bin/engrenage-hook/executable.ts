@@ -33,12 +33,22 @@ function openHook(error: unknown) {
 enableCompileCache();
 
 try {
-  const { createProgram, runProgram } = await import("#workflows/cli/index");
+  const {
+    CommandUsageError,
+    createProgram,
+    runProgram,
+  } = await import("#workflows/cli/index");
 
   const { default: hook } = await import("#bin/engrenage-hook/index");
 
   await runProgram(createProgram("engrenage-hook", hook), process.argv, {
-    onError: openHook,
+    onError(error) {
+      openHook(
+        error instanceof CommandUsageError
+          ? `${error.message}; regenerate the hooks with pnpm install, then pnpm engrenage sync`
+          : error,
+      );
+    },
   });
 } catch (error) {
   openHook(error);

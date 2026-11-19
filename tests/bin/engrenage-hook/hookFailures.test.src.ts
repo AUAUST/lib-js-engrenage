@@ -100,6 +100,39 @@ test.each(["claude", "codex"])(
   },
 );
 
+test.each([
+  [["bogus", "PreToolUse"], "unknown command 'bogus'"],
+  [["claude", "Bogus"], "unknown command 'Bogus'"],
+  [["claude"], "no command given"],
+])(
+  "usage error %j opens naming the fix",
+  { timeout: binaryTimeout },
+  (args, reason) => {
+    const result = spawnSync(
+      process.execPath,
+      [getExecutable("engrenage-hook"), ...args],
+      { input: "{}", encoding: "utf-8" },
+    );
+
+    expect(result.status, result.stderr).toBe(0);
+
+    expect(readOutput(result.stdout).systemMessage).toBe(
+      `engrenage-hook ${args.join(" ")} did not run, so its checks are off: ${reason}; regenerate the hooks with pnpm install, then pnpm engrenage sync`,
+    );
+  },
+);
+
+test("help stays a successful run", { timeout: binaryTimeout }, () => {
+  const result = spawnSync(
+    process.execPath,
+    [getExecutable("engrenage-hook"), "--help"],
+    { encoding: "utf-8" },
+  );
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toMatch(/^Usage: engrenage-hook/);
+});
+
 test(
   "an invalid consumer config opens with a message",
   { timeout: binaryTimeout },

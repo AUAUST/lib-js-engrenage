@@ -9,6 +9,10 @@ export { getRunContext } from "#workflows/cli/operations/getRunContext";
 export { launch } from "#workflows/cli/operations/launch";
 export { runProgram } from "#workflows/cli/operations/runProgram";
 
+// @barrel errors
+export { CommandUsageError } from "#workflows/cli/errors/CommandUsageError";
+// @end
+
 // @barrel utils
 export { collectArgument } from "#workflows/cli/utils/collectArgument";
 export { collectListArgument } from "#workflows/cli/utils/collectListArgument";

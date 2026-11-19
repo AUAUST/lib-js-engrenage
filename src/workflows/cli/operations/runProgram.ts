@@ -1,9 +1,13 @@
-import type { CommandUnknownOpts } from "@commander-js/extra-typings";
+import {
+  CommanderError,
+  type CommandUnknownOpts,
+} from "@commander-js/extra-typings";
 
 import {
   createConsoleReporter,
   type Reporter,
 } from "#foundation/reports/index";
+import { CommandUsageError } from "#workflows/cli/errors/CommandUsageError";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 import { runContext } from "#workflows/cli/operations/runContext";
@@ -18,6 +22,23 @@ function isFlagSet(command: CommandUnknownOpts | null, name: string): boolean {
   }
 
   return false;
+}
+
+function overrideExits(command: CommandUnknownOpts): void {
+  command.exitOverride();
+
+  for (const subcommand of command.commands) {
+    overrideExits(subcommand);
+  }
+}
+
+// @debt strips the `error: ` prefix Commander formats its messages with, which no Commander API exposes apart
+function toUsageError({ code, message }: CommanderError): CommandUsageError {
+  return new CommandUsageError(
+    code === "commander.help"
+      ? "no command given"
+      : message.replace(/^error: /u, ""),
+  );
 }
 
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
@@ -90,6 +111,10 @@ export async function runProgram(
     process.once(aborting, abort);
   }
 
+  if (onError !== undefined) {
+    overrideExits(program);
+  }
+
   try {
     await runContext.run({ signal: runSignal, reporter: runReporter }, () => {
       return program.parseAsync(argv);
@@ -100,7 +125,15 @@ export async function runProgram(
     }
 
     if (onError !== undefined) {
-      return void onError(error);
+      if (!(error instanceof CommanderError)) {
+        return void onError(error);
+      }
+
+      if (error.exitCode !== 0) {
+        onError(toUsageError(error));
+      }
+
+      return;
     }
 
     const debug = (
