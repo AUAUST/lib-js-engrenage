@@ -131,6 +131,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   const config = {
     filesystem: context.filesystem,
+    reporter: context.reporter,
     resolve: context.path,
     agents: await resolve("agents"),
     extensions: await listActiveExtensions(loaded),

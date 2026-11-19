@@ -10,6 +10,7 @@ import {
 import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { getFixture } from "#tests/utils/getFixture";
 
 const root = getFixture("agents");
@@ -368,6 +369,23 @@ describe("fragment fillers", () => {
     expect(await filesystem.read(".ai/backlog/index.md")).toContain(
       "<!-- @reference @auaust/engrenage/metalbrain/templates/backlog.md -->",
     );
+  });
+
+  test("warns about a snippet overriding a former reference, leaving current ones silent", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], snippetsDir: "snippets" } };',
+      "snippets/@auaust/engrenage/agents/rules/git.md": "Former\n",
+      "snippets/@auaust/engrenage/metalbrain/rules/budgets.md": "Current\n",
+    });
+
+    const reporter = createTestReporter();
+
+    await syncAgentFiles(await loadConfig(project.root, { reporter }));
+
+    expect(reporter.warnings).toEqual([
+      'snippets/@auaust/engrenage/agents/rules/git.md overrides the former reference "@auaust/engrenage/agents/rules/git.md", which no marker names anymore: move it to snippets/@auaust/engrenage/metalbrain/rules/git.md',
+    ]);
   });
 
   test("merges the skills a skill replaces into it, with its agent", async () => {
