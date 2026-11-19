@@ -122,3 +122,4 @@
 - in-process adapters as the only metalbrain protocol: engrenage integration (package split report) — peer within one 0.x minor, excludes non-JS stacks
 - GraphQL engine in @auaust/codegen: Interscript GraphQL generation (package split report) — @graphql-codegen/cli and gql.tada provide it; schemas are client data
 - rulesync, @intellectronica/ruler, agentsmesh: instruction distribution (package split report) — copy one source to runtimes, no packs, providers, hooks, gates or planning contract
+- Claude subagent `skills:` preload: reach supporting files from agent files — Claude-only; skills with disable-model-invocation cannot be preloaded
