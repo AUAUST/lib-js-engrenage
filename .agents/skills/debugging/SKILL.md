@@ -21,11 +21,12 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 | A backlog entry                                        | The entry and the entries closely related to it                        |
 | A `@debt` marker                                       | The marked code and its callers                                        |
 | A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
-| A merger's findings                                    | Each finding's cited code                                              |
+
+Given a merger's findings, read each finding's cited code first, and reproduce each finding there.
 
 ## Diagnosis
 
-1. **Reproduce.** Show the behavior with a failing test, command or minimal case, or a merger's finding in its cited code. When it cannot be shown, report what you tried instead of fixing on a guess.
+1. **Reproduce.** Show the behavior with a failing test, command or minimal case. When it cannot be shown, report what you tried instead of fixing on a guess.
 2. **Cause.** Follow the execution path to where behavior first departs from its contract. The site of the symptom is not the cause.
 3. **Sites.** Find every other site sharing the cause: the same assumption, pattern or caller. Fix the class of bug, not the reported instance.
 4. **Contract.** Take the expected behavior from authoritative sources: types, schemas, documentation, tests and recorded decisions. When the expected behavior is itself undecided, it is a question, not a choice for you.

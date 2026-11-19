@@ -10,13 +10,13 @@ order: 10
 
 Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then write it:
 
-| Context                                              | Write the change                                                                                          |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `writer` agent you can dispatch                      | Dispatch it with the decided behavior and the reach the consent covers; review its diff before committing |
-| `writer` agent installed, but you cannot dispatch it | Load the instruction-writing skill and follow it yourself                                                 |
+| Context                            | Write the change                                                                                          |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `writer` agent you can dispatch    | Dispatch it with the decided behavior and the reach the consent covers; review its diff before committing |
+| No `writer` agent you can dispatch | Load the instruction-writing skill and follow it yourself                                                 |
 
 <!-- @file .claude/rules/instructions.md -->
 
-With no `writer` agent, follow `.claude/rules/instructions.md` yourself.
+Without that skill, follow `.claude/rules/instructions.md` yourself.
 
 <!-- @end -->
