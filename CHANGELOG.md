@@ -1,5 +1,22 @@
 # @auaust/engrenage
 
+## 0.16.1
+
+### Patch Changes
+
+- [`d9bd1d1`](https://github.com/AUAUST/lib-js-engrenage/commit/d9bd1d1663c74c1cc488bba63cc7cb9f1dcf25ad) Thanks [@apademide](https://github.com/apademide)! - - Define the user-facing change that needs a changeset as one altering what a published package gives its users
+  - Have the shape and walking skills check each reviewed change for its changeset, the shaper adding a missing one and the walker returning it to the agent
+  - Let the writer add the changeset its instruction changes need
+
+- [`052eaf0`](https://github.com/AUAUST/lib-js-engrenage/commit/052eaf07d11d09d2584817cbe80a852aad5c836f) Thanks [@apademide](https://github.com/apademide)! - - Hint after sync and init at the default rules of active extensions a project lacks, with the command installing them
+  - Name that command in the fragment files check when a missing file is such a rule
+
+- [`4f600ea`](https://github.com/AUAUST/lib-js-engrenage/commit/4f600ea2ec8058f9bcd99c2a32b59d9d4f01a4c1) Thanks [@apademide](https://github.com/apademide)! - - Remove instruction examples that add no meaning to their rule
+  - State as rules what the remaining reach and verification examples carried
+  - Give shape writers a pool of their own, one at a time by default
+
+- [`b4c4af7`](https://github.com/AUAUST/lib-js-engrenage/commit/b4c4af7e7f6d859db60d085ec4d7ddf63993c2e0) Thanks [@apademide](https://github.com/apademide)! - - Fix `sync` and `sync --check` failing in installed packages on the `package` target
+
 ## 0.16.0
 
 ### Minor Changes
