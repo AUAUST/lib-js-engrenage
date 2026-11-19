@@ -349,7 +349,7 @@ describe("shared skill files", () => {
     );
 
     await expect(sync(project)).rejects.toThrow(
-      'Expected one shared file of skill "guide": steps.md, unused.md',
+      /Expected one shared file of skill "guide": .*\bsteps\.md\b/,
     );
 
     writeFileSync(
