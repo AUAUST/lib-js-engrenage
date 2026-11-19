@@ -81,6 +81,11 @@ export const packages = freeze({
   zod,
 });
 
+// @debt the hook program belongs to the agents domain, kept global because `#tools/agents/constants` imports the Claude constants for `agentShellVariables`, so the runtime constants could not import it back; a runtime port field for the shell variable would free it
+export const hookProgram = `${project}-hook` as const;
+
+export const hookProgramSource = `bin/${hookProgram}/executable.ts` satisfies File;
+
 export const engrenageConfigFile = `${project}.config` satisfies File;
 
 export const gitignoreFile = ".gitignore" satisfies File;

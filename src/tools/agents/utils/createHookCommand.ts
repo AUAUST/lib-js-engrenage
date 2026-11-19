@@ -1,5 +1,4 @@
-import { pnpmWorkspaceFile } from "#constants";
-import { hookProgram, hookProgramSource } from "#tools/agents/constants";
+import { hookProgram, hookProgramSource, pnpmWorkspaceFile } from "#constants";
 import { gitDirectory } from "#tools/git/constants";
 
 // @debt the walk restates `findRepositoryRoot` and the workspace root as shell tests, bounding the root by markers rather than the config lookup

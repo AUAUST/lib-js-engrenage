@@ -85,3 +85,6 @@
 - worktree-isolated Bash: `pnpm … ; git status` in one command — refused as naming git too complexly; reran git alone with `git -C`
 - worktree-isolated Bash: `cat` of several files, one path holding `git.ts` — refused as naming git in a compound command; read them through the Read tool
 - `$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks: no instruction or doc says which checkout it names — logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree
+- commit gate tests: checkAgents.test.src.ts timed out at 5000ms while another agent ran tests — passed alone and on retry
+- worktree-isolated Bash: `sed -i ''` edits chained with `git diff` — refused as too complex to verify; edited through the edit tool
+- `engrenage gate --worktree`: init.test.src.ts, 4 tests timed out at 5000ms — passed alone; reran the gate

@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { hookProgram } from "#constants";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -28,7 +29,7 @@ export const claudeVariables = freeze({
 
 // @debt the legacy marker only cleans settings synced before engrenage-hook
 export const claudeHookMarkers = freeze([
-  "engrenage-hook claude ",
+  `${hookProgram} claude `,
   "engrenage agents claude hook ",
 ] as const);
 

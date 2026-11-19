@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { engrenage } from "#constants";
+import { engrenage, hookProgram } from "#constants";
 import { metalbrain } from "#tools/agents/constants";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
@@ -22,7 +22,7 @@ export const codexHooksFile = ".codex/hooks.json" satisfies File;
 
 // @debt the legacy marker only cleans settings synced before engrenage-hook
 export const codexHookMarkers = freeze([
-  "engrenage-hook codex ",
+  `${hookProgram} codex `,
   "engrenage agents codex hook ",
 ] as const);
 
