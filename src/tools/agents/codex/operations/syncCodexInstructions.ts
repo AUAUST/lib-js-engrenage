@@ -22,7 +22,7 @@ export async function syncCodexInstructions({
 }: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
-  extensions?: readonly Extension[];
+  extensions: readonly Extension[];
   fillers: BlockFillers;
   config: LoadedConfig;
 }) {

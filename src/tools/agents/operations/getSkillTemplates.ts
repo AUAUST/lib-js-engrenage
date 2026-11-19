@@ -29,7 +29,7 @@ export async function getSkillTemplates({
   fillers,
 }: {
   agents: ResolvedAgents;
-  extensions?: readonly Extension[] | undefined;
+  extensions: readonly Extension[];
   fillers: BlockFillers;
 }) {
   const preferred = agents.preferred ?? [];

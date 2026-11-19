@@ -6,7 +6,7 @@ import type { BlockFillers } from "#types/BlockFillers";
 
 export async function getRuleTemplates(config: {
   fillers: BlockFillers;
-  extensions?: readonly Extension[];
+  extensions: readonly Extension[];
 }) {
   const templates = await getInstructionTemplates("rules", config);
 

@@ -57,7 +57,11 @@ export function createBacklogStep(): Step {
           extensions,
           fillers,
         }),
-        getSkillTemplates({ agents, fillers }),
+        getSkillTemplates({
+          agents,
+          extensions,
+          fillers,
+        }),
       ]);
 
       if (missingRules.some(({ name }) => name === "backlog")) {
@@ -79,9 +83,7 @@ export function createBacklogStep(): Step {
       return false;
     },
     async plan(context) {
-      const { filesystem, resolve } = context;
-
-      const agents = await resolve("agents");
+      const { filesystem } = context;
 
       if (!(await filesystem.exists(backlogIndex))) {
         await filesystem.write(
@@ -110,17 +112,7 @@ export function createBacklogStep(): Step {
         );
       }
 
-      const fillers = await createAgentFillers(context);
-
-      await addAgentRules(
-        {
-          filesystem,
-          agents,
-          fillers,
-          config: context,
-        },
-        ["backlog"],
-      );
+      await addAgentRules(context, ["backlog"]);
 
       await addAgentSkills(context, skills);
 

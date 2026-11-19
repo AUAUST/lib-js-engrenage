@@ -31,6 +31,7 @@ import type { FileSync } from "#types/FileSync";
 async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
+  extensions: readonly Extension[];
   fillers: BlockFillers;
 }) {
   const { attribution } = config.agents;
@@ -65,6 +66,7 @@ async function syncAttributionRules(config: {
   }
 }
 
+// @debt finds only rules of origins still configured, gated off by `extension` metadata: an extension removed from the config leaves its rules installed
 async function removeInactiveExtensionRules(config: {
   filesystem: Filesystem;
   extensions: readonly Extension[];

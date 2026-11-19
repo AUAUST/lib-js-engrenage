@@ -310,8 +310,26 @@ describe("fragment fillers", () => {
     expect(await filesystem.exists(".claude/rules/github.md")).toBe(false);
 
     expect(await filesystem.read(".claude/rules/issue-drafts.md")).toBe(
-      "\nProject line\n",
+      "Project line\n",
     );
+  });
+
+  test("removes the block of an extension turned off between project lines, leaving one blank line", async () => {
+    const rules = "@auaust/engrenage/metalbrain/rules";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] }, github: { planning: false } };',
+      ".claude/rules/issue-drafts.md": `Intro\n\n<!-- @reference ${rules}/issue-drafts.md -->\n<!-- @end -->\n\nProject line\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    await syncAgentFiles(config);
+
+    expect(
+      await config.context.filesystem.read(".claude/rules/issue-drafts.md"),
+    ).toBe("Intro\n\nProject line\n");
   });
 
   test("removes the generated files of a former skill directory when the new one exists", async () => {

@@ -28,7 +28,7 @@ export function createAgentRulesStep(): Step {
       return missing.some((template) => template.default);
     },
     async plan(context) {
-      const { resolve, filesystem, multiselect } = context;
+      const { filesystem, multiselect } = context;
 
       const fillers = await createAgentFillers(context);
 
@@ -46,15 +46,7 @@ export function createAgentRulesStep(): Step {
         filterMap(missing, (template) => template.default, "name"),
       );
 
-      await addAgentRules(
-        {
-          filesystem,
-          agents: await resolve("agents"),
-          fillers,
-          config: context,
-        },
-        names,
-      );
+      await addAgentRules(context, names);
     },
   };
 }

@@ -69,15 +69,7 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentRules(
-    {
-      filesystem: config.context.filesystem,
-      agents: await config.resolve("agents"),
-      fillers,
-      config,
-    },
-    names,
-  );
+  await addAgentRules(config, names);
 
   await settleChanges(config, {
     check: false,

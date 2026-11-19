@@ -1,24 +1,11 @@
-import { listBlockMarkers } from "#foundation/blocks/index";
-import { listCodeRanges } from "#foundation/markdown/index";
-import { markdownBlocks } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
+import { listInstructionMarkers } from "#tools/agents/utils/listInstructionMarkers";
 
 export function removeReferenceBlock(
   content: string,
   reference: string,
 ): string | undefined {
-  const code = listCodeRanges(content);
-
-  const markers = listBlockMarkers(content, markdownBlocks).filter(
-    ({ directive, index }) => {
-      return (
-        (directive === "reference" || directive === "end") &&
-        !code.some(({ start, end }) => {
-          return index >= start && index < end;
-        })
-      );
-    },
-  );
+  const markers = listInstructionMarkers(content, ["reference", "end"]);
 
   const lines = content.split("\n");
   const dropped = new Set<number>();
@@ -41,11 +28,27 @@ export function removeReferenceBlock(
     }
   }
 
-  const remaining = lines
-    .filter((_, index) => {
-      return !dropped.has(index + 1);
-    })
-    .join("\n");
+  const kept: string[] = [];
+
+  let isTrimming = false;
+
+  for (const [index, line] of lines.entries()) {
+    if (dropped.has(index + 1)) {
+      isTrimming = (kept.at(-1) ?? "").trim() === "";
+
+      continue;
+    }
+
+    if (isTrimming && line.trim() === "") {
+      continue;
+    }
+
+    isTrimming = false;
+
+    kept.push(line);
+  }
+
+  const remaining = kept.join("\n");
 
   return parseInstruction(remaining, "").body.trim() === ""
     ? undefined

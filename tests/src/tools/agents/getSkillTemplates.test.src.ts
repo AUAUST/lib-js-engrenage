@@ -54,6 +54,7 @@ async function renderSkills(preferred = ["claude"]) {
 
   return getSkillTemplates({
     agents,
+    extensions: [],
     fillers: {},
   });
 }
