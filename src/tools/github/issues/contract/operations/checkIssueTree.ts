@@ -253,5 +253,10 @@ export async function checkIssueTree(
       .map(({ report }) => {
         return { repository: report.repository, number: report.number };
       }),
+    finished: isClosed({
+      repository: tree.repository,
+      number: tree.issue.number,
+      state: tree.issue.state,
+    }),
   };
 }

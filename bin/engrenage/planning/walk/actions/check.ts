@@ -59,7 +59,7 @@ export default async function (
     getRunContext().reporter.log(line);
   }
 
-  if (check.ready.length === 0) {
+  if (!check.finished && check.ready.length === 0) {
     process.exitCode = 1;
   }
 }

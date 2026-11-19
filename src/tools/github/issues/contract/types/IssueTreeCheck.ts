@@ -7,4 +7,5 @@ export interface IssueTreeCheck {
   readonly checkouts: readonly IssueCheckout[];
   readonly issues: readonly WalkedIssue[];
   readonly ready: readonly IssueLocation[];
+  readonly finished: boolean;
 }

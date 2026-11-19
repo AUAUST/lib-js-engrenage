@@ -119,6 +119,7 @@ export function formatIssueTreeCheck({
   checkouts,
   issues,
   ready,
+  finished,
 }: IssueTreeCheck): readonly string[] {
   const [next] = ready;
 
@@ -130,8 +131,11 @@ export function formatIssueTreeCheck({
         })),
     ...toTree(issues).flatMap((node) => formatIssue(node, repository, ready)),
     ...(next === undefined
-      ? // @debt The none message omits the in-turn condition: an open issue with closed sub-issues and no finding can still be out of turn.
-        ["Next: none, no open issue has its sub-issues closed and no finding"]
+      ? [
+          finished
+            ? "Next: none, walk finished"
+            : "Next: none, walk stuck: no open issue in turn within the plan depth has its sub-issues closed and no finding",
+        ]
       : [
           `Ready: ${ready
             .map((issue) => {

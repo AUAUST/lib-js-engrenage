@@ -230,6 +230,35 @@ describe("checkIssueTree", () => {
     expect(nested.ready).toEqual([{ repository: "o/r", number: 32 }]);
   });
 
+  test("reports a walk with an open issue and no ready one as stuck, and one whose issue a local commit closes as finished", async () => {
+    mockGraphql();
+
+    const [stuck, finished] = await Promise.all([
+      checkIssueTree(access, 30, {
+        checkouts: checkoutAt(createWorkingCopy()),
+      }),
+      checkIssueTree(access, 20, {
+        checkouts: checkoutAt(
+          createWorkingCopy(
+            "feat: twenty\n\nCloses #21\nCloses #22\nCloses #20",
+          ),
+        ),
+      }),
+    ]);
+
+    expect(stuck.finished).toBe(false);
+
+    expect(formatIssueTreeCheck(stuck).at(-1)).toBe(
+      "Next: none, walk stuck: no open issue in turn within the plan depth has its sub-issues closed and no finding",
+    );
+
+    expect(finished).toMatchObject({ ready: [], finished: true });
+
+    expect(formatIssueTreeCheck(finished).at(-1)).toBe(
+      "Next: none, walk finished",
+    );
+  });
+
   test("prints each parent above its sub-issues, then the ready set and the next issue", async () => {
     mockGraphql();
 
@@ -330,6 +359,7 @@ describe("formatIssueTreeCheck", () => {
           walked(10, 0, "Plan", "open"),
         ],
         ready: [{ repository: "o/r", number: 14 }],
+        finished: false,
       }),
     ).toEqual([
       "Checkouts: none, no local commit read",
@@ -355,6 +385,7 @@ describe("formatIssueTreeCheck", () => {
           walked(10, 0, "Plan", "open"),
         ],
         ready: [{ repository: "o/r", number: 13 }],
+        finished: false,
       }),
     ).toEqual([
       "Checkouts: none, no local commit read",
