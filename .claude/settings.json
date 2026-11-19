@@ -30,7 +30,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PreToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PreToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'"
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PreToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PreToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'"
           }
         ]
       }
@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PostToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PostToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PostToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PostToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]
@@ -53,7 +53,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStart; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStart; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStart; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStart; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]
@@ -65,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude Stop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude Stop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude Stop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude Stop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]
@@ -77,7 +77,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -x \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]

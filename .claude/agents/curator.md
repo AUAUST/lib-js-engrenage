@@ -20,7 +20,8 @@ hooks:
           command: "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then
             r=\"${PWD%%/node_modules/*}\"; while [ ! -x
             \"$r/node_modules/.bin/engrenage-hook\" ] && [ ! -f
-            \"$r/bin/engrenage-hook/executable.ts\" ] && [ \"$r\" != / ]; do
+            \"$r/bin/engrenage-hook/executable.ts\" ] && [ ! -e \"$r/.git\" ] &&
+            [ ! -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do
             r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [
             -x node_modules/.bin/engrenage-hook ]; then exec
             node_modules/.bin/engrenage-hook claude Stop skill; fi; if [ -f

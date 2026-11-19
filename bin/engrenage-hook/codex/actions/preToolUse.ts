@@ -2,6 +2,7 @@ import { text } from "node:stream/consumers";
 
 import { looseObject, optional, parse, string } from "valibot";
 
+// @debt repeats the Claude router's payload schema and stdin read, which each router keeps to import nothing but node: modules and valibot
 const payloadSchema = looseObject({
   tool_name: string(),
   tool_input: looseObject({

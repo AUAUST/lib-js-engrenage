@@ -83,6 +83,44 @@ test("the generated command runs the root's program from a workspace", async () 
   expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
 });
 
+test("the generated command stops at a nested worktree before its install", async () => {
+  const command = await createCommand();
+
+  const worktree = ".codex/worktrees/fresh";
+
+  const { project } = createConsumer({
+    ".git/HEAD": "ref: refs/heads/main\n",
+    [`${worktree}/.git`]: "gitdir: ../../../.git/worktrees/fresh\n",
+    [`${worktree}/package.json`]: "{}",
+    [`${worktree}/nested/keep`]: "",
+  });
+
+  const result = run(command, project.resolve(`${worktree}/nested`));
+
+  expect(result.status, result.stderr).toBe(0);
+
+  expect(result.stdout).toBe(
+    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
+  );
+});
+
+test("the generated command stops at the workspace root before its install", async () => {
+  const command = await createCommand();
+
+  const { project } = createConsumer({
+    "outer/pnpm-workspace.yaml": "packages:\n  - theme\n",
+    "outer/theme/package.json": "{}",
+  });
+
+  const result = run(command, project.resolve("outer/theme"));
+
+  expect(result.status, result.stderr).toBe(0);
+
+  expect(result.stdout).toBe(
+    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
+  );
+});
+
 test("the generated command skips a package inside node_modules", async () => {
   const command = await createCommand();
 

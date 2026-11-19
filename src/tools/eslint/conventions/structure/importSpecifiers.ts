@@ -2,7 +2,7 @@ import { relative } from "node:path";
 
 import { freeze, values } from "@auaust/toolkit/object";
 
-import { resolve, toPosixPath } from "#foundation/filesystem/index";
+import { isWithin, resolve, toPosixPath } from "#foundation/filesystem/index";
 import { boundaryMessages } from "#tools/eslint/constants";
 import { defineBoundaryRule } from "#tools/eslint/utils/defineBoundaryRule";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
@@ -11,7 +11,6 @@ import type {
   BoundaryViolation,
   ImportEdge,
 } from "#project/structure/index";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
@@ -20,10 +19,6 @@ function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
     boundary: undefined,
     fix,
   });
-}
-
-function isWithin(path: string, directory: Directory): boolean {
-  return path.startsWith(`${directory}/`);
 }
 
 export default defineConvention({
@@ -41,10 +36,8 @@ export default defineConvention({
     });
 
     function unknownPath(file: File): BoundaryViolation {
-      const path = toPosixPath(relative(root, resolve(root, file)));
-
       const directory = unclassified.find((candidate) => {
-        return isWithin(path, candidate);
+        return isWithin(resolve(root, candidate), resolve(root, file));
       });
 
       return directory === undefined
