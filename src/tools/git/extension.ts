@@ -22,8 +22,12 @@ export default {
     keys: {
       git: {
         input: "git",
-        load() {
-          return import("#tools/git/config/sections/gitSection");
+        async load() {
+          const {
+            gitSection,
+          } = await import("#tools/git/config/sections/gitSection");
+
+          return gitSection;
         },
       },
     },
@@ -52,16 +56,24 @@ export default {
 
           return listIgnoreFiles(config);
         },
-        load() {
-          return import("#tools/git/operations/fillIgnoreBlock");
+        async load() {
+          const {
+            fillIgnoreBlock,
+          } = await import("#tools/git/operations/fillIgnoreBlock");
+
+          return fillIgnoreBlock;
         },
       },
       attributes: {
         files(): Promise<readonly File[]> {
           return Promise.resolve([gitattributesFile]);
         },
-        load() {
-          return import("#tools/git/operations/fillAttributesBlock");
+        async load() {
+          const {
+            fillAttributesBlock,
+          } = await import("#tools/git/operations/fillAttributesBlock");
+
+          return fillAttributesBlock;
         },
       },
     },
@@ -70,8 +82,12 @@ export default {
     "ignore.files": [
       {
         name: "gitignore",
-        load() {
-          return import("#tools/git/operations/createGitignorePresets");
+        async load() {
+          const {
+            createGitignorePresets,
+          } = await import("#tools/git/operations/createGitignorePresets");
+
+          return createGitignorePresets;
         },
       },
     ],

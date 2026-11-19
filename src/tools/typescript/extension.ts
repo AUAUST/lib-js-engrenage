@@ -24,8 +24,12 @@ export default {
     },
     keys: {
       declarations: {
-        load() {
-          return import("#tools/typescript/config/sections/declarationsSection");
+        async load() {
+          const {
+            declarationsSection,
+          } = await import("#tools/typescript/config/sections/declarationsSection");
+
+          return declarationsSection;
         },
       },
     },
@@ -95,8 +99,12 @@ export default {
 
           return listBarrelCandidates(config);
         },
-        load() {
-          return import("#tools/typescript/operations/fillBarrelBlock");
+        async load() {
+          const {
+            fillBarrelBlock,
+          } = await import("#tools/typescript/operations/fillBarrelBlock");
+
+          return fillBarrelBlock;
         },
       },
       define: {
@@ -107,8 +115,12 @@ export default {
 
           return listDefineFiles(config);
         },
-        load() {
-          return import("#tools/typescript/operations/fillDefineBlock");
+        async load() {
+          const {
+            fillDefineBlock,
+          } = await import("#tools/typescript/operations/fillDefineBlock");
+
+          return fillDefineBlock;
         },
       },
     },
@@ -134,16 +146,24 @@ export default {
         name: barrelsTarget,
         stage: "generate",
         produces: ["typescript.barrels"],
-        load() {
-          return import("#tools/typescript/setup/syncBarrelFiles");
+        async load() {
+          const {
+            syncBarrelFiles,
+          } = await import("#tools/typescript/setup/syncBarrelFiles");
+
+          return syncBarrelFiles;
         },
       },
       {
         name: "tsconfig",
         stage: "write",
         produces: ["tsconfig"],
-        load() {
-          return import("#tools/typescript/setup/syncTsconfigFiles");
+        async load() {
+          const {
+            syncTsconfigFiles,
+          } = await import("#tools/typescript/setup/syncTsconfigFiles");
+
+          return syncTsconfigFiles;
         },
       },
       {
@@ -151,24 +171,36 @@ export default {
         stage: "write",
         reads: ["tsconfig"],
         produces: ["package.json#imports", "tsconfig#paths"],
-        load() {
-          return import("#tools/typescript/setup/syncAliases");
+        async load() {
+          const {
+            syncAliases,
+          } = await import("#tools/typescript/setup/syncAliases");
+
+          return syncAliases;
         },
       },
       {
         name: "globals",
         stage: "write",
         reads: ["tsconfig"],
-        load() {
-          return import("#tools/typescript/setup/syncEnvFile");
+        async load() {
+          const {
+            syncEnvFile,
+          } = await import("#tools/typescript/setup/syncEnvFile");
+
+          return syncEnvFile;
         },
       },
       {
         name: "workspaces",
         stage: "write",
         reads: ["tsconfig"],
-        load() {
-          return import("#tools/typescript/setup/syncWorkspaceFiles");
+        async load() {
+          const {
+            syncWorkspaceFiles,
+          } = await import("#tools/typescript/setup/syncWorkspaceFiles");
+
+          return syncWorkspaceFiles;
         },
       },
     ],

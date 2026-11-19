@@ -10,24 +10,40 @@ export default {
   owns: {
     keys: {
       "typescript": {
-        load() {
-          return import("#project/tsconfig/config/sections/typescriptSection");
+        async load() {
+          const {
+            typescriptSection,
+          } = await import("#project/tsconfig/config/sections/typescriptSection");
+
+          return typescriptSection;
         },
       },
       "typescript.options": {
         input: "typescript",
-        load() {
-          return import("#project/tsconfig/config/sections/typescriptOptionsSection");
+        async load() {
+          const {
+            typescriptOptionsSection,
+          } = await import("#project/tsconfig/config/sections/typescriptOptionsSection");
+
+          return typescriptOptionsSection;
         },
       },
       "tsconfig": {
-        load() {
-          return import("#project/tsconfig/config/sections/tsconfigSection");
+        async load() {
+          const {
+            tsconfigSection,
+          } = await import("#project/tsconfig/config/sections/tsconfigSection");
+
+          return tsconfigSection;
         },
       },
       "tsconfigPath": {
-        load() {
-          return import("#project/tsconfig/config/sections/tsconfigPathSection");
+        async load() {
+          const {
+            tsconfigPathSection,
+          } = await import("#project/tsconfig/config/sections/tsconfigPathSection");
+
+          return tsconfigPathSection;
         },
       },
     },

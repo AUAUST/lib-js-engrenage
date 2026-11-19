@@ -12,12 +12,20 @@ export default {
         name: "sync --check",
         stage: "checks",
         audience: "agents",
-        load() {
-          return import("#workflows/sync/operations/runSyncCheck");
+        async load() {
+          const {
+            runSyncCheck,
+          } = await import("#workflows/sync/operations/runSyncCheck");
+
+          return runSyncCheck;
         },
         check: {
-          load() {
-            return import("#workflows/sync/operations/runSyncCheck");
+          async load() {
+            const {
+              runSyncCheck,
+            } = await import("#workflows/sync/operations/runSyncCheck");
+
+            return runSyncCheck;
           },
         },
       },
@@ -28,16 +36,24 @@ export default {
         stage: "write",
         reads: ["tsconfig"],
         produces: ["package.json"],
-        load() {
-          return import("#workflows/sync/setup/syncPackageJson");
+        async load() {
+          const {
+            syncPackageJson,
+          } = await import("#workflows/sync/setup/syncPackageJson");
+
+          return syncPackageJson;
         },
       },
       {
         name: "publishing",
         stage: "check",
         reads: ["package.json"],
-        load() {
-          return import("#workflows/sync/setup/checkPublishing");
+        async load() {
+          const {
+            checkPublishing,
+          } = await import("#workflows/sync/setup/checkPublishing");
+
+          return checkPublishing;
         },
       },
     ],

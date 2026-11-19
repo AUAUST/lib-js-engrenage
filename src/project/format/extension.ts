@@ -17,14 +17,22 @@ export default {
     keys: {
       "format": {
         input: "format",
-        load() {
-          return import("#project/format/config/sections/formatSection");
+        async load() {
+          const {
+            formatSection,
+          } = await import("#project/format/config/sections/formatSection");
+
+          return formatSection;
         },
       },
       "format.formatter": {
         input: "format",
-        load() {
-          return import("#project/format/config/sections/formatterSection");
+        async load() {
+          const {
+            formatterSection,
+          } = await import("#project/format/config/sections/formatterSection");
+
+          return formatterSection;
         },
       },
     },

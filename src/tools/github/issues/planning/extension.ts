@@ -29,16 +29,24 @@ export default {
     "agents.fillers": [
       {
         name: planningSheetRule,
-        load() {
-          return import("#tools/github/issues/planning/operations/fillPlanningSheet");
+        async load() {
+          const {
+            fillPlanningSheet,
+          } = await import("#tools/github/issues/planning/operations/fillPlanningSheet");
+
+          return fillPlanningSheet;
         },
       },
     ],
     "agents.rules": [
       {
         name: planningSheetRule,
-        load() {
-          return import("#tools/github/issues/planning/operations/generatePlanningSheetRules");
+        async load() {
+          const {
+            generatePlanningSheetRules,
+          } = await import("#tools/github/issues/planning/operations/generatePlanningSheetRules");
+
+          return generatePlanningSheetRules;
         },
       },
     ],

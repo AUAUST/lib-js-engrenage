@@ -20,8 +20,12 @@ export default {
     keys: {
       prettier: {
         input: "prettier",
-        load() {
-          return import("#tools/prettier/config/sections/prettierSection");
+        async load() {
+          const {
+            prettierSection,
+          } = await import("#tools/prettier/config/sections/prettierSection");
+
+          return prettierSection;
         },
       },
     },
@@ -42,8 +46,12 @@ export default {
       {
         name: "prettier",
         stage: "write",
-        load() {
-          return import("#tools/prettier/setup/syncPrettierPreset");
+        async load() {
+          const {
+            syncPrettierPreset,
+          } = await import("#tools/prettier/setup/syncPrettierPreset");
+
+          return syncPrettierPreset;
         },
       },
     ],
@@ -51,8 +59,12 @@ export default {
       {
         name: prettier,
         package: prettier,
-        load() {
-          return import("#tools/prettier/adapters/formatWithPrettier");
+        async load() {
+          const {
+            formatWithPrettier,
+          } = await import("#tools/prettier/adapters/formatWithPrettier");
+
+          return formatWithPrettier;
         },
       },
     ],
@@ -62,12 +74,20 @@ export default {
         name: prettier,
         stage: "fixes",
         audience: "everyone",
-        load() {
-          return import("#tools/prettier/operations/fixWithPrettier");
+        async load() {
+          const {
+            fixWithPrettier,
+          } = await import("#tools/prettier/operations/fixWithPrettier");
+
+          return fixWithPrettier;
         },
         check: {
-          load() {
-            return import("#tools/prettier/operations/checkWithPrettier");
+          async load() {
+            const {
+              checkWithPrettier,
+            } = await import("#tools/prettier/operations/checkWithPrettier");
+
+            return checkWithPrettier;
           },
         },
       },
@@ -76,8 +96,12 @@ export default {
       // @debt repeats the hash-comment syntax tools/git declares as `hashBlocks`; one shared ignore-file syntax would own it
       {
         name: "prettierignore",
-        load() {
-          return import("#tools/prettier/operations/createPrettierignorePresets");
+        async load() {
+          const {
+            createPrettierignorePresets,
+          } = await import("#tools/prettier/operations/createPrettierignorePresets");
+
+          return createPrettierignorePresets;
         },
       },
     ],

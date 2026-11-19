@@ -15,7 +15,7 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ jsdoc  Parse and print JSDoc blocks.
 │  ├─ json  Read and edit JSON while preserving its formatting and comments, through jsonc-parser's edit API.
 │  ├─ markdown  Parse Markdown structure: frontmatter, sections and prose.
-│  ├─ modules  Load lazily imported modules and resolve their single export.
+│  ├─ modules  Load lazily imported modules and resolve the export they provide.
 │  ├─ options  Declare and validate configuration options.
 │  ├─ processes  Run external processes.
 │  ├─ reports  Report typed messages to the handler the running context chooses.

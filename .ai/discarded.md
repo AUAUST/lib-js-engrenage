@@ -124,3 +124,9 @@
 - rulesync, @intellectronica/ruler, agentsmesh: instruction distribution (package split report) — copy one source to runtimes, no packs, providers, hooks, gates or planning contract
 - Claude subagent `skills:` preload: reach supporting files from agent files — Claude-only; skills with disable-model-invocation cannot be preloaded
 - `./metalbrain/shared/*.md` export before any shared file: let skills share supporting files — publint fails on an export matching no files; ship it with the first file
+- rolldown 1.3.3 upgrade: drop the leaked internal export from lazily loaded chunks — its fix (#11737) covers only exports another chunk imports; the dead `t` export stays
+- rolldown `preserveEntrySignatures: "strict"`: keep dynamic entry chunk signatures — applies to static entries only, no effect on the syncPackageJson chunk
+- static `#tools/pnpm/index` import in enableLinkedSource: remove the dynamic barrel entry that leaks `listPnpmWarnings` — loads built modules before the run defers to linked sources
+- `pickExport(import(…), name)` loader helper: name the export a lazy loader loads — `extension-imports` forbids its static import in `extension.ts`
+- `[import(…), name]` loader tuple: name the export without a helper — no TypeScript type ties the name to the module; even valid loaders fail to check
+- `import(…).then(({ name }) => name)` loaders: select the export by name — config section types inferred from the loaders turn `unknown` (1264 errors)

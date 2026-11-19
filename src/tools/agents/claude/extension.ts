@@ -37,8 +37,12 @@ export default {
         skills: claudeSkillsDir,
         agents: claudeAgentsDir,
         dispatcher: {
-          load() {
-            return import("#tools/agents/claude/adapters/dispatchClaudeAgent");
+          async load() {
+            const {
+              dispatchClaudeAgent,
+            } = await import("#tools/agents/claude/adapters/dispatchClaudeAgent");
+
+            return dispatchClaudeAgent;
           },
         },
       },
@@ -50,8 +54,12 @@ export default {
         flags: {
           settings: "create .claude/settings.json when it is missing",
         },
-        load() {
-          return import("#tools/agents/claude/setup/syncClaudeSettings");
+        async load() {
+          const {
+            syncClaudeSettings,
+          } = await import("#tools/agents/claude/setup/syncClaudeSettings");
+
+          return syncClaudeSettings;
         },
       },
     ],

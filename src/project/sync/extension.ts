@@ -35,8 +35,12 @@ export default {
       {
         name: "blocks",
         stage: "fill",
-        load() {
-          return import("#project/sync/setup/syncDirectiveBlocks");
+        async load() {
+          const {
+            syncDirectiveBlocks,
+          } = await import("#project/sync/setup/syncDirectiveBlocks");
+
+          return syncDirectiveBlocks;
         },
       },
     ],

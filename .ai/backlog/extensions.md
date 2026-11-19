@@ -25,3 +25,9 @@ The extension registry and extension declarations.
 - sites: `src/tools/git/operations/fillIgnoreBlock.ts:60`, `src/tools/agents/operations/fillReferenceBlock.ts:57`
 - why: `DirectiveFill` runs once per marker with no per-run setup, so each fill memoizes its presets or fillers in a `WeakMap` keyed by `LoadedConfig`, a lifetime `syncDirectiveBlocks` does not own; `memoizeByContext` keys by `ConfigContext` and fits neither.
 - want: `DirectiveDeclaration` loads a per-run fill factory (`(config) => fill`) that `syncDirectiveBlocks` calls once per run.
+
+## 5. Lazy loaders may still resolve a module by its export count
+
+- sites: `src/foundation/modules/utils/loadLazy.ts:30`
+- why: bundling adds exports to lazily loaded chunks (0.16.0 shipped `syncPackageJson, t`); built-in loaders select theirs by name, third-party ones may not.
+- want: in a minor release, `loadLazy` rejects namespaces without `default`.

@@ -18,99 +18,139 @@ export default {
     roles: [
       {
         name: "index",
-        load() {
-          return import("#project/roles/presets/index");
+        async load() {
+          const { index } = await import("#project/roles/presets/index");
+
+          return index;
         },
         environments: codeEnvironments,
       },
       {
         name: "constants",
-        load() {
-          return import("#project/roles/presets/constants");
+        async load() {
+          const {
+            constants,
+          } = await import("#project/roles/presets/constants");
+
+          return constants;
         },
         environments: codeEnvironments,
       },
       {
         name: "declarations",
-        load() {
-          return import("#project/roles/presets/declarations");
+        async load() {
+          const {
+            declarations,
+          } = await import("#project/roles/presets/declarations");
+
+          return declarations;
         },
         environments: codeEnvironments,
       },
       {
         name: "types",
-        load() {
-          return import("#project/roles/presets/types");
+        async load() {
+          const { types } = await import("#project/roles/presets/types");
+
+          return types;
         },
         environments: codeEnvironments,
       },
       {
         name: "utils",
-        load() {
-          return import("#project/roles/presets/utils");
+        async load() {
+          const { utils } = await import("#project/roles/presets/utils");
+
+          return utils;
         },
         environments: ["src", "scripts", "tooling"],
       },
       {
         name: "errors",
-        load() {
-          return import("#project/roles/presets/errors");
+        async load() {
+          const { errors } = await import("#project/roles/presets/errors");
+
+          return errors;
         },
         environments: codeEnvironments,
       },
       {
         name: "enums",
-        load() {
-          return import("#project/roles/presets/enums");
+        async load() {
+          const { enums } = await import("#project/roles/presets/enums");
+
+          return enums;
         },
         environments: codeEnvironments,
       },
       {
         name: "ports",
-        load() {
-          return import("#project/roles/presets/ports");
+        async load() {
+          const { ports } = await import("#project/roles/presets/ports");
+
+          return ports;
         },
         environments: codeEnvironments,
       },
       {
         name: "adapters",
-        load() {
-          return import("#project/roles/presets/adapters");
+        async load() {
+          const { adapters } = await import("#project/roles/presets/adapters");
+
+          return adapters;
         },
         environments: codeEnvironments,
       },
       {
         name: "operations",
-        load() {
-          return import("#project/roles/presets/operations");
+        async load() {
+          const {
+            operations,
+          } = await import("#project/roles/presets/operations");
+
+          return operations;
         },
         environments: codeEnvironments,
       },
       {
         name: "testutils",
-        load() {
-          return import("#project/roles/presets/testutils");
+        async load() {
+          const {
+            testutils,
+          } = await import("#project/roles/presets/testutils");
+
+          return testutils;
         },
         environments: ["tests"],
       },
       {
         name: "fixtures",
-        load() {
-          return import("#project/roles/presets/fixtures");
+        async load() {
+          const { fixtures } = await import("#project/roles/presets/fixtures");
+
+          return fixtures;
         },
         environments: ["tests"],
       },
       {
         name: "testsetup",
-        load() {
-          return import("#project/roles/presets/testsetup");
+        async load() {
+          const {
+            testsetup,
+          } = await import("#project/roles/presets/testsetup");
+
+          return testsetup;
         },
         environments: ["tests"],
       },
       {
         name: "entrypoint",
-        load() {
-          return import("#project/roles/presets/entrypoint");
+        async load() {
+          const {
+            entrypoint,
+          } = await import("#project/roles/presets/entrypoint");
+
+          return entrypoint;
         },
         environments: ["src"],
         traits: ["published"],

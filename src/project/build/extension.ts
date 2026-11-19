@@ -15,20 +15,32 @@ export default {
     keys: {
       "build": {
         input: "build",
-        load() {
-          return import("#project/build/config/sections/buildSection");
+        async load() {
+          const {
+            buildSection,
+          } = await import("#project/build/config/sections/buildSection");
+
+          return buildSection;
         },
       },
       "build.outDir": {
         input: "build",
-        load() {
-          return import("#project/build/config/sections/buildOutDirSection");
+        async load() {
+          const {
+            buildOutDirSection,
+          } = await import("#project/build/config/sections/buildOutDirSection");
+
+          return buildOutDirSection;
         },
       },
       "build.tool": {
         input: "build",
-        load() {
-          return import("#project/build/config/sections/buildToolSection");
+        async load() {
+          const {
+            buildToolSection,
+          } = await import("#project/build/config/sections/buildToolSection");
+
+          return buildToolSection;
         },
       },
     },

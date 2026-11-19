@@ -38,15 +38,21 @@ export default {
       {
         name: "pnpm",
         stage: "write",
-        load() {
-          return import("#tools/pnpm/setup/syncWorkspaceFile");
+        async load() {
+          const {
+            syncWorkspaceFile,
+          } = await import("#tools/pnpm/setup/syncWorkspaceFile");
+
+          return syncWorkspaceFile;
         },
       },
       {
         name: "links",
         stage: "check",
-        load() {
-          return import("#tools/pnpm/setup/checkLinks");
+        async load() {
+          const { checkLinks } = await import("#tools/pnpm/setup/checkLinks");
+
+          return checkLinks;
         },
       },
     ],

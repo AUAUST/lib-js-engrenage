@@ -48,12 +48,20 @@ export default {
         name: eslint,
         stage: "fixes",
         audience: "agents",
-        load() {
-          return import("#tools/eslint/operations/fixWithEslint");
+        async load() {
+          const {
+            fixWithEslint,
+          } = await import("#tools/eslint/operations/fixWithEslint");
+
+          return fixWithEslint;
         },
         check: {
-          load() {
-            return import("#tools/eslint/operations/checkWithEslint");
+          async load() {
+            const {
+              checkWithEslint,
+            } = await import("#tools/eslint/operations/checkWithEslint");
+
+            return checkWithEslint;
           },
         },
       },

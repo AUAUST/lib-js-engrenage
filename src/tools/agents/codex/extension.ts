@@ -49,8 +49,12 @@ export default {
         skills: codexSkillsDir,
         agents: codexAgentsDir,
         dispatcher: {
-          load() {
-            return import("#tools/agents/codex/adapters/dispatchCodexAgent");
+          async load() {
+            const {
+              dispatchCodexAgent,
+            } = await import("#tools/agents/codex/adapters/dispatchCodexAgent");
+
+            return dispatchCodexAgent;
           },
         },
       },
@@ -63,8 +67,12 @@ export default {
           hooks: "create .codex/hooks.json when it is missing",
         },
         reads: ["agents.instructions"],
-        load() {
-          return import("#tools/agents/codex/setup/syncCodexFiles");
+        async load() {
+          const {
+            syncCodexFiles,
+          } = await import("#tools/agents/codex/setup/syncCodexFiles");
+
+          return syncCodexFiles;
         },
       },
     ],

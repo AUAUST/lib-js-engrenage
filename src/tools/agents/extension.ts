@@ -28,8 +28,12 @@ export default {
     keys: {
       agents: {
         input: "agents",
-        load() {
-          return import("#tools/agents/config/sections/agentsSection");
+        async load() {
+          const {
+            agentsSection,
+          } = await import("#tools/agents/config/sections/agentsSection");
+
+          return agentsSection;
         },
       },
     },
@@ -110,8 +114,12 @@ export default {
             agents,
           });
         },
-        load() {
-          return import("#tools/agents/operations/fillReferenceBlock");
+        async load() {
+          const {
+            fillReferenceBlock,
+          } = await import("#tools/agents/operations/fillReferenceBlock");
+
+          return fillReferenceBlock;
         },
       },
     },
@@ -120,8 +128,12 @@ export default {
     "agents.fillers": [
       {
         name: "agent-limits",
-        load() {
-          return import("#tools/agents/operations/fillAgentLimits");
+        async load() {
+          const {
+            fillAgentLimits,
+          } = await import("#tools/agents/operations/fillAgentLimits");
+
+          return fillAgentLimits;
         },
       },
     ],
@@ -138,43 +150,65 @@ export default {
         stage: "write",
         reads: ["tsconfig"],
         produces: ["agents.instructions"],
-        load() {
-          return import("#tools/agents/setup/syncAgents");
+        async load() {
+          const { syncAgents } = await import("#tools/agents/setup/syncAgents");
+
+          return syncAgents;
         },
       },
       {
         name: "backlog-sites",
         stage: "check",
-        load() {
-          return import("#tools/agents/setup/checkBacklogSites");
+        async load() {
+          const {
+            checkBacklogSites,
+          } = await import("#tools/agents/setup/checkBacklogSites");
+
+          return checkBacklogSites;
         },
       },
       {
         name: "table-cells",
         stage: "check",
         reads: ["agents.instructions"],
-        load() {
-          return import("#tools/agents/setup/checkTableCells");
+        async load() {
+          const {
+            checkTableCells,
+          } = await import("#tools/agents/setup/checkTableCells");
+
+          return checkTableCells;
         },
       },
       {
         name: "fragment-files",
         stage: "check",
         reads: ["agents.instructions"],
-        load() {
-          return import("#tools/agents/setup/checkFragmentFiles");
+        async load() {
+          const {
+            checkFragmentFiles,
+          } = await import("#tools/agents/setup/checkFragmentFiles");
+
+          return checkFragmentFiles;
         },
       },
     ],
     "sync.done": [
       {
-        load() {
-          return import("#tools/agents/operations/reportSyncedAgentChecks");
+        async load() {
+          const {
+            reportSyncedAgentChecks,
+          } = await import("#tools/agents/operations/reportSyncedAgentChecks");
+
+          return reportSyncedAgentChecks;
         },
       },
       {
-        load() {
-          return import("#tools/agents/operations/reportMissingExtensionRules");
+        async load() {
+          const {
+            reportMissingExtensionRules,
+          } = await import("#tools/agents/operations/reportMissingExtensionRules");
+
+          return reportMissingExtensionRules;
         },
       },
     ],

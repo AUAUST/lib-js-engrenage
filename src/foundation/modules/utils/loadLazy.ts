@@ -27,6 +27,7 @@ export async function loadLazy<T>(lazy: Lazy<T>): Promise<T> {
     return loaded.default;
   }
 
+  // @debt infers the value from the namespace's export count, which bundling does not preserve (rolldown 1.3 leaves dead internal exports on lazily loaded chunks); kept only for third-party loaders until they select their export by name
   const [name, ...others] = names;
 
   if (name === undefined || others.length > 0) {

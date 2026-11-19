@@ -16,8 +16,12 @@ export default {
         name: "vitest",
         stage: "checks",
         audience: "agents",
-        load() {
-          return import("#tools/vitest/operations/runGateTests");
+        async load() {
+          const {
+            runGateTests,
+          } = await import("#tools/vitest/operations/runGateTests");
+
+          return runGateTests;
         },
       },
     ],

@@ -15,12 +15,20 @@ export default {
         name: "typecheck",
         stage: "checks",
         audience: "agents",
-        load() {
-          return import("#tools/typescript/tsc/operations/checkTypes");
+        async load() {
+          const {
+            checkTypes,
+          } = await import("#tools/typescript/tsc/operations/checkTypes");
+
+          return checkTypes;
         },
         check: {
-          load() {
-            return import("#tools/typescript/tsc/operations/checkTypes");
+          async load() {
+            const {
+              checkTypes,
+            } = await import("#tools/typescript/tsc/operations/checkTypes");
+
+            return checkTypes;
           },
         },
       },

@@ -21,8 +21,12 @@ export default {
       {
         name: "lefthook",
         stage: "write",
-        load() {
-          return import("#tools/lefthook/setup/syncLefthookConfig");
+        async load() {
+          const {
+            syncLefthookConfig,
+          } = await import("#tools/lefthook/setup/syncLefthookConfig");
+
+          return syncLefthookConfig;
         },
       },
     ],

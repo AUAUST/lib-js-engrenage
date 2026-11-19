@@ -9,8 +9,12 @@ export default {
     keys: {
       github: {
         input: "github",
-        load() {
-          return import("#tools/github/config/sections/githubSection");
+        async load() {
+          const {
+            githubSection,
+          } = await import("#tools/github/config/sections/githubSection");
+
+          return githubSection;
         },
       },
     },
@@ -32,8 +36,12 @@ export default {
       {
         name: "workflows",
         stage: "write",
-        load() {
-          return import("#tools/github/setup/syncWorkflowFiles");
+        async load() {
+          const {
+            syncWorkflowFiles,
+          } = await import("#tools/github/setup/syncWorkflowFiles");
+
+          return syncWorkflowFiles;
         },
       },
     ],
