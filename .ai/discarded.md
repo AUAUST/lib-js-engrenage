@@ -115,3 +115,5 @@
 - issue-drafting skill: one filing and drafts source for four skills — no skill-to-skill install dependency, invocation model-driven; a default `paths` rule instead
 - dispatch stop gate via `claude --settings`: headless gated agent stop gate — caller's engrenage writes a hook the target's engrenage version may not accept; a target `Stop` settings hook instead
 - runtime-name map of dispatchers in `agents`: picking a runtime's headless client — runtimes are contributed data; an optional `dispatcher` on `AgentRuntime` instead
+- cross-repository walk rule as generated rule: keep foreign-leaf text out of every walk — only `paths:` or always-loaded, needs a never-matching glob; skill supporting file instead (#683)
+- cross-repository walk rule as shipped extension rule: same need — init skips extension rules and sync never installs them, pointer could dangle

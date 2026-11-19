@@ -10,7 +10,8 @@ import { isMissingError, readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { runGit } from "#tools/git/index";
 import { linkedOutput, modulesDirectory } from "#tools/pnpm/constants";
-import { readLinkedPackage } from "#tools/pnpm/operations/readLinkedPackage";
+import { inspectLink } from "#tools/pnpm/operations/inspectLink";
+import { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
 import type { LinkState } from "#tools/pnpm/types/LinkState";
 import type { Directory } from "#types/Directory";
@@ -91,14 +92,30 @@ async function listPeerMismatches(
 }
 
 /**
- * The state of every link `root` records: whether its symlink still points at
- * the checkout, whether the checkout's build predates its `HEAD` commit, and the
- * peer dependencies `root` installs at another version than the checkout.
+ * The state of every link `root` records: whether its checkout still exists,
+ * whether its symlink still points at it, whether the checkout's build predates
+ * its `HEAD` commit, and the peer dependencies `root` installs at another
+ * version than the checkout.
  */
 export async function listLinks(root: Directory): Promise<LinkState[]> {
   return Promise.all(
-    entries(await readLinks(root)).map(async ([short, { directory }]) => {
-      const { manifest, resolved } = await readLinkedPackage(root, directory);
+    entries(await readLinks(root)).map(async ([short, link]) => {
+      const { directory } = link;
+
+      const { present, holds } = await inspectLink(root, link);
+
+      if (!present) {
+        return {
+          short,
+          directory,
+          present,
+          holds,
+          stale: false,
+          peers: [],
+        };
+      }
+
+      const manifest = await readCheckoutManifest(directory);
 
       const [stale, peers] = await Promise.all([
         isStale(directory),
@@ -108,7 +125,8 @@ export async function listLinks(root: Directory): Promise<LinkState[]> {
       return {
         short,
         directory,
-        holds: resolved === directory,
+        present,
+        holds,
         stale,
         peers,
       };

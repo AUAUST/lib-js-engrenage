@@ -1,8 +1,7 @@
-import { execFileSync } from "node:child_process";
-
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { resolveCodexProfile } from "#tools/agents/codex/index";
@@ -178,32 +177,18 @@ test.each([
 });
 
 test("passes the checkouts the project links with the local one", async () => {
-  const checkout = createTemporaryProject();
-
-  for (const args of [
-    ["init", "--quiet", "--initial-branch=main"],
-    ["remote", "add", "origin", "git@github.com:acme/tool.git"],
-    [
-      "-c",
-      "user.name=T",
-      "-c",
-      "user.email=t@example.com",
-      "commit",
-      "--quiet",
-      "--allow-empty",
-      "-m",
-      "start",
-    ],
-  ]) {
-    execFileSync("git", args, { cwd: checkout.root, stdio: "ignore" });
-  }
+  const checkout = createCheckout("acme/tool");
 
   const {
     project,
     filesystem,
   } = await installed('{ repositories: { tool: "acme/tool" } }', {
     ".engrenage/links.json": JSON.stringify({
-      tool: { directory: checkout.root, installed: "../.pnpm/tool" },
+      tool: {
+        package: "tool",
+        directory: checkout.root,
+        installed: "../.pnpm/tool",
+      },
     }),
   });
 

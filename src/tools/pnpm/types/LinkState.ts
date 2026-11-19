@@ -1,6 +1,7 @@
 export interface LinkState {
   readonly short: string;
   readonly directory: string;
+  readonly present: boolean;
   readonly holds: boolean;
   readonly stale: boolean;
   readonly peers: readonly {

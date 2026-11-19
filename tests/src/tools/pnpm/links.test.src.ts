@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import {
   mkdirSync,
   readlinkSync,
@@ -12,6 +11,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
+import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkCheckout } from "#tools/pnpm/operations/linkCheckout";
@@ -26,10 +26,6 @@ const linkPath = `node_modules/${name}`;
 
 function repositories() {
   return Promise.resolve(new Map([["engrenage", "AUAUST/engrenage"]]));
-}
-
-function git(root: string, args: readonly string[]) {
-  execFileSync("git", args, { cwd: root, stdio: "ignore" });
 }
 
 function createConsumer(dependencies: Record<string, string>) {
@@ -51,30 +47,24 @@ function createConsumer(dependencies: Record<string, string>) {
   return consumer;
 }
 
-function createCheckout(origin = "AUAUST/engrenage") {
-  const checkout = createTemporaryProject({
+function createEngrenageCheckout(origin = "AUAUST/engrenage") {
+  return createCheckout(origin, {
     "package.json": JSON.stringify({ name, version: "1.1.0" }),
     "dist/bin/engrenage.mjs": "export {};\n",
   });
+}
 
-  git(checkout.root, ["init", "--quiet", "--initial-branch=main"]);
+async function linkEngrenage() {
+  const consumer = createConsumer({ [name]: "^1.0.0" });
+  const checkout = createEngrenageCheckout();
 
-  git(checkout.root, [
-    "remote",
-    "add",
-    "origin",
-    `git@github.com:${origin}.git`,
-  ]);
+  await linkCheckout(
+    { root: consumer.root, repositories },
+    "engrenage",
+    checkout.root,
+  );
 
-  git(checkout.root, [
-    "commit",
-    "--quiet",
-    "--allow-empty",
-    "-m",
-    "chore: start",
-  ]);
-
-  return checkout;
+  return { consumer, checkout };
 }
 
 function readTarget(root: string) {
@@ -95,17 +85,14 @@ async function checkLinks(root: string) {
 
 describe("links", () => {
   test("links a checkout, lists it, and restores the installed package on removal", async () => {
-    const consumer = createConsumer({ [name]: "^1.0.0" });
-    const checkout = createCheckout();
-
-    await linkCheckout(
-      { root: consumer.root, repositories },
-      "engrenage",
-      checkout.root,
-    );
+    const { consumer, checkout } = await linkEngrenage();
 
     expect(await readLinks(consumer.root)).toEqual({
-      engrenage: { directory: checkout.root, installed },
+      engrenage: {
+        package: name,
+        directory: checkout.root,
+        installed,
+      },
     });
 
     expect(readTarget(consumer.root)).toBe(checkout.root);
@@ -122,14 +109,7 @@ describe("links", () => {
   });
 
   test("fails the sync check once an install repoints the symlink, until restored", async () => {
-    const consumer = createConsumer({ [name]: "^1.0.0" });
-    const checkout = createCheckout();
-
-    await linkCheckout(
-      { root: consumer.root, repositories },
-      "engrenage",
-      checkout.root,
-    );
+    const { consumer } = await linkEngrenage();
 
     rmSync(consumer.resolve(linkPath));
 
@@ -147,7 +127,7 @@ describe("links", () => {
   });
 
   test("refuses a checkout of another repository or a package the consumer does not depend on", async () => {
-    const other = createCheckout("AUAUST/toolkit");
+    const other = createEngrenageCheckout("AUAUST/toolkit");
     const consumer = createConsumer({ [name]: "^1.0.0" });
 
     await expect(
@@ -164,12 +144,36 @@ describe("links", () => {
       linkCheckout(
         { root: unrelated.root, repositories },
         "engrenage",
-        createCheckout().root,
+        createEngrenageCheckout().root,
       ),
     ).rejects.toThrow("in neither dependencies nor devDependencies");
 
     expect(readlinkSync(consumer.resolve(linkPath))).toBe(installed);
 
     expect(readlinkSync(unrelated.resolve(linkPath))).toBe(installed);
+  });
+
+  test("unlinks a checkout that no longer exists, which the sync check names", async () => {
+    const { consumer, checkout } = await linkEngrenage();
+
+    rmSync(checkout.root, { recursive: true, force: true });
+
+    expect(await checkLinks(consumer.root)).toEqual(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          "run `engrenage link --remove engrenage`",
+        ),
+      }),
+    );
+
+    expect(await listLinks(consumer.root)).toEqual([
+      expect.objectContaining({ short: "engrenage", present: false }),
+    ]);
+
+    await unlinkCheckout(consumer.root, "engrenage");
+
+    expect(readlinkSync(consumer.resolve(linkPath))).toBe(installed);
+
+    expect(await checkLinks(consumer.root)).toBeUndefined();
   });
 });

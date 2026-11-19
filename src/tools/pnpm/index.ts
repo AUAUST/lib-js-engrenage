@@ -8,12 +8,15 @@ export { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus
 // @end
 
 // @barrel operations
+export { inspectLink } from "#tools/pnpm/operations/inspectLink";
 export { installDependencies } from "#tools/pnpm/operations/installDependencies";
 export { linkCheckout } from "#tools/pnpm/operations/linkCheckout";
 export { listLinks } from "#tools/pnpm/operations/listLinks";
 export { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
-export { readLinkedPackage } from "#tools/pnpm/operations/readLinkedPackage";
+export { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
+export { readLinkedCheckouts } from "#tools/pnpm/operations/readLinkedCheckouts";
 export { readLinks } from "#tools/pnpm/operations/readLinks";
+export { readPackageSymlink } from "#tools/pnpm/operations/readPackageSymlink";
 export { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 export { restoreLinks } from "#tools/pnpm/operations/restoreLinks";
 export { unlinkCheckout } from "#tools/pnpm/operations/unlinkCheckout";
@@ -30,6 +33,8 @@ export { syncWorkspaceFile } from "#tools/pnpm/setup/syncWorkspaceFile";
 // @end
 
 // @barrel types
+export type * from "#tools/pnpm/types/Link";
+export type * from "#tools/pnpm/types/LinkInspection";
 export type * from "#tools/pnpm/types/Links";
 export type * from "#tools/pnpm/types/LinkState";
 export type * from "#tools/pnpm/types/WorkspaceSettings";

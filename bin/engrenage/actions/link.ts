@@ -1,3 +1,4 @@
+import { restoreLinksCommand, unlinkCommand } from "#tools/pnpm/constants";
 import {
   linkCheckout,
   listLinks,
@@ -6,12 +7,13 @@ import {
 } from "#tools/pnpm/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
+import type { LoadedConfig } from "#project/config/index";
 
-async function link(repository: string, directory: string) {
-  const config = await loadValidatedConfig(process.cwd(), {
-    reporter: getRunContext().reporter,
-  });
-
+async function link(
+  config: LoadedConfig,
+  repository: string,
+  directory: string,
+) {
   const { repositories } = await config.resolve("github");
 
   await linkCheckout(
@@ -32,12 +34,16 @@ async function list(root: string) {
     return void reporter.log("No linked checkout.");
   }
 
-  for (const { short, directory, holds, stale, peers } of links) {
+  for (const { short, directory, present, holds, stale, peers } of links) {
     reporter.log(`${short}: ${directory}`);
 
-    if (!holds) {
+    if (!present) {
       reporter.warn(
-        `${short}: the installed package no longer points at the checkout: run \`engrenage link --restore\``,
+        `${short}: the checkout is missing: run \`${unlinkCommand} ${short}\``,
+      );
+    } else if (!holds) {
+      reporter.warn(
+        `${short}: the installed package no longer points at the checkout: run \`${restoreLinksCommand}\``,
       );
     }
 
@@ -60,9 +66,11 @@ export default async function (
   directory: string | undefined,
   { remove, restore }: { remove?: string | undefined; restore: boolean },
 ): Promise<void> {
-  const root = process.cwd();
-
   const { reporter } = getRunContext();
+
+  const config = await loadValidatedConfig(process.cwd(), { reporter });
+
+  const { root } = config.context;
 
   if (remove !== undefined) {
     await unlinkCheckout(root, remove);
@@ -90,5 +98,5 @@ export default async function (
     );
   }
 
-  await link(repository, directory);
+  await link(config, repository, directory);
 }

@@ -42,7 +42,11 @@ function createFixture(linked: boolean) {
     ...(linked
       ? {
           ".engrenage/links.json": JSON.stringify({
-            fixture: { directory: checkout.root, installed: "../.pnpm/x" },
+            fixture: {
+              package: "fixture",
+              directory: checkout.root,
+              installed: "../.pnpm/x",
+            },
           }),
         }
       : {}),

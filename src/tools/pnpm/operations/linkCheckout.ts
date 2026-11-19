@@ -16,8 +16,9 @@ import {
 } from "#tools/github/index";
 import { linkedExecutables } from "#tools/pnpm/constants";
 import { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
-import { readLinkedPackage } from "#tools/pnpm/operations/readLinkedPackage";
+import { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
+import { readPackageSymlink } from "#tools/pnpm/operations/readPackageSymlink";
 import { writeLinks } from "#tools/pnpm/operations/writeLinks";
 import type { Directory } from "#types/Directory";
 
@@ -70,9 +71,7 @@ export async function linkCheckout(
     );
   }
 
-  const linked = await readLinkedPackage(root, checkout);
-
-  const { name } = linked.manifest;
+  const { name } = await readCheckoutManifest(checkout);
 
   if (!(await isDependency(root, name))) {
     throw new Error(
@@ -86,20 +85,26 @@ export async function linkCheckout(
     );
   }
 
-  if (linked.target === undefined) {
+  const symlink = await readPackageSymlink(root, name);
+
+  if (symlink.target === undefined) {
     throw new Error(
-      `${linked.path} is no symlink: run \`pnpm install\` before linking`,
+      `${symlink.path} is no symlink: run \`pnpm install\` before linking`,
     );
   }
 
   const links = await readLinks(root);
 
-  const installed = links[short]?.installed ?? linked.target;
+  const installed = links[short]?.installed ?? symlink.target;
 
-  await pointPackageLink(linked.path, checkout);
+  await pointPackageLink(symlink.path, checkout);
 
   await writeLinks(root, {
     ...links,
-    [short]: { directory: checkout, installed },
+    [short]: {
+      package: name,
+      directory: checkout,
+      installed,
+    },
   });
 }

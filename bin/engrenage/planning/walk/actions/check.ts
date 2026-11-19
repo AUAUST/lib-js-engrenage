@@ -5,7 +5,7 @@ import {
   resolveIssueCheckouts,
   resolveRepository,
 } from "#tools/github/index";
-import { readLinks } from "#tools/pnpm/index";
+import { readLinkedCheckouts } from "#tools/pnpm/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -17,11 +17,11 @@ export default async function (
     checkout,
   }: { repo?: string | undefined; depth: number; checkout: readonly string[] },
 ): Promise<void> {
-  const root = process.cwd();
-
-  const config = await loadValidatedConfig(root, {
+  const config = await loadValidatedConfig(process.cwd(), {
     reporter: getRunContext().reporter,
   });
+
+  const { root } = config.context;
 
   const {
     repositories,
@@ -30,7 +30,7 @@ export default async function (
 
   const [repository, checkouts] = await Promise.all([
     resolveRepository({ root, repositories }, repo),
-    readLinks(root).then((linked) => {
+    readLinkedCheckouts(root).then((linked) => {
       return resolveIssueCheckouts(
         {
           root,

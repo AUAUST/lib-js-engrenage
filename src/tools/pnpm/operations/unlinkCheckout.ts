@@ -1,14 +1,14 @@
 import { omit } from "@auaust/toolkit/object";
 
 import { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
-import { readLinkedPackage } from "#tools/pnpm/operations/readLinkedPackage";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
+import { readPackageSymlink } from "#tools/pnpm/operations/readPackageSymlink";
 import { writeLinks } from "#tools/pnpm/operations/writeLinks";
 import type { Directory } from "#types/Directory";
 
 /**
- * Repoints the package linked for `short` at its installed target and
- * drops the record.
+ * Repoints the package linked for `short` at its installed target and drops the
+ * record, whether or not its checkout still exists.
  *
  * @throws {Error} When no link is recorded for `short`.
  */
@@ -24,7 +24,7 @@ export async function unlinkCheckout(
     throw new Error(`No link is recorded for \`${short}\``);
   }
 
-  const { path } = await readLinkedPackage(root, link.directory);
+  const { path } = await readPackageSymlink(root, link.package);
 
   await pointPackageLink(path, link.installed);
 

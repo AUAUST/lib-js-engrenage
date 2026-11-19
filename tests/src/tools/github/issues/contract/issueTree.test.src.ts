@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { number, object, optional, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
@@ -477,25 +478,13 @@ describe("checkIssueTree with another repository's checkout", () => {
     ).trim();
   }
 
-  function createCheckout(origin: string) {
-    const { root } = createTemporaryProject();
-
-    git(root, ["init", "--quiet", "--initial-branch=main"]);
-
-    git(root, ["remote", "add", "origin", `git@github.com:${origin}.git`]);
-
-    git(root, ["commit", "--quiet", "--allow-empty", "-m", "chore: start"]);
-
-    return root;
-  }
-
   async function checkWith(
     requested: readonly string[],
     linked: Readonly<Record<string, { directory: string }>> = {},
   ) {
     const checkouts = await resolveIssueCheckouts(
       {
-        root: createCheckout(engrenage),
+        root: createCheckout(engrenage).root,
         repositories,
         linked,
       },
@@ -517,7 +506,7 @@ describe("checkIssueTree with another repository's checkout", () => {
   test("reports a toolkit sub-issue closed by the toolkit checkout's commit and leaves it out of the ready set", async () => {
     mockCrossRepositoryGraphql();
 
-    const checkout = createCheckout(toolkit);
+    const checkout = createCheckout(toolkit).root;
 
     git(checkout, [
       "commit",
@@ -548,7 +537,7 @@ describe("checkIssueTree with another repository's checkout", () => {
   test("reads the named ref's commits instead of HEAD's", async () => {
     mockCrossRepositoryGraphql();
 
-    const checkout = createCheckout(toolkit);
+    const checkout = createCheckout(toolkit).root;
 
     git(checkout, ["switch", "--quiet", "-c", "plan"]);
 
@@ -580,7 +569,7 @@ describe("checkIssueTree with another repository's checkout", () => {
   });
 
   test("fails on a checkout whose origin is another repository, naming both", async () => {
-    const checkout = createCheckout(engrenage);
+    const checkout = createCheckout(engrenage).root;
 
     await expect(checkWith([`toolkit=${checkout}`])).rejects.toThrow(
       `The checkout ${checkout} for ${toolkit} has origin ${engrenage}`,
@@ -588,7 +577,7 @@ describe("checkIssueTree with another repository's checkout", () => {
   });
 
   function createClosingCheckout() {
-    const checkout = createCheckout(toolkit);
+    const checkout = createCheckout(toolkit).root;
 
     git(checkout, [
       "commit",
@@ -614,7 +603,7 @@ describe("checkIssueTree with another repository's checkout", () => {
   test("prefers an explicit checkout over the linked one of the same repository", async () => {
     mockCrossRepositoryGraphql();
 
-    const check = await checkWith([`toolkit=${createCheckout(toolkit)}`], {
+    const check = await checkWith([`toolkit=${createCheckout(toolkit).root}`], {
       toolkit: { directory: createClosingCheckout() },
     });
 

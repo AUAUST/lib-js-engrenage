@@ -42,3 +42,4 @@ export const linkedOutput = "dist" satisfies Directory;
 export const linkedExecutables = `${linkedOutput}/bin` satisfies Directory;
 
 export const restoreLinksCommand = "engrenage link --restore";
+export const unlinkCommand = "engrenage link --remove";

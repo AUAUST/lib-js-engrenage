@@ -5,7 +5,7 @@ import {
   resolveIssueCheckouts,
   type ContractNames,
 } from "#tools/github/index";
-import { readLinks } from "#tools/pnpm/index";
+import { readLinkedCheckouts } from "#tools/pnpm/index";
 import type { Directory } from "#types/Directory";
 
 export async function checkAgentDispatch(
@@ -32,7 +32,7 @@ export async function checkAgentDispatch(
       : undefined;
   }
 
-  const linked = await readLinks(root);
+  const linked = await readLinkedCheckouts(root);
 
   const checkouts = await resolveIssueCheckouts(
     {
