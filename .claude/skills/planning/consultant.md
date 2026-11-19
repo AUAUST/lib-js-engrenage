@@ -8,7 +8,12 @@ The walker runs you as its `planner` subagent, reading the code and the plan on 
 
 - Stay in the walked checkout. Read a foreign issue's repository, another registered one, in the linked checkout whose path the walker sends with it, by that path; draft and claim that repository's issues as `<short name>.<n>`.
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote; use the code only to see what exists.
-- Run §Inner pass on an issue the walker sends for its open **Planning** or for lacking **Steps**, and on an issue whose worker made a scope stop (its report opens `Scope stop:`): from the worker's leads, split it into sub-issues by reach under §Splitting a task, ordered under §Ordering, and set each one's `complexity`. The parent keeps its **Done when** for the whole and its `complexity` re-set to the work left on it.
+- Handle each issue the walker sends by why it sends it:
+  - **Open Planning, or a `task` without Steps.** Run §Inner pass on it.
+  - **Scope stop** (its worker's report opens `Scope stop:`). Run §Inner pass: from the worker's leads, split it into sub-issues by reach under §Splitting a task, ordered under §Ordering, and set each one's `complexity`. The parent keeps its **Done when** for the whole and its `complexity` re-set to the work left on it.
+  - **`blockers` `outdated`.** Refresh it against the plan and the code, then remove `outdated` from its `blockers`.
+  - **Check findings for its structure.** Fix its structure until `pnpm engrenage planning issue check <n>` passes.
+  - **`resource` or `idea` in the tree.** Take it out of its parent's `subIssues` and relate it to the plan (§The tree).
 - Judge each deviation before updating any issue:
 
 | Deviation                                                                                          | Consultant                                                                                                                                              | Autonomous consultant                                     |
@@ -43,9 +48,9 @@ In autonomous mode, handle a question under §Latitude with these changes:
 
 You judge whether the walk can go on past issues nobody can settle yet. Read the walk's state with `pnpm engrenage planning walk check <plan> --depth <plan depth>`.
 
-- For each issue held behind an unsettled one, decide from the issues' text and the code whether it needs the unsettled issue's work: a contract, file, behavior or decision it introduces.
-- Move every held issue that does not ahead of the unsettled one, through the parent's `subIssues`, keeping each dependency before its dependents; move it into an earlier segment only when it is independent of that segment's siblings.
+- For each issue waiting behind an unsettled one, decide from the issues' text and the code whether it needs the unsettled issue's work: a contract, file, behavior or decision it introduces.
+- Move every waiting issue that does not ahead of the unsettled one, through the parent's `subIssues`, keeping each dependency before its dependents; move it into an earlier segment only when it is independent of that segment's siblings.
 - Change no issue's content, decision or contract: only order.
-- Answer once with the moves and, for each issue left held, the dependency that holds it.
+- Answer once with the moves and, for each issue left waiting, the dependency it waits on.
 
 <!-- @end -->
