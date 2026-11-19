@@ -1,5 +1,5 @@
 import {
-  codexHookPrefix,
+  codexHookMarkers,
   codexHooks,
   codexHooksFile,
 } from "#tools/agents/codex/constants";
@@ -46,7 +46,7 @@ export async function syncCodexFiles(
     await syncHooks(config, {
       file: codexHooksFile,
       hooks: codexHooks,
-      prefix: codexHookPrefix,
+      markers: codexHookMarkers,
     });
   }
 }

@@ -1,8 +1,8 @@
 import { spawnSync } from "node:child_process";
-import { chmodSync } from "node:fs";
+import { chmodSync, realpathSync } from "node:fs";
 
 import { parse as parseJsonc } from "jsonc-parser";
-import { describe, expect, test } from "vitest";
+import { expect, test } from "vitest";
 
 import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
 import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
@@ -10,168 +10,16 @@ import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
-const settings = JSON.stringify({
-  hooks: {
-    PostToolUse: [
-      {
-        matcher: "Edit|MultiEdit|Write",
-        hooks: [
-          {
-            type: "command",
-            command: "pnpm --silent engrenage agents claude hook edit",
-          },
-        ],
-      },
-    ],
-    PreToolUse: [
-      {
-        matcher: "Bash",
-        hooks: [
-          {
-            type: "command",
-            command: "echo mine",
-          },
-          {
-            type: "command",
-            command: "pnpm --silent engrenage agents claude hook github",
-            if: "Bash(gh issue *)",
-          },
-        ],
-      },
-      {
-        matcher: "Agent|Task",
-        hooks: [
-          {
-            type: "command",
-            command: "pnpm --silent engrenage agents claude hook dispatch",
-            if: "Agent(worker)",
-          },
-        ],
-      },
-    ],
-  },
-});
+const fakeProgram = "#!/bin/sh\npwd\nprintf '%s\\n' \"$@\"\n";
 
-describe("syncHooks", () => {
-  test("keeps only the produced hooks and the user's own, idempotently", async () => {
-    const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
-      "package.json": '{"type":"module"}',
-      ".claude/settings.json": settings,
-    });
+const legacy = `engrenage_hook_root="$(node -e 'process.stdout.write(process.cwd())')" && cd -- "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook`;
 
-    const config = await loadConfig(project.root);
-
-    await syncClaudeSettings(config);
-
-    await config.context.filesystem.flush();
-
-    const { hooks } = JSON.parse(project.read(".claude/settings.json"));
-
-    expect(JSON.stringify(hooks.PostToolUse)).not.toContain("hook edit");
-
-    expect(hooks.PreToolUse[0]).toEqual({
-      matcher: "Bash",
-      hooks: [{ type: "command", command: "echo mine" }],
-    });
-
-    expect(
-      hooks.PreToolUse.slice(1).map(
-        (group: {
-          matcher: string;
-          hooks: { command: string; if: string; onFailure: string }[];
-        }) => {
-          return {
-            matcher: group.matcher,
-            hooks: group.hooks.map((entry) => {
-              return {
-                ...entry,
-                command: entry.command
-                  .slice(entry.command.lastIndexOf(" && ") + 4)
-                  .replace(/ \|\| exit 2$/, ""),
-              };
-            }),
-          };
-        },
-      ),
-    ).toEqual([
-      ...["create", "edit", "comment"].map((verb) => {
-        return {
-          matcher: "Bash",
-          hooks: [
-            {
-              type: "command",
-              command: "pnpm --silent engrenage agents claude hook github",
-              if: `Bash(gh issue ${verb} *)`,
-              onFailure: "block",
-            },
-          ],
-        };
-      }),
-      ...["commit", "-c", "-C", "config"].map((start) => {
-        return {
-          matcher: "Bash",
-          hooks: [
-            {
-              type: "command",
-              command: "pnpm --silent engrenage agents claude hook git",
-              if: `Bash(git ${start} *)`,
-              onFailure: "block",
-            },
-          ],
-        };
-      }),
-      {
-        matcher: "Agent|Task",
-        hooks: [
-          {
-            type: "command",
-            command: "pnpm --silent engrenage agents claude hook dispatch",
-            onFailure: "block",
-          },
-        ],
-      },
-      {
-        matcher: "SendMessage",
-        hooks: [
-          {
-            type: "command",
-            command: "pnpm --silent engrenage agents claude hook resume",
-            onFailure: "block",
-          },
-        ],
-      },
-    ]);
-
-    expect(
-      hooks.PreToolUse.slice(1).every(
-        (group: { hooks: { command: string; onFailure: string }[] }) => {
-          return group.hooks.every((entry) => {
-            return (
-              entry.command.startsWith("engrenage_hook_root=") &&
-              entry.onFailure === "block"
-            );
-          });
-        },
-      ),
-    ).toBe(true);
-
-    await syncClaudeSettings(config);
-
-    expect(config.context.filesystem.discard()).toEqual([]);
-  });
-});
-
-test("resolves generated commands from a nested consumer directory", async () => {
+async function createCommand(): Promise<string> {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     ".claude/settings.json": "{}",
-    "nested/deeper/keep": "",
-    "bin/pnpm": "#!/bin/sh\npwd\nprintf '%s\\n' \"$@\"\n",
   });
-
-  chmodSync(project.resolve("bin/pnpm"), 0o755);
 
   const config = await loadConfig(project.root);
 
@@ -180,25 +28,182 @@ test("resolves generated commands from a nested consumer directory", async () =>
   await config.context.filesystem.flush();
 
   const { hooks } = JSON.parse(project.read(".claude/settings.json"));
-  const command = hooks.PreToolUse[0].hooks[0].command;
 
-  const result = spawnSync("sh", ["-c", command], {
-    cwd: project.resolve("nested/deeper"),
-    env: {
-      ...process.env,
-      PATH: `${project.resolve("bin")}:${process.env.PATH ?? ""}`,
-    },
+  return hooks.PreToolUse[0].hooks[0].command;
+}
+
+function run(
+  command: string,
+  cwd: string,
+  environment: Record<string, string> = {},
+) {
+  const { CLAUDE_PROJECT_DIR: _project, ...inherited } = process.env;
+
+  return spawnSync("sh", ["-c", command], {
+    cwd,
+    env: { ...inherited, ...environment },
     encoding: "utf-8",
   });
+}
+
+function createConsumer(files: Record<string, string> = {}) {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module"}',
+    "node_modules/.bin/engrenage-hook": fakeProgram,
+    ...files,
+  });
+
+  chmodSync(project.resolve("node_modules/.bin/engrenage-hook"), 0o755);
+
+  return { project, root: realpathSync(project.root) };
+}
+
+test("the generated command finds the root from a nested directory", async () => {
+  const command = await createCommand();
+
+  const { project, root } = createConsumer({ "nested/deeper/keep": "" });
+
+  const result = run(command, project.resolve("nested/deeper"));
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+});
+
+test("the generated command skips a package inside node_modules", async () => {
+  const command = await createCommand();
+
+  const inner = "node_modules/.pnpm/x/node_modules/@auaust/engrenage";
+
+  const { project, root } = createConsumer({
+    [`${inner}/package.json`]: "{}",
+  });
+
+  const result = run(command, project.resolve(inner));
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+});
+
+test("the generated command runs in CLAUDE_PROJECT_DIR", async () => {
+  const command = await createCommand();
+
+  const { root } = createConsumer();
+
+  const other = createTemporaryProject({ "package.json": "{}" });
+
+  const result = run(command, other.root, { CLAUDE_PROJECT_DIR: root });
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+});
+
+test("the generated command runs the source program without the bin", async () => {
+  const command = await createCommand();
+
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module"}',
+    "bin/engrenage-hook/executable.ts": "console.log(process.argv.slice(2).join(' '));\n",
+  });
+
+  const result = run(command, project.root);
+
+  expect(result.status, result.stderr).toBe(0);
+  expect(result.stdout).toBe("claude PreToolUse\n");
+});
+
+test("the generated command asks for an install without bin or source", async () => {
+  const command = await createCommand();
+
+  const project = createTemporaryProject({ "package.json": "{}" });
+
+  const result = run(command, project.root);
 
   expect(result.status, result.stderr).toBe(0);
 
-  expect(result.stdout).toContain(
-    `${project.root}\n--silent\nengrenage\nagents\nclaude\nhook\ngithub\n`,
+  expect(result.stdout).toBe(
+    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
   );
 });
 
-test("syncs Codex SubagentStop and preserves unrelated custom hooks", async () => {
+test("sync replaces the old entries with one per event, keeping the user's, idempotently", async () => {
+  const project = createTemporaryProject({
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
+    "package.json": '{"type":"module"}',
+    ".claude/settings.json": JSON.stringify({
+      hooks: {
+        PreToolUse: [
+          {
+            matcher: "Bash",
+            hooks: [
+              {
+                type: "command",
+                command: "echo mine",
+              },
+              {
+                type: "command",
+                command: `${legacy} github || exit 2`,
+                if: "Bash(gh issue create *)",
+                onFailure: "block",
+              },
+            ],
+          },
+          {
+            matcher: "Bash",
+            hooks: [
+              {
+                type: "command",
+                command: `${legacy} git || exit 2`,
+                if: "Bash(git commit *)",
+                onFailure: "block",
+              },
+            ],
+          },
+        ],
+        Stop: [
+          {
+            matcher: "*",
+            hooks: [{ type: "command", command: `${legacy} stop || exit 2` }],
+          },
+        ],
+      },
+    }),
+  });
+
+  const config = await loadConfig(project.root);
+
+  await syncClaudeSettings(config);
+
+  await config.context.filesystem.flush();
+
+  const { hooks } = JSON.parse(project.read(".claude/settings.json"));
+
+  expect(hooks.PreToolUse[0]).toEqual({
+    matcher: "Bash",
+    hooks: [{ type: "command", command: "echo mine" }],
+  });
+
+  expect(JSON.stringify(hooks)).not.toContain("engrenage agents claude hook");
+
+  for (const event of [
+    "PreToolUse",
+    "PostToolUse",
+    "SubagentStart",
+    "Stop",
+    "SubagentStop",
+  ]) {
+    const owned = (hooks[event] as { hooks: { command: string }[] }[])
+      .flatMap((group) => group.hooks)
+      .filter(({ command }) => command.includes("engrenage-hook claude "));
+
+    expect(owned, event).toHaveLength(1);
+  }
+
+  await syncClaudeSettings(config);
+
+  expect(config.context.filesystem.discard()).toEqual([]);
+});
+
+test("syncs Codex hooks and preserves unrelated custom hooks", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
@@ -251,118 +256,12 @@ test("syncs Codex SubagentStop and preserves unrelated custom hooks", async () =
   });
 
   expect(hooks.SubagentStop[0].hooks[0].command).toContain(
-    "engrenage agents codex hook stop",
+    "engrenage-hook codex SubagentStop",
   );
 
-  expect(
-    hooks.PreToolUse.some(
-      (group: { matcher: string }) => group.matcher === "^Bash$",
-    ),
-  ).toBe(true);
+  expect(hooks.PreToolUse[1].matcher).toBe("^(spawn_agent|Agent|Bash)$");
 
   await syncCodexFiles(config);
 
   expect(config.context.filesystem.changes()).toEqual([]);
-});
-
-test("package-resolution failure exits 2 before running a successful child command", async () => {
-  const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
-    ".claude/settings.json": "{}",
-  });
-
-  const config = await loadConfig(project.root);
-
-  await syncClaudeSettings(config);
-
-  await config.context.filesystem.flush();
-
-  const command = JSON.parse(project.read(".claude/settings.json")).hooks
-    .PreToolUse[0].hooks[0].command;
-
-  const empty = createTemporaryProject({
-    "bin/pnpm": "#!/bin/sh\necho child-started\n",
-  });
-
-  chmodSync(empty.resolve("bin/pnpm"), 0o755);
-
-  const result = spawnSync("sh", ["-c", command], {
-    cwd: empty.root,
-    env: {
-      ...process.env,
-      PATH: `${empty.resolve("bin")}:${process.env.PATH ?? ""}`,
-    },
-    encoding: "utf-8",
-  });
-
-  expect(result.status).toBe(2);
-  expect(result.stderr).toContain("No consumer package found");
-  expect(result.stdout).toBe("");
-});
-
-test("runs the session stop hook only for a payload naming an agent, replacing its unguarded entry", async () => {
-  const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
-    ".claude/settings.json": JSON.stringify({
-      hooks: {
-        Stop: [
-          {
-            matcher: "*",
-            hooks: [
-              {
-                type: "command",
-                command: `engrenage_hook_root="$(node -e 'const fs=require("node:fs"),p=require("node:path");let d=process.cwd();while(!fs.existsSync(p.join(d,"package.json"))){const n=p.dirname(d);if(n===d)throw Error("No consumer package found");d=n}process.stdout.write(d)')" && cd -- "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook stop || exit 2`,
-              },
-            ],
-          },
-        ],
-      },
-    }),
-    "bin/pnpm": "#!/bin/sh\necho child-started\ncat\n",
-  });
-
-  chmodSync(project.resolve("bin/pnpm"), 0o755);
-
-  const config = await loadConfig(project.root);
-
-  await syncClaudeSettings(config);
-
-  await config.context.filesystem.flush();
-
-  const stops: {
-    hooks: { command: string; async?: boolean }[];
-  }[] = JSON.parse(project.read(".claude/settings.json")).hooks.Stop;
-
-  const commands = stops
-    .flatMap((group) => group.hooks)
-    .filter((entry) => entry.async !== true)
-    .map((entry) => entry.command);
-
-  expect(commands).toHaveLength(1);
-
-  function run(input: string) {
-    return spawnSync("sh", ["-c", commands[0]], {
-      cwd: project.root,
-      input,
-      env: {
-        ...process.env,
-        PATH: `${project.resolve("bin")}:${process.env.PATH ?? ""}`,
-      },
-      encoding: "utf-8",
-    });
-  }
-
-  const main = run('{"session_id":"s","cwd":"."}');
-
-  expect(main.status, main.stderr).toBe(0);
-  expect(main.stdout).toBe("");
-
-  const payload = '{"session_id":"s","agent_type":"worker","cwd":"."}';
-
-  const agent = run(payload);
-
-  expect(agent.status, agent.stderr).toBe(0);
-  expect(agent.stdout).toBe(`child-started\n${payload}`);
 });

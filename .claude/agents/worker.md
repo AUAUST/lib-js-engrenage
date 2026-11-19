@@ -10,13 +10,16 @@ hooks:
   Stop:
     - hooks:
         - type: command
-          command: engrenage_hook_root="$(node -e 'const
-            fs=require("node:fs"),p=require("node:path");let
-            d=process.cwd();while(!fs.existsSync(p.join(d,"package.json"))){const
-            n=p.dirname(d);if(n===d)throw Error("No consumer package
-            found");d=n}process.stdout.write(d)')" && cd --
-            "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook
-            stop || exit 2
+          command: "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then
+            r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] &&
+            [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd --
+            \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then
+            exec node_modules/.bin/engrenage-hook claude Stop skill; fi; if [ -f
+            bin/engrenage-hook/executable.ts ]; then exec node
+            bin/engrenage-hook/executable.ts claude Stop skill; fi; printf
+            '%s\\n' '{\"systemMessage\":\"engrenage hooks are off:
+            engrenage-hook is not installed in this project; run pnpm
+            install\"}'"
 tools:
   - Bash
   - Read

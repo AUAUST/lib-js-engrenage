@@ -26,132 +26,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash",
+        "matcher": "Bash|Agent|Task|SendMessage",
         "hooks": [
           {
             "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook github || exit 2",
-            "if": "Bash(gh issue create *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook github || exit 2",
-            "if": "Bash(gh issue edit *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook github || exit 2",
-            "if": "Bash(gh issue comment *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook git || exit 2",
-            "if": "Bash(git commit *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook git || exit 2",
-            "if": "Bash(git -c *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook git || exit 2",
-            "if": "Bash(git -C *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook git || exit 2",
-            "if": "Bash(git config *)",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "Agent|Task",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook dispatch || exit 2",
-            "onFailure": "block"
-          }
-        ]
-      },
-      {
-        "matcher": "SendMessage",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook resume || exit 2",
-            "onFailure": "block"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook record || exit 2",
-            "async": true
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_payload=\"$(cat)\"; case \"$engrenage_hook_payload\" in *'\"agent_'*) ;; *) exit 0 ;; esac; printf '%s' \"$engrenage_hook_payload\" | { engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook stop || exit 2; }"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook record || exit 2",
-            "async": true
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PreToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PreToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'"
           }
         ]
       }
@@ -162,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook lint || exit 2",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude PostToolUse; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude PostToolUse; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]
@@ -174,7 +53,31 @@
         "hooks": [
           {
             "type": "command",
-            "command": "engrenage_hook_root=\"$(node -e 'const fs=require(\"node:fs\"),p=require(\"node:path\");let d=process.cwd();while(!fs.existsSync(p.join(d,\"package.json\"))){const n=p.dirname(d);if(n===d)throw Error(\"No consumer package found\");d=n}process.stdout.write(d)')\" && cd -- \"$engrenage_hook_root\" && pnpm --silent engrenage agents claude hook start || exit 2",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStart; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStart; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude Stop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude Stop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then r=\"${PWD%%/node_modules/*}\"; while [ ! -f \"$r/package.json\" ] && [ \"$r\" != / ]; do r=\"$(dirname -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook claude SubagentStop; fi; if [ -f bin/engrenage-hook/executable.ts ]; then exec node bin/engrenage-hook/executable.ts claude SubagentStop; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install\"}'",
             "async": true
           }
         ]

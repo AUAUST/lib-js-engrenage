@@ -232,10 +232,10 @@ export async function createTsdownConfig(
     },
     exports: {
       enabled: true,
+      bin: false,
       ...(sourceExports
         ? {
             devExports: sourceCondition,
-            bin: false,
           }
         : {}),
       packageJson: false,

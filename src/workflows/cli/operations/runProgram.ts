@@ -4,7 +4,6 @@ import {
   createConsoleReporter,
   type Reporter,
 } from "#foundation/reports/index";
-import { detectHookCommand } from "#workflows/cli/operations/detectHookCommand";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 import { runContext } from "#workflows/cli/operations/runContext";
@@ -41,7 +40,15 @@ async function isDebugConfigured(reporter: Reporter): Promise<boolean> {
 export async function runProgram(
   program: CommandUnknownOpts,
   argv?: readonly string[],
-  { signal, reporter }: { signal?: AbortSignal; reporter?: Reporter } = {},
+  {
+    signal,
+    reporter,
+    onError,
+  }: {
+    signal?: AbortSignal;
+    reporter?: Reporter;
+    onError?(error: unknown): void;
+  } = {},
 ): Promise<void> {
   let running: CommandUnknownOpts | null = program;
   let verbose = false;
@@ -92,7 +99,9 @@ export async function runProgram(
       return;
     }
 
-    const kind = await detectHookCommand(argv ?? process.argv);
+    if (onError !== undefined) {
+      return void onError(error);
+    }
 
     const debug = (
       isFlagSet(running, "debug") || (await isDebugConfigured(runReporter))
@@ -100,7 +109,7 @@ export async function runProgram(
 
     runReporter.error(formatCommandError(error, { debug }));
 
-    process.exitCode = kind === "command" ? 1 : 2;
+    process.exitCode = 1;
   } finally {
     stopListening();
   }

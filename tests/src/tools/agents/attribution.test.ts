@@ -55,7 +55,7 @@ describe("agents.attribution", () => {
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       hooks: {
-        PreToolUse: Array.from({ length: 9 }, () => expect.anything()),
+        PreToolUse: [expect.anything()],
       },
       attribution: hidden,
     });

@@ -4,10 +4,12 @@ import { buildMode } from "@auaust/engrenage/vitest/constants";
 
 import manifest from "#package.json" with { type: "json" };
 
-export function getExecutable(): string {
+export function getExecutable(
+  program: keyof typeof manifest.bin = "engrenage",
+): string {
   const path = process.env.MODE === buildMode
-    ? manifest.bin.engrenage
-    : "./bin/engrenage/executable.ts";
+    ? manifest.bin[program]
+    : `./bin/${program}/executable.ts`;
 
   return fileURLToPath(new URL(`../../${path}`, import.meta.url));
 }

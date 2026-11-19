@@ -314,7 +314,7 @@ describe("createTsdownConfig", () => {
 
     expect(disabled.exports).not.toHaveProperty("devExports");
 
-    expect(disabled.exports).not.toHaveProperty("bin");
+    expect(disabled.exports).toHaveProperty("bin", false);
 
     expect(
       await createTsdownConfig(

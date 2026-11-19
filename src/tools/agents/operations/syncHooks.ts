@@ -44,13 +44,13 @@ export async function syncHooks(
   {
     file,
     hooks,
-    prefix,
-  }: { file: File; hooks: readonly HookDefinition[]; prefix: string },
+    markers,
+  }: {
+    file: File;
+    hooks: readonly HookDefinition[];
+    markers: readonly string[];
+  },
 ) {
-  const wrapped = createHookCommand(prefix);
-
-  const ownedPrefix = wrapped.slice(0, wrapped.indexOf(prefix) + prefix.length);
-
   const path = resolve(file);
 
   let content = (await filesystem.read(file)) ?? emptyObjectFile;
@@ -103,9 +103,9 @@ export async function syncHooks(
         })
         .filter(({ entry }) => {
           return (
-            (entry.command?.startsWith(prefix) === true ||
-              entry.command?.includes(ownedPrefix) === true) &&
-            !isProduced(event, matcher, entry)
+            markers.some((marker) => {
+              return entry.command?.includes(marker) === true;
+            }) && !isProduced(event, matcher, entry)
           );
         });
 
@@ -132,15 +132,7 @@ export async function syncHooks(
   const present = read();
 
   for (const hook of hooks) {
-    const {
-      event,
-      matcher,
-      command,
-      condition,
-      onFailure,
-      async,
-      payloadIncludes,
-    } = hook;
+    const { event, matcher, args, async } = hook;
 
     const found = present[event]?.some((group) => {
       return (
@@ -159,9 +151,7 @@ export async function syncHooks(
           hooks: [
             {
               type: "command",
-              command: createHookCommand(command, payloadIncludes),
-              ...(condition === undefined ? {} : { if: condition }),
-              ...(onFailure === undefined ? {} : { onFailure }),
+              command: createHookCommand(args),
               ...(async === undefined ? {} : { async }),
             },
           ],

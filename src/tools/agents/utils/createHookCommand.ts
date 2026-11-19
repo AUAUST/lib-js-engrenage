@@ -1,14 +1,5 @@
-export function createHookCommand(
-  command: string,
-  payloadIncludes?: string,
-): string {
-  const run = `engrenage_hook_root="$(node -e 'const fs=require("node:fs"),p=require("node:path");let d=process.cwd();while(!fs.existsSync(p.join(d,"package.json"))){const n=p.dirname(d);if(n===d)throw Error("No consumer package found");d=n}process.stdout.write(d)')" && cd -- "$engrenage_hook_root" && ${command} || exit 2`;
+import { hookProgram, hookProgramSource } from "#tools/agents/constants";
 
-  if (payloadIncludes === undefined) {
-    return run;
-  }
-
-  const pattern = `'${payloadIncludes.replaceAll("'", `'\\''`)}'`;
-
-  return `engrenage_hook_payload="$(cat)"; case "$engrenage_hook_payload" in *${pattern}*) ;; *) exit 0 ;; esac; printf '%s' "$engrenage_hook_payload" | { ${run}; }`;
+export function createHookCommand(args: string): string {
+  return `r="\${CLAUDE_PROJECT_DIR:-}"; if [ -z "$r" ]; then r="\${PWD%%/node_modules/*}"; while [ ! -f "$r/package.json" ] && [ "$r" != / ]; do r="$(dirname -- "$r")"; done; fi; cd -- "$r" || exit 0; if [ -x node_modules/.bin/${hookProgram} ]; then exec node_modules/.bin/${hookProgram} ${args}; fi; if [ -f ${hookProgramSource} ]; then exec node ${hookProgramSource} ${args}; fi; printf '%s\\n' '{"systemMessage":"engrenage hooks are off: ${hookProgram} is not installed in this project; run pnpm install"}'`;
 }

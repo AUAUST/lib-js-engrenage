@@ -166,7 +166,7 @@ describe("getSkillTemplates", () => {
             hooks: [
               {
                 type: "command",
-                command: createHookCommand(claudeStopHook.command),
+                command: createHookCommand(claudeStopHook.args),
               },
             ],
           },

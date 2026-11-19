@@ -10,7 +10,7 @@ import { validate } from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   claudeHiddenAttribution,
-  claudeHookPrefix,
+  claudeHookMarkers,
   claudeHooks,
   claudePermissions,
   claudeSettingsFile,
@@ -151,7 +151,7 @@ export async function syncClaudeSettings(
   await syncHooks(config, {
     file: claudeSettingsFile,
     hooks: claudeHooks,
-    prefix: claudeHookPrefix,
+    markers: claudeHookMarkers,
   });
 
   await syncPermissions(config);

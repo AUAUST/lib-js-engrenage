@@ -79,7 +79,7 @@ describe("syncCodexFiles", () => {
     expect(project.read(".codex/hooks.json")).toContain("custom-check");
 
     expect(project.read(".codex/hooks.json")).toContain(
-      "engrenage agents codex hook github",
+      "engrenage-hook codex PreToolUse",
     );
 
     await syncCodexFiles(config);

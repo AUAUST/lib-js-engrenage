@@ -20,23 +20,22 @@ export const codexTemplate = `${engrenage}/${metalbrain}/templates/${codexFile}`
 
 export const codexHooksFile = ".codex/hooks.json" satisfies File;
 
-export const codexHookPrefix = "pnpm --silent engrenage agents codex hook ";
+// @debt the legacy marker only cleans settings synced before engrenage-hook
+export const codexHookMarkers = freeze([
+  "engrenage-hook codex ",
+  "engrenage agents codex hook ",
+] as const);
 
 export const codexHooks = freeze([
   {
     event: "PreToolUse",
-    matcher: "^(spawn_agent|Agent)$",
-    command: `${codexHookPrefix}dispatch`,
+    matcher: "^(spawn_agent|Agent|Bash)$",
+    args: "codex PreToolUse",
   },
   {
     event: "SubagentStop",
     matcher: ".*",
-    command: `${codexHookPrefix}stop`,
-  },
-  {
-    event: "PreToolUse",
-    matcher: "^Bash$",
-    command: `${codexHookPrefix}github`,
+    args: "codex SubagentStop",
   },
 ] as const) satisfies readonly HookDefinition[];
 

@@ -26,70 +26,46 @@ export const claudeVariables = freeze({
   ],
 } as const);
 
-export const claudeHookPrefix = "pnpm --silent engrenage agents claude hook ";
+// @debt the legacy marker only cleans settings synced before engrenage-hook
+export const claudeHookMarkers = freeze([
+  "engrenage-hook claude ",
+  "engrenage agents claude hook ",
+] as const);
 
 export const claudeHooks = freeze([
-  ...(["create", "edit", "comment"] as const).map((verb) => {
-    return {
-      event: "PreToolUse",
-      matcher: "Bash",
-      condition: `Bash(gh issue ${verb} *)`,
-      command: `${claudeHookPrefix}github`,
-      onFailure: "block",
-    } as const satisfies HookDefinition;
-  }),
-  ...(["commit", "-c", "-C", "config"] as const).map((start) => {
-    return {
-      event: "PreToolUse",
-      matcher: "Bash",
-      condition: `Bash(git ${start} *)`,
-      command: `${claudeHookPrefix}git`,
-      onFailure: "block",
-    } as const satisfies HookDefinition;
-  }),
   {
     event: "PreToolUse",
-    matcher: "Agent|Task",
-    command: `${claudeHookPrefix}dispatch`,
-    onFailure: "block",
-  } as const satisfies HookDefinition,
-  {
-    event: "PreToolUse",
-    matcher: "SendMessage",
-    command: `${claudeHookPrefix}resume`,
-    onFailure: "block",
-  } as const satisfies HookDefinition,
+    matcher: "Bash|Agent|Task|SendMessage",
+    args: "claude PreToolUse",
+  },
   {
     event: "PostToolUse",
     matcher: "Edit|MultiEdit|Write",
-    command: `${claudeHookPrefix}lint`,
+    args: "claude PostToolUse",
     async: true,
-  } as const satisfies HookDefinition,
+  },
   {
     event: "SubagentStart",
     matcher: "*",
-    command: `${claudeHookPrefix}start`,
+    args: "claude SubagentStart",
     async: true,
-  } as const satisfies HookDefinition,
+  },
   {
     event: "Stop",
     matcher: "*",
-    command: `${claudeHookPrefix}stop`,
-    // @debt the guard text restates the stop handler's payload keys, `agent_id` and `agent_type`, instead of deriving from its schema
-    payloadIncludes: '"agent_',
-  } as const satisfies HookDefinition,
-  ...(["Stop", "SubagentStop"] as const).map((event) => {
-    return {
-      event,
-      matcher: "*",
-      command: `${claudeHookPrefix}record`,
-      async: true,
-    } as const satisfies HookDefinition;
-  }),
-]) satisfies readonly HookDefinition[];
+    args: "claude Stop",
+    async: true,
+  },
+  {
+    event: "SubagentStop",
+    matcher: "*",
+    args: "claude SubagentStop",
+    async: true,
+  },
+] as const) satisfies readonly HookDefinition[];
 
 export const claudeStopHook = freeze({
-  command: `${claudeHookPrefix}stop`,
+  args: "claude Stop skill",
 } as const);
 
 // @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)

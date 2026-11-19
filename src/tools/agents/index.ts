@@ -16,7 +16,6 @@ export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
-export { isHookCommand } from "#tools/agents/utils/isHookCommand";
 
 // @barrel setup
 export { checkBacklogSites } from "#tools/agents/setup/checkBacklogSites";
@@ -80,6 +79,7 @@ export { resolveAgentReference } from "#tools/agents/operations/resolveAgentRefe
 export { startAgentRun } from "#tools/agents/operations/startAgentRun";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
+export { validateHookPayload } from "#tools/agents/operations/validateHookPayload";
 export { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 export { writeHookContext } from "#tools/agents/operations/writeHookContext";
 // @end

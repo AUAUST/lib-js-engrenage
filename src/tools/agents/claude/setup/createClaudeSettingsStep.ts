@@ -12,13 +12,12 @@ import type { HookDefinition } from "#tools/agents/types/HookDefinition";
  * when `claude` is a preferred agent, `CLAUDE.md` exists, the settings file does
  * not and `agents.claudeSettings` is not `false`.
  */
+// @debt the prompt lists raw hook matchers, `*` included, instead of naming what the hooks check
 export function createClaudeSettingsStep(): Step {
   return {
     name: claudeSettingsFile,
     message: `Check ${claudeHooks
-      .map(({ condition, matcher }: HookDefinition) => {
-        return condition ?? matcher;
-      })
+      .map(({ matcher }: HookDefinition) => matcher)
       .join(", ")} commands with a Claude Code hook?`,
     async isMissing({ resolve, filesystem }) {
       const agents = await resolve("agents");

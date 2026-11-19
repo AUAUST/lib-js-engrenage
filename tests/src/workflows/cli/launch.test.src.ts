@@ -67,27 +67,6 @@ describe("launch", () => {
     vi.restoreAllMocks();
   });
 
-  test("a hook command that cannot load exits 2 with the message", async () => {
-    const error = vi.spyOn(process.stderr, "write").mockImplementation(() => {
-      return true;
-    });
-
-    await launch(run, [
-      "node",
-      "engrenage",
-      "agents",
-      "claude",
-      "hook",
-      "github",
-    ]);
-
-    expect(process.exitCode).toBe(2);
-
-    expect(error).toHaveBeenCalledWith(
-      "engrenage cannot load: src is broken; this check fails until it runs\n",
-    );
-  });
-
   test.each([
     {
       stale: "a barrel listing a deleted module prints the line to delete",
@@ -115,7 +94,7 @@ describe("launch", () => {
       return true;
     });
 
-    await launch(() => Promise.reject(failed), ["node", "engrenage", "sync"]);
+    await launch(() => Promise.reject(failed));
 
     expect(process.exitCode).toBe(1);
     expect(String(error.mock.calls[0]?.[0])).toContain(message);
@@ -130,36 +109,10 @@ describe("launch", () => {
 
     const failed = load("src/main.ts");
 
-    await expect(
-      launch(() => Promise.reject(failed), ["node", "engrenage", "sync"]),
-    ).rejects.toBe(failed);
+    await expect(launch(() => Promise.reject(failed))).rejects.toBe(failed);
   });
 
   test("any other command rethrows", async () => {
-    await expect(launch(run, ["node", "engrenage", "sync"])).rejects.toBe(
-      failure,
-    );
+    await expect(launch(run)).rejects.toBe(failure);
   });
 });
-
-test.each(["claude", "codex"])(
-  "%s hook dependency/config loading failures stay blocking",
-  async (provider) => {
-    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
-
-    for (const message of [
-      "Cannot find package required-dependency",
-      "Missing required config",
-    ]) {
-      await launch(
-        () => Promise.reject(new Error(message)),
-        ["node", "engrenage", "agents", provider, "hook", "dispatch"],
-      );
-
-      expect(process.exitCode).toBe(2);
-    }
-
-    process.exitCode = undefined;
-    vi.restoreAllMocks();
-  },
-);

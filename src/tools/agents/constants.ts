@@ -155,6 +155,10 @@ export const agentStatsDirectory = ".ai/stats" satisfies Directory;
 
 export const mainAgent = "main";
 
+export const hookProgram = "engrenage-hook";
+
+export const hookProgramSource = "bin/engrenage-hook/executable.ts" satisfies File;
+
 export const tokenWeights = freeze({
   input: 1,
   cacheRead: 0.1,

@@ -2,15 +2,15 @@
 
 import { enableCompileCache } from "node:module";
 
-import {
+enableCompileCache();
+
+const {
   createProgram,
   enableLinkedSource,
   findSourceExecutable,
   launch,
   runProgram,
-} from "#workflows/cli/index";
-
-enableCompileCache();
+} = await import("#workflows/cli/index");
 
 await launch(async () => {
   await enableLinkedSource(import.meta.url);

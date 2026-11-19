@@ -11,9 +11,9 @@ export function matchesHookEntry(
   hook: HookDefinition,
 ): boolean {
   return (
-    entry.command === createHookCommand(hook.command, hook.payloadIncludes) &&
-    entry.if === hook.condition &&
-    entry.onFailure === hook.onFailure &&
+    entry.command === createHookCommand(hook.args) &&
+    entry.if === undefined &&
+    entry.onFailure === undefined &&
     entry.async === hook.async
   );
 }

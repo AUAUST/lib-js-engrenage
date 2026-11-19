@@ -1,6 +1,6 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import hook from "#bin/engrenage/agents/codex/hook/index";
+import hook from "#bin/engrenage/agents/codex/hook";
 
 export default defineGroup({
   configure(command) {

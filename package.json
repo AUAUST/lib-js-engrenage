@@ -14,7 +14,8 @@
   },
   "type": "module",
   "bin": {
-    "engrenage": "./dist/bin/engrenage.mjs"
+    "engrenage": "./dist/bin/engrenage.mjs",
+    "engrenage-hook": "./dist/bin/engrenage-hook.mjs"
   },
   "scripts": {
     "build": "pnpm run engrenage tsdown && pnpm run engrenage typecheck:dist && pnpm run engrenage vitest:dist",
