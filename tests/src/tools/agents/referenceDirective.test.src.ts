@@ -6,6 +6,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { fillBlocks } from "#tests/utils/fillBlocks";
 import { getFixture } from "#tests/utils/getFixture";
+import { addAgentSkills } from "#tools/agents/index";
 
 function createProject(instructions: string, fragment = "") {
   return createTemporaryProject({
@@ -91,4 +92,25 @@ describe("reference directive", () => {
       'AGENTS.md: line 3: Unknown directive in "<!-- @referenc x -->"',
     );
   });
+
+  test.each([false, true])(
+    "gates the debugging walk text on planning: %s",
+    async (planning) => {
+      const project = createTemporaryProject({
+        "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+        "engrenage.config.ts": `export default { agents: { preferred: ["claude"], instructionFiles: [] }, github: { planning: ${String(planning)} } };`,
+      });
+
+      const config = await loadConfig(project.root);
+
+      await addAgentSkills(config, ["debugging"]);
+
+      const skill = await config.context.filesystem.read(
+        ".claude/skills/debugging/SKILL.md",
+      );
+
+      expect(skill?.includes("Walk:")).toBe(planning);
+      expect(skill?.includes("**The current repository.**")).toBe(planning);
+    },
+  );
 });

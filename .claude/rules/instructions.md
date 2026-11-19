@@ -33,6 +33,7 @@ Refines the writing rules' structure table:
 ## Placement
 
 - A `<!-- @reference <reference> -->` marker opens a block that `pnpm engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
+- A `<!-- @extension <name> -->` or `<!-- @file <path> -->` marker opens a block of an engrenage instruction fragment, closed by the next `<!-- @end -->`: sync keeps its text, without the markers, only while that extension is active or that project file exists. Wrap text that applies only under that extension or file; never nest these blocks.
 - Put in AGENTS.md only rules every agent needs, and surface-specific detail in `.claude/rules/`, one file per surface. Keep feature documentation, file inventories, API details and records of recent changes out of both.
 
 ## Wording

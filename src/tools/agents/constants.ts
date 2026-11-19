@@ -49,7 +49,11 @@ export const agentLoaderEntry: StandardSchemaV1 = looseObject({
   load: function_(),
 });
 
-export const builtInFillers = freeze(["skill-file"] as const);
+export const builtInFillers = freeze([
+  "skill-file",
+  "extension",
+  "file",
+] as const);
 
 export const backlogIndex = ".ai/backlog/index.md" satisfies File;
 

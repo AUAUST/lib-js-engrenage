@@ -108,6 +108,7 @@ export type * from "#tools/agents/types/BudgetKind";
 export type * from "#tools/agents/types/BudgetMode";
 export type * from "#tools/agents/types/Budgets";
 export type * from "#tools/agents/types/Effort";
+export type * from "#tools/agents/types/FragmentConditions";
 export type * from "#tools/agents/types/FragmentRenderer";
 export type * from "#tools/agents/types/Gate";
 export type * from "#tools/agents/types/GeneratedFrontmatter";

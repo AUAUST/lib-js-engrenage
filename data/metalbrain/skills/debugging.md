@@ -58,10 +58,20 @@ Mark the debt you notice while diagnosing, on the execution path, its callers an
 
 ## Outcome
 
-Decide it by the issues rule › Outcome, and record any write-up under that rule: fixing every site that shares the cause stays within your input; a merger's improvement finding is accepted work. With a `Walk:` line in your brief:
+Decide it by the issues rule › Outcome, and record any write-up under that rule: fixing every site that shares the cause stays within your input.
+
+<!-- @extension tools/github/issues/planning -->
+
+A merger's improvement finding is accepted work. With a `Walk:` line in your brief:
 
 - With a `Leaf:` line too, write the defect up, never fix it: the walker routes it before the leaf.
-- Place each new issue under `.claude/rules/issue-drafts.md` › Walks.
+- Create each new issue by the first matching case:
+  - **A `Leaf:` line in your brief, the defect owned by the current repository or a registered one.** A `problem` in the repository owning the defect, `--parent <the Leaf: issue>`, adding `--repo <short name>` when it is not the current repository.
+  - **The current repository.** In the walked tree, `--parent <its parent> --after <it>`, right after your input issue or, for a merger's findings, the segment or nested plan your brief names; with neither, last under the walked issue.
+  - **Another repository with a linked checkout, one `pnpm engrenage link` lists.** A `problem`, `--repo <short name> --parent <your input issue>`; never fix it in that checkout: the walker routes the `problem` there.
+  - **Any other.** Under `.claude/rules/issue-drafts.md` › Repository.
+
+<!-- @end -->
 
 ## Questions and answers
 
@@ -70,7 +80,12 @@ Decide it by the issues rule › Outcome, and record any write-up under that rul
 
 ## Finishing
 
+<!-- @extension tools/github/issues/planning -->
+
 - When resumed with a merger's findings, fix each one your input covers, and report the rest with the reason.
+
+<!-- @end -->
+
 - After a fix, remove the backlog entries and debt markers it resolves. Never close an issue you fixed: merging the fix closes it.
 - Report by outcome:
 
@@ -80,4 +95,10 @@ Decide it by the issues rule › Outcome, and record any write-up under that rul
   | Written up | The issue URL or backlog entry ID, ready to implement or needing planning                  |
   | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
 
-- Commit under the git rules; with a `Walk:` line in your brief, commit nothing: the walker commits your work.
+- Commit under the git rules.
+
+<!-- @extension tools/github/issues/planning -->
+
+- With a `Walk:` line in your brief, commit nothing instead: the walker commits your work.
+
+<!-- @end -->
