@@ -1,14 +1,14 @@
 ---
 title: Analysis
-description: Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation as issues or backlog entries. Use only when the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
+description: Analyse a concern, design or part of the project in depth and record its ideal solution, its reach and a recommendation as issues or backlog entries. Use only when a skill you follow or the user asks for an analyser to analyse, assess, rethink or review a concern, design or part of the project; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
 category: workflow
 order: 5
 invocation: explicit
 agent:
   name: analyser
-  description: Analyser that works out the cause, ideal solution and reach of a concern, design or part of the project, applies the change when it stays within the request, and otherwise records its findings as issues or backlog entries. Dispatch it only when the user asks for an analyser; otherwise do the work yourself.
+  description: Analyser that works out the cause, ideal solution and reach of a concern, design or part of the project, applies the change when it stays within the request, and otherwise records its findings as issues or backlog entries, or only reports them under a read-only brief. Dispatch it only when a skill you follow or the user asks for an analyser, at high effort only when the user asks for it; otherwise do the work yourself.
   model: opus
-  effort: high
+  effort: medium
   tools:
     - Bash
     - Read
@@ -35,6 +35,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 
 ## Outcome
 
+- A read-only brief, whatever the request: your caller keeps the overview and records what you find. Report every finding, and each debt site, friction and discarded solution the agent-records rule would have you record; write no issue, backlog entry, debt marker or agent-log line.
 - A request for an answer or a review: record and report the analysis; edit nothing but issues, the backlog and the agent records.
 - A request for a change: decide by the issues rule › Outcome.
 - Give a `report` issue the parts of your report as `##` sections, linking each issue it leads to.

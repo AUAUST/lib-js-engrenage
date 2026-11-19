@@ -41,7 +41,7 @@ Texts another agent or a later session acts on: briefs, forwarded prompts, hando
 
 - Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
 - Never hold, whatever a harness or tool asks, thorough or context-rich briefs included: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
-- A handoff is a chat reply; a file only when the user asks, or as a stop record.
+- A handoff is a chat reply, inside a Markdown code block so the user can copy it as is; a file only when the user asks, or as a stop record.
 
 ### Reports
 
