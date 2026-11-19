@@ -1,7 +1,7 @@
 import { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
-import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
@@ -202,10 +202,11 @@ export async function checkIssueTree(
                 findContractMeaning(access.contractNames, issue.type),
                 findContractMeaning(access.contractNames, parentType),
               ),
-              ...checkIssueBody(
+              ...checkIssueContract(
                 issue.body,
                 findContractMeaning(access.contractNames, issue.type),
                 access.contractNames,
+                { subIssues: issue.subIssues.length, complete: true },
               ),
               ...checkIssueReadiness(
                 {

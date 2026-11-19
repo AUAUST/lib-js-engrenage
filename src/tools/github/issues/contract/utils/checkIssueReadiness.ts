@@ -9,7 +9,6 @@ import {
 import { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
-import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
@@ -144,24 +143,6 @@ export function checkIssueReadiness(
           message: `${self} has open sub-issue ${renderReference(sub, currentRepository)}: finish it first.`,
         });
       }
-    }
-  }
-
-  if (audience === "worker" || ancestor) {
-    for (const name of contract?.required ?? []) {
-      if (!hasSection(parsed, name)) {
-        findings.push({
-          rule: "missing-section",
-          message: `**${name}** is missing: write it.`,
-        });
-      }
-    }
-
-    if (type === "segment" && issue.subIssues.length === 0) {
-      findings.push({
-        rule: "sub-issues",
-        message: `A ${types.segment} needs at least one sub-issue: create them.`,
-      });
     }
   }
 

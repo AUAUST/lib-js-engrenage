@@ -11,8 +11,8 @@ ESLint rules and conventions engrenage ships.
 ## 2. ESLint rules check less than they should
 
 - sites: `src/tools/eslint/conventions/imports/noPointlessDynamicImport.ts:17`, `src/tools/eslint/conventions/structure/importEffects.ts:199`, `src/tools/eslint/conventions/structure/importSpecifiers.ts:33`, `src/tools/eslint/conventions/structure/importSpecifiers.ts:45`, `src/tools/eslint/conventions/structure/roleExports.ts:19`, `src/tools/eslint/config/schemas/optionsSchema.ts:14`
-- why: dynamic-import rule sees direct imports only; bare side-effect imports take the highest binding level (#315); the specifier check lives outside `project/structure`, and an unknown path may postdate the index; `bin` has no lint scope; the schema accepts unknown convention names.
-- want: rule walks the static graph; specifier check in `project/structure`, index refreshed on unknown paths; `bin` checked; unknown names rejected.
+- why: dynamic-import rule sees direct imports only; bare side-effect imports take the highest binding level (#315); the specifier check lives outside `project/structure`, and an unknown path may postdate the index; `bin` has no lint scope; the schema accepts unknown convention names; imports of files the index knows as `unclassified` get no `unclassifiedPath` report (#707 covers unknown files only).
+- want: rule walks the static graph; specifier check in `project/structure`, index refreshed on unknown paths; `bin` checked; unknown names rejected; unclassified files reported.
 
 ## 3. ESLint plugin and analysis hold on unchecked inputs
 

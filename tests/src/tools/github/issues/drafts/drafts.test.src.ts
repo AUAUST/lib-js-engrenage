@@ -340,7 +340,7 @@ describe("checkIssues", () => {
         /^new-x: Defect: "Defect" is not a key of a Task manifest/,
       ),
       expect.stringMatching(
-        /^new-x: `#\{new-missing\}` names the draft `new-missing`, outside the checked drafts/,
+        /^new-x: `#\{new-missing\}` names the draft `new-missing`, outside the drafts it can resolve against/,
       ),
     ]);
   });
@@ -503,6 +503,47 @@ o
     expect(lines).toContain(
       "new-first: The header starts with a reference: `publish` generates the ancestor chain `#<plan> › … › #<parent> · `, so keep only `<sections>: <gist>`.",
     );
+  });
+
+  test("resolves references and the parent against every local draft, failing what publish and walk check reject", async () => {
+    const config = await createProject({
+      ".ai/issues/new-plan.draft.md": plan,
+      ".ai/issues/new-first.draft.md": first
+        .replace("Goal: the first step", "A plain paragraph\nover two lines.")
+        .replace("1. Do.", "1. Do after #{new-plan}.")
+        .replace("\n## Tests\n\n- t\n", ""),
+    });
+
+    await expect(checkIssues(config, ["new-first"], "worker")).resolves.toEqual(
+      {
+        lines: [
+          "new-first: **Tests** is missing: write it.",
+          "new-first: The text before the first section spans several lines, but `publish` reads it as the header line: keep only `<sections>: <gist>` there and move the rest into a section.",
+        ],
+        passed: false,
+      },
+    );
+  });
+
+  test("requires a plan's generated Roadmap through subIssues, and Tests only for a worker", async () => {
+    const config = await createProject({
+      ".ai/issues/new-plan.draft.md": plan.replace(
+        /subIssues:[\s\S]*?sections: \[\]\n/,
+        "",
+      ),
+      ".ai/issues/new-first.draft.md": first.replace("\n## Tests\n\n- t\n", ""),
+    });
+
+    await expect(checkIssues(config, ["new-plan"], "worker")).resolves.toEqual({
+      lines: [
+        "new-plan: **Roadmap** is missing: list its issues in `subIssues`, which publish generates it from.",
+      ],
+      passed: false,
+    });
+
+    await expect(
+      checkIssues(config, ["new-first"], "debugger"),
+    ).resolves.toEqual({ lines: ["new-first: ready"], passed: true });
   });
 
   test("reports a cycle through subIssues and blockedBy", async () => {

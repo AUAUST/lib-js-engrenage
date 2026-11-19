@@ -5,11 +5,15 @@ import {
   issueDraftsDirectory,
 } from "#tools/github/issues/drafts/constants";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
+import { readLocalDrafts } from "#tools/github/issues/drafts/operations/readLocalDrafts";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 import { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import type { LoadedConfig } from "#project/config/index";
-import type { IssueFinding } from "#tools/github/issues/contract/index";
+import type {
+  IssueAudience,
+  IssueFinding,
+} from "#tools/github/issues/contract/index";
 import type { File } from "#types/File";
 
 function findDraftStem(root: string, file: File) {
@@ -33,6 +37,7 @@ function findDraftStem(root: string, file: File) {
 export async function checkDraftFile(
   config: LoadedConfig,
   file: File,
+  audience: IssueAudience,
 ): Promise<readonly IssueFinding[]> {
   const { root, filesystem } = config.context;
 
@@ -53,7 +58,15 @@ export async function checkDraftFile(
     return [{ rule: "draft-missing", message: `No draft at \`${file}\`.` }];
   }
 
-  const context = await resolveDraftsContext(config);
+  const [context, known] = await Promise.all([
+    resolveDraftsContext(config),
+    readLocalDrafts(filesystem),
+  ]);
 
-  return checkDrafts(new Map([[stem, draft]]), context).get(stem) ?? [];
+  const checked = checkDrafts(new Map([[stem, draft]]), context, {
+    known,
+    complete: audience === "worker",
+  });
+
+  return checked.get(stem) ?? [];
 }

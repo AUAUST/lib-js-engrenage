@@ -22,6 +22,7 @@ export { resolveLocalCheckout } from "#tools/github/issues/contract/operations/r
 export { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 export { checkContractNames } from "#tools/github/issues/contract/utils/checkContractNames";
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+export { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 export { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";

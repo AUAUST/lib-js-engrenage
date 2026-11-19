@@ -130,3 +130,6 @@
 - `pickExport(import(…), name)` loader helper: name the export a lazy loader loads — `extension-imports` forbids its static import in `extension.ts`
 - `[import(…), name]` loader tuple: name the export without a helper — no TypeScript type ties the name to the module; even valid loaders fail to check
 - `import(…).then(({ name }) => name)` loaders: select the export by name — config section types inferred from the loaders turn `unknown` (1264 errors)
+- tsconfig project references to `src` (#702): give compiling environments `src`'s ambient files — imports resolve to declaration output, which never carries `.d.ts` inputs; needs composite emit against #68's noEmit references
+- shared ambient tsconfig extended by environments (#702): one list of `src`'s ambient files — `include` never merges through `extends`; inherited `files` drops silently under any own `files`; a generated file more
+- ambient detection by missing imports and exports (#702): identify `src`'s ambient files — misses `declare global` augmentations, which import; the `declarations` role already names them

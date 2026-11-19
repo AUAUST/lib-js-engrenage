@@ -7,23 +7,21 @@ import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkBlockersField,
-  checkIssueBody,
+  checkIssueContract,
   checkNesting,
   findContractMeaning,
   listOpenSections,
   parseIssueBody,
-  renderHeader,
   type ContractMeaning,
   type ContractNames,
   type IssueContract,
   type IssueFinding,
 } from "#tools/github/issues/contract/index";
-import { headerPlaceholder } from "#tools/github/issues/drafts/constants";
+import { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
-import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 import { resolveDraftRepository } from "#tools/github/issues/drafts/utils/resolveDraftRepository";
 import { resolveStem } from "#tools/github/issues/drafts/utils/resolveStem";
 import type { Draft } from "#tools/github/issues/drafts/types/Draft";
@@ -96,7 +94,7 @@ function checkReference(
   if (resolved.parsed.kind === "draft" && !stems.has(resolved.stem)) {
     return {
       rule: "outside-draft",
-      message: `\`${reference}\` names the draft \`${resolved.stem}\`, outside the checked drafts: check it with them, or create it.`,
+      message: `\`${reference}\` names the draft \`${resolved.stem}\`, outside the drafts it can resolve against: create it, or publish it with them.`,
     };
   }
 }
@@ -196,6 +194,7 @@ function checkBody(
   meaning: ContractMeaning | undefined,
   blockers: readonly string[],
   contractNames: ContractNames,
+  { subIssues, complete }: { subIssues: number; complete: boolean },
 ): IssueFinding[] {
   const contract:
     | IssueContract
@@ -208,7 +207,11 @@ function checkBody(
   const names = new Set(sections.map(({ name }) => name));
 
   return [
-    ...checkIssueBody(body, meaning, contractNames),
+    ...checkIssueContract(body, meaning, contractNames, {
+      subIssues,
+      complete,
+      draft: true,
+    }),
     ...checkBlockersField(listOpenSections(parsed), blockers, contractNames),
     ...sections
       .filter(({ content }) => content === "")
@@ -227,45 +230,6 @@ function checkBody(
         };
       }),
   ];
-}
-
-function checkHeader(
-  body: string,
-  contract: IssueContract | undefined,
-  parent: string | undefined,
-): IssueFinding[] {
-  const header = readDraftHeader(body);
-
-  if (header !== undefined && /^#(?:\d|\{)/.test(header)) {
-    return [
-      {
-        rule: "header",
-        message: `The header starts with a reference: \`publish\` generates the ancestor chain \`${renderHeader(["#<plan>", "…", "#<parent>"], "")}\`, so keep only \`${headerPlaceholder}\`.`,
-      },
-    ];
-  }
-
-  if (contract?.hasHeader !== true || parent === undefined) {
-    return [];
-  }
-
-  if (header === undefined) {
-    return [
-      {
-        rule: "header",
-        message: `\`${parent}\` lists the draft in \`subIssues\` but it has no header line: write \`${headerPlaceholder}\` before the first section.`,
-      },
-    ];
-  }
-
-  return header === headerPlaceholder
-    ? [
-        {
-          rule: "header",
-          message: `The header line is still the placeholder \`${headerPlaceholder}\`: fill in its sections and gist.`,
-        },
-      ]
-    : [];
 }
 
 function readBlockers(
@@ -311,34 +275,71 @@ function findCycles(
 export function checkDrafts(
   drafts: ReadonlyMap<string, Draft>,
   context: DraftsContext,
+  {
+    known = drafts,
+    complete,
+  }: {
+    known?: ReadonlyMap<string, Draft | undefined>;
+    complete: boolean;
+  },
 ): ReadonlyMap<string, readonly IssueFinding[]> {
-  const stems = new Set(drafts.keys());
+  const stems = new Set([...known.keys(), ...drafts.keys()]);
   const findings = new Map<string, IssueFinding[]>();
   const edges = new Map<string, string[]>();
 
-  const checked = new Map(
-    [...drafts].map(([stem, draft]) => {
-      const repository = findDraftRepository(stem, context);
+  function describe(stem: string, draft: Draft) {
+    const repository = findDraftRepository(stem, context);
 
-      return [
-        stem,
-        { draft, ...checkManifest(draft, repository, context) },
-      ] as const;
+    return [
+      [stem, { draft, ...checkManifest(draft, repository, context) }] as const,
+    ];
+  }
+
+  const described = new Map([
+    ...[...drafts].flatMap(([stem, draft]) => describe(stem, draft)),
+    ...[...known].flatMap(([stem, draft]) => {
+      if (draft === undefined || drafts.has(stem)) {
+        return [];
+      }
+
+      try {
+        return describe(stem, draft);
+      } catch {
+        // @debt A known draft whose repository fails to resolve silently drops out of parent and cycle checks; only its own check reports why.
+        return [];
+      }
     }),
-  );
+  ]);
 
   const parents = new Map(
-    [...checked].flatMap(([stem, { manifest }]) => {
+    [...described].flatMap(([stem, { manifest }]) => {
       return listDraftReferences(manifest?.subIssues).map((reference) => {
         return [findTarget(reference, context) ?? reference, stem] as const;
       });
     }),
   );
 
+  for (const [stem, { manifest }] of described) {
+    edges.set(
+      stem,
+      manifest === undefined
+        ? []
+        : listRelations(manifest)
+            .map((reference) => findTarget(reference, context))
+            .filter((target): target is string => {
+              return target !== undefined && stems.has(target);
+            }),
+    );
+  }
+
   for (const [
     stem,
     { draft, findings: manifestFindings, meaning, manifest },
-  ] of checked) {
+  ] of described) {
+    if (!drafts.has(stem)) {
+      continue;
+    }
+
     const repository = findDraftRepository(stem, context);
 
     const references = [
@@ -357,9 +358,13 @@ export function checkDrafts(
         meaning,
         readBlockers(manifest, context.contractNames),
         context.contractNames,
+        {
+          subIssues: listDraftReferences(manifest?.subIssues).length,
+          complete,
+        },
       ),
-      ...checkNesting(meaning, checked.get(parents.get(stem) ?? "")?.meaning),
-      ...checkHeader(
+      ...checkNesting(meaning, described.get(parents.get(stem) ?? "")?.meaning),
+      ...checkDraftHeader(
         draft.body,
         meaning === undefined ? undefined : issueContracts[meaning],
         parents.get(stem),
@@ -378,21 +383,10 @@ export function checkDrafts(
           return true;
         }),
     ]);
-
-    edges.set(
-      stem,
-      manifest === undefined
-        ? []
-        : listRelations(manifest)
-            .map((reference) => findTarget(reference, context))
-            .filter((target): target is string => {
-              return target !== undefined && stems.has(target);
-            }),
-    );
   }
 
   for (const cycle of findCycles(edges)) {
-    const [first = ""] = cycle;
+    const first = cycle.find((stem) => findings.has(stem)) ?? "";
 
     findings.get(first)?.push({
       rule: "cycle",

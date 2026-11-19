@@ -187,11 +187,13 @@ export async function publishIssues(
 
   const context = await resolveDraftsContext(config);
 
-  const findings = [...checkDrafts(read.drafts, context)].flatMap(
-    ([stem, found]) => {
-      return found.map(({ message }) => `${stem}: ${message}`);
-    },
-  );
+  const findings = [
+    ...checkDrafts(read.drafts, context, {
+      complete: false,
+    }),
+  ].flatMap(([stem, found]) => {
+    return found.map(({ message }) => `${stem}: ${message}`);
+  });
 
   if (findings.length > 0) {
     return failed(findings);

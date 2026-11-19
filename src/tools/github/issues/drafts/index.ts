@@ -12,6 +12,7 @@ export { linkPublishedIssue } from "#tools/github/issues/drafts/operations/linkP
 export { linkSubIssues } from "#tools/github/issues/drafts/operations/linkSubIssues";
 export { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
 export { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
+export { readLocalDrafts } from "#tools/github/issues/drafts/operations/readLocalDrafts";
 export { releaseIssues } from "#tools/github/issues/drafts/operations/releaseIssues";
 export { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 export { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
@@ -21,6 +22,7 @@ export { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 // @end
 
 // @barrel utils
+export { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 export { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 export { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 export { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";

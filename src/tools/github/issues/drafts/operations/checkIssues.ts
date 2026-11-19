@@ -14,6 +14,7 @@ import {
   type LinkedCheckout,
 } from "#tools/github/issues/contract/index";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
+import { readLocalDrafts } from "#tools/github/issues/drafts/operations/readLocalDrafts";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 import { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
@@ -132,9 +133,17 @@ export async function checkIssues(
   let passed = lines.length === 0;
 
   if (drafts.size > 0) {
-    const context = await resolveDraftsContext(config);
+    const [context, known] = await Promise.all([
+      resolveDraftsContext(config),
+      readLocalDrafts(config.context.filesystem),
+    ]);
 
-    for (const [stem, found] of checkDrafts(drafts, context)) {
+    const checked = checkDrafts(drafts, context, {
+      known,
+      complete: audience === "worker",
+    });
+
+    for (const [stem, found] of checked) {
       lines.push(
         ...(found.length === 0
           ? [`${stem}: ready`]

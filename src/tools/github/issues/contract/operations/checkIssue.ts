@@ -2,7 +2,7 @@ import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue"
 import { findAncestors } from "#tools/github/issues/contract/operations/findAncestors";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
-import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
@@ -81,10 +81,11 @@ export async function checkIssue(
 
   findings.push(
     ...(audience === "worker"
-      ? checkIssueBody(
+      ? checkIssueContract(
           issue.body,
           findContractMeaning(access.contractNames, issue.type),
           access.contractNames,
+          { subIssues: issue.subIssues.length, complete: true },
         )
       : []),
     ...checkIssueReadiness(
@@ -113,10 +114,11 @@ export async function checkIssue(
       );
 
       const blocked = [
-        ...checkIssueBody(
+        ...checkIssueContract(
           ancestor.body,
           findContractMeaning(access.contractNames, ancestor.type),
           access.contractNames,
+          { subIssues: ancestor.subIssues.length, complete: true },
         ),
         ...checkIssueReadiness(
           {

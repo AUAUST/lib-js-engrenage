@@ -105,7 +105,7 @@ export async function checkAgentDispatch(
     return checkBriefedIssue(config, role, brief, root);
   }
 
-  const findings = await checkDraftFile(config, value);
+  const findings = await checkDraftFile(config, value, role);
 
   return findings.length === 0
     ? undefined
