@@ -34,8 +34,8 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | <code>bin/**</code> | <code>.claude/rules/project-map.md</code> |
 | <code>bin/**</code> | <code>.claude/rules/project-map/bin.md</code> |
 | <code>CLAUDE.md</code> | <code>.claude/rules/instructions.md</code> |
-| <code>data/agents/**</code> | <code>.claude/rules/agent-fragments.md</code> |
-| <code>data/agents/**</code> | <code>.claude/rules/instructions.md</code> |
+| <code>data/metalbrain/**</code> | <code>.claude/rules/agent-fragments.md</code> |
+| <code>data/metalbrain/**</code> | <code>.claude/rules/instructions.md</code> |
 | <code>package.json</code> | <code>.claude/rules/modules.md</code> |
 | <code>scripts/**</code> | <code>.claude/rules/modules.md</code> |
 | <code>scripts/**</code> | <code>.claude/rules/project-map.md</code> |

@@ -9,7 +9,7 @@ paths:
   - ".ai/issues/**"
   - ".ai/backlog/**"
   - ".codex/**"
-  - "data/agents/**"
+  - "data/metalbrain/**"
 ---
 
 <!-- @reference @auaust/engrenage/metalbrain/rules/instructions.md -->

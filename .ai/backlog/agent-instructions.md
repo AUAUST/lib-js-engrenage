@@ -25,7 +25,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 5. Whether an issue's text counts as consent to change instructions is undecided
 
-- why: maintenance requires user consent, precedence lets issues carry maintainers' decisions; walked workers get issues editing `data/agents/`, and the writer skill's "Commit nothing" clashes with their checkpoints.
+- why: maintenance requires user consent, precedence lets issues carry maintainers' decisions; walked workers get issues editing `data/metalbrain/`, and the writer skill's "Commit nothing" clashes with their checkpoints.
 - want: user decision; proposed: session or maintainer-issue consent; the fallback keeps the role's commit rules.
 
 ## 6. Skills have no rank against the project's own rules
