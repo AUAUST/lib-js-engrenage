@@ -13,6 +13,7 @@ function runRecord(root: string, agentTranscript: string) {
     {
       cwd: root,
       input: JSON.stringify({
+        cwd: root,
         session_id: "session",
         transcript_path: `${root}/session.jsonl`,
         agent_id: "agent",

@@ -83,3 +83,5 @@
 - `loadConfig` in tests: rewrote `engrenage.config.ts` between two loads of one root — Node cached the first config module, so the new option was ignored; set the option at project creation
 - `engrenage planning issue check`: checked a parentless draft with a header line — passed, then `publish` refused it for having no ancestors; removed the header line and republished
 - worktree-isolated Bash: `pnpm … ; git status` in one command — refused as naming git too complexly; reran git alone with `git -C`
+- worktree-isolated Bash: `cat` of several files, one path holding `git.ts` — refused as naming git in a compound command; read them through the Read tool
+- `$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks: no instruction or doc says which checkout it names — logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree

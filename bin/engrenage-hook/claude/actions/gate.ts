@@ -5,6 +5,7 @@ import {
   listActiveExtensions,
   mainAgent,
   readHookPayload,
+  resolveHookDirectory,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -43,7 +44,7 @@ export default async function (): Promise<void> {
     return;
   }
 
-  const config = await loadValidatedConfig(cwd, {
+  const config = await loadValidatedConfig(resolveHookDirectory(cwd), {
     reporter: getRunContext().reporter,
   });
 

@@ -4,6 +4,7 @@ import { resolveCodexProfile } from "#tools/agents/codex/index";
 import {
   checkAgentDispatch,
   denyToolUse,
+  resolveHookDirectory,
   validateHookPayload,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -26,7 +27,7 @@ export default async function (payload: unknown): Promise<boolean> {
     tool_input: input,
   } = validateHookPayload(payloadSchema, payload, "Codex");
 
-  const config = await loadValidatedConfig(cwd, {
+  const config = await loadValidatedConfig(resolveHookDirectory(cwd), {
     reporter: getRunContext().reporter,
   });
 
@@ -43,7 +44,7 @@ export default async function (payload: unknown): Promise<boolean> {
     config,
     profile.role,
     input.message ?? input.prompt ?? "",
-    cwd,
+    config.context.root,
   );
 
   if (reason === undefined) {

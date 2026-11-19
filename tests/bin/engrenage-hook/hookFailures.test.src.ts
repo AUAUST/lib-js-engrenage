@@ -25,6 +25,7 @@ vi.mock("node:stream/consumers", () => {
     text: vi.fn(() => {
       return Promise.resolve(
         JSON.stringify({
+          cwd: process.cwd(),
           tool_name: "Agent",
           tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
         }),

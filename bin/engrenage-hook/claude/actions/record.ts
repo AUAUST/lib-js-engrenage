@@ -5,6 +5,7 @@ import {
   mainAgent,
   readClaudeTranscript,
   readHookPayload,
+  resolveHookDirectory,
   writeAgentRun,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
@@ -12,6 +13,7 @@ import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
+  cwd: string(),
   session_id: string(),
   transcript_path: string(),
   agent_id: optional(string()),
@@ -21,6 +23,7 @@ const payloadSchema = object({
 
 export default async function (): Promise<void> {
   const {
+    cwd,
     session_id: session,
     transcript_path: transcript,
     agent_id: agent = mainAgent,
@@ -44,7 +47,7 @@ export default async function (): Promise<void> {
   }
 
   const config = await loadValidatedConfig(
-    await resolveMainWorktree(process.cwd()),
+    await resolveMainWorktree(resolveHookDirectory(cwd)),
     { reporter: getRunContext().reporter },
   );
 

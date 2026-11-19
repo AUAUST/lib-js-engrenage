@@ -3,6 +3,7 @@ import { object, string } from "valibot";
 import {
   checkAgentResume,
   denyToolUse,
+  resolveHookDirectory,
   validateHookPayload,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
@@ -10,6 +11,7 @@ import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
+  cwd: string(),
   session_id: string(),
   tool_input: object({
     to: string(),
@@ -18,12 +20,13 @@ const payloadSchema = object({
 
 export default async function (payload: unknown): Promise<boolean> {
   const {
+    cwd,
     session_id: session,
     tool_input: { to: recipient },
   } = validateHookPayload(payloadSchema, payload, "Claude Code");
 
   const config = await loadValidatedConfig(
-    await resolveMainWorktree(process.cwd()),
+    await resolveMainWorktree(resolveHookDirectory(cwd)),
     { reporter: getRunContext().reporter },
   );
 

@@ -4,6 +4,7 @@ import {
   denyToolUse,
   measureGithubCommand,
   reportBudgetFindings,
+  resolveHookDirectory,
   validateHookPayload,
 } from "#tools/agents/index";
 import { checkGithubWrite } from "#tools/github/index";
@@ -26,7 +27,7 @@ export default async function (
     tool_input: { command: shellCommand },
   } = validateHookPayload(payloadSchema, payload, runtime);
 
-  const config = await loadValidatedConfig(cwd, {
+  const config = await loadValidatedConfig(resolveHookDirectory(cwd), {
     reporter: getRunContext().reporter,
   });
 

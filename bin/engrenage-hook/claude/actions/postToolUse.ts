@@ -1,6 +1,10 @@
 import { object, string } from "valibot";
 
-import { readHookPayload, writeHookContext } from "#tools/agents/index";
+import {
+  readHookPayload,
+  resolveHookDirectory,
+  writeHookContext,
+} from "#tools/agents/index";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import { formatInfoMessages, listInfoMessages } from "#tools/eslint/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -22,7 +26,9 @@ async function reportInfoMessages() {
   const context = formatInfoMessages(
     file,
     await listInfoMessages(
-      await loadValidatedConfig(cwd, { reporter: getRunContext().reporter }),
+      await loadValidatedConfig(resolveHookDirectory(cwd), {
+        reporter: getRunContext().reporter,
+      }),
       file,
     ),
   );

@@ -16,6 +16,7 @@ export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
+export { resolveHookDirectory } from "#tools/agents/utils/resolveHookDirectory";
 
 // @barrel setup
 export { checkBacklogSites } from "#tools/agents/setup/checkBacklogSites";

@@ -54,6 +54,7 @@ test.each(["Context\nIssue: o/r#1", "Context\nDraft: /x.draft.md"])(
   "denies a brief naming its issue or draft past the first line: %s",
   async (prompt) => {
     payload = {
+      cwd: process.cwd(),
       tool_input: { subagent_type: "worker", prompt },
     };
 
@@ -76,6 +77,7 @@ test("accepts a first-line CRLF brief and bare requests", async () => {
   });
 
   payload = {
+    cwd: process.cwd(),
     tool_input: {
       subagent_type: "worker",
       prompt: "Issue: o/r#1\r\nContext",
@@ -105,6 +107,7 @@ test("accepts a first-line CRLF brief and bare requests", async () => {
   );
 
   payload = {
+    cwd: process.cwd(),
     tool_input: {
       subagent_type: "debugger",
       prompt: "A direct user failure",
@@ -114,6 +117,7 @@ test("accepts a first-line CRLF brief and bare requests", async () => {
   await runCheck(dispatch);
 
   payload = {
+    cwd: process.cwd(),
     tool_input: {
       subagent_type: "worker",
       prompt: "implement it",
