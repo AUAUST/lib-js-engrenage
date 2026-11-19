@@ -55,3 +55,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `src/tools/agents/operations/checkAgentResume.ts:107`
 - why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
 - want: a message naming the dispatching skill generically once another skill resumes such agents.
+
+## 11. Nothing catches a subagent stopping with unlogged friction
+
+- why: of 8 subagents meeting refusals and retries in one session, one logged friction.
+- want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.

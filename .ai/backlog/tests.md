@@ -14,9 +14,9 @@ Test infrastructure and coverage gaps.
 - why: temporary configs cannot import `@auaust/engrenage` or the tooling, so rules cross through `globalThis`; every root entry is linked; a source-only test exists because generated paths resolve `agents/constants` to the index.
 - want: test configs resolve package and tooling; the link limited to published and source-mode entries; the block test through the public entry.
 
-## 3. Process-spawning tests time out under the worktree gate's load
+## 3. Process-spawning tests time out under concurrent agents' load
 
-- why: under load, spawn-based tests fail while passing alone: `engrenage gate --worktree` 3 of 5 runs (`runGateLocks` lock release, `hookFailures` 5000 ms timeout), `pnpm build` once (`syncVscodeFiles.test.ts` settings merge, 5000 ms).
+- why: under load, spawn-based tests fail while passing alone: `runGateLocks`, `hookFailures`, `syncVscodeFiles` and others hit 5000 ms in both gates and `pnpm build`, up to 4 commit attempts beside parallel sessions (friction ×5).
 - want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
 
 ## 4. Tests initialize Git repositories by hand

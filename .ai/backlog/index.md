@@ -27,6 +27,7 @@ Deferred questions, bugs, tasks and improvements.
 ## Open categories
 
 - [c12](c12.md): Upstream c12 configuration loader issues.
+- [claude-code](claude-code.md): Upstream Claude Code harness behavior.
 - [eslint-import-context](eslint-import-context.md): Upstream eslint-import-context dependency and type issues.
 - [eslint](eslint.md): Upstream ESLint API limitations.
 - [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
