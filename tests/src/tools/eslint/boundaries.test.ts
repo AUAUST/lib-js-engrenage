@@ -567,6 +567,27 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
+  test("names the unclassified directory holding an unknown path", async () => {
+    const lint = await createLinter(
+      "auaust/import-specifiers",
+      createTemporaryProject({
+        "package.json": '{ "name": "app", "type": "module" }',
+        "engrenage.config.ts": 'export default { traits: { disable: ["published"] }, src: { structure: { layers: ["feature"] } } };\n',
+        "tsconfig.json": "{}",
+        "src/feature/index.ts": exported,
+        "tests/ghost/deep/a.test.ts": "",
+      }),
+    );
+
+    const [message] = await lint.messages(
+      "tests/ghost/deep/a.test.ts",
+      'export { value } from "../../../src/feature/index";\n',
+    );
+
+    expect(message).toContain("`tests/ghost`");
+    expect(message).not.toContain("reload");
+  });
+
   test("enforces role contracts", async () => {
     const lint = await createLinter("auaust/role-");
 

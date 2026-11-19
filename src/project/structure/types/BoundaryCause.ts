@@ -12,4 +12,5 @@ export type BoundaryCause =
   | "workspace"
   | "relativePath"
   | "selfImport"
-  | "unknownPath";
+  | "unknownPath"
+  | "unclassifiedPath";

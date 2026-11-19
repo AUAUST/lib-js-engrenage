@@ -67,7 +67,7 @@ export function defineBoundaryRule({
   }
 
   function render(
-    { boundary, fix, category }: BoundaryViolation,
+    { boundary, fix, category, unclassified = "" }: BoundaryViolation,
     {
       file,
       importer,
@@ -114,6 +114,7 @@ export function defineBoundaryRule({
       variantReach: guidance?.reach ?? "",
       variantMove: guidance?.move ?? "",
       unknown: importer === undefined ? path : targetPath,
+      unclassified,
     };
   }
 

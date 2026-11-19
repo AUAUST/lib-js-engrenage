@@ -1,6 +1,6 @@
 import { relative } from "node:path";
 
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, values } from "@auaust/toolkit/object";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { boundaryMessages } from "#tools/eslint/constants";
@@ -11,6 +11,8 @@ import type {
   BoundaryViolation,
   ImportEdge,
 } from "#project/structure/index";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
   return freeze({
@@ -18,6 +20,10 @@ function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {
     boundary: undefined,
     fix,
   });
+}
+
+function isWithin(path: string, directory: Directory): boolean {
+  return path.startsWith(`${directory}/`);
 }
 
 export default defineConvention({
@@ -28,7 +34,26 @@ export default defineConvention({
     grants: "importGrants",
   },
   rule: ({ grants, ...graph }, { root }) => {
-    const { entities } = graph;
+    const { entities, structure } = graph;
+
+    const unclassified = values(structure).flatMap((environment) => {
+      return environment?.unclassified.map(({ path }) => path) ?? [];
+    });
+
+    function unknownPath(file: File): BoundaryViolation {
+      const path = toPosixPath(relative(root, resolve(root, file)));
+
+      const directory = unclassified.find((candidate) => {
+        return isWithin(path, candidate);
+      });
+
+      return directory === undefined
+        ? violation("unknownPath")
+        : freeze({
+            ...violation("unclassifiedPath"),
+            unclassified: directory,
+          });
+    }
 
     // @debt the check lives in the convention rather than `project/structure` with the other checks, because it needs the entity index
     function check({
@@ -39,7 +64,7 @@ export default defineConvention({
       target,
     }: ImportEdge): BoundaryViolation | undefined {
       if (importer === undefined && entities.withinEnvironment(file)) {
-        return violation("unknownPath");
+        return unknownPath(file);
       }
 
       // @debt an unknown path may be a file created after the index was built; refresh the index instead once config loading can (#247)
@@ -56,7 +81,7 @@ export default defineConvention({
       }
 
       if (target === undefined && entities.withinEnvironment(targetFile)) {
-        return violation("unknownPath");
+        return unknownPath(targetFile);
       }
 
       const fix = resolved.kind === "relative"

@@ -33,6 +33,7 @@ export const boundaryMessages = freeze({
   selfImport: "`{{path}}` imports itself.",
   relativePath: "Import {{fix}} instead of `{{specifier}}`.",
   unknownPath: "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",
+  unclassifiedPath: "`{{unknown}}` sits in `{{unclassified}}`, a directory the structure leaves unclassified; classify it.",
 } as const satisfies Record<BoundaryCause, string>);
 
 export const eslintFlags = freeze([
