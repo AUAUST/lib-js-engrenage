@@ -54,6 +54,7 @@ export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinition
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
+export { listReferenceFiles } from "#tools/agents/operations/listReferenceFiles";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 export { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";

@@ -4,7 +4,6 @@ import {
   agentRuntimeEntry,
   agentsTarget,
   agentStatsDirectory,
-  backlogIndex,
   markdownBlocks,
   rulesDirectory,
 } from "#tools/agents/constants";
@@ -102,17 +101,14 @@ export default {
             return [];
           }
 
-          const { codexFile } = await import("#tools/agents/codex/constants");
+          const {
+            listReferenceFiles,
+          } = await import("#tools/agents/operations/listReferenceFiles");
 
-          const files = await config.context.filesystem.glob(
-            agents.instructionFiles,
-          );
-
-          const instructionFiles = files.filter((file) => file !== codexFile);
-
-          return (await config.context.filesystem.exists(backlogIndex))
-            ? [...instructionFiles, backlogIndex]
-            : instructionFiles;
+          return listReferenceFiles({
+            filesystem: config.context.filesystem,
+            agents,
+          });
         },
         load() {
           return import("#tools/agents/operations/fillReferenceBlock");

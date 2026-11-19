@@ -1,5 +1,5 @@
 ---
-"@auaust/engrenage": patch
+"@auaust/engrenage": minor
 ---
 
 - Ship every agent instruction fragment under `@auaust/engrenage/metalbrain/<kind>/`, replacing `agents/<kind>/` and `extensions/<name>/agents/<kind>/`

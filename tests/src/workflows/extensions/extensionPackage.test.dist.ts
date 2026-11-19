@@ -19,7 +19,7 @@ const run = promisify(execFile);
 
 const packageName = "@fixtures/engrenage-extension";
 
-const rule = `${packageName}/agents/rules/fixture-rule.md`;
+const rule = `${packageName}/metalbrain/rules/fixture-rule.md`;
 
 function fromRepository(path: string): string {
   return fileURLToPath(new URL(`../../../../${path}`, import.meta.url));

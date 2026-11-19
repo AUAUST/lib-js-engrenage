@@ -117,3 +117,8 @@
 - runtime-name map of dispatchers in `agents`: picking a runtime's headless client — runtimes are contributed data; an optional `dispatcher` on `AgentRuntime` instead
 - cross-repository walk rule as generated rule: keep foreign-leaf text out of every walk — only `paths:` or always-loaded, needs a never-matching glob; skill supporting file instead (#683)
 - cross-repository walk rule as shipped extension rule: same need — init skips extension rules and sync never installs them, pointer could dangle
+- pkg.pr.new previews: unreleased upstream in downstream PR CI (package split report) — public registry and GitHub App, republishes a restricted package
+- linked sibling checkouts in CI: unreleased upstream in downstream PR CI (package split report) — lockfile stops describing what CI tested
+- in-process adapters as the only metalbrain protocol: engrenage integration (package split report) — peer within one 0.x minor, excludes non-JS stacks
+- GraphQL engine in @auaust/codegen: Interscript GraphQL generation (package split report) — @graphql-codegen/cli and gql.tada provide it; schemas are client data
+- rulesync, @intellectronica/ruler, agentsmesh: instruction distribution (package split report) — copy one source to runtimes, no packs, providers, hooks, gates or planning contract

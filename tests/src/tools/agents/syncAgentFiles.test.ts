@@ -214,7 +214,7 @@ describe("syncAgentFiles", () => {
 
 describe("fragment fillers", () => {
   test("moves a former skill directory and rewrites references to its former fragment", async () => {
-    const former = "@auaust/engrenage/metalbrain/skills/issue-planning.md";
+    const former = "@auaust/engrenage/agents/skills/issue-planning.md";
     const current = "@auaust/engrenage/metalbrain/skills/planning.md";
 
     const project = createTemporaryProject({
@@ -304,7 +304,7 @@ describe("fragment fillers", () => {
   test.each([true, false])(
     "carries skills synced before the planning data root moved, with github.planning %s",
     async (planning) => {
-      const former = "@auaust/engrenage/metalbrain/skills/planning.md";
+      const former = "@auaust/engrenage/extensions/tools/github/issues/planning/agents/skills/planning.md";
       const current = "@auaust/engrenage/metalbrain/skills/planning.md";
 
       const project = createTemporaryProject({
@@ -348,6 +348,7 @@ describe("fragment fillers", () => {
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/writing.md -->\n<!-- @end -->\n\n<!-- @reference ./local.md -->\n<!-- @end -->\n",
       ".claude/rules/git.md": "<!-- @reference @auaust/engrenage/agents/rules/git.md -->\n<!-- @end -->\n",
+      ".ai/backlog/index.md": "# Backlog\n\n<!-- @reference @auaust/engrenage/agents/templates/backlog.md -->\n<!-- @end -->\n\n## Open categories\n",
     });
 
     const config = await loadConfig(project.root);
@@ -362,6 +363,10 @@ describe("fragment fillers", () => {
 
     expect(await filesystem.read(".claude/rules/git.md")).toBe(
       "<!-- @reference @auaust/engrenage/metalbrain/rules/git.md -->\n<!-- @end -->\n",
+    );
+
+    expect(await filesystem.read(".ai/backlog/index.md")).toContain(
+      "<!-- @reference @auaust/engrenage/metalbrain/templates/backlog.md -->",
     );
   });
 
