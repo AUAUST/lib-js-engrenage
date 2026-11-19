@@ -1,4 +1,7 @@
+import { Minimatch } from "minimatch";
 import { record, string, unknown } from "valibot";
+
+import { entries } from "@auaust/toolkit/object";
 
 import {
   declare,
@@ -14,7 +17,7 @@ const workspaceSchema = declareObject(
   {
     name: declare(string(), {
       description: [
-        `Package name of every workspace the glob matches, with \`${directoryPlaceholder}\` standing for the directory name of the workspace.`,
+        `Package name of every workspace the glob matches, with \`${directoryPlaceholder}\` standing for the directory name of the workspace; required when the glob holds a wildcard.`,
         "Sync writes it as the `name` of the workspace `package.json`.",
       ],
     }),
@@ -82,13 +85,6 @@ const workspaceSchema = declareObject(
   },
   {
     description: "The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json` and `tsconfig.json`.",
-    assert({ name }, path) {
-      if (!name.includes(directoryPlaceholder)) {
-        throw new Error(
-          `${path}.name must contain ${directoryPlaceholder}, so every workspace gets its own package name`,
-        );
-      }
-    },
   },
 );
 
@@ -100,5 +96,17 @@ export const workspacesSchema = declareRecord(string(), workspaceSchema, {
   ],
   optional: {
     value: {},
+  },
+  assert(workspaces, path) {
+    for (const [glob, { name }] of entries(workspaces)) {
+      if (
+        new Minimatch(glob).hasMagic() &&
+        !name.includes(directoryPlaceholder)
+      ) {
+        throw new Error(
+          `${path}.${glob}.name must contain ${directoryPlaceholder}, so every workspace its wildcard matches gets its own package name`,
+        );
+      }
+    }
   },
 });

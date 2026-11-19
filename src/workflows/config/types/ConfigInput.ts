@@ -111,7 +111,7 @@ export interface BuiltinConfigInput {
      */
     [k: string]: {
       /**
-       * Package name of every workspace the glob matches, with `{dir}` standing for the directory name of the workspace.
+       * Package name of every workspace the glob matches, with `{dir}` standing for the directory name of the workspace; required when the glob holds a wildcard.
        * Sync writes it as the `name` of the workspace `package.json`.
        */
       name: string

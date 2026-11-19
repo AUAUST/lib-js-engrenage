@@ -165,6 +165,39 @@ describe("workspaces", () => {
     ).toBe("extensions/action-d/src/index.js");
   });
 
+  test("accepts a literal name for a glob without wildcard", async () => {
+    const project = createTemporaryProject({
+      ...files,
+      "engrenage.config.ts": `export default { src: { node: 24 }, workspaces: { "theme": { name: "@scope/theme" } } };\n`,
+      "theme/src/index.ts": "",
+    });
+
+    const groups = await (await loadConfig(project.root)).resolve("workspaces");
+
+    expect(
+      groups
+        .flatMap(({ workspaces }) => {
+          return workspaces;
+        })
+        .map(({ name }) => {
+          return name;
+        }),
+    ).toEqual(["@scope/theme"]);
+  });
+
+  test("rejects a literal name for a wildcard glob", async () => {
+    const project = createTemporaryProject({
+      ...files,
+      "engrenage.config.ts": `export default { src: { node: 24 }, workspaces: { "extensions/action-*": { name: "@scope/app" } } };\n`,
+    });
+
+    await expect(
+      (await loadConfig(project.root)).resolve("workspaces"),
+    ).rejects.toThrow(
+      `workspaces.extensions/action-*.name must contain ${placeholder}`,
+    );
+  });
+
   test("derives the lint scope and the solution references from the declaration", async () => {
     const project = createProject();
 
