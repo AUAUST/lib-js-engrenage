@@ -4,6 +4,7 @@ import { engrenage } from "#constants";
 import { metalbrain, skillFileName } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
+import { isSkillFileReference } from "#tools/agents/utils/isSkillFileReference";
 import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import { listReferences } from "#tools/agents/utils/listReferences";
@@ -50,7 +51,7 @@ async function removeSkillFiles(
   reference: string,
 ) {
   await removeSupportingFiles(filesystem, directory, (found) => {
-    return isSupportingReference(found, reference);
+    return isSkillFileReference(found, reference);
   });
 
   for (const file of generatedSkillFiles) {

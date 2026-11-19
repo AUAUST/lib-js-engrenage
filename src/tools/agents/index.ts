@@ -54,11 +54,14 @@ export { getInstructionTemplates } from "#tools/agents/operations/getInstruction
 export { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 export { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 export { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+export { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+export { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { listReferenceFiles } from "#tools/agents/operations/listReferenceFiles";
+export { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
 export { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 export { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 export { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";

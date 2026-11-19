@@ -25,6 +25,8 @@ export const agentsFile = "AGENTS.md" satisfies File;
 
 export const metalbrain = "metalbrain";
 
+export const sharedFilesKind = "shared";
+
 export const agentsTemplate = `${engrenage}/${metalbrain}/templates/${agentsFile}`;
 
 export const agentsTarget = "agents";
@@ -51,6 +53,7 @@ export const agentLoaderEntry: StandardSchemaV1 = looseObject({
 
 export const builtInFillers = freeze([
   "skill-file",
+  "shared-file",
   "extension",
   "file",
 ] as const);

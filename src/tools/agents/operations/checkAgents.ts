@@ -1,5 +1,3 @@
-import { posix } from "node:path";
-
 import { spawnProcess } from "#foundation/processes/index";
 import { loadFormatter } from "#project/format/index";
 import {
@@ -16,10 +14,9 @@ import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
-import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
-import { listReferences } from "#tools/agents/utils/listReferences";
 import type { LoadedConfig } from "#project/config/index";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
@@ -169,25 +166,16 @@ export async function checkAgents(
         );
       }
 
-      for (const file of await filesystem.glob(
-        `${posix.dirname(skillFile.file)}/*.md`,
+      for (const file of await listStaleSkillFiles(
+        filesystem,
+        skillFile.file,
+        template,
       )) {
-        const content = (await filesystem.read(file)) ?? "";
-
-        const isStale = (
-          !template.files.some((output) => output.file === file) &&
-          listReferences(content).some((reference) => {
-            return isSupportingReference(reference, template.reference);
-          })
+        add(
+          agent,
+          "conflicting",
+          `${file}: stale supporting file of a shipped skill; sync agents`,
         );
-
-        if (isStale) {
-          add(
-            agent,
-            "conflicting",
-            `${file}: stale supporting file of a shipped skill; sync agents`,
-          );
-        }
       }
 
       if (agent === "codex") {

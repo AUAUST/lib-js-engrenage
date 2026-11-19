@@ -1,4 +1,4 @@
-import { rmSync } from "node:fs";
+import { existsSync, rmSync, writeFileSync } from "node:fs";
 
 import { describe, expect, test, vi } from "vitest";
 
@@ -252,6 +252,123 @@ describe("skill supporting files", () => {
 
     await expect(sync(project)).rejects.toThrow(
       'Expected one supporting file of skill "guide": mode.md',
+    );
+  });
+});
+
+function createSharedProject() {
+  function skill(name: string, body: string) {
+    return [
+      "---",
+      `title: ${name}`,
+      "description: A skill sharing a file.",
+      "category: fixture",
+      "order: 1",
+      "---",
+      "",
+      body,
+      "",
+    ].join("\n");
+  }
+
+  const shared = "Steps:\n\n<!-- @shared-file steps.md -->\n<!-- @end -->";
+
+  return createTemporaryProject({
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+    "engrenage.config.ts": [
+      "export default {",
+      '  agents: { preferred: ["claude", "codex"] },',
+      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
+      "};",
+    ].join("\n"),
+    "AGENTS.md": "Instructions\n",
+    "skills/package.json": JSON.stringify({
+      name: "@fixtures/skills",
+      exports: {
+        "./metalbrain/skills/*.md": "./metalbrain/skills/*.md",
+        "./metalbrain/shared/*.md": "./metalbrain/shared/*.md",
+      },
+    }),
+    "skills/metalbrain/skills/guide.md": skill("Guide", shared),
+    "skills/metalbrain/skills/other.md": skill(
+      "Other",
+      `${shared}\n\n<!-- @extension absent -->\n<!-- @shared-file gone.md -->\n<!-- @end -->\n<!-- @end -->`,
+    ),
+    "skills/metalbrain/shared/steps.md": "# Steps\n\nShared.\n",
+    "skills/metalbrain/shared/unused.md": "# Unused\n",
+  });
+}
+
+describe("shared skill files", () => {
+  const sharedReference = "@fixtures/skills/metalbrain/shared/steps.md";
+
+  test("installs a shared file beside each skill referencing it, rendered as its path", async () => {
+    const project = createSharedProject();
+
+    const config = await loadConfig(project.root);
+
+    await addAgentSkills(config, ["guide", "other"]);
+
+    await config.context.filesystem.flush();
+
+    for (const directory of [".claude/skills", ".agents/skills"]) {
+      for (const name of ["guide", "other"]) {
+        expect(project.read(`${directory}/${name}/steps.md`)).toBe(
+          `<!-- @reference ${sharedReference} -->\n\n# Steps\n\nShared.\n\n<!-- @end -->\n`,
+        );
+
+        expect(project.read(`${directory}/${name}/SKILL.md`)).toContain(
+          `\`${directory}/${name}/steps.md\``,
+        );
+      }
+    }
+
+    expect(
+      await config.context.filesystem.glob(
+        "{.claude,.agents}/skills/*/unused.md",
+      ),
+    ).toEqual([]);
+  });
+
+  test("fails on an unknown shared file and removes a copy once its skill no longer references it", async () => {
+    const project = createSharedProject();
+
+    const config = await loadConfig(project.root);
+
+    await addAgentSkills(config, ["guide", "other"]);
+
+    await config.context.filesystem.flush();
+
+    const guide = project.resolve("skills/metalbrain/skills/guide.md");
+
+    writeFileSync(
+      guide,
+      project
+        .read("skills/metalbrain/skills/guide.md")
+        .replace("steps.md", "missing.md"),
+    );
+
+    await expect(sync(project)).rejects.toThrow(
+      'Expected one shared file of skill "guide": steps.md, unused.md',
+    );
+
+    writeFileSync(
+      guide,
+      "---\ntitle: Guide\ndescription: A skill sharing a file.\ncategory: fixture\norder: 1\n---\n\nNo steps.\n",
+    );
+
+    await sync(project);
+
+    expect(existsSync(project.resolve(".claude/skills/guide/steps.md"))).toBe(
+      false,
+    );
+
+    expect(existsSync(project.resolve(".agents/skills/guide/steps.md"))).toBe(
+      false,
+    );
+
+    expect(existsSync(project.resolve(".claude/skills/other/steps.md"))).toBe(
+      true,
     );
   });
 });

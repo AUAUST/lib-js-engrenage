@@ -2,6 +2,7 @@ import { validate } from "#foundation/options/index";
 import { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 import { skillFileName } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import type { Extension } from "#project/config/index";
 import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 import type { Directory } from "#types/Directory";
@@ -16,6 +17,10 @@ export async function getSkillDefinitions(config: {
     extensions: config.extensions,
     supporting: true,
   });
+
+  const shared = render === undefined
+    ? []
+    : await getSharedFiles(config.extensions ?? []);
 
   return Promise.all(
     templates.map(async (template) => {
@@ -39,10 +44,16 @@ export async function getSkillDefinitions(config: {
 
       const { renderer, skillsDirectory } = render;
 
+      const files = template.supporting.map(({ name }) => name);
+
+      const referenced = new Set<string>();
+
       const skill = {
         directory: skillsDirectory,
         skill: template.name,
-        files: template.supporting.map(({ name }) => name),
+        files,
+        shared: shared.map(({ name }) => name),
+        onSharedFile: (file: string) => referenced.add(file),
       };
 
       const supporting = await Promise.all(
@@ -58,11 +69,32 @@ export async function getSkillDefinitions(config: {
         }),
       );
 
+      const body = await renderer.render(template.body, template.source, skill);
+
+      const installed = shared.filter(({ name }) => referenced.has(name));
+
+      for (const { name, source } of installed) {
+        if (name === skillFileName || files.includes(name)) {
+          throw new Error(
+            `Shared file ${name} collides with a file of skill "${template.name}": ${source}`,
+          );
+        }
+      }
+
+      const sharedCopies = await Promise.all(
+        installed.map(async (file) => {
+          return {
+            ...file,
+            body: await renderer.render(file.body, file.source),
+          };
+        }),
+      );
+
       return {
         ...template,
         ...metadata,
-        body: await renderer.render(template.body, template.source, skill),
-        supporting,
+        body,
+        supporting: [...supporting, ...sharedCopies],
       };
     }),
   );

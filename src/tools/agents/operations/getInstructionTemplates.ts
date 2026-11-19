@@ -1,6 +1,5 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
-import { pathToFileURL } from "node:url";
 
 import {
   array,
@@ -15,10 +14,10 @@ import {
 
 import { sort } from "@auaust/toolkit/array";
 
-import { engrenage } from "#constants";
-import { listDataFiles, resolveDataFile } from "#foundation/data/index";
+import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
 import { metalbrain } from "#tools/agents/constants";
+import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import type { Extension } from "#project/config/index";
 import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
@@ -50,11 +49,6 @@ export async function getInstructionTemplates(
     supporting?: boolean;
   } = {},
 ) {
-  const engrenageRoot = new URL(
-    ".",
-    pathToFileURL(resolveDataFile(`${engrenage}/package.json`)),
-  );
-
   const active = new Set(
     extensions.map(({ name }) => {
       return name;
@@ -63,12 +57,7 @@ export async function getInstructionTemplates(
 
   const subpath = `./${metalbrain}/${kind}/*.md` as const;
 
-  const origins: readonly URL[] = [
-    engrenageRoot,
-    ...extensions.flatMap(({ root }) => {
-      return root === undefined ? [] : [root];
-    }),
-  ];
+  const origins = listFragmentOrigins(extensions);
 
   async function render(content: string, source: string) {
     return renderer === undefined

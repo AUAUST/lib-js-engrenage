@@ -26,16 +26,27 @@ async function buildRenderer(config: LoadedConfig): Promise<FragmentRenderer> {
         conditions,
         skill === undefined
           ? fillers
-          : { ...fillers, "skill-file": createSkillFileFiller(skill) },
+          : {
+              ...fillers,
+              "skill-file": createSkillFileFiller(skill, {
+                kind: "supporting",
+                files: skill.files,
+              }),
+              "shared-file": createSkillFileFiller(skill, {
+                kind: "shared",
+                files: skill.shared,
+                onFill: skill.onSharedFile,
+              }),
+            },
       );
     },
   };
 }
 
 /**
- * Creates the renderer of agent instruction fragments for a loaded config,
- * holding its contributed fillers and the built-in `@skill-file` filler, and
- * filtering its `@extension` and `@file` blocks.
+ * Creates the renderer of agent instruction fragments for a loaded config, holding
+ * its contributed fillers and the built-in `@skill-file` and `@shared-file`
+ * fillers, and filtering its `@extension` and `@file` blocks.
  */
 export function createFragmentRenderer(
   config: LoadedConfig,

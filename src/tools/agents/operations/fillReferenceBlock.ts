@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
@@ -13,6 +14,7 @@ import type { File } from "#types/File";
 interface ShippedSkill {
   readonly skill: string;
   readonly files: readonly string[];
+  readonly shared: readonly string[];
 }
 
 const loadedSkills = new WeakMap<
@@ -23,10 +25,16 @@ const loadedSkills = new WeakMap<
 async function indexSkills(
   config: LoadedConfig,
 ): Promise<ReadonlyMap<string, ShippedSkill>> {
+  const extensions = await listActiveExtensions(config);
+
   const templates = await getInstructionTemplates("skills", {
-    extensions: await listActiveExtensions(config),
+    extensions,
     supporting: true,
   });
+
+  const sharedFiles = await getSharedFiles(extensions);
+
+  const shared = sharedFiles.map(({ name }) => name);
 
   const skills = new Map<string, ShippedSkill>();
 
@@ -34,6 +42,7 @@ async function indexSkills(
     const skill = {
       skill: name,
       files: supporting.map((supported) => supported.name),
+      shared,
     };
 
     for (const shipped of [
@@ -104,7 +113,7 @@ async function findReference(
  * instruction fragment the reference resolves to. A reference that cannot be
  * resolved leaves its block untouched and logs a warning. A skill's fragments, or
  * the snippets overriding them, filled in a runtime's skills or agents directory
- * also render `@skill-file`.
+ * also render `@skill-file` and `@shared-file`.
  *
  * @throws {Error} The marker names no single reference.
  */

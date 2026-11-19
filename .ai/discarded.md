@@ -123,3 +123,4 @@
 - GraphQL engine in @auaust/codegen: Interscript GraphQL generation (package split report) — @graphql-codegen/cli and gql.tada provide it; schemas are client data
 - rulesync, @intellectronica/ruler, agentsmesh: instruction distribution (package split report) — copy one source to runtimes, no packs, providers, hooks, gates or planning contract
 - Claude subagent `skills:` preload: reach supporting files from agent files — Claude-only; skills with disable-model-invocation cannot be preloaded
+- `./metalbrain/shared/*.md` export before any shared file: let skills share supporting files — publint fails on an export matching no files; ship it with the first file

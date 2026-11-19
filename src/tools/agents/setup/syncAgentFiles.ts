@@ -1,3 +1,5 @@
+import { posix } from "node:path";
+
 import { syncFiles } from "#foundation/blocks/index";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import {
@@ -5,6 +7,7 @@ import {
   backlogCategoriesHeading,
   backlogIndex,
   backlogTemplate,
+  skillFileName,
 } from "#tools/agents/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
@@ -13,6 +16,7 @@ import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
 import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
@@ -140,6 +144,22 @@ async function migrateFormerRules(config: {
   }
 }
 
+async function removeStaleSkillFiles(
+  filesystem: Filesystem,
+  skillFile: File,
+  skill: { reference: string; files: readonly { file: File }[] },
+) {
+  const installed = await filesystem.read(skillFile);
+
+  if (installed?.includes(formatReferenceMarker(skill.reference)) !== true) {
+    return;
+  }
+
+  for (const file of await listStaleSkillFiles(filesystem, skillFile, skill)) {
+    await filesystem.remove(file);
+  }
+}
+
 async function migrateBacklogIndex(filesystem: Filesystem) {
   const content = await filesystem.read(backlogIndex);
 
@@ -222,6 +242,10 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     const { reference, files: skillFiles } = template;
 
     for (const { file, content, frontmatter, skillFile } of skillFiles) {
+      if (posix.basename(file) === skillFileName) {
+        await removeStaleSkillFiles(config.filesystem, file, template);
+      }
+
       if (skillFile !== undefined) {
         const installed = await config.filesystem.read(skillFile);
 
