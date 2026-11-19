@@ -182,7 +182,7 @@ The user delegated every decision the instructions let an agent settle and is no
 
 ## Agent limits
 
-<!-- @agent-limits -->
+<!-- @agent-limits worker debugger merger planner -->
 <!-- @end -->
 
 ## Stops and restarts

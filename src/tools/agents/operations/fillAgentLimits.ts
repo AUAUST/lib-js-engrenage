@@ -3,10 +3,23 @@ import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensi
 import { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
 import type { LoadedConfig } from "#project/config/index";
 
-export async function fillAgentLimits(config: LoadedConfig): Promise<string> {
+export async function fillAgentLimits(
+  config: LoadedConfig,
+  ...names: string[]
+): Promise<string> {
+  const definitions = await getSkillDefinitions({
+    extensions: await listActiveExtensions(config),
+  });
+
+  if (names.length === 0) {
+    return renderAgentLimits(definitions);
+  }
+
   return renderAgentLimits(
-    await getSkillDefinitions({
-      extensions: await listActiveExtensions(config),
+    names.flatMap((name) => {
+      return definitions.filter(({ agent }) => {
+        return agent?.name === name;
+      });
     }),
   );
 }

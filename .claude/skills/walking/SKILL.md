@@ -183,13 +183,10 @@ The user delegated every decision the instructions let an agent settle and is no
 
 | Agent      | Default effort | Effort by complexity                  | Fresh up to             |
 | ---------- | -------------- | ------------------------------------- | ----------------------- |
-| `analyser` | high           | none                                  | no limit                |
-| `planner`  | medium         | none                                  | 2× its starting context |
-| `debugger` | medium         | `trivial`: low, `complex`: high       | no limit                |
 | `worker`   | low            | `involved`: medium, `complex`: medium | no limit                |
+| `debugger` | medium         | `trivial`: low, `complex`: high       | no limit                |
 | `merger`   | medium         | none                                  | 2× its starting context |
-| `curator`  | high           | none                                  | no limit                |
-| `writer`   | medium         | `trivial`: low, `complex`: high       | no limit                |
+| `planner`  | medium         | none                                  | 2× its starting context |
 
 ## Stops and restarts
 
