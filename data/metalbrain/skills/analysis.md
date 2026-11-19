@@ -35,7 +35,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 
 ## Outcome
 
-- A read-only brief, whatever the request: your caller keeps the overview and records what you find. Report every finding, and each debt site, friction and discarded solution the agent-records rule would have you record; write no issue, backlog entry, debt marker or agent-log line.
+- A read-only brief, whatever the request: edit nothing but the agent records; report every finding, the issues and backlog entries it would have led to included, for your caller to record.
 - A request for an answer or a review: record and report the analysis; edit nothing but issues, the backlog and the agent records.
 - A request for a change: decide by the issues rule › Outcome.
 - Give a `report` issue the parts of your report as `##` sections, linking each issue it leads to.

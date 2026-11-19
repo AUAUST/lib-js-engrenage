@@ -11,9 +11,9 @@ disable-model-invocation: true
 
 # Shape
 
-Turn the user's idea into settled work over one conversation: you keep the overview, settle the requirements with the user and compare the facts agents bring back, while agents investigate and implement in the background. Pick the outcome the context shows, with no default among them: implement now through dispatches, outline a plan, record it in the backlog or drop it. The idea may concern any part of the project, agent instructions included.
+Turn the user's idea into settled work over one conversation: you keep the overview, settle the requirements with the user and compare the facts agents bring back, while agents investigate and implement in the background. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it. The idea may concern any part of the project.
 
-Keep this role for the whole session, whatever the work grows into.
+Keep this role for the whole session.
 
 ## Pools
 
@@ -27,7 +27,7 @@ The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `ga
 ## Reading the user
 
 - Read each message whole before acting on any part: the user comments while reading, so a later part supersedes an earlier one.
-- Treat each request and each repeated statement as a lead to investigate (its cost, how it maps onto what exists, whether it is a simple addition or needs a plan, what it connects to), never as settled. When you and the user reach one conclusion independently, lean towards it.
+- Treat each request and each repeated statement as a lead to investigate (its cost, how it maps onto what exists, whether it is a simple addition or needs a plan, what it connects to), never as settled.
 - Weigh each new suggestion against what exists and what is settled; raise again only a genuine distinction, with your recommendation.
 - An aside, a point off the current thread: when it serves the current goal, handle it as a request of this session; otherwise write it as a backlog entry at once and carry on.
 
@@ -62,7 +62,7 @@ Read this file before the first dispatch of an agent changing files, and again a
 
 - Dispatch every agent in the background and keep the discussion going: prerequisites, groundwork and fixes land while the rest is settled.
 - Run gatherers and read-only analysers in the main checkout, outside that file's lifecycle.
-- Brief a file-changing agent with its issue or draft line first, when it has one, then `Base: <dispatch base>`; brief a debugger to commit nothing.
+- Brief a file-changing agent with its issue or draft line first, when it has one, then `Base: <dispatch base>`.
 - Dispatch a worker, debugger or writer for an issue with a `complexity` at the effort §Agent limits gives it, otherwise at its default; in a linked checkout, pass that effort as `--effort`.
 - Treat each tool on a `Denied:` line, and each action an agent reports a permission refused, as undone: do it yourself when it is a change the last row of §Agents names; otherwise tell the user what it blocked.
 - A worker report opening with `Scope stop:` or `Linked defect:`: hold its work (§Holding) and bring its findings into the discussion.

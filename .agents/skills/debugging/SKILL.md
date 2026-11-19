@@ -72,7 +72,9 @@ A merger's improvement finding is accepted work. With a `Walk:` line in your bri
   | Written up | The issue URL or backlog entry ID, ready to implement or needing planning                  |
   | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
 
-- Commit under the git rules.
-- With a `Walk:` line in your brief, commit nothing instead: the walker commits your work.
+## Commits
+
+- **As a subagent.** Leave your work uncommitted: your caller commits it.
+- **In the main session.** Commit under the git rules.
 
 <!-- @end -->

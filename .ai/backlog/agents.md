@@ -45,18 +45,12 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: renaming `issue-implementation` to `implement` left references in `walking.md` and `planning.md` that only a grep caught.
 - want: sync fails on a fragment naming a skill that does not exist or appears only in a `formerly` list.
 
-## 9. The debugger commits its own work unless a `Walk:` line says otherwise
-
-- sites: `data/metalbrain/skills/debugging.md:103`
-- why: `shape` reviews and commits its agents' work, so it must brief debuggers "commit nothing"; the worker already leaves commits to any caller as a subagent.
-- want: the debugger, as a subagent, leaves its work uncommitted for its caller, as the worker does.
-
-## 10. Nothing checks references between shared skill files
+## 9. Nothing checks references between shared skill files
 
 - why: `linked-checkouts.md` relies on `worktree-dispatch.md`, and `.claude/rules/agent-fragments.md` asks every skill referencing the first to reference the second; `<file>.md › <Section>` references are unchecked too.
 - want: sync fails on a shared file naming one its referencing skill lacks, and on a section reference to a missing section.
 
-## 11. The resume hook names the walking skill
+## 10. The resume hook names the walking skill
 
 - sites: `src/tools/agents/operations/checkAgentResume.ts:107`
 - why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.

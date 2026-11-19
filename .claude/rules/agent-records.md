@@ -6,7 +6,7 @@
 - **Discarded solution**, `.ai/discarded.md` under `# Discarded solutions`: each pattern, abstraction, refactor, library or tool you set aside because its cost exceeded what the task or your role allows. Form: `- <subject>: <need> — <reason set aside>`, naming a library by its package name.
 - **Debt**, a comment at the code: code that could be better and that you are not fixing. Form: `@debt <statement>` at the start of its own comment, one per comment, stating what could be better as you see it; a fix only when you already know one.
 
-- Record within the task, without asking first, whatever edit scope your role sets, and only in the current repository. Report instead what you notice elsewhere, and each record whose file your brief forbids you to edit.
+- Write each record yourself as soon as you find what it records, without asking or awaiting review, whatever your role, mode or brief, read-only included; only in the current repository. Report instead what you notice elsewhere.
 - Create a log when absent, under its heading. Write each line a few words per part, so repeated mentions of a subject match.
 - Before weighing a solution or reporting friction, search its log for the subject. A subject with three or more lines is recurring: report it as a candidate with its line count and the needs it records.
 - Remove a subject's lines once a backlog entry, an issue or a change takes it up, and a debt marker only when your change resolves it.
