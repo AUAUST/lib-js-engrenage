@@ -171,6 +171,9 @@ describe("syncAgentFiles", () => {
 
       expect(config.context.filesystem.changes()).toEqual([
         expect.objectContaining({
+          file: ".claude/skills/analysis/analysis.md",
+        }),
+        expect.objectContaining({
           file: ".claude/skills/analysis/SKILL.md",
         }),
       ]);

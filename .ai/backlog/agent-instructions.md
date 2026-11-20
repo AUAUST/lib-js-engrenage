@@ -60,8 +60,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 12. Flaky gate failures and the walker's resume count have no rule
 
-- why: the stop gate blocks only the first stop and has failures listed without edits, but load timeouts fail it transiently and walking's resume limit counts any gate failure (friction ×3).
-- want: rerun the gate once before reporting; the walker counts failures outside the leaf's change as no resume cause.
+- why: load timeouts fail the stop gate transiently, and walking's resume limit counts any gate failure (friction ×3).
+- want: rerun the gate once before reporting; failures outside the leaf's change are no resume cause.
 
 ## 13. A question asked mid-task can end the task
 
@@ -76,8 +76,8 @@ Shared agent instructions, skills and the backlog conventions.
 ## 15. Instruction sync keeps or drops rules silently
 
 - sites: `src/tools/agents/setup/syncAgentFiles.ts:74`, `src/tools/agents/setup/syncAgentFiles.ts:131`, `src/tools/agents/setup/syncAgentFiles.ts:222`, `src/tools/agents/operations/getInstructionTemplates.ts:91`, `src/tools/agents/operations/migrateInstructionLocations.ts:34`
-- why: a removed extension leaves its rules installed; a merged former rule loses its project lines; an upgrade cannot tell a deleted default rule from a new one; an unknown `extension` hides a fragment; external extensions' former markers stay unresolvable.
-- want: each case reported or failed by sync. Related: #699.
+- why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; unknown `extension` hides fragments; external former markers stay unresolved.
+- want: sync reports or fails each. Related: #699.
 
 ## 16. Instruction markers have no single definition
 
@@ -100,8 +100,3 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/sections/analysis.md:21`
 - why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
 - want: a section-level filler rendering the installed path of a shared file for the reading runtime.
-
-## 20. The instructions rule survives as a pointer stub
-
-- why: the instruction-writing skill now holds its rules; retiring it needs sync to remove installed copies and their override rows, and init and its tests to stop offering it.
-- want: the rule retired; Instruction maintenance alone points to the skill.

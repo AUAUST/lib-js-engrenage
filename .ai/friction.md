@@ -69,3 +69,5 @@
 - Write tool on instruction sources: writing `data/metalbrain/shared/analysis.md` as a subagent — harness refused it as a report file; wrote it through a shell heredoc
 - `@shared-file` marker: indented inside a list item — sync left it unrendered and installed no copy; moved it to a paragraph at column 0
 - sync table-cells check: two-row report table in a skill — failed on cells over 25 words, a limit no instruction states; moved the rows into a list
+- commit gate: committing retired-rule change — pre-existing failing agent tests blocked it; left uncommitted
+- commit gate budgets: staging the backlog file — pre-existing over-budget entries 12 and 15 fail the gate

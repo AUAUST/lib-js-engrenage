@@ -18,8 +18,10 @@ describe("addAgentSkills", () => {
     expect(config.context.filesystem.changes()).toEqual(
       [
         ".claude/skills/debugging/SKILL.md",
+        ".claude/skills/debugging/analysis.md",
         ".claude/agents/debugger.md",
         ".agents/skills/debugging/SKILL.md",
+        ".agents/skills/debugging/analysis.md",
         ".agents/skills/debugging/agents/openai.yaml",
         ".codex/agents/debugger.toml",
         ".codex/agents/debugger_low.toml",
