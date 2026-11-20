@@ -103,18 +103,12 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: briefs are checked against the caller's contract names, not the target checkout's; a recipient that is no agent id resolves by role name, so other names escape the resume limit.
 - want: the target's contract names; recipients resolved to agent ids.
 
-## 19. A `gh` body read from a file is not measured
-
-- sites: `src/tools/agents/operations/measureGithubCommand.ts:23`
-- why: `--body-file`, piped or unreadable bodies are measured as the whole command text.
-- want: the body file read.
-
-## 20. The Claude settings prompt lists raw hook matchers
+## 19. The Claude settings prompt lists raw hook matchers
 
 - sites: `src/tools/agents/claude/setup/createClaudeSettingsStep.ts:15`
 - want: the prompt names what each hook checks.
 
-## 21. The worker dispatch hook misreads cross-repository ancestors and stale fields
+## 20. The worker dispatch hook misreads cross-repository ancestors and stale fields
 
 - why: friction ×4, two from these: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after **Planning** was removed by `gh issue edit`, until claim and publish.
 - want: ancestor references resolved against the issue's own repository; the Blockers check reading the body, not only the field.

@@ -77,13 +77,7 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - why: no environment glob or engrenage resource covers it since #702 replaced the root `env.d.ts` resource; `eslint global.d.ts` reports "File ignored", `prettier:all` skips it.
 - want: the file in the lint and format coverage while it exists.
 
-## 14. Tsconfig types restate the managed fields
-
-- sites: `src/project/tsconfig/types/ManagedEnvironmentTsconfig.ts:9`, `src/project/tsconfig/types/ResolvedEnvironmentTsconfig.ts:7`, `src/project/tsconfig/types/TsconfigTarget.ts:13`, `src/project/workspaces/types/WorkspaceTsconfig.ts:4`
-- why: each repeats `extends`, `include`, `exclude`, `lib`, `types`, `compilerOptions` and `unmanaged` (jscpd).
-- want: one interface of the managed fields, extended by each.
-
-## 15. Default-exported expressions are declared as `const`
+## 14. Default-exported expressions are declared as `const`
 
 - sites: `src/tools/typescript/config/sections/declarationsSection.ts:248`
 - why: `SourceDeclaration.kind` has no member for them.

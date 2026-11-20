@@ -35,5 +35,5 @@ The extension registry and extension declarations.
 ## 6. The lint rule loader in `engrenage.config.ts` is lazy only to skip ESLint tools
 
 - sites: `engrenage.config.ts:36`
-- why: a config load would otherwise import `tools/eslint`.
+- why: a config load would otherwise import `tools/eslint`. Related: #616.
 - done: #331 injects the tools a run needs; then drop the loader.

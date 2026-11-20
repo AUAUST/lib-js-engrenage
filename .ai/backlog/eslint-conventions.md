@@ -53,19 +53,13 @@ ESLint rules and conventions engrenage ships.
 - why: `Rule` types options as mutable tuples, which the constants role rejects. Related: `eslint-conventions.4`.
 - want: the constants role accepts readonly tuples, or rule options typed readonly.
 
-## 10. Six boundary conventions repeat the same wiring
-
-- sites: `src/tools/eslint/conventions/structure/importData.ts:1`, `importEnvironments.ts:1`, `importLayers.ts:1`, `importSurfaces.ts:1`, `importTests.ts:1`, `importWorkspaces.ts:1`
-- why: each repeats the sections and `defineBoundaryRule` call, differing only by check and description (jscpd).
-- want: one boundary convention factory taking the check and description.
-
-## 11. Tooling definer entries are memoized per process
+## 10. Tooling definer entries are memoized per process
 
 - sites: `tooling/eslint/rules/definerEntries.ts:59`
 - why: a long-lived ESLint, such as an editor server, keeps an entry's first reading after the config changes. Related: #57.
 - want: memoized per lint run.
 
-## 12. `engrenage debt` loads every ESLint plugin to run one rule
+## 11. `engrenage debt` loads every ESLint plugin to run one rule
 
 - sites: `src/tools/eslint/operations/listDebtMarkers.ts:24`
 - why: a cold run takes seconds. Related: #554.

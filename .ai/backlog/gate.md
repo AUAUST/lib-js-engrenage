@@ -21,8 +21,8 @@ The commit gate and its process locks.
 
 ## 4. `gate --worktree` in a shared checkout touches other sessions' work
 
-- why: it fixes files other sessions changed, and its lint output interleaves runs from other worktrees (6 friction lines; #615 › F25).
-- want: the gate limited to the session's own changes, and output kept per run.
+- why: it fixes files other sessions changed, and its lint output interleaves runs from other worktrees (friction ×8; #615 › F25). #666 limits the stop gate to a session's files.
+- want: `gate --worktree` scoped like #666's stop gate; output kept per run.
 
 ## 5. The commit gate refuses the `snap` commit setting aside a leaf held for a failing gate
 

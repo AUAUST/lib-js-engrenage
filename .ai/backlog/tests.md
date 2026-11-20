@@ -31,12 +31,7 @@ Test infrastructure and coverage gaps.
 - why: temporary projects, ESLint instances and `syncProject` helpers are repeated; jscpd finds 18 test clones, also in `createEslintConfig`, `syncLefthookConfig`, `issueContract`, `issueTree`, `runGateLocalFiles`, `produceTsconfigRuntime` and `enableLinkedSource`/`findSourceExecutable`.
 - want: shared builders in `tests/utils`, starting with the marked sites.
 
-## 6. Console spies silence nothing since #638
-
-- sites: `tests/src/tools/typescript/produceTsconfigSolution.test.src.ts:189`, `tests/src/workflows/cli/runTool.test.src.ts:41`
-- want: the spies removed.
-
-## 7. Tests reloading a project's config get cached state
+## 6. Tests reloading a project's config get cached state
 
 - why: friction ×3: between two loads of one root, a rewritten `engrenage.config.ts` stays cached by Node, a deleted file stays in the cached filesystem, aliases stay memoized; agents call `loadConfig.refresh` or edit through `config.context.filesystem`. Related: `configuration.6`, #57.
 - want: a test utility that changes a temporary project and returns a freshly loaded config.

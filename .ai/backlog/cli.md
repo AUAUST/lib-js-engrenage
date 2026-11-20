@@ -24,7 +24,7 @@ Command definitions, registration and program runs.
 
 - sites: `src/workflows/cli/operations/createProgram.ts:20`, `src/workflows/cli/operations/runProgram.ts:35`, `src/workflows/cli/operations/defineCommand.ts:1`
 - why: the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text; `defineCommand` and `defineLazyCommand` clone each other (jscpd).
-- want: extensions applied at the root; messages without the prefix; one command definer.
+- want: extensions applied at the root; messages without the prefix; one command definer. Related: #385 moves the definers.
 
 ## 5. Tool runs and linked sources resolve against the wrong base
 

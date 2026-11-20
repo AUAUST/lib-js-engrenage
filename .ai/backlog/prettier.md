@@ -32,31 +32,25 @@ The Prettier tool domain: layout plugin, layout conventions and formatting runs.
 - why: the visitor walks every enumerable key but known metadata instead of the parser's visitor keys; cached statement pairs hold only while no convention mutates the program between traversals.
 - want: the parser's visitor keys; pairs recomputed or invalidated on mutation.
 
-## 6. `groupedOverloads` joins signatures of different functions
-
-- sites: `src/tools/prettier/conventions/layout/groupedOverloads.ts:20`
-- why: it groups consecutive signatures of differently named functions, as ESLint's `function-overload` matcher did.
-- want: only overloads of one function grouped.
-
-## 7. Plugins named by a string bypass the layout and printer plugins
+## 6. Plugins named by a string bypass the layout and printer plugins
 
 - sites: `src/tools/prettier/operations/createPrettierConfig.ts:52`, `src/tools/prettier/ports/PrettierPlugin.ts:19`
 - why: Prettier loads string or URL plugins itself, so the layout plugin cannot wrap their parsers nor the printer chain their `estree` printer, and both shadow them; a contributed plugin's `options` is dropped without `files`, silently. #573 changes the plugin contract the other way (specifiers for the parallel CLI).
 - done: needs planning with #573: wrap named plugins or change the plugin contract; an error for dropped `options`.
 
-## 8. Formatting scope is every changed file and only changed files
+## 7. Formatting scope is every changed file and only changed files
 
 - sites: `src/tools/prettier/operations/fixWithPrettier.ts:7`, `src/tools/prettier/operations/fixWithPrettier.ts:8`
 - why: a Prettier config or plugin change leaves unchanged files for CI to reject; changed files outside the declared environments, engrenage's own included, are formatted too.
 - done: needs planning: formatting scope.
 
-## 9. `canonicalJsdoc` approximates Markdown by line prefixes
+## 8. `canonicalJsdoc` approximates Markdown by line prefixes
 
 - sites: `src/tools/prettier/conventions/layout/canonicalJsdoc.ts:65`, `src/tools/prettier/conventions/layout/canonicalJsdoc.ts:164`
 - why: list items, verbatim lines and paragraphs are told apart by prefixes, approximating indented code and lazy continuations; a code body is recovered by slicing the tag text, holding only while `splitDocTag` returns it as the unmodified tail. Related: `docs.2`.
 - want: a Markdown parser; `splitDocTag` returning the body's offset.
 
-## 10. Ignore files repeat Git's hash-comment syntax
+## 9. Ignore files repeat Git's hash-comment syntax
 
 - sites: `src/tools/prettier/extension.ts:96`, `src/tools/prettier/extension.ts:109`
 - why: `tools/git` declares the same syntax as `hashBlocks`.

@@ -77,7 +77,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 - sites: `src/tools/agents/setup/syncAgentFiles.ts:74`, `src/tools/agents/setup/syncAgentFiles.ts:131`, `src/tools/agents/setup/syncAgentFiles.ts:222`, `src/tools/agents/operations/getInstructionTemplates.ts:91`, `src/tools/agents/operations/migrateInstructionLocations.ts:34`
 - why: a removed extension leaves its rules installed; a merged former rule loses its project lines; an upgrade cannot tell a deleted default rule from a new one; an unknown `extension` hides a fragment; external extensions' former markers stay unresolvable.
-- want: each case reported or failed by sync.
+- want: each case reported or failed by sync. Related: #699.
 
 ## 16. Instruction markers have no single definition
 
