@@ -5,6 +5,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
 import { claudeShellVariable } from "#tools/agents/claude/constants";
+import { statsDirectory } from "#tools/agents/metalbrain/constants";
 import type { Agent } from "#tools/agents/types/Agent";
 import type { AgentTokens } from "#tools/agents/types/AgentTokens";
 import type { BlockSyntax } from "#types/BlockSyntax";
@@ -157,9 +158,7 @@ export const hookEvents = freeze([
   "SubagentStop",
 ] as const);
 
-export const agentStatsDirectory = ".ai/stats" satisfies Directory;
-
-export const mainAgent = "main";
+export const agentStatsDirectory = statsDirectory satisfies Directory;
 
 export const tokenWeights = freeze({
   input: 1,
@@ -178,3 +177,5 @@ export const defaultInstructionFiles = freeze([
 ] as const) satisfies Globs;
 
 export const tableCellWords = 25;
+
+export { mainAgent } from "#tools/agents/metalbrain/constants";

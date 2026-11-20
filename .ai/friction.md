@@ -98,3 +98,6 @@
 - WebFetch on the Anthropic Messages API reference: needed the response Usage schema — 1.3M-character page, the first 100k characters held only the request side; did not page on, took usage fields from the prompt-caching, fast-mode and compaction pages
 - WebFetch on code.claude.com docs: fetched long pages — truncated at 100k chars, needed offset re-fetches; PreCompact subagent behaviour not documented
 - Claude Code worktree isolation: sed edit chained with a gate run whose text named git — refused as unverifiable; edited through the edit tool, ran the gate alone
+- Claude Code worktree isolation: a heredoc writing source files and a chained command naming git — refused as unverifiable; wrote files through the edit tools and split the commands
+- `pnpm engrenage` after sync adds a `bin` entry: ran typecheck — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace bins changed since install; ran `pnpm install --offline`
+- `engrenage sync` after changing `data.exports`: added an export and synced — sync left `package.json` exports stale, so self-referencing the new subpath failed; ran `pnpm engrenage tsdown`

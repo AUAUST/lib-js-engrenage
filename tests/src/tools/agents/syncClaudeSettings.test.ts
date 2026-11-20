@@ -67,6 +67,18 @@ describe("syncClaudeSettings", () => {
           },
         ],
       },
+      {
+        matcher: "*",
+        hooks: [
+          {
+            type: "command",
+            command: expect.stringContaining(
+              "exec node_modules/.bin/metalbrain hook claude PreToolUse;",
+            ),
+            async: true,
+          },
+        ],
+      },
     ]);
 
     await syncClaudeSettings(config);

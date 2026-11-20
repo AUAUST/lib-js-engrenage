@@ -15,7 +15,8 @@
   "type": "module",
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs",
-    "engrenage-hook": "./dist/bin/engrenage-hook.mjs"
+    "engrenage-hook": "./dist/bin/engrenage-hook.mjs",
+    "metalbrain": "./dist/bin/metalbrain.mjs"
   },
   "scripts": {
     "build": "pnpm run engrenage tsdown && pnpm run engrenage typecheck:dist && pnpm run engrenage vitest:dist",
@@ -253,6 +254,7 @@
     "./metalbrain/sections/*.md": "./data/metalbrain/sections/*.md",
     "./metalbrain/skills/*.md": "./data/metalbrain/skills/*.md",
     "./metalbrain/shared/*.md": "./data/metalbrain/shared/*.md",
+    "./metalbrain/models.json": "./data/metalbrain/models.json",
     "./package.json": "./package.json",
     "./github/workflows/*.yml": "./data/github/workflows/*.yml",
     "./tsconfig/*.json": "./data/tsconfig/*.json",
@@ -477,6 +479,7 @@
       "./metalbrain/sections/*.md": "./data/metalbrain/sections/*.md",
       "./metalbrain/skills/*.md": "./data/metalbrain/skills/*.md",
       "./metalbrain/shared/*.md": "./data/metalbrain/shared/*.md",
+      "./metalbrain/models.json": "./data/metalbrain/models.json",
       "./package.json": "./package.json",
       "./github/workflows/*.yml": "./data/github/workflows/*.yml",
       "./tsconfig/*.json": "./data/tsconfig/*.json",

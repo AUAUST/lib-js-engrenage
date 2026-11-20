@@ -1,0 +1,85 @@
+{
+  "read": "2026-11-20",
+  "source": {
+    "prices": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "limits": "https://platform.claude.com/docs/en/about-claude/models/overview"
+  },
+  "models": {
+    "claude-opus-5-5": {
+      "family": "opus",
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 4,
+            "cacheWrite5m": 5,
+            "cacheWrite1h": 8,
+            "cacheRead": 0.2,
+            "output": 20
+          }
+        },
+        {
+          "name": "fast",
+          "condition": { "speed": "fast" },
+          "prices": {
+            "input": 8,
+            "cacheWrite5m": 10,
+            "cacheWrite1h": 16,
+            "cacheRead": 0.4,
+            "output": 40
+          }
+        }
+      ]
+    },
+    "claude-sonnet-5-5": {
+      "family": "sonnet",
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 2,
+            "cacheWrite5m": 2.5,
+            "cacheWrite1h": 4,
+            "cacheRead": 0.1,
+            "output": 10
+          }
+        }
+      ]
+    },
+    "claude-haiku-5-5": {
+      "family": "haiku",
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 0.1,
+            "cacheWrite5m": 0.125,
+            "cacheWrite1h": 0.2,
+            "cacheRead": 0.01,
+            "output": 0.5
+          }
+        },
+        {
+          "name": "long",
+          "condition": { "contextAbove": 100000 },
+          "prices": {
+            "input": 0.5,
+            "cacheWrite5m": 0.625,
+            "cacheWrite1h": 1,
+            "cacheRead": 0.05,
+            "output": 2.5
+          }
+        }
+      ]
+    }
+  }
+}

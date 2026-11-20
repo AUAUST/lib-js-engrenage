@@ -20,9 +20,10 @@ bin/  (global roles: executable.ts *.ts)
 │  │  ├─ issue  Create, claim, check and publish issue drafts, and check published issues.
 │  │  └─ walk  Check a walked issue tree.
 │  └─ pnpm  Package manager maintenance commands.
-└─ engrenage-hook{claude codex}  Agent runtime hook commands, run directly by the runtimes' settings.
-   ├─ claude  Claude hook events.
-   └─ codex  Codex hook events.
+├─ engrenage-hook{claude codex}  Agent runtime hook commands, run directly by the runtimes' settings.
+│  ├─ claude  Claude hook events.
+│  └─ codex  Codex hook events.
+└─ metalbrain  The lean metalbrain hook program, run directly by the runtimes' settings.
 ```
 
 Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.

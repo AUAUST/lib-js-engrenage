@@ -149,3 +149,5 @@
 - dispatch budget defaults: per-role default level for omitted `Budget:` lines — kept as an AGENTS.md table; an `agent:` frontmatter `budget` field the hook could read needs schema and renderer code beyond an instruction change
 - budget handover in the stopped agent's worktree: fresh agent continuing uncommitted work — `agents dispatch` runs headless, denying every prompt; a handover commit towards the task reuses walk check's checkpoint commits
 - budget handover via snap hold branch as successor `Base:`: carry uncommitted work to a fresh worktree — the snap commit would be cherry-picked onto the working branch
+- `#workflows/cli` (commander) for the metalbrain CLI: route `metalbrain hook claude <event>` (#370) — the command layer roughly doubles a no-op hook call; a lookup table of hook actions instead
+- `valibot` and `@auaust/toolkit` guards in the metalbrain hook: validate model facts and payloads (#370) — the hook loads only Node builtins; hand-written guards marked as debt instead

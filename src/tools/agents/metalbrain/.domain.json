@@ -1,0 +1,3 @@
+{
+  "purpose": "Log each agent tool call with its duration, output size and dollar cost, loading only Node builtins and the model facts so hooks fire cheaply."
+}

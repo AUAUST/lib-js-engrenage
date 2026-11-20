@@ -1,6 +1,10 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { hookProgram } from "#constants";
+import {
+  metalbrainProgram,
+  metalbrainProgramSource,
+} from "#tools/agents/metalbrain/constants";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -30,8 +34,14 @@ export const claudeVariables = freeze({
 // @debt the legacy marker only cleans settings synced before engrenage-hook
 export const claudeHookMarkers = freeze([
   `${hookProgram} claude `,
+  `${metalbrainProgram} hook claude `,
   "engrenage agents claude hook ",
 ] as const);
+
+const metalbrainHook = freeze({
+  name: metalbrainProgram,
+  source: metalbrainProgramSource,
+} as const);
 
 export const claudeHooks = freeze([
   {
@@ -62,6 +72,20 @@ export const claudeHooks = freeze([
     matcher: "*",
     args: "claude SubagentStop",
     async: true,
+  },
+  {
+    event: "PreToolUse",
+    matcher: "*",
+    args: "hook claude PreToolUse",
+    async: true,
+    program: metalbrainHook,
+  },
+  {
+    event: "PostToolUse",
+    matcher: "*",
+    args: "hook claude PostToolUse",
+    async: true,
+    program: metalbrainHook,
   },
 ] as const) satisfies readonly HookDefinition[];
 

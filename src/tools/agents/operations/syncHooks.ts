@@ -132,7 +132,7 @@ export async function syncHooks(
   const present = read();
 
   for (const hook of hooks) {
-    const { event, matcher, args, async } = hook;
+    const { event, matcher, args, async, program } = hook;
 
     const found = present[event]?.some((group) => {
       return (
@@ -151,7 +151,7 @@ export async function syncHooks(
           hooks: [
             {
               type: "command",
-              command: createHookCommand(args),
+              command: createHookCommand(args, program),
               ...(async === undefined ? {} : { async }),
             },
           ],
