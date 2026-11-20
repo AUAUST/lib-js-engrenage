@@ -62,3 +62,5 @@
 - git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
 - `pnpm engrenage debt --json`: dropped stdout's first line as the earlier line says — the echoed command now goes to stderr, so the parse failed; parsed stdout whole
 - `engrenage jscpd`: read the clone pairs from the console report — it prints shortened paths (`structure.ts`, `claude/hook.ts`); reran with `-r json -o <dir>`
+- gh run view --log-failed: read failed job logs of a run — printed nothing for whole runs and single jobs; got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
+- changeset version: reproduced the release step locally — @changesets/changelog-github needs GITHUB_TOKEN, and `pnpm exec` sets pnpm_config_verify_deps_before_run=false for children, hiding the failure; ran node bin.js directly with the default changelog in a scratch clone

@@ -73,6 +73,8 @@ describe("syncWorkflowFiles", () => {
 
     expect(publish).toContain("publish-script: pnpm run ci:publish\n");
 
+    expect(publish).toContain('pnpm_config_verify_deps_before_run: "false"\n');
+
     project.write(".github/workflows/ci.yml", "name: Edited\n");
 
     loadConfig.refresh(project.root);
