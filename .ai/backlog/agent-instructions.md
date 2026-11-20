@@ -75,7 +75,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 15. Instruction sync keeps or drops rules silently
 
-- sites: `src/tools/agents/setup/syncAgentFiles.ts:74`, `src/tools/agents/setup/syncAgentFiles.ts:131`, `src/tools/agents/setup/syncAgentFiles.ts:222`, `src/tools/agents/operations/getInstructionTemplates.ts:91`, `src/tools/agents/operations/migrateInstructionLocations.ts:34`
+- sites: `src/tools/agents/setup/syncAgentFiles.ts:95`, `src/tools/agents/setup/syncAgentFiles.ts:148`, `src/tools/agents/setup/syncAgentFiles.ts:241`, `src/tools/agents/operations/getInstructionTemplates.ts:91`, `src/tools/agents/operations/migrateInstructionLocations.ts:34`
 - why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; unknown `extension` hides fragments; external former markers stay unresolved.
 - want: sync reports or fails each. Related: #699.
 

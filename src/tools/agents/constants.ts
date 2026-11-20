@@ -107,6 +107,10 @@ export const attributionRules = freeze({
   false: "no-attribution",
 } as const);
 
+export const retiredRules = freeze([
+  `${engrenage}/${metalbrain}/rules/instructions.md`,
+] as const);
+
 export const rulesDirectory = ".claude/rules" satisfies Directory;
 
 export const addRuleCommand = "pnpm engrenage agents rules add";

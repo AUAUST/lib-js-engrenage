@@ -279,6 +279,31 @@ describe("fragment fillers", () => {
     );
   });
 
+  test("removes a retired rule, keeping project lines", async () => {
+    const reference = "@auaust/engrenage/metalbrain/rules/instructions.md";
+
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      ".claude/rules/instructions.md": `<!-- @reference ${reference} -->\n<!-- @end -->\n`,
+      ".claude/rules/local.md": `# Local\n\n<!-- @reference ${reference} -->\n<!-- @end -->\n`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    const { filesystem } = config.context;
+
+    await syncAgentFiles(config);
+
+    expect(await filesystem.exists(".claude/rules/instructions.md")).toBe(
+      false,
+    );
+
+    expect(await filesystem.read(".claude/rules/local.md")).not.toContain(
+      reference,
+    );
+  });
+
   test("keeps a deleted extension default rule out", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',

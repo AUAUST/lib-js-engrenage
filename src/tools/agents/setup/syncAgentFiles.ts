@@ -7,6 +7,7 @@ import {
   backlogCategoriesHeading,
   backlogIndex,
   backlogTemplate,
+  retiredRules,
   skillFileName,
 } from "#tools/agents/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
@@ -71,6 +72,26 @@ async function syncAttributionRules(config: {
   }
 }
 
+async function removeRuleBlocks(
+  filesystem: Filesystem,
+  references: ReadonlyMap<string, readonly File[]>,
+  reference: string,
+) {
+  for (const file of references.get(reference) ?? []) {
+    const content = await filesystem.read(file);
+
+    if (content === undefined) {
+      continue;
+    }
+
+    const remaining = removeReferenceBlock(content, reference);
+
+    await (remaining === undefined
+      ? filesystem.remove(file)
+      : filesystem.write(file, remaining));
+  }
+}
+
 // @debt finds only rules of origins still configured, gated off by `extension` metadata: an extension removed from the config leaves its rules installed
 async function removeInactiveExtensionRules(config: {
   filesystem: Filesystem;
@@ -95,19 +116,15 @@ async function removeInactiveExtensionRules(config: {
       continue;
     }
 
-    for (const file of references.get(reference) ?? []) {
-      const content = await config.filesystem.read(file);
+    await removeRuleBlocks(config.filesystem, references, reference);
+  }
+}
 
-      if (content === undefined) {
-        continue;
-      }
+async function removeRetiredRules(filesystem: Filesystem) {
+  const references = await getRuleReferences({ filesystem });
 
-      const remaining = removeReferenceBlock(content, reference);
-
-      await (remaining === undefined
-        ? config.filesystem.remove(file)
-        : config.filesystem.write(file, remaining));
-    }
+  for (const reference of retiredRules) {
+    await removeRuleBlocks(filesystem, references, reference);
   }
 }
 
@@ -212,6 +229,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await migrateSkillFiles(config);
 
   await migrateFormerRules(config);
+
+  await removeRetiredRules(config.filesystem);
 
   await migrateBacklogIndex(config.filesystem);
 
