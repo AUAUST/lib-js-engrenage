@@ -1,12 +1,12 @@
 import { round } from "@auaust/toolkit/math";
 
 import { mainAgent, tokenWeights } from "#tools/agents/constants";
-import {
-  findModelFact,
-  priceTokens,
-  type ModelFacts,
-} from "#tools/agents/metalbrain/index";
+import { formatAgentCost } from "#tools/agents/utils/formatAgentCost";
 import { formatCount } from "#tools/agents/utils/formatCount";
+import { formatMarkdownTable } from "#tools/agents/utils/formatMarkdownTable";
+import { priceAgentUsage } from "#tools/agents/utils/priceAgentUsage";
+import { weighAgentUsage } from "#tools/agents/utils/weighAgentUsage";
+import type { ModelFacts } from "#tools/agents/metalbrain/index";
 import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
 import type { AgentResultTotals } from "#tools/agents/types/AgentResultTotals";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
@@ -14,54 +14,11 @@ import type { AgentTokens } from "#tools/agents/types/AgentTokens";
 
 const largestResultCount = 10;
 
-interface Price {
-  readonly cost: number;
-  readonly unpriced: readonly string[];
-}
-
-function weighTokens(tokens: AgentTokens): number {
-  return (
-    tokens.input * tokenWeights.input +
-    tokens.cacheRead * tokenWeights.cacheRead +
-    tokens.cacheWrite5m * tokenWeights.cacheWrite5m +
-    tokens.cacheWrite1h * tokenWeights.cacheWrite1h +
-    tokens.output * tokenWeights.output
-  );
-}
-
-function weigh(entries: readonly AgentModelUsage[]): number {
-  return entries.reduce((sum, { tokens }) => sum + weighTokens(tokens), 0);
-}
-
-function price(facts: ModelFacts, entries: readonly AgentModelUsage[]): Price {
-  return entries.reduce<Price>(
-    ({ cost, unpriced }, { model, tier, tokens }) => {
-      const prices = findModelFact(facts, model)?.tiers.find(({ name }) => {
-        return name === tier;
-      })?.prices;
-
-      return prices === undefined
-        ? {
-            cost,
-            unpriced: unpriced.includes(model)
-              ? unpriced
-              : [...unpriced, model],
-          }
-        : { cost: cost + priceTokens(prices, tokens), unpriced };
-    },
-    { cost: 0, unpriced: [] },
-  );
-}
-
 function sumTokens(
   entries: readonly AgentModelUsage[],
   read: (tokens: AgentTokens) => number,
 ): number {
   return entries.reduce((sum, { tokens }) => sum + read(tokens), 0);
-}
-
-function formatCost({ cost, unpriced }: Price): string {
-  return unpriced.length > 0 ? "?" : `$${cost.toFixed(2)}`;
 }
 
 function formatShare(part: number, total: number): string {
@@ -72,15 +29,6 @@ function formatMinutes({ started, ended }: AgentRun): string {
   return started === undefined || ended === undefined
     ? "?"
     : ((Date.parse(ended) - Date.parse(started)) / 60_000).toFixed(1);
-}
-
-function formatTable(
-  header: readonly string[],
-  rows: readonly (readonly string[])[],
-): string {
-  return [header, header.map(() => "---"), ...rows]
-    .map((cells) => `| ${cells.join(" | ")} |`)
-    .join("\n");
 }
 
 function formatAgent(run: AgentRun): string {
@@ -116,7 +64,10 @@ function formatResultsByFamily(runs: readonly AgentRun[]): string {
       ];
     });
 
-  return formatTable(["Family", "Results", "Characters", "Share"], rows);
+  return formatMarkdownTable(
+    ["Family", "Results", "Characters", "Share"],
+    rows,
+  );
 }
 
 function formatLargestResults(runs: readonly AgentRun[]): string {
@@ -132,7 +83,7 @@ function formatLargestResults(runs: readonly AgentRun[]): string {
       return [formatAgent(run), result.family, formatCount(result.chars)];
     });
 
-  return formatTable(["Agent", "Family", "Characters"], rows);
+  return formatMarkdownTable(["Agent", "Family", "Characters"], rows);
 }
 
 export function formatAgentRuns(
@@ -141,16 +92,16 @@ export function formatAgentRuns(
 ): string {
   const entries = runs.flatMap((run) => run.models);
 
-  const total = weigh(entries);
+  const total = weighAgentUsage(entries);
 
-  const totalPrice = price(facts, entries);
+  const totalPrice = priceAgentUsage(facts, entries);
 
   const roles = Map.groupBy(runs, (run) => run.role);
 
   const byRole = [...roles].map(([role, members]) => {
     const memberEntries = members.flatMap((run) => run.models);
 
-    const units = weigh(memberEntries);
+    const units = weighAgentUsage(memberEntries);
 
     return [
       role,
@@ -164,7 +115,7 @@ export function formatAgentRuns(
       ),
       formatCount(sumTokens(memberEntries, (tokens) => tokens.output)),
       formatCount(units),
-      formatCost(price(facts, memberEntries)),
+      formatAgentCost(priceAgentUsage(facts, memberEntries)),
       formatShare(units, total),
     ];
   });
@@ -189,8 +140,8 @@ export function formatAgentRuns(
         ),
         String(run.batched ?? 0),
         `${run.ttl5m?.count ?? 0} (${formatCount(run.ttl5m?.tokens ?? 0)})`,
-        formatCount(weigh(run.models)),
-        formatCost(price(facts, run.models)),
+        formatCount(weighAgentUsage(run.models)),
+        formatAgentCost(priceAgentUsage(facts, run.models)),
         formatMinutes(run),
       ];
     });
@@ -198,7 +149,7 @@ export function formatAgentRuns(
   const models = Map.groupBy(entries, ({ model }) => model);
 
   const byModel = [...models].map(([model, modelEntries]) => {
-    const modelPrice = price(facts, modelEntries);
+    const modelPrice = priceAgentUsage(facts, modelEntries);
 
     return [
       model,
@@ -208,8 +159,8 @@ export function formatAgentRuns(
         }).length,
       ),
       String(modelEntries.reduce((sum, entry) => sum + entry.calls, 0)),
-      formatCount(weigh(modelEntries)),
-      formatCost(modelPrice),
+      formatCount(weighAgentUsage(modelEntries)),
+      formatAgentCost(modelPrice),
       modelPrice.unpriced.length > 0
         ? "?"
         : formatShare(modelPrice.cost, totalPrice.cost),
@@ -222,7 +173,7 @@ export function formatAgentRuns(
 
   return [
     `Units weigh input ${tokenWeights.input}, cache read ${tokenWeights.cacheRead}, 5-minute cache write ${tokenWeights.cacheWrite5m}, 1-hour cache write ${tokenWeights.cacheWrite1h}, output ${tokenWeights.output}. Total: ${formatCount(total)} units. Cost in dollars at API prices: $${totalPrice.cost.toFixed(2)}.${unpricedNote}`,
-    formatTable(
+    formatMarkdownTable(
       [
         "Role",
         "Runs",
@@ -236,7 +187,7 @@ export function formatAgentRuns(
       ],
       byRole,
     ),
-    formatTable(
+    formatMarkdownTable(
       [
         "Agent",
         "Role",
@@ -255,7 +206,7 @@ export function formatAgentRuns(
       ],
       byAgent,
     ),
-    formatTable(
+    formatMarkdownTable(
       ["Model", "Runs", "Calls", "Units", "Cost", "Share of cost"],
       byModel,
     ),

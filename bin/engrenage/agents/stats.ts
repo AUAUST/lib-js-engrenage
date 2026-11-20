@@ -6,7 +6,16 @@ export default defineLazyCommand({
       .description(
         "Report the recorded agent runs of a session by role and by agent, with token counts weighted into units: the current Claude session by default, else the latest recorded one.",
       )
-      .argument("[session]", "session id");
+      .argument("[session]", "session id")
+      .option(
+        "--all",
+        "aggregate the runs of every session by role, model and day",
+        false,
+      )
+      .option(
+        "--since <date>",
+        "aggregate the runs started on or after this date by role, model and day",
+      );
   },
   action() {
     return import("#bin/engrenage/agents/actions/stats");

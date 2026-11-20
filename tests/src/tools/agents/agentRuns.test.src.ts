@@ -6,6 +6,7 @@ import { findModelFact, readModelFacts } from "#tools/agents/metalbrain/index";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
+import { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
 import { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
@@ -388,4 +389,58 @@ test("rewrites an agent's record on each stop, counting its stops", async () => 
   ]);
 
   await expect(readAgentRuns(project.resolve("missing"))).resolves.toEqual([]);
+});
+
+test("aggregates runs of several sessions by role, model and day", async () => {
+  const tokens = {
+    input: 0,
+    cacheRead: 0,
+    cacheWrite5m: 0,
+    cacheWrite1h: 0,
+    output: 1000,
+  };
+
+  function run(session: string, role: string, model: string, started: string) {
+    return {
+      runtime: "claude",
+      session,
+      agent: `${session}-${role}`,
+      role,
+      stops: 1,
+      started,
+      turns: 1,
+      tools: {},
+      models: [
+        {
+          model,
+          tier: "standard",
+          calls: 2,
+          tokens,
+        },
+      ],
+      startContext: 0,
+      peakContext: 0,
+    };
+  }
+
+  const output = formatAgentAggregate(
+    [
+      run("first", "worker", "claude-opus-5-5", "2026-11-18T10:00:00.000Z"),
+      run("first", "merger", "claude-sonnet-5-5", "2026-11-18T11:00:00.000Z"),
+      run("second", "worker", "claude-sonnet-5-5", "2026-11-19T09:00:00.000Z"),
+    ],
+    await readModelFacts(),
+  );
+
+  expect(output).toMatch(/\| worker \| 2 \| 4 \|/u);
+
+  expect(output).toMatch(/\| merger \| 1 \| 2 \|/u);
+
+  expect(output).toMatch(/\| claude-sonnet-5-5 \| 2 \| 4 \|/u);
+
+  expect(output).toMatch(/\| claude-opus-5-5 \| 1 \| 2 \|/u);
+
+  expect(output).toMatch(/\| 2026-11-18 \| 2 \| 4 \|/u);
+
+  expect(output).toMatch(/\| 2026-11-19 \| 1 \| 2 \|/u);
 });
