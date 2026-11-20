@@ -6,17 +6,24 @@ export async function listDefaultRoles(
   config: ConfigResolver,
   environment: string,
 ): Promise<readonly Role[]> {
-  const [contributions, traits] = await Promise.all([
+  const [contributions, traits, environments] = await Promise.all([
     config.context.registry.contributions("roles", config),
     config.resolve("traits"),
+    config.resolve("environments"),
   ]);
+
+  const kind = environments.find(({ entry }) => entry.name === environment)
+    ?.kind.name;
+
+  if (kind == null) {
+    return [];
+  }
 
   const entries = contributions
     .map(({ entry }) => entry)
     .filter(({ environments, traits: required = [] }) => {
       return (
-        environments.includes(environment) &&
-        required.every((trait) => traits[trait])
+        environments.includes(kind) && required.every((trait) => traits[trait])
       );
     });
 

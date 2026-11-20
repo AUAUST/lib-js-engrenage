@@ -13,7 +13,7 @@ export interface RolePresetEntry extends EntryShape {
    */
   load(): Promise<Loadable<RolePreset>>;
   /**
-   * The environments the role is a default role of.
+   * The environment kinds the role is a default role of.
    */
   readonly environments: readonly string[];
   /**

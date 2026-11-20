@@ -1,7 +1,9 @@
 import { describe, expect, test } from "vitest";
 
 import { createRolePreset } from "#batiment/roles/index";
-import { createProjectConfig } from "#project/config/index";
+import { declareSection } from "#foundation/options/index";
+import { createProjectConfig, type Extension } from "#project/config/index";
+import { sourceOptionsSection } from "#project/environments/config/sections/sourceOptionsSection";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
@@ -10,10 +12,49 @@ const helpers = createRolePreset({
   purpose: "Helpers.",
 });
 
-function createConfig(contribution: string, omitRoles: readonly string[]) {
+const librarySection = declareSection({
+  resolve() {
+    return { active: true, dirs: ["lib"] };
+  },
+});
+
+const library: Extension = {
+  name: "fixture/lib",
+  owns: {
+    keys: {
+      "lib": {
+        load() {
+          return Promise.resolve(librarySection);
+        },
+      },
+      "lib.options": {
+        input: "lib",
+        load() {
+          return Promise.resolve(sourceOptionsSection);
+        },
+      },
+    },
+  },
+  contributes: {
+    environments: [
+      {
+        name: "lib",
+        kind: "src",
+        title: "the library",
+      },
+    ],
+  },
+};
+
+function createConfig(
+  contribution: string,
+  omitRoles: readonly string[],
+  extensions: readonly Extension[] = [],
+) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "src/.gitkeep": "",
+    "lib/.gitkeep": "",
   });
 
   return createProjectConfig({
@@ -26,6 +67,7 @@ function createConfig(contribution: string, omitRoles: readonly string[]) {
         omitRoles,
       },
       extensions: [
+        ...extensions,
         {
           name: "helpers",
           contributes: {
@@ -63,5 +105,13 @@ describe("listDefaultRoles", () => {
     await expect(config.resolve("environmentRoles")).rejects.toThrow(
       'The "helper" roles contribution creates the "helpers" role',
     );
+  });
+
+  test("applies the defaults of an environment's kind", async () => {
+    const config = createConfig("helpers", [], [library]);
+
+    const roles = (await config.resolve("environmentRoles")).lib?.roles;
+
+    expect(roles).toHaveProperty("helpers");
   });
 });
