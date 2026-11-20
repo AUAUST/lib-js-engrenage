@@ -124,7 +124,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: block markers match at column 0 only, so an indented one in an agent fragment renders nothing and sync passes.
 - want: sync rejecting marker-like indented lines in agent fragments.
 
-## 23. The PreToolUse hook skips its checks when reading issue fields returns 404
+## 23. The PreToolUse hook skips its checks when a GitHub read returns 404
 
-- why: dispatching workers for freshly published #768 and #769, `GET issues/<n>/issue-field-values` returned 404, so the effort check never ran.
+- why: dispatching workers for freshly published #766, #768 and #769, `GET issues/<n>/issue-field-values` and `issues/<n>/sub_issues` returned 404, so the effort check never ran.
 - want: the hook reading fields through the endpoint `publish` writes them with, or failing the dispatch instead of passing silently.
