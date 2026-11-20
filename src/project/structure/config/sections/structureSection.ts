@@ -2,8 +2,9 @@ import { matchesGlob, posix } from "node:path";
 
 import { freeze, hasOwn, keys, record, values } from "@auaust/toolkit/object";
 
-import { declareSection } from "#foundation/options/index";
+import { declareSection, type ValueOrigin } from "#foundation/options/index";
 import {
+  getOptionsKey,
   readEnvironment,
   type ResolvedEnvironment,
 } from "#project/environments/index";
@@ -13,8 +14,10 @@ import { readStructureOption } from "#project/structure/operations/readStructure
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
 import { flattenStructure } from "#project/structure/utils/flattenStructure";
+import { listContestedOptionPaths } from "#project/structure/utils/listContestedOptionPaths";
 import { listStructureDiagnostics } from "#project/structure/utils/listStructureDiagnostics";
 import { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
+import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 import type { DeclaredStructure } from "#project/structure/types/DeclaredStructure";
@@ -27,6 +30,7 @@ import type { TestsContext } from "#project/structure/types/TestsContext";
 
 interface StructuredEnvironment {
   readonly name: string;
+  readonly key: string;
   readonly environment: ResolvedEnvironment;
   readonly option: EnvironmentStructureOption;
 }
@@ -37,7 +41,10 @@ function listUnreached({
   merged,
   metadata,
 }: {
-  structure: Omit<EnvironmentStructure, "unreached" | "diagnostics">;
+  structure: Omit<
+    EnvironmentStructure,
+    "unreached" | "diagnostics" | "entries"
+  >;
   declared: DeclaredStructure;
   merged: Pick<StructureOptions, "namespaces" | "domains">;
   metadata: readonly StructureMetadata[];
@@ -88,9 +95,25 @@ function listUnreached({
   ].sort((left, right) => left.path.localeCompare(right.path));
 }
 
+async function readOrigins(
+  config: ConfigResolver,
+  key: string,
+  paths: readonly string[],
+): Promise<ReadonlyMap<string, ValueOrigin>> {
+  const unique = [...new Set(paths)];
+
+  const origins = await Promise.all(
+    unique.map(async (path) => {
+      return [path, await config.origin(key, path)] as const;
+    }),
+  );
+
+  return new Map(origins);
+}
+
 async function resolveStructure(
   config: ConfigResolver,
-  { name, environment, option }: StructuredEnvironment,
+  { name, key, environment, option }: StructuredEnvironment,
   tests?: TestsContext,
 ): Promise<EnvironmentStructure | undefined> {
   if (!option.enabled || !environment.active) {
@@ -102,34 +125,55 @@ async function resolveStructure(
     config.resolve("traits"),
   ]);
 
-  const { defined, ...declared } = flattenStructure({
+  const { defined, optionPaths, ...declared } = flattenStructure({
     environment: name,
     structure: option.structure,
     published,
   });
 
-  const metadata = await readStructureMetadata({
+  const read = await readStructureMetadata({
+    environment: name,
     filesystem: config.context.filesystem,
     dirs: environment.dirs,
   });
 
-  const [mirrored] = tests === undefined ? [] : metadata;
+  const mirrored = tests === undefined
+    ? []
+    : read.metadata.map(({ files }) => {
+        return freeze({
+          severity: "error" as const,
+          code: "mirrored-metafile" as const,
+          message: `${files.join(", ")} describes the mirrored ${name} environment, whose structure follows its counterparts; ignoring every metafile of ${name}`,
+          blocking: true as const,
+          environment: name,
+          files,
+        });
+      });
 
-  if (mirrored !== undefined) {
-    throw new Error(
-      `${mirrored.files.join(", ")} describes the mirrored ${name} environment, whose structure follows its counterparts`,
-    );
-  }
+  const metadata = tests === undefined ? read.metadata : [];
+
+  const origins = await readOrigins(
+    config,
+    key,
+    listContestedOptionPaths({
+      declared,
+      metadata,
+      optionPaths,
+    }),
+  );
 
   const merged = mergeStructureMetadata({
     environment: name,
+    key,
     declared,
     metadata,
+    optionPaths,
+    origins,
   });
 
   const { namespaces, domains } = merged;
 
-  const structure = await resolveEnvironmentStructure({
+  const walked = await resolveEnvironmentStructure({
     name,
     filesystem: config.context.filesystem,
     dirs: environment.dirs,
@@ -146,17 +190,33 @@ async function resolveStructure(
     ...(tests === undefined ? {} : { tests }),
   });
 
-  const walked = {
-    ...structure,
+  const {
+    entries: domainEntries,
+    diagnostics: entryDiagnostics,
+  } = resolveDomainEntries(walked.structure);
+
+  const structure = {
+    ...walked.structure,
+    entries: domainEntries,
     unreached: listUnreached({
-      structure,
+      structure: walked.structure,
       declared,
       merged,
       metadata,
     }),
   };
 
-  return { ...walked, diagnostics: listStructureDiagnostics(walked) };
+  return {
+    ...structure,
+    diagnostics: [
+      ...read.diagnostics,
+      ...mirrored,
+      ...merged.diagnostics,
+      ...walked.diagnostics,
+      ...entryDiagnostics,
+      ...listStructureDiagnostics(structure),
+    ],
+  };
 }
 
 function freezeNode(node: StructureNode): StructureNode {
@@ -222,8 +282,15 @@ function freezeEnvironment(
 
   freeze(structure.unreached);
 
+  freeze(structure.entries);
+
   for (const diagnostic of structure.diagnostics) {
     freeze(diagnostic.files);
+
+    if (diagnostic.config !== undefined) {
+      freeze(diagnostic.config);
+    }
+
     freeze(diagnostic);
   }
 
@@ -243,9 +310,12 @@ export const structureSection = declareSection({
     const structured = await Promise.all(
       environments
         .filter(({ kind }) => kind.structure !== undefined)
-        .map(async ({ entry: { name } }): Promise<StructuredEnvironment> => {
+        .map(async (contributed): Promise<StructuredEnvironment> => {
+          const { name } = contributed.entry;
+
           return {
             name,
+            key: getOptionsKey(contributed),
             environment: await readEnvironment(config, name),
             option: await readStructureOption(config, name),
           };

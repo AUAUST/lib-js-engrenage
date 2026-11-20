@@ -11,7 +11,8 @@ import type { File } from "#types/File";
  * is a violation; under `loose`, it counts as a domain, or a mirror in `tests`.
  * `roles` holds every role the walk met, by name. `unreached` lists, by path, each
  * namespace or domain the config (`config`) or metadata `files` declare where
- * the walk builds no node, a violation under either strictness. `diagnostics`
+ * the walk builds no node, a violation under either strictness. `entries` maps
+ * each package subpath its domains and roles expose to its file. `diagnostics`
  * lists the walk's findings.
  *
  * @experimental
@@ -29,5 +30,6 @@ export interface EnvironmentStructure extends EnvironmentFileNames {
     readonly config: boolean;
     readonly files: readonly File[];
   }[];
+  readonly entries: Readonly<Record<string, File>>;
   readonly diagnostics: readonly StructureDiagnostic[];
 }

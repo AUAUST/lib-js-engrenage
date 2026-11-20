@@ -20,7 +20,7 @@ const files = {
 
 const rootEntry = { "src/entry.ts": "" };
 
-async function exposed(
+async function loadSource(
   source: string,
   extra: Record<string, string> = {},
   roles = renderCodeRoles(entry()),
@@ -32,9 +32,23 @@ async function exposed(
     "engrenage.config.ts": `export default { preset: "library", structure: ${structure}, src: { roles: ${roles}, ...${source} } };\n`,
   });
 
-  const config = await loadConfig(project.root);
+  return loadConfig(project.root);
+}
+
+async function exposed(...args: Parameters<typeof loadSource>) {
+  const config = await loadSource(...args);
 
   return config.resolve("src.exports");
+}
+
+async function sharedSpecifiers(...args: Parameters<typeof loadSource>) {
+  const config = await loadSource(...args);
+
+  const { src } = await config.resolve("structure");
+
+  return (src?.diagnostics ?? []).filter(({ code }) => {
+    return code === "shared-specifier";
+  });
 }
 
 function barrelRole(subpath: boolean | "root" = true) {
@@ -79,21 +93,35 @@ describe("domain entries", () => {
     ).toMatchObject({ "./first": "src/tools/alpha/entry.ts" });
   });
 
-  test("two public domains with one specifier fail", async () => {
-    await expect(
-      exposed(`{
-        structure: {
-          namespaces: {
-            tools: {
-              domains: {
-                alpha: { specifier: "./same" },
-                beta: { specifier: "./same" },
-              },
+  test("two public domains with one specifier report a blocking diagnostic, the first kept", async () => {
+    const source = `{
+      structure: {
+        namespaces: {
+          tools: {
+            domains: {
+              alpha: { specifier: "./same" },
+              beta: { specifier: "./same" },
             },
           },
         },
-      }`),
-    ).rejects.toThrow("share the specifier './same'");
+      },
+    }`;
+
+    const [diagnostic, ...others] = await sharedSpecifiers(source);
+
+    expect(others).toEqual([]);
+
+    expect(diagnostic).toMatchObject({
+      severity: "error",
+      blocking: true,
+      files: ["src/tools/alpha/entry.ts", "src/tools/beta/entry.ts"],
+    });
+
+    expect(diagnostic?.message).toContain("share the specifier './same'");
+
+    expect(await exposed(source)).toMatchObject({
+      "./same": "src/tools/alpha/entry.ts",
+    });
   });
 
   test("a subpath both derived from a public domain and listed in src.exports fails", async () => {
@@ -290,23 +318,24 @@ describe("domain entries", () => {
     });
   });
 
-  test("an /internals subpath colliding with a declared specifier fails naming both domains", async () => {
-    await expect(
-      exposed(
-        `{
-          structure: {
-            namespaces: {
-              tools: { domains: { beta: { specifier: "./alpha/internals" } } },
-            },
+  test("an /internals subpath colliding with a declared specifier reports both domains", async () => {
+    const [diagnostic] = await sharedSpecifiers(
+      `{
+        structure: {
+          namespaces: {
+            tools: { domains: { beta: { specifier: "./alpha/internals" } } },
           },
-        }`,
-        {},
-        renderCodeRoles(entry()),
-        "{ internals: true }",
-      ),
-    ).rejects.toThrow(
-      /src\/tools\/alpha\/index\.ts and src\/tools\/beta\/entry\.ts|src\/tools\/beta\/entry\.ts and src\/tools\/alpha\/index\.ts/,
+        },
+      }`,
+      {},
+      renderCodeRoles(entry()),
+      "{ internals: true }",
     );
+
+    expect([...(diagnostic?.files ?? [])].sort()).toEqual([
+      "src/tools/alpha/index.ts",
+      "src/tools/beta/entry.ts",
+    ]);
   });
 });
 

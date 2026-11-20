@@ -12,7 +12,6 @@ import { extendEntityLineage } from "#project/structure/utils/extendEntityLineag
 import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
 import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
-import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import type { EntityIndex } from "#project/structure/apis/EntityIndex";
 import type { Entity } from "#project/structure/types/Entity";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -73,7 +72,7 @@ export function createEntityIndex({
   const specifiers = [...aliases.src, ...aliases.global];
 
   const publicEntries = new Map(
-    entries(resolveDomainEntries(structure.src)).map(([subpath, file]) => {
+    entries(structure.src?.entries ?? {}).map(([subpath, file]) => {
       return [file, subpath] as const;
     }),
   );

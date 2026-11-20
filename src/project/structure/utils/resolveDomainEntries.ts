@@ -1,11 +1,12 @@
 import { basename, extname } from "node:path";
 
-import { entries, getOwn, record } from "@auaust/toolkit/object";
+import { entries, freeze, getOwn, record } from "@auaust/toolkit/object";
 
 import { entryRoleName } from "#batiment/roles/constants";
 import { isPlaced } from "#project/structure/utils/isPlaced";
 import type { EnvironmentFileNames } from "#project/structure/types/EnvironmentFileNames";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureRole } from "#project/structure/types/StructureRole";
 import type { File } from "#types/File";
@@ -115,13 +116,16 @@ function collectEntries(
 }
 
 export function resolveDomainEntries(
-  structure: EnvironmentStructure | undefined,
-): Record<string, File> {
-  if (structure === undefined) {
-    return {};
-  }
-
+  structure: Omit<
+    EnvironmentStructure,
+    "entries" | "unreached" | "diagnostics"
+  >,
+): {
+  readonly entries: Readonly<Record<string, File>>;
+  readonly diagnostics: readonly StructureDiagnostic[];
+} {
   const found = new Map<string, File>();
+  const diagnostics: StructureDiagnostic[] = [];
 
   const { root, roles } = structure;
 
@@ -136,13 +140,25 @@ export function resolveDomainEntries(
     const previous = found.get(subpath);
 
     if (previous !== undefined) {
-      throw new Error(
-        `${previous} and ${file} share the specifier '${subpath}': declare a distinct 'specifier' on the domain of one of them`,
+      diagnostics.push(
+        freeze({
+          severity: "error",
+          code: "shared-specifier",
+          message: `${previous} and ${file} share the specifier '${subpath}': declare a distinct 'specifier' on the domain of one of them; keeping ${previous}`,
+          blocking: true,
+          environment: structure.name,
+          files: freeze([previous, file]),
+        }),
       );
+
+      continue;
     }
 
     found.set(subpath, file);
   }
 
-  return record([...found]);
+  return freeze({
+    entries: freeze(record([...found])),
+    diagnostics: freeze(diagnostics),
+  });
 }

@@ -1,4 +1,8 @@
 import {
+  listBlockingDiagnostics,
+  renderStructureDiagnostic,
+} from "#project/structure/index";
+import {
   listSyncOptions,
   readSyncFlags,
   runSync,
@@ -14,14 +18,26 @@ export default async function (
     values,
   }: { check: boolean; values: Readonly<Record<string, unknown>> },
 ): Promise<void> {
-  const config = await loadValidatedConfig(undefined, {
-    reporter: getRunContext().reporter,
-  });
+  const { reporter } = getRunContext();
+
+  const config = await loadValidatedConfig(undefined, { reporter });
+
+  const blocking = listBlockingDiagnostics(await config.resolve("structure"));
+
+  if (blocking.length > 0) {
+    for (const diagnostic of blocking) {
+      reporter.error(renderStructureDiagnostic(diagnostic));
+    }
+
+    process.exitCode = 1;
+
+    return;
+  }
 
   const { options } = await listSyncOptions(config);
 
   if (check) {
-    getRunContext().reporter.info("Checking synced files...");
+    reporter.info("Checking synced files...");
   }
 
   const failures = await runSync(config, {

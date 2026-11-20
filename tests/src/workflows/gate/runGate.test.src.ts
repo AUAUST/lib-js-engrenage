@@ -88,7 +88,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     expect(
       failures.find(({ step }) => step === "batiment map --check")?.output,
-    ).toContain("import cycles (1)");
+    ).toContain("src/a.ts -> src/b.ts -> src/a.ts");
   });
 
   test("fails the batiment map step with one line per unclassified directory under strict", async () => {
@@ -104,9 +104,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     expect(
       failures.find(({ step }) => step === "batiment map --check")?.output,
-    ).toBe(
-      "tests/nowhere  nowhere  unclassified (unknown root key)  [inferred]",
-    );
+    ).toBe("tests/nowhere  unclassified (unknown root key)");
   });
 
   test("fails a staged outdated synced file under sync --check without rewriting it", async () => {

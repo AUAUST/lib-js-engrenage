@@ -1,6 +1,6 @@
 import { basename, extname, join, matchesGlob } from "node:path";
 
-import { entries, keys, values } from "@auaust/toolkit/object";
+import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
   defaultReexport,
@@ -16,13 +16,17 @@ import { listReexportModes } from "#project/structure/utils/listReexportModes";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 type DomainDeclaration = StructureOptions["domains"][string];
 
+type CollectsSource = NonNullable<DomainDeclaration["collectsSource"]>;
+
 export function createStructureDomainResolver({
+  name,
   filesystem,
   options,
   commands,
@@ -30,7 +34,9 @@ export function createStructureDomainResolver({
   entryFile,
   internals,
   rolesFor,
+  report,
 }: {
+  name: string;
   filesystem: Filesystem;
   options: StructureOptions;
   commands: boolean;
@@ -38,9 +44,11 @@ export function createStructureDomainResolver({
   entryFile: File | undefined;
   internals: boolean;
   rolesFor(scopes: readonly string[]): ResolvedRoles;
+  report(diagnostic: StructureDiagnostic): void;
 }) {
   const { namespaces } = options;
   const domains = entries(options.domains);
+  const collectsSources = new Map<Directory, CollectsSource>();
 
   function describe(subpath: string) {
     const directory = subpath.slice(subpath.lastIndexOf("/") + 1);
@@ -79,7 +87,10 @@ export function createStructureDomainResolver({
               : { reexport: declared.reexport }),
             ...(declared.collects === undefined
               ? {}
-              : { collects: declared.collects }),
+              : {
+                  collects: declared.collects,
+                  collectsSource: declared.collectsSource,
+                }),
             ...(declared.public === undefined
               ? {}
               : { public: declared.public }),
@@ -99,8 +110,15 @@ export function createStructureDomainResolver({
     const exists = entry !== undefined && (await filesystem.exists(entry));
 
     if (declared === false && exists) {
-      throw new Error(
-        `${entry} exists, but its domain is declared \`public: false\``,
+      report(
+        freeze({
+          severity: "error",
+          code: "private-domain-entry",
+          message: `${entry} exists, but its domain is declared \`public: false\`; keeping \`public: false\``,
+          blocking: true,
+          environment: name,
+          files: freeze([entry]),
+        }),
       );
     }
 
@@ -114,6 +132,10 @@ export function createStructureDomainResolver({
   ) {
     const roles = rolesFor(scopes);
     const { roles: contracts } = roles;
+
+    if (metadata.collectsSource !== undefined) {
+      collectsSources.set(path, metadata.collectsSource);
+    }
 
     const fileGlobs = values(contracts).flatMap(({ file }) => {
       return listStaticFileGlobs(file);
@@ -169,5 +191,13 @@ export function createStructureDomainResolver({
     };
   }
 
-  return { describe, metadataForDomain };
+  function collectsSourceOf(path: Directory): CollectsSource | undefined {
+    return collectsSources.get(path);
+  }
+
+  return {
+    describe,
+    metadataForDomain,
+    collectsSourceOf,
+  };
 }

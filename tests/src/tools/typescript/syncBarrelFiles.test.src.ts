@@ -367,7 +367,7 @@ export type * from "#modules/guard/utils/isNull";
     );
   });
 
-  test("fails resolution when `collects` names a private role, naming the role", async () => {
+  test("reports a `collects` naming a private role with its option, dropping the role", async () => {
     const { config } = createKit({
       files: {
         "src/modules/guard/types/Guard.ts": "export type Guard = unknown;\n",
@@ -378,9 +378,20 @@ export type * from "#modules/guard/utils/isNull";
       roles: [types({ public: false })],
     });
 
-    await expect(runSync(config)).rejects.toThrow(
-      "src/modules/guard collects the role types, which is not a public collected role of its environment",
+    const { src } = await config.resolve("structure");
+
+    const [diagnostic, ...others] = (src?.diagnostics ?? []).filter(
+      ({ code }) => code === "collected-role-not-public",
     );
+
+    expect(others).toEqual([]);
+
+    expect(diagnostic).toMatchObject({
+      blocking: true,
+      message: "src/modules/guard collects the role types, which is not a public collected role of its environment; dropping it from its collects",
+    });
+
+    expect(diagnostic?.config?.path).toMatch(/\.guard\.collects$/);
   });
 
   test("adds the aliases a contribution returns to the module's entry", async () => {

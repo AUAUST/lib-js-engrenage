@@ -5,7 +5,6 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
-  resolveDomainEntries,
   type EnvironmentStructure,
 } from "#project/structure/index";
 import { isBelow } from "#tools/typescript/utils/isBelow";
@@ -45,7 +44,7 @@ export function listRootReexports(
   const { root, roles, indexFile } = environment;
 
   const subpaths = new Map(
-    entries(resolveDomainEntries(environment)).map(([subpath, file]) => {
+    entries(environment.entries).map(([subpath, file]) => {
       return [file, subpath] as const;
     }),
   );

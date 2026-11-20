@@ -4,6 +4,10 @@ import { packageJsonFile } from "#constants";
 import { runProcess } from "#foundation/processes/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import {
+  listBlockingDiagnostics,
+  renderStructureDiagnostic,
+} from "#project/structure/index";
+import {
   formatChanges,
   reportSyncResults,
   runSync,
@@ -112,6 +116,20 @@ export default async function ({ yes }: { yes: boolean }): Promise<void> {
     searchParents: false,
     reporter: getRunContext().reporter,
   });
+
+  const blocking = listBlockingDiagnostics(
+    await installed.resolve("structure"),
+  );
+
+  if (blocking.length > 0) {
+    for (const diagnostic of blocking) {
+      getRunContext().reporter.error(renderStructureDiagnostic(diagnostic));
+    }
+
+    process.exitCode = 1;
+
+    return;
+  }
 
   const failures = await runSync(installed);
 

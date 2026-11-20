@@ -19,7 +19,10 @@ export function flattenStructure({
   environment: string;
   structure: NamespaceDeclaration;
   published: boolean;
-}): DeclaredStructure & { readonly defined: RoleRegistry } {
+}): DeclaredStructure & {
+  readonly defined: RoleRegistry;
+  readonly optionPaths: Readonly<Record<Directory, string>>;
+} {
   const defined: RoleRegistry = {
     contracts: {},
     aliases: {},
@@ -31,6 +34,9 @@ export function flattenStructure({
   > = {};
 
   const domains: Record<string, DeclaredStructure["domains"][string]> = {};
+
+  // @debt a directory name holding a dot breaks the dotted option path `Resolver.origin` reads
+  const optionPaths: Record<Directory, string> = {};
 
   function childPath(parent: Directory, name: string): Directory {
     return parent === environmentRoot ? name : `${parent}/${name}`;
@@ -59,6 +65,9 @@ export function flattenStructure({
 
     for (const [name, domain] of entries(node.domains)) {
       const child = childPath(path, name);
+      const domainOption = `${option}.domains.${name}`;
+
+      optionPaths[child] = domainOption;
 
       domains[child] = freeze({
         specifier: domain.specifier,
@@ -69,7 +78,7 @@ export function flattenStructure({
         public: domain.public,
       });
 
-      visitChildren(child, domain, `${option}.domains.${name}`);
+      visitChildren(child, domain, domainOption);
     }
   }
 
@@ -85,6 +94,8 @@ export function flattenStructure({
       registry: defined,
       published,
     });
+
+    optionPaths[path] = option;
 
     namespaces[path] = freeze({
       layers: namespace.layers,
@@ -103,5 +114,6 @@ export function flattenStructure({
     namespaces: freeze(namespaces),
     domains: freeze(domains),
     defined,
+    optionPaths: freeze(optionPaths),
   });
 }

@@ -1,22 +1,54 @@
-import { matchesGlob } from "node:path";
+import { matchesGlob, posix } from "node:path";
 
-import { entries, freeze, hasOwn, keys, record } from "@auaust/toolkit/object";
+import {
+  entries,
+  freeze,
+  getOwn,
+  hasOwn,
+  keys,
+  record,
+} from "@auaust/toolkit/object";
 
+import type { ValueOrigin } from "#foundation/options/index";
 import type { DeclaredStructure } from "#project/structure/types/DeclaredStructure";
 import type { MetadataField } from "#project/structure/types/MetadataField";
+import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureMetadata } from "#project/structure/types/StructureMetadata";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { StructureSource } from "#project/structure/types/StructureSource";
+import type { Directory } from "#types/Directory";
+
+const environmentRoot = ".";
+
+type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
 
 export function mergeStructureMetadata({
   environment,
+  key,
   declared,
   metadata,
+  optionPaths,
+  origins,
 }: {
   environment: string;
+  key: string;
   declared: DeclaredStructure;
   metadata: readonly StructureMetadata[];
-}): Pick<StructureOptions, "namespaces" | "domains"> {
+  optionPaths: Readonly<Record<Directory, string>>;
+  origins: ReadonlyMap<string, ValueOrigin>;
+}): Pick<StructureOptions, "namespaces" | "domains"> & {
+  readonly diagnostics: readonly StructureDiagnostic[];
+} {
+  function optionPath(path: string): string {
+    const option = getOwn(optionPaths, path);
+
+    if (option === undefined) {
+      throw new Error(`${environment}:${path} has no declared option path`);
+    }
+
+    return option;
+  }
+
   const namespaces = new Map<
     string,
     DeclaredStructure["namespaces"][string] & {
@@ -30,11 +62,56 @@ export function mergeStructureMetadata({
 
   const domains = new Map<string, StructureOptions["domains"][string]>(
     entries(declared.domains).map(([path, domain]) => {
-      return [path, { ...domain, source: "config" }];
+      return [
+        path,
+        {
+          ...domain,
+          source: "config",
+          collectsSource: domain.collects === undefined
+            ? undefined
+            : freeze({
+                files: freeze([]),
+                config: freeze({ key, path: `${optionPath(path)}.collects` }),
+              }),
+        },
+      ];
     }),
   );
 
   const globs = keys(declared.domains);
+  const diagnostics: StructureDiagnostic[] = [];
+
+  function addDiagnostic(
+    finding: Finding,
+    config?: StructureDiagnostic["config"],
+  ) {
+    diagnostics.push(
+      freeze({
+        severity: "error",
+        blocking: true,
+        environment,
+        ...finding,
+        files: freeze(finding.files),
+        ...(config === undefined ? {} : { config: freeze(config) }),
+      }),
+    );
+  }
+
+  function reportInput(finding: Finding, option: string) {
+    const origin = origins.get(option);
+
+    if (origin === undefined) {
+      throw new Error(`The origin of ${key} option ${option} was not read`);
+    }
+
+    if (origin.layer === "input") {
+      addDiagnostic(finding, {
+        key,
+        path: option,
+        origin,
+      });
+    }
+  }
 
   for (const { path, kind, fields, files } of metadata) {
     const sources = files.join(", ");
@@ -44,33 +121,60 @@ export function mergeStructureMetadata({
       configured: Value | undefined,
       located: MetadataField<Value> | undefined,
     ): Value | undefined {
-      if (configured !== undefined && located !== undefined) {
-        throw new Error(
-          `${environment}:${path} sets ${field} in both the config and ${located.file}`,
+      if (located === undefined) {
+        return configured;
+      }
+
+      if (configured !== undefined) {
+        reportInput(
+          {
+            code: "config-metafile-conflict",
+            message: `${environment}:${path} sets ${field} in both the config and ${located.file}; keeping the value of ${located.file}`,
+            files: [located.file],
+          },
+          `${optionPath(path)}.${field}`,
         );
       }
 
-      return configured ?? located?.value;
+      return located.value;
     }
+
+    const other = kind === "namespace" ? "domain" : "namespace";
 
     const conflicting = kind === "namespace"
       ? hasOwn(declared.domains, path)
       : hasOwn(declared.namespaces, path);
 
     if (conflicting) {
-      throw new Error(
-        `${environment}:${path} is declared as a ${kind === "namespace" ? "domain" : "namespace"} by the config and as a ${kind} by ${sources}`,
+      reportInput(
+        {
+          code: "config-metafile-kind",
+          message: `${environment}:${path} is declared as a ${other} by the config and as a ${kind} by ${sources}; keeping the ${kind} and dropping the config's ${other}`,
+          files,
+        },
+        optionPath(path),
       );
+
+      if (kind === "namespace") {
+        domains.delete(path);
+      } else {
+        namespaces.delete(path);
+      }
     }
 
     if (kind === "namespace") {
-      const glob = globs.find((key) => {
-        return key !== path && matchesGlob(path, key);
+      const matching = globs.filter((glob) => {
+        return glob !== path && matchesGlob(path, glob);
       });
 
-      if (glob !== undefined) {
-        throw new Error(
-          `${environment}:${path} is declared as a namespace by ${sources}, but the config domain glob ${glob} matches it`,
+      for (const glob of matching) {
+        reportInput(
+          {
+            code: "domain-glob-namespace",
+            message: `${environment}:${path} is declared as a namespace by ${sources}, but the config domain glob ${glob} matches it; keeping the namespace`,
+            files,
+          },
+          optionPath(glob),
         );
       }
 
@@ -98,7 +202,41 @@ export function mergeStructureMetadata({
       collects: pick("collects", existing?.collects, fields.collects),
       public: pick("public", existing?.public, fields.public),
       source: existing?.source ?? "metadata",
+      collectsSource: fields.collects === undefined
+        ? existing?.collectsSource
+        : freeze({ files: freeze([fields.collects.file]) }),
     });
+  }
+
+  const metadataAt = new Map(
+    metadata.map((located) => {
+      return [located.path, located] as const;
+    }),
+  );
+
+  for (const { path, kind, files } of metadata) {
+    if (kind !== "namespace" || path === environmentRoot) {
+      continue;
+    }
+
+    const parent = posix.dirname(path);
+
+    if (namespaces.get(parent)?.children !== "domains") {
+      continue;
+    }
+
+    const finding = {
+      code: "children-domains-namespace" as const,
+      message: `${environment}:${path} is declared as a namespace by ${files.join(", ")}, but ${parent}'s children are domains; keeping the namespace`,
+    };
+
+    const declaring = metadataAt.get(parent)?.fields.children;
+
+    if (declaring === undefined) {
+      reportInput({ ...finding, files }, `${optionPath(parent)}.children`);
+    } else {
+      addDiagnostic({ ...finding, files: [declaring.file, ...files] });
+    }
   }
 
   const resolvedNamespaces = [...namespaces].map(([path, namespace]) => {
@@ -118,5 +256,6 @@ export function mergeStructureMetadata({
   return freeze({
     namespaces: freeze(record(resolvedNamespaces)),
     domains: freeze(record(resolvedDomains)),
+    diagnostics: freeze(diagnostics),
   });
 }

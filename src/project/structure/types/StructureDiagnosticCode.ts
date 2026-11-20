@@ -1,7 +1,10 @@
 /**
  * What a structure diagnostic reports: an unclassified directory under `strict`,
  * a role cardinality violation, a module beside the command group of its name, a
- * declaration the walk never reaches, a domain without purpose or an import cycle.
+ * declaration the walk never reaches, a domain without purpose, an import cycle,
+ * or a walk finding: a metafile unreadable, invalid, misplaced or conflicting
+ * with another metafile or the config, a private domain holding an entry, a
+ * collected role that is not public, or two files sharing one specifier.
  *
  * @experimental
  */
@@ -11,4 +14,18 @@ export type StructureDiagnosticCode =
   | "twin"
   | "unreached"
   | "missing-purpose"
-  | "import-cycle";
+  | "import-cycle"
+  | "unreadable-metafile"
+  | "invalid-metafile"
+  | "metafile-kind-conflict"
+  | "metafile-field-conflict"
+  | "shared-metafile-directory"
+  | "domain-metafile-at-root"
+  | "mirrored-metafile"
+  | "config-metafile-conflict"
+  | "config-metafile-kind"
+  | "domain-glob-namespace"
+  | "children-domains-namespace"
+  | "private-domain-entry"
+  | "collected-role-not-public"
+  | "shared-specifier";

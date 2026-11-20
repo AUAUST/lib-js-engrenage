@@ -54,4 +54,52 @@ describe("runSyncCheck", () => {
     expect(stderr).not.toHaveBeenCalled();
     expect(stdout).not.toHaveBeenCalled();
   });
+
+  test("fails on a blocking structure diagnostic before syncing", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "src/entry.ts": "",
+      "src/feature/index.ts": "",
+      "src/feature/.domain.json": '{ "purpose": "From the metafile." }',
+      "engrenage.config.ts": 'export default { src: { structure: { domains: { feature: { purpose: "From the config." } } } } };',
+    });
+
+    const config = await loadConfig(project.root, {
+      reporter: createTestReporter(),
+    });
+
+    const { ok, output } = await runSyncCheck(config);
+
+    expect(ok).toBe(false);
+    expect(output).toContain("src:feature sets purpose in both the config");
+  });
+
+  test("syncs past an unclassified directory", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "src/entry.ts": "",
+      "src/mystery/a.ts": "",
+      "engrenage.config.ts": "export default {};",
+    });
+
+    const config = await loadConfig(project.root, {
+      reporter: createTestReporter(),
+    });
+
+    const structure = await config.resolve("structure");
+
+    expect(structure.src?.diagnostics.map(({ code }) => code)).toContain(
+      "unclassified",
+    );
+
+    await settleChanges(config, {
+      check: false,
+      failures: await runSync(config),
+    });
+
+    const { ok, output } = await runSyncCheck(config);
+
+    expect(output).toBe("");
+    expect(ok).toBe(true);
+  });
 });

@@ -6,6 +6,10 @@ import {
   type Reporter,
 } from "#foundation/reports/index";
 import {
+  listBlockingDiagnostics,
+  renderStructureDiagnostic,
+} from "#project/structure/index";
+import {
   collectChanges,
   formatSyncFailure,
   formatSyncResult,
@@ -30,6 +34,15 @@ function createRecordingReporter(problems: string[]): Reporter {
 }
 
 export async function runSyncCheck(config: LoadedConfig): Promise<GateResult> {
+  const blocking = listBlockingDiagnostics(await config.resolve("structure"));
+
+  if (blocking.length > 0) {
+    return {
+      ok: false,
+      output: blocking.map(renderStructureDiagnostic).join("\n"),
+    };
+  }
+
   const problems: string[] = [];
 
   const copy = config.context.copy({

@@ -19,6 +19,7 @@ import {
   namespaceMetadataFile,
 } from "#project/structure/constants";
 import type { MetadataField } from "#project/structure/types/MetadataField";
+import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureMetadata } from "#project/structure/types/StructureMetadata";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -27,6 +28,8 @@ import type { File } from "#types/File";
 const environmentRoot = ".";
 const projectRoot = ".";
 
+type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
+
 function locate<Value>(
   value: Value | undefined,
   file: File,
@@ -34,17 +37,11 @@ function locate<Value>(
   return value === undefined ? undefined : freeze({ value, file });
 }
 
-async function readFileMetadata(
-  filesystem: Filesystem,
+function parseFileMetadata(
+  text: string,
   directory: Directory,
   file: File,
-): Promise<StructureMetadata> {
-  const text = await filesystem.read(file);
-
-  if (text === undefined) {
-    throw new Error(`${file} was listed but cannot be read`);
-  }
-
+): StructureMetadata {
   const content = parseJson(text, file);
   const match = posix.relative(toPosixPath(directory), file);
   const path = posix.dirname(match);
@@ -102,23 +99,60 @@ async function readFileMetadata(
   };
 }
 
+async function readFileMetadata(
+  filesystem: Filesystem,
+  directory: Directory,
+  file: File,
+): Promise<StructureMetadata | Finding> {
+  const text = await filesystem.read(file);
+
+  if (text === undefined) {
+    return {
+      code: "unreadable-metafile",
+      message: `${file} was listed but cannot be read; ignoring it`,
+      files: [file],
+    };
+  }
+
+  try {
+    return parseFileMetadata(text, directory, file);
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      throw error;
+    }
+
+    return {
+      code: "invalid-metafile",
+      message: `${file} is ignored: ${error.message}`,
+      files: [file],
+    };
+  }
+}
+
 function mergeAtPath(
   merged: StructureMetadata,
   next: StructureMetadata,
+  report: (diagnostic: Finding) => void,
 ): StructureMetadata {
   if (merged.kind !== next.kind) {
-    throw new Error(
-      `${merged.path} is declared as a ${merged.kind} by ${merged.files.join(", ")} and as a ${next.kind} by ${next.files.join(", ")}`,
-    );
+    report({
+      code: "metafile-kind-conflict",
+      message: `${merged.path} is declared as a ${merged.kind} by ${merged.files.join(", ")} and as a ${next.kind} by ${next.files.join(", ")}; keeping the ${merged.kind}`,
+      files: [...merged.files, ...next.files],
+    });
+
+    return merged;
   }
 
   for (const [field, located] of entries(next.fields)) {
     const existing = merged.fields[field];
 
     if (existing !== undefined && located !== undefined) {
-      throw new Error(
-        `${merged.path} sets ${field} in both ${existing.file} and ${located.file}`,
-      );
+      report({
+        code: "metafile-field-conflict",
+        message: `${merged.path} sets ${field} in both ${existing.file} and ${located.file}; keeping the value of ${existing.file}`,
+        files: [existing.file, located.file],
+      });
     }
   }
 
@@ -141,14 +175,61 @@ function mergeAtPath(
   };
 }
 
+function groupByDirectory(
+  read: readonly StructureMetadata[],
+  report: (diagnostic: Finding) => void,
+): StructureMetadata[] {
+  const inDirectory = new Map<Directory, StructureMetadata>();
+
+  for (const metadata of read) {
+    const sibling = inDirectory.get(metadata.path);
+
+    if (sibling === undefined) {
+      inDirectory.set(metadata.path, metadata);
+
+      continue;
+    }
+
+    const kept = sibling.kind === "domain" ? sibling : metadata;
+
+    report({
+      code: "shared-metafile-directory",
+      message: `${sibling.files.join(", ")} and ${metadata.files.join(", ")} share one directory; keeping ${kept.files.join(", ")}`,
+      files: [...sibling.files, ...metadata.files],
+    });
+
+    inDirectory.set(metadata.path, kept);
+  }
+
+  return [...inDirectory.values()];
+}
+
 export async function readStructureMetadata({
+  environment,
   filesystem,
   dirs,
 }: {
+  environment: string;
   filesystem: Filesystem;
   dirs: Directories;
-}): Promise<readonly StructureMetadata[]> {
+}): Promise<{
+  readonly metadata: readonly StructureMetadata[];
+  readonly diagnostics: readonly StructureDiagnostic[];
+}> {
   const byPath = new Map<Directory, StructureMetadata>();
+  const diagnostics: StructureDiagnostic[] = [];
+
+  function report(finding: Finding) {
+    diagnostics.push(
+      freeze({
+        severity: "error",
+        blocking: true,
+        environment,
+        ...finding,
+        files: freeze(finding.files),
+      }),
+    );
+  }
 
   for (const directory of dirs.filter((dir) => dir !== projectRoot)) {
     const matches = await filesystem.glob(
@@ -165,30 +246,34 @@ export async function readStructureMetadata({
       }),
     );
 
-    const inDirectory = new Map<Directory, StructureMetadata>();
+    const parsed: StructureMetadata[] = [];
 
-    for (const metadata of read) {
-      const sibling = inDirectory.get(metadata.path);
-
-      if (sibling !== undefined) {
-        throw new Error(
-          `${sibling.files.join(", ")} and ${metadata.files.join(", ")} share one directory`,
-        );
+    for (const result of read) {
+      if ("code" in result) {
+        report(result);
+      } else {
+        parsed.push(result);
       }
+    }
 
-      inDirectory.set(metadata.path, metadata);
+    const grouped = groupByDirectory(parsed, report);
 
+    for (const metadata of grouped) {
       if (metadata.kind === "domain" && metadata.path === environmentRoot) {
-        throw new Error(
-          `${metadata.files.join(", ")} describes an environment root, which is a namespace`,
-        );
+        report({
+          code: "domain-metafile-at-root",
+          message: `${metadata.files.join(", ")} describes an environment root, which is a namespace; ignoring it`,
+          files: metadata.files,
+        });
+
+        continue;
       }
 
       const merged = byPath.get(metadata.path);
 
       byPath.set(
         metadata.path,
-        merged === undefined ? metadata : mergeAtPath(merged, metadata),
+        merged === undefined ? metadata : mergeAtPath(merged, metadata, report),
       );
     }
   }
@@ -197,5 +282,8 @@ export async function readStructureMetadata({
     return left.path.localeCompare(right.path);
   });
 
-  return freeze(resolved.map((metadata) => freeze(metadata)));
+  return freeze({
+    metadata: freeze(resolved.map((metadata) => freeze(metadata))),
+    diagnostics: freeze(diagnostics),
+  });
 }

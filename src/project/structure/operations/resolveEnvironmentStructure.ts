@@ -1,6 +1,6 @@
 import { basename } from "node:path";
 
-import { flat } from "@auaust/toolkit/array";
+import { flat, sort } from "@auaust/toolkit/array";
 import { freeze, getOwn, keys } from "@auaust/toolkit/object";
 
 import { assignRoleFiles } from "#project/structure/operations/assignRoleFiles";
@@ -20,13 +20,30 @@ import type { EnvironmentStructure } from "#project/structure/types/EnvironmentS
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
+import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { TestsContext } from "#project/structure/types/TestsContext";
 import type { Directories } from "#types/Directories";
+import type { Directory } from "#types/Directory";
 
 const environmentRoot = ".";
 const projectRoot = ".";
+
+function dropCollects(
+  node: StructureNode,
+  dropped: ReadonlyMap<Directory, ReadonlySet<string>>,
+): StructureNode {
+  const roles = dropped.get(node.path);
+
+  return freeze({
+    ...node,
+    ...(roles === undefined || node.collects === undefined
+      ? {}
+      : { collects: node.collects.filter((role) => !roles.has(role)) }),
+    children: node.children.map((child) => dropCollects(child, dropped)),
+  });
+}
 
 export async function resolveEnvironmentStructure({
   name,
@@ -48,9 +65,20 @@ export async function resolveEnvironmentStructure({
   defined?: RoleRegistry;
   tests?: TestsContext;
   tree?: ProgramLayout | undefined;
-}): Promise<Omit<EnvironmentStructure, "unreached" | "diagnostics">> {
+}): Promise<{
+  readonly structure: Omit<
+    EnvironmentStructure,
+    "unreached" | "diagnostics" | "entries"
+  >;
+  readonly diagnostics: readonly StructureDiagnostic[];
+}> {
   const { strictness, namespaces } = options;
   const commands = tree === "commands";
+  const diagnostics: StructureDiagnostic[] = [];
+
+  function report(diagnostic: StructureDiagnostic) {
+    diagnostics.push(diagnostic);
+  }
 
   const roleResolver = createStructureRoleResolver({
     name,
@@ -65,6 +93,7 @@ export async function resolveEnvironmentStructure({
   const entryFile = getEntryFile(rolesFor([]));
 
   const domainResolver = createStructureDomainResolver({
+    name,
     filesystem,
     options,
     commands,
@@ -72,6 +101,7 @@ export async function resolveEnvironmentStructure({
     entryFile,
     internals,
     rolesFor,
+    report,
   });
 
   const walk = createStructureWalker({
@@ -161,33 +191,61 @@ export async function resolveEnvironmentStructure({
     rolesIn,
   );
 
+  const dropped = new Map<Directory, ReadonlySet<string>>();
+
   for (const { path, collects } of collectStructureNodes(resolvedRoot)) {
-    // @debt the error names the domain path, not the `.domain.json` or config declaring `collects`, since resolved domain options drop their source file
-    for (const role of collects ?? []) {
+    const invalid = (collects ?? []).filter((role) => {
       const contract = getOwn(structureRoles, role)?.contract;
 
-      if (contract === undefined || !contract.public || !contract.collected) {
-        throw new Error(
-          `${path} collects the role ${role}, which is not a public collected role of its environment`,
-        );
-      }
+      return contract === undefined || !contract.public || !contract.collected;
+    });
+
+    if (invalid.length > 0) {
+      dropped.set(path, new Set(invalid));
+    }
+
+    const source = domainResolver.collectsSourceOf(path);
+
+    for (const role of invalid) {
+      report(
+        freeze({
+          severity: "error",
+          code: "collected-role-not-public",
+          message: `${path} collects the role ${role}, which is not a public collected role of its environment; dropping it from its collects`,
+          blocking: true,
+          environment: name,
+          files: freeze([...(source?.files ?? [])]),
+          ...(source?.config === undefined ? {} : { config: source.config }),
+        }),
+      );
     }
   }
 
+  const collectedRoot = dropped.size === 0
+    ? resolvedRoot
+    : dropCollects(resolvedRoot, dropped);
+
   const rootNode = strictness === "loose"
-    ? loosenStructureNode(resolvedRoot, name === "tests" ? "mirror" : "domain")
-    : resolvedRoot;
+    ? loosenStructureNode(collectedRoot, name === "tests" ? "mirror" : "domain")
+    : collectedRoot;
+
+  const sorted = sort(diagnostics, (left, right) => {
+    return left.message.localeCompare(right.message);
+  });
 
   return freeze({
-    name,
-    dirs,
-    indexFile,
-    entryFile,
-    strictness,
-    root: rootNode,
-    unclassified: collectStructureNodes(rootNode).filter(
-      ({ kind }) => kind === "unclassified",
-    ),
-    roles: structureRoles,
+    structure: freeze({
+      name,
+      dirs,
+      indexFile,
+      entryFile,
+      strictness,
+      root: rootNode,
+      unclassified: collectStructureNodes(rootNode).filter(
+        ({ kind }) => kind === "unclassified",
+      ),
+      roles: structureRoles,
+    }),
+    diagnostics: freeze(sorted),
   });
 }

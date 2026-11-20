@@ -313,24 +313,48 @@ describe("structure", () => {
     });
   });
 
-  test("fails on a domain declared `public: false` beside its entry file", async () => {
-    await expect(
-      describeSource(declaration, {
-        "src/feature/sub/.domain.json": '{ "public": false }',
+  test("reports a domain declared `public: false` beside its entry file, keeping it private", async () => {
+    const { structure, nodes } = await describeSource(declaration, {
+      "src/feature/sub/.domain.json": '{ "public": false }',
+    });
+
+    expect(
+      structure.diagnostics.filter(({ code }) => {
+        return code === "private-domain-entry";
       }),
-    ).rejects.toThrow(
-      "src/feature/sub/entry.ts exists, but its domain is declared `public: false`",
-    );
+    ).toMatchObject([
+      {
+        severity: "error",
+        blocking: true,
+        files: ["src/feature/sub/entry.ts"],
+      },
+    ]);
+
+    expect(nodes.get("src/feature/sub")?.public).toBe(false);
   });
 
-  test("fails on a field set by both the config and a metadata file", async () => {
-    await expect(
-      describeSource(declaration, {
-        "src/errors/.domain.json": '{ "purpose": "Errors." }',
-      }),
-    ).rejects.toThrow(
-      "src:errors sets purpose in both the config and src/errors/.domain.json",
-    );
+  test("reports a field set by both the config input and a metadata file, keeping the metadata's", async () => {
+    const { structure, nodes } = await describeSource(declaration, {
+      "src/errors/.domain.json": '{ "purpose": "Errors." }',
+    });
+
+    const conflicts = structure.diagnostics.filter(({ code }) => {
+      return code === "config-metafile-conflict";
+    });
+
+    expect(conflicts).toMatchObject([
+      {
+        severity: "error",
+        blocking: true,
+        files: ["src/errors/.domain.json"],
+        config: {
+          origin: { layer: "input" },
+        },
+      },
+    ]);
+
+    expect(conflicts[0]?.config?.path).toMatch(/\.purpose$/);
+    expect(nodes.get("src/errors")?.purpose).toBe("Errors.");
   });
 
   test("fails on a name declared as a namespace and as a domain of one node", async () => {
@@ -553,7 +577,7 @@ describe("structure", () => {
       });
     });
 
-    test("fails on a metadata file in the mirrored environment", async () => {
+    test("reports and ignores a metadata file in the mirrored environment", async () => {
       const project = createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
         "src/entry.ts": "",
@@ -563,9 +587,21 @@ describe("structure", () => {
         "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles} } };\n`,
       });
 
-      await expect(loadStructure(project.root)).rejects.toThrow(
-        "tests/src/a/.domain.json describes the mirrored tests environment",
-      );
+      const structure = await loadStructure(project.root);
+
+      expect(structure.tests?.diagnostics).toMatchObject([
+        {
+          code: "mirrored-metafile",
+          blocking: true,
+          files: ["tests/src/a/.domain.json"],
+        },
+      ]);
+
+      const mirrored = flatten(structure.tests!.root).find(({ path }) => {
+        return path === "tests/src/a";
+      });
+
+      expect(mirrored?.purpose).toBeUndefined();
     });
 
     test("roots accepts any directory below a root key", async () => {

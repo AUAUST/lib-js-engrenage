@@ -1,7 +1,9 @@
 import type { ReexportMode } from "#batiment/roles/index";
+import type { OptionSource } from "#project/structure/types/OptionSource";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { StructureSource } from "#project/structure/types/StructureSource";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 export interface StructureOptions {
   readonly namespaces: Readonly<
@@ -29,6 +31,9 @@ export interface StructureOptions {
         readonly collects: readonly string[] | undefined;
         readonly public: boolean | undefined;
         readonly source: StructureSource;
+        readonly collectsSource:
+          | { readonly files: readonly File[]; readonly config?: OptionSource }
+          | undefined;
       }
     >
   >;

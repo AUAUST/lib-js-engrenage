@@ -1,7 +1,6 @@
 import { entries, freeze, getOwn, keys } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 import type { ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
@@ -14,7 +13,7 @@ export const sourceExportsSection = declareSection({
 
     const { src } = await config.resolve("structure");
 
-    const derived = resolveDomainEntries(src);
+    const derived = src?.entries ?? {};
 
     for (const [subpath, file] of entries(configured ?? {})) {
       const exposer = getOwn(derived, subpath);
