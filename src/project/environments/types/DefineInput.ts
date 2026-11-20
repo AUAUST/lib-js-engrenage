@@ -11,7 +11,7 @@ export interface DefineInput {
   /**
    * Compile-time globals, by identifier or dotted path (such as `import.meta.env.NAME`) with a JSON-serializable value, optionally wrapped by `define()` for a type, scope and documentation.
    * A function receives the `package.json` and the filesystem and returns them.
-   * They feed the `define` option of tsdown and Vite (hence Vitest) according to their scope, and the env file declarations.
+   * They feed the `define` option of tsdown and Vite (hence Vitest) according to their scope, and the declarations in `env.d.ts` at the root of the first `src.dirs` directory.
    * @default none
    */
   values?: ((GlobalsFactory | {

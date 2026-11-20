@@ -9,6 +9,7 @@ import { syncEnvFile } from "#tools/typescript/setup/syncEnvFile";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 import { define } from "#workflows/config/index";
 
+// @debt syncProject duplicates the one of produceTsconfigExtends.test.src.ts; one tests/utils helper returning the parsed tsconfig would serve both
 async function syncProject(
   input: Record<string, unknown>,
   files: Record<string, string> = {},

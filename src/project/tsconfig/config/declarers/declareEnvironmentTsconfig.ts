@@ -53,7 +53,7 @@ export function declareEnvironmentTsconfig<Context = unknown>(
           "Value of `include`.",
           "`false` leaves the field to the file.",
         ],
-        explain: "the TypeScript files of the environments that share this tsconfig, plus the env file when they define globals; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations, so no `.src` test brings source into the dist check",
+        explain: "the TypeScript files of the environments that share this tsconfig, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists",
       }),
       exclude: declareManagedList(string(), {
         description: [
