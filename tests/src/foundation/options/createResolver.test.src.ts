@@ -1,4 +1,4 @@
-import { string } from "valibot";
+import { string, unknown } from "valibot";
 import { describe, expect, test } from "vitest";
 
 import { getOwn } from "@auaust/toolkit/object";
@@ -9,6 +9,7 @@ import { createResolver } from "#foundation/options/utils/createResolver";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import type { Resolver } from "#foundation/options/apis/Resolver";
 import type { Section } from "#foundation/options/ports/Section";
+import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 
 function createSource(
@@ -26,6 +27,30 @@ function createSource(
 function createSourceResolver(sections: Readonly<Record<string, Section>>) {
   return createResolver({}, undefined, {
     sections: createSource(sections),
+    reporter: createTestReporter(),
+  });
+}
+
+function createLayeredResolver(
+  input: Readonly<Record<string, unknown>>,
+  layers: readonly InputLayer[],
+) {
+  const section = declareSection({
+    declaration: declare(unknown()),
+    resolve(value: unknown): unknown {
+      return value;
+    },
+  });
+
+  function load(key: string) {
+    return Promise.resolve(key === "a" ? { input: "a", section } : undefined);
+  }
+
+  return createResolver(input, undefined, {
+    sections: { load },
+    defaults() {
+      return Promise.resolve(layers);
+    },
     reporter: createTestReporter(),
   });
 }
@@ -221,5 +246,60 @@ describe("createResolver", () => {
     expect(await set.input("named")).toBe("given");
 
     expect(calls).toBe(0);
+  });
+
+  test("names the source of each input value", async () => {
+    const config = createLayeredResolver(
+      {
+        a: { b: 1 },
+      },
+      [
+        {
+          name: "p",
+          values: { "a.c": 2 },
+        },
+      ],
+    );
+
+    expect(await config.origin("a", "a.b")).toEqual({ layer: "input" });
+
+    expect(await config.origin("a", "a.c")).toEqual({
+      layer: "default",
+      name: "p",
+    });
+
+    expect(await config.origin("a", "a.d")).toEqual({ layer: "declaration" });
+  });
+
+  test("takes the first layer setting a path, under the input's list adjustments", async () => {
+    const config = createLayeredResolver(
+      {
+        a: {
+          list: { append: ["input"] },
+        },
+      },
+      [
+        {
+          name: "first",
+          values: { "a.c": 1, "a.list": ["first"] },
+        },
+        {
+          name: "second",
+          values: { "a.c": 2, "a.list": ["second"] },
+        },
+      ],
+    );
+
+    expect(await config.input("a")).toEqual({
+      c: 1,
+      list: ["first", "input"],
+    });
+
+    expect(await config.origin("a", "a.c")).toEqual({
+      layer: "default",
+      name: "first",
+    });
+
+    expect(await config.origin("a", "a.list")).toEqual({ layer: "input" });
   });
 });

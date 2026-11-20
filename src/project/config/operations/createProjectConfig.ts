@@ -21,6 +21,7 @@ import { loadLazy } from "#foundation/modules/index";
 import {
   createResolver,
   validate,
+  type InputLayer,
   type KeyedSection,
   type Resolver,
 } from "#foundation/options/index";
@@ -230,15 +231,12 @@ export function createProjectConfig({
 
   const names = map(registry.extensions, ({ name }) => name);
 
-  const presetValues = new WeakMap<
-    object,
-    Promise<Readonly<Record<string, unknown>>>
-  >();
+  const presetLayers = new WeakMap<object, Promise<readonly InputLayer[]>>();
 
-  async function loadPresetValues({
+  async function loadPresetLayers({
     name,
     load: loadValues,
-  }: ConfigSlots["presets"]): Promise<Readonly<Record<string, unknown>>> {
+  }: ConfigSlots["presets"]): Promise<readonly InputLayer[]> {
     const loaded = (await loadValues?.()) ?? {};
 
     const reserved = keys(loaded).filter((path) => {
@@ -253,26 +251,26 @@ export function createProjectConfig({
       );
     }
 
-    return loaded;
+    return [{ name: `preset "${name}"`, values: loaded }];
   }
 
   async function defaults(
     input: string,
     reader: ConfigResolver,
-  ): Promise<Readonly<Record<string, unknown>>> {
+  ): Promise<readonly InputLayer[]> {
     if (includes(unpresettable, input)) {
-      return {};
+      return [];
     }
 
     const preset = await reader.resolve("preset");
 
     if (preset === false) {
-      return {};
+      return [];
     }
 
-    const pending = presetValues.get(preset) ?? loadPresetValues(preset);
+    const pending = presetLayers.get(preset) ?? loadPresetLayers(preset);
 
-    presetValues.set(preset, pending);
+    presetLayers.set(preset, pending);
 
     return pending;
   }
@@ -280,6 +278,7 @@ export function createProjectConfig({
   const {
     resolve,
     input: readInput,
+    origin,
     context,
     validate: validateKeys,
     forget,
@@ -319,6 +318,7 @@ export function createProjectConfig({
   return freeze({
     resolve,
     input: readInput,
+    origin,
     context,
     validate: validateKeys,
     forget,

@@ -224,6 +224,7 @@ export async function createStepContext({
   return freeze<StepContext>({
     resolve,
     input: config.input,
+    origin: config.origin,
     context: config.context,
     validate: config.validate,
     forget: config.forget,

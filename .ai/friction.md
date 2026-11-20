@@ -91,3 +91,4 @@
 - worktree isolation: a `git mv` loop and a heredoc writing a metafile — refused as unverifiable; moved with plain `mv` and wrote through the edit tools
 - `engrenage sync` after adding the `batiment` namespace: config load failed on the missing `#batiment/*` alias and stale barrels, which only sync generates — added the alias and barrels by hand, then synced
 - issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there
+- worktree isolation: `sed -i` inserting an import chained with `&&`, and a heredoc write — refused as unverifiable; used the edit tools

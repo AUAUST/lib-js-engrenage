@@ -23,8 +23,8 @@ const fixture = {
   },
 };
 
-async function resolveSource(input: Readonly<Record<string, unknown>>) {
-  const config = createProjectConfig({
+function createFixtureConfig(input: Readonly<Record<string, unknown>>) {
+  return createProjectConfig({
     root: createTemporaryProject().root,
     raw: withSourceRuntime({
       extensions: [fixture],
@@ -33,8 +33,10 @@ async function resolveSource(input: Readonly<Record<string, unknown>>) {
     }),
     configFile: undefined,
   });
+}
 
-  const source = await config.resolve("src.options");
+async function resolveSource(input: Readonly<Record<string, unknown>>) {
+  const source = await createFixtureConfig(input).resolve("src.options");
 
   return {
     roles: "roles" in source ? source.roles.map(({ name }) => name) : [],
@@ -63,5 +65,22 @@ describe("preset values", () => {
     });
 
     expect(generated).toEqual(["preset/**", "config/**"]);
+  });
+
+  test("report the preset as the origin of a value only it sets", async () => {
+    const preset = createFixtureConfig({});
+
+    const configured = createFixtureConfig({
+      src: { generated: ["config/**"] },
+    });
+
+    expect(await preset.origin("src.options", "src.generated")).toEqual({
+      layer: "default",
+      name: 'preset "fixture"',
+    });
+
+    expect(await configured.origin("src.options", "src.generated")).toEqual({
+      layer: "input",
+    });
   });
 });

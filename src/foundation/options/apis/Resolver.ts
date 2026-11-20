@@ -1,3 +1,5 @@
+import type { ValueOrigin } from "#foundation/options/types/ValueOrigin";
+
 export interface Resolver<
   Context = unknown,
   Sections extends object = Readonly<Record<string, unknown>>,
@@ -25,4 +27,14 @@ export interface Resolver<
    * @throws When `key` is unknown or its input is invalid.
    */
   input(key: string): Promise<unknown>;
+  /**
+   * The source of the value at `path`, dotted under the input name of the
+   * section of `key`: the highest-precedence source setting a value at `path`,
+   * at one of its ancestors or under it, the input above every default layer;
+   * `"declaration"` when none does.
+   *
+   * @throws When `key` is unknown, its input is invalid, or `path` is not
+   * under its input name.
+   */
+  origin(key: string, path: string): Promise<ValueOrigin>;
 }

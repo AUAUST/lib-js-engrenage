@@ -12,8 +12,8 @@ export interface InputResolver<
    */
   validate(keys: readonly string[]): Promise<void>;
   /**
-   * Drops the resolved values, so each next read recomputes its section;
-   * validated inputs stay cached.
+   * Drops the resolved values, so each next read recomputes its section; validated
+   * inputs and their origins stay cached.
    */
   forget(): void;
 }

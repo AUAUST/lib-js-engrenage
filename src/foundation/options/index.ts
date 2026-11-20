@@ -21,9 +21,11 @@ export { managedListOptionSchema } from "#foundation/options/config/schemas/mana
 // @barrel utils
 export { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
 export { createAccessors } from "#foundation/options/utils/createAccessors";
+export { createInputReader } from "#foundation/options/utils/createInputReader";
 export { createOptionSchema } from "#foundation/options/utils/createOptionSchema";
 export { createResolver } from "#foundation/options/utils/createResolver";
 export { describeDefault } from "#foundation/options/utils/describeDefault";
+export { findValueOrigin } from "#foundation/options/utils/findValueOrigin";
 export { listDefaults } from "#foundation/options/utils/listDefaults";
 export { resolveDefault } from "#foundation/options/utils/resolveDefault";
 export { resolveListOption } from "#foundation/options/utils/resolveListOption";
@@ -32,6 +34,7 @@ export { validate } from "#foundation/options/utils/validate";
 // @end
 
 // @barrel apis
+export type * from "#foundation/options/apis/InputReader";
 export type * from "#foundation/options/apis/InputResolver";
 export type * from "#foundation/options/apis/Resolver";
 // @end
@@ -47,6 +50,7 @@ export type * from "#foundation/options/types/Accessors";
 export type * from "#foundation/options/types/DeclarationEntries";
 export type * from "#foundation/options/types/DescribedResolver";
 export type * from "#foundation/options/types/Description";
+export type * from "#foundation/options/types/InputLayer";
 export type * from "#foundation/options/types/InputOf";
 export type * from "#foundation/options/types/KeyedSection";
 export type * from "#foundation/options/types/ListAdjustment";
@@ -60,4 +64,5 @@ export type * from "#foundation/options/types/ObjectResolution";
 export type * from "#foundation/options/types/OutputOf";
 export type * from "#foundation/options/types/ResolvedLocation";
 export type * from "#foundation/options/types/SectionSource";
+export type * from "#foundation/options/types/ValueOrigin";
 // @end

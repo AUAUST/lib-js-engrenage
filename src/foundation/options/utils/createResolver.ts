@@ -1,13 +1,13 @@
 import { isSelf } from "@auaust/toolkit";
 import { keys } from "@auaust/toolkit/object";
 
-import { applyInputDefaults } from "#foundation/options/utils/applyInputDefaults";
-import { validate } from "#foundation/options/utils/validate";
+import { createInputReader } from "#foundation/options/utils/createInputReader";
 import type { InputResolver } from "#foundation/options/apis/InputResolver";
 import type { Resolver } from "#foundation/options/apis/Resolver";
-import type { Declaration } from "#foundation/options/ports/Declaration";
+import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { KeyedSection } from "#foundation/options/types/KeyedSection";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
+import type { ValueOrigin } from "#foundation/options/types/ValueOrigin";
 import type { Reporter } from "#foundation/reports/index";
 
 interface Reading {
@@ -42,7 +42,7 @@ export function createResolver<
     defaults?(
       name: string,
       reader: Resolver<Context>,
-    ): Promise<Readonly<Record<string, unknown>>>;
+    ): Promise<readonly InputLayer[]>;
     unknownNote?: string;
     describeUnknown?(key: string, value: unknown): string | undefined;
     reporter: Reporter;
@@ -52,58 +52,11 @@ export function createResolver<
   const memos = new Map<string, Promise<Reading>>();
   const waits = new Map<string, Set<string>>();
 
-  const inputs = new Map<
-    string,
-    Map<Declaration<unknown, unknown, unknown>, Promise<unknown>>
-  >();
-
-  async function validateInput(
-    name: string,
-    declaration: Declaration<unknown, unknown, unknown>,
-    reader: Resolver<Context>,
-  ): Promise<unknown> {
-    const value = defaults === undefined
-      ? input[name]
-      : applyInputDefaults(
-          input[name],
-          name,
-          await defaults(name, reader),
-          reporter,
-        );
-
-    return validate(
-      declaration.schema,
-      value,
-      source === undefined ? `${name} config` : `${name} config in ${source}`,
-    );
-  }
-
-  function readInput(
-    name: string,
-    declaration: Declaration<unknown, unknown, unknown>,
-    reader: Resolver<Context>,
-  ): Promise<unknown> {
-    const validated = inputs.get(name) ?? new Map();
-
-    const cached = validated.get(declaration);
-
-    if (cached !== undefined) {
-      return cached;
-    }
-
-    const pending = validateInput(name, declaration, reader);
-
-    validated.set(declaration, pending);
-    inputs.set(name, validated);
-
-    pending.catch(() => {
-      if (validated.get(declaration) === pending) {
-        validated.delete(declaration);
-      }
-    });
-
-    return pending;
-  }
+  const inputs = createInputReader(input, {
+    source,
+    defaults,
+    reporter,
+  });
 
   async function loadSection(
     key: string,
@@ -160,9 +113,23 @@ export function createResolver<
   ): Promise<unknown> {
     const { input: name, section } = await load(key);
 
+    if (name === undefined || section.declaration === undefined) {
+      return;
+    }
+
+    return inputs.read(name, section.declaration, reader);
+  }
+
+  async function readKeyOrigin(
+    key: string,
+    path: string,
+    reader: Resolver<Context>,
+  ): Promise<ValueOrigin> {
+    const { input: name, section } = await load(key);
+
     return name === undefined || section.declaration === undefined
-      ? undefined
-      : readInput(name, section.declaration, reader);
+      ? { layer: "declaration" }
+      : inputs.origin(name, path, section.declaration, reader);
   }
 
   function findPath(from: string, to: string): string[] | undefined {
@@ -227,10 +194,15 @@ export function createResolver<
       return readKeyInput(dependency, config);
     }
 
+    function origin(dependency: string, path: string): Promise<ValueOrigin> {
+      return readKeyOrigin(dependency, path, config);
+    }
+
     const config: Resolver<Context> = {
       context,
       resolve,
       input,
+      origin,
     };
 
     const chain: Chain<Context> = {
@@ -247,7 +219,7 @@ export function createResolver<
       const value = await section.resolve(
         name === undefined || declaration === undefined
           ? undefined
-          : await readInput(name, declaration, config),
+          : await inputs.read(name, declaration, config),
         config,
       );
 
@@ -360,7 +332,7 @@ export function createResolver<
       known.add(name);
 
       try {
-        await readInput(name, section.declaration, reader);
+        await inputs.read(name, section.declaration, reader);
       } catch (error) {
         if (!(error instanceof Error)) {
           throw error;
@@ -407,6 +379,10 @@ export function createResolver<
     return readKeyInput(key, reader);
   }
 
+  function origin(key: string, path: string): Promise<ValueOrigin> {
+    return readKeyOrigin(key, path, reader);
+  }
+
   function forget() {
     memos.clear();
     waits.clear();
@@ -416,6 +392,7 @@ export function createResolver<
     context,
     resolve: readValue,
     input: readValueInput,
+    origin,
   };
 
   function resolve<Key extends keyof Sections & string>(
@@ -429,6 +406,7 @@ export function createResolver<
     context,
     resolve,
     input: readValueInput,
+    origin,
     validate: validateKeys,
     forget,
   };

@@ -2,6 +2,7 @@ import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 import { entries } from "@auaust/toolkit/object";
 
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
 import type { Reporter } from "#foundation/reports/index";
 
@@ -22,23 +23,26 @@ function isAdjustment(value: unknown): value is ListAdjustment<string> {
   );
 }
 
+interface Placement {
+  readonly fallback: unknown;
+  readonly path: string;
+  readonly layer: string;
+  readonly origins: Map<string, string>;
+  readonly reporter: Reporter;
+}
+
 // @debt a list adjustment is recognized by its shape and the default's, not by the option declared at the path
-function combine(
-  explicit: unknown,
-  fallback: unknown,
-  path: string,
-  reporter: Reporter,
-): unknown {
-  if (explicit === undefined) {
+function combine(explicit: unknown, placement: Placement): unknown {
+  const { fallback, path, layer, origins, reporter } = placement;
+
+  if (explicit === undefined || (explicit === true && isStringList(fallback))) {
+    origins.set(path, layer);
+
     return fallback;
   }
 
   if (!isStringList(fallback)) {
     return explicit;
-  }
-
-  if (explicit === true) {
-    return fallback;
   }
 
   return isAdjustment(explicit)
@@ -49,19 +53,17 @@ function combine(
 function place(
   current: unknown,
   segments: readonly string[],
-  fallback: unknown,
-  path: string,
-  reporter: Reporter,
+  placement: Placement,
 ): unknown {
   const [head, ...rest] = segments;
 
   if (head === undefined) {
-    return combine(current, fallback, path, reporter);
+    return combine(current, placement);
   }
 
   // @debt creating the parent object skips the default an object option computes when its input is unset
   if (current === undefined) {
-    return { [head]: place(undefined, rest, fallback, path, reporter) };
+    return { [head]: place(undefined, rest, placement) };
   }
 
   if (!isPlainObject(current)) {
@@ -70,29 +72,39 @@ function place(
 
   return {
     ...current,
-    [head]: place(current[head], rest, fallback, path, reporter),
+    [head]: place(current[head], rest, placement),
   };
 }
 
 export function applyInputDefaults(
   input: unknown,
   name: string,
-  defaults: Readonly<Record<string, unknown>>,
+  layers: readonly InputLayer[],
   reporter: Reporter,
-): unknown {
-  let applied = input;
+): { readonly value: unknown; readonly origins: ReadonlyMap<string, string> } {
+  const origins = new Map<string, string>();
 
-  for (const [path, fallback] of entries(defaults)) {
-    if (path !== name && !path.startsWith(`${name}.`)) {
-      continue;
+  let value = input;
+
+  for (const layer of layers) {
+    for (const [path, fallback] of entries(layer.values)) {
+      if (path !== name && !path.startsWith(`${name}.`)) {
+        continue;
+      }
+
+      const segments = path === name
+        ? []
+        : path.slice(name.length + 1).split(".");
+
+      value = place(value, segments, {
+        fallback,
+        path,
+        layer: layer.name,
+        origins,
+        reporter,
+      });
     }
-
-    const segments = path === name
-      ? []
-      : path.slice(name.length + 1).split(".");
-
-    applied = place(applied, segments, fallback, path, reporter);
   }
 
-  return applied;
+  return { value, origins };
 }
