@@ -1,6 +1,5 @@
 # Discarded solutions
 
-- skill traits (#277): share the analyser's depth with the debugger and planner — sync cannot add trait blocks yet; global `analysis` section instead
 - init step for `.ai/discarded.md`: create the log with the project — agents create it on first entry, no tooling needed
 - structure nested walker: walker reading the nested declaration child by child (#322) — rewrites the walker and resolvers for no behavior change; flattening at the boundary keeps them
 - structure flat declarations: keeping `namespaces` and `domains` beside `structure` (#322) — two shapes for one concept and a merge check between them

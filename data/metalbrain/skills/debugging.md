@@ -28,6 +28,11 @@ Understand a problem, decide its fix, then apply it or write it up. A fix is don
 
 Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 
+Examine the problem and the sources it touches by the analysis method in this file, which §Diagnosis refines for a fault:
+
+<!-- @shared-file analysis.md -->
+<!-- @end -->
+
 ## Input
 
 | Given                                                  | Read first                                                             |

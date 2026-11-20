@@ -94,3 +94,9 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: friction ×3: ESM resolves bare specifiers from the script's directory, so `prettier` or `eslint` imported from a scratchpad `.mjs` fails; agents use absolute `node_modules` paths or `node --input-type=module -e` from the root.
 - want: the Environment table naming the working form.
+
+## 19. AGENTS.md cannot name a shared file's path for every runtime
+
+- sites: `data/metalbrain/sections/analysis.md:21`
+- why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
+- want: a section-level filler rendering the installed path of a shared file for the reading runtime.

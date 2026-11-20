@@ -47,8 +47,11 @@ An issue edit undoes a wrong guess before any worker builds on it, so your own q
 - Count as costly any reach that changes the plan's goal or **Decisions**, a contract several items share, or the order of issues already written.
 - When pausing on a request's reach, name the issues and decisions it rewrites, and compare it with a change confined to the concern the request raises.
 - Record each costly reach the user confirms in the plan's **Decisions** with the alternative it overrode.
-- Investigate every question in the code, configuration, history, documentation, dependencies and issues it touches, and work out its candidate answers, before handling it below.
 - Write what no open question affects without waiting for answers.
+
+Investigate every question in the code, configuration, history, documentation, dependencies and issues it touches, by the analysis method in this file, and work out its candidate answers, before handling it below:
+
+`.claude/skills/planning/analysis.md`
 
 ### Latitude
 

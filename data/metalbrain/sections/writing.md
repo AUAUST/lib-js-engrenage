@@ -57,7 +57,7 @@ A subagent's final report, per dispatch or resume:
 
 <!-- @end -->
 
-- What remains and the kind of work it needs, or that nothing remains: last, unless your skill orders the parts.
+- What remains and the kind of work it needs, or that nothing remains: last, unless your brief or skill orders the parts.
 
 ### Stop records
 
