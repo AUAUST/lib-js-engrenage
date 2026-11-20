@@ -30,7 +30,7 @@ src/  foundation < batiment < project < tools < workflows  (global roles: types 
 │  ├─ cache  Cache directory of the project's tools.
 │  ├─ config  Load and resolve declarative configuration sections.
 │  ├─ docs*  Doc tags, their presets and the documented exports of source files.
-│  ├─ environments  Configure source, tests, commands, tooling and data environments.
+│  ├─ environments  Configure each environment's JavaScript side: options, sections, tsconfig and package fields.
 │  ├─ format*  Formatting contracts shared by tool adapters.
 │  ├─ gate  Contract of the steps the gate runs.
 │  ├─ package*  Read and synchronize the project package manifest.
