@@ -1,4 +1,5 @@
-import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
+import { isFinite } from "@auaust/toolkit/number";
+
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
 import type { ModelFact } from "#tools/agents/metalbrain/types/ModelFact";
@@ -20,7 +21,7 @@ function readText(value: unknown, path: string): string {
 }
 
 function readCount(value: unknown, path: string): number {
-  return isFiniteNumber(value) && value >= 0
+  return isFinite(value) && value >= 0
     ? value
     : fail(path, "a non-negative number");
 }

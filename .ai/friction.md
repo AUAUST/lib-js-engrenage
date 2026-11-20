@@ -111,3 +111,4 @@
 - zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
 - instruction review: the user requests behind past `brain:` commits — no record keeps them; parsed session transcripts under `~/.claude/projects` by hand
+- pnpm engrenage gate --worktree: ran it in the shared main checkout — another editor replaced `isFiniteNumber` mid-run, breaking hooks and the gate; waited for the tree to settle and committed only my paths

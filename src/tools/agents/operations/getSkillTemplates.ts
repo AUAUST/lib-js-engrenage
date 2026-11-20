@@ -181,7 +181,6 @@ export async function getSkillTemplates({
       const values = {
         ...definition,
         hooks: {
-          // @debt unverified whether Claude Code reruns frontmatter hooks for an agent resumed through SendMessage, which would leave resumed agents unchecked
           PreToolUse: [
             {
               matcher: "*",

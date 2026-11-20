@@ -1,5 +1,6 @@
+import { isFinite } from "@auaust/toolkit/number";
+
 import { isBudgetLevel } from "#tools/agents/metalbrain/utils/isBudgetLevel";
-import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
 import type { BudgetState } from "#tools/agents/metalbrain/types/BudgetState";
@@ -10,7 +11,7 @@ function fail(path: string, expected: string): never {
 }
 
 function readNumber(value: unknown, path: string): number {
-  return isFiniteNumber(value) ? value : fail(path, "a number");
+  return isFinite(value) ? value : fail(path, "a number");
 }
 
 function readWarning(value: unknown, index: number): BudgetWarning {
