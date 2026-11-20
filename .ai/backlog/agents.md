@@ -150,7 +150,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 ## 27. Open questions on token spend from #771
 
 - why: #771 closed with these unanswered.
-- want: a decision on each: a PreToolUse hook flagging `gh issue view` on an issue held in `.ai/issues/` plus a PostToolUse warning past N output characters, or wording only; a "batch independent commands and edits per call" rule for every agent; which MCP servers and connectors to disable here (claude.ai docs, easel, browser, simulator); mergers on Sonnet now or once model-priced units measure the change.
+- want: a decision on each: a PreToolUse hook flagging `gh issue view` on an issue held in `.ai/issues/` plus a PostToolUse warning past N output characters, or wording only; a "batch independent commands and edits per call" rule for every agent; which base-context parts to disable (#791: desktop adds ~43k tokens over the CLI's 22k; `deny` keeps `Artifact` and connector instructions; synced skills ~3.5k via `skillOverrides`); mergers on Sonnet now or once model-priced units measure the change.
 
 ## 28. `agents stats --all` costs disagree between role and model views
 
