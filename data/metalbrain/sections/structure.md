@@ -19,6 +19,13 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
 - Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 
+A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too; no code enforces them, and none names a directory, so a project names its foundations as it likes:
+
+- **Foundations.** Primitives every namespace builds on; they build on no namespace.
+- **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level. A helper holding business logic belongs to the domain owning that logic.
+- **Binding.** The effectful glue injecting one domain into another: `extension.ts`, ports typing what fills a slot. Never support, even when small.
+- **Ambient declarations** (`*.d.ts`). Between support and the environment.
+
 Place:
 
 - **Code.** The domain owning its concern, in the role whose contract fits it.

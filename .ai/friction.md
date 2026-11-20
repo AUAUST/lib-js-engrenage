@@ -86,3 +86,5 @@
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - worktree isolation: heredoc file write, and `git commit` after `cd &&` — refused as unverifiable; used the edit tools and `git -C <worktree>` alone
 - commit gate vitest: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel — each passed alone; retried the commit
+- worktree isolation: `git diff` chained after a printf file write and the gate — refused as unverifiable; wrote the file with the edit tools and ran each command alone
+- commit-msg hook: 77-character subject rejected — no git rule states the 72-character limit; shortened the subject
