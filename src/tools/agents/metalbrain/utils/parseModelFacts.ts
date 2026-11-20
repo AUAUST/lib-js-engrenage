@@ -71,8 +71,17 @@ function readModel(value: unknown, path: string): ModelFact {
     return fail(`${path}.tiers`, "a non-empty array");
   }
 
+  const { aliases = [] } = model;
+
+  if (!Array.isArray(aliases)) {
+    return fail(`${path}.aliases`, "an array");
+  }
+
   return {
     family: readText(model.family, `${path}.family`),
+    aliases: aliases.map((alias: unknown, index) => {
+      return readText(alias, `${path}.aliases[${index}]`);
+    }),
     contextWindow: readCount(model.contextWindow, `${path}.contextWindow`),
     maxOutput: readCount(model.maxOutput, `${path}.maxOutput`),
     tiers: tiers.map((tier: unknown, index) => {

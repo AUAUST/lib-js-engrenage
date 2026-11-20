@@ -2,6 +2,7 @@ import {
   claudeSessionVariable,
   formatAgentRuns,
   readAgentRuns,
+  readModelFacts,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -36,6 +37,6 @@ export default async function (requested?: string): Promise<void> {
   }
 
   getRunContext().reporter.log(
-    `Session ${session}\n\n${formatAgentRuns(selected)}`,
+    `Session ${session}\n\n${formatAgentRuns(selected, await readModelFacts())}`,
   );
 }

@@ -136,12 +136,6 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
 - want: failures logged; start times never lost or left behind.
 
-## 25. Model facts match transcripts by exact model id only
-
-- sites: `src/tools/agents/metalbrain/utils/priceMessage.ts:31`
-- why: models carry `aliases`, but lookup is by key; an alias or a dated id in a transcript gives an unpriced line.
-- want: lookup through aliases, settled with #772.
-
 ## 26. The implement skill's report kinds omit the budget stop
 
 - sites: `data/metalbrain/skills/implement.md:93`

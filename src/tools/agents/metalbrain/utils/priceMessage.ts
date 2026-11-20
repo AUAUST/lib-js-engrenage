@@ -1,16 +1,10 @@
+import { findModelFact } from "#tools/agents/metalbrain/utils/findModelFact";
+import { findPriceTier } from "#tools/agents/metalbrain/utils/findPriceTier";
 import { measureContext } from "#tools/agents/metalbrain/utils/measureContext";
+import { priceTokens } from "#tools/agents/metalbrain/utils/priceTokens";
 import type { MessagePrice } from "#tools/agents/metalbrain/types/MessagePrice";
 import type { MessageTokens } from "#tools/agents/metalbrain/types/MessageTokens";
 import type { ModelFacts } from "#tools/agents/metalbrain/types/ModelFacts";
-import type { PriceTier } from "#tools/agents/metalbrain/types/PriceTier";
-
-const standardSpeed = "standard";
-
-const tokensPerPrice = 1_000_000;
-
-function countConditions({ condition }: PriceTier): number {
-  return Object.values(condition).filter((value) => value !== undefined).length;
-}
 
 /**
  * Prices one assistant message: the tier whose condition its `speed` and context
@@ -25,46 +19,15 @@ export function priceMessage(
     readonly tokens: MessageTokens;
   },
 ): MessagePrice | undefined {
-  const { model, speed = standardSpeed, tokens } = message;
+  const { model, speed, tokens } = message;
 
-  const fact = Object.hasOwn(facts.models, model)
-    ? facts.models[model]
-    : undefined;
+  const fact = findModelFact(facts, model);
 
-  if (fact === undefined) {
-    return;
-  }
+  const tier = fact === undefined
+    ? undefined
+    : findPriceTier(fact, { speed, context: measureContext(tokens) });
 
-  const context = measureContext(tokens);
-
-  const tier = fact.tiers
-    .filter(({ condition }) => {
-      return (
-        (condition.speed ?? standardSpeed) === speed &&
-        (condition.contextAbove === undefined ||
-          context > condition.contextAbove)
-      );
-    })
-    .reduce<PriceTier | undefined>((chosen, candidate) => {
-      return chosen === undefined ||
-        countConditions(candidate) > countConditions(chosen)
-        ? candidate
-        : chosen;
-    }, undefined);
-
-  if (tier === undefined) {
-    return;
-  }
-
-  const { prices } = tier;
-
-  const dollars = (
-    tokens.input * prices.input +
-    tokens.cacheWrite5m * prices.cacheWrite5m +
-    tokens.cacheWrite1h * prices.cacheWrite1h +
-    tokens.cacheRead * prices.cacheRead +
-    tokens.output * prices.output
-  );
-
-  return { tier: tier.name, cost: dollars / tokensPerPrice };
+  return tier === undefined
+    ? undefined
+    : { tier: tier.name, cost: priceTokens(tier.prices, tokens) };
 }

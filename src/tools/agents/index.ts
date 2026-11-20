@@ -12,6 +12,7 @@ export {
   syncCodexFiles,
 } from "#tools/agents/codex/index";
 export { agentShellVariables, mainAgent } from "#tools/agents/constants";
+export { readModelFacts } from "#tools/agents/metalbrain/index";
 export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 export { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
@@ -105,6 +106,7 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 export type * from "#tools/agents/types/Agent";
 export type * from "#tools/agents/types/AgentCheckFinding";
 export type * from "#tools/agents/types/AgentDispatch";
+export type * from "#tools/agents/types/AgentModelUsage";
 export type * from "#tools/agents/types/AgentReport";
 export type * from "#tools/agents/types/AgentRun";
 export type * from "#tools/agents/types/AgentSections";

@@ -11,13 +11,7 @@ function usage(startContext: number, peakContext: number) {
     ended: "2026-11-15T12:00:00.000Z",
     turns: 1,
     tools: {},
-    tokens: {
-      input: 0,
-      cacheRead: 0,
-      cacheWrite5m: 0,
-      cacheWrite1h: 0,
-      output: 0,
-    },
+    models: [],
     startContext,
     peakContext,
   };

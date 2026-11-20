@@ -101,3 +101,4 @@
 - Claude Code worktree isolation: a heredoc writing source files and a chained command naming git — refused as unverifiable; wrote files through the edit tools and split the commands
 - `pnpm engrenage` after sync adds a `bin` entry: ran typecheck — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace bins changed since install; ran `pnpm install --offline`
 - `engrenage sync` after changing `data.exports`: added an export and synced — sync left `package.json` exports stale, so self-referencing the new subpath failed; ran `pnpm engrenage tsdown`
+- zsh glob: grep --include=*.ts in a gatherer shell — "no matches found" from zsh glob — quoted the pattern or used grep -r on the directory

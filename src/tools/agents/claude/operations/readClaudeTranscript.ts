@@ -13,6 +13,13 @@ import {
 import { isArray, isString } from "@auaust/toolkit";
 import { max } from "@auaust/toolkit/math";
 
+import { fastTier, standardTier, unknownModel } from "#tools/agents/constants";
+import {
+  findModelFact,
+  findPriceTier,
+  readModelFacts,
+  type ModelFacts,
+} from "#tools/agents/metalbrain/index";
 import { findBriefedIssue } from "#tools/github/index";
 import type { AgentTokens } from "#tools/agents/types/AgentTokens";
 import type { AgentUsage } from "#tools/agents/types/AgentUsage";
@@ -37,6 +44,7 @@ const entrySchema = looseObject({
         looseObject({
           input_tokens: number(),
           output_tokens: number(),
+          speed: optional(string()),
           cache_read_input_tokens: optional(number(), 0),
           cache_creation_input_tokens: optional(number(), 0),
           cache_creation: optional(
@@ -52,6 +60,23 @@ const entrySchema = looseObject({
 });
 
 const syntheticModel = "<synthetic>";
+
+interface ModelEntry {
+  readonly model: string;
+  readonly tier: string;
+  readonly tokens: { -readonly [Key in keyof AgentTokens]: number };
+}
+
+function resolveTier(
+  facts: ModelFacts,
+  call: { model: string; speed: string | undefined; context: number },
+): string {
+  const fact = findModelFact(facts, call.model);
+
+  const tier = fact === undefined ? undefined : findPriceTier(fact, call);
+
+  return tier?.name ?? (call.speed === fastTier ? fastTier : standardTier);
+}
 
 function parseLine(line: string): unknown {
   try {
@@ -75,16 +100,11 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
 
   const tools: Record<string, number> = {};
 
-  const tokens: { -readonly [Key in keyof AgentTokens]: number } = {
-    input: 0,
-    cacheRead: 0,
-    cacheWrite5m: 0,
-    cacheWrite1h: 0,
-    output: 0,
-  };
+  const facts = await readModelFacts();
+
+  const entries = new Map<string, ModelEntry>();
 
   let issue: string | undefined;
-  let model: string | undefined;
   let started: string | undefined;
   let ended: string | undefined;
   let briefed = false;
@@ -151,7 +171,37 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
 
     messages.add(message.id);
 
-    model = message.model ?? model;
+    const context = (
+      usage.input_tokens +
+      usage.cache_read_input_tokens +
+      usage.cache_creation_input_tokens
+    );
+
+    const model = message.model ?? unknownModel;
+
+    const tier = resolveTier(facts, {
+      model,
+      speed: usage.speed,
+      context,
+    });
+
+    const key = `${model}\n${tier}`;
+
+    const tokens = (
+      entries.get(key)?.tokens ?? {
+        input: 0,
+        cacheRead: 0,
+        cacheWrite5m: 0,
+        cacheWrite1h: 0,
+        output: 0,
+      }
+    );
+
+    entries.set(key, {
+      model,
+      tier,
+      tokens,
+    });
 
     const written = usage.cache_creation === undefined
       ? {
@@ -169,12 +219,6 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
     tokens.cacheWrite1h += written.long;
     tokens.output += usage.output_tokens;
 
-    const context = (
-      usage.input_tokens +
-      usage.cache_read_input_tokens +
-      usage.cache_creation_input_tokens
-    );
-
     if (messages.size === 1) {
       startContext = context;
     }
@@ -184,12 +228,11 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
 
   return {
     ...(issue === undefined ? {} : { issue }),
-    ...(model === undefined ? {} : { model }),
     ...(started === undefined ? {} : { started }),
     ...(ended === undefined ? {} : { ended }),
     turns: messages.size,
     tools,
-    tokens,
+    models: [...entries.values()],
     startContext,
     peakContext,
   };

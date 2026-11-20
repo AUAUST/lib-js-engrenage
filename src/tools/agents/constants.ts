@@ -168,6 +168,12 @@ export const tokenWeights = freeze({
   output: 5,
 } as const) satisfies Record<keyof AgentTokens, number>;
 
+export const unknownModel = "unknown";
+
+export const standardTier = "standard";
+
+export const fastTier = "fast";
+
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
   ".claude/rules/**/*.md",
