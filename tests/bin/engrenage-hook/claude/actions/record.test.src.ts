@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 
 import { expect, test } from "vitest";
@@ -7,6 +7,8 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 
 function runRecord(root: string, agentTranscript: string) {
+  execFileSync("git", ["init", "--quiet"], { cwd: root, stdio: "pipe" });
+
   return spawnSync(
     process.execPath,
     [getExecutable("engrenage-hook"), "claude", "SubagentStop"],
@@ -28,6 +30,7 @@ function runRecord(root: string, agentTranscript: string) {
 test("a subagent without a transcript records nothing", () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
+    "engrenage.config.ts": "export default {};",
   });
 
   const result = runRecord(
@@ -43,6 +46,7 @@ test("a subagent without a transcript records nothing", () => {
 test("an unreadable transcript opens the hook with the error", () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
+    "engrenage.config.ts": "export default {};",
     "subagents/agent-agent.jsonl/.keep": "",
   });
 

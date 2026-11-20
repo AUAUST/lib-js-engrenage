@@ -2,6 +2,8 @@ import { readFile } from "node:fs/promises";
 
 import {
   array,
+  fallback,
+  literal,
   looseObject,
   number,
   optional,
@@ -11,7 +13,6 @@ import {
 } from "valibot";
 
 import { isArray, isString } from "@auaust/toolkit";
-import { max } from "@auaust/toolkit/math";
 
 import { fastTier, standardTier, unknownModel } from "#tools/agents/constants";
 import {
@@ -20,16 +21,44 @@ import {
   readModelFacts,
   type ModelFacts,
 } from "#tools/agents/metalbrain/index";
+import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
 import { findBriefedIssue } from "#tools/github/index";
-import type { AgentTokens } from "#tools/agents/types/AgentTokens";
-import type { AgentUsage } from "#tools/agents/types/AgentUsage";
+import type { AgentCall } from "#tools/agents/types/AgentCall";
+import type { AgentCompaction } from "#tools/agents/types/AgentCompaction";
+import type { AgentToolResult } from "#tools/agents/types/AgentToolResult";
+import type { AgentTranscript } from "#tools/agents/types/AgentTranscript";
 import type { File } from "#types/File";
+
+const textBlockSchema = looseObject({
+  type: string(),
+  text: optional(string()),
+});
 
 const blockSchema = looseObject({
   type: string(),
   id: optional(string()),
   name: optional(string()),
   text: optional(string()),
+  input: fallback(
+    optional(looseObject({ command: fallback(optional(string()), undefined) })),
+    undefined,
+  ),
+  tool_use_id: optional(string()),
+  content: fallback(
+    optional(union([string(), array(textBlockSchema)])),
+    undefined,
+  ),
+});
+
+const compactionSchema = looseObject({
+  type: literal("system"),
+  subtype: literal("compact_boundary"),
+  timestamp: string(),
+  compactMetadata: looseObject({
+    trigger: string(),
+    preTokens: number(),
+    postTokens: number(),
+  }),
 });
 
 const entrySchema = looseObject({
@@ -53,6 +82,9 @@ const entrySchema = looseObject({
               ephemeral_1h_input_tokens: optional(number(), 0),
             }),
           ),
+          output_tokens_details: optional(
+            looseObject({ thinking_tokens: optional(number(), 0) }),
+          ),
         }),
       ),
     }),
@@ -61,10 +93,14 @@ const entrySchema = looseObject({
 
 const syntheticModel = "<synthetic>";
 
-interface ModelEntry {
-  readonly model: string;
-  readonly tier: string;
-  readonly tokens: { -readonly [Key in keyof AgentTokens]: number };
+interface ResultEntry extends AgentToolResult {
+  chars: number;
+}
+
+interface CallEntry {
+  readonly at: string | undefined;
+  readonly results: ResultEntry[];
+  call?: Omit<AgentCall, "at" | "results">;
 }
 
 function resolveTier(
@@ -90,29 +126,55 @@ function parseLine(line: string): unknown {
   }
 }
 
+function measureContent(
+  content:
+    string | readonly { readonly text?: string | undefined }[] | undefined,
+): number {
+  if (content === undefined) {
+    return 0;
+  }
+
+  return isString(content)
+    ? content.length
+    : content.reduce((sum, block) => sum + (block.text?.length ?? 0), 0);
+}
+
 // @debt reads Claude's transcript entries, whose format Claude does not document as a contract; a format change silently zeroes the counters
-export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
+export async function readClaudeTranscript(
+  path: File,
+): Promise<AgentTranscript> {
   const content = await readFile(path, "utf-8");
-
-  const messages = new Set<string>();
-
-  const toolUses = new Set<string>();
-
-  const tools: Record<string, number> = {};
 
   const facts = await readModelFacts();
 
-  const entries = new Map<string, ModelEntry>();
+  const entries = new Map<string, CallEntry>();
+
+  const toolResults = new Map<string, ResultEntry>();
+
+  const compactions: AgentCompaction[] = [];
 
   let issue: string | undefined;
   let started: string | undefined;
   let ended: string | undefined;
   let briefed = false;
-  let startContext = 0;
-  let peakContext = 0;
 
   for (const line of content.split("\n")) {
-    const parsed = safeParse(entrySchema, parseLine(line));
+    const value = parseLine(line);
+
+    const compaction = safeParse(compactionSchema, value);
+
+    if (compaction.success) {
+      const { timestamp, compactMetadata } = compaction.output;
+
+      compactions.push({
+        at: timestamp,
+        trigger: compactMetadata.trigger,
+        before: compactMetadata.preTokens,
+        after: compactMetadata.postTokens,
+      });
+    }
+
+    const parsed = safeParse(entrySchema, value);
 
     if (!parsed.success) {
       continue;
@@ -126,18 +188,32 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
       ended = timestamp;
     }
 
-    if (type === "user" && !briefed && message !== undefined) {
-      briefed = true;
+    if (type === "user" && message !== undefined) {
+      if (!briefed) {
+        briefed = true;
 
-      const brief = isString(message.content)
-        ? message.content
-        : message.content?.find((block) => block.type === "text")?.text;
+        const brief = isString(message.content)
+          ? message.content
+          : message.content?.find((block) => block.type === "text")?.text;
 
-      const found = brief == null ? undefined : findBriefedIssue(brief);
+        const found = brief == null ? undefined : findBriefedIssue(brief);
 
-      issue = found === undefined
-        ? undefined
-        : `${found.repository}#${found.number}`;
+        issue = found === undefined
+          ? undefined
+          : `${found.repository}#${found.number}`;
+      }
+
+      for (const block of isArray(message.content) ? message.content : []) {
+        const result = (
+          block.type === "tool_result" && block.tool_use_id !== undefined
+        )
+          ? toolResults.get(block.tool_use_id)
+          : undefined;
+
+        if (result !== undefined) {
+          result.chars = measureContent(block.content);
+        }
+      }
     }
 
     if (
@@ -148,28 +224,36 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
       continue;
     }
 
+    const entry = entries.get(message.id) ?? { at: timestamp, results: [] };
+
+    entries.set(message.id, entry);
+
     for (const block of isArray(message.content) ? message.content : []) {
       if (
         block.type !== "tool_use" ||
         block.id === undefined ||
         block.name === undefined ||
-        toolUses.has(block.id)
+        toolResults.has(block.id)
       ) {
         continue;
       }
 
-      toolUses.add(block.id);
+      const result = {
+        name: block.name,
+        family: findCommandFamily(block.name, block.input?.command),
+        chars: 0,
+      };
 
-      tools[block.name] = (tools[block.name] ?? 0) + 1;
+      toolResults.set(block.id, result);
+
+      entry.results.push(result);
     }
 
     const { usage } = message;
 
-    if (usage === undefined || messages.has(message.id)) {
+    if (usage === undefined || entry.call !== undefined) {
       continue;
     }
-
-    messages.add(message.id);
 
     const context = (
       usage.input_tokens +
@@ -178,30 +262,6 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
     );
 
     const model = message.model ?? unknownModel;
-
-    const tier = resolveTier(facts, {
-      model,
-      speed: usage.speed,
-      context,
-    });
-
-    const key = `${model}\n${tier}`;
-
-    const tokens = (
-      entries.get(key)?.tokens ?? {
-        input: 0,
-        cacheRead: 0,
-        cacheWrite5m: 0,
-        cacheWrite1h: 0,
-        output: 0,
-      }
-    );
-
-    entries.set(key, {
-      model,
-      tier,
-      tokens,
-    });
 
     const written = usage.cache_creation === undefined
       ? {
@@ -213,27 +273,42 @@ export async function readClaudeTranscript(path: File): Promise<AgentUsage> {
           long: usage.cache_creation.ephemeral_1h_input_tokens,
         };
 
-    tokens.input += usage.input_tokens;
-    tokens.cacheRead += usage.cache_read_input_tokens;
-    tokens.cacheWrite5m += written.short;
-    tokens.cacheWrite1h += written.long;
-    tokens.output += usage.output_tokens;
+    entry.call = {
+      model,
+      tier: resolveTier(facts, {
+        model,
+        speed: usage.speed,
+        context,
+      }),
+      tokens: {
+        input: usage.input_tokens,
+        cacheRead: usage.cache_read_input_tokens,
+        cacheWrite5m: written.short,
+        cacheWrite1h: written.long,
+        output: usage.output_tokens,
+      },
+      context,
+      thinking: usage.output_tokens_details?.thinking_tokens ?? 0,
+    };
+  }
 
-    if (messages.size === 1) {
-      startContext = context;
+  const calls: AgentCall[] = [];
+
+  for (const { at, results, call } of entries.values()) {
+    if (call !== undefined) {
+      calls.push({
+        ...(at === undefined ? {} : { at }),
+        ...call,
+        results,
+      });
     }
-
-    peakContext = max(peakContext, context);
   }
 
   return {
+    calls,
+    compactions,
     ...(issue === undefined ? {} : { issue }),
     ...(started === undefined ? {} : { started }),
     ...(ended === undefined ? {} : { ended }),
-    turns: messages.size,
-    tools,
-    models: [...entries.values()],
-    startContext,
-    peakContext,
   };
 }

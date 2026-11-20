@@ -5,6 +5,7 @@ import {
   minValue,
   number,
   object,
+  optional,
   pipe,
   record,
   string,
@@ -30,6 +31,11 @@ const tokensSchema = object({
   output: count,
 });
 
+const cacheLossSchema = object({
+  count,
+  tokens: count,
+});
+
 const runEntries = {
   runtime: string(),
   session: string(),
@@ -43,6 +49,46 @@ const runEntries = {
   tools: record(string(), count),
   startContext: count,
   peakContext: count,
+  results: exactOptional(
+    record(
+      string(),
+      object({
+        count,
+        chars: count,
+      }),
+    ),
+  ),
+  largestResults: exactOptional(
+    array(
+      object({
+        family: string(),
+        chars: count,
+        call: count,
+      }),
+    ),
+  ),
+  thinking: exactOptional(count),
+  batched: exactOptional(count),
+  gaps: exactOptional(
+    object({
+      under1m: count,
+      upTo5m: count,
+      upTo60m: count,
+      over60m: count,
+    }),
+  ),
+  ttl5m: exactOptional(cacheLossSchema),
+  misses: exactOptional(cacheLossSchema),
+  compactions: exactOptional(
+    array(
+      object({
+        at: string(),
+        trigger: string(),
+        before: count,
+        after: count,
+      }),
+    ),
+  ),
 };
 
 const legacyRunSchema = pipe(
@@ -58,6 +104,7 @@ const legacyRunSchema = pipe(
         {
           model,
           tier: standardTier,
+          calls: 0,
           tokens,
         },
       ],
@@ -72,6 +119,7 @@ const runSchema: GenericSchema<unknown, AgentRun> = union([
       object({
         model: string(),
         tier: string(),
+        calls: optional(count, 0),
         tokens: tokensSchema,
       }),
     ),

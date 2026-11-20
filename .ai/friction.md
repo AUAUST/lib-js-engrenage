@@ -102,3 +102,6 @@
 - `pnpm engrenage` after sync adds a `bin` entry: ran typecheck — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace bins changed since install; ran `pnpm install --offline`
 - `engrenage sync` after changing `data.exports`: added an export and synced — sync left `package.json` exports stale, so self-referencing the new subpath failed; ran `pnpm engrenage tsdown`
 - zsh glob: grep --include=*.ts in a gatherer shell — "no matches found" from zsh glob — quoted the pattern or used grep -r on the directory
+- gh api graphql: read #772/#773 `Complexity` field before dispatch — token lacks `read:project`; read it from a claimed draft's manifest instead
+- Bash cd into an agent worktree: `cd <worktree> && git diff` moved the session cwd there; removing the worktree broke the next command — use `git -C` with absolute paths
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter

@@ -5,8 +5,10 @@ import { readClaudeTranscript } from "#tools/agents/claude/index";
 import { findModelFact, readModelFacts } from "#tools/agents/metalbrain/index";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
+import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
 import { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 import { formatCount } from "#tools/agents/utils/formatCount";
+import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
 
 const usage = {
   input_tokens: 2,
@@ -95,9 +97,9 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
     "agent.jsonl": `${transcript}\n{"type":"assist`,
   });
 
-  await expect(
-    readClaudeTranscript(project.resolve("agent.jsonl")),
-  ).resolves.toEqual({
+  const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
+
+  expect(summarizeAgentCalls(read)).toMatchObject({
     issue: "AUAUST/lib-js-toolkit#204",
     started: "2026-11-12T22:00:00.000Z",
     ended: "2026-11-12T22:12:00.000Z",
@@ -110,6 +112,7 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
       {
         model: "claude-opus-5-5",
         tier: "standard",
+        calls: 2,
         tokens: {
           input: 4,
           cacheRead: 5000,
@@ -121,6 +124,7 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
       {
         model: "claude-haiku-5-5",
         tier: "long",
+        calls: 1,
         tokens: {
           input: 2,
           cacheRead: 100_000,
@@ -133,6 +137,120 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
     startContext: 1502,
     peakContext: 100_502,
   });
+});
+
+test("breaks a transcript down per tool result, cache gap and compaction", async () => {
+  const toolTranscript = [
+    {
+      type: "assistant",
+      timestamp: "2026-11-12T22:00:00.000Z",
+      message: {
+        id: "first",
+        model: "claude-opus-5-5",
+        content: [
+          {
+            type: "tool_use",
+            id: "bash",
+            name: "Bash",
+            input: { command: "gh issue view 1" },
+          },
+          {
+            type: "tool_use",
+            id: "read",
+            name: "Read",
+            input: { file_path: "src/x.ts" },
+          },
+        ],
+        usage: {
+          ...usage,
+          output_tokens_details: { thinking_tokens: 40 },
+        },
+      },
+    },
+    {
+      type: "user",
+      timestamp: "2026-11-12T22:00:01.000Z",
+      message: {
+        content: [
+          {
+            type: "tool_result",
+            tool_use_id: "bash",
+            content: "x".repeat(300),
+          },
+          {
+            type: "tool_result",
+            tool_use_id: "read",
+            content: [{ type: "text", text: "y".repeat(50) }],
+          },
+        ],
+      },
+    },
+    {
+      type: "system",
+      subtype: "compact_boundary",
+      timestamp: "2026-11-12T22:03:00.000Z",
+      compactMetadata: {
+        trigger: "auto",
+        preTokens: 150_000,
+        postTokens: 20_000,
+      },
+    },
+    {
+      type: "assistant",
+      timestamp: "2026-11-12T22:07:00.000Z",
+      message: {
+        id: "second",
+        model: "claude-opus-5-5",
+        content: [{ type: "text", text: "Done." }],
+        usage: { ...usage, cache_read_input_tokens: 600 },
+      },
+    },
+  ]
+    .map((entry) => JSON.stringify(entry))
+    .join("\n");
+
+  const project = createTemporaryProject({ "agent.jsonl": toolTranscript });
+
+  const summary = summarizeAgentCalls(
+    await readClaudeTranscript(project.resolve("agent.jsonl")),
+  );
+
+  expect(summary).toMatchObject({
+    results: {
+      "Bash: gh issue view": { count: 1, chars: 300 },
+      "Read": { count: 1, chars: 50 },
+    },
+    batched: 1,
+    gaps: {
+      under1m: 0,
+      upTo5m: 0,
+      upTo60m: 1,
+      over60m: 0,
+    },
+    ttl5m: {
+      count: 1,
+      tokens: 600,
+    },
+    misses: {
+      count: 1,
+      tokens: 900,
+    },
+    thinking: 40,
+    compactions: [
+      {
+        at: "2026-11-12T22:03:00.000Z",
+        trigger: "auto",
+        before: 150_000,
+        after: 20_000,
+      },
+    ],
+  });
+});
+
+test("names a shell command's family after its leading bare words", () => {
+  expect(
+    findCommandFamily("Bash", "cd /x && pnpm engrenage gate --worktree | tail"),
+  ).toBe("Bash: pnpm engrenage gate");
 });
 
 test("loads a legacy record holding one model and its tokens", async () => {
@@ -173,6 +291,7 @@ test("loads a legacy record holding one model and its tokens", async () => {
         {
           model: "claude-opus-5-5",
           tier: "standard",
+          calls: 0,
           tokens,
         },
       ],
@@ -206,6 +325,7 @@ test("prices runs per model, naming the models it cannot price", async () => {
         {
           model,
           tier: "standard",
+          calls: 1,
           tokens,
         },
       ],
@@ -226,7 +346,7 @@ test("prices runs per model, naming the models it cannot price", async () => {
   expect(output).toMatch(/\| mystery0 \|.*\| \? \|/u);
 
   expect(output).toContain(
-    `| sonnet00 | worker |  | claude-sonnet-5-5 | 1 | 0 | 0 | 1 | ${formatCount(6_000_000)} | $${((prices?.input ?? 0) + (prices?.output ?? 0)).toFixed(2)} |`,
+    `| sonnet00 | worker |  | claude-sonnet-5-5 | 1 | 0 | 0 | 1 | 0% | 0 | 0 (0) | ${formatCount(6_000_000)} | $${((prices?.input ?? 0) + (prices?.output ?? 0)).toFixed(2)} |`,
   );
 });
 
@@ -254,7 +374,9 @@ test("rewrites an agent's record on each stop, counting its stops", async () => 
     session: "session",
     agent: "agent",
     role: "worker",
-    ...(await readClaudeTranscript(project.resolve("agent.jsonl"))),
+    ...summarizeAgentCalls(
+      await readClaudeTranscript(project.resolve("agent.jsonl")),
+    ),
   };
 
   await writeAgentRun(directory, run);

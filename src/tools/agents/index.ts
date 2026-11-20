@@ -4,7 +4,7 @@ export {
   createClaudeStep,
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
-export { readClaudeTranscript } from "#tools/agents/claude/index";
+export { recordClaudeRun } from "#tools/agents/claude/index";
 export { codexFile } from "#tools/agents/codex/constants";
 export {
   createCodexHooksStep,
@@ -104,14 +104,22 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 
 // @barrel types
 export type * from "#tools/agents/types/Agent";
+export type * from "#tools/agents/types/AgentCacheLoss";
+export type * from "#tools/agents/types/AgentCall";
+export type * from "#tools/agents/types/AgentCallGaps";
 export type * from "#tools/agents/types/AgentCheckFinding";
+export type * from "#tools/agents/types/AgentCompaction";
 export type * from "#tools/agents/types/AgentDispatch";
+export type * from "#tools/agents/types/AgentLargestResult";
 export type * from "#tools/agents/types/AgentModelUsage";
 export type * from "#tools/agents/types/AgentReport";
+export type * from "#tools/agents/types/AgentResultTotals";
 export type * from "#tools/agents/types/AgentRun";
 export type * from "#tools/agents/types/AgentSections";
 export type * from "#tools/agents/types/AgentsInput";
 export type * from "#tools/agents/types/AgentTokens";
+export type * from "#tools/agents/types/AgentToolResult";
+export type * from "#tools/agents/types/AgentTranscript";
 export type * from "#tools/agents/types/AgentUsage";
 export type * from "#tools/agents/types/BudgetFinding";
 export type * from "#tools/agents/types/BudgetKind";

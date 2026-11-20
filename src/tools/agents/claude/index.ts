@@ -6,4 +6,5 @@ export { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSetting
 
 // @barrel operations
 export { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
+export { recordClaudeRun } from "#tools/agents/claude/operations/recordClaudeRun";
 // @end

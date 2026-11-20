@@ -8,8 +8,11 @@ import {
 } from "#tools/agents/metalbrain/index";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
+import type { AgentResultTotals } from "#tools/agents/types/AgentResultTotals";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { AgentTokens } from "#tools/agents/types/AgentTokens";
+
+const largestResultCount = 10;
 
 interface Price {
   readonly cost: number;
@@ -80,6 +83,58 @@ function formatTable(
     .join("\n");
 }
 
+function formatAgent(run: AgentRun): string {
+  return run.agent === mainAgent ? mainAgent : run.agent.slice(0, 8);
+}
+
+function formatResultsByFamily(runs: readonly AgentRun[]): string {
+  const families = new Map<string, AgentResultTotals>();
+
+  for (const [family, { count, chars }] of runs.flatMap((run) => {
+    return Object.entries(run.results ?? {});
+  })) {
+    const previous = families.get(family) ?? { count: 0, chars: 0 };
+
+    families.set(family, {
+      count: previous.count + count,
+      chars: previous.chars + chars,
+    });
+  }
+
+  const total = [...families.values()].reduce((sum, { chars }) => {
+    return sum + chars;
+  }, 0);
+
+  const rows = [...families]
+    .toSorted(([, left], [, right]) => right.chars - left.chars)
+    .map(([family, { count, chars }]) => {
+      return [
+        family,
+        String(count),
+        formatCount(chars),
+        formatShare(chars, total),
+      ];
+    });
+
+  return formatTable(["Family", "Results", "Characters", "Share"], rows);
+}
+
+function formatLargestResults(runs: readonly AgentRun[]): string {
+  const rows = runs
+    .flatMap((run) => {
+      return (run.largestResults ?? []).map((result) => {
+        return { run, result };
+      });
+    })
+    .toSorted((left, right) => right.result.chars - left.result.chars)
+    .slice(0, largestResultCount)
+    .map(({ run, result }) => {
+      return [formatAgent(run), result.family, formatCount(result.chars)];
+    });
+
+  return formatTable(["Agent", "Family", "Characters"], rows);
+}
+
 export function formatAgentRuns(
   runs: readonly AgentRun[],
   facts: ModelFacts,
@@ -120,7 +175,7 @@ export function formatAgentRuns(
     })
     .map((run) => {
       return [
-        run.agent === mainAgent ? mainAgent : run.agent.slice(0, 8),
+        formatAgent(run),
         run.role,
         run.issue ?? "",
         [...new Set(run.models.map(({ model }) => model))].join(", "),
@@ -128,6 +183,12 @@ export function formatAgentRuns(
         formatCount(run.startContext),
         formatCount(run.peakContext),
         String(run.stops),
+        formatShare(
+          run.thinking ?? 0,
+          sumTokens(run.models, (tokens) => tokens.output),
+        ),
+        String(run.batched ?? 0),
+        `${run.ttl5m?.count ?? 0} (${formatCount(run.ttl5m?.tokens ?? 0)})`,
         formatCount(weigh(run.models)),
         formatCost(price(facts, run.models)),
         formatMinutes(run),
@@ -146,6 +207,7 @@ export function formatAgentRuns(
           return run.models.some((entry) => entry.model === model);
         }).length,
       ),
+      String(modelEntries.reduce((sum, entry) => sum + entry.calls, 0)),
       formatCount(weigh(modelEntries)),
       formatCost(modelPrice),
       modelPrice.unpriced.length > 0
@@ -184,12 +246,20 @@ export function formatAgentRuns(
         "Start context",
         "Peak context",
         "Stops",
+        "Thinking",
+        "Batched",
+        "5m misses",
         "Units",
         "Cost",
         "Minutes",
       ],
       byAgent,
     ),
-    formatTable(["Model", "Runs", "Units", "Cost", "Share of cost"], byModel),
+    formatTable(
+      ["Model", "Runs", "Calls", "Units", "Cost", "Share of cost"],
+      byModel,
+    ),
+    formatResultsByFamily(runs),
+    formatLargestResults(runs),
   ].join("\n\n");
 }
