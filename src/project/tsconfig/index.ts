@@ -18,6 +18,7 @@ export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier
 // @barrel types
 export type * from "#project/tsconfig/types/EnvironmentTsconfig";
 export type * from "#project/tsconfig/types/ManagedEnvironmentTsconfig";
+export type * from "#project/tsconfig/types/ManagedTsconfigFields";
 export type * from "#project/tsconfig/types/PathAlias";
 export type * from "#project/tsconfig/types/PathAliases";
 export type * from "#project/tsconfig/types/Paths";
