@@ -70,6 +70,28 @@ const tree: Record<number, MockIssue> = {
   },
   32: task(32, "#31 · Roadmap"),
   33: task(33, "#30 · Roadmap"),
+  40: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #41\n\n## Decisions\n\nx\n",
+    subIssues: [41],
+  },
+  41: {
+    type: "Segment",
+    body: "#40 · Roadmap\n\n## Context\n\nx\n",
+    subIssues: [42, 43, 44],
+  },
+  42: {
+    type: "Problem",
+    body: "#40 › #41 · Roadmap\n\n## Context\n\nx\n\n## Leads\n\n- fails\n",
+  },
+  43: {
+    ...task(43, "#40 › #41 · Roadmap"),
+    type: "Problem",
+  },
+  44: {
+    type: "Problem",
+    body: `${task(44, "#40 › #41 · Roadmap").body}\n## Leads\n\n- fails\n`,
+  },
 };
 
 function connection(nodes: readonly unknown[]) {
@@ -191,10 +213,56 @@ describe("checkIssueTree", () => {
     });
 
     expect(check.ready).toEqual([
-      { repository: "o/r", number: 12 },
-      { repository: "o/r", number: 13 },
-      { repository: "o/r", number: 14 },
+      {
+        repository: "o/r",
+        number: 12,
+        audience: "worker",
+      },
+      {
+        repository: "o/r",
+        number: 13,
+        audience: "worker",
+      },
+      {
+        repository: "o/r",
+        number: 14,
+        audience: "worker",
+      },
     ]);
+  });
+
+  test("names each ready Problem's agent from its shape and holds back one with both Steps and Leads", async () => {
+    mockGraphql();
+
+    const check = await checkIssueTree(access, 40, {
+      checkouts: checkoutAt(createWorkingCopy()),
+    });
+
+    expect(check.ready).toEqual([
+      {
+        repository: "o/r",
+        number: 42,
+        audience: "debugger",
+      },
+      {
+        repository: "o/r",
+        number: 43,
+        audience: "worker",
+      },
+    ]);
+
+    expect(
+      check.issues.find(({ number }) => number === 44)?.findings,
+    ).toContainEqual(
+      expect.objectContaining({
+        rule: "exclusive-sections",
+        message: expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+      }),
+    );
+
+    expect(formatIssueTreeCheck(check)).toContain(
+      "Ready: #42 debugger, #43 worker",
+    );
   });
 
   test("lists only the first open task of a plan as ready until a local commit closes it", async () => {
@@ -204,7 +272,13 @@ describe("checkIssueTree", () => {
       checkouts: checkoutAt(createWorkingCopy()),
     });
 
-    expect(open.ready).toEqual([{ repository: "o/r", number: 21 }]);
+    expect(open.ready).toEqual([
+      {
+        repository: "o/r",
+        number: 21,
+        audience: "worker",
+      },
+    ]);
 
     const closed = await checkIssueTree(access, 20, {
       checkouts: checkoutAt(
@@ -212,7 +286,13 @@ describe("checkIssueTree", () => {
       ),
     });
 
-    expect(closed.ready).toEqual([{ repository: "o/r", number: 22 }]);
+    expect(closed.ready).toEqual([
+      {
+        repository: "o/r",
+        number: 22,
+        audience: "worker",
+      },
+    ]);
   });
 
   test("walks a nested plan only within the plan depth", async () => {
@@ -227,7 +307,13 @@ describe("checkIssueTree", () => {
 
     expect(shallow.ready).toEqual([]);
 
-    expect(nested.ready).toEqual([{ repository: "o/r", number: 32 }]);
+    expect(nested.ready).toEqual([
+      {
+        repository: "o/r",
+        number: 32,
+        audience: "worker",
+      },
+    ]);
   });
 
   test("reports a walk with an open issue and no ready one as stuck, and one whose issue a local commit closes as finished", async () => {
@@ -273,7 +359,7 @@ describe("checkIssueTree", () => {
       "    #12 Task: open",
       "    #13 Task: open",
       "    #14 Task: open",
-      "Ready: #12, #13, #14",
+      "Ready: #12 worker, #13 worker, #14 worker",
       "Next: #12",
     ]);
   });
@@ -300,8 +386,16 @@ describe("checkIssueTree", () => {
     ]);
 
     expect(check.ready).toEqual([
-      { repository: "o/r", number: 13 },
-      { repository: "o/r", number: 14 },
+      {
+        repository: "o/r",
+        number: 13,
+        audience: "worker",
+      },
+      {
+        repository: "o/r",
+        number: 14,
+        audience: "worker",
+      },
     ]);
   });
 
@@ -321,7 +415,11 @@ describe("checkIssueTree", () => {
 
     expect(formatIssueTreeCheck(check)[3]).toBe("    #12 Task: open");
 
-    expect(check.ready).toContainEqual({ repository: "o/r", number: 12 });
+    expect(check.ready).toContainEqual({
+      repository: "o/r",
+      number: 12,
+      audience: "worker",
+    });
   });
 });
 
@@ -358,7 +456,13 @@ describe("formatIssueTreeCheck", () => {
           walked(14, 1, "Task", "open"),
           walked(10, 0, "Plan", "open"),
         ],
-        ready: [{ repository: "o/r", number: 14 }],
+        ready: [
+          {
+            repository: "o/r",
+            number: 14,
+            audience: "worker",
+          },
+        ],
         finished: false,
       }),
     ).toEqual([
@@ -368,7 +472,7 @@ describe("formatIssueTreeCheck", () => {
       "    Warning: closed with open sub-issues #13",
       "    Closed sub-issues: 1 (#12)",
       "  #14 Task: open",
-      "Ready: #14",
+      "Ready: #14 worker",
       "Next: #14",
     ]);
   });
@@ -384,7 +488,13 @@ describe("formatIssueTreeCheck", () => {
           walked(11, 1, "Segment", "closed"),
           walked(10, 0, "Plan", "open"),
         ],
-        ready: [{ repository: "o/r", number: 13 }],
+        ready: [
+          {
+            repository: "o/r",
+            number: 13,
+            audience: "worker",
+          },
+        ],
         finished: false,
       }),
     ).toEqual([
@@ -394,7 +504,7 @@ describe("formatIssueTreeCheck", () => {
       "    Warning: closed with open sub-issues #13",
       "    #12 Task: closed",
       "    #13 Task: open",
-      "Ready: #13",
+      "Ready: #13 worker",
       "Next: #13",
     ]);
   });
@@ -550,7 +660,7 @@ describe("checkIssueTree across repositories", () => {
       "  #11 Segment: open",
       "    #12 Task: open",
       `    ${toolkit}#45 Task: open`,
-      `Ready: #12, ${toolkit}#45`,
+      `Ready: #12 worker, ${toolkit}#45 worker`,
       "Next: #12",
     ]);
   });
@@ -630,7 +740,13 @@ describe("checkIssueTree with another repository's checkout", () => {
       hash: git(checkout, ["log", "--format=%h", "-1"]),
     });
 
-    expect(check.ready).toEqual([{ repository: engrenage, number: 12 }]);
+    expect(check.ready).toEqual([
+      {
+        repository: engrenage,
+        number: 12,
+        audience: "worker",
+      },
+    ]);
 
     expect(formatIssueTreeCheck(check).slice(0, 2)).toEqual([
       `Checkout: ${engrenage} at HEAD`,
@@ -660,11 +776,16 @@ describe("checkIssueTree with another repository's checkout", () => {
       checkWith([`toolkit=${checkout}@plan`]),
     ]);
 
-    expect(head.ready).toContainEqual({ repository: toolkit, number: 45 });
+    expect(head.ready).toContainEqual({
+      repository: toolkit,
+      number: 45,
+      audience: "worker",
+    });
 
     expect(branch.ready).not.toContainEqual({
       repository: toolkit,
       number: 45,
+      audience: "worker",
     });
 
     expect(formatIssueTreeCheck(branch)[1]).toBe(
@@ -701,7 +822,13 @@ describe("checkIssueTree with another repository's checkout", () => {
       toolkit: { directory: createClosingCheckout() },
     });
 
-    expect(check.ready).toEqual([{ repository: engrenage, number: 12 }]);
+    expect(check.ready).toEqual([
+      {
+        repository: engrenage,
+        number: 12,
+        audience: "worker",
+      },
+    ]);
   });
 
   test("prefers an explicit checkout over the linked one of the same repository", async () => {
@@ -711,6 +838,10 @@ describe("checkIssueTree with another repository's checkout", () => {
       toolkit: { directory: createClosingCheckout() },
     });
 
-    expect(check.ready).toContainEqual({ repository: toolkit, number: 45 });
+    expect(check.ready).toContainEqual({
+      repository: toolkit,
+      number: 45,
+      audience: "worker",
+    });
   });
 });

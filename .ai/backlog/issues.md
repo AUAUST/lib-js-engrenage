@@ -66,3 +66,9 @@ GitHub issue drafts, checks and planning commands.
 
 - why: friction ×4: a header line without ancestors and a Segment or new `subIssues` whose Plan is outside the published set pass `check`, then `publish` refuses them.
 - want: `check` applies `publish`'s tree preconditions to the refs it checks.
+
+## 12. `publish` sends the skeleton's hint comments to GitHub
+
+- sites: `src/tools/github/issues/drafts/operations/createDraft.ts:269`, `src/foundation/markdown/utils/stripComments.ts:3`
+- why: `create problem` writes HTML hint comments above **Steps** and **Leads**; `check` strips them, `publish` keeps any the author left.
+- want: hint comments stripped from the published body, or `check` failing on one left.

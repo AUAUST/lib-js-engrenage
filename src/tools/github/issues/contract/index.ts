@@ -21,6 +21,7 @@ export { resolveLocalCheckout } from "#tools/github/issues/contract/operations/r
 // @barrel utils
 export { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
 export { checkContractNames } from "#tools/github/issues/contract/utils/checkContractNames";
+export { checkIssueAudience } from "#tools/github/issues/contract/utils/checkIssueAudience";
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 export { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
@@ -28,6 +29,7 @@ export { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 export { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
 export { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
+export { findIssueAudience } from "#tools/github/issues/contract/utils/findIssueAudience";
 export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
@@ -64,6 +66,7 @@ export type * from "#tools/github/issues/contract/types/LinkedCheckout";
 export type * from "#tools/github/issues/contract/types/LocalCommits";
 export type * from "#tools/github/issues/contract/types/NamedMeaning";
 export type * from "#tools/github/issues/contract/types/ParsedIssueBody";
+export type * from "#tools/github/issues/contract/types/ReadyIssue";
 export type * from "#tools/github/issues/contract/types/RelatedIssue";
 export type * from "#tools/github/issues/contract/types/RoadmapEntry";
 export type * from "#tools/github/issues/contract/types/WalkedIssue";

@@ -2,6 +2,7 @@ import {
   listCodeRanges,
   splitSections,
   stripCode,
+  stripComments,
 } from "#foundation/markdown/index";
 import {
   checkpointPrefix,
@@ -50,7 +51,7 @@ function readSections(body: string) {
 
     const [, ...content] = source.split("\n");
 
-    return { name, content: content.join("\n").trim() };
+    return { name, content: stripComments(content.join("\n")).trim() };
   });
 }
 

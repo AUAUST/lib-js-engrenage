@@ -10,6 +10,7 @@ import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue"
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
 import { parseGithubCommand } from "#tools/github/issues/contract/operations/parseGithubCommand";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import { renderHeader } from "#tools/github/issues/contract/utils/renderHeader";
@@ -62,6 +63,17 @@ Checkpoint: a exists.
 ## Tests
 
 - a works
+`;
+
+const problem = `#10 · [Gates](https://example.com/10#gates)
+
+## Context
+
+Why.
+
+## Leads
+
+- Fails on b.
 `;
 
 describe("parseIssueBody", () => {
@@ -159,6 +171,46 @@ describe("checkIssueBody", () => {
         rule: "unknown-section",
         message: expect.stringContaining("Direction"),
       },
+    ]);
+  });
+
+  test("accepts a Problem with Leads and no Steps or Tests, and one with Steps and Tests", () => {
+    for (const body of [problem, task]) {
+      expect(
+        checkIssueContract(body, "problem", contractNames, {
+          subIssues: 0,
+          complete: true,
+        }),
+      ).toEqual([]);
+    }
+  });
+
+  test("rejects a Problem holding both Steps and Leads, naming both", () => {
+    expect(
+      checkIssueContract(
+        task.replace("## Tests", "## Leads\n\n- x\n\n## Tests"),
+        "problem",
+        contractNames,
+        { subIssues: 0, complete: true },
+      ),
+    ).toEqual([
+      {
+        rule: "exclusive-sections",
+        message: expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+      },
+    ]);
+  });
+
+  test("requires Tests on a Problem with Steps", () => {
+    expect(
+      checkIssueContract(
+        "## Context\n\nx\n\n## Steps\n\n1. Fix.\n",
+        "problem",
+        contractNames,
+        { subIssues: 0, complete: true },
+      ),
+    ).toMatchObject([
+      { rule: "missing-section", message: expect.stringContaining("Tests") },
     ]);
   });
 
@@ -320,24 +372,42 @@ describe("checkIssue", () => {
     },
   );
 
-  test("a report-only Problem needs Steps for a worker but remains debugger input", async () => {
+  test("denies a worker a Problem without Steps, and a debugger one with them", async () => {
     mockGithub({
-      11: { body: "## Context\n\nA failure.\n", type: "Problem" },
+      11: {
+        body: "## Context\n\nA failure.\n\n## Leads\n\n- x\n",
+        type: "Problem",
+      },
+      12: {
+        body: task.replace("#10 ·", "Standalone"),
+        type: "Problem",
+      },
     });
 
     expect(
       (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
-    ).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          rule: "missing-section",
-          message: expect.stringContaining("Steps"),
-        }),
-      ]),
-    );
+    ).toEqual([
+      expect.objectContaining({
+        rule: "audience",
+        message: expect.stringContaining("debugger"),
+      }),
+    ]);
 
     expect(
       (await checkIssue(access, 11, "debugger", { dispatch: true })).findings,
+    ).toEqual([]);
+
+    expect(
+      (await checkIssue(access, 12, "debugger", { dispatch: true })).findings,
+    ).toEqual([
+      expect.objectContaining({
+        rule: "audience",
+        message: expect.stringContaining("worker"),
+      }),
+    ]);
+
+    expect(
+      (await checkIssue(access, 12, "worker", { dispatch: true })).findings,
     ).toEqual([]);
   });
 
@@ -349,7 +419,7 @@ describe("checkIssue", () => {
         blockers: ["Open questions"],
       },
       11: {
-        body: task,
+        body: problem,
         type: "Problem",
         parent: 10,
       },
@@ -382,7 +452,7 @@ describe("checkIssue", () => {
           blockedBy: [{ number: 12, state: "open" }],
         },
         11: {
-          body: task,
+          body: audience === "worker" ? task : problem,
           type: "Problem",
           parent: 10,
         },

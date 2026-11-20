@@ -139,7 +139,7 @@ export function formatIssueTreeCheck({
       : [
           `Ready: ${ready
             .map((issue) => {
-              return renderReference(issue, repository);
+              return `${renderReference(issue, repository)} ${issue.audience}`;
             })
             .join(", ")}`,
           `Next: ${renderReference(next, repository)}`,

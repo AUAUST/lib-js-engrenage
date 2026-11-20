@@ -20,12 +20,12 @@ Examine the problem and the sources it touches by the analysis method in this fi
 
 ## Input
 
-| Given                                                  | Read first                                                             |
-| ------------------------------------------------------ | ---------------------------------------------------------------------- |
-| A GitHub issue                                         | Its body, comments, linked issues and ancestors up to the nearest plan |
-| A backlog entry                                        | The entry and the entries closely related to it                        |
-| A `@debt` marker                                       | The marked code and its callers                                        |
-| A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                        |
+| Given                                                  | Read first                                                                                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| A GitHub issue                                         | Its body, comments, linked issues and ancestors up to the nearest plan; a `problem`'s **Leads** as facts to verify, never a diagnosis |
+| A backlog entry                                        | The entry and the entries closely related to it                                                                                       |
+| A `@debt` marker                                       | The marked code and its callers                                                                                                       |
+| A direct report: an error, a failing check, a behavior | The reported output, then reproduce it yourself                                                                                       |
 
 Given a merger's findings, read each finding's cited code first, and reproduce each finding there.
 

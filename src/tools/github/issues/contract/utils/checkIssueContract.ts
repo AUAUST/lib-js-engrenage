@@ -1,3 +1,5 @@
+import { entries } from "@auaust/toolkit/object";
+
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
@@ -40,6 +42,21 @@ export function checkIssueContract(
         rule: "missing-section",
         message: `**${name}** is missing: write it.`,
       });
+    }
+  }
+
+  for (const [section, names] of entries(contract.requiredWith ?? {})) {
+    if (!hasSection(parsed, section)) {
+      continue;
+    }
+
+    for (const name of names) {
+      if (!hasSection(parsed, name)) {
+        findings.push({
+          rule: "missing-section",
+          message: `**${name}** is missing: write it, as **${section}** requires.`,
+        });
+      }
     }
   }
 

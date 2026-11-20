@@ -141,6 +141,7 @@ export async function checkIssues(
     const checked = checkDrafts(drafts, context, {
       known,
       complete: audience === "worker",
+      audience,
     });
 
     for (const [stem, found] of checked) {

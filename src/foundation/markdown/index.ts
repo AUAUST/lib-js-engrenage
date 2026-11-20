@@ -5,6 +5,7 @@ export { replaceOutsideCode } from "#foundation/markdown/utils/replaceOutsideCod
 export { splitFrontmatter } from "#foundation/markdown/utils/splitFrontmatter";
 export { splitSections } from "#foundation/markdown/utils/splitSections";
 export { stripCode } from "#foundation/markdown/utils/stripCode";
+export { stripComments } from "#foundation/markdown/utils/stripComments";
 // @end
 
 // @barrel types

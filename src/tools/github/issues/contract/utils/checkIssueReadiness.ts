@@ -7,6 +7,7 @@ import {
   planningSection,
 } from "#tools/github/issues/contract/constants";
 import { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlockersField";
+import { checkIssueAudience } from "#tools/github/issues/contract/utils/checkIssueAudience";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
@@ -128,6 +129,10 @@ export function checkIssueReadiness(
         .map((meaning) => types[meaning])
         .join(", ")}.`,
     });
+  }
+
+  if (!ancestor) {
+    findings.push(...checkIssueAudience(type, parsed, audience, contractNames));
   }
 
   if (dispatch && !ancestor) {

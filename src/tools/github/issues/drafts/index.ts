@@ -22,6 +22,7 @@ export { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 // @end
 
 // @barrel utils
+export { checkDraftBody } from "#tools/github/issues/drafts/utils/checkDraftBody";
 export { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 export { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 export { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";

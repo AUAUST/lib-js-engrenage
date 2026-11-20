@@ -265,7 +265,13 @@ export async function createDraft(
     ...header,
     ...(contract?.sections ?? [])
       .filter((section) => !(contract?.generated ?? []).includes(section))
-      .map((section) => `## ${section}`),
+      .map((section) => {
+        const hint = contract?.hints?.[section];
+
+        return hint === undefined
+          ? `## ${section}`
+          : `## ${section}\n\n<!-- ${hint} -->`;
+      }),
   ].join("\n\n");
 
   await listInParent(filesystem, context, stem, placement);

@@ -79,3 +79,5 @@
 - `pnpm engrenage planning issue create`: ran it on a fresh session on `main` — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace structure changed since install; ran `pnpm install --offline`
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found" despite the Shell section; dropped the filter
 - BSD `ls <dir> -R`: listed a tree with the flag after the path — macOS ls reads `-R` as a file; used `find` or flag-first
+- worktree isolation: heredocs, and commands naming a `tests/src/tools/github` path or chaining `git status` — refused as unverifiable; used the edit tools and ran each command alone
+- `pnpm engrenage sync`: new utils imported through a barrel — sync loads the barrel before regenerating it and fails; added each export line by hand, as its message says, then synced

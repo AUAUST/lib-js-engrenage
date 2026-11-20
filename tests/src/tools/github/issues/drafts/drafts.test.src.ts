@@ -480,6 +480,28 @@ Goal: the segment
     );
   });
 
+  test("writes a fresh Problem with both Steps and Leads, each under its comment, which check reads as empty", async () => {
+    const config = await createProject({});
+
+    const file = await createDraft(config, "problem", { slug: "fresh" });
+
+    const content = await config.context.filesystem.read(file);
+
+    expect(content).toMatch(
+      /## Steps\n\n<!-- Steps when the cause is clear[^\n]*-->\n\n## Leads\n\n<!-- Leads when the cause still needs investigation[^\n]*-->\n/,
+    );
+
+    const { lines } = await checkIssues(config, ["new-fresh"], "debugger");
+
+    expect(lines).toEqual(
+      expect.arrayContaining([
+        "new-fresh: **Steps** is empty: fill it or remove it.",
+        "new-fresh: **Leads** is empty: fill it or remove it.",
+        expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+      ]),
+    );
+  });
+
   test("fails an Idea asking questions without a Questions section, and passes it with one", async () => {
     const idea = `---
 title: Idea

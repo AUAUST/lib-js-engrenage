@@ -122,11 +122,11 @@ Order expresses urgency, not importance: a task comes first because later work s
 
 ## Inner pass
 
-Deepen an item until a worker implements it without design.
+Deepen an item until a worker implements it without design, or, for a `problem` whose cause still needs investigation, a debugger starts from its **Leads**.
 
 1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
 2. **Ground** each change in the code it touches: functions, types, call sites, tests and conventions. Verify every name, path and shape the item states.
-3. **Write** **Steps**, **Tests** and **Done when**, splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
+3. **Write** **Steps**, **Tests** and **Done when**, or, for a `problem` whose cause still needs investigation, **Leads** instead of **Steps** (issue-drafts rule › Bodies), splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
 4. **Review** the item under §Readiness.
 
 As an inner planner:
@@ -143,6 +143,8 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 - **Tests** hold what the issue-drafts rule › Bodies asks of them.
 
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
+
+A `problem` whose cause still needs investigation is ready for a debugger once `check` passes and its **Leads** state only what you verified, suspected sites marked as such.
 
 ## How workers read issues
 

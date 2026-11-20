@@ -80,6 +80,21 @@ export function checkIssueBody(
     }
   }
 
+  for (const group of contract.exclusive ?? []) {
+    const present = group.filter((name) => names.includes(name));
+
+    if (present.length > 1) {
+      findings.push({
+        rule: "exclusive-sections",
+        message: `A ${typeName} holds ${present
+          .map((name) => `**${name}**`)
+          .join(
+            " and ",
+          )}, which exclude each other: keep one and delete the others.`,
+      });
+    }
+  }
+
   if (parsed.steps !== undefined) {
     if (!parsed.steps.numbered) {
       findings.push({

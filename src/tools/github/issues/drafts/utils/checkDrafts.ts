@@ -6,17 +6,14 @@ import { stripCode } from "#foundation/markdown/index";
 import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
-  checkBlockersField,
-  checkIssueContract,
   checkNesting,
   findContractMeaning,
-  listOpenSections,
-  parseIssueBody,
   type ContractMeaning,
   type ContractNames,
-  type IssueContract,
+  type IssueAudience,
   type IssueFinding,
 } from "#tools/github/issues/contract/index";
+import { checkDraftBody } from "#tools/github/issues/drafts/utils/checkDraftBody";
 import { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
@@ -189,49 +186,6 @@ function checkManifest(
   };
 }
 
-function checkBody(
-  body: string,
-  meaning: ContractMeaning | undefined,
-  blockers: readonly string[],
-  contractNames: ContractNames,
-  { subIssues, complete }: { subIssues: number; complete: boolean },
-): IssueFinding[] {
-  const contract:
-    | IssueContract
-    | undefined = meaning === undefined ? undefined : issueContracts[meaning];
-
-  const generated = contract?.generated ?? [];
-
-  const parsed = parseIssueBody(body);
-  const { sections } = parsed;
-  const names = new Set(sections.map(({ name }) => name));
-
-  return [
-    ...checkIssueContract(body, meaning, contractNames, {
-      subIssues,
-      complete,
-      draft: true,
-    }),
-    ...checkBlockersField(listOpenSections(parsed), blockers, contractNames),
-    ...sections
-      .filter(({ content }) => content === "")
-      .map(({ name }) => {
-        return {
-          rule: "empty-section",
-          message: `**${name}** is empty: fill it or remove it.`,
-        };
-      }),
-    ...generated
-      .filter((name) => names.has(name))
-      .map((name) => {
-        return {
-          rule: "generated-section",
-          message: `**${name}** is generated at publish from \`subIssues\`: remove it from the body.`,
-        };
-      }),
-  ];
-}
-
 function readBlockers(
   manifest: DraftManifest | undefined,
   contractNames: ContractNames,
@@ -278,9 +232,11 @@ export function checkDrafts(
   {
     known = drafts,
     complete,
+    audience,
   }: {
     known?: ReadonlyMap<string, Draft | undefined>;
     complete: boolean;
+    audience?: IssueAudience;
   },
 ): ReadonlyMap<string, readonly IssueFinding[]> {
   const stems = new Set([...known.keys(), ...drafts.keys()]);
@@ -355,7 +311,7 @@ export function checkDrafts(
 
     findings.set(stem, [
       ...manifestFindings,
-      ...checkBody(
+      ...checkDraftBody(
         draft.body,
         meaning,
         readBlockers(manifest, context.contractNames),
@@ -363,6 +319,7 @@ export function checkDrafts(
         {
           subIssues: listDraftReferences(manifest?.subIssues).length,
           complete,
+          audience,
         },
       ),
       ...checkNesting(meaning, described.get(parents.get(stem) ?? "")?.meaning),

@@ -5,6 +5,8 @@ import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIss
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
+import { findIssueAudience } from "#tools/github/issues/contract/utils/findIssueAudience";
+import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
@@ -184,6 +186,11 @@ export async function checkIssueTree(
     }) => {
       const closed = isClosed({ ...location, state: issue.state });
 
+      const audience = findIssueAudience(
+        findTypeMeaning(access.contractNames, issue.type),
+        parsed,
+      );
+
       const closedBy = issue.state === "open"
         ? commits.closedBy(location)
         : undefined;
@@ -225,8 +232,10 @@ export async function checkIssueTree(
                     );
                   }),
                   commits,
+                  // @debt `checkIssueReadiness` skips prerequisites, the header chain and missing references for a debugger outside dispatch, so the walk passes `dispatch` for a debugger leaf to match the hook; readiness could take the checks it runs apart from the audience.
+                  dispatch: audience === "debugger",
                 },
-                "worker",
+                audience,
               ),
             ],
         openSections: listOpenSections(parsed),
@@ -241,7 +250,11 @@ export async function checkIssueTree(
         report.findings.length === 0
       );
 
-      return { report, ready };
+      return {
+        report,
+        audience,
+        ready,
+      };
     },
   );
 
@@ -251,8 +264,12 @@ export async function checkIssueTree(
     issues: walked.map(({ report }) => report),
     ready: walked
       .filter(({ ready }) => ready)
-      .map(({ report }) => {
-        return { repository: report.repository, number: report.number };
+      .map(({ report, audience }) => {
+        return {
+          repository: report.repository,
+          number: report.number,
+          audience,
+        };
       }),
     finished: isClosed({
       repository: tree.repository,

@@ -205,24 +205,42 @@ export const segmentForbiddenSections = freeze([
   "Decisions",
 ] as const);
 
-const itemContract = freeze({
-  sections: freeze([
-    "Context",
-    "Prerequisites",
-    "Steps",
-    "Tests",
-    "Done when",
-    "Planning",
-    "Questions",
-  ] as const),
-  required: freeze(["Context", "Steps", "Tests"] as const),
-  hasHeader: true,
-  subIssues: "references",
-} as const) satisfies IssueContract;
-
 export const issueContracts = freeze({
-  task: itemContract,
-  problem: itemContract,
+  task: freeze({
+    sections: freeze([
+      "Context",
+      "Prerequisites",
+      "Steps",
+      "Tests",
+      "Done when",
+      "Planning",
+      "Questions",
+    ] as const),
+    required: freeze(["Context", "Steps", "Tests"] as const),
+    hasHeader: true,
+    subIssues: "references",
+  } as const),
+  problem: freeze({
+    sections: freeze([
+      "Context",
+      "Prerequisites",
+      "Steps",
+      "Leads",
+      "Tests",
+      "Done when",
+      "Planning",
+      "Questions",
+    ] as const),
+    required: freeze(["Context"] as const),
+    requiredWith: freeze({ Steps: freeze(["Tests"] as const) } as const),
+    exclusive: freeze([freeze(["Steps", "Leads"] as const)] as const),
+    hints: freeze({
+      Steps: "Steps when the cause is clear and only the fix remains, for a worker: keep Steps or Leads and delete the other.",
+      Leads: "Leads when the cause still needs investigation, for a debugger: facts, symptoms, reproductions and suspected sites. Keep Steps or Leads and delete the other.",
+    } as const),
+    hasHeader: true,
+    subIssues: "references",
+  } as const),
   segment: freeze({
     sections: freeze([
       "Context",
