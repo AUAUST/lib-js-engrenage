@@ -14,11 +14,37 @@ function skipLineEnding(content: string, offset: number) {
   return content.startsWith("\n", offset) ? offset + 1 : offset;
 }
 
-export function splitFrontmatter(content: string): MarkdownFrontmatter {
-  const [first] = fromMarkdown(content, {
+function parseFirstNode(content: string) {
+  return fromMarkdown(content, {
     extensions: [frontmatter()],
     mdastExtensions: [frontmatterFromMarkdown()],
-  }).children;
+  }).children.at(0);
+}
+
+function sliceThroughFirstFenceLine(content: string) {
+  const fenceLine = content.indexOf(`\n${fence}`);
+
+  if (fenceLine === -1) {
+    return content;
+  }
+
+  const lineEnd = content.indexOf("\n", fenceLine + 1);
+
+  return lineEnd === -1 ? content : content.slice(0, lineEnd + 1);
+}
+
+function parseLeadingNode(content: string) {
+  const prefix = sliceThroughFirstFenceLine(content);
+
+  const first = parseFirstNode(prefix);
+
+  return first?.type === "yaml" || prefix === content
+    ? first
+    : parseFirstNode(content);
+}
+
+export function splitFrontmatter(content: string): MarkdownFrontmatter {
+  const first = parseLeadingNode(content);
 
   const end = first?.position?.end.offset;
 

@@ -71,3 +71,4 @@
 - sync table-cells check: two-row report table in a skill — failed on cells over 25 words, a limit no instruction states; moved the rows into a list
 - commit gate: committing retired-rule change — pre-existing failing agent tests blocked it; left uncommitted
 - commit gate budgets: staging the backlog file — pre-existing over-budget entries 12 and 15 fail the gate
+- `pnpm engrenage vitest run`: ran one test file — `run` became a filter and 34 files ran; used `pnpm exec vitest run`
