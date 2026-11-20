@@ -129,3 +129,21 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: the hook denies Housekeeping issues read from `Issue:` lines; a shape dispatch from a draft may rely only on the worker-side stop in the implement skill.
 - want: the hook reading `Draft:` paths too, or a test showing it does.
+
+## 24. The tool call log misses failed calls and some start times
+
+- sites: `src/tools/agents/metalbrain/operations/runMetalbrain.ts:8`
+- why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
+- want: failures logged; start times never lost or left behind.
+
+## 25. Model facts match transcripts by exact model id only
+
+- sites: `src/tools/agents/metalbrain/utils/priceMessage.ts:31`
+- why: models carry `aliases`, but lookup is by key; an alias or a dated id in a transcript gives an unpriced line.
+- want: lookup through aliases, settled with #772.
+
+## 26. The implement skill's report kinds omit the budget stop
+
+- sites: `data/metalbrain/skills/implement.md:93`
+- why: §Finishing lists a completion or a blocked report; `Budget stop:` lives only in Analysis › Budget levels.
+- want: the skill names it, or defers to the shared rule.
