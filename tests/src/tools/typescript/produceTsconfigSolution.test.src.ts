@@ -186,9 +186,6 @@ describe(
     };
 
     async function typecheck(testSource: string) {
-      // @debt Nothing in src calls the console since #638, so this spy silences nothing
-      vi.spyOn(console, "info").mockImplementation(() => {});
-
       const { project } = await syncProject(input, testSource);
 
       symlinkSync(repositoryModules, project.resolve("node_modules"));

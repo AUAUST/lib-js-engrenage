@@ -38,8 +38,6 @@ test("loads the config with the run's reporter", async () => {
   });
 
   mockCwd(project.root);
-  // @debt Nothing in src calls the console since #638, so this spy silences nothing
-  vi.spyOn(console, "warn").mockImplementation(() => {});
   vi.mocked(resolveBinary).mockResolvedValue(project.resolve("tool.mjs"));
 
   const reporter = await runDefinition(
