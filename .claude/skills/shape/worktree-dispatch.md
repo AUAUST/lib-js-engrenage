@@ -19,11 +19,20 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 
 Each commit of an agent's work, made in the main checkout:
 
-1. For an agent in a worktree, when the main checkout holds uncommitted records, the files the git rules' Commits table stages in each commit (agent-log changes, files changed only by debt markers), commit them alone first, as `brain` under the git rules: a cherry-pick refuses a dirty file it touches.
-2. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3.
-3. Make the commit your skill sets.
-4. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
-5. Once the commit exists, remove the agent's worktree, when it has one.
+1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict, and both inside §Setting records aside, from `HEAD`; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3.
+2. Make the commit your skill sets, which stages the records with the agent's work.
+3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
+4. Once the commit exists, remove the agent's worktree, when it has one.
+
+## Setting records aside
+
+Wraps a git operation in the main checkout touching files that hold records (git rules › Commits › Records), from a commit `<from>`, so the records stay uncommitted instead of needing a commit of their own: a cherry-pick or apply refuses a dirty file it touches, a reset or discard drops it.
+
+1. Save the records' diff from `<from>` to the patch file `"$(git rev-parse --git-path records.patch)"`, then restore those files to `<from>`.
+2. Run the operation.
+3. Re-apply the patch with `git apply --3way`, keeping both sides' lines where it conflicts, then delete the patch file.
+
+A patch file present before step 1: an earlier operation stopped before step 3; run step 3 first.
 
 ## Holding work
 
@@ -35,12 +44,12 @@ Moves an agent's work onto its own branch, so your work goes on from a clean tre
 
 ## Dropping work
 
-Takes an agent's work off the working branch, keeping its lines in `.ai/friction.md` and `.ai/discarded.md` and every change that is not the agent's:
+Takes an agent's work off the working branch, keeping its lines in `.ai/friction.md` and `.ai/discarded.md`, the records pending before it and every change that is not the agent's:
 
-1. Copy the lines the agent added to those logs since its dispatch base, from its hold branch when held, otherwise from its checkout.
+1. Copy the lines those logs gained since the agent's dispatch base, whoever wrote them, from its hold branch when held, otherwise from its checkout.
 2. Return the main checkout to the working branch as it stood before the agent:
-   - **Agent in the main checkout.** Switch back to the working branch when on another one, reset it to the agent's dispatch base, dropping the agent's commits, and discard the files the agent changed or added.
-   - **Agent in a worktree.** Undo the agent's cherry-picks and apply in the main checkout, when any, discarding only the files they changed; then remove the agent's worktree with `--force`, since it may hold uncommitted work.
+   - **Agent in the main checkout.** Switch back to the working branch when on another one, then, inside §Setting records aside from the agent's dispatch base, reset it to that base, dropping the agent's commits, and discard the files the agent changed or added: its commits may hold records pending at its dispatch.
+   - **Agent in a worktree.** Inside §Setting records aside, from the commit preceding the agent's cherry-picks, otherwise from `HEAD`, undo its cherry-picks and apply in the main checkout, when any, discarding only the files they changed; then remove the agent's worktree with `--force`, since it may hold uncommitted work.
 3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit.
 
 ## Stopping

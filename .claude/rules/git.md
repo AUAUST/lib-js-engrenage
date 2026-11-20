@@ -4,15 +4,18 @@
 
 ## Commits
 
-| When                                                                                                                   | Do                                                                                                            |
-| ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| A task's work is settled: no question on it pending, its checks passing                                                | Commit it before ending the turn, without asking                                                              |
-| A question on the work is pending                                                                                      | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies |
-| Your work covers several tasks                                                                                         | One commit per task                                                                                           |
-| An issue marks a checkpoint                                                                                            | Commit at it                                                                                                  |
-| Staging                                                                                                                | Only your changes and the next row's files, by path, never `.ai/issues/` or `.ai/handoffs/`, which stay local |
-| `.ai/friction.md` or `.ai/discarded.md` has uncommitted changes, or a file's only uncommitted changes are debt markers | Stage them in each commit, whoever wrote them; never name that staging in a commit message or report          |
-| Any commit                                                                                                             | Never push                                                                                                    |
+| When                                                                    | Do                                                                                                                       |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                                         |
+| Only records are uncommitted                                            | Leave them for your next commit, across turns; commit them alone only at a flush                                         |
+| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies            |
+| Your work covers several tasks                                          | One commit per task                                                                                                      |
+| An issue marks a checkpoint                                             | Commit at it                                                                                                             |
+| Staging                                                                 | Only your changes and the records, whoever wrote them, by path, never `.ai/issues/` or `.ai/handoffs/`, which stay local |
+| Any commit                                                              | Never push                                                                                                               |
+
+- **Records.** Uncommitted changes to `.ai/friction.md` and `.ai/discarded.md`, files whose only uncommitted changes are debt markers, and backlog entries written beside a task. Never name their staging in a commit message or report. A records operation, a task whose work is the records themselves, curation or a user request to record or edit them, is a task like any other.
+- **Flush.** One `brain` commit of the records alone, when nothing else is left to commit, once one holds: the records add or change five or more backlog entries; a handoff or stop record you are about to write; a segment, plan or walk your skill closes; the user signalling the session ends, by wrapping up, asking for a summary or handoff, or saying they are done; a context or usage limit warning. Records left in a checkout when a session ends without a flush ride in the next session's first commit.
 
 | Message part    | Form                                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

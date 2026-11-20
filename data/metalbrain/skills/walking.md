@@ -151,7 +151,7 @@ When a segment or a nested plan closes and at the walk's end:
 
 1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
 2. When the merger reports findings or agents declined leaf findings since the previous review run, brief a new debugger with them and handle the outcome by §After a debugger; otherwise dispatch no debugger.
-3. Commit the debt markers, backlog entries and discarded-solutions lines the merger added with the debugger's fix, or alone when no debugger ran or it fixed nothing. At the walk's end, unless the debugger wrote an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
+3. Commit the records, the merger's included, with the debugger's fix, or alone as the flush the boundary calls for (git rules › Commits) when no debugger ran or it fixed nothing. At the walk's end, unless the debugger wrote an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
 4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
 
 In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cross-repository.md` › Boundary reviews.
@@ -197,7 +197,7 @@ Reshape around each set-aside issue once per settlement attempt: run it again on
 Every turn re-reads your whole context, and a long walk outgrows it.
 
 - Read only `walk check` output and agent reports, plus the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
-- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's records commit, cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
+- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's records set-aside with its cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.
 
