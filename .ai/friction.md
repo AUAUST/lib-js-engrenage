@@ -81,3 +81,4 @@
 - BSD `ls <dir> -R`: listed a tree with the flag after the path — macOS ls reads `-R` as a file; used `find` or flag-first
 - worktree isolation: heredocs, and commands naming a `tests/src/tools/github` path or chaining `git status` — refused as unverifiable; used the edit tools and ran each command alone
 - `pnpm engrenage sync`: new utils imported through a barrel — sync loads the barrel before regenerating it and fails; added each export line by hand, as its message says, then synced
+- `pnpm engrenage planning issue publish`: published three drafts — exited 1 though each printed `published` and the drafts and `Drafting` locks were gone; checked GitHub by hand
