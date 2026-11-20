@@ -28,7 +28,6 @@ async function createProject(
 
 const files = {
   "src/index.ts": "",
-  "env.d.ts": "",
   "tsconfig.json": JSON.stringify({
     extends: "./base.json",
     compilerOptions: { strict: true },
@@ -55,7 +54,7 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
-      include: ["src/**/*.ts", "src/**/*.tsx", "env.d.ts"],
+      include: ["src/**/*.ts", "src/**/*.tsx"],
       exclude: ["dist"],
       compilerOptions: {
         target: "ESNext",
@@ -147,7 +146,6 @@ describe("syncTsconfigFiles", () => {
       {},
       {
         "src/index.ts": "",
-        "env.d.ts": "",
         "tsconfig.json": "{}",
       },
     );
@@ -157,7 +155,6 @@ describe("syncTsconfigFiles", () => {
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
       "src/**/*.ts",
       "src/**/*.tsx",
-      "env.d.ts",
     ]);
 
     expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");

@@ -96,3 +96,4 @@
 - gh api graphql: read issues' project `complexity` field for dispatch effort — token lacks `read:project`; dispatched at default effort
 - worker dispatch hook: dispatched #710 and #712 under AUAUST/clients-intscr-shopify#52 — refused: open **Planning** in ancestors #49 and #52, bare `#676` there resolving to the client repository; paused for the user
 - worker dispatch hook: dispatched #710 after removing #52's Planning by `gh issue edit` — refused for stale `Open questions` Blockers; cleared it through `planning issue claim` and `publish`
+- BSD sed `\|` alternation: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`

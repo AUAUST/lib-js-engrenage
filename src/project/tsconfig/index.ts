@@ -35,7 +35,11 @@ export type * from "#project/tsconfig/types/TypescriptInput";
 export type * from "#project/tsconfig/types/UnmanagedEnvironmentTsconfig";
 // @end
 
-export { unmanagedTsconfig } from "#project/tsconfig/constants";
+export {
+  environmentDeclarationsFile,
+  globalDeclarationsFile,
+  unmanagedTsconfig,
+} from "#project/tsconfig/constants";
 
 // @barrel config/schemas
 export { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";

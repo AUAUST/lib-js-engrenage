@@ -44,11 +44,6 @@ export interface TestsInput {
    */
   discovered?: (ListOption<string> | undefined)
   /**
-   * Whether the tests tsconfig includes the env file declaring the `define.values` globals.
-   * @default true
-   */
-  defines?: (boolean | undefined)
-  /**
    * Options of the tsconfig that sync writes for the tests environment.
    * `false` manages none.
    * @default `tsconfig.tests.json` with derived options

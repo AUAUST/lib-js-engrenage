@@ -3,14 +3,13 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareDefines } from "#project/environments/config/declarers/declareDefines";
 import { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 
 export function declareCodeEnvironment(
   name: string,
-  defaults: { dirs: Directories; defines: boolean },
+  defaults: { dirs: Directories },
 ) {
   return {
     ...declareStructureOptions(),
@@ -35,7 +34,6 @@ export function declareCodeEnvironment(
       ],
       optional: { value: [] },
     }),
-    defines: declareDefines(name, defaults.defines),
     tsconfig: declareEnvironmentTsconfig(name, {
       description: [
         `Options of the tsconfig that sync writes for the ${name} environment.`,

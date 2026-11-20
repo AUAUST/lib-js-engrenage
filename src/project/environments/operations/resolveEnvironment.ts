@@ -13,7 +13,6 @@ export async function resolveEnvironment(
     dirs: Directories;
     generated: Globs;
     discovered: Globs;
-    defines: boolean;
   },
   name: string,
 ) {

@@ -7,7 +7,6 @@ export interface ResolvedCodeEnvironment {
   readonly dirs: Directories;
   readonly generated: Globs;
   readonly discovered: Globs;
-  readonly defines: boolean;
   readonly globs: Globs;
   readonly tsconfig: ResolvedEnvironmentTsconfig;
 }

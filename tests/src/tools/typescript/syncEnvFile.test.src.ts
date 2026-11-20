@@ -50,11 +50,11 @@ describe("syncEnvFile", () => {
         },
       },
       {
-        "env.d.ts": 'declare module "giget" {}\n',
+        "src/env.d.ts": 'declare module "giget" {}\n',
       },
     );
 
-    expect(project.read("env.d.ts")).toBe(
+    expect(project.read("src/env.d.ts")).toBe(
       [
         'declare module "giget" {}',
         "",
@@ -79,9 +79,6 @@ describe("syncEnvFile", () => {
       define: {
         types: false,
         values,
-      },
-      typescript: {
-        envFile: "src/env.d.ts",
       },
     });
 

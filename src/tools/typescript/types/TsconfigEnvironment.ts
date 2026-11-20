@@ -5,7 +5,6 @@ import type { Globs } from "#types/Globs";
 
 export interface TsconfigEnvironment extends ResolvedEnvironment {
   readonly globs: Globs;
-  readonly defines: boolean;
   readonly tsconfig: ResolvedEnvironmentTsconfig;
   readonly runtime: Runtime | undefined;
 }

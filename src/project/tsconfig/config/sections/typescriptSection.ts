@@ -2,7 +2,6 @@ import { object } from "@auaust/toolkit";
 import { compose } from "@auaust/toolkit/composer";
 import { once } from "@auaust/toolkit/function";
 
-import { resolveWithin } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTypescript } from "#project/tsconfig/types/ResolvedTypescript";
@@ -43,7 +42,6 @@ export const typescriptSection = declareSection({
         },
         compose.getters({
           tsconfig: base,
-          envFile: () => resolveWithin(config.context.root, option.envFile),
         }),
       ),
     );

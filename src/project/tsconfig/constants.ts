@@ -5,7 +5,9 @@ import type { Globs } from "#types/Globs";
 
 export const noInputsDiagnostic = 18_003;
 
-export const defaultEnvFile = "env.d.ts" satisfies File;
+export const environmentDeclarationsFile = "env.d.ts" satisfies File;
+
+export const globalDeclarationsFile = "global.d.ts" satisfies File;
 
 export const defaultTypescriptFiles = freeze([
   "**/*.{ts,tsx}",

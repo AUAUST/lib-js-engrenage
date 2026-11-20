@@ -16,8 +16,6 @@ const tsconfigEnvironment = custom<TsconfigEnvironment>((value) => {
     isArray(value.dirs) &&
     "globs" in value &&
     isArray(value.globs) &&
-    "defines" in value &&
-    isBoolean(value.defines) &&
     "tsconfig" in value &&
     isObject(value.tsconfig) &&
     "runtime" in value
@@ -32,7 +30,7 @@ export async function resolveTsconfigEnvironment(
 
   if (!is(tsconfigEnvironment, environment)) {
     throw new Error(
-      `Config key "${name}" of an environment with a tsconfig resolves to no \`active\`, \`dirs\`, \`globs\`, \`defines\`, \`tsconfig\` and \`runtime\``,
+      `Config key "${name}" of an environment with a tsconfig resolves to no \`active\`, \`dirs\`, \`globs\`, \`tsconfig\` and \`runtime\``,
     );
   }
 

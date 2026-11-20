@@ -44,11 +44,6 @@ export interface ScriptsInput {
    */
   discovered?: (ListOption<string> | undefined)
   /**
-   * Whether the scripts tsconfig includes the env file declaring the `define.values` globals.
-   * @default false
-   */
-  defines?: (boolean | undefined)
-  /**
    * Options of the tsconfig that sync writes for the scripts environment.
    * `false` manages none.
    * @default `tsconfig.scripts.json` with derived options

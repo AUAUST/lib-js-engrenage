@@ -44,11 +44,6 @@ export interface BinInput {
    */
   discovered?: (ListOption<string> | undefined)
   /**
-   * Whether the bin tsconfig includes the env file declaring the `define.values` globals.
-   * @default false
-   */
-  defines?: (boolean | undefined)
-  /**
    * Options of the tsconfig that sync writes for the bin environment.
    * `false` manages none.
    * @default `tsconfig.bin.json` with derived options

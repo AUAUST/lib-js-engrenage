@@ -46,12 +46,19 @@ export default {
       "typescript.env": {
         title: "TypeScript",
         async locate(config): Promise<FileLocation | undefined> {
-          const [{ types }, { envFile }] = await Promise.all([
-            config.resolve("define"),
-            config.resolve("typescript"),
-          ]);
+          const { types } = await config.resolve("define");
 
-          return types ? { file: envFile } : undefined;
+          if (!types) {
+            return;
+          }
+
+          const {
+            resolveSourceDeclarationsFile,
+          } = await import("#tools/typescript/operations/resolveSourceDeclarationsFile");
+
+          const file = await resolveSourceDeclarationsFile(config);
+
+          return file === undefined ? undefined : { file };
         },
       },
       "tsconfig.environments": {

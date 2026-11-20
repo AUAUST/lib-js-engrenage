@@ -1,6 +1,5 @@
 // @barrel config/declarers
 export { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
-export { declareDefines } from "#project/environments/config/declarers/declareDefines";
 export { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
 export { declareStructureNodes } from "#project/environments/config/declarers/declareStructureNodes";
 export { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";

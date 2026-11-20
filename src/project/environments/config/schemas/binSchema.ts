@@ -20,7 +20,6 @@ export const binSchema = declareObject(
   {
     ...declareCodeEnvironment("bin", {
       dirs: defaultBinDirectories,
-      defines: false,
     }),
     tree: declareProgramLayout(),
     roles: rolesSchema,

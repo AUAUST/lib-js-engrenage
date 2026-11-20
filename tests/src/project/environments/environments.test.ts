@@ -31,7 +31,6 @@ describe("environments", () => {
       dirs: ["src"],
       generated: [],
       discovered: [],
-      defines: true,
       globs: ["src/**/*.{ts,tsx}"],
     });
 
@@ -40,7 +39,6 @@ describe("environments", () => {
       dirs: ["tests"],
       generated: [],
       discovered: [],
-      defines: true,
       globs: ["tests/**/*.{ts,tsx}"],
       files: [
         "**/*.test.{ts,tsx}",
@@ -54,13 +52,11 @@ describe("environments", () => {
     expect(await config.resolve("bin")).toMatchObject({
       active: false,
       dirs: ["bin"],
-      defines: false,
     });
 
     expect(await config.resolve("scripts")).toMatchObject({
       active: false,
       dirs: ["scripts"],
-      defines: false,
     });
 
     expect(await config.resolve("tooling")).toMatchObject({
@@ -101,7 +97,6 @@ describe("environments", () => {
       dirs: [],
       generated: [],
       discovered: [],
-      defines: false,
       globs: [],
     });
 

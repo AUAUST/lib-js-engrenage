@@ -4,7 +4,7 @@ import type { GlobalsFactory } from "#project/environments/types/GlobalsFactory"
 
 export interface DefineInput {
   /**
-   * Whether sync declares the `define.values` globals in the env file (`typescript.envFile`) and `build.typed` follows.
+   * Whether sync declares the `define.values` globals in `env.d.ts` at the root of the first `src.dirs` directory and `build.typed` follows.
    * @default true
    */
   types?: (boolean | undefined)

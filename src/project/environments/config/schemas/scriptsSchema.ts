@@ -11,7 +11,6 @@ export const scriptsSchema = declareObject(
   {
     ...declareCodeEnvironment("scripts", {
       dirs: defaultScriptsDirectories,
-      defines: false,
     }),
     tree: declareProgramLayout(),
     roles: rolesSchema,

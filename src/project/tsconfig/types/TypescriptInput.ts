@@ -41,9 +41,4 @@ export interface TypescriptInput {
    * @default `** /*.{ts,tsx}`
    */
   files?: (ListOption<string> | undefined)
-  /**
-   * Declaration file where sync writes the `define.values` globals, within a marked block. It is added to the tsconfig `include` of the environments that define globals.
-   * @default `env.d.ts`
-   */
-  envFile?: (string | undefined)
 }

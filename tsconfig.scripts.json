@@ -6,7 +6,8 @@
     "*.config.ts",
     ".*.ts",
     "tooling/**/*.ts",
-    "tooling/**/*.tsx"
+    "tooling/**/*.tsx",
+    "global.d.ts"
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.scripts.tsbuildinfo",

@@ -68,7 +68,6 @@ export const disabledCodeEnvironment = freeze({
   dirs: [],
   generated: [],
   discovered: [],
-  defines: false,
   tsconfig: unmanagedTsconfig,
 } as const);
 

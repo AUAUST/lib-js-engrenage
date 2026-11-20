@@ -42,7 +42,6 @@ export const sourceSchema = declareObject(
   {
     ...declareCodeEnvironment("src", {
       dirs: defaultSourceDirectories,
-      defines: true,
     }),
     roles: rolesSchema,
     omitRoles: omitRolesSchema,

@@ -10,14 +10,12 @@ export async function resolveCodeEnvironment({
   dirs,
   generated,
   discovered,
-  defines,
   typescriptFiles,
   config,
 }: {
   dirs: Directories;
   generated: Globs;
   discovered: Globs;
-  defines: boolean;
   typescriptFiles: Globs;
   config: ConfigResolver;
 }) {
@@ -26,7 +24,6 @@ export async function resolveCodeEnvironment({
     dirs,
     generated,
     discovered,
-    defines,
     globs: filesIn(dirs, typescriptFiles),
   });
 }

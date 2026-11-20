@@ -12,7 +12,7 @@
     "tests/**/*.test.dist.ts",
     "tests/**/*.test.dist.tsx",
     "tests/setup.ts",
-    "tests/*.d.ts",
-    "env.d.ts"
+    "tests/**/*.d.ts",
+    "global.d.ts"
   ]
 }

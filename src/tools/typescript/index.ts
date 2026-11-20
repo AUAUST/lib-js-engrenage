@@ -12,6 +12,7 @@ export { syncWorkspaceFiles } from "#tools/typescript/setup/syncWorkspaceFiles";
 export { resolvePathAliases } from "#project/tsconfig/index";
 export { createLibraryCompiler } from "#tools/typescript/operations/createLibraryCompiler";
 export { formatModule } from "#tools/typescript/operations/formatModule";
+export { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
 export { resolveTscArguments } from "#tools/typescript/operations/resolveTscArguments";
 export { resolveTscDistArguments } from "#tools/typescript/operations/resolveTscDistArguments";
 export { inferType } from "#tools/typescript/utils/inferType";

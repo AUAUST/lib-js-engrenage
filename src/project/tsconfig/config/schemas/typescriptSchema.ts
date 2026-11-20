@@ -7,13 +7,9 @@ import {
   declareLocation,
   declareManagedList,
   declareObject,
-  fileSchema,
   globSchema,
 } from "#foundation/options/index";
-import {
-  defaultEnvFile,
-  defaultTypescriptFiles,
-} from "#project/tsconfig/constants";
+import { defaultTypescriptFiles } from "#project/tsconfig/constants";
 
 export const typescriptSchema = declareObject(
   {
@@ -56,10 +52,6 @@ export const typescriptSchema = declareObject(
     files: declareList(globSchema, {
       description: "Globs of the TypeScript files inside every environment directory, feeding the tsconfig `include` and the published file scopes.",
       optional: { value: defaultTypescriptFiles },
-    }),
-    envFile: declare(fileSchema, {
-      description: "Declaration file where sync writes the `define.values` globals, within a marked block. It is added to the tsconfig `include` of the environments that define globals.",
-      optional: { value: defaultEnvFile },
     }),
   },
   {

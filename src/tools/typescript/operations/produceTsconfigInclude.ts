@@ -1,22 +1,47 @@
-import { relative } from "node:path/posix";
-
-import { iterable } from "@auaust/toolkit";
-import { flatMap } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/array";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
 import { declarations, testsetup } from "#project/roles/index";
 import { listStaticFileGlobs } from "#project/structure/index";
 import {
+  globalDeclarationsFile,
   toTsconfigGlobs,
   type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
+
+async function listGlobalDeclarations(
+  config: LoadedConfig,
+): Promise<readonly File[]> {
+  const exists = await config.context.filesystem.exists(globalDeclarationsFile);
+
+  return exists ? [globalDeclarationsFile] : [];
+}
+
+async function listSourceDeclarations(
+  config: LoadedConfig,
+  owner: string,
+): Promise<readonly File[]> {
+  const { consumers } = await config.resolve("importGrants");
+
+  if (owner !== "tests" && !consumers.includes(owner)) {
+    return [];
+  }
+
+  const declarations = await resolveSourceDeclarationsFile(config);
+
+  return declarations !== undefined &&
+    (await config.context.filesystem.exists(declarations))
+    ? [declarations]
+    : [];
+}
 
 async function createDefaultInclude(
   config: LoadedConfig,
@@ -32,22 +57,15 @@ async function createDefaultInclude(
     environments.map((name) => resolveTsconfigEnvironment(config, name)),
   );
 
-  const { defines } = await resolveTsconfigEnvironment(config, owner);
-
-  const root = config.context.root;
-
-  const { envFile } = await config.resolve("typescript");
-
-  const hasEnvFile = await config.context.filesystem.exists(envFile);
+  const declarations = [
+    ...(await listGlobalDeclarations(config)),
+    ...(await listSourceDeclarations(config, owner)),
+  ];
 
   return () => {
     const globs = flatMap(resolved, ({ globs }) => globs);
 
-    const included = defines && hasEnvFile
-      ? [...globs, relative(root, envFile)]
-      : globs;
-
-    return toTsconfigGlobs(file, included);
+    return toTsconfigGlobs(file, [...globs, ...declarations]);
   };
 }
 
@@ -59,30 +77,28 @@ async function createDistTestsInclude(
 
   const roles = await config.resolve("environmentRoles");
 
-  const { envFile } = await config.resolve("typescript");
-
-  const root = config.context.root;
-
-  const hasEnvFile = await config.context.filesystem.exists(envFile);
+  const globalDeclarations = await listGlobalDeclarations(config);
 
   return () => {
     const { plain, dist } = tests.patterns;
 
-    // @debt role files are matched only at the root of the tests directories, as in findSetupFiles, so declarations placed deeper stay out of the dist check
-    const roleFiles = iterable.flatMap(
-      [testsetup(), declarations()],
-      ({ name }) => {
-        return listStaticFileGlobs(roles.tests?.roles[name]?.file);
-      },
+    const testRoles = roles.tests?.roles;
+
+    const setupFiles = listStaticFileGlobs(testRoles?.[testsetup().name]?.file);
+
+    const declarationFiles = map(
+      listStaticFileGlobs(testRoles?.[declarations().name]?.file),
+      (glob) => `**/${glob}`,
     );
 
-    const globs = filesIn(tests.dirs, [...plain, ...dist, ...roleFiles]);
+    const globs = filesIn(tests.dirs, [
+      ...plain,
+      ...dist,
+      ...setupFiles,
+      ...declarationFiles,
+    ]);
 
-    const included = tests.defines && hasEnvFile
-      ? [...globs, relative(root, envFile)]
-      : globs;
-
-    return toTsconfigGlobs(file, included);
+    return toTsconfigGlobs(file, [...globs, ...globalDeclarations]);
   };
 }
 

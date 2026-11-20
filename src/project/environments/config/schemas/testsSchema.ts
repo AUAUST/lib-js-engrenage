@@ -27,7 +27,6 @@ export const testsSchema = declareObject(
   {
     ...declareCodeEnvironment("tests", {
       dirs: defaultTestsDirectories,
-      defines: true,
     }),
     roles: rolesSchema,
     omitRoles: omitRolesSchema,

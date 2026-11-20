@@ -45,11 +45,6 @@ export interface SourceInput {
    */
   discovered?: (ListOption<string> | undefined)
   /**
-   * Whether the src tsconfig includes the env file declaring the `define.values` globals.
-   * @default true
-   */
-  defines?: (boolean | undefined)
-  /**
    * Options of the tsconfig that sync writes for the src environment.
    * `false` manages none.
    * @default `tsconfig.src.json` with derived options
