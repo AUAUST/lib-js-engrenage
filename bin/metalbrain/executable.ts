@@ -1,21 +1,24 @@
 #!/usr/bin/env node
 
 import { enableCompileCache } from "node:module";
-import { text } from "node:stream/consumers";
-
-const time = Date.now();
 
 enableCompileCache();
 
+// @debt a failure loading the cli barrel crashes the hook instead of failing open, since openHook lives behind it
+const {
+  createProgram,
+  openHook,
+  runProgram,
+} = await import("#workflows/cli/index");
+
 try {
-  const { runMetalbrain } = await import("#tools/agents/metalbrain/index");
+  const { default: metalbrain } = await import("#bin/metalbrain/index");
 
-  await runMetalbrain(process.argv.slice(2), await text(process.stdin), {
-    root: process.cwd(),
-    time,
+  await runProgram(createProgram("metalbrain", metalbrain), process.argv, {
+    onError(error) {
+      openHook("metalbrain", error);
+    },
   });
-} catch {
-  // @debt fails open without a trace, so a broken logger shows only as missing lines
+} catch (error) {
+  openHook("metalbrain", error);
 }
-
-process.exitCode = 0;

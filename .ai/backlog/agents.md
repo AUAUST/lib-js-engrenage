@@ -132,7 +132,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 24. The tool call log misses failed calls and some start times
 
-- sites: `src/tools/agents/metalbrain/operations/runMetalbrain.ts:8`
+- sites: `bin/metalbrain/hook/claude/index.ts:11`
 - why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
 - want: failures logged; start times never lost or left behind.
 

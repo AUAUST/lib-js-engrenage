@@ -7,6 +7,7 @@ export { enableLinkedSource } from "#workflows/cli/operations/enableLinkedSource
 export { findSourceExecutable } from "#workflows/cli/operations/findSourceExecutable";
 export { getRunContext } from "#workflows/cli/operations/getRunContext";
 export { launch } from "#workflows/cli/operations/launch";
+export { openHook } from "#workflows/cli/operations/openHook";
 export { runProgram } from "#workflows/cli/operations/runProgram";
 
 // @barrel errors

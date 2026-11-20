@@ -23,7 +23,9 @@ bin/  (global roles: executable.ts *.ts)
 ├─ engrenage-hook{claude codex}  Agent runtime hook commands, run directly by the runtimes' settings.
 │  ├─ claude  Claude hook events.
 │  └─ codex  Codex hook events.
-└─ metalbrain  The lean metalbrain hook program, run directly by the runtimes' settings.
+└─ metalbrain{hook{claude}}  Metalbrain commands, agent hooks first, run directly by the runtimes' settings.
+   └─ hook{claude}  Agent runtime hook commands of metalbrain.
+      └─ claude  Claude hook events of metalbrain.
 ```
 
 Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.

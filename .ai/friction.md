@@ -106,3 +106,4 @@
 - Bash cd into an agent worktree: `cd <worktree> && git diff` moved the session cwd there; removing the worktree broke the next command — use `git -C` with absolute paths
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - Claude Code worktree isolation: `prettier --check` over a `git diff --name-only` substitution — refused as naming git; listed the files by hand
+- Claude Code worktree isolation: heredocs writing scratch and bin files, naming no git — refused as unverifiable; wrote each file through the write tool

@@ -2,48 +2,23 @@
 
 import { enableCompileCache } from "node:module";
 
-const contextEvents = new Set(["PreToolUse", "PostToolUse", "SubagentStart"]);
-
-function openHook(error: unknown) {
-  const args = process.argv.slice(2);
-
-  const reason = error instanceof Error ? error.message : String(error);
-
-  const message = `engrenage-hook ${args.join(" ")} did not run, so its checks are off: ${reason}`;
-
-  const event = args[1];
-
-  process.stdout.write(
-    `${JSON.stringify({
-      systemMessage: message,
-      ...(event !== undefined && contextEvents.has(event)
-        ? {
-            hookSpecificOutput: {
-              hookEventName: event,
-              additionalContext: message,
-            },
-          }
-        : {}),
-    })}\n`,
-  );
-
-  process.exitCode = 0;
-}
-
 enableCompileCache();
 
-try {
-  const {
-    CommandUsageError,
-    createProgram,
-    runProgram,
-  } = await import("#workflows/cli/index");
+// @debt a failure loading the cli barrel crashes the hook instead of failing open, since openHook lives behind it
+const {
+  CommandUsageError,
+  createProgram,
+  openHook,
+  runProgram,
+} = await import("#workflows/cli/index");
 
+try {
   const { default: hook } = await import("#bin/engrenage-hook/index");
 
   await runProgram(createProgram("engrenage-hook", hook), process.argv, {
     onError(error) {
       openHook(
+        "engrenage-hook",
         error instanceof CommandUsageError
           ? `${error.message}; regenerate the hooks with pnpm install, then pnpm engrenage sync`
           : error,
@@ -51,5 +26,5 @@ try {
     },
   });
 } catch (error) {
-  openHook(error);
+  openHook("engrenage-hook", error);
 }

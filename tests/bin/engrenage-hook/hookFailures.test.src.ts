@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { cpSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { object, optional, parse, string } from "valibot";
 import { afterEach, expect, test, vi } from "vitest";
@@ -38,6 +39,10 @@ vi.mock("#tools/github/issues/api/operations/resolveGithubToken", () => {
     resolveGithubToken: vi.fn(() => Promise.resolve("token")),
   };
 });
+
+const openHookSource = fileURLToPath(
+  import.meta.resolve("#workflows/cli/operations/openHook"),
+);
 
 const outputSchema = object({
   systemMessage: string(),
@@ -203,7 +208,7 @@ test(
         },
       }),
       "bin/engrenage-hook/index.ts": 'throw new Error("program is broken");\n',
-      "workflows/cli/index.ts": "export function createProgram() {}\nexport function runProgram() {}\n",
+      "workflows/cli/index.ts": `export function createProgram() {}\nexport function runProgram() {}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
     });
 
     cpSync(

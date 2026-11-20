@@ -3,7 +3,11 @@ import { existsSync } from "node:fs";
 import { expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { runMetalbrain } from "#tools/agents/metalbrain/index";
+import {
+  logToolCall,
+  parseToolPayload,
+  recordCallStart,
+} from "#tools/agents/metalbrain/index";
 
 const session = "session-1";
 
@@ -87,15 +91,13 @@ async function runPair(
     tool_input: { command: "ls" },
   };
 
-  await runMetalbrain(
-    ["hook", "claude", "PreToolUse"],
-    JSON.stringify(payload),
-    { root: project.root, time: 1000 },
-  );
+  await recordCallStart(parseToolPayload(payload), {
+    root: project.root,
+    time: 1000,
+  });
 
-  await runMetalbrain(
-    ["hook", "claude", "PostToolUse"],
-    JSON.stringify({
+  await logToolCall(
+    parseToolPayload({
       ...payload,
       tool_response: { stdout: "a\nb\n", stderr: "" },
     }),
