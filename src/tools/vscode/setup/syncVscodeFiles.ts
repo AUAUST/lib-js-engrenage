@@ -353,15 +353,15 @@ export async function syncVscodeFiles(
     extensions?: boolean;
   } = {},
 ) {
-  const [root, filesystem, resolve, environment, vscode] = await Promise.all([
+  const [root, filesystem, resolve, dependencies, vscode] = await Promise.all([
     config.context.root,
     config.context.filesystem,
     config.context.path,
-    config.resolve("environment"),
+    config.resolve("dependencies"),
     config.resolve("vscode"),
   ]);
 
-  const applicable = findIntegrations(environment.hasDependency);
+  const applicable = findIntegrations(dependencies.hasDependency);
 
   const recommendations = toArray(
     iterable.unique(

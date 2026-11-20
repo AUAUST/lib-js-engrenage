@@ -164,9 +164,9 @@ export function createProjectConfig({
           return (await readConfigPath(config, when.config)) === true;
         }
 
-        const environment = await config.resolve("environment");
+        const dependencies = await config.resolve("dependencies");
 
-        return environment.hasDependency(when.installed);
+        return dependencies.hasDependency(when.installed);
       },
       explainInactive,
       matches(read, produced): boolean {

@@ -11,9 +11,9 @@ export async function loadEslint({
 }: LoadedConfig): Promise<
   (options: Omit<ESLint.Options, "cwd" | "cache">) => ESLint
 > {
-  const environment = await resolve("environment");
+  const dependencies = await resolve("dependencies");
 
-  if (!environment.hasDependency(eslint)) {
+  if (!dependencies.hasDependency(eslint)) {
     throw new MissingEslintError();
   }
 

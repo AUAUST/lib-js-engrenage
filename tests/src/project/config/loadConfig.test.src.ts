@@ -122,19 +122,19 @@ describe("loadConfig", () => {
     expect((await config.resolve("packageJson")).name).toBe("custom-fixture");
 
     expect(
-      (await config.resolve("environment")).hasDependency("custom-fixture"),
+      (await config.resolve("dependencies")).hasDependency("custom-fixture"),
     ).toBe(true);
 
-    expect((await config.resolve("environment")).hasDependency("valibot")).toBe(
-      true,
-    );
+    expect(
+      (await config.resolve("dependencies")).hasDependency("valibot"),
+    ).toBe(true);
 
-    expect((await config.resolve("environment")).hasDependency("zod")).toBe(
+    expect((await config.resolve("dependencies")).hasDependency("zod")).toBe(
       true,
     );
 
     expect(
-      (await config.resolve("environment")).hasDependency("@auaust/toolkit"),
+      (await config.resolve("dependencies")).hasDependency("@auaust/toolkit"),
     ).toBe(false);
 
     expect((await config.resolve("tsconfig")).outDir).toBe("dist");

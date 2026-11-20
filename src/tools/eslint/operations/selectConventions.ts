@@ -1,7 +1,7 @@
 import { isBoolean, iterable, object } from "@auaust/toolkit";
 import { every, filter, find } from "@auaust/toolkit/array";
 
-import type { Environment } from "#project/config/index";
+import type { Dependencies } from "#project/config/index";
 import type { ResolvedTraits } from "#project/presets/index";
 import type { Convention } from "#tools/eslint/ports/Convention";
 import type { SelectedConvention } from "#tools/eslint/types/SelectedConvention";
@@ -9,13 +9,13 @@ import type { SelectedConvention } from "#tools/eslint/types/SelectedConvention"
 function isEnabledByDefault(
   { enabled, traits, requires }: Convention,
   activeTraits: ResolvedTraits,
-  environment: Environment,
+  dependencies: Dependencies,
 ): boolean {
   if (!enabled) {
     return false;
   }
 
-  const hasRequiredPackages = every(requires, environment.hasDependency);
+  const hasRequiredPackages = every(requires, dependencies.hasDependency);
 
   if (!hasRequiredPackages) {
     return false;
@@ -33,7 +33,7 @@ export function selectConventions({
   settings,
   typeAware,
   traits,
-  environment,
+  dependencies,
 }: {
   categories: Readonly<Record<string, Readonly<Record<string, Convention>>>>;
   settings: Readonly<
@@ -41,7 +41,7 @@ export function selectConventions({
   >;
   typeAware: boolean;
   traits: ResolvedTraits;
-  environment: Environment;
+  dependencies: Dependencies;
 }): SelectedConvention[] {
   const unknownCategories = filter(object.keys(settings), (category) => {
     return !object.hasOwn(categories, category);
@@ -92,7 +92,7 @@ export function selectConventions({
       const enabledByDefault = isEnabledByDefault(
         convention,
         traits,
-        environment,
+        dependencies,
       );
 
       const enabled = isBoolean(setting)

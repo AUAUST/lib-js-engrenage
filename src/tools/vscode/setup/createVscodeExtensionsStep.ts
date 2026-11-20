@@ -8,7 +8,7 @@ export function createVscodeExtensionsStep(): Step {
     name: extensionsFile,
     message: "Recommend the VS Code extensions of the project tools?",
     async isMissing({ resolve, filesystem }) {
-      const { hasDependency } = await resolve("environment");
+      const { hasDependency } = await resolve("dependencies");
 
       const vscode = await resolve("vscode");
 

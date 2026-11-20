@@ -51,9 +51,9 @@ describe("loadConfig", () => {
       published: false,
     });
 
-    expect((await config.resolve("environment")).hasDependency("valibot")).toBe(
-      false,
-    );
+    expect(
+      (await config.resolve("dependencies")).hasDependency("valibot"),
+    ).toBe(false);
   });
 
   test("reports a duplicated tooling directory", async () => {

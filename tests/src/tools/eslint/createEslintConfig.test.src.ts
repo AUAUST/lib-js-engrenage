@@ -19,7 +19,7 @@ import { createEslintConfig as createConfig } from "#tools/eslint/operations/cre
 import { createPrettierConfig } from "#tools/prettier/operations/createPrettierConfig";
 import type { ConfigKey } from "#project/config/types/ConfigKey";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
-import type { Environment } from "#project/config/types/Environment";
+import type { Dependencies } from "#project/config/types/Dependencies";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { ResolvedTraits } from "#project/presets/types/ResolvedTraits";
 import type { Config } from "#tools/eslint/types/Config";
@@ -97,10 +97,10 @@ export const values = [map, string, z.string, zod.string];
 async function lintedPerformanceRules(
   {
     traits,
-    environment,
+    dependencies,
   }: {
     traits: ResolvedTraits;
-    environment?: Environment;
+    dependencies?: Dependencies;
   },
   options?: Options,
 ) {
@@ -114,7 +114,10 @@ async function lintedPerformanceRules(
         config,
         new Map<ConfigKey, unknown>([
           ["traits", traits],
-          ["environment", environment ?? (await config.resolve("environment"))],
+          [
+            "dependencies",
+            dependencies ?? (await config.resolve("dependencies")),
+          ],
         ]),
       ),
       {
@@ -503,7 +506,7 @@ export const values = [path, v, things, alias];
   });
 
   test("enables dependency-gated conventions only for declared packages, unless options force them", async () => {
-    const zodOnly: Environment = {
+    const zodOnly: Dependencies = {
       hasDependency(name): name is "zod" {
         return name === "zod";
       },
@@ -512,7 +515,7 @@ export const values = [path, v, things, alias];
     expect(
       await lintedPerformanceRules({
         traits: { published: true },
-        environment: zodOnly,
+        dependencies: zodOnly,
       }),
     ).toEqual([
       "auaust/no-zod-classic",
@@ -520,7 +523,7 @@ export const values = [path, v, things, alias];
       "auaust/no-zod-namespace",
     ]);
 
-    const noDependencies: Environment = {
+    const noDependencies: Dependencies = {
       hasDependency(name): name is never {
         return false;
       },
@@ -529,7 +532,7 @@ export const values = [path, v, things, alias];
     expect(
       await lintedPerformanceRules({
         traits: { published: true },
-        environment: noDependencies,
+        dependencies: noDependencies,
       }),
     ).toEqual([]);
 
@@ -537,7 +540,7 @@ export const values = [path, v, things, alias];
       await lintedPerformanceRules(
         {
           traits: { published: true },
-          environment: noDependencies,
+          dependencies: noDependencies,
         },
         {
           performance: {

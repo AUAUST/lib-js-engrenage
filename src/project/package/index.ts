@@ -35,7 +35,7 @@ export type * from "#project/package/types/Visibility";
 // @end
 
 // @barrel config/sections
-export { environmentSection } from "#project/package/config/sections/environmentSection";
+export { dependenciesSection } from "#project/package/config/sections/dependenciesSection";
 export { packageJsonPathSection } from "#project/package/config/sections/packageJsonPathSection";
 export { packageJsonSection } from "#project/package/config/sections/packageJsonSection";
 export { visibilitySection } from "#project/package/config/sections/visibilitySection";

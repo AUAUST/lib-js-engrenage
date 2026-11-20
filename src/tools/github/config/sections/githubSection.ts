@@ -14,7 +14,7 @@ export const githubSection = declareSection({
   async resolve(input, config: ConfigResolver): Promise<ResolvedGithub> {
     const [traits, { hasDependency }, packageJson] = await Promise.all([
       config.resolve("traits"),
-      config.resolve("environment"),
+      config.resolve("dependencies"),
       config.resolve("packageJson"),
     ]);
 

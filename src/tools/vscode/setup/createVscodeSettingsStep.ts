@@ -8,7 +8,7 @@ export function createVscodeSettingsStep(): Step {
     name: settingsFile,
     message: "Add the VS Code settings of the project tools?",
     async isMissing({ resolve, filesystem }) {
-      const { hasDependency } = await resolve("environment");
+      const { hasDependency } = await resolve("dependencies");
 
       const vscode = await resolve("vscode");
 

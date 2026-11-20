@@ -1,14 +1,14 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import type { ConfigResolver, Environment } from "#project/config/index";
+import type { ConfigResolver, Dependencies } from "#project/config/index";
 import type { PackageJson } from "#project/package/types/PackageJson";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { PackageName } from "#types/PackageName";
 
-const environments = new WeakMap<PackageJson, Environment>();
+const dependencies = new WeakMap<PackageJson, Dependencies>();
 
-function createEnvironment(packageJson: PackageJson): Environment {
+function createDependencies(packageJson: PackageJson): Dependencies {
   const { optional } = packageJson;
 
   const packages = new Set<PackageName>(optional.dependencies);
@@ -26,20 +26,20 @@ function createEnvironment(packageJson: PackageJson): Environment {
   });
 }
 
-export const environmentSection = declareSection({
+export const dependenciesSection = declareSection({
   live: true,
-  async resolve(_input, config: ConfigResolver): Promise<Environment> {
+  async resolve(_input, config: ConfigResolver): Promise<Dependencies> {
     const packageJson = await config.resolve("packageJson");
 
-    const known = environments.get(packageJson);
+    const known = dependencies.get(packageJson);
 
     if (known !== undefined) {
       return known;
     }
 
-    const created = createEnvironment(packageJson);
+    const created = createDependencies(packageJson);
 
-    environments.set(packageJson, created);
+    dependencies.set(packageJson, created);
 
     return created;
   },

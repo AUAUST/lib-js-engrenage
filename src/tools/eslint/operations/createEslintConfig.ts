@@ -77,21 +77,24 @@ export async function createEslintConfig(
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
-  const [scopes, traits, environment, conventionCategories] = await Promise.all(
-    [
-      resolveScopeSources(config),
-      config.resolve("traits"),
-      config.resolve("environment"),
-      loadConventionCategories(config),
-    ],
-  );
+  const [
+    scopes,
+    traits,
+    dependencies,
+    conventionCategories,
+  ] = await Promise.all([
+    resolveScopeSources(config),
+    config.resolve("traits"),
+    config.resolve("dependencies"),
+    loadConventionCategories(config),
+  ]);
 
   const selected = selectConventions({
     categories: conventionCategories,
     settings: categories,
     typeAware,
     traits,
-    environment,
+    dependencies,
   });
 
   const sections = await resolveConventionSections(

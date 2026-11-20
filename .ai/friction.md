@@ -90,3 +90,4 @@
 - commit gate vitest: committing #768 while a worker ran its gate — `tests/scripts/codegen/config.test.src.ts` timed out at 5000ms; passed alone, retried the commit
 - `pnpm engrenage sync`: deleted modules a barrel still listed — sync loads the barrel before regenerating it and fails; removed the stale lines by hand, then synced
 - `pnpm engrenage sync`: new operation imported by `bin` through the domain barrel — sync never added its export line, typecheck failed; added the line by hand, sync kept it
+- engrenage sync after git mv of a barrelled module: sync refused on the stale barrel export — edited the barrel by hand first

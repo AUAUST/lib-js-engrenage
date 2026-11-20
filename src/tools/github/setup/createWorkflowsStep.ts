@@ -14,7 +14,7 @@ async function findMissingWorkflows(
 ): Promise<readonly MissingWorkflow[]> {
   const github = await context.resolve("github");
 
-  const { hasDependency } = await context.resolve("environment");
+  const { hasDependency } = await context.resolve("dependencies");
 
   const name = github.workflowsConfigured
     ? github.workflows

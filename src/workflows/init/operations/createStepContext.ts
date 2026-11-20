@@ -106,9 +106,9 @@ export async function createStepContext({
   }
 
   async function hasDependency(name: PackageName): Promise<boolean> {
-    const environment = await config.resolve("environment");
+    const dependencies = await config.resolve("dependencies");
 
-    return environment.hasDependency(name);
+    return dependencies.hasDependency(name);
   }
 
   async function addDevDependency(

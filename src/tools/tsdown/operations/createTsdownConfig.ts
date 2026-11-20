@@ -189,7 +189,7 @@ export async function createTsdownConfig(
 
   const packageSnapshot = await readPackageSnapshot(packageJsonPath);
 
-  const environment = await config.resolve("environment");
+  const dependencies = await config.resolve("dependencies");
 
   const resources = await config.resolve("resources");
 
@@ -274,9 +274,9 @@ export async function createTsdownConfig(
       isTesting: false,
     }),
     report: false,
-    publint: environment.hasDependency(publint),
+    publint: dependencies.hasDependency(publint),
     attw: {
-      enabled: environment.hasDependency(arethetypeswrongCore),
+      enabled: dependencies.hasDependency(arethetypeswrongCore),
       profile: "node16",
       ignoreRules: ["cjs-resolves-to-esm"],
     },
