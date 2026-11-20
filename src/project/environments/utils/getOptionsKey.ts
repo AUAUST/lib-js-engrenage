@@ -1,5 +1,8 @@
-import type { EnvironmentEntry } from "#project/environments/ports/EnvironmentEntry";
+import type { ContributedEnvironmentEntry } from "#project/environments/types/ContributedEnvironmentEntry";
 
-export function getOptionsKey({ name, structure }: EnvironmentEntry): string {
-  return structure === undefined ? name : `${name}.options`;
+export function getOptionsKey({
+  entry,
+  kind,
+}: ContributedEnvironmentEntry): string {
+  return kind.structure === undefined ? entry.name : `${entry.name}.options`;
 }

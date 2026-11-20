@@ -1,6 +1,7 @@
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
+import { listEnvironmentEntries } from "#project/environments/index";
 import { noRoles } from "#project/structure/constants";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
@@ -23,14 +24,11 @@ export const environmentRolesSection = declareSection({
     _input,
     config: ConfigResolver,
   ): Promise<Readonly<Partial<Record<string, ResolvedRoles>>>> {
-    const contributions = await config.context.registry.contributions(
-      "environments",
-      config,
-    );
+    const environments = await listEnvironmentEntries(config);
 
     const roles = await Promise.all(
-      contributions
-        .filter(({ entry }) => entry.structure !== undefined)
+      environments
+        .filter(({ kind }) => kind.structure !== undefined)
         .map(async ({ entry: { name } }) => {
           return [name, await resolveEnvironmentRoles(config, name)] as const;
         }),

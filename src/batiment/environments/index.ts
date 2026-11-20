@@ -4,6 +4,10 @@ export { declareStructureNodes } from "#batiment/environments/config/declarers/d
 export { declareStructureOptions } from "#batiment/environments/config/declarers/declareStructureOptions";
 // @end
 
+// @barrel ports
+export type * from "#batiment/environments/ports/EnvironmentKind";
+// @end
+
 // @barrel types
 export type * from "#batiment/environments/types/DomainDeclaration";
 export type * from "#batiment/environments/types/DomainInput";

@@ -126,5 +126,5 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 23. The PreToolUse hook skips its checks when a GitHub read returns 404
 
-- why: dispatching workers for freshly published #766, #768 and #769, `GET issues/<n>/issue-field-values` and `issues/<n>/sub_issues` returned 404, so the effort check never ran.
+- why: on every worker dispatch this session (#766–#770), `GET issues/<n>/issue-field-values`, `sub_issues` or `dependencies/blocked_by` returned 404, so the effort check never ran.
 - want: the hook reading fields through the endpoint `publish` writes them with, or failing the dispatch instead of passing silently.

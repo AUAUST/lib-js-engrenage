@@ -1,20 +1,23 @@
 import {
   environmentEntry,
+  environmentKindEntry,
   languageEntry,
 } from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns the `environments` and `languages` slots, the config keys of each built-in
- * environment and its options, `environments.claims`, `define` and `runtime`,
- * the uncommitted coverage directory and the unlinted static directories.
- * Contributes the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static`
- * environments and the `javascript` language.
+ * Owns the `environmentKinds`, `environments` and `languages` slots, the config
+ * keys of each built-in environment and its options, `environments.claims`,
+ * `define` and `runtime`, the uncommitted coverage directory and the unlinted
+ * static directories. Contributes the `src`, `tests`, `bin`, `scripts`, `tooling`,
+ * `data` and `static` environment kinds, one environment of each, named after
+ * it, and the `javascript` language.
  */
 export default {
   name: "project/environments",
   owns: {
     slots: {
+      environmentKinds: { entry: environmentKindEntry },
       environments: { entry: environmentEntry },
       languages: { entry: languageEntry },
     },
@@ -203,10 +206,9 @@ export default {
     },
   },
   contributes: {
-    environments: [
+    environmentKinds: [
       {
         name: "src",
-        title: "the src environment's files",
         level: "enforced",
         code: "published",
         structure: "domains",
@@ -214,7 +216,6 @@ export default {
       },
       {
         name: "tests",
-        title: "the tests environment's files",
         level: "enforced",
         code: "private",
         structure: "roles",
@@ -223,7 +224,6 @@ export default {
       },
       {
         name: "bin",
-        title: "the bin environment's files",
         level: "enforced",
         code: "published",
         structure: "roles",
@@ -232,7 +232,6 @@ export default {
       },
       {
         name: "scripts",
-        title: "the scripts environment's files",
         level: "enforced",
         code: "private",
         structure: "domains",
@@ -242,7 +241,6 @@ export default {
       },
       {
         name: "tooling",
-        title: "the tooling environment's files",
         level: "enforced",
         structure: "domains",
         consumesSource: true,
@@ -250,13 +248,48 @@ export default {
       },
       {
         name: "data",
-        title: "the data environment's files",
         level: "enforced",
       },
       {
         name: "static",
-        title: "the static environment's files",
         level: "enforced",
+      },
+    ],
+    environments: [
+      {
+        name: "src",
+        kind: "src",
+        title: "the src environment's files",
+      },
+      {
+        name: "tests",
+        kind: "tests",
+        title: "the tests environment's files",
+      },
+      {
+        name: "bin",
+        kind: "bin",
+        title: "the bin environment's files",
+      },
+      {
+        name: "scripts",
+        kind: "scripts",
+        title: "the scripts environment's files",
+      },
+      {
+        name: "tooling",
+        kind: "tooling",
+        title: "the tooling environment's files",
+      },
+      {
+        name: "data",
+        kind: "data",
+        title: "the data environment's files",
+      },
+      {
+        name: "static",
+        kind: "static",
+        title: "the static environment's files",
       },
     ],
     languages: [

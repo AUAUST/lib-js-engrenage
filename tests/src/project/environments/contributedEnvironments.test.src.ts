@@ -15,6 +15,8 @@ import {
   type Extension,
 } from "#project/config/index";
 import {
+  getOptionsKey,
+  listEnvironmentEntries,
   readEnvironment,
   readInputDirs,
   resolveEnvironmentDirs,
@@ -94,13 +96,19 @@ function createLiquid(owns: readonly string[] = []): Extension {
       },
     },
     contributes: {
-      environments: [
+      environmentKinds: [
         {
           name: "liquid",
-          title: "the Liquid templates",
           level: "described",
           structure: "roles",
           imports: [],
+        },
+      ],
+      environments: [
+        {
+          name: "liquid",
+          kind: "liquid",
+          title: "the Liquid templates",
           owns,
         },
       ],
@@ -149,13 +157,19 @@ function createWorkers(
       },
     },
     contributes: {
-      environments: [
+      environmentKinds: [
         {
           name: "workers",
-          title: "the workers",
           level,
           structure: "domains",
           code: "private",
+        },
+      ],
+      environments: [
+        {
+          name: "workers",
+          kind: "workers",
+          title: "the workers",
         },
       ],
     },
@@ -345,5 +359,89 @@ describe("contributed environments", () => {
     expect((await readEnvironment(config, "workers")).dirs).toEqual([
       "workers",
     ]);
+  });
+
+  test("list an environment of a contributed kind under its own config key", async () => {
+    const site: Extension = {
+      name: "fixture/site",
+      owns: {
+        keys: {
+          "site": {
+            load() {
+              return Promise.resolve(liquidSection);
+            },
+          },
+          "site.options": {
+            input: "site",
+            load() {
+              return Promise.resolve(liquidOptionsSection);
+            },
+          },
+        },
+      },
+      contributes: {
+        environments: [
+          {
+            name: "site",
+            kind: "src",
+            title: "the site",
+          },
+        ],
+      },
+    };
+
+    const config = createWorkersConfig(site, {
+      site: { dirs: ["web"] },
+    });
+
+    const environments = await listEnvironmentEntries(config);
+
+    const listed = environments.find(({ entry }) => entry.name === "site");
+
+    expect(listed?.kind).toMatchObject({
+      name: "src",
+      level: "enforced",
+      structure: "domains",
+    });
+
+    const key = listed === undefined ? undefined : getOptionsKey(listed);
+
+    expect(key).toBe("site.options");
+
+    const claims = await config.resolve("environments.claims");
+
+    expect(claims.site?.dirs).toEqual(["web"]);
+  });
+
+  test("fail on a kind two extensions contribute", () => {
+    expect(() => {
+      return createWorkersConfig({
+        name: "fixture/twin",
+        contributes: {
+          environmentKinds: [{ name: "src", level: "described" }],
+        },
+      });
+    }).toThrow(
+      'Slot "environmentKinds" has two entries named "src", from project/environments and fixture/twin',
+    );
+  });
+
+  test("fail on an environment naming a kind no extension contributes", async () => {
+    const config = createWorkersConfig({
+      name: "fixture/nope",
+      contributes: {
+        environments: [
+          {
+            name: "nope",
+            kind: "nope",
+            title: "nothing",
+          },
+        ],
+      },
+    });
+
+    await expect(listEnvironmentEntries(config)).rejects.toThrow(
+      'Environment "nope" names the kind "nope", which no active extension contributes',
+    );
   });
 });

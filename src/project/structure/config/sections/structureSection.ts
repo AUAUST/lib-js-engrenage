@@ -242,8 +242,8 @@ export const structureSection = declareSection({
 
     const structured = await Promise.all(
       environments
-        .filter(({ structure }) => structure !== undefined)
-        .map(async ({ name }): Promise<StructuredEnvironment> => {
+        .filter(({ kind }) => kind.structure !== undefined)
+        .map(async ({ entry: { name } }): Promise<StructuredEnvironment> => {
           return {
             name,
             environment: await readEnvironment(config, name),

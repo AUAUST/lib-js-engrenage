@@ -8,6 +8,7 @@ import {
   type ConfigContext,
   type ConfigResolver,
 } from "#project/config/index";
+import { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 import { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 import {
   resolveTsconfig,
@@ -16,7 +17,7 @@ import {
   type TsconfigKey,
 } from "#project/tsconfig/index";
 import type { Resolver } from "#foundation/options/index";
-import type { EnvironmentEntry } from "#project/environments/ports/EnvironmentEntry";
+import type { ContributedEnvironmentEntry } from "#project/environments/types/ContributedEnvironmentEntry";
 import type { File } from "#types/File";
 
 // @debt the check covers `enabled` only, so the rest of the tsconfig option a contributed environment resolves is trusted unchecked
@@ -28,9 +29,9 @@ const tsconfigOption = object({
 
 async function readTsconfigOption(
   config: Resolver<ConfigContext>,
-  entry: EnvironmentEntry,
+  environment: ContributedEnvironmentEntry,
 ): Promise<readonly [string, ResolvedEnvironmentTsconfigOption]> {
-  const key = getOptionsKey(entry);
+  const key = getOptionsKey(environment);
 
   const option = await config.resolve(key);
 
@@ -40,23 +41,20 @@ async function readTsconfigOption(
     );
   }
 
-  return [entry.name, option.tsconfig];
+  return [environment.entry.name, option.tsconfig];
 }
 
 export async function resolveEnvironmentTsconfig(
   config: ConfigResolver,
   key: TsconfigKey,
 ): Promise<ResolvedEnvironmentTsconfig> {
-  const contributions = await config.context.registry.contributions(
-    "environments",
-    config,
-  );
+  const environments = await listEnvironmentEntries(config);
 
   const [groups, tests] = await Promise.all([
     Promise.all(
-      contributions
-        .filter(({ entry }) => entry.tsconfig === true)
-        .map(({ entry }) => readTsconfigOption(config, entry)),
+      environments
+        .filter(({ kind }) => kind.tsconfig === true)
+        .map((environment) => readTsconfigOption(config, environment)),
     ),
     config.resolve("tests.options"),
   ]);

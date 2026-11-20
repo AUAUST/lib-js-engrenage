@@ -12,6 +12,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { environmentKindFields } from "#batiment/environments/constants";
 import { unmanagedTsconfig } from "#project/tsconfig/constants";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -76,16 +77,18 @@ export const sourceTestsVariant = ".src";
 export const distTestsVariant = ".dist";
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const environmentKindEntry: StandardSchemaV1 = looseObject({
+  ...environmentKindFields,
+  tsconfig: optional(boolean()),
+  code: optional(picklist(["published", "private"])),
+});
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const environmentEntry: StandardSchemaV1 = looseObject({
   name: string(),
+  kind: string(),
   title: string(),
-  level: picklist(["foreign", "described", "enforced"]),
-  structure: optional(picklist(["domains", "roles"])),
-  consumesSource: optional(boolean()),
-  imports: optional(array(string())),
-  tsconfig: optional(boolean()),
   owns: optional(array(string())),
-  code: optional(picklist(["published", "private"])),
 });
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type

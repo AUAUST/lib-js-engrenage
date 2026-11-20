@@ -7,7 +7,7 @@ import {
   sourceEnvironment,
 } from "#project/structure/constants";
 import { renderProjectMapRoles } from "#project/structure/utils/renderProjectMapRoles";
-import type { EnvironmentEntry } from "#project/environments/index";
+import type { ContributedEnvironmentEntry } from "#project/environments/index";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
@@ -29,6 +29,7 @@ function renderCell(
   category: ImportCategory,
   grants: ImportGrants,
 ): string {
+  // @debt the data column is found by the environment name `data`, while grants tell data apart by kind, so an environment of the data kind under another name renders as allowed
   const forbidden = category === dataEnvironment
     ? grants.data.includes(name)
     : grants.environments[name]?.includes(category) === true;
@@ -55,14 +56,14 @@ function renderCell(
 }
 
 function listCategories(
-  environments: readonly EnvironmentEntry[],
+  environments: readonly ContributedEnvironmentEntry[],
 ): readonly (readonly [ImportCategory, string])[] {
   return [
     ["public-entries", importCategories["public-entries"]],
     ["internal-aliases", importCategories["internal-aliases"]],
     ...environments
-      .filter(({ name }) => name !== sourceEnvironment)
-      .map(({ name, title }) => [name, title] as const),
+      .filter(({ kind }) => kind.name !== sourceEnvironment)
+      .map(({ entry }) => [entry.name, entry.title] as const),
     ["dist-artefacts", importCategories["dist-artefacts"]],
   ];
 }
@@ -76,7 +77,7 @@ export function renderProjectMap({
   directory,
 }: {
   structure: ResolvedStructure;
-  environments: readonly EnvironmentEntry[];
+  environments: readonly ContributedEnvironmentEntry[];
   grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;

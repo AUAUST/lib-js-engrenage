@@ -6,6 +6,6 @@ export async function listTsconfigEnvironments(
   const environments = await config.resolve("environments");
 
   return environments
-    .filter(({ tsconfig }) => tsconfig === true)
-    .map(({ name }) => name);
+    .filter(({ kind }) => kind.tsconfig === true)
+    .map(({ entry }) => entry.name);
 }

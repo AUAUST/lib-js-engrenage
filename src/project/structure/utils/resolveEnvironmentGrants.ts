@@ -4,37 +4,53 @@ import {
   dataEnvironment,
   sourceEnvironment,
 } from "#project/structure/constants";
-import type { EnvironmentEntry } from "#project/environments/index";
+import type { ContributedEnvironmentEntry } from "#project/environments/index";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export function resolveEnvironmentGrants(
   published: boolean,
-  environments: readonly EnvironmentEntry[],
+  environments: readonly ContributedEnvironmentEntry[],
 ): Pick<
   ImportGrants,
   "environments" | "data" | "elements" | "consumers" | "variants"
 > {
-  const categories = environments
-    .map(({ name }) => name)
-    .filter((name) => name !== sourceEnvironment);
+  const categories = environments.filter(({ kind }) => {
+    return kind.name !== sourceEnvironment;
+  });
 
-  const forbidden = environments.map(({ name, imports = [] }) => {
+  const dataCategories = new Set(
+    environments
+      .filter(({ kind }) => kind.name === dataEnvironment)
+      .map(({ entry }) => entry.name),
+  );
+
+  const forbidden = environments.map(({ entry, kind }) => {
     const granted = new Set([
-      name,
-      ...imports,
-      ...(name === sourceEnvironment && !published ? [dataEnvironment] : []),
+      ...(kind.imports ?? []),
+      ...(kind.name === sourceEnvironment && !published
+        ? [dataEnvironment]
+        : []),
     ]);
 
     return [
-      name,
-      freeze(categories.filter((category) => !granted.has(category))),
+      entry.name,
+      freeze(
+        categories
+          .filter((category) => {
+            return (
+              category.entry.name !== entry.name &&
+              !granted.has(category.kind.name)
+            );
+          })
+          .map((category) => category.entry.name),
+      ),
     ] as const;
   });
 
   const consumers = freeze(
     environments
-      .filter(({ consumesSource }) => consumesSource === true)
-      .map(({ name }) => name),
+      .filter(({ kind }) => kind.consumesSource === true)
+      .map(({ entry }) => entry.name),
   );
 
   return freeze({
@@ -44,7 +60,7 @@ export function resolveEnvironmentGrants(
           return [
             name,
             freeze(
-              categories.filter((category) => category !== dataEnvironment),
+              categories.filter((category) => !dataCategories.has(category)),
             ),
           ] as const;
         }),
@@ -52,13 +68,15 @@ export function resolveEnvironmentGrants(
     ),
     data: freeze(
       forbidden
-        .filter(([, categories]) => categories.includes(dataEnvironment))
+        .filter(([, categories]) => {
+          return categories.some((category) => dataCategories.has(category));
+        })
         .map(([name]) => name),
     ),
     elements: freeze(
       environments
-        .filter(({ structure }) => structure === "domains")
-        .map(({ name }) => name),
+        .filter(({ kind }) => kind.structure === "domains")
+        .map(({ entry }) => entry.name),
     ),
     consumers,
     variants: published

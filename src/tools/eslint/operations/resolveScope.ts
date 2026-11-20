@@ -30,8 +30,8 @@ function shippedDirs(
   code: "published" | "private",
 ): Globs {
   return filesIn(
-    flatMap(listEnvironments(sources), ({ entry, environment }) => {
-      return entry.code === code ? environment.dirs : [];
+    flatMap(listEnvironments(sources), ({ kind, environment }) => {
+      return kind.code === code ? environment.dirs : [];
     }),
     anyFile,
   );
@@ -62,8 +62,8 @@ function resolveScopeReference(
   switch (reference) {
     case "files.code": {
       return [
-        ...flatMap(listEnvironments(sources), ({ entry, environment }) => {
-          return entry.level === "enforced" ? (environment.globs ?? []) : [];
+        ...flatMap(listEnvironments(sources), ({ kind, environment }) => {
+          return kind.level === "enforced" ? (environment.globs ?? []) : [];
         }),
         ...workspaceGlobs(sources),
       ];

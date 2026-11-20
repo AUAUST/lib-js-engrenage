@@ -3,6 +3,7 @@ import { array, is, object, optional, string, union } from "valibot";
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
+import { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 import { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 import { readInputDirs } from "#project/environments/utils/readInputDirs";
 import type { ConfigResolver } from "#project/config/index";
@@ -30,14 +31,13 @@ export const environmentClaimsSection = declareSection({
     _input,
     config: ConfigResolver,
   ): Promise<Readonly<Record<string, EnvironmentClaim>>> {
-    const contributions = await config.context.registry.contributions(
-      "environments",
-      config,
-    );
+    const environments = await listEnvironmentEntries(config);
 
     const claims = await Promise.all(
-      contributions.map(async ({ entry }) => {
-        const input = await config.input(getOptionsKey(entry));
+      environments.map(async (environment) => {
+        const { entry } = environment;
+
+        const input = await config.input(getOptionsKey(environment));
 
         const dirs = readInputDirs(input);
 

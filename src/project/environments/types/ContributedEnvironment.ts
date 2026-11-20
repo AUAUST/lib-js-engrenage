@@ -1,7 +1,6 @@
-import type { EnvironmentEntry } from "#project/environments/ports/EnvironmentEntry";
 import type { ResolvedEnvironment } from "#project/environments/ports/ResolvedEnvironment";
+import type { ContributedEnvironmentEntry } from "#project/environments/types/ContributedEnvironmentEntry";
 
-export interface ContributedEnvironment {
-  readonly entry: EnvironmentEntry;
+export interface ContributedEnvironment extends ContributedEnvironmentEntry {
   readonly environment: ResolvedEnvironment;
 }

@@ -10,6 +10,7 @@ export { readInputDirs } from "#project/environments/utils/readInputDirs";
 
 // @barrel ports
 export type * from "#project/environments/ports/EnvironmentEntry";
+export type * from "#project/environments/ports/EnvironmentKindEntry";
 export type * from "#project/environments/ports/LanguageEntry";
 export type * from "#project/environments/ports/ResolvedEnvironment";
 // @end
@@ -18,6 +19,7 @@ export type * from "#project/environments/ports/ResolvedEnvironment";
 export type * from "#project/environments/types/AliasesInput";
 export type * from "#project/environments/types/BinInput";
 export type * from "#project/environments/types/ContributedEnvironment";
+export type * from "#project/environments/types/ContributedEnvironmentEntry";
 export type * from "#project/environments/types/DataInput";
 export type * from "#project/environments/types/DefineContext";
 export type * from "#project/environments/types/DefineInput";
@@ -58,6 +60,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
 export { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
+export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
