@@ -37,7 +37,7 @@ Leave the checkout on that branch, never its default branch.
 ## Review and commit
 
 - **Review.** Read the diff with `git -C <checkout> diff` against the dispatch base.
-- **Commit.** `worktree-dispatch.md` › Committing work without its steps for an agent in a worktree: no records set-aside, cherry-pick, apply, log copy or worktree removal. Run every git command with `git -C <checkout>`, staging by path; close only that repository's issues from it.
+- **Commit.** `worktree-dispatch.md` › Committing work without its steps for an agent in a worktree: no record stash, cherry-pick, apply, log copy or worktree removal. Run every git command with `git -C <checkout>`, staging by path; close only that repository's issues from it.
 
 ## Holding and dropping
 

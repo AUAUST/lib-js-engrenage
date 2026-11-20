@@ -95,7 +95,7 @@ In the main session, weighing options or examining material for contradictions, 
 
 ### Budget levels
 
-A dispatch brief's `Budget: <level>` line, after its other `<Name>:` lines, sets how far its receiver digs; a main session has no level. No level licenses sprawling: work deeper than one agent's level is iterated across fresh agents, each taking over from its predecessor's handoff. A level bounds how far an agent digs, never how much work its brief hands over: work too large for one agent is split before dispatch.
+A dispatch brief's `Budget: <level>` line, after its other `<Name>:` lines, sets how far its receiver digs; a main session has no level. No level licenses sprawling or sizes the work handed over: work deeper than one agent's level is iterated across fresh agents, each taking over from its predecessor's handoff, and work too large for one agent is split before dispatch.
 
 | Level      | Expected depth                                                                                                      | Default for                                       |
 | ---------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |

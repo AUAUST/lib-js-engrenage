@@ -105,7 +105,7 @@ Read this file once a request's scope is clear: it holds the issue draft the wor
 
 ## Growing scope
 
-When the work needs a design several tasks share, or several ordered tasks with a design still unsettled, keep clarifying it with the user, then leave a backlog entry needing planning, holding what was settled and found. Meanwhile, keep dispatching the groundwork and fixes found on the way, so the plan holds no trivial fixes.
+When the work needs several ordered tasks or a design several tasks share, keep clarifying it with the user, then leave a backlog entry needing planning, holding what was settled and found. Meanwhile, keep dispatching the groundwork and fixes found on the way, so the plan holds no trivial fixes.
 
 Read this file then, which replaces that backlog entry with a plan draft:
 
@@ -126,7 +126,7 @@ Write for a reader without deep knowledge of the codebase:
 When the user asks to report back with split handoffs, write as chat handoffs:
 
 - One per issue, or per group of closely related bugs, ready for a debugger: neither one per small bug nor unrelated bugs together.
-- One per clearly specified task of one agent's worth (issue-drafts rule › Size), ready for a worker; a larger task as one per part of its split.
+- One per clearly specified task, ready for a worker.
 - One for a planner: what was discussed, the goals, implications and findings.
 
 ## Agent limits

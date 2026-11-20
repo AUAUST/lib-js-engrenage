@@ -89,7 +89,7 @@ Before the first `walk check`, and again after each compaction, read this file: 
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then its `Budget:` line, then the checkpoint commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
-- Handle a budget stop by Analysis › Budget levels: integrate or review its work as a completion's, commit it as a handover commit (§Commit), then dispatch the issue to a new agent once `walk check` reports it ready, briefed as the first with the checkpoint commits, the handover commit among them, plus the stopped agent's progress and the gaps and leaf findings of that review instead of a resume.
+- Handle a budget stop by Analysis › Budget levels: integrate or review its work as a completion's, commit it as a handover commit (§Commit), then dispatch the successor once `walk check` reports the issue ready, briefed with the handover commit among its checkpoint commits and that review's leaf findings among its gaps.
 - Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 
 ## Integration
@@ -145,7 +145,7 @@ When a segment or a nested plan closes and at the walk's end:
 
 1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start.
 2. When the merger reports findings or agents declined leaf findings since the previous review run, brief a new debugger with them and handle the outcome by §After a debugger; otherwise dispatch no debugger.
-3. Commit the records, the merger's included, with the debugger's fix, or alone as the flush the boundary calls for (git rules › Commits) when no debugger ran or it fixed nothing. At the walk's end, unless the debugger wrote an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
+3. Commit the backlog entries the merger added with the debugger's fix, or alone when no debugger ran or it fixed nothing; its other records follow git rules › Commits. At the walk's end, unless the debugger wrote an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
 4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
 
 In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cross-repository.md` › Boundary reviews.
@@ -195,7 +195,7 @@ Reshape around each set-aside issue once per settlement attempt: run it again on
 Every turn re-reads your whole context, and a long walk outgrows it.
 
 - Read only `walk check` output and agent reports, plus the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
-- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's records set-aside with its cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
+- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's record stash, cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.
 

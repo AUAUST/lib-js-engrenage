@@ -109,4 +109,5 @@
 - Claude Code worktree isolation: heredocs writing scratch and bin files, naming no git — refused as unverifiable; wrote each file through the write tool
 - zsh glob: grep --include=*.ts over repo root — "no matches found" from zsh glob expansion — re-ran with quoted patterns and -e flags
 - zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
-- Claude Code rm safety check: `rm $P` on the records patch from `git rev-parse --git-path` — refused as unresolvable target; kept the patch in the scratchpad
+- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
+- instruction review: the user requests behind past `brain:` commits — no record keeps them; parsed session transcripts under `~/.claude/projects` by hand
