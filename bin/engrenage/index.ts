@@ -1,6 +1,7 @@
 import { defineGroup } from "#workflows/cli/index";
 
 import agents from "#bin/engrenage/agents/index";
+import batiment from "#bin/engrenage/batiment/index";
 import debt from "#bin/engrenage/debt";
 import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";
@@ -16,7 +17,6 @@ import pnpm from "#bin/engrenage/pnpm/index";
 import prettier from "#bin/engrenage/prettier";
 import prettierAll from "#bin/engrenage/prettierAll";
 import prettierCheck from "#bin/engrenage/prettierCheck";
-import structure from "#bin/engrenage/structure";
 import sync from "#bin/engrenage/sync";
 import tsc from "#bin/engrenage/tsc";
 import tscDist from "#bin/engrenage/tscDist";
@@ -38,7 +38,7 @@ export default defineGroup({
   commands: {
     "init": init,
     "sync": sync,
-    "structure": structure,
+    "batiment": batiment,
     "gate": gate,
     "planning": planning,
     "debt": debt,

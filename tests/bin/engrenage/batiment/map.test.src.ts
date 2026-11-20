@@ -4,7 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import structure from "#bin/engrenage/structure";
+import map from "#bin/engrenage/batiment/map";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -32,13 +32,13 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-describe("engrenage structure", () => {
+describe("engrenage batiment map", () => {
   test("prints each environment as the project map's tree, with classification details", async () => {
     createProject(
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." } } } } }',
     );
 
-    const { messages } = await runDefinition(structure);
+    const { messages } = await runDefinition(map);
 
     expect(messages.slice(0, 3)).toStrictEqual([
       {
@@ -62,7 +62,7 @@ describe("engrenage structure", () => {
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    const { warnings } = await runDefinition(structure, "--check");
+    const { warnings } = await runDefinition(map, "--check");
 
     expect(warnings).toContain(
       "src/feature has no purpose: set one on its `domains` entry.",
@@ -76,7 +76,7 @@ describe("engrenage structure", () => {
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',
     );
 
-    const { warnings } = await runDefinition(structure, "--check");
+    const { warnings } = await runDefinition(map, "--check");
 
     expect(warnings).toStrictEqual([]);
   });
@@ -84,7 +84,7 @@ describe("engrenage structure", () => {
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 
-    await runDefinition(structure, "--check");
+    await runDefinition(map, "--check");
 
     expect(process.exitCode).toBe(1);
   });
@@ -92,7 +92,7 @@ describe("engrenage structure", () => {
   test("passes the check on the same directory under loose", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await runDefinition(structure, "--check");
+    await runDefinition(map, "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -109,7 +109,7 @@ describe("engrenage structure", () => {
         ...extra,
       });
 
-      await runDefinition(structure, "--check");
+      await runDefinition(map, "--check");
 
       expect(process.exitCode).toBe(exitCode);
     },
@@ -121,7 +121,7 @@ describe("engrenage structure", () => {
       "tests/src/ghost/y.test.ts": "",
     });
 
-    await runDefinition(structure, "--check");
+    await runDefinition(map, "--check");
 
     expect(process.exitCode).toBe(1);
   });

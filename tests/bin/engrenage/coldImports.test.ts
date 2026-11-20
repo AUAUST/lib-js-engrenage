@@ -41,7 +41,8 @@ test(
         "--import",
         `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
         getExecutable(),
-        "structure",
+        "batiment",
+        "map",
       ],
       { cwd: project.root },
     );

@@ -4,7 +4,7 @@ Test infrastructure and coverage gaps.
 
 ## 1. Test infrastructure gaps
 
-- sites: `src/project/build/operations/createEmittedManifest.ts:25`, `tests/scripts/codegen/generateApiDeclarations.test.src.ts:24`, `tests/setup.ts:15`, `tests/bin/engrenage/structure.test.src.ts:36`, `tests/src/project/config/resolveListOption.test.src.ts:1`, `tests/utils/binaryTimeout.ts:1`
+- sites: `src/project/build/operations/createEmittedManifest.ts:25`, `tests/scripts/codegen/generateApiDeclarations.test.src.ts:24`, `tests/setup.ts:15`, `tests/bin/engrenage/batiment/map.test.src.ts:36`, `tests/src/project/config/resolveListOption.test.src.ts:1`, `tests/utils/binaryTimeout.ts:1`
 - why: tsdown and Vite hooks untested, no real build with `clean: "emitted"`; a bare timeout beside `binaryTimeout`; every warning silenced; structure output untested; `foundation/options` tested from `project/config`'s mirror; a comment below `binaryTimeout` explains instead of naming.
 - want: a build-level test; one named timeout scale; an owned logger so tests silence only expected warnings; structure test on its report; options test in its mirror; a name carrying the explanation.
 

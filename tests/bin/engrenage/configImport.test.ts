@@ -18,9 +18,13 @@ test(
       "engrenage.config.ts": 'enum Unused {\n  Value = "value",\n}\n\nexport default { src: { baseline: "2026-10" } };\n',
     });
 
-    const failure = run(process.execPath, [getExecutable(), "structure"], {
-      cwd: project.root,
-    });
+    const failure = run(
+      process.execPath,
+      [getExecutable(), "batiment", "map"],
+      {
+        cwd: project.root,
+      },
+    );
 
     await expect(failure).rejects.toMatchObject({
       stderr: expect.stringContaining(

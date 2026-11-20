@@ -82,3 +82,7 @@
 - worktree isolation: `git status` chained after `pnpm engrenage sync` with `&&` — refused as unverifiable; ran it alone
 - grep is ugrep: `grep -o` with `.{0,1800}` context on a minified binary dump — ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`
 - `git reset --hard HEAD` to redo a `cherry-pick -n`: auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- worktree isolation: heredoc file write, and `git commit` after `cd &&` — refused as unverifiable; used the edit tools and `git -C <worktree>` alone
+- commit gate vitest: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel — each passed alone; retried the commit

@@ -72,7 +72,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     ]);
   });
 
-  test("fails a staged import cycle under structure --check", async () => {
+  test("fails a staged import cycle under batiment map --check", async () => {
     const { project, git } = await createGateRepository();
 
     project.write("src/a.ts", 'export { b } from "./b.ts";\n');
@@ -84,14 +84,14 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       mode: "staged",
     });
 
-    expect(failures.map(({ step }) => step)).toContain("structure --check");
+    expect(failures.map(({ step }) => step)).toContain("batiment map --check");
 
     expect(
-      failures.find(({ step }) => step === "structure --check")?.output,
+      failures.find(({ step }) => step === "batiment map --check")?.output,
     ).toContain("import cycles (1)");
   });
 
-  test("fails the structure step with one line per unclassified directory under strict", async () => {
+  test("fails the batiment map step with one line per unclassified directory under strict", async () => {
     const { project, git } = await createGateRepository();
 
     project.write("tests/nowhere/a.test.ts", "export {};\n");
@@ -103,7 +103,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     });
 
     expect(
-      failures.find(({ step }) => step === "structure --check")?.output,
+      failures.find(({ step }) => step === "batiment map --check")?.output,
     ).toBe(
       "tests/nowhere  nowhere  unclassified (unknown root key)  [inferred]",
     );

@@ -11,6 +11,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/actions/structure");
+    return import("#bin/engrenage/batiment/actions/map");
   },
 });

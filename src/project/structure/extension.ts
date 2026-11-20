@@ -5,7 +5,7 @@ import type { Extension } from "#project/config/index";
  * Owns the `structure`, `structure.options`, `aliases`, `effectModules`,
  * `entities`, `environmentRoles`, `files`, `importGrants`, `importResolver` and
  * `src.exports` config keys. Contributes the project map and environment map
- * agent fillers, the project map rule files, and the `structure --check` gate
+ * agent fillers, the project map rule files, and the `batiment map --check` gate
  * step run for agents only.
  */
 export default {
@@ -143,7 +143,7 @@ export default {
     ],
     "gate.steps": [
       {
-        name: "structure --check",
+        name: "batiment map --check",
         stage: "checks",
         audience: "agents",
         async load() {
