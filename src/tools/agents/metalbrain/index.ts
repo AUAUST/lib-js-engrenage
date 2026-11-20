@@ -13,6 +13,8 @@ export { logToolCall } from "#tools/agents/metalbrain/operations/logToolCall";
 export { readBudgets } from "#tools/agents/metalbrain/operations/readBudgets";
 export { readFirstPrompt } from "#tools/agents/metalbrain/operations/readFirstPrompt";
 export { readIssuingMessage } from "#tools/agents/metalbrain/operations/readIssuingMessage";
+export { readLatestContext } from "#tools/agents/metalbrain/operations/readLatestContext";
 export { readModelFacts } from "#tools/agents/metalbrain/operations/readModelFacts";
 export { recordCallStart } from "#tools/agents/metalbrain/operations/recordCallStart";
+export { scanTranscriptTail } from "#tools/agents/metalbrain/operations/scanTranscriptTail";
 // @end

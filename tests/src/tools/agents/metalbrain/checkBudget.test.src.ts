@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+
 import { expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -15,30 +17,58 @@ const stateFile = `.ai/stats/${session}/${agent}.budget.json`;
 
 const transcriptFile = `transcripts/${session}/subagents/agent-${agent}.jsonl`;
 
-function createTranscript(prompt: string, context: number): string {
+/**
+ * A subagent transcript as Claude Code holds it at a PreToolUse: the brief, then
+ * a message spanning a thinking and a tool use entry, then its tool result,
+ * without the message issuing the tool use under way.
+ */
+function createTranscript(prompt: string, context?: number): string {
+  const message = {
+    id: "msg_1",
+    model: "claude-opus-5-5",
+    usage: {
+      input_tokens: 2,
+      cache_read_input_tokens: context === undefined ? 0 : context - 2,
+      output_tokens: 1,
+    },
+  };
+
   return [
     {
       type: "user",
       message: { role: "user", content: prompt },
     },
-    {
-      type: "assistant",
-      message: {
-        id: "msg_1",
-        model: "claude-opus-5-5",
-        content: [
+    ...(context === undefined
+      ? []
+      : [
           {
-            type: "tool_use",
-            id: "toolu_1",
-            name: "Read",
+            type: "assistant",
+            message: {
+              ...message,
+              content: [{ type: "thinking", thinking: "" }],
+            },
           },
-        ],
-        usage: {
-          input_tokens: context,
-          output_tokens: 1,
-        },
-      },
-    },
+          {
+            type: "assistant",
+            message: {
+              ...message,
+              content: [
+                {
+                  type: "tool_use",
+                  id: "toolu_1",
+                  name: "Read",
+                },
+              ],
+            },
+          },
+          {
+            type: "user",
+            message: {
+              role: "user",
+              content: [{ type: "tool_result", tool_use_id: "toolu_1" }],
+            },
+          },
+        ]),
   ]
     .map((entry) => JSON.stringify(entry))
     .join("\n");
@@ -51,8 +81,8 @@ function runCheck(project: ReturnType<typeof createTemporaryProject>) {
       transcript_path: project.resolve(`transcripts/${session}.jsonl`),
       agent_id: agent,
       agent_type: "worker",
-      tool_name: "Read",
-      tool_use_id: "toolu_1",
+      tool_name: "Bash",
+      tool_use_id: "toolu_2",
       tool_input: {},
     }),
     { root: project.root, time: 1000 },
@@ -112,4 +142,13 @@ test("a first prompt's Budget: line sets the level over the default", async () =
     budget: levels.scoped,
     warnings: [],
   });
+});
+
+test("a transcript without an assistant message yet waits for one", async () => {
+  const project = createTemporaryProject({
+    [transcriptFile]: createTranscript("Budget: scoped\n\nGo."),
+  });
+
+  expect(await runCheck(project)).toBeUndefined();
+  expect(existsSync(project.resolve(stateFile))).toBe(false);
 });

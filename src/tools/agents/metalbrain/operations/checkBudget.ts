@@ -7,7 +7,7 @@ import {
 } from "#tools/agents/metalbrain/constants";
 import { readBudgets } from "#tools/agents/metalbrain/operations/readBudgets";
 import { readFirstPrompt } from "#tools/agents/metalbrain/operations/readFirstPrompt";
-import { readIssuingMessage } from "#tools/agents/metalbrain/operations/readIssuingMessage";
+import { readLatestContext } from "#tools/agents/metalbrain/operations/readLatestContext";
 import { isBudgetLevel } from "#tools/agents/metalbrain/utils/isBudgetLevel";
 import { isMissingFile } from "#tools/agents/metalbrain/utils/isMissingFile";
 import { parseBudgetState } from "#tools/agents/metalbrain/utils/parseBudgetState";
@@ -51,13 +51,14 @@ function countThresholds(gain: number, budget: number): number {
 
 /**
  * PreToolUse, for a subagent: measures the context it gained since its first
- * call against the budget of its brief's `Budget:` level, or of `fallback`, and
- * returns a warning, logged in its budget state, each time the gain crosses the
- * budget or a further half of it.
+ * measured call, from the latest assistant message its transcript holds, against
+ * the budget of its brief's `Budget:` level, or of `fallback`, and returns a
+ * warning, logged in its budget state, each time the gain crosses the budget
+ * or a further half of it.
  */
 export function checkBudget(fallback: BudgetLevel): HookAction {
   return async (payload, { root, time }) => {
-    const { session, agent, toolUse } = payload;
+    const { session, agent } = payload;
 
     if (agent === undefined) {
       return;
@@ -65,13 +66,12 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
 
     const transcript = resolveTranscript(payload);
 
-    const found = await readIssuingMessage(transcript, toolUse);
+    // @debt measures the context up to one message late, as Claude Code at times writes the issuing message only after PreToolUse and its payload carries no context size
+    const context = await readLatestContext(transcript);
 
-    if (found === undefined) {
+    if (context === undefined) {
       return;
     }
-
-    const { context } = found.issuing;
 
     const directory = join(root, statsDirectory, session);
 
