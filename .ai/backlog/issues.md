@@ -82,3 +82,9 @@ GitHub issue drafts, checks and planning commands.
 
 - why: friction ×2: any **Planning** section counts as open, and a task for a shaper is refused without **Steps** and **Tests**.
 - want: a decision on which issues may leave **Planning** open and need no **Steps**/**Tests** (planning-contract policy).
+
+## 15. `planning walk check` lists a leaf ready that the dispatch hook refuses for its ancestors
+
+- sites: `src/tools/github/issues/contract/operations/checkIssueTree.ts:233`, `src/tools/github/issues/contract/operations/checkIssue.ts:103`
+- why: the walk checks each issue alone; dispatch also checks ancestors (a direct parent's **Questions**, any ancestor's `Drafting`). #733 was listed `Ready` under #732 holding both.
+- want: the walk applies the dispatch hook's ancestor checks, so its ready set matches what dispatch accepts.

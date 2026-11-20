@@ -80,3 +80,9 @@
 - `pnpm engrenage vitest`: a source type error under `--typecheck` — summary printed "Type Errors no errors" beside two unhandled TypeCheckErrors; read the errors section
 - oxlint binary from scratchpad: listing oxlint 1.94 native rules with `oxlint --rules` — auto mode classifier denied running the downloaded binary; read `crates/oxc_linter/src/rules.rs` at tag `oxlint_v1.94.0` through `gh api`
 - `eslint --print-config`: listing the effective rule set — needs `--flag unstable_native_nodejs_ts_config` for `eslint.config.ts`, which no instruction names; took it from `eslintFlags` in `src/tools/eslint/constants.ts`
+- worker dispatch hook: dispatched a published leaf (#733) while its parent plan (#732) was claimed with open **Questions** — refused on the ancestor's Questions and `Drafting` blocker; no instruction says a leaf waits on its plan's questions
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call a third time — "no matches found" despite the Shell section; reran without the filter
+- planning skill › Ordering: shaping a tree so a leaf dispatches while its plan has open **Questions** — no instruction says which ancestor sections and Blockers the dispatch hook checks (direct parent: all; above it: all but **Questions**, **Planning** and `Open questions`); read `checkIssueReadiness.ts` to learn it
+- `pnpm engrenage planning walk 732`: walking the tree — unknown command; the subcommand is `walk check <n>`
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
