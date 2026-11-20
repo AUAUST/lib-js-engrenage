@@ -26,6 +26,9 @@ const separators = {
   "private-domain-entry": "  ",
   "collected-role-not-public": "  ",
   "shared-specifier": "  ",
+  "workspace-in-environment": "  ",
+  "workspace-environment-name": "  ",
+  "nested-workspace": "  ",
 } as const satisfies Record<StructureDiagnosticCode, string>;
 
 function renderOrigin(origin: ValueOrigin): string {

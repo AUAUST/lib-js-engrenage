@@ -16,6 +16,8 @@ export async function reportStructure(
 
   const { verbatimModuleSyntax } = await config.resolve("typescript");
 
+  const scopes = await config.resolve("scopes");
+
   const cycles = await findImportCycles({
     root: config.context.root,
     filesystem: config.context.filesystem,
@@ -42,6 +44,7 @@ export async function reportStructure(
           files: [...unique(cycle)],
         };
       }),
+      ...scopes.diagnostics,
     ],
   };
 }

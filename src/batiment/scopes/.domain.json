@@ -1,0 +1,3 @@
+{
+  "purpose": "Build the scope tree: the root workspace, the workspaces in it and the IDs of their environments."
+}

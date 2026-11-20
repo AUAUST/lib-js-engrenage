@@ -31,6 +31,9 @@ export default async function ({
   } else {
     const aliases = await config.resolve("aliases");
 
+    // @debt the report's facts lack the scope tree, so the action resolves it again to tell its diagnostics apart from the others
+    const scopes = await config.resolve("scopes");
+
     for (const line of [
       ...renderStructure(report.facts.structure, [
         ...aliases.global,
@@ -39,6 +42,10 @@ export default async function ({
       ...renderImportCycles(report.facts.cycles),
     ]) {
       reporter.log(line);
+    }
+
+    for (const diagnostic of scopes.diagnostics) {
+      reporter.error(renderStructureDiagnostic(diagnostic));
     }
 
     for (const diagnostic of report.diagnostics) {
