@@ -92,3 +92,6 @@
 - `engrenage gate --worktree`: barrelDirective and syncDirectiveBlocks tests timed out at 5000ms — passed alone; reran the gate
 - gh api graphql: queried `AUAUST/engrenage` from the package name — repository not found; the repository is `AUAUST/lib-js-engrenage`
 - tool extension in temporary-project tests: symlinked `node_modules/eslint` alone — `resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`
+- `pnpm engrenage debt --json`: piped stdout into a JSON parse — first line is the echoed command, so parse failed; dropped line 1 and reparsed
+- gh api graphql: read issues' project `complexity` field for dispatch effort — token lacks `read:project`; dispatched at default effort
+- worker dispatch hook: dispatched #710 and #712 under AUAUST/clients-intscr-shopify#52 — refused: open **Planning** in ancestors #49 and #52, bare `#676` there resolving to the client repository; paused for the user
