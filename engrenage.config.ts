@@ -230,6 +230,7 @@ export default defineConfig({
       "./metalbrain/skills/*.md": "data/metalbrain/skills/*.md",
       "./metalbrain/shared/*.md": "data/metalbrain/shared/*.md",
       "./metalbrain/models.json": "data/metalbrain/models.json",
+      "./metalbrain/budgets.json": "data/metalbrain/budgets.json",
       "./package.json": "package.json",
       "./github/workflows/*.yml": "data/github/workflows/*.yml",
       "./tsconfig/*.json": "data/tsconfig/*.json",

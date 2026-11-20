@@ -81,6 +81,7 @@ async function readPackageSnapshot(path: File): Promise<string> {
   return JSON.stringify(await readJsonFile(path));
 }
 
+// @debt the build owns the `exports` it writes into package.json, so a hand edit drifting from `data.exports` passes `sync --check` and fails only a CI build; sync should write them
 async function assertPackageUnchanged(path: File, snapshot: string) {
   if ((await readPackageSnapshot(path)) !== snapshot) {
     throw new Error(
