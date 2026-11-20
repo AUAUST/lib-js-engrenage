@@ -10,6 +10,7 @@ import {
   type RoadmapEntry,
 } from "#tools/github/issues/contract/index";
 import { closeReasonParameters } from "#tools/github/issues/drafts/constants";
+import { localizeReferences } from "#tools/github/issues/drafts/utils/localizeReferences";
 import { toDraftReference } from "#tools/github/issues/drafts/utils/toDraftReference";
 import { toLocalStem } from "#tools/github/issues/drafts/utils/toLocalStem";
 import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsContext";
@@ -80,7 +81,7 @@ export function readIssueManifest(
     | undefined = meaning === undefined ? undefined : issueContracts[meaning];
 
   return {
-    title: issue.title,
+    title: localizeReferences(issue.title, target.repository, context),
     type: issue.type ?? null,
     labels: issue.labels,
     ...record(

@@ -72,3 +72,5 @@
 - commit gate: committing retired-rule change — pre-existing failing agent tests blocked it; left uncommitted
 - commit gate budgets: staging the backlog file — pre-existing over-budget entries 12 and 15 fail the gate
 - `pnpm engrenage vitest run`: ran one test file — `run` became a filter and 34 files ran; used `pnpm exec vitest run`
+- pnpm verifyDepsBeforeRun: running vitest after a concurrent release run in the checkout — "workspace structure has changed"; ran `pnpm install --offline --frozen-lockfile`
+- `git checkout <rev> -- <paths>`: reverting a committed file — the working file kept the committed content while the index took the old one; rewrote it from `git show <rev>:<path>`

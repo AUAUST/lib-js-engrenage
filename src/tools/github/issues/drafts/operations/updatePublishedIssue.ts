@@ -7,6 +7,7 @@ import { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFie
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
 import { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
+import { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
 
@@ -28,7 +29,12 @@ export async function updatePublishedIssue(
     {
       ...splitRepository(access.repository),
       issue_number: number,
-      title: manifest.title,
+      title: renderDraftReferences(
+        manifest.title,
+        access.repository,
+        publication.context,
+        publication.numbers,
+      ),
       body,
       ...(manifest.labels === undefined
         ? {}

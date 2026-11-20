@@ -35,6 +35,7 @@ export { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 export { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 export { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 export { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
+export { localizeReferences } from "#tools/github/issues/drafts/utils/localizeReferences";
 export { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 export { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
 export { mergeDraftBody } from "#tools/github/issues/drafts/utils/mergeDraftBody";

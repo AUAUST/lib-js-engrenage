@@ -43,17 +43,21 @@ function rewriteReference(
     );
   }
 
+  function rewrite(text: string) {
+    return replaceOutsideCode(text, /#\{[^{}\s]+\}/g, (match) => {
+      return names(match) ? to : match;
+    });
+  }
+
   visit(draft.draft.manifest, {
     Scalar(_, node) {
-      if (isString(node.value) && names(node.value)) {
-        node.value = to;
+      if (isString(node.value)) {
+        node.value = rewrite(node.value);
       }
     },
   });
 
-  draft.body = replaceOutsideCode(draft.body, /#\{[^{}\s]+\}/g, (match) => {
-    return names(match) ? to : match;
-  });
+  draft.body = rewrite(draft.body);
 }
 
 export async function createPublishedIssue(
@@ -72,6 +76,7 @@ export async function createPublishedIssue(
     "POST /repos/{owner}/{repo}/issues",
     {
       ...splitRepository(access.repository),
+      // @debt The issue is created under its raw draft title, references unrendered, until the update request that follows renders them.
       title: draft.manifest.title,
       type: draft.manifest.type,
     },

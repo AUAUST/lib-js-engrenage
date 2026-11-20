@@ -345,7 +345,9 @@ export function checkDrafts(
     const references = [
       ...(manifest === undefined ? [] : listRelations(manifest)),
       ...[
-        ...stripCode(draft.body).matchAll(/#\{[^{}\s]*\}|(?<![\w/&])#\d+\b/g),
+        ...stripCode(`${manifest?.title ?? ""}\n${draft.body}`).matchAll(
+          /#\{[^{}\s]*\}|(?<![\w/&])#\d+\b/g,
+        ),
       ].map(([match]) => match),
     ];
 

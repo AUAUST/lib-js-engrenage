@@ -1168,7 +1168,7 @@ Follows #{app.12} and #{toolkit.45}.
 - t
 `,
       ".ai/issues/new-local.draft.md": `---
-title: Local
+title: "Local after #{toolkit.new-port}, #{app.7} and \`#{app.8}\`"
 type: Task
 Nature: Feature
 blockedBy: ["#{toolkit.new-port}"]
@@ -1200,6 +1200,10 @@ Follows #{app.7}.
     );
 
     expect(findIssue(14).body).toContain("Follows #7.");
+
+    expect(findIssue(14).title).toBe(
+      "Local after AUAUST/toolkit#46, #7 and `#{app.8}`",
+    );
 
     expect(requests).toContain(
       "POST /repos/AUAUST/app/issues/14/dependencies/blocked_by",
@@ -1254,6 +1258,8 @@ See #{unknown.1}.
       "toolkit",
     ).body = "## Context\n\nAfter #186 and AUAUST/app#5.\n\n## Steps\n\n1. Do.\n\n## Tests\n\n- t";
 
+    findIssue(45, "toolkit").title = "Port after AUAUST/app#5";
+
     const root = createProject();
 
     expect(await claimIssues(await loadConfig(root), ["toolkit.45"])).toEqual([
@@ -1266,6 +1272,10 @@ See #{unknown.1}.
 
     expect(read(root, "toolkit.45.draft.md")).toContain(
       "After #{toolkit.186} and #{app.5}.",
+    );
+
+    expect(read(root, "toolkit.45.draft.md")).toContain(
+      'title: "Port after #{app.5}"',
     );
 
     expect(listBlockersWrites()).toEqual([]);
