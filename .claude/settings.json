@@ -109,5 +109,31 @@
     "pr": "",
     "sessionUrl": false
   },
-  "subagentPromptCacheTtl": "1h"
+  "subagentPromptCacheTtl": "5m",
+  "skillOverrides": {
+    "skill-creator": "off",
+    "xlsx": "off",
+    "pptx": "off",
+    "docx": "off",
+    "pdf": "off",
+    "docs": "off",
+    "built-in-browser": "off",
+    "chrome-browser": "off",
+    "computer-use": "off",
+    "deep-research": "off",
+    "import-memory": "off",
+    "morning": "off",
+    "consolidate-memory": "off",
+    "explain-usage": "off",
+    "google-workspace": "off",
+    "setup-claude": "off",
+    "dataviz": "off",
+    "artifact-design": "off",
+    "artifact-diagramming": "off",
+    "artifact-capabilities": "off",
+    "plugin-authoring": "off",
+    "run": "off",
+    "keybindings-help": "off",
+    "claude-api": "off"
+  }
 }
