@@ -3,6 +3,7 @@ import {
   checkIssue,
   createGithubClient,
   findBriefedIssue,
+  isMissingResource,
   resolveIssueCheckouts,
   type IssueAudience,
 } from "#tools/github/index";
@@ -22,6 +23,30 @@ function formatFindings(
   return `${subject} is not ready for a ${role}:\n${messages
     .map((message) => `- ${message}`)
     .join("\n")}`;
+}
+
+async function explainReadFailure(
+  error: unknown,
+  repository: string,
+  repositories: () => Promise<ReadonlyMap<string, string>>,
+) {
+  const reason = error instanceof Error ? error.message : String(error);
+
+  if (!isMissingResource(error)) {
+    return reason;
+  }
+
+  const registry = await repositories();
+
+  const registered = [...registry.values()];
+
+  const known = registered.some((name) => {
+    return name.toLowerCase() === repository.toLowerCase();
+  });
+
+  return known
+    ? reason
+    : `${reason}; \`${repository}\` is not a registered repository: ${registered.join(", ") || "none"}`;
 }
 
 async function checkBriefedIssue(
@@ -52,27 +77,37 @@ async function checkBriefedIssue(
     [],
   );
 
-  const { findings } = await checkIssue(
-    {
-      repository: issue.repository,
-      client: await createGithubClient(),
-      contractNames,
-    },
-    issue.number,
-    role,
-    {
-      dispatch: true,
-      checkouts,
-    },
-  );
+  try {
+    const { findings } = await checkIssue(
+      {
+        repository: issue.repository,
+        client: await createGithubClient(),
+        contractNames,
+      },
+      issue.number,
+      role,
+      {
+        dispatch: true,
+        checkouts,
+      },
+    );
 
-  return findings.length === 0
-    ? undefined
-    : formatFindings(
-        `#${issue.number}`,
-        role,
-        findings.map(({ message }) => message),
-      );
+    return findings.length === 0
+      ? undefined
+      : formatFindings(
+          `#${issue.number}`,
+          role,
+          findings.map(({ message }) => message),
+        );
+  } catch (error) {
+    const reason = await explainReadFailure(
+      error,
+      issue.repository,
+      repositories,
+    );
+
+    return `${issue.repository}#${issue.number} could not be checked for a ${role}: ${reason}`;
+  }
 }
 
 /**

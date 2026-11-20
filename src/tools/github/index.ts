@@ -3,6 +3,7 @@ export {
   createGithubClient,
   fetchGithubSnapshot,
   findRegisteredRepository,
+  isMissingResource,
   readGithubSnapshot,
   readOriginRepository,
   resolveRepository,

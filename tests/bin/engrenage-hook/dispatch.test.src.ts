@@ -1,3 +1,4 @@
+import { RequestError } from "@octokit/request-error";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -128,6 +129,41 @@ test("accepts a first-line CRLF brief and bare requests", async () => {
 
   expect(checkIssue).toHaveBeenCalledTimes(1);
   expect(process.stdout.write).not.toHaveBeenCalled();
+});
+
+test("denies a brief whose issue cannot be read, naming the registered repositories on a 404", async () => {
+  vi.mocked(checkIssue)
+    .mockRejectedValueOnce(
+      new RequestError("Not Found", 404, {
+        request: {
+          method: "GET",
+          url: "https://api.github.com",
+          headers: {},
+        },
+      }),
+    )
+    .mockRejectedValueOnce(new Error("token missing"));
+
+  payload = {
+    cwd: process.cwd(),
+    tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1\nContext" },
+  };
+
+  await runCheck(dispatch);
+
+  await runCheck(dispatch);
+
+  expect(process.stdout.write).toHaveBeenNthCalledWith(
+    1,
+    expect.stringMatching(
+      /o\/r#1 could not be checked for a worker: Not Found; `o\/r` is not a registered repository: /,
+    ),
+  );
+
+  expect(process.stdout.write).toHaveBeenNthCalledWith(
+    2,
+    expect.stringMatching(/"permissionDecision":"deny".*token missing"/),
+  );
 });
 
 async function installed(
