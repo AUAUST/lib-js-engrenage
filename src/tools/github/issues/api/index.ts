@@ -1,5 +1,6 @@
 // @barrel operations
 export { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+export { ensureGithubSnapshot } from "#tools/github/issues/api/operations/ensureGithubSnapshot";
 export { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGithubSnapshot";
 export { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 export { readGithubSnapshot } from "#tools/github/issues/api/operations/readGithubSnapshot";

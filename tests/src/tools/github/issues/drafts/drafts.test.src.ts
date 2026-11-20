@@ -1,7 +1,8 @@
-import { assert, describe, expect, test } from "vitest";
+import { assert, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGithubSnapshot";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { createDraft } from "#tools/github/issues/drafts/operations/createDraft";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
@@ -109,14 +110,42 @@ c
 - t
 `;
 
-async function createProject(drafts: Record<string, string>) {
+vi.mock(
+  import("#tools/github/issues/api/operations/createGithubClient"),
+  () => {
+    return {
+      createGithubClient: vi.fn(async () => {
+        return {} as never;
+      }),
+    };
+  },
+);
+
+vi.mock(
+  import("#tools/github/issues/api/operations/fetchGithubSnapshot"),
+  () => {
+    return {
+      fetchGithubSnapshot: vi.fn(async (config) => {
+        await config.context.filesystem.write(
+          ".engrenage/github.json",
+          JSON.stringify(snapshot),
+        );
+      }),
+    };
+  },
+);
+
+async function createProject(
+  drafts: Record<string, string>,
+  { withSnapshot = true }: { withSnapshot?: boolean } = {},
+) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "@auaust/app",
       type: "module",
       repository: "github:AUAUST/app",
     }),
-    ".engrenage/github.json": JSON.stringify(snapshot),
+    ...(withSnapshot && { ".engrenage/github.json": JSON.stringify(snapshot) }),
     ...drafts,
   });
 
@@ -145,6 +174,28 @@ describe("splitBodySections", () => {
 });
 
 describe("createDraft", () => {
+  test("fetches the GitHub snapshot when the project has none", async () => {
+    vi.mocked(fetchGithubSnapshot).mockClear();
+
+    const config = await createProject({}, { withSnapshot: false });
+
+    expect(await createDraft(config, "plan", {})).toBe(
+      ".ai/issues/new-plan-1.draft.md",
+    );
+
+    expect(fetchGithubSnapshot).toHaveBeenCalledTimes(1);
+  });
+
+  test("reads an existing GitHub snapshot without fetching it", async () => {
+    vi.mocked(fetchGithubSnapshot).mockClear();
+
+    const config = await createProject({});
+
+    await createDraft(config, "plan", {});
+
+    expect(fetchGithubSnapshot).not.toHaveBeenCalled();
+  });
+
   test("writes a Task's pinned fields with their options and its skeleton, listed last in the parent plan", async () => {
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan,

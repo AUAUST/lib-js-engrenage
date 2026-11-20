@@ -1,5 +1,5 @@
 import {
-  readGithubSnapshot,
+  ensureGithubSnapshot,
   resolveCurrentRepository,
 } from "#tools/github/issues/api/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -11,13 +11,10 @@ export async function resolveDraftsContext(
   const [
     { contract: contractNames, repositories },
     snapshot,
-  ] = await Promise.all([config.resolve("github"), readGithubSnapshot(config)]);
-
-  if (snapshot === undefined) {
-    throw new Error(
-      "Drafts need the GitHub snapshot: run `engrenage github fetch`",
-    );
-  }
+  ] = await Promise.all([
+    config.resolve("github"),
+    ensureGithubSnapshot(config),
+  ]);
 
   const [repository, registry] = await Promise.all([
     resolveCurrentRepository(config.context.root),
