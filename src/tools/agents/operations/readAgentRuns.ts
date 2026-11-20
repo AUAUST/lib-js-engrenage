@@ -3,9 +3,11 @@ import { join } from "node:path";
 
 import { isMissingError } from "#foundation/filesystem/index";
 import { readAgentRun } from "#tools/agents/operations/readAgentRun";
+import { parseAgentRunFile } from "#tools/agents/utils/parseAgentRunFile";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { Directory } from "#types/Directory";
 
+// @debt lists recursively to serve both the stats root and one session directory, so a run file anywhere below, such as under `starts/`, would count as a run; callers should name the level they read
 async function listRecords(directory: Directory): Promise<readonly string[]> {
   try {
     return await readdir(directory, { recursive: true });
@@ -25,7 +27,7 @@ export async function readAgentRuns(
 
   const runs = await Promise.all(
     records
-      .filter((record) => record.endsWith(".json"))
+      .filter((record) => parseAgentRunFile(record, "recorded") !== undefined)
       .map((record) => readAgentRun(join(directory, record))),
   );
 

@@ -185,3 +185,8 @@ export const defaultInstructionFiles = freeze([
 export const tableCellWords = 25;
 
 export { mainAgent } from "#tools/agents/metalbrain/constants";
+
+export const agentRunExtensions = freeze({
+  recorded: ".json",
+  running: ".running",
+} as const);

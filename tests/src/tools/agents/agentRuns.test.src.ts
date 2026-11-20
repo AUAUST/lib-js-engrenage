@@ -1,3 +1,5 @@
+import { writeFile } from "node:fs/promises";
+
 import { expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -365,20 +367,26 @@ test("finds model facts through aliases and dated ids", async () => {
   expect(findModelFact(facts, "claude-mystery-1")).toBeUndefined();
 });
 
-test("rewrites an agent's record on each stop, counting its stops", async () => {
+async function createRecordedProject() {
   const project = createTemporaryProject({ "agent.jsonl": transcript });
 
-  const directory = project.resolve(".ai/stats");
-
-  const run = {
-    runtime: "claude",
-    session: "session",
-    agent: "agent",
-    role: "worker",
-    ...summarizeAgentCalls(
-      await readClaudeTranscript(project.resolve("agent.jsonl")),
-    ),
+  return {
+    project,
+    directory: project.resolve(".ai/stats"),
+    run: {
+      runtime: "claude",
+      session: "session",
+      agent: "agent",
+      role: "worker",
+      ...summarizeAgentCalls(
+        await readClaudeTranscript(project.resolve("agent.jsonl")),
+      ),
+    },
   };
+}
+
+test("rewrites an agent's record on each stop, counting its stops", async () => {
+  const { project, directory, run } = await createRecordedProject();
 
   await writeAgentRun(directory, run);
 
@@ -389,6 +397,29 @@ test("rewrites an agent's record on each stop, counting its stops", async () => 
   ]);
 
   await expect(readAgentRuns(project.resolve("missing"))).resolves.toEqual([]);
+});
+
+test("reads only run records, never an agent's other stats files", async () => {
+  const { project, directory, run } = await createRecordedProject();
+
+  await writeAgentRun(directory, run);
+
+  await writeFile(
+    project.resolve(".ai/stats/session/agent.budget.json"),
+    JSON.stringify({ level: "scoped", warned: [] }),
+  );
+
+  const expected = [{ ...run, stops: 1 }];
+
+  await expect(readAgentRuns(directory)).resolves.toEqual(expected);
+
+  await expect(
+    readAgentRuns(project.resolve(".ai/stats/session")),
+  ).resolves.toEqual(expected);
+
+  await expect(
+    writeAgentRun(directory, { ...run, agent: "agent.budget" }),
+  ).rejects.toThrow('Invalid agent id "agent.budget"');
 });
 
 test("aggregates runs of several sessions by role, model and day", async () => {

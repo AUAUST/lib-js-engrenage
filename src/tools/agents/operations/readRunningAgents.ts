@@ -9,17 +9,18 @@ import {
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { parseAgentRunFile } from "#tools/agents/utils/parseAgentRunFile";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-
-const runningSuffix = ".running";
 
 const markerSchema = object({
   role: string(),
   transcript: string(),
 });
 
-async function listMarkers(directory: Directory): Promise<readonly string[]> {
+async function listMarkers(
+  directory: Directory,
+): Promise<readonly { file: string; agent: string }[]> {
   let files: readonly string[];
 
   try {
@@ -32,7 +33,13 @@ async function listMarkers(directory: Directory): Promise<readonly string[]> {
     throw error;
   }
 
-  return files.filter((file) => file.endsWith(runningSuffix));
+  return files
+    .map((file) => {
+      return { file, agent: parseAgentRunFile(file, "running") };
+    })
+    .filter((marker): marker is { file: string; agent: string } => {
+      return marker.agent !== undefined;
+    });
 }
 
 function parseMarker(
@@ -59,12 +66,10 @@ export async function readRunningAgents(
   const files = await listMarkers(directory);
 
   const markers = await Promise.all(
-    files.map(async (file) => {
+    files.map(async ({ file, agent }) => {
       const marker = await readMarker(resolveWithin(directory, file));
 
-      return marker === undefined
-        ? undefined
-        : { agent: file.slice(0, -runningSuffix.length), ...marker };
+      return marker === undefined ? undefined : { agent, ...marker };
     }),
   );
 

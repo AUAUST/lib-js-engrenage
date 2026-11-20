@@ -1,15 +1,23 @@
 import { resolveWithin } from "#foundation/filesystem/index";
+import { agentRunExtensions } from "#tools/agents/constants";
+import type { AgentRunState } from "#tools/agents/types/AgentRunState";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export function resolveAgentRunFile(
   directory: Directory,
   run: { session: string; agent: string },
-  state: "recorded" | "running",
+  state: AgentRunState,
 ): File {
+  if (run.agent.includes(".")) {
+    throw new Error(
+      `Invalid agent id "${run.agent}": a dot would make its run file ambiguous with the agent's other stats files`,
+    );
+  }
+
   return resolveWithin(
     directory,
     run.session,
-    `${run.agent}${state === "recorded" ? ".json" : ".running"}`,
+    `${run.agent}${agentRunExtensions[state]}`,
   );
 }
