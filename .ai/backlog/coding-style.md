@@ -24,3 +24,9 @@ Local coding conventions and linting.
 
 - why: #541's pass split: `foundation` ports and apis use `@throws` (9 sites), every other layer states "Throws…"/"Rejects…" in the summary (~50 sites).
 - want: one form in the documentation rule, then the other sites rewritten.
+
+## 5. Oxlint switch losses #557 and #558 do not count
+
+- sites: `src/tools/eslint/conventions/promises/returnAwait.ts:9`, `src/tools/eslint/conventions/stylistic/noRedundantTypes.ts:25`, `src/tools/eslint/conventions/stylistic/noUnnecessaryTypeParameters.ts:154`
+- why: on tsgolint these typed delegates lose their filters; 76 of 134 enabled `unicorn` rules lack a native Oxlint rule (1.94.0).
+- want: both counted in #557/#558 before planning a switch.

@@ -6,6 +6,7 @@ import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
+// @debt a TypeScript file name hardcoded in the language-agnostic structure model; belongs to a language port
 export const defaultIndexFile = "index.ts";
 
 export const namespaceMetadataFile = ".namespace.json";

@@ -78,3 +78,5 @@
 - planning issue check: tasks for a shaper, goal and **Planning** only — `check` requires **Steps** and **Tests** and refuses a "settle **Planning**" step; wrote only the known steps
 - worktree isolation: heredoc file writes, a binary path spelled as a glob, and `$(git log …)` in one command — refused as unverifiable; used the edit tools, literal paths and single commands
 - `pnpm engrenage vitest`: a source type error under `--typecheck` — summary printed "Type Errors no errors" beside two unhandled TypeCheckErrors; read the errors section
+- oxlint binary from scratchpad: listing oxlint 1.94 native rules with `oxlint --rules` — auto mode classifier denied running the downloaded binary; read `crates/oxc_linter/src/rules.rs` at tag `oxlint_v1.94.0` through `gh api`
+- `eslint --print-config`: listing the effective rule set — needs `--flag unstable_native_nodejs_ts_config` for `eslint.config.ts`, which no instruction names; took it from `eslintFlags` in `src/tools/eslint/constants.ts`

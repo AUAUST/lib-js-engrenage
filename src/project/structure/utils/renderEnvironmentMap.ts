@@ -29,6 +29,7 @@ export function renderEnvironmentMap({
 }): string {
   const { root } = environment;
 
+  // @debt "global roles" mixes role directories present at the root with file roles allowed there
   const globalRoles = [
     ...root.children
       .filter((child) => child.kind === "role")

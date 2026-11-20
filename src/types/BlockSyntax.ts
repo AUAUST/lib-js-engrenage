@@ -1,3 +1,4 @@
+// @debt a domain contract held as a global type; belongs to the lowest domain owning it
 /**
  * How a file format writes block markers: a marker is a whole line of `open`,
  * `@<directive>` with its arguments, then `close`. `padding` surrounds the filled
