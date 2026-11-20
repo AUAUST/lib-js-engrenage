@@ -4,9 +4,1005 @@
     "prices": "https://platform.claude.com/docs/en/about-claude/pricing",
     "limits": "https://platform.claude.com/docs/en/about-claude/models/overview"
   },
+  "schemaVersion": 1,
+  "units": {
+    "price": "USD per million tokens (MTok)",
+    "tokens": "tokens",
+    "multiplier": "unitless factor on the base input price unless stated",
+    "duration": "seconds",
+    "date": "ISO 8601 date",
+    "perThousand": "USD per 1,000 events"
+  },
+  "sources": [
+    {
+      "id": "pricing",
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "title": "Pricing",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "models",
+      "url": "https://platform.claude.com/docs/en/models/overview",
+      "title": "Models overview",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "prompt-caching",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching",
+      "title": "Prompt caching",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "context-windows",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+      "title": "Context windows",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "fast-mode",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/fast-mode",
+      "title": "Fast mode (API)",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "batch",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+      "title": "Batch processing",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "compaction-on-demand",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/compaction-on-demand",
+      "title": "Compaction on demand",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "thinking",
+      "url": "https://platform.claude.com/docs/en/build-with-claude/thinking",
+      "title": "Thinking",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "deprecations",
+      "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations",
+      "title": "Model deprecations",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "cc-costs",
+      "url": "https://code.claude.com/docs/en/costs",
+      "title": "Claude Code: manage costs",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "cc-model-config",
+      "url": "https://code.claude.com/docs/en/model-config.md",
+      "title": "Claude Code: model configuration",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "cc-prompt-caching",
+      "url": "https://code.claude.com/docs/en/prompt-caching.md",
+      "title": "Claude Code: prompt caching",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "cc-context-window",
+      "url": "https://code.claude.com/docs/en/context-window.md",
+      "title": "Claude Code: context window",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "cc-fast-mode",
+      "url": "https://code.claude.com/docs/en/fast-mode.md",
+      "title": "Claude Code: fast mode",
+      "readOn": "2026-11-20"
+    },
+    {
+      "id": "claude-api-skill",
+      "url": "bundled skill claude-api (no URL; model table cached 2026-11-03 per the skill)",
+      "title": "Bundled claude-api skill",
+      "readOn": "2026-11-20"
+    }
+  ],
+  "billing": {
+    "formulaUsd": "cost = sum over usage fields of tokens/1e6 * price (see usageFieldMap); then * dataResidencyMultiplier when usage.inference_geo is 'us'; tier chosen by usage.speed and (Haiku 5.5) prompt length.",
+    "usageFieldMap": [
+      {
+        "field": "usage.input_tokens",
+        "meaning": "Uncached input: tokens after the last cache breakpoint, not read from or written to cache",
+        "priceKey": "inputPerMTok",
+        "sourceIds": ["prompt-caching"],
+        "inferred": false
+      },
+      {
+        "field": "usage.cache_creation.ephemeral_5m_input_tokens",
+        "meaning": "Tokens written to the 5-minute cache",
+        "priceKey": "cacheWrite5mPerMTok",
+        "sourceIds": ["prompt-caching", "pricing"],
+        "inferred": false
+      },
+      {
+        "field": "usage.cache_creation.ephemeral_1h_input_tokens",
+        "meaning": "Tokens written to the 1-hour cache",
+        "priceKey": "cacheWrite1hPerMTok",
+        "sourceIds": ["prompt-caching", "pricing"],
+        "inferred": false
+      },
+      {
+        "field": "usage.cache_creation_input_tokens",
+        "meaning": "Sum of the two cache_creation values; use only as a fallback when cache_creation is absent, priced as 5m (the default TTL)",
+        "priceKey": "cacheWrite5mPerMTok",
+        "sourceIds": ["prompt-caching"],
+        "inferred": true,
+        "inferredNote": "The docs state the sum identity; the 5m fallback follows from 5m being the default TTL."
+      },
+      {
+        "field": "usage.cache_read_input_tokens",
+        "meaning": "Tokens served from cache; also covers refreshes",
+        "priceKey": "cacheReadPerMTok",
+        "sourceIds": ["prompt-caching", "pricing"],
+        "inferred": false
+      },
+      {
+        "field": "usage.output_tokens",
+        "meaning": "Generated tokens including thinking tokens, at the full thinking length even when thinking text is summarized or omitted",
+        "priceKey": "outputPerMTok",
+        "sourceIds": ["thinking", "context-windows"],
+        "inferred": false
+      },
+      {
+        "field": "usage.speed",
+        "meaning": "'fast' selects the fast tier; 'standard' the standard tier",
+        "selects": "tier.condition.usageSpeed",
+        "sourceIds": ["fast-mode"],
+        "inferred": false
+      },
+      {
+        "field": "usage.inference_geo",
+        "meaning": "'us' applies the data residency multiplier; 'global' is standard",
+        "selects": "billing.dataResidency.multiplier",
+        "sourceIds": ["pricing", "claude-api-skill"],
+        "inferred": false,
+        "unverifiedNote": "Field name is from the claude-api skill; the pricing page names only the inference_geo request parameter."
+      },
+      {
+        "field": "usage.server_tool_use.web_search_requests",
+        "meaning": "Web searches performed",
+        "price": {
+          "usdPerThousand": 10,
+          "scope": "Claude API"
+        },
+        "sourceIds": ["pricing"],
+        "inferred": false
+      },
+      {
+        "field": "usage.server_tool_use.web_fetch_requests",
+        "meaning": "Web fetches performed",
+        "price": {
+          "usdPerThousand": 0
+        },
+        "sourceIds": ["pricing"],
+        "inferred": false
+      },
+      {
+        "field": "usage.server_tool_use.code_execution_requests",
+        "meaning": "Code execution calls; not billed per call: billed by container execution time (min 5 minutes, 1,550 free hours per month per organization, then 0.05 USD per container-hour); free alongside web search/fetch 20260209+",
+        "price": null,
+        "sourceIds": ["pricing"],
+        "inferred": false,
+        "derivableFromTranscript": false
+      },
+      {
+        "field": "usage.iterations[]",
+        "meaning": "Per-iteration usage. A compaction iteration (type 'compaction') is billed like any request and reported only here; on an on-demand compaction response top-level input/output are 0, so sum across iterations. A 'fallback_message' type exists for server-side refusal fallback (billed at the fallback model's rates).",
+        "sourceIds": ["compaction-on-demand", "claude-api-skill"],
+        "inferred": false,
+        "unverifiedNote": "Exact semantics when both top-level totals and iterations are non-zero (threshold compaction, fallback) not read; the Messages API reference Usage schema could not be fetched."
+      }
+    ],
+    "totalInputTokens": {
+      "formula": "input_tokens + cache_creation_input_tokens + cache_read_input_tokens",
+      "sourceIds": ["prompt-caching"],
+      "inferred": false
+    },
+    "contextTokensUsedByRequest": {
+      "formula": "input_tokens + cache_creation_input_tokens + cache_read_input_tokens (all three count toward the window); the next request also carries this turn's output, so context for the next request is that sum + output_tokens (thinking excluded on models that strip prior thinking)",
+      "sourceIds": ["context-windows", "compaction-on-demand"],
+      "inferred": true,
+      "inferredNote": "Sum and 'add output_tokens' are stated by the docs; combining them into one next-request estimate is inferred."
+    },
+    "cacheMultipliers": {
+      "cacheWrite5m": 1.25,
+      "cacheWrite1h": 2.0,
+      "cacheReadDefault": 0.1,
+      "cacheReadExceptions": [
+        {
+          "multiplier": 0.025,
+          "models": [
+            "claude-fable-5-2",
+            "claude-mythos-5-2",
+            "claude-fable-5-1",
+            "claude-mythos-5-1"
+          ]
+        },
+        {
+          "multiplier": 0.05,
+          "models": ["claude-opus-5-5", "claude-sonnet-5-5"]
+        }
+      ],
+      "sourceIds": ["pricing", "prompt-caching"],
+      "inferred": false
+    },
+    "cacheTtl": {
+      "default": "5m",
+      "options": ["5m", "1h"],
+      "ttlSeconds": {
+        "5m": 300,
+        "1h": 3600
+      },
+      "refreshOnRead": true,
+      "refreshCost": "same as cache read price",
+      "lifetimeStartsAt": "start of the request that writes or reads the entry",
+      "breakEven": {
+        "5m": "after 1 cache read",
+        "1h": "after 2 cache reads"
+      },
+      "ordering": "Longer-TTL entries must appear before shorter-TTL entries.",
+      "lookbackWindowPositions": 20,
+      "cacheScopeNote": "Separate caches per model and per speed (fast vs standard).",
+      "sourceIds": ["prompt-caching", "pricing", "cc-prompt-caching"],
+      "inferred": false
+    },
+    "batch": {
+      "discountMultiplier": 0.5,
+      "appliesTo": ["input", "output"],
+      "stacksWithCaching": true,
+      "stacksWithDataResidency": true,
+      "fastModeSupported": false,
+      "maxOutputTokensWithBetaHeader": {
+        "tokens": 300000,
+        "header": "output-300k-2026-03-24",
+        "models": [
+          "claude-opus-5-5",
+          "claude-opus-5",
+          "claude-sonnet-5-5",
+          "claude-sonnet-5",
+          "claude-haiku-5-5",
+          "claude-opus-4-8",
+          "claude-opus-4-7",
+          "claude-opus-4-6",
+          "claude-sonnet-4-6"
+        ]
+      },
+      "explicitInputOutputPrices": "Pricing page lists batch input/output for every model, each exactly 0.5x standard (Haiku 5.5 also 0.5x for both prompt-length tiers).",
+      "cachePricesInBatch": "Not listed explicitly; 0.5x of the standard cache prices by the stacking statement.",
+      "cachePricesInBatchInferred": true,
+      "claudeCodeUsesBatch": false,
+      "sourceIds": ["pricing", "batch", "models"],
+      "inferred": false
+    },
+    "fastMode": {
+      "requestParameter": "speed: 'fast'",
+      "usageField": "usage.speed",
+      "usageValues": ["fast", "standard"],
+      "multiplierOnStandardInputOutput": 2.0,
+      "multiplierInferred": true,
+      "multiplierNote": "Fable 5.2/Mythos 5.2 16/80 vs 8/40, Opus 5.5 8/40 vs 4/20, Opus 5/4.8 10/50 vs 5/25: all exactly 2x; the docs call it 'a multiplier on standard rates' without stating 2x. The claude-api skill does say 2x for Opus 5.5.",
+      "flatAcrossContext": "Applies across the full context window, including requests over 200K input tokens.",
+      "cacheStacking": "Cache multipliers apply on top of fast pricing.",
+      "separateCache": true,
+      "batch": false,
+      "priorityTier": false,
+      "supportedModels": {
+        "general": ["claude-fable-5-2", "claude-mythos-5-2", "claude-opus-5-5"],
+        "researchPreview": ["claude-opus-5"],
+        "deprecated": [
+          {
+            "model": "claude-opus-4-8",
+            "removalDate": "2026-11-30"
+          }
+        ]
+      },
+      "fallbackBehavior": "429/529 on a fast request errors (SDK retries 429 twice by default); falling back to standard speed is a cache miss. Opus 4.6 historically ran at standard speed with usage.speed 'standard'.",
+      "claudeCode": "Claude Code /fast; subscription plans pay fast mode from usage credits only; Console/API orgs pay per token; Console can group by Speed.",
+      "sourceIds": ["fast-mode", "pricing", "cc-fast-mode"]
+    },
+    "dataResidency": {
+      "usageField": "usage.inference_geo",
+      "multiplier": 1.1,
+      "appliesTo": "all token categories incl. cache writes and reads",
+      "models": "Claude 4.6 and later; earlier models reject the parameter with a 400",
+      "platforms": "Claude API, Claude Platform on AWS, Claude Models on Google Cloud (Anthropic managed), Foundry US Data Zone Standard; not Bedrock / Google managed",
+      "claudeCodeBehavior": "Claude Code multiplies the list price of a response billed at the residency rate by 1.1 in its session cost figure.",
+      "sourceIds": ["pricing", "cc-costs"],
+      "inferred": false
+    },
+    "longContext": {
+      "rule": "Claude 4.6 and later models except Haiku 5.5 bill the full 1M window at standard per-token prices (no premium above 200K). Haiku 5.5 is priced by prompt length (over 100,000 prompt tokens costs 5x the base rates; see its tiers).",
+      "betaHeaderRequired": false,
+      "sourceIds": ["pricing", "context-windows"],
+      "inferred": false
+    },
+    "thinking": {
+      "billedAs": "output tokens at the full thinking length generated, not the summary shown",
+      "displayAffectsBilling": false,
+      "countsTowardMaxTokens": true,
+      "priorTurnThinking": "Models that keep prior thinking (Opus 4.5+, Sonnet 4.6+, Haiku 5.5, Fable, Mythos): kept blocks are re-sent and billed as input (or cache read) and count toward the window. Earlier models strip prior-turn thinking automatically.",
+      "progressUpdates": "Between-tool-call progress notes count toward output_tokens at full length, not the summary length.",
+      "sourceIds": ["thinking", "context-windows"],
+      "inferred": false
+    },
+    "toolUseOverheadTokens": {
+      "note": "System prompt tokens the API adds when tools are present (tool_choice auto/none; any/tool in parentheses).",
+      "byModel": {
+        "claude-opus-5-5": {
+          "autoNone": 286
+        },
+        "claude-opus-5": {
+          "autoNone": 286,
+          "anyTool": 406
+        },
+        "claude-opus-4-8": {
+          "autoNone": 290,
+          "anyTool": 410
+        },
+        "claude-opus-4-7": {
+          "autoNone": 675,
+          "anyTool": 804
+        },
+        "claude-opus-4-6": {
+          "autoNone": 497,
+          "anyTool": 589
+        },
+        "claude-opus-4-5-20251101": {
+          "autoNone": 496,
+          "anyTool": 588
+        },
+        "claude-sonnet-5-5": {
+          "autoNone": 286
+        },
+        "claude-sonnet-5": {
+          "autoNone": 354,
+          "anyTool": 474
+        },
+        "claude-sonnet-4-6": {
+          "autoNone": 497,
+          "anyTool": 589
+        },
+        "claude-sonnet-4-5-20250929": {
+          "autoNone": 496,
+          "anyTool": 588
+        },
+        "claude-haiku-5-5": {
+          "autoNone": 286,
+          "anyTool": 406
+        },
+        "claude-haiku-4-5-20251001": {
+          "autoNone": 496,
+          "anyTool": 588
+        }
+      },
+      "extraTokens": {
+        "bashTool": {
+          "claude-4.7-and-later": 325,
+          "claude-4.6-and-earlier": 244
+        },
+        "textEditor_20250728": {
+          "claude-4.7-and-later": 974,
+          "claude-4.6-and-earlier": 745
+        }
+      },
+      "sourceIds": ["pricing"],
+      "inferred": false
+    },
+    "tokenizer": {
+      "note": "Claude 4.7 and later (and Mythos Preview) use a newer tokenizer producing about 30% more tokens for the same text; Sonnet 4.6 and earlier use the previous one. Do not compare token counts across the boundary.",
+      "sourceIds": ["pricing"],
+      "inferred": false
+    },
+    "subscriptionNote": "On Pro/Max/Ultra/Team/Enterprise, token usage is inside the plan; Claude Code's dollar figure is a local list-price estimate (unless a managed modelPricing table applies). Fast mode and over-plan usage bill as usage credits.",
+    "subscriptionNoteSourceIds": ["cc-costs", "cc-fast-mode"]
+  },
+  "claudeCode": {
+    "modelAliases": {
+      "anthropicApi": {
+        "default": "claude-opus-5-5",
+        "best": "claude-opus-5-5",
+        "opus": "claude-opus-5-5",
+        "sonnet": "claude-sonnet-5-5",
+        "haiku": "claude-haiku-5-5",
+        "fable": "claude-fable-5-2",
+        "opusplan": "opus in plan mode, sonnet otherwise"
+      },
+      "claudeAppsGatewayFable": "claude-fable-5",
+      "otherProviders": {
+        "Claude Platform on AWS": {
+          "opus": "Opus 5.5",
+          "sonnet": "Sonnet 4.6",
+          "haiku": "Haiku 4.5"
+        },
+        "Claude Models on Google Cloud (Anthropic managed)": {
+          "opus": "Opus 5.5",
+          "sonnet": "Sonnet 5.5",
+          "haiku": "Haiku 4.5"
+        },
+        "Amazon Bedrock / Google Cloud Agent Platform": {
+          "opus": "Opus 5.5",
+          "sonnet": "Sonnet 4.5",
+          "haiku": "Haiku 4.5"
+        },
+        "Microsoft Foundry": {
+          "opus": "Opus 4.6",
+          "sonnet": "Sonnet 4.5",
+          "haiku": "Haiku 4.5",
+          "default": "Sonnet 4.5"
+        }
+      },
+      "versionHistory": [
+        {
+          "claudeCodeVersion": "2.1.321",
+          "change": "fable -> Fable 5.2; best -> same as opus"
+        },
+        {
+          "claudeCodeVersion": "2.1.293",
+          "change": "haiku -> Haiku 5.5 (API)"
+        },
+        {
+          "claudeCodeVersion": "2.1.284",
+          "change": "sonnet -> Sonnet 5.5 (API)"
+        },
+        {
+          "claudeCodeVersion": "2.1.280",
+          "change": "opus -> Opus 5.5"
+        },
+        {
+          "claudeCodeVersion": "2.1.257",
+          "change": "fable -> Fable 5.1"
+        },
+        {
+          "claudeCodeVersion": "2.1.219",
+          "change": "opus -> Opus 5"
+        },
+        {
+          "claudeCodeVersion": "2.1.197",
+          "change": "sonnet -> Sonnet 5"
+        },
+        {
+          "claudeCodeVersion": "2.1.154",
+          "change": "opus -> Opus 4.8"
+        }
+      ],
+      "suffix": "[1m] selects the 1M window for Opus 4.6 / Sonnet 4.6; no effect on models with a native 1M window. The suffix is stripped before the ID is sent, so transcripts carry the plain model ID.",
+      "suffixStrippedInferred": false,
+      "sourceIds": ["cc-model-config"],
+      "inferred": false
+    },
+    "contextWindow": {
+      "native1M": [
+        "Fable models",
+        "Sonnet 5 and later",
+        "Haiku 5.5",
+        "Opus 4.7 and later"
+      ],
+      "needs1mSuffix": ["claude-opus-4-6", "claude-sonnet-4-6"],
+      "default200k": "Other models",
+      "unknownModelId": "Claude Code assumes a window for an unrecognized ID (1M for claude-* / [1m]); CLAUDE_CODE_MAX_CONTEXT_TOKENS corrects it.",
+      "env": {
+        "CLAUDE_CODE_DISABLE_1M_CONTEXT": "=1 treats native-1M models as 200K and compacts at 200K",
+        "CLAUDE_CODE_MAX_CONTEXT_TOKENS": "declared window for unrecognized IDs"
+      },
+      "sourceIds": ["cc-model-config"],
+      "inferred": false
+    },
+    "autoCompaction": {
+      "defaultTriggerTokensNative1M": 967000,
+      "defaultTriggerNote": "Models with a native 1M window compact at about 967K by default (before the window fills). The docs give 'about 967K' only; the ~33K gap to 1,000,000 is presumably a reserved buffer (inferred).",
+      "defaultTriggerInferred": false,
+      "bufferInferredTokens": 33000,
+      "bufferInferred": true,
+      "200kBoundaryCases": [
+        "Opus 4.6 / Sonnet 4.6 without [1m]",
+        "any model with CLAUDE_CODE_DISABLE_1M_CONTEXT=1",
+        "200K-window models (compact when the conversation reaches the model context limit; exact buffer not published)"
+      ],
+      "setWindow": {
+        "command": "/autocompact <size>",
+        "flag": "--autocompact",
+        "setting": "autoCompactWindow (and modelSettings per model)",
+        "env": "CLAUDE_CODE_AUTO_COMPACT_WINDOW",
+        "minimumTokens": 100000,
+        "cappedAtModelWindow": true,
+        "envPrecedence": "env var beats command, flag and setting",
+        "bareNumberRule": "/autocompact: bare 100..1000 means thousands; env var: bare number means tokens (k/M suffix from v2.1.304)"
+      },
+      "idleCompaction": "Setting idleCompaction (false disables); a conversation left idle on the 1h TTL can be compacted. Requires v2.1.290 to turn off.",
+      "compactionCost": "The summarization is a separate request that repeats the system prompt, tools and history; warm cache reads the prefix, a cold cache reprocesses it as uncached input.",
+      "afterCompaction": "The next request rebuilds the conversation cache; re-reads up to 5 recent files (over 5,000 tokens: path only); skill bodies capped 5,000 each / 25,000 total.",
+      "statusLineNote": "status line used_percentage measures against the model's full window, not the compaction trigger.",
+      "sourceIds": ["cc-model-config", "cc-context-window", "cc-prompt-caching"]
+    },
+    "promptCacheTtl": {
+      "mainConversation": {
+        "claudeSubscriptionWithinPlan": "1h",
+        "usageCreditsOrApiKeyOrCloud": "5m"
+      },
+      "everythingElse": {
+        "description": "subagents, workflows, teammates, forks, compaction, session titles",
+        "default": "5m",
+        "exception": "a small set of server-controlled helper requests get 1h on subscriptions"
+      },
+      "overQuotaRule": "Once a subscription draws usage credits, the main conversation drops to 5m.",
+      "controls": {
+        "CLAUDE_CODE_PROMPT_CACHE_TTL": "5m|1h, main conversation (setting promptCacheTtl)",
+        "CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL": "5m|1h, everything else (setting subagentPromptCacheTtl)",
+        "FORCE_PROMPT_CACHING_5M": "=1 forces 5m for both, highest precedence",
+        "ENABLE_PROMPT_CACHING_1H": "=1 requests 1h for both, lowest explicit precedence",
+        "DISABLE_PROMPT_CACHING": "=1 disables for all models (also _HAIKU, _SONNET, _OPUS, _FABLE)"
+      },
+      "minVersion": "2.1.242 for the TTL settings and env vars",
+      "transcriptSignal": "usage.cache_creation.ephemeral_1h_input_tokens vs ephemeral_5m_input_tokens shows which TTL was used (the docs recommend `claude -p --output-format json` to confirm).",
+      "cacheScope": "Effectively per machine and directory; model, speed and prefix must match. Subagents start their own cache (do not read the parent's); forks inherit it.",
+      "sourceIds": ["cc-prompt-caching"],
+      "inferred": false
+    },
+    "costReporting": {
+      "dollarFigure": "Computed locally from token counts at list price unless a managed modelPricing table is in effect; an estimate, not an invoice.",
+      "residencyRate": "x1.1 applied for responses billed at the data residency rate.",
+      "perModelUsageLine": "/usage prints input, output, cache read and cache write tokens per model and a dollar figure.",
+      "sourceIds": ["cc-costs"],
+      "inferred": false
+    },
+    "effortDefaults": {
+      "claudeCode": {
+        "fable-5.2": "medium",
+        "opus-5.5": "medium",
+        "sonnet-5.5": "medium",
+        "haiku-5.5": "medium",
+        "opus-4.7": "xhigh",
+        "others": "high"
+      },
+      "api": {
+        "fable-5.2": "high",
+        "opus-5.5": "medium",
+        "sonnet-5.5": "high",
+        "haiku-5.5": "medium"
+      },
+      "cacheNote": "Changing effort mid-session keeps the cache on Fable 5.1+, Opus 5.5, Sonnet 5.5, Haiku 5.5 with API key or subscription; elsewhere it invalidates the cache.",
+      "sourceIds": ["cc-model-config", "models", "cc-prompt-caching"],
+      "inferred": false
+    },
+    "cacheInvalidators": [
+      "model switch (incl. opusplan toggles and automatic model fallback)",
+      "effort change on most models",
+      "fast mode on/off",
+      "tool definition set change (when MCP tools load upfront)",
+      "compaction",
+      "image-limit trimming",
+      "Claude Code upgrade"
+    ],
+    "cacheInvalidatorsSourceIds": ["cc-prompt-caching"]
+  },
+  "minCacheableTokensByModelGroup": [
+    {
+      "tokens": 512,
+      "models": [
+        "claude-fable-5-2",
+        "claude-mythos-5-2",
+        "claude-fable-5-1",
+        "claude-mythos-5-1",
+        "claude-opus-5-5",
+        "claude-opus-5",
+        "claude-sonnet-5-5",
+        "claude-fable-5",
+        "claude-mythos-5",
+        "claude-haiku-5-5"
+      ]
+    },
+    {
+      "tokens": 1024,
+      "models": [
+        "claude-opus-4-8",
+        "claude-sonnet-5",
+        "claude-sonnet-4-6",
+        "claude-sonnet-4-5-20250929",
+        "claude-opus-4-1-20250805",
+        "claude-opus-4-20250514",
+        "claude-sonnet-4-20250514"
+      ]
+    },
+    {
+      "tokens": 2048,
+      "models": ["claude-opus-4-7", "claude-mythos-preview"]
+    },
+    {
+      "tokens": 4096,
+      "models": [
+        "claude-opus-4-6",
+        "claude-opus-4-5-20251101",
+        "claude-haiku-4-5-20251001"
+      ]
+    }
+  ],
+  "minCacheableTokensSourceIds": ["prompt-caching"],
+  "otherModels": [
+    {
+      "id": "claude-mythos-preview",
+      "status": "deprecated",
+      "deprecatedOn": "2026-06-09",
+      "note": "1M window per context-windows page; price and max output not found on the pages read; 2048-token cache minimum.",
+      "sourceIds": ["deprecations", "context-windows", "prompt-caching"]
+    },
+    {
+      "id": "claude-3-7-sonnet-20250219",
+      "status": "retired",
+      "retiredOn": "2026-02-19",
+      "sourceIds": ["deprecations"]
+    },
+    {
+      "id": "claude-3-5-haiku-20241022",
+      "status": "retired",
+      "retiredOn": "2026-02-19",
+      "sourceIds": ["deprecations"]
+    },
+    {
+      "id": "claude-3-haiku-20240307",
+      "status": "retired",
+      "retiredOn": "2026-04-20",
+      "sourceIds": ["deprecations"]
+    },
+    {
+      "id": "claude-3-opus-20240229",
+      "status": "retired",
+      "retiredOn": "2026-01-05",
+      "sourceIds": ["deprecations"]
+    },
+    {
+      "id": "claude-3-5-sonnet-20241022",
+      "status": "retired",
+      "retiredOn": "2025-10-28",
+      "sourceIds": ["deprecations"]
+    },
+    {
+      "id": "claude-3-5-sonnet-20240620",
+      "status": "retired",
+      "retiredOn": "2025-10-28",
+      "sourceIds": ["deprecations"]
+    }
+  ],
   "models": {
+    "claude-fable-5-2": {
+      "displayName": "Claude Fable 5.2",
+      "family": "fable",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-11-09",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.025,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "defaultEffortApi": "high",
+      "defaultEffortClaudeCode": "medium",
+      "claudeCodeAlias": "fable",
+      "thinkingAlwaysOn": true,
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 8,
+            "cacheWrite5m": 10,
+            "cacheWrite1h": 16,
+            "cacheRead": 0.2,
+            "output": 40
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        },
+        {
+          "name": "fast",
+          "condition": {
+            "speed": "fast"
+          },
+          "prices": {
+            "input": 16,
+            "cacheWrite5m": 20.0,
+            "cacheWrite1h": 32,
+            "cacheRead": 0.4,
+            "output": 80
+          },
+          "sourceIds": ["pricing", "fast-mode"],
+          "inferred": true,
+          "inferredFields": [
+            "prices.cacheWrite5mPerMTok",
+            "prices.cacheWrite1hPerMTok",
+            "prices.cacheReadPerMTok"
+          ],
+          "note": " Input/output are listed on the pricing page; cache prices derived: the pricing page says caching multipliers apply on top of fast mode pricing."
+        }
+      ]
+    },
+    "claude-mythos-5-2": {
+      "displayName": "Claude Mythos 5.2",
+      "family": "mythos",
+      "aliases": [],
+      "status": "active",
+      "availability": "limited (verified organizations only)",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-11-09",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.025,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 8,
+            "cacheWrite5m": 10,
+            "cacheWrite1h": 16,
+            "cacheRead": 0.2,
+            "output": 40
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        },
+        {
+          "name": "fast",
+          "condition": {
+            "speed": "fast"
+          },
+          "prices": {
+            "input": 16,
+            "cacheWrite5m": 20.0,
+            "cacheWrite1h": 32,
+            "cacheRead": 0.4,
+            "output": 80
+          },
+          "sourceIds": ["pricing", "fast-mode"],
+          "inferred": true,
+          "inferredFields": [
+            "prices.cacheWrite5mPerMTok",
+            "prices.cacheWrite1hPerMTok",
+            "prices.cacheReadPerMTok"
+          ],
+          "note": " Input/output are listed on the pricing page; cache prices derived: the pricing page says caching multipliers apply on top of fast mode pricing."
+        }
+      ]
+    },
+    "claude-fable-5-1": {
+      "displayName": "Claude Fable 5.1",
+      "family": "fable",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-09-01",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.025,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 0.25,
+            "output": 50
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-mythos-5-1": {
+      "displayName": "Claude Mythos 5.1",
+      "family": "mythos",
+      "aliases": [],
+      "status": "active",
+      "availability": "limited (verified organizations only)",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-09-01",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.025,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 0.25,
+            "output": 50
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-fable-5": {
+      "displayName": "Claude Fable 5",
+      "family": "fable",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-06-09",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 1,
+            "output": 50
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-mythos-5": {
+      "displayName": "Claude Mythos 5",
+      "family": "mythos",
+      "aliases": [],
+      "status": "active",
+      "availability": "limited (verified organizations only)",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-06-09",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 1,
+            "output": 50
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
     "claude-opus-5-5": {
+      "displayName": "Claude Opus 5.5",
       "family": "opus",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-09-22",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.05,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "defaultEffortApi": "medium",
+      "defaultEffortClaudeCode": "medium",
+      "claudeCodeAlias": "opus",
+      "thinkingAlwaysOn": true,
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
       "contextWindow": 1000000,
       "maxOutput": 128000,
       "tiers": [
@@ -19,23 +1015,410 @@
             "cacheWrite1h": 8,
             "cacheRead": 0.2,
             "output": 20
-          }
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
         },
         {
           "name": "fast",
-          "condition": { "speed": "fast" },
+          "condition": {
+            "speed": "fast"
+          },
           "prices": {
             "input": 8,
-            "cacheWrite5m": 10,
+            "cacheWrite5m": 10.0,
             "cacheWrite1h": 16,
             "cacheRead": 0.4,
             "output": 40
-          }
+          },
+          "sourceIds": ["pricing", "fast-mode"],
+          "inferred": true,
+          "inferredFields": [
+            "prices.cacheWrite5mPerMTok",
+            "prices.cacheWrite1hPerMTok",
+            "prices.cacheReadPerMTok"
+          ],
+          "note": " Input/output are listed on the pricing page; cache prices derived: the pricing page says caching multipliers apply on top of fast mode pricing."
+        }
+      ]
+    },
+    "claude-opus-5": {
+      "displayName": "Claude Opus 5",
+      "family": "opus",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-07-24",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 5,
+            "cacheWrite5m": 6.25,
+            "cacheWrite1h": 10,
+            "cacheRead": 0.5,
+            "output": 25
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        },
+        {
+          "name": "fast",
+          "condition": {
+            "speed": "fast"
+          },
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 1.0,
+            "output": 50
+          },
+          "sourceIds": ["pricing", "fast-mode"],
+          "inferred": true,
+          "inferredFields": [
+            "prices.cacheWrite5mPerMTok",
+            "prices.cacheWrite1hPerMTok",
+            "prices.cacheReadPerMTok"
+          ],
+          "note": "Research preview; needs beta header fast-mode-2026-02-01 and access. Input/output listed on pricing page; cache prices derived (multipliers stack on fast)."
+        }
+      ]
+    },
+    "claude-opus-4-8": {
+      "displayName": "Claude Opus 4.8",
+      "family": "opus",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-05-28",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 5,
+            "cacheWrite5m": 6.25,
+            "cacheWrite1h": 10,
+            "cacheRead": 0.5,
+            "output": 25
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        },
+        {
+          "name": "fast",
+          "condition": {
+            "speed": "fast"
+          },
+          "prices": {
+            "input": 10,
+            "cacheWrite5m": 12.5,
+            "cacheWrite1h": 20,
+            "cacheRead": 1.0,
+            "output": 50
+          },
+          "sourceIds": ["pricing", "fast-mode"],
+          "inferred": true,
+          "inferredFields": [
+            "prices.cacheWrite5mPerMTok",
+            "prices.cacheWrite1hPerMTok",
+            "prices.cacheReadPerMTok"
+          ],
+          "note": "Deprecated; removal 2026-11-30, after which speed fast returns an error. Cache prices derived."
+        }
+      ]
+    },
+    "claude-opus-4-7": {
+      "displayName": "Claude Opus 4.7",
+      "family": "opus",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-04-16",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 2048,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "fastModeNote": "Fast mode removed 2026-07-24 (cc-fast-mode); no fast tier.",
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 5,
+            "cacheWrite5m": 6.25,
+            "cacheWrite1h": 10,
+            "cacheRead": 0.5,
+            "output": 25
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-opus-4-6": {
+      "displayName": "Claude Opus 4.6",
+      "family": "opus",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-02-05",
+        "retiredOn": null
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 4096,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeContextNote": "Claude Code runs 200K unless the [1m] variant is selected; the API itself serves 1M.",
+      "claudeCodeAutoCompactTokens": 200000,
+      "claudeCodeAutoCompactInferred": true,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 5,
+            "cacheWrite5m": 6.25,
+            "cacheWrite1h": 10,
+            "cacheRead": 0.5,
+            "output": 25
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-opus-4-5-20251101": {
+      "displayName": "Claude Opus 4.5",
+      "family": "opus",
+      "aliases": ["claude-opus-4-5"],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2026-11-24",
+        "retiredOn": null
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 4096,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 64000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 5,
+            "cacheWrite5m": 6.25,
+            "cacheWrite1h": 10,
+            "cacheRead": 0.5,
+            "output": 25
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-opus-4-1-20250805": {
+      "displayName": "Claude Opus 4.1",
+      "family": "opus",
+      "aliases": ["claude-opus-4-1"],
+      "status": "retired",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": "2026-06-05",
+        "retiresNotBefore": null,
+        "retiredOn": "2026-08-05"
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "retiredNote": "Retired on the Claude API; may remain on Bedrock / Google Cloud (Google managed). In Claude Code, a claude-opus-4-1 ID runs on what opus resolves to (cc-model-config).",
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 32000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 15,
+            "cacheWrite5m": 18.75,
+            "cacheWrite1h": 30,
+            "cacheRead": 1.5,
+            "output": 75
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-opus-4-20250514": {
+      "displayName": "Claude Opus 4",
+      "family": "opus",
+      "aliases": ["claude-opus-4"],
+      "status": "retired",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": "2026-04-14",
+        "retiresNotBefore": null,
+        "retiredOn": "2026-06-15"
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 32000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 15,
+            "cacheWrite5m": 18.75,
+            "cacheWrite1h": 30,
+            "cacheRead": 1.5,
+            "output": 75
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
         }
       ]
     },
     "claude-sonnet-5-5": {
+      "displayName": "Claude Sonnet 5.5",
       "family": "sonnet",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-09-28",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.05,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "defaultEffortApi": "high",
+      "defaultEffortClaudeCode": "medium",
+      "claudeCodeAlias": "sonnet",
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
       "contextWindow": 1000000,
       "maxOutput": 128000,
       "tiers": [
@@ -48,12 +1431,217 @@
             "cacheWrite1h": 4,
             "cacheRead": 0.1,
             "output": 10
-          }
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-sonnet-5": {
+      "displayName": "Claude Sonnet 5",
+      "family": "sonnet",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-06-30",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "priceNote": "$2/$10 is now the standard price; the announced 2026-09-01 increase to $3/$15 will not occur.",
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 2,
+            "cacheWrite5m": 2.5,
+            "cacheWrite1h": 4,
+            "cacheRead": 0.2,
+            "output": 10
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-sonnet-4-6": {
+      "displayName": "Claude Sonnet 4.6",
+      "family": "sonnet",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-02-17",
+        "retiredOn": null
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeContextNote": "Claude Code runs 200K unless the [1m] variant is selected; the API itself serves 1M.",
+      "claudeCodeAutoCompactTokens": 200000,
+      "claudeCodeAutoCompactInferred": true,
+      "contextWindow": 1000000,
+      "maxOutput": 128000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 3,
+            "cacheWrite5m": 3.75,
+            "cacheWrite1h": 6,
+            "cacheRead": 0.3,
+            "output": 15
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-sonnet-4-5-20250929": {
+      "displayName": "Claude Sonnet 4.5",
+      "family": "sonnet",
+      "aliases": ["claude-sonnet-4-5"],
+      "status": "deprecated",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": "2026-09-30",
+        "retiresNotBefore": "2026-11-30",
+        "retiredOn": null
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 64000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 3,
+            "cacheWrite5m": 3.75,
+            "cacheWrite1h": 6,
+            "cacheRead": 0.3,
+            "output": 15
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-sonnet-4-20250514": {
+      "displayName": "Claude Sonnet 4",
+      "family": "sonnet",
+      "aliases": ["claude-sonnet-4"],
+      "status": "retired",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": "2026-04-14",
+        "retiresNotBefore": null,
+        "retiredOn": "2026-06-15"
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 1024,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 64000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 3,
+            "cacheWrite5m": 3.75,
+            "cacheWrite1h": 6,
+            "cacheRead": 0.3,
+            "output": 15
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
         }
       ]
     },
     "claude-haiku-5-5": {
+      "displayName": "Claude Haiku 5.5",
       "family": "haiku",
+      "aliases": [],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2027-10-07",
+        "retiredOn": null
+      },
+      "tokenizer": "new-4.7+",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 512,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "defaultEffortApi": "medium",
+      "defaultEffortClaudeCode": "medium",
+      "claudeCodeAlias": "haiku",
+      "tierRule": "Prompt length = input_tokens + cache_read_input_tokens + cache_creation_input_tokens of that request; each request is priced alone, even when part of its prompt is a cache hit. The 1.1x data residency multiplier also applies to the over-100K prices.",
+      "claudeCodeAutoCompactTokens": 967000,
+      "claudeCodeAutoCompactInferred": false,
       "contextWindow": 1000000,
       "maxOutput": 128000,
       "tiers": [
@@ -66,18 +1654,71 @@
             "cacheWrite1h": 0.2,
             "cacheRead": 0.01,
             "output": 0.5
-          }
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
         },
         {
           "name": "long",
-          "condition": { "contextAbove": 100000 },
+          "condition": {
+            "contextAbove": 100000
+          },
           "prices": {
             "input": 0.5,
             "cacheWrite5m": 0.625,
             "cacheWrite1h": 1,
             "cacheRead": 0.05,
             "output": 2.5
-          }
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
+        }
+      ]
+    },
+    "claude-haiku-4-5-20251001": {
+      "displayName": "Claude Haiku 4.5",
+      "family": "haiku",
+      "aliases": ["claude-haiku-4-5"],
+      "status": "active",
+      "availability": "general",
+      "lifecycle": {
+        "deprecatedOn": null,
+        "retiresNotBefore": "2026-10-15",
+        "retiredOn": null
+      },
+      "tokenizer": "legacy",
+      "cacheReadMultiplier": 0.1,
+      "minCacheableTokens": 4096,
+      "supportsBatch": true,
+      "sourceIds": [
+        "pricing",
+        "models",
+        "deprecations",
+        "prompt-caching",
+        "context-windows"
+      ],
+      "lifecycleNote": "tentative retirement date 2026-10-15 has passed as of the read date but the page still lists the model Active; recheck.",
+      "claudeCodeAutoCompactTokens": null,
+      "claudeCodeAutoCompactInferred": true,
+      "claudeCodeAutoCompactNote": "200K-window model: Claude Code compacts when the conversation reaches the model context limit (no number published beyond that); exact buffer unverified.",
+      "contextWindow": 200000,
+      "maxOutput": 64000,
+      "tiers": [
+        {
+          "name": "standard",
+          "condition": {},
+          "prices": {
+            "input": 1,
+            "cacheWrite5m": 1.25,
+            "cacheWrite1h": 2,
+            "cacheRead": 0.1,
+            "output": 5
+          },
+          "sourceIds": ["pricing"],
+          "inferred": false,
+          "inferredFields": []
         }
       ]
     }
