@@ -88,3 +88,8 @@ GitHub issue drafts, checks and planning commands.
 - sites: `src/tools/github/issues/contract/operations/checkIssueTree.ts:233`, `src/tools/github/issues/contract/operations/checkIssue.ts:103`
 - why: the walk checks each issue alone; dispatch also checks ancestors (a direct parent's **Questions**, any ancestor's `Drafting`). #733 was listed `Ready` under #732 holding both.
 - want: the walk applies the dispatch hook's ancestor checks, so its ready set matches what dispatch accepts.
+
+## 16. `check` lets a **Housekeeping** step name source or test paths
+
+- why: the instructions limit Housekeeping to edits outside code and tests, enforced only when an orchestrator applies it.
+- want: a `check` finding for a Housekeeping step naming a path under a code or test environment.

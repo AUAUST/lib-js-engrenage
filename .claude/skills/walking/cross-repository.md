@@ -26,6 +26,10 @@ Before the first foreign dispatch, extending walking §Stops and restarts:
 - **Commit.** Walking §Commit, through `linked-checkouts.md` › Review and commit.
 - **Walked-repository parent.** One the commit leaves with no open sub-issue closes with the next commit in the walked checkout: when no walked-repository leaf commits before that parent's boundary review, an empty commit made before that review.
 
+## Housekeeping
+
+A foreign issue's **Housekeeping**: walking §Housekeeping in its linked checkout, once no agent is in flight there, running each command from that checkout and each git command with `git -C <checkout>`; its commits by §Review and commit.
+
 ## Holding and dropping
 
 Hold and drop a foreign leaf's work by `linked-checkouts.md` › Holding and dropping.

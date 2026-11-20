@@ -6,3 +6,11 @@ Read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md` before your f
 2. Once the draft is settled and its scope fits a few issues, offer the user in one message the choice between publishing it then dispatching, and dispatching straight from the draft. Publish only on that choice: it replaces the issue-drafts rule's default publishing.
 3. Brief the worker with `Issue: <owner>/<repo>#<n>` as the first line for a published issue, `Draft: <absolute path>` for a draft.
 4. Commit a published issue's work with `Closes #<n>`. Delete a draft never published once its work's review and commit are done; the worker never deletes it.
+
+An issue holding **Housekeeping** is dispatched through its open sub-issues only, never itself. Once their work is committed, apply it yourself, a change the last row of the shape skill's §Agents lets you make, by this file:
+
+<!-- @shared-file housekeeping.md -->
+<!-- @end -->
+
+- Its commits: under the git rules through the commit gate, the last one closing the issue as step 4 states; the gate refusing one stops you as a failing step does.
+- Handing it back: tell the user the step and output that stopped you, and handle the fix it calls for as any finding.

@@ -49,14 +49,14 @@ Implement one specified change as its specification states. The specification ca
 
 With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when you believe it holds information the issue needs. Read a draft's `blockedBy` as its **Prerequisites** and its `subIssues` as its sub-issues. Then stop and report instead of implementing when:
 
-| Check                                               | Stop when                                                                                                                              |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| The issue itself                                    | It has no **Steps**, so it is a report or request: report it needs the debugger, or the planner for work spanning several tasks.       |
-| **Prerequisites**                                   | One is still open.                                                                                                                     |
-| Sub-issues                                          | Some are open. Report them in order: each is worked alone before the issue's remaining work; a segment has none beyond its sub-issues. |
-| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                           |
-| **Planning** or **Questions**                       | Either is present.                                                                                                                     |
-| `blockers`                                          | Any is set.                                                                                                                            |
+| Check                                               | Stop when                                                                                                                                               |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The issue itself                                    | No **Steps**: report it needs its orchestrator for **Housekeeping**, the debugger for a report or request, the planner for work spanning several tasks. |
+| **Prerequisites**                                   | One is still open.                                                                                                                                      |
+| Sub-issues                                          | Some are open. Report them in order: each is worked alone before the issue's remaining work; a segment has none beyond its sub-issues.                  |
+| The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                            |
+| **Planning** or **Questions**                       | Either is present.                                                                                                                                      |
+| `blockers`                                          | Any is set.                                                                                                                                             |
 
 ## Reading the specification
 

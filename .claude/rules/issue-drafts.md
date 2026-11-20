@@ -42,28 +42,30 @@ Applies, on top of the issues rule, to every issue you file or draft.
 
 Items are `task` and `problem` issues. Write each complete, through its ancestors, for the agent its shape sends it to:
 
-| Item                                                     | Sections                                   | Agent    | Reads it                                                  |
-| -------------------------------------------------------- | ------------------------------------------ | -------- | --------------------------------------------------------- |
-| `task`                                                   | **Steps** and **Tests**                    | Worker   | Everything as binding, applied without redesign           |
-| `problem` whose cause is settled, only the fix remaining | **Steps** and **Tests**                    | Worker   | Same                                                      |
-| `problem` whose cause still needs investigation          | **Leads** or neither; **Tests** when known | Debugger | **Leads** as facts to verify; finds the cause and the fix |
+| Item                                                                | Sections                                   | Agent                                                          | Reads it                                                                              |
+| ------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `task`                                                              | **Steps** and **Tests**                    | Worker                                                         | Everything as binding, applied without redesign                                       |
+| `problem` whose cause is settled, only the fix remaining            | **Steps** and **Tests**                    | Worker                                                         | Same                                                                                  |
+| `problem` whose cause still needs investigation                     | **Leads** or neither; **Tests** when known | Debugger                                                       | **Leads** as facts to verify; finds the cause and the fix                             |
+| `task` or `problem` with sub-issues, its own work only housekeeping | **Housekeeping**                           | None: the orchestrator, the session dispatching its sub-issues | Each step applied as written once the sub-issues land, stopping at any step it cannot |
 
-Uncertainty lives only under **Planning**, design not finished, **Questions**, what the user owes, and a `problem`'s **Leads**, what investigation starts from; never in vague **Steps**.
+Uncertainty lives only under **Planning**, design not finished, **Questions**, what the user owes, and a `problem`'s **Leads**, what investigation starts from; never in vague **Steps** or **Housekeeping**.
 
-| Section           | Types                       | Holds                                                                                                                                    |
-| ----------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Header line       | segment, item               | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                               |
-| **Goal**          | plan                        | Why the work is needed and the target state                                                                                              |
-| Model sections    | plan                        | Only the shapes at least two items use, as tables, trees and diagrams                                                                    |
-| **Decisions**     | plan                        | Each choice spanning several items, with its reason in one clause                                                                        |
-| **Context**       | segment, item               | A segment: what it adds. An item: the problem, its known cause and every site sharing it, then its decisions, with exact paths and names |
-| **Prerequisites** | segment, item               | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                     |
-| **Steps**         | item                        | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                 |
-| **Leads**         | `problem` without **Steps** | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                     |
-| **Tests**         | item                        | Each case with its expected outcome, within the Verification test minimum; for a fix, the regression case and its reproduction           |
-| **Done when**     | plan, segment, item         | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                             |
-| **Planning**      | plan, segment, item         | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                  |
-| **Questions**     | plan, segment, item         | What investigation could not settle: the findings and the candidate answers                                                              |
+| Section           | Types                                                           | Holds                                                                                                                                    |
+| ----------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Header line       | segment, item                                                   | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                               |
+| **Goal**          | plan                                                            | Why the work is needed and the target state                                                                                              |
+| Model sections    | plan                                                            | Only the shapes at least two items use, as tables, trees and diagrams                                                                    |
+| **Decisions**     | plan                                                            | Each choice spanning several items, with its reason in one clause                                                                        |
+| **Context**       | segment, item                                                   | A segment: what it adds. An item: the problem, its known cause and every site sharing it, then its decisions, with exact paths and names |
+| **Prerequisites** | segment, item                                                   | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                     |
+| **Steps**         | item                                                            | Actionable changes only, naming the files, functions, models and helpers; when split, the work left after the sub-issues                 |
+| **Leads**         | `problem` without **Steps**                                     | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                     |
+| **Housekeeping**  | item with sub-issues, without **Steps**, **Leads** or **Tests** | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests       |
+| **Tests**         | item                                                            | Each case with its expected outcome, within the Verification test minimum; for a fix, the regression case and its reproduction           |
+| **Done when**     | plan, segment, item                                             | Observable state beyond the **Steps**; dropped when it would only say the Steps are done and the checks pass                             |
+| **Planning**      | plan, segment, item                                             | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                  |
+| **Questions**     | plan, segment, item                                             | What investigation could not settle: the findings and the candidate answers                                                              |
 
 | Section       | Budget in words |
 | ------------- | --------------- |
@@ -72,6 +74,7 @@ Uncertainty lives only under **Planning**, design not finished, **Questions**, w
 | **Done when** | ~60             |
 
 - Give the other sections no budget: make them as complete as the item's agent needs.
+- Own work after the sub-issues needing a step **Housekeeping** cannot hold, or a choice: all of it under **Steps**.
 - Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
 - Never restate the project's instructions: workers follow them for everything an issue does not say.
 - An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
@@ -108,7 +111,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
 - Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
 - Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep working.
-- Fill or remove every section `create` writes, keeping one of a `problem`'s **Steps** and **Leads** by its shape: `check` fails on an empty one and on both.
+- Fill or remove every section `create` writes, keeping one of a `task`'s **Steps** and **Housekeeping**, or of a `problem`'s **Steps**, **Leads** and **Housekeeping**, by its shape: `check` fails on an empty one and on two of them.
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each question you asked.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.

@@ -122,25 +122,26 @@ Extract a part of a plan into its own plan when the Roadmap grows too long to sc
 
 Order expresses urgency, not importance: a task comes first because later work stands on it. The walker runs a segment's members at once and a sequence's members one at a time, so place an item after another only for a dependency you can name.
 
-| Situation                                                                      | Placement                                                                                                      |
-| ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| B depends on A                                                                 | B after all of its dependencies                                                                                |
-| B needs from A only a piece A does not use itself: a helper, a type, an option | The piece moved into B, both in one segment                                                                    |
-| Later work depends on a task and nothing can run alongside it                  | Alone in the sequence; never a single-item segment                                                             |
-| Two or more tasks can be done at the same point                                | One segment. Touching the same files is fine; needing each other's output is not.                              |
-| A segment member needs another member's result                                 | Reshaped as above when it can be; otherwise moved after the segment, or merged with it if they are one feature |
-| Adjacent segments, the later one independent of the earlier                    | Merged, to keep the sequence short                                                                             |
+| Situation                                                                               | Placement                                                                                                                                           |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B depends on A                                                                          | B after all of its dependencies                                                                                                                     |
+| B needs from A only a piece A does not use itself: a helper, a type, an option          | The piece moved into B, both in one segment                                                                                                         |
+| Later work depends on a task and nothing can run alongside it                           | Alone in the sequence; never a single-item segment                                                                                                  |
+| Two or more tasks can be done at the same point                                         | One segment. Touching the same files is fine; needing each other's output is not.                                                                   |
+| A segment member needs another member's result                                          | Reshaped as above when it can be; otherwise moved after the segment, or merged with it if they are one feature                                      |
+| Work that is only housekeeping (issue-drafts rule › Bodies) needs other work done first | That other work as sub-issues of an issue holding it under **Housekeeping**, applied after them without a dispatch; never its own item or **Steps** |
+| Adjacent segments, the later one independent of the earlier                             | Merged, to keep the sequence short                                                                                                                  |
 
 - Move a piece between tasks only when each stays one coherent feature, verifiable without the other.
 - Never add or split an item only to run work concurrently: each item adds a dispatch, a merge and a review.
 
 ## Inner pass
 
-Deepen an item until a worker implements it without design, or, for a `problem` whose cause still needs investigation, a debugger starts from its **Leads**.
+Deepen an item until a worker implements it without design, for a `problem` whose cause still needs investigation until a debugger starts from its **Leads**, or for one holding **Housekeeping** until its orchestrator applies it as written.
 
 1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
 2. **Ground** each change in the code it touches: functions, types, call sites, tests and conventions. Verify every name, path and shape the item states.
-3. **Write** **Steps**, **Tests** and **Done when**, or, for a `problem` whose cause still needs investigation, **Leads** instead of **Steps** (issue-drafts rule › Bodies), splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
+3. **Write** **Steps**, **Tests** and **Done when**; for a `problem` whose cause still needs investigation, **Leads** instead of **Steps**; for an item whose own work after its sub-issues is only housekeeping, **Housekeeping** instead of **Steps** and **Tests** (issue-drafts rule › Bodies); splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
 4. **Review** the item under §Readiness.
 
 As an inner planner:
@@ -159,6 +160,8 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
 
 A `problem` whose cause still needs investigation is ready for a debugger once `check` passes and its **Leads** state only what you verified, suspected sites marked as such.
+
+An item holding **Housekeeping** is ready once `check` passes and each step is housekeeping as the issue-drafts rule › Bodies defines it, the commands, files and entries it names verified to exist.
 
 ## How workers read issues
 
