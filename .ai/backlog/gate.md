@@ -47,3 +47,8 @@ The commit gate and its process locks.
 - sites: `src/workflows/gate/operations/runMessageGate.ts:14`
 - why: gate steps are contributed by their domains; message checks are not. Related: #375.
 - want: domains owning commit conventions contribute their message checks.
+
+## 9. The worktree gate formats a moved generated file `.prettierignore` lists
+
+- why: in #768, the first `pnpm engrenage gate --worktree` reformatted the moved `src/batiment/environments/types/NamespaceInput.ts`, failing `codegen --check`; regenerating it, the second run passed.
+- want: the gate honoring the ignore file for renamed paths.

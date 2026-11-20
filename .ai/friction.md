@@ -83,3 +83,4 @@
 - commit-msg hook: 77-character subject rejected — no git rule states the 72-character limit; shortened the subject
 - `engrenage sync` after adding the `batiment` namespace: config load failed on the missing `#batiment/*` alias and stale barrels, which only sync generates — added the alias and barrels by hand, then synced
 - issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there
+- engrenage-hook claude PreToolUse: dispatching workers for #768 and #769 — GET issues/<n>/issue-field-values returned 404, hook checks skipped; dispatched with effort set by hand
