@@ -76,3 +76,6 @@
 - `git checkout <rev> -- <paths>`: reverting a committed file — the working file kept the committed content while the index took the old one; rewrote it from `git show <rev>:<path>`
 - worktree isolation: git commands on a scratch clone, and any command whose text holds "git" (a `github.com` string) — refused as outside the worktree; reproduced with pnpm alone, renamed the string
 - `git commit --no-verify` in a scratch clone: built merge-reproduction commits — the PreToolUse hook refused it anyway; dropped the full merge reproduction
+- `pnpm engrenage planning issue create`: ran it on a fresh session on `main` — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace structure changed since install; ran `pnpm install --offline`
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found" despite the Shell section; dropped the filter
+- BSD `ls <dir> -R`: listed a tree with the flag after the path — macOS ls reads `-R` as a file; used `find` or flag-first
