@@ -3,8 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { checkWorkspaces } from "#batiment/structure/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { checkWorkspaces } from "#project/structure/index";
 import { runSync } from "#project/sync/index";
 import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

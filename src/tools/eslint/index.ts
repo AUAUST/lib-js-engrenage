@@ -82,5 +82,8 @@ export { formatInfoMessages } from "#tools/eslint/utils/formatInfoMessages";
 export { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export { visitImportSources } from "#tools/eslint/utils/visitImportSources";
-export type { EnvironmentFileNames } from "#batiment/structure/index";
-export type { Entity, LineageMember } from "#project/structure/index";
+export type {
+  Entity,
+  EnvironmentFileNames,
+  LineageMember,
+} from "#batiment/structure/index";

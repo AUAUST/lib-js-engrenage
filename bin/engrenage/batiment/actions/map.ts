@@ -1,9 +1,9 @@
-import { renderStructureDiagnostic } from "#batiment/structure/index";
 import {
   renderImportCycles,
   renderStructure,
-  reportStructure,
-} from "#project/structure/index";
+  renderStructureDiagnostic,
+} from "#batiment/structure/index";
+import { reportStructure } from "#project/structure/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 

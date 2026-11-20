@@ -12,7 +12,7 @@ import type {
   ImportEdge,
   ImportGrants,
   TestVariant,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { Directory } from "#types/Directory";

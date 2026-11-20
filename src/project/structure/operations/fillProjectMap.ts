@@ -1,5 +1,5 @@
+import { renderProjectMap } from "#batiment/structure/index";
 import { listMappedEnvironments } from "#project/structure/operations/listMappedEnvironments";
-import { renderProjectMap } from "#project/structure/utils/renderProjectMap";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 
@@ -25,7 +25,13 @@ export async function fillProjectMap(
 
   return renderProjectMap({
     structure,
-    environments,
+    environments: environments.map(({ entry, kind }) => {
+      return {
+        name: entry.name,
+        title: entry.title,
+        kind,
+      };
+    }),
     grants,
     roles,
     patterns: tests.patterns,

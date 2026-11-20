@@ -34,6 +34,7 @@ export type {
   StructureMirror,
   StructureNode,
   StructureRelation,
+  StructureReport,
   StructureRole,
   StructureSource,
   UnclassifiedReason,
@@ -61,7 +62,6 @@ export type {
   GateStepEntry,
 } from "#project/gate/index";
 export type { Prompter, Step, StepContext } from "#project/steps/index";
-export type { StructureReport } from "#project/structure/index";
 export type {
   SyncDone,
   SyncFlags,

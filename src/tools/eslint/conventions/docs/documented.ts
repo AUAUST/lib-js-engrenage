@@ -16,7 +16,7 @@ import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { findJsdocBlock } from "#tools/eslint/utils/findJsdocBlock";
 import { readOverload } from "#tools/eslint/utils/readOverload";
-import type { EntityIndex } from "#project/structure/index";
+import type { EntityIndex } from "#batiment/structure/index";
 
 // @debt the contract roles are found by their preset names, while a preset's `name` option lets a project rename them
 const contractRoles: ReadonlySet<string> = new Set(["ports", "apis"]);

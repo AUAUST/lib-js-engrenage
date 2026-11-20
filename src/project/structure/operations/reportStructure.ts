@@ -2,10 +2,12 @@ import { flatMap, map } from "@auaust/toolkit/array";
 import { unique } from "@auaust/toolkit/iterable";
 import { values } from "@auaust/toolkit/object";
 
+import {
+  renderImportCycle,
+  type StructureReport,
+} from "#batiment/structure/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
-import { renderImportCycle } from "#project/structure/utils/renderImportCycle";
 import type { LoadedConfig } from "#project/config/index";
-import type { StructureReport } from "#project/structure/types/StructureReport";
 
 export async function reportStructure(
   config: LoadedConfig,

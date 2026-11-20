@@ -39,7 +39,7 @@ src/  foundation < batiment < project < tools < workflows  (global roles: types 
 │  ├─ presets  Project presets and their resolved traits.
 │  ├─ roles*  Contribute the generic role presets and own the `roles` slot.
 │  ├─ steps  Contracts and helpers for project initialization steps.
-│  ├─ structure  Resolve project structure and enforce its boundaries.
+│  ├─ structure  Bind the batiment structure model to the config, TypeScript resolution, the project-map rule files and the gate.
 │  ├─ sync  Run the sync targets and settle the files they change.
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.

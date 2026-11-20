@@ -2,7 +2,7 @@ import { sort } from "@auaust/toolkit/array";
 import { record } from "@auaust/toolkit/object";
 
 import { importPrefix } from "#tools/typescript/constants";
-import type { Alias } from "#project/structure/index";
+import type { Alias } from "#batiment/structure/index";
 
 export function listSubpathImports(
   aliases: readonly Alias[],

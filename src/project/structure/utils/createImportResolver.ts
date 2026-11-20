@@ -3,9 +3,11 @@ import { posix, relative } from "node:path";
 import { memoize } from "@auaust/toolkit/function";
 
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
-import type { Alias } from "#project/structure/types/Alias";
-import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedSpecifier } from "#project/structure/types/ResolvedSpecifier";
+import type {
+  Alias,
+  ResolvedAliases,
+  ResolvedSpecifier,
+} from "#batiment/structure/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

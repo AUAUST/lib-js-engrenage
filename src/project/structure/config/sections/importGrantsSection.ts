@@ -1,10 +1,12 @@
 import { flatMap } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
+import {
+  resolveEnvironmentGrants,
+  type ImportGrants,
+} from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
-import { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnvironmentGrants";
 import type { ConfigResolver } from "#project/config/index";
-import type { ImportGrants } from "#project/structure/types/ImportGrants";
 
 export const importGrantsSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ImportGrants> {
@@ -16,7 +18,16 @@ export const importGrantsSection = declareSection({
 
     return freeze({
       published: traits.published,
-      ...resolveEnvironmentGrants(traits.published, environments),
+      ...resolveEnvironmentGrants(
+        traits.published,
+        environments.map(({ entry, kind }) => {
+          return {
+            name: entry.name,
+            title: entry.title,
+            kind,
+          };
+        }),
+      ),
       workspaces: new Map(
         flatMap(groups, (group) => {
           return group.workspaces.map(({ dir, dependencies }) => {

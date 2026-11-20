@@ -1,4 +1,4 @@
-import { renderEnvironmentMap } from "#project/structure/utils/renderEnvironmentMap";
+import { renderEnvironmentMap } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function fillEnvironmentMap(

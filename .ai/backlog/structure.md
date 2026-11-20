@@ -79,13 +79,13 @@ Project structure description, its report and the tooling generated from it.
 
 ## 13. Structure resolvers and index hold loose rules
 
-- sites: `src/batiment/structure/operations/createStructureDomainResolver.ts:68`, `src/batiment/structure/operations/createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `src/project/structure/utils/createEntityIndex.ts:101`, `src/project/structure/operations/findImportCycles.ts:238`
+- sites: `src/batiment/structure/operations/createStructureDomainResolver.ts:68`, `src/batiment/structure/operations/createStructureRoleResolver.ts:131`, `src/batiment/structure/utils/createEntityIndex.ts:96`, `src/batiment/structure/utils/createEntityIndex.ts:101`, `src/project/structure/operations/findImportCycles.ts:238`
 - why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
 - want: each rule fixed at its site.
 
 ## 14. Structure boundary and layer rules miss cases
 
-- sites: `src/project/structure/utils/checkBoundary.ts:47`, `src/project/structure/utils/checkBoundary.ts:111`, `src/project/structure/utils/checkBoundary.ts:201`, `src/project/structure/utils/checkLayers.ts:7`, `src/project/structure/utils/checkSurfaces.ts:8`
+- sites: `src/batiment/structure/utils/checkBoundary.ts:47`, `src/batiment/structure/utils/checkBoundary.ts:111`, `src/batiment/structure/utils/checkBoundary.ts:201`, `src/batiment/structure/utils/checkLayers.ts:7`, `src/batiment/structure/utils/checkSurfaces.ts:8`
 - why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind; the lineage condition never decides.
 - want: index specifier read directly; every environment file checked; rules split by broken relation.
 
@@ -97,7 +97,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 16. Map and tree renderers are ad hoc
 
-- sites: `src/project/structure/utils/renderEnvironmentMap.ts:10`, `src/project/structure/utils/renderStructureTree.ts:15`
+- sites: `src/batiment/structure/utils/renderEnvironmentMap.ts:10`, `src/batiment/structure/utils/renderStructureTree.ts:15`
 - why: map renderers repeat code; one `detailed` flag branches every tree helper.
 - want: one structured renderer shared by the map renderers; two row policies over one drawing.
 
@@ -167,6 +167,6 @@ Project structure description, its report and the tooling generated from it.
 
 ## 28. Layer and surface checks skip package self-references
 
-- sites: `src/project/structure/utils/checkLayers.ts:14`, `src/project/structure/utils/getImportCategory.ts:11`
+- sites: `src/batiment/structure/utils/checkLayers.ts:14`, `src/batiment/structure/utils/getImportCategory.ts:11`
 - why: only `relative` and `alias` imports are checked; `@auaust/engrenage/...` counts as `public-entries`, granted to `src`, so a lower layer importing a workflows entry passes lint.
 - want: self-references resolved to their source domain and checked like aliases.

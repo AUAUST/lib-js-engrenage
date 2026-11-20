@@ -1,7 +1,7 @@
 import type { Rule } from "eslint";
 
 import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
-import type { Entity, EntityIndex } from "#project/structure/index";
+import type { Entity, EntityIndex } from "#batiment/structure/index";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
 export function defineStructureRule({

@@ -1,4 +1,4 @@
-import { checkData } from "#project/structure/index";
+import { checkData } from "#batiment/structure/index";
 import { defineBoundaryConvention } from "#tools/eslint/utils/defineBoundaryConvention";
 
 export default defineBoundaryConvention({

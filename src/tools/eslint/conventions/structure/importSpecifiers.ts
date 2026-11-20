@@ -10,7 +10,7 @@ import type {
   BoundaryCause,
   BoundaryViolation,
   ImportEdge,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import type { File } from "#types/File";
 
 function violation(cause: BoundaryCause, fix?: string): BoundaryViolation {

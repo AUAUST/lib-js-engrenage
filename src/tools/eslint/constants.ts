@@ -3,7 +3,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
-import type { BoundaryCause } from "#project/structure/index";
+import type { BoundaryCause } from "#batiment/structure/index";
 import type { CoreRules } from "#tools/eslint/types/rules/CoreRules";
 import type { TypescriptEslintRules } from "#tools/eslint/types/rules/TypescriptEslintRules";
 import type { UnicornRules } from "#tools/eslint/types/rules/UnicornRules";

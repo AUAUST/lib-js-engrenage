@@ -7,8 +7,8 @@ import {
   type LanguageEntry,
 } from "#project/environments/index";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
+import type { ResolvedAliases } from "#batiment/structure/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { Directory } from "#types/Directory";
 
 const aliasedLanguage = "typescript";

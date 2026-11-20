@@ -5,7 +5,7 @@ import type {
   BoundaryViolation,
   ImportEdge,
   ImportGrants,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import type { Convention } from "#tools/eslint/ports/Convention";
 
 export function defineBoundaryConvention({

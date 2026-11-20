@@ -35,8 +35,8 @@ import { importPrefix } from "#tools/typescript/constants";
 import { readTypescriptLanguage } from "#tools/typescript/operations/readTypescriptLanguage";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
+import type { Alias } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { Alias } from "#project/structure/index";
 import type { File } from "#types/File";
 
 const importsPart = "package.json#imports";

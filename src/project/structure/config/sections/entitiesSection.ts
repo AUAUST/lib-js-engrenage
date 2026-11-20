@@ -1,10 +1,9 @@
 import { record } from "@auaust/toolkit/object";
 
+import { createEntityIndex, type EntityIndex } from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
 import { readEnvironments } from "#project/environments/index";
-import { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 import type { ConfigResolver } from "#project/config/index";
-import type { EntityIndex } from "#project/structure/apis/EntityIndex";
 import type { Directory } from "#types/Directory";
 
 async function readOutDir(

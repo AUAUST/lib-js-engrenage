@@ -5,7 +5,11 @@ import type { Rule, SourceCode } from "eslint";
 import { getOwn } from "@auaust/toolkit/object";
 
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type { Entity, EntityIndex, ImportEdge } from "#project/structure/index";
+import type {
+  Entity,
+  EntityIndex,
+  ImportEdge,
+} from "#batiment/structure/index";
 import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 
 interface ImportAnalysis {
