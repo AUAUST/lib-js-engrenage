@@ -128,3 +128,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: the hook denies Housekeeping issues read from `Issue:` lines; a shape dispatch from a draft may rely only on the worker-side stop in the implement skill.
 - want: the hook reading `Draft:` paths too, or a test showing it does.
+
+## 24. An agent run that ends without a stop event never records its usage
+
+- sites: `src/tools/agents/operations/startAgentRun.ts:8`, `bin/engrenage-hook/claude/actions/record.ts:35`
+- why: the `.running` marker becomes a record only on a stop; 5 stale markers remain from 2026-11-18–19 (sessions `94f6e16c`, `e765cdab`, `932be051`, `6a5f051c`), so `.ai/stats/` undercounts. Suspects: `TaskStop`, session kill, crash.
+- want: stale markers recorded from their `subagents/agent-<id>.jsonl` transcript, flagged as unstopped.

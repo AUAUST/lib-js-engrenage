@@ -87,3 +87,5 @@
 - `pnpm engrenage gate --worktree`: first run reformatted the generated, moved `NamespaceInput.ts` despite `.prettierignore` listing its new path, then failed `codegen --check` — regenerated it; second run passed
 - commit gate vitest: committing #768 while a worker ran its gate — `tests/scripts/codegen/config.test.src.ts` timed out at 5000ms; passed alone, retried the commit
 - Claude Code worktree isolation: a heredoc and a loop whose text named `github` or `git` — refused as unverifiable; edited files through the edit tools and ran commands one by one
+- `planning issue check`: passed a new draft as `#{new-<slug>}` — "no draft at" error; bare `new-<slug>` works
+- `engrenage agents stats`: needed live usage of running subagents and the quota window — stats cover stopped runs of one session only; parsed transcripts under `~/.claude/projects` by hand
