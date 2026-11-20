@@ -135,3 +135,6 @@
 - hook command workspace root: shell repeating the config lookup's `pnpm-workspace.yaml` globs — duplicates #713's lookup in sh; the shell finds the nearest installed engrenage-hook within the repository or workspace, the actions resolve the root from the payload `cwd`
 - delete `syncPaths` (#711): no generated `src` alias needs tsconfig `paths` — non-`#` bundler aliases (`$shopify/*`) resolve only through `paths`, which `imports` cannot hold
 - instructions rule removal: retire the rule once the skill holds its rules — needs sync, init and test changes beyond the writer's role; kept as a pointer stub (agent-instructions backlog)
+- ResolvedEnvironment move to batiment: structural part split out in #734 — no batiment consumer before #735's walk takes data; moving now would split a config-key contract twice.
+- Structure diagnostics in lint: walk diagnostics reported per file by ESLint — gate and `batiment map --check` already fail on them; lint would re-report metafile findings it cannot locate in code.
+- Sync refusing every error diagnostic: blocking sync on the structure report — an unclassified directory or cycle would block the sync that fixes it; only kept-value diagnostics block.
