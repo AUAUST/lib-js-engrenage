@@ -1,7 +1,4 @@
-import {
-  getExecutableFile,
-  type ResolvedRoles,
-} from "#project/structure/index";
+import { getExecutableFile, type ResolvedRoles } from "#batiment/roles/index";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { Filesystem } from "#foundation/filesystem/index";

@@ -5,11 +5,13 @@ import { entries } from "@auaust/toolkit/object";
 import {
   defaultEffectLevels,
   effectLevelPurposes,
-} from "#project/structure/constants";
-import { findFileResolver } from "#project/structure/utils/findFileResolver";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+} from "#batiment/roles/constants";
+import {
+  findFileResolver,
+  listStaticFileGlobs,
+  type ResolvedRoleContract,
+  type ResolvedRoles,
+} from "#batiment/roles/index";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
 interface RoleRow {

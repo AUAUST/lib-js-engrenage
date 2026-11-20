@@ -2,8 +2,7 @@ import { join } from "node:path";
 
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureRole } from "#project/structure/types/StructureRole";
 import type { Directory } from "#types/Directory";

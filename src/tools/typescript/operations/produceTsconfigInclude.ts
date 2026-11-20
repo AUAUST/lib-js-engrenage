@@ -1,9 +1,9 @@
 import { flatMap, map } from "@auaust/toolkit/array";
 
+import { listStaticFileGlobs } from "#batiment/roles/index";
 import { filesIn } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
 import { declarations, testsetup } from "#project/roles/index";
-import { listStaticFileGlobs } from "#project/structure/index";
 import {
   globalDeclarationsFile,
   toTsconfigGlobs,

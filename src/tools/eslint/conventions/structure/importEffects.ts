@@ -11,8 +11,8 @@ import type { Rule } from "eslint";
 import { getOwn } from "@auaust/toolkit/object";
 
 import { entryRoleName } from "#batiment/roles/constants";
+import { rankModule } from "#batiment/roles/index";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { rankModule } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";

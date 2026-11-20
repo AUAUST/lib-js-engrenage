@@ -3,6 +3,11 @@ import { basename, extname, join, matchesGlob } from "node:path";
 import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
+  listReexportModes,
+  listStaticFileGlobs,
+  type ResolvedRoles,
+} from "#batiment/roles/index";
+import {
   defaultReexport,
   domainMetadataFile,
   namespaceMetadataFile,
@@ -12,10 +17,7 @@ import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole"
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 import { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
-import { listReexportModes } from "#project/structure/utils/listReexportModes";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";
 import type { Directory } from "#types/Directory";

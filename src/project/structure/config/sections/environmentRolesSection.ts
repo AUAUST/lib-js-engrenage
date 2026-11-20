@@ -1,12 +1,11 @@
 import { freeze, record } from "@auaust/toolkit/object";
 
+import { noRoles } from "#batiment/roles/constants";
+import { resolveRoles, type ResolvedRoles } from "#batiment/roles/index";
 import { declareSection } from "#foundation/options/index";
 import { listEnvironmentEntries } from "#project/environments/index";
-import { noRoles } from "#project/structure/constants";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
-import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { ConfigResolver } from "#project/config/index";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
 async function resolveEnvironmentRoles(
   config: ConfigResolver,

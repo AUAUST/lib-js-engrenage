@@ -1,6 +1,6 @@
-import type { Role } from "#batiment/roles/index";
-import type { EffectModules } from "#project/structure/types/EffectModules";
-import type { RoleEffects } from "#project/structure/types/RoleEffects";
+import type { EffectModules } from "#batiment/roles/types/EffectModules";
+import type { Role } from "#batiment/roles/types/Role";
+import type { RoleEffects } from "#batiment/roles/types/RoleEffects";
 
 export interface EnvironmentRoles {
   readonly roles: readonly Role[];

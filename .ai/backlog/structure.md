@@ -114,7 +114,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 19. Duplicate-role errors name merged positions, not the config's
 
-- why: since default roles (AUAUST/lib-js-engrenage#629), `listEnvironmentRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/project/structure/utils/registerRoles.ts`.
+- why: since default roles (AUAUST/lib-js-engrenage#629), `listEnvironmentRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/batiment/roles/utils/registerRoles.ts`.
 - want: `resolveRoles` receives each role's own config position (or none for a default) and errors name it.
 
 ## 20. Structure types restate schema vocabulary and field names
@@ -131,7 +131,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 22. Role contracts stay unfrozen and cannot see their directory
 
-- sites: `src/project/structure/config/sections/structureSection.ts:195`, `src/project/structure/utils/completeRole.ts:96`
+- sites: `src/project/structure/config/sections/structureSection.ts:195`, `src/batiment/roles/utils/completeRole.ts:96`
 - why: freezing in place would freeze caller-owned preset values; a root role never placed at an environment root passes the contract check.
 - want: frozen copies once toolkit's `constant()` exists (`toolkit.11`); directory context for contracts (planning).
 

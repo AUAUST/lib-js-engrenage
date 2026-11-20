@@ -119,3 +119,5 @@
 - metalbrain budget hook by hand: passed the subagent transcript as `transcript_path` — the hook derives the subagent path from the main transcript, doubling it; no instruction states the payload shape
 - zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
 - worktree-isolated Bash: `echo $?; git status; git diff` in one call — refused as too complex; ran git status alone
+- Bash cwd after `cd` into an agent worktree: the session moved its primary directory there; removing that worktree failed the next command — reran from the main checkout with `git -C`
+- `pnpm engrenage planning issue check`: crashed on a missing module while another session moved `src/project/structure` to `src/batiment` in the same checkout — left the draft unchecked and unpublished

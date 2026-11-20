@@ -1,6 +1,6 @@
 import { entryRoleName } from "#batiment/roles/constants";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import { listStaticFileGlobs } from "#batiment/roles/utils/listStaticFileGlobs";
+import type { ResolvedRoles } from "#batiment/roles/types/ResolvedRoles";
 import type { File } from "#types/File";
 
 export function getEntryFile({ roles }: ResolvedRoles): File | undefined {

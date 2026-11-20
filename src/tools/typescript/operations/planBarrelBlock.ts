@@ -5,7 +5,6 @@ import { getOwn, keys, values } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   type EnvironmentStructure,
-  type ResolvedRoleContract,
   type StructureNode,
 } from "#project/structure/index";
 import { domainsBlock } from "#tools/typescript/constants";
@@ -14,6 +13,7 @@ import { listDomainModules } from "#tools/typescript/operations/listDomainModule
 import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels";
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import { listRootReexports } from "#tools/typescript/utils/listRootReexports";
+import type { ResolvedRoleContract } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { BarrelModule } from "#tools/typescript/types/BarrelModule";

@@ -1,4 +1,4 @@
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import type { ResolvedRoleContract } from "#batiment/roles/types/ResolvedRoleContract";
 
 export interface RoleRegistry {
   readonly contracts: Record<string, ResolvedRoleContract>;

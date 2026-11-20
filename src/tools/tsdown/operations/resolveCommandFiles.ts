@@ -1,9 +1,6 @@
 import { posix } from "node:path";
 
-import {
-  getExecutableFile,
-  type ResolvedRoles,
-} from "#project/structure/index";
+import { getExecutableFile, type ResolvedRoles } from "#batiment/roles/index";
 import { builtExtension } from "#tools/tsdown/constants";
 import { findCommands } from "#tools/tsdown/utils/findCommands";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";

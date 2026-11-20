@@ -1,15 +1,15 @@
 import { isFunction, isString } from "@auaust/toolkit";
 import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
-import { defaultEffectLevels } from "#project/structure/constants";
-import { registerRoles } from "#project/structure/utils/registerRoles";
-import type { EffectModules } from "#project/structure/types/EffectModules";
-import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
-import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleEffects } from "#project/structure/types/RoleEffects";
-import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
+import { defaultEffectLevels } from "#batiment/roles/constants";
+import { registerRoles } from "#batiment/roles/utils/registerRoles";
+import type { EffectModules } from "#batiment/roles/types/EffectModules";
+import type { EnvironmentRoles } from "#batiment/roles/types/EnvironmentRoles";
+import type { ResolvedEffects } from "#batiment/roles/types/ResolvedEffects";
+import type { ResolvedRoleContract } from "#batiment/roles/types/ResolvedRoleContract";
+import type { ResolvedRoles } from "#batiment/roles/types/ResolvedRoles";
+import type { RoleEffects } from "#batiment/roles/types/RoleEffects";
+import type { RoleRegistry } from "#batiment/roles/types/RoleRegistry";
 
 function resolveEffects(
   effects: RoleEffects,

@@ -5,8 +5,8 @@ import { parse } from "valibot";
 import { isPlainObject, isString } from "@auaust/toolkit";
 import { entries, values } from "@auaust/toolkit/object";
 
-import { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";
-import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
+import { effectModuleSchema } from "#batiment/roles/config/schemas/effectModuleSchema";
+import type { ResolvedEffects } from "#batiment/roles/types/ResolvedEffects";
 
 export function rankModule(
   { levels, modules, fallback }: ResolvedEffects,

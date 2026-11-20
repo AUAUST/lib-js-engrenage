@@ -1,4 +1,4 @@
-import type { EffectModules } from "#project/structure/types/EffectModules";
+import type { EffectModules } from "#batiment/roles/types/EffectModules";
 
 export interface ResolvedEffects {
   readonly levels: readonly string[];

@@ -1,10 +1,11 @@
 import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
-import { roleSchema, type Role } from "#batiment/roles/index";
-import { completeRole } from "#project/structure/utils/completeRole";
-import { findFileResolver } from "#project/structure/utils/findFileResolver";
-import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
+import { roleSchema } from "#batiment/roles/config/schemas/roleSchema";
+import { completeRole } from "#batiment/roles/utils/completeRole";
+import { findFileResolver } from "#batiment/roles/utils/findFileResolver";
+import type { Role } from "#batiment/roles/types/Role";
+import type { RoleRegistry } from "#batiment/roles/types/RoleRegistry";
 
 // @debt an environment's positions count its default roles before its listed ones, so an error names `src.roles[9]` for the config's `src.roles[0]`
 export function registerRoles({

@@ -3,6 +3,7 @@ import { concat, unique } from "@auaust/toolkit/iterable";
 import { max } from "@auaust/toolkit/math";
 import { entries } from "@auaust/toolkit/object";
 
+import { noRoles } from "#batiment/roles/constants";
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
 import { findDirectories } from "#foundation/filesystem/index";
@@ -12,7 +13,6 @@ import {
   createPackageJson,
   writePackageJsonValue,
 } from "#project/package/index";
-import { noRoles } from "#project/structure/constants";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";

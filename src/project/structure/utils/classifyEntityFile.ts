@@ -1,5 +1,5 @@
 import { indexRoleName } from "#batiment/roles/constants";
-import { getIndexFile } from "#project/structure/utils/getIndexFile";
+import { getIndexFile } from "#batiment/roles/index";
 import { isPlaced } from "#project/structure/utils/isPlaced";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { Entity } from "#project/structure/types/Entity";

@@ -1,8 +1,8 @@
 import { flatMap } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
+import { listStaticFileGlobs } from "#batiment/roles/utils/listStaticFileGlobs";
+import type { ResolvedRoles } from "#batiment/roles/types/ResolvedRoles";
 import type { Globs } from "#types/Globs";
 
 export function listDiscoveredGlobs({ roles }: ResolvedRoles): Globs {

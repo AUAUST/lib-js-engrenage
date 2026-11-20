@@ -13,6 +13,7 @@ export type * from "#batiment/environments/types/DomainDeclaration";
 export type * from "#batiment/environments/types/DomainInput";
 export type * from "#batiment/environments/types/NamespaceDeclaration";
 export type * from "#batiment/environments/types/NamespaceInput";
+export type * from "#batiment/environments/types/ProgramLayout";
 // @end
 
 // @barrel config/schemas

@@ -2,12 +2,11 @@ import { parse, record, string } from "valibot";
 
 import { object } from "@auaust/toolkit";
 
+import { effectModuleSchema, type EffectModule } from "#batiment/roles/index";
 import { engrenage } from "#constants";
 import { resolveDataFile } from "#foundation/data/index";
 import { readJsonFile } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
-import { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";
-import type { EffectModule } from "#project/structure/types/EffectModule";
 
 export const effectModulesSection = declareSection({
   async resolve(): Promise<Readonly<Record<string, EffectModule>>> {

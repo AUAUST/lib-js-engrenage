@@ -2,9 +2,14 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { index, utils } from "#project/roles/index";
-import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
-import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import { listEnvironmentRoles, resolveRoles } from "#batiment/roles/index";
+import {
+  actions,
+  commands,
+  executable,
+  index,
+  utils,
+} from "#project/roles/index";
 
 describe("listEnvironmentRoles", () => {
   test("lets a listed role replace the layout's role of the same name", () => {
@@ -12,7 +17,7 @@ describe("listEnvironmentRoles", () => {
       environment: "scripts",
       roles: listEnvironmentRoles({
         environment: "scripts",
-        tree: "commands",
+        layoutRoles: [index(), executable(), commands(), actions()],
         roles: [index({ purpose: "The group." })],
         defaults: [],
       }),

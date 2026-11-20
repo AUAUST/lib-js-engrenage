@@ -4,21 +4,23 @@ import { toArray } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { freeze, record } from "@auaust/toolkit/object";
 
-import { noRoles } from "#project/structure/constants";
+import { noRoles } from "#batiment/roles/constants";
+import {
+  findFileResolver,
+  resolveRoles,
+  type EnvironmentRoles,
+  type ResolvedRoles,
+  type RoleLocation,
+  type RoleRegistry,
+} from "#batiment/roles/index";
 import { listStructureFiles } from "#project/structure/operations/listStructureFiles";
 import { listStructureFilesAtAnyDepth } from "#project/structure/operations/listStructureFilesAtAnyDepth";
 import { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
-import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 import { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
-import { resolveRoles } from "#project/structure/utils/resolveRoles";
-import type { RoleLocation } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureParent } from "#project/structure/types/StructureParent";
 import type { Directory } from "#types/Directory";

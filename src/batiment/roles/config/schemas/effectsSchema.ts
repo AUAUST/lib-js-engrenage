@@ -1,8 +1,8 @@
 import { string } from "valibot";
 
+import { effectLevelsSchema } from "#batiment/roles/config/schemas/effectLevelsSchema";
+import { effectModulesSchema } from "#batiment/roles/config/schemas/effectModulesSchema";
 import { declare, declareObject, unset } from "#foundation/options/index";
-import { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
-import { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
 
 export const effectsSchema = declareObject(
   {

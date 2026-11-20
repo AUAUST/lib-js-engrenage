@@ -2,11 +2,8 @@ import { posix } from "node:path";
 
 import { entries } from "@auaust/toolkit/object";
 
+import { getExecutableFile, type ResolvedRoles } from "#batiment/roles/index";
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
-import {
-  getExecutableFile,
-  type ResolvedRoles,
-} from "#project/structure/index";
 import { toEntryName } from "#tools/tsdown/utils/toEntryName";
 import type { ResolvedBin } from "#project/environments/index";
 import type { File } from "#types/File";

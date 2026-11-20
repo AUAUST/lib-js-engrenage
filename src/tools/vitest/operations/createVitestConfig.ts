@@ -5,10 +5,10 @@ import { configDefaults, coverageConfigDefaults } from "vitest/config";
 import { flatMap, unique } from "@auaust/toolkit/iterable";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { noRoles } from "#batiment/roles/constants";
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { composeTestsPatterns } from "#project/environments/index";
-import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,

@@ -7,6 +7,7 @@ import { flatMap } from "@auaust/toolkit/iterable";
 import { keys } from "@auaust/toolkit/object";
 import type { Maybe } from "@auaust/toolkit/types";
 
+import { noRoles } from "#batiment/roles/constants";
 import { arethetypeswrongCore, packageJsonFile, publint } from "#constants";
 import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
@@ -14,7 +15,6 @@ import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
 import { createDefine } from "#project/environments/index";
 import { sourceCondition } from "#project/package/constants";
-import { noRoles } from "#project/structure/constants";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
   emptyNamespaces,

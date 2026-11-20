@@ -1,9 +1,6 @@
+import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { testsetup } from "#project/roles/index";
-import {
-  listStaticFileGlobs,
-  type ResolvedRoles,
-} from "#project/structure/index";
 import type { ResolvedTests } from "#project/environments/index";
 import type { Files } from "#types/Files";
 

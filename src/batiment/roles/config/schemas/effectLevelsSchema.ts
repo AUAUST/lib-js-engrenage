@@ -1,6 +1,6 @@
 import { array, check, pipe, string } from "valibot";
 
-import { defaultEffectLevels } from "#project/structure/constants";
+import { defaultEffectLevels } from "#batiment/roles/constants";
 
 function keepsDefaultLevels(levels: string[]): boolean {
   let position = -1;

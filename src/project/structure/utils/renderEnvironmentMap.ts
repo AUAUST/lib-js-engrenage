@@ -1,11 +1,10 @@
 import { entries } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 import type { Alias } from "#project/structure/types/Alias";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 
 // @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {

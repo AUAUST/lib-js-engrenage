@@ -1,6 +1,8 @@
-import type { NamespaceDeclaration } from "#batiment/environments/index";
+import type {
+  NamespaceDeclaration,
+  ProgramLayout,
+} from "#batiment/environments/index";
 import type { Role } from "#batiment/roles/index";
-import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { Directory } from "#types/Directory";
 
 export type EnvironmentStructureOption =

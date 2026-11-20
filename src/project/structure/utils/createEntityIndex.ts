@@ -3,15 +3,19 @@ import { extname, matchesGlob, posix, relative } from "node:path";
 import { memoize } from "@auaust/toolkit/function";
 import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
-import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
+import {
+  entryRoleName,
+  indexRoleName,
+  noRoles,
+} from "#batiment/roles/constants";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
-import { noRoles } from "#project/structure/constants";
 import { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
 import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
 import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
+import type { ResolvedRoles } from "#batiment/roles/index";
 import type { EntityIndex } from "#project/structure/apis/EntityIndex";
 import type { Entity } from "#project/structure/types/Entity";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
@@ -19,7 +23,6 @@ import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { LocatedEntity } from "#project/structure/types/LocatedEntity";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { TestVariant } from "#project/structure/types/TestVariant";

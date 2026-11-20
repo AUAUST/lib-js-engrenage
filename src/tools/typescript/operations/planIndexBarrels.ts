@@ -9,13 +9,13 @@ import {
   collectStructureNodes,
   isPlaced,
   type EnvironmentStructure,
-  type ResolvedRoleContract,
   type StructureNode,
 } from "#project/structure/index";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import { locateDomain } from "#tools/typescript/utils/locateDomain";
+import type { ResolvedRoleContract } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
 import type { Directory } from "#types/Directory";

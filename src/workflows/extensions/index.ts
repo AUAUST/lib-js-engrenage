@@ -17,6 +17,10 @@ export type {
   RoleRuleModule,
   RoleRules,
 } from "#batiment/roles/index";
+export type {
+  ResolvedRoleContract,
+  ResolvedRoleExports,
+} from "#batiment/roles/index";
 export type { HookEntry } from "#foundation/extensions/index";
 export type { Filesystem } from "#foundation/filesystem/index";
 export type { Section } from "#foundation/options/index";
@@ -44,8 +48,6 @@ export type {
   CardinalityViolation,
   EnvironmentFileNames,
   EnvironmentStructure,
-  ResolvedRoleContract,
-  ResolvedRoleExports,
   ResolvedStructure,
   StructureDiagnostic,
   StructureDiagnosticCode,

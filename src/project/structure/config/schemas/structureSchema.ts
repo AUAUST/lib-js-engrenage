@@ -1,7 +1,7 @@
 import { boolean } from "valibot";
 
+import { effectsSchema } from "#batiment/roles/index";
 import { declare, declareObject } from "#foundation/options/index";
-import { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 
 export const structureSchema = declareObject(
   {

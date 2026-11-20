@@ -20,12 +20,8 @@ export type * from "#project/structure/types/BoundaryCause";
 export type * from "#project/structure/types/BoundaryViolation";
 export type * from "#project/structure/types/CardinalityViolation";
 export type * from "#project/structure/types/DeclaredStructure";
-export type * from "#project/structure/types/EffectModule";
-export type * from "#project/structure/types/EffectModuleResolver";
-export type * from "#project/structure/types/EffectModules";
 export type * from "#project/structure/types/Entity";
 export type * from "#project/structure/types/EnvironmentFileNames";
-export type * from "#project/structure/types/EnvironmentRoles";
 export type * from "#project/structure/types/EnvironmentStructure";
 export type * from "#project/structure/types/ImportCategory";
 export type * from "#project/structure/types/ImportCycle";
@@ -38,18 +34,10 @@ export type * from "#project/structure/types/LocatedEntity";
 export type * from "#project/structure/types/MetadataField";
 export type * from "#project/structure/types/NamedFileRole";
 export type * from "#project/structure/types/OptionSource";
-export type * from "#project/structure/types/ProgramLayout";
 export type * from "#project/structure/types/ResolvedAliases";
-export type * from "#project/structure/types/ResolvedEffects";
 export type * from "#project/structure/types/ResolvedFiles";
-export type * from "#project/structure/types/ResolvedRoleContract";
-export type * from "#project/structure/types/ResolvedRoleExports";
-export type * from "#project/structure/types/ResolvedRoles";
 export type * from "#project/structure/types/ResolvedSpecifier";
 export type * from "#project/structure/types/ResolvedStructure";
-export type * from "#project/structure/types/RoleDefinition";
-export type * from "#project/structure/types/RoleEffects";
-export type * from "#project/structure/types/RoleRegistry";
 export type * from "#project/structure/types/StructureDiagnostic";
 export type * from "#project/structure/types/StructureDiagnosticCode";
 export type * from "#project/structure/types/StructureInput";
@@ -69,11 +57,6 @@ export type * from "#project/structure/types/UnclassifiedReason";
 // @end
 
 // @barrel config/schemas
-export { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
-export { effectModuleResolverSchema } from "#project/structure/config/schemas/effectModuleResolverSchema";
-export { effectModuleSchema } from "#project/structure/config/schemas/effectModuleSchema";
-export { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
-export { effectsSchema } from "#project/structure/config/schemas/effectsSchema";
 export { structureSchema } from "#project/structure/config/schemas/structureSchema";
 // @end
 
@@ -87,7 +70,6 @@ export { checkTests } from "#project/structure/utils/checkTests";
 export { checkWorkspaces } from "#project/structure/utils/checkWorkspaces";
 export { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
 export { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
-export { completeRole } from "#project/structure/utils/completeRole";
 export { constrainsFileRole } from "#project/structure/utils/constrainsFileRole";
 export { createEntityIndex } from "#project/structure/utils/createEntityIndex";
 export { createImportResolver } from "#project/structure/utils/createImportResolver";
@@ -95,15 +77,11 @@ export { createMirrorClassifier } from "#project/structure/utils/createMirrorCla
 export { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 export { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
 export { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
-export { findFileResolver } from "#project/structure/utils/findFileResolver";
 export { findStructureAliases } from "#project/structure/utils/findStructureAliases";
 export { flattenStructure } from "#project/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
-export { getEntryFile } from "#project/structure/utils/getEntryFile";
 export { getEnvironmentRootRole } from "#project/structure/utils/getEnvironmentRootRole";
-export { getExecutableFile } from "#project/structure/utils/getExecutableFile";
 export { getImportCategory } from "#project/structure/utils/getImportCategory";
-export { getIndexFile } from "#project/structure/utils/getIndexFile";
 export { getLocalRoleName } from "#project/structure/utils/getLocalRoleName";
 export { getStructureCardinality } from "#project/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#project/structure/utils/getStructureLayer";
@@ -113,19 +91,13 @@ export { isPlaced } from "#project/structure/utils/isPlaced";
 export { isViolatingNode } from "#project/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#project/structure/utils/listBlockingDiagnostics";
 export { listContestedOptionPaths } from "#project/structure/utils/listContestedOptionPaths";
-export { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
-export { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
 export { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 export { listNodeViolations } from "#project/structure/utils/listNodeViolations";
-export { listReexportModes } from "#project/structure/utils/listReexportModes";
-export { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 export { listStructureDiagnostics } from "#project/structure/utils/listStructureDiagnostics";
 export { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 export { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";
 export { matchFileRole } from "#project/structure/utils/matchFileRole";
 export { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
-export { rankModule } from "#project/structure/utils/rankModule";
-export { registerRoles } from "#project/structure/utils/registerRoles";
 export { renderCardinalityViolation } from "#project/structure/utils/renderCardinalityViolation";
 export { renderCommandGroupTwin } from "#project/structure/utils/renderCommandGroupTwin";
 export { renderEnvironmentMap } from "#project/structure/utils/renderEnvironmentMap";
@@ -139,7 +111,6 @@ export { renderStructureLabel } from "#project/structure/utils/renderStructureLa
 export { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 export { resolveDomainEntries } from "#project/structure/utils/resolveDomainEntries";
 export { resolveEnvironmentGrants } from "#project/structure/utils/resolveEnvironmentGrants";
-export { resolveRoles } from "#project/structure/utils/resolveRoles";
 // @end
 
 // @barrel config/sections

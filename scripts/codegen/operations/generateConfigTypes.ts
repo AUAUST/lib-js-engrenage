@@ -17,6 +17,7 @@ import { map, sort } from "@auaust/toolkit/array";
 import { keys, mapValues } from "@auaust/toolkit/object";
 
 import {
+  effectModuleResolverSchema,
   roleCompanionResolverSchema,
   roleFileResolverSchema,
   roleRulesSchema,
@@ -30,7 +31,6 @@ import {
 import { tagDeclarationSchema } from "#project/docs/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
-import { effectModuleResolverSchema } from "#project/structure/index";
 import { inheritsSchema } from "#project/tsconfig/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
 import { composeInputSchemas } from "#scripts/codegen/operations/composeInputSchemas";
@@ -63,10 +63,7 @@ const externalTypes = new Map<string, TypeSource>([
   ["ManagedListOption", { domain: "foundation/options", specifier: undefined }],
   ["GlobalsFactory", { domain: "project/environments", specifier: undefined }],
   ["ExtensionOption", { domain: "project/config", specifier: undefined }],
-  [
-    "EffectModuleResolver",
-    { domain: "project/structure", specifier: undefined },
-  ],
+  ["EffectModuleResolver", { domain: "batiment/roles", specifier: undefined }],
   ["RoleRules", { domain: "batiment/roles", specifier: undefined }],
   ["TagDeclaration", { domain: "project/docs", specifier: undefined }],
   ["RoleFileResolver", { domain: "batiment/roles", specifier: undefined }],

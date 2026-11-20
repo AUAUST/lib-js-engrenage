@@ -1,6 +1,8 @@
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import {
+  listStaticFileGlobs,
+  type ResolvedRoleContract,
+} from "#batiment/roles/index";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 
 export function listNamedFileRoles(

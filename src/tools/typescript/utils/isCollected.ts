@@ -1,4 +1,4 @@
-import type { ResolvedRoleContract } from "#project/structure/index";
+import type { ResolvedRoleContract } from "#batiment/roles/index";
 
 export function isCollected(
   contract: ResolvedRoleContract | undefined,

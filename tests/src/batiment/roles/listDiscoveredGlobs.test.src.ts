@@ -1,8 +1,10 @@
 import { expect, test } from "vitest";
 
-import { noRoles } from "#project/structure/constants";
-import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
+import { noRoles } from "#batiment/roles/constants";
+import {
+  listDiscoveredGlobs,
+  type ResolvedRoleContract,
+} from "#batiment/roles/index";
 
 function contract(
   overrides: Partial<ResolvedRoleContract>,

@@ -1,6 +1,6 @@
 import { isString } from "@auaust/toolkit";
 
-import type { RoleFileResolver } from "#batiment/roles/index";
+import type { RoleFileResolver } from "#batiment/roles/types/RoleFileResolver";
 import type { DescribedResolver } from "#foundation/options/index";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";

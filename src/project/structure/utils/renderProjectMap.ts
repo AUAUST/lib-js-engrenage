@@ -7,10 +7,10 @@ import {
   sourceEnvironment,
 } from "#project/structure/constants";
 import { renderProjectMapRoles } from "#project/structure/utils/renderProjectMapRoles";
+import type { ResolvedRoles } from "#batiment/roles/index";
 import type { ContributedEnvironmentEntry } from "#project/environments/index";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportGrants } from "#project/structure/types/ImportGrants";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";

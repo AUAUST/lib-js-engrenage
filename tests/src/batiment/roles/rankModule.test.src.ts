@@ -1,13 +1,15 @@
 import { parse } from "valibot";
 import { describe, expect, test } from "vitest";
 
+import { defaultEffectLevels } from "#batiment/roles/constants";
+import {
+  effectLevelsSchema,
+  effectModulesSchema,
+  rankModule,
+  type ResolvedEffects,
+} from "#batiment/roles/index";
 import { resolveDataFile } from "#foundation/data/index";
 import { readJsonFile } from "#foundation/filesystem/index";
-import { effectLevelsSchema } from "#project/structure/config/schemas/effectLevelsSchema";
-import { effectModulesSchema } from "#project/structure/config/schemas/effectModulesSchema";
-import { defaultEffectLevels } from "#project/structure/constants";
-import { rankModule } from "#project/structure/utils/rankModule";
-import type { ResolvedEffects } from "#project/structure/types/ResolvedEffects";
 
 describe("module effect levels", () => {
   test("requires the four default levels in order", () => {

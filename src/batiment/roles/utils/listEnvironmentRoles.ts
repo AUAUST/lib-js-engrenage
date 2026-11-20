@@ -1,16 +1,14 @@
-import { actions, commands, executable, index } from "#project/roles/index";
-import type { Role } from "#batiment/roles/index";
-import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
+import type { Role } from "#batiment/roles/types/Role";
 
 export function listEnvironmentRoles({
   environment,
-  tree,
+  layoutRoles = [],
   roles = [],
   omitRoles = [],
   defaults,
 }: {
   environment: string;
-  tree?: ProgramLayout | undefined;
+  layoutRoles?: readonly Role[] | undefined;
   roles?: readonly Role[] | undefined;
   omitRoles?: readonly string[] | undefined;
   defaults: readonly Role[];
@@ -34,15 +32,11 @@ export function listEnvironmentRoles({
     ...roles,
   ];
 
-  if (tree !== "commands") {
-    return configured;
-  }
-
   const named = new Set(configured.map(({ name }) => name));
 
   return [
     ...configured,
-    ...[index(), executable(), commands(), actions()].filter(({ name }) => {
+    ...layoutRoles.filter(({ name }) => {
       return !named.has(name);
     }),
   ];

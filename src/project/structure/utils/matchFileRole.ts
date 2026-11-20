@@ -3,10 +3,12 @@ import { matchesGlob } from "node:path";
 import { entries } from "@auaust/toolkit/object";
 
 import { indexRoleName } from "#batiment/roles/constants";
-import { getIndexFile } from "#project/structure/utils/getIndexFile";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
+import {
+  getIndexFile,
+  listStaticFileGlobs,
+  type ResolvedRoles,
+} from "#batiment/roles/index";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { Globs } from "#types/Globs";
 
 function matchesAny(name: string, globs: Globs) {

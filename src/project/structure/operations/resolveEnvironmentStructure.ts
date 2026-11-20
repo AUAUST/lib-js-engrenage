@@ -3,23 +3,25 @@ import { basename } from "node:path";
 import { flat, sort } from "@auaust/toolkit/array";
 import { freeze, getOwn, keys } from "@auaust/toolkit/object";
 
+import {
+  getEntryFile,
+  getIndexFile,
+  type EnvironmentRoles,
+  type ResolvedRoles,
+  type RoleRegistry,
+} from "#batiment/roles/index";
 import { assignRoleFiles } from "#project/structure/operations/assignRoleFiles";
 import { createStructureDomainResolver } from "#project/structure/operations/createStructureDomainResolver";
 import { createStructureRoleResolver } from "#project/structure/operations/createStructureRoleResolver";
 import { createStructureWalker } from "#project/structure/operations/createStructureWalker";
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
 import { createMirrorClassifier } from "#project/structure/utils/createMirrorClassifier";
-import { getEntryFile } from "#project/structure/utils/getEntryFile";
-import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { groupRoleFiles } from "#project/structure/utils/groupRoleFiles";
 import { listStructureRoles } from "#project/structure/utils/listStructureRoles";
 import { loosenStructureNode } from "#project/structure/utils/loosenStructureNode";
+import type { ProgramLayout } from "#batiment/environments/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
-import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { StructureOptions } from "#project/structure/types/StructureOptions";

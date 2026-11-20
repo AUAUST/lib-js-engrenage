@@ -1,4 +1,4 @@
-import type { EffectModule } from "#project/structure/types/EffectModule";
+import type { EffectModule } from "#batiment/roles/types/EffectModule";
 
 export type EffectModuleResolver = (
   specifier: string,

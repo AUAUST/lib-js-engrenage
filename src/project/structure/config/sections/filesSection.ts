@@ -1,6 +1,8 @@
 import { flatMap } from "@auaust/toolkit/array";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
+import { noRoles } from "#batiment/roles/constants";
+import { listDiscoveredGlobs } from "#batiment/roles/index";
 import { filesIn } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import { listLocationGlobs, type ConfigResolver } from "#project/config/index";
@@ -8,8 +10,6 @@ import {
   readEnvironments,
   type ContributedEnvironment,
 } from "#project/environments/index";
-import { noRoles } from "#project/structure/constants";
-import { listDiscoveredGlobs } from "#project/structure/utils/listDiscoveredGlobs";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 import type { Globs } from "#types/Globs";
 

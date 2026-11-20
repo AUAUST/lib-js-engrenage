@@ -1,8 +1,11 @@
+import {
+  listEnvironmentRoles,
+  type EnvironmentRoles,
+} from "#batiment/roles/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
+import { actions, commands, executable, index } from "#project/roles/index";
 import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
-import { listEnvironmentRoles } from "#project/structure/utils/listEnvironmentRoles";
-import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 
 const readsFor = memoizeByContext(() => {
   return new Map<string, Promise<EnvironmentRoles | undefined>>();
@@ -37,6 +40,9 @@ async function createEnvironmentRoles(
       ...option,
       environment,
       defaults,
+      layoutRoles: option.tree === "commands"
+        ? [index(), executable(), commands(), actions()]
+        : [],
     }),
     effects,
     defaultModules,

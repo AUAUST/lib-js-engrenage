@@ -1,12 +1,10 @@
 import type { roleSurfaces } from "#batiment/roles/constants";
-import type {
-  ReexportMode,
-  RoleCompanionResolver,
-  RoleFileResolver,
-  RoleRules,
-} from "#batiment/roles/index";
+import type { ReexportMode } from "#batiment/roles/types/ReexportMode";
+import type { ResolvedRoleExports } from "#batiment/roles/types/ResolvedRoleExports";
+import type { RoleCompanionResolver } from "#batiment/roles/types/RoleCompanionResolver";
+import type { RoleFileResolver } from "#batiment/roles/types/RoleFileResolver";
+import type { RoleRules } from "#batiment/roles/types/RoleRules";
 import type { DescribedResolver } from "#foundation/options/index";
-import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 

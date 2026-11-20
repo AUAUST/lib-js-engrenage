@@ -1,12 +1,11 @@
 import { entries, freeze, hasOwn, keys } from "@auaust/toolkit/object";
 
-import { registerRoles } from "#project/structure/utils/registerRoles";
+import { registerRoles, type RoleRegistry } from "#batiment/roles/index";
 import type {
   DomainDeclaration,
   NamespaceDeclaration,
 } from "#batiment/environments/index";
 import type { DeclaredStructure } from "#project/structure/types/DeclaredStructure";
-import type { RoleRegistry } from "#project/structure/types/RoleRegistry";
 import type { Directory } from "#types/Directory";
 
 const environmentRoot = ".";

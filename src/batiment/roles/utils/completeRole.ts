@@ -2,11 +2,11 @@ import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { roleContractDefaults } from "#batiment/roles/constants";
-import { listReexportModes } from "#project/structure/utils/listReexportModes";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
-import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
-import type { ResolvedRoleExports } from "#project/structure/types/ResolvedRoleExports";
-import type { RoleDefinition } from "#project/structure/types/RoleDefinition";
+import { listReexportModes } from "#batiment/roles/utils/listReexportModes";
+import { listStaticFileGlobs } from "#batiment/roles/utils/listStaticFileGlobs";
+import type { ResolvedRoleContract } from "#batiment/roles/types/ResolvedRoleContract";
+import type { ResolvedRoleExports } from "#batiment/roles/types/ResolvedRoleExports";
+import type { RoleDefinition } from "#batiment/roles/types/RoleDefinition";
 
 function resolveExports(
   declared: RoleDefinition["exports"],

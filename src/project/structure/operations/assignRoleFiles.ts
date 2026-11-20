@@ -2,11 +2,10 @@ import { join } from "node:path";
 
 import { values } from "@auaust/toolkit/object";
 
+import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import { listStructureFiles } from "#project/structure/operations/listStructureFiles";
-import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
