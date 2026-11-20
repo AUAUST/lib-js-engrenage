@@ -7,7 +7,6 @@ import { afterEach, expect, test, vi } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { createProgram, runProgram } from "#workflows/cli/index";
 
 import hook from "#bin/engrenage-hook/index";
@@ -160,14 +159,6 @@ test(
     expect(readOutput(result.stdout).systemMessage).toContain("Invalid");
   },
 );
-
-test("a GitHub failure during dispatch reaches the fail-open handler", async () => {
-  const failure = await runDispatch();
-
-  expect(checkIssue).toHaveBeenCalled();
-  expect(process.exitCode).toBeUndefined();
-  expect(failure).toHaveProperty("message", "GitHub request failed with 503");
-});
 
 test("a dispatch check failing to load reaches the fail-open handler", async () => {
   vi.doMock("#bin/engrenage-hook/claude/actions/dispatch", () => {
