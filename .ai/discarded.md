@@ -146,3 +146,4 @@
 - incremental transcript reading: per-tool-call overrun check (subagent context cap) — a full parse of a 2 MB subagent transcript takes ~12 ms, under node startup; an offset state file would add a race for nothing
 - PostToolBatch `decision: "block"` or `continue: false` as the overrun lockout: end an overrunning subagent — ends the loop before any final report; PreToolUse deny all but the report tool instead
 - elapsed time or tool-call count as lockout signal: cap tunnelling subagents — a 23k→187k analyser took 12 minutes and 55 calls, under any 30-minute cap; context multiple measures the cost freshness already bounds
+- dispatch budget defaults: per-role default level for omitted `Budget:` lines — kept as an AGENTS.md table; an `agent:` frontmatter `budget` field the hook could read needs schema and renderer code beyond an instruction change

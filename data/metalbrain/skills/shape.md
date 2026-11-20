@@ -49,7 +49,7 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 | Agent instructions                                                                                         | Writer, under Instruction maintenance                               |
 | A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                                            |
 
-- Choose the cheapest agent and effort that fits each need; raise a gatherer or analyser to high effort only on the user's request.
+- Choose the cheapest agent, effort and budget level that fit each need; raise a gatherer or analyser to high effort only on the user's request.
 - For each new idea or topic, first read the backlog categories covering it for entries it would ease, worsen or take up; have a gatherer search the `@debt` markers and the agent-friction and discarded-solutions logs for the same.
 - Beyond backlog entries, agent-log lines and issue drafts, edit files only for the changes the last row names, and only while no agent changes files in the main checkout.
 - When a gatherer's report misses what you asked, dispatch one more with a narrowed prompt; past that, tell the user what is still unknown.
@@ -70,7 +70,7 @@ Read this file before the first dispatch of an agent changing files, and again a
 - Brief a file-changing agent with its issue or draft line first, when it has one, then `Base: <dispatch base>`.
 - Dispatch a worker, debugger or writer for an issue with a `complexity` at the effort §Agent limits gives it, otherwise at its default; in a linked checkout, pass that effort as `--effort`.
 - Treat each tool on a `Denied:` line, and each action an agent reports a permission refused, as undone: do it yourself when it is a change the last row of §Agents names; otherwise tell the user what it blocked.
-- A worker report opening with `Scope stop:` or `Linked defect:`: hold its work (§Holding) and bring its findings into the discussion.
+- A worker report opening with `Scope stop:` or `Linked defect:`, or a `Budget stop:` report you take as it stands: hold its work, if any (§Holding), and bring its findings into the discussion.
 
 For work in another registered repository, once the user confirmed the location under Environment, read this file too, which replaces the steps of `worktree-dispatch.md` it covers:
 
