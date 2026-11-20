@@ -17,11 +17,11 @@ describe("renderGateCommand", () => {
     ).toEqual({
       "engrenage": {
         only: [{ run: 'test -n "$CLAUDECODE"' }],
-        run: "pnpm --silent engrenage gate --staged",
+        run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged",
       },
       "engrenage-local": {
         skip: [{ run: 'test -n "$CLAUDECODE"' }],
-        run: "pnpm --silent engrenage gate --staged --everyone",
+        run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
       },
     });
   });
@@ -41,7 +41,7 @@ describe("renderGateCommand", () => {
   test("renders only an unconditional everyone command without agent variables", () => {
     expect(renderGateCommand([], gateHooks["pre-commit"])).toEqual({
       "engrenage-local": {
-        run: "pnpm --silent engrenage gate --staged --everyone",
+        run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
       },
     });
   });

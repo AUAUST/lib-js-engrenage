@@ -521,14 +521,14 @@ describe("engrenage init", () => {
         "pre-commit": {
           commands: {
             "engrenage-local": {
-              run: "pnpm --silent engrenage gate --staged --everyone",
+              run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
             },
           },
         },
         "commit-msg": {
           commands: {
             "engrenage-local": {
-              run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
+              run: 'pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}" --everyone',
             },
           },
         },

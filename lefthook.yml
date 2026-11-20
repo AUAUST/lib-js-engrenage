@@ -3,18 +3,18 @@ pre-commit:
     engrenage:
       only:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --staged
+      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged
     engrenage-local:
       skip:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --staged --everyone
+      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone
 commit-msg:
   commands:
     engrenage:
       only:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --message "{1}"
+      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}"
     engrenage-local:
       skip:
         - run: test -n "$CLAUDECODE"
-      run: pnpm --silent engrenage gate --message "{1}" --everyone
+      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}" --everyone

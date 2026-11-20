@@ -38,14 +38,14 @@ describe("syncLefthookConfig", () => {
         "pre-commit": {
           commands: {
             "engrenage-local": {
-              run: "pnpm --silent engrenage gate --staged --everyone",
+              run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
             },
           },
         },
         "commit-msg": {
           commands: {
             "engrenage-local": {
-              run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
+              run: 'pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}" --everyone',
             },
           },
         },
@@ -70,11 +70,11 @@ describe("syncLefthookConfig", () => {
         commands: {
           "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --staged",
+            run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged",
           },
           "engrenage-local": {
             skip: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --staged --everyone",
+            run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
           },
         },
       },
@@ -82,11 +82,11 @@ describe("syncLefthookConfig", () => {
         commands: {
           "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: 'pnpm --silent engrenage gate --message "{1}"',
+            run: 'pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}"',
           },
           "engrenage-local": {
             skip: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
+            run: 'pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}" --everyone',
           },
         },
       },
@@ -115,11 +115,11 @@ describe("syncLefthookConfig", () => {
         commands: {
           "engrenage": {
             only: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --staged",
+            run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged",
           },
           "engrenage-local": {
             skip: [{ run: 'test -n "$CLAUDECODE"' }],
-            run: "pnpm --silent engrenage gate --staged --everyone",
+            run: "pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged --everyone",
           },
         },
       },
@@ -147,7 +147,7 @@ describe("syncLefthookConfig", () => {
 
   test("rewrites a changed condition", async () => {
     const project = createProject(
-      'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - run: test -n "$OTHER"\n      run: pnpm --silent engrenage gate --staged\n',
+      'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - run: test -n "$OTHER"\n      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged\n',
     );
 
     const config = await loadConfig(project.root);
@@ -162,7 +162,7 @@ describe("syncLefthookConfig", () => {
 
   test("quotes a stale unquoted message path", async () => {
     const project = createProject(
-      "commit-msg:\n  commands:\n    engrenage-local:\n      run: pnpm --silent engrenage gate --message {1} --everyone\n",
+      "commit-msg:\n  commands:\n    engrenage-local:\n      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --message {1} --everyone\n",
     );
 
     const config = await loadConfig(project.root);
@@ -175,7 +175,7 @@ describe("syncLefthookConfig", () => {
       "commit-msg": {
         commands: {
           "engrenage-local": {
-            run: 'pnpm --silent engrenage gate --message "{1}" --everyone',
+            run: 'pnpm --silent --config.verify-deps-before-run=false engrenage gate --message "{1}" --everyone',
           },
         },
       },
@@ -184,7 +184,7 @@ describe("syncLefthookConfig", () => {
 
   test("rewrites an equal command holding an anchor", async () => {
     const project = createProject(
-      'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - &a1\n          run: test -n "$CLAUDECODE"\n      run: pnpm --silent engrenage gate --staged\n',
+      'pre-commit:\n  commands:\n    engrenage:\n      only:\n        - &a1\n          run: test -n "$CLAUDECODE"\n      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged\n',
     );
 
     const before = parse(project.read("lefthook.yml"));
@@ -217,7 +217,7 @@ describe("syncLefthookConfig", () => {
         "      only:",
         "        - &agent",
         '          run: test -n "$OTHER"',
-        "      run: pnpm --silent engrenage gate --staged",
+        "      run: pnpm --silent --config.verify-deps-before-run=false engrenage gate --staged",
         "    lint:",
         "      only:",
         "        - *agent",
