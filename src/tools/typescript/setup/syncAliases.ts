@@ -30,10 +30,8 @@ import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
-import {
-  bundledImportExtensions,
-  importPrefix,
-} from "#tools/typescript/constants";
+import { importPrefix } from "#tools/typescript/constants";
+import { readTypescriptLanguage } from "#tools/typescript/operations/readTypescriptLanguage";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { LoadedConfig } from "#project/config/index";
@@ -181,17 +179,20 @@ async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
   await writeGeneratedKeys(config, pathsPart, keys(generated));
 }
 
-// @debt Recovers the stem by stripping the first bundled extension from a target the alias resolver built from the typescript language's extensions; an `Alias` carrying its stem would remove that coupling.
-function toBundledImport({ key, target }: Alias): ImportTarget {
-  const [extension] = bundledImportExtensions;
+// @debt Recovers the stem by stripping the language's first extension from a target the alias resolver built; an `Alias` carrying its stem would remove that coupling.
+function toBundledImport(
+  { key, target }: Alias,
+  extensions: readonly string[],
+): ImportTarget {
+  const [extension] = extensions;
 
-  if (!target.endsWith(extension)) {
+  if (extension === undefined || !target.endsWith(extension)) {
     throw new Error(
       `The generated alias ${key} → ${target} targets no ${extension} module`,
     );
   }
 
-  return createBundledImport(target.slice(0, -extension.length));
+  return createBundledImport(target.slice(0, -extension.length), extensions);
 }
 
 export async function syncAliases(config: LoadedConfig) {
@@ -209,11 +210,13 @@ export async function syncAliases(config: LoadedConfig) {
       })
     : [];
 
+  const { extensions } = await readTypescriptLanguage(config);
+
   const imports = {
     ...listSubpathImports([...global, ...src]),
     ...record(
       map(generated, (alias) => {
-        return [alias.key, toBundledImport(alias)] as const;
+        return [alias.key, toBundledImport(alias, extensions)] as const;
       }),
     ),
   };

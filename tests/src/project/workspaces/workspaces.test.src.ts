@@ -79,7 +79,7 @@ describe("workspaces", () => {
       license: "MIT",
       imports: {
         "#self/*": {
-          types: ["./src/*.ts", "./src/*.tsx"],
+          types: ["./src/*.ts", "./src/*.tsx", "./src/*.mts", "./src/*.cts"],
           default: "./src/*",
         },
       },

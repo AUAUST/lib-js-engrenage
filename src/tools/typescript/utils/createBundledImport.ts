@@ -1,10 +1,11 @@
 import { map } from "@auaust/toolkit/array";
 
-import { bundledImportExtensions } from "#tools/typescript/constants";
-
-export function createBundledImport(stem: string) {
+export function createBundledImport(
+  stem: string,
+  extensions: readonly string[],
+) {
   return {
-    types: map(bundledImportExtensions, (extension) => `${stem}${extension}`),
+    types: map(extensions, (extension) => `${stem}${extension}`),
     default: stem,
   };
 }

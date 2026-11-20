@@ -120,11 +120,21 @@ describe("aliases", () => {
     expect((await read("package.json")).imports).toMatchObject({
       "#data/*": "./data/*",
       "#utils/*": {
-        types: ["./src/utils/*.ts", "./src/utils/*.tsx"],
+        types: [
+          "./src/utils/*.ts",
+          "./src/utils/*.tsx",
+          "./src/utils/*.mts",
+          "./src/utils/*.cts",
+        ],
         default: "./src/utils/*",
       },
       "#constants": {
-        types: ["./src/constants.ts", "./src/constants.tsx"],
+        types: [
+          "./src/constants.ts",
+          "./src/constants.tsx",
+          "./src/constants.mts",
+          "./src/constants.cts",
+        ],
         default: "./src/constants",
       },
     });

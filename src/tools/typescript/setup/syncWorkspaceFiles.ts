@@ -24,6 +24,7 @@ import {
   toTsconfigGlobs,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
+import { readTypescriptLanguage } from "#tools/typescript/operations/readTypescriptLanguage";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import type { LoadedConfig } from "#project/config/index";
 import type {
@@ -44,6 +45,7 @@ function createPackageFields(
   { optional: { version, license } }: PackageJson,
   { name }: ResolvedWorkspace,
   access: PublishAccess | undefined,
+  extensions: readonly string[],
 ): Field[] {
   const fields: Field[] = [
     { location: ["name"], value: name },
@@ -68,7 +70,7 @@ function createPackageFields(
   fields.push({
     location: ["imports", selfImportKey],
     value: toJsonValue(
-      createBundledImport(selfImportStem),
+      createBundledImport(selfImportStem, extensions),
       "the workspace self imports",
     ),
   });
@@ -151,6 +153,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     packageJson,
     traits,
     visibility,
+    language,
   ] = await Promise.all([
     config.resolve("workspaces"),
     config.context.filesystem,
@@ -158,6 +161,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     config.resolve("packageJson"),
     config.resolve("traits"),
     config.resolve("visibility"),
+    readTypescriptLanguage(config),
   ]);
 
   const access = traits.published ? accessByVisibility[visibility] : undefined;
@@ -169,7 +173,12 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
 
       await filesystem.write(
         packageFile,
-        createPackageFields(packageJson, workspace, access).reduce(
+        createPackageFields(
+          packageJson,
+          workspace,
+          access,
+          language.extensions,
+        ).reduce(
           (current, { location, value }) => {
             return writePackageJsonValue(
               current,

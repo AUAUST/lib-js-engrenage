@@ -30,7 +30,6 @@
 - pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
 - npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
 - repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.
-- `engrenage gate --worktree`: first gate run in a worktree — printed a vitest failure (`listDebtMarkers` timeout) run from another agent worktree yet exited 0; reran the gate, which passed silently
 - `engrenage planning issue publish`: published a root Segment with no parent Plan — refused as "parent Plan outside the set"; rooted it under a new Plan
 - listInfoMessages: listed a file's `info` lint messages — no command exposes them; wrote a scratch script importing it
 - `pnpm lint`: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
@@ -63,7 +62,6 @@
 - engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
 - `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
 - walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
-- commit gate tests: init.test.src.ts "setup review is declined" timed out at 5000ms under the gate — passed on retry
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
 - `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
@@ -85,11 +83,8 @@
 - worktree-isolated Bash: `pnpm … ; git status` in one command — refused as naming git too complexly; reran git alone with `git -C`
 - worktree-isolated Bash: `cat` of several files, one path holding `git.ts` — refused as naming git in a compound command; read them through the Read tool
 - `$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks: no instruction or doc says which checkout it names — logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree
-- commit gate tests: checkAgents.test.src.ts timed out at 5000ms while another agent ran tests — passed alone and on retry
 - worktree-isolated Bash: `sed -i ''` edits chained with `git diff` — refused as too complex to verify; edited through the edit tool
-- `engrenage gate --worktree`: init.test.src.ts, 4 tests timed out at 5000ms — passed alone; reran the gate
 - `loadConfig` in tests: rewrote `engrenage.config.ts` and removed a `src` directory between two loads of one root — the memoized config kept the old aliases; called `loadConfig.refresh(root)` before each load
-- `engrenage gate --worktree`: barrelDirective and syncDirectiveBlocks tests timed out at 5000ms — passed alone; reran the gate
 - gh api graphql: queried `AUAUST/engrenage` from the package name — repository not found; the repository is `AUAUST/lib-js-engrenage`
 - tool extension in temporary-project tests: symlinked `node_modules/eslint` alone — `resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`
 - `pnpm engrenage debt --json`: piped stdout into a JSON parse — first line is the echoed command, so parse failed; dropped line 1 and reparsed
@@ -98,7 +93,6 @@
 - worker dispatch hook: dispatched #710 after removing #52's Planning by `gh issue edit` — refused for stale `Open questions` Blockers; cleared it through `planning issue claim` and `publish`
 - BSD sed `\|` alternation: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`
 - `engrenage planning issue publish`: detached #706 from Segment #52 keeping its header line — refused: "header line but no ancestors"; removed the line, moved its origin into Context
-- `engrenage gate --worktree`: barrelDirective test timed out at 5000ms — passed alone; reran the gate
 - `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
 - git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
 - worktree-isolated Bash: chained `cd` with `git rev-parse` and a log grep — refused as a compound git command; ran git alone
