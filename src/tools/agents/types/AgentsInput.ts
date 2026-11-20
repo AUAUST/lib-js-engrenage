@@ -40,8 +40,8 @@ export interface AgentsInput {
   attribution?: (boolean | undefined)
   /**
    * Prompt cache lifetime of subagent requests, written to Claude's `subagentPromptCacheTtl` setting.
-   * `1h` keeps a resumed subagent's cache across a review or a consultant answer.
-   * @default `1h`
+   * `1h` keeps a subagent's cache across pauses over five minutes, at a higher write cost.
+   * @default `5m`
    */
   subagentCacheTtl?: (("5m" | "1h") | undefined)
   /**

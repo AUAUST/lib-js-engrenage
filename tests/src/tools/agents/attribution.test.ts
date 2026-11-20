@@ -198,7 +198,7 @@ describe("agents.attribution", () => {
           ],
         },
         attribution: hidden,
-        subagentPromptCacheTtl: "1h",
+        subagentPromptCacheTtl: "5m",
       }),
       [noAttributionRule]: "<!-- @reference @auaust/engrenage/metalbrain/rules/no-attribution.md -->\n<!-- @end -->\n",
       [attributionRule]: "Project attribution note.\n",
@@ -212,7 +212,7 @@ describe("agents.attribution", () => {
 
     expect(JSON.parse(project.read(".claude/settings.json"))).toMatchObject({
       attribution: hidden,
-      subagentPromptCacheTtl: "1h",
+      subagentPromptCacheTtl: "5m",
     });
 
     expect(project.read(attributionRule)).toBe(files[attributionRule]);

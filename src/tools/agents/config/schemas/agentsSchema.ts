@@ -65,7 +65,7 @@ export const agentsSchema = declareObject(
     subagentCacheTtl: declare(picklist(subagentCacheTtls), {
       description: [
         "Prompt cache lifetime of subagent requests, written to Claude's `subagentPromptCacheTtl` setting.",
-        "`1h` keeps a resumed subagent's cache across a review or a consultant answer.",
+        "`1h` keeps a subagent's cache across pauses over five minutes, at a higher write cost.",
       ],
       optional: { value: defaultSubagentCacheTtl },
     }),

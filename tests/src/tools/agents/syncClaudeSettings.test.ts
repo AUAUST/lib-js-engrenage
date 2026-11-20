@@ -39,7 +39,7 @@ describe("syncClaudeSettings", () => {
       "Bash(git config core.hooksPath*)"
     ]
   },
-  "subagentPromptCacheTtl": "1h"
+  "subagentPromptCacheTtl": "5m"
 }
 `;
 
@@ -88,9 +88,9 @@ describe("syncClaudeSettings", () => {
 
   test("writes the configured subagent cache lifetime over another one", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], subagentCacheTtl: "5m" } };\n',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], subagentCacheTtl: "1h" } };\n',
       "package.json": '{"type":"module"}',
-      ".claude/settings.json": '{\n  "subagentPromptCacheTtl": "1h"\n}\n',
+      ".claude/settings.json": '{\n  "subagentPromptCacheTtl": "5m"\n}\n',
     });
 
     const config = await loadConfig(project.root);
@@ -100,7 +100,7 @@ describe("syncClaudeSettings", () => {
     await config.context.filesystem.flush();
 
     expect(project.read(".claude/settings.json")).toContain(
-      '"subagentPromptCacheTtl": "5m"',
+      '"subagentPromptCacheTtl": "1h"',
     );
   });
 
