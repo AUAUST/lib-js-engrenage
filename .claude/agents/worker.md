@@ -57,7 +57,7 @@ With an issue or a draft as specification, read it, then only the ancestors and 
 | The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                            |
 | **Planning** or **Questions**                       | Either is present.                                                                                                                                      |
 | `blockers`                                          | Any is set.                                                                                                                                             |
-| Size, by `.claude/rules/issue-drafts.md` › Size     | It holds more than one agent's worth: open the report with `Scope stop:`, naming each outcome with the **Steps** and **Tests** it covers.               |
+| Size, by `.claude/rules/issue-drafts.md` › Size     | It holds more than one agent's worth: open the report with `Scope stop:`, naming its outcomes with the **Steps** and **Tests** each covers.             |
 
 ## Reading the specification
 
