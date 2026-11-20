@@ -82,3 +82,5 @@
 - worktree isolation: heredocs, and commands naming a `tests/src/tools/github` path or chaining `git status` — refused as unverifiable; used the edit tools and ran each command alone
 - `pnpm engrenage sync`: new utils imported through a barrel — sync loads the barrel before regenerating it and fails; added each export line by hand, as its message says, then synced
 - `pnpm engrenage planning issue publish`: published three drafts — exited 1 though each printed `published` and the drafts and `Drafting` locks were gone; checked GitHub by hand
+- planning issue create: --parent with a bare slug (`batiment-relations`) — rejected; the stem needs its `new-` prefix although `--slug` accepts it without
+- planning issue check: tasks for a shaper, goal and **Planning** only — `check` requires **Steps** and **Tests** and refuses a "settle **Planning**" step; wrote only the known steps
