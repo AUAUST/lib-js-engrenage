@@ -4,7 +4,10 @@ export {
   createClaudeStep,
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
-export { recordClaudeRun } from "#tools/agents/claude/index";
+export {
+  recordClaudeRun,
+  resolveClaudeAgentTranscript,
+} from "#tools/agents/claude/index";
 export { codexFile } from "#tools/agents/codex/constants";
 export {
   createCodexHooksStep,
@@ -73,6 +76,7 @@ export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
 export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
+export { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 export { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";

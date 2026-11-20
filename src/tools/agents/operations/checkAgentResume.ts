@@ -1,47 +1,10 @@
-import { readdir } from "node:fs/promises";
-
-import {
-  isMissingError,
-  readTextFile,
-  resolveWithin,
-} from "#foundation/filesystem/index";
+import { resolveWithin } from "#foundation/filesystem/index";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
+import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import type { LoadedConfig } from "#project/config/index";
-import type { Directory } from "#types/Directory";
-
-const runningSuffix = ".running";
-
-async function listRunningAgents(
-  directory: Directory,
-): Promise<readonly { agent: string; role: string }[]> {
-  let files: readonly string[];
-
-  try {
-    files = await readdir(directory);
-  } catch (error) {
-    if (isMissingError(error)) {
-      return [];
-    }
-
-    throw error;
-  }
-
-  return Promise.all(
-    files
-      .filter((file) => file.endsWith(runningSuffix))
-      .map(async (file) => {
-        const role = await readTextFile(resolveWithin(directory, file));
-
-        return {
-          agent: file.slice(0, -runningSuffix.length),
-          role: role?.trim() ?? "",
-        };
-      }),
-  );
-}
 
 async function resolveFreshness(
   config: LoadedConfig,
@@ -68,7 +31,7 @@ export async function checkAgentResume(
 
   const [runs, running] = await Promise.all([
     readAgentRuns(directory),
-    listRunningAgents(directory),
+    readRunningAgents(directory),
   ]);
 
   // @debt a recipient that is not an agent id resolves to the agents whose role it names, so an agent addressed by any other name escapes the limit

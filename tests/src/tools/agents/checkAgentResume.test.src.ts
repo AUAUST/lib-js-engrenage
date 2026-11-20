@@ -79,6 +79,7 @@ test("passes a worker past its start, a planner under the limit, a running plann
     session: "session",
     agent: "p2",
     role: "planner",
+    transcript: "session/subagents/agent-p2.jsonl",
   });
 
   await expect(check("w1")).resolves.toBeUndefined();

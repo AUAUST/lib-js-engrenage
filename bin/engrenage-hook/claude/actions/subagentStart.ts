@@ -1,7 +1,8 @@
-import { object, string } from "valibot";
+import { object, optional, string } from "valibot";
 
 import {
   readHookPayload,
+  resolveClaudeAgentTranscript,
   resolveHookDirectory,
   startAgentRun,
 } from "#tools/agents/index";
@@ -14,6 +15,8 @@ const payloadSchema = object({
   session_id: string(),
   agent_id: string(),
   agent_type: string(),
+  transcript_path: string(),
+  agent_transcript_path: optional(string()),
 });
 
 export default async function (): Promise<void> {
@@ -22,6 +25,8 @@ export default async function (): Promise<void> {
     session_id: session,
     agent_id: agent,
     agent_type: role,
+    transcript_path: transcript,
+    agent_transcript_path: agentTranscript,
   } = await readHookPayload(payloadSchema, "Claude Code");
 
   const config = await loadValidatedConfig(
@@ -35,5 +40,13 @@ export default async function (): Promise<void> {
     session,
     agent,
     role,
+    transcript: (
+      agentTranscript ??
+      resolveClaudeAgentTranscript({
+        session,
+        agent,
+        transcript,
+      })
+    ),
   });
 }
