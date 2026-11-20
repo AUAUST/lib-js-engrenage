@@ -4,7 +4,10 @@ export {
   createClaudeStep,
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
-export { readClaudeTranscript } from "#tools/agents/claude/index";
+export {
+  readClaudeTranscript,
+  writeClaudeShellOptions,
+} from "#tools/agents/claude/index";
 export { codexFile } from "#tools/agents/codex/constants";
 export {
   createCodexHooksStep,

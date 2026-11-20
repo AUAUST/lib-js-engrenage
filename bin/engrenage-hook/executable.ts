@@ -2,7 +2,12 @@
 
 import { enableCompileCache } from "node:module";
 
-const contextEvents = new Set(["PreToolUse", "PostToolUse", "SubagentStart"]);
+const contextEvents = new Set([
+  "SessionStart",
+  "PreToolUse",
+  "PostToolUse",
+  "SubagentStart",
+]);
 
 function openHook(error: unknown) {
   const args = process.argv.slice(2);

@@ -237,6 +237,7 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
   expect(JSON.stringify(hooks)).not.toContain("engrenage agents claude hook");
 
   for (const event of [
+    "SessionStart",
     "PreToolUse",
     "PostToolUse",
     "SubagentStart",

@@ -143,7 +143,7 @@ In the main session, weighing options or examining material for contradictions, 
 
 | Trap                                                                                                              | Write                                                |
 | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| zsh aborts on an unmatched glob                                                                                   | Quote every glob passed as an argument               |
+| The shell expands an unquoted glob, and zsh can abort when it matches nothing                                     | Quote every glob passed as an argument               |
 | zsh never splits an unquoted variable                                                                             | Lists as arrays or through `xargs`                   |
 | zsh expands a word starting with `=` as a command path                                                            | No word starting with `=`                            |
 | macOS has no `timeout`                                                                                            | Each tool's own timeout                              |

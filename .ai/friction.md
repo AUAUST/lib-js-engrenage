@@ -34,13 +34,10 @@
 - `engrenage planning issue create --repo`: draft an issue for a client repository — only repositories in the planning sheet are registered; kept the client report in chat
 - `prettier --experimental-cli`: checked the repository with engrenage's config — silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
 - BSD sed: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
-- pnpm add in scratchpad: probing TypeScript 7 on the repo — auto mode classifier denied the install; relied on #558 measurements
 - deny rule on .env*: moving and reading the Interscript theme .env/.env.example for #581 — blocked even outside the repo; left the move to the user
 - engrenage planning issue create: passed `report` as the type — it takes `resource`; the material is a field
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
-- zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
-- rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
 - git index lock: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
@@ -70,7 +67,6 @@
 - worktree isolation: git commands on a scratch clone, and any command whose text holds "git" (a `github.com` string) — refused as outside the worktree; reproduced with pnpm alone, renamed the string
 - `git commit --no-verify` in a scratch clone: built merge-reproduction commits — the PreToolUse hook refused it anyway; dropped the full merge reproduction
 - `pnpm engrenage planning issue create`: ran it on a fresh session on `main` — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace structure changed since install; ran `pnpm install --offline`
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found" despite the Shell section; dropped the filter
 - BSD `ls <dir> -R`: listed a tree with the flag after the path — macOS ls reads `-R` as a file; used `find` or flag-first
 - worktree isolation: heredocs, and commands naming a `tests/src/tools/github` path or chaining `git status` — refused as unverifiable; used the edit tools and ran each command alone
 - `pnpm engrenage sync`: new utils imported through a barrel — sync loads the barrel before regenerating it and fails; added each export line by hand, as its message says, then synced
@@ -78,12 +74,10 @@
 - planning issue check: tasks for a shaper, goal and **Planning** only — `check` requires **Steps** and **Tests** and refuses a "settle **Planning**" step; wrote only the known steps
 - worktree isolation: heredoc file writes, a binary path spelled as a glob, and `$(git log …)` in one command — refused as unverifiable; used the edit tools, literal paths and single commands
 - `pnpm engrenage vitest`: a source type error under `--typecheck` — summary printed "Type Errors no errors" beside two unhandled TypeCheckErrors; read the errors section
-- oxlint binary from scratchpad: listing oxlint 1.94 native rules with `oxlint --rules` — auto mode classifier denied running the downloaded binary; read `crates/oxc_linter/src/rules.rs` at tag `oxlint_v1.94.0` through `gh api`
 - `eslint --print-config`: listing the effective rule set — needs `--flag unstable_native_nodejs_ts_config` for `eslint.config.ts`, which no instruction names; took it from `eslintFlags` in `src/tools/eslint/constants.ts`
 - worker dispatch hook: dispatched a published leaf (#733) while its parent plan (#732) was claimed with open **Questions** — refused on the ancestor's Questions and `Drafting` blocker; no instruction says a leaf waits on its plan's questions
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call a third time — "no matches found" despite the Shell section; reran without the filter
 - planning skill › Ordering: shaping a tree so a leaf dispatches while its plan has open **Questions** — no instruction says which ancestor sections and Blockers the dispatch hook checks (direct parent: all; above it: all but **Questions**, **Planning** and `Open questions`); read `checkIssueReadiness.ts` to learn it
 - `pnpm engrenage planning walk 732`: walking the tree — unknown command; the subcommand is `walk check <n>`
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - published issue complexity: needed #749's complexity for its dispatch effort after `planning issue publish` — publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
+- worktree isolation: `git status` chained after `pnpm engrenage sync` with `&&` — refused as unverifiable; ran it alone
+- grep is ugrep: `grep -o` with `.{0,1800}` context on a minified binary dump — ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`

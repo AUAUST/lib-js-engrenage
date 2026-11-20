@@ -15,6 +15,10 @@ export const claudeShellVariable = "CLAUDECODE";
 
 export const claudeSessionVariable = "CLAUDE_CODE_SESSION_ID";
 
+export const claudeEnvFileVariable = "CLAUDE_ENV_FILE";
+
+export const claudeShellOptions = '{ [ -z "${ZSH_VERSION-}" ] || setopt NO_NOMATCH; }';
+
 // @debt the kept names guess which `CLAUDE` variables a user configures, as Claude Code documents no split from those it sets for its own session and the processes it starts
 export const claudeVariables = freeze({
   prefix: "CLAUDE",
@@ -34,6 +38,11 @@ export const claudeHookMarkers = freeze([
 ] as const);
 
 export const claudeHooks = freeze([
+  {
+    event: "SessionStart",
+    matcher: "*",
+    args: "claude SessionStart",
+  },
   {
     event: "PreToolUse",
     matcher: "Bash|Agent|Task|SendMessage",
