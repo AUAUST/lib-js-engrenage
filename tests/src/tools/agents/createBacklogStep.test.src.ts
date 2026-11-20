@@ -6,7 +6,7 @@ import { createBacklogStep } from "#tools/agents/setup/createBacklogStep";
 import { createPrompter } from "#workflows/init/operations/createPrompter";
 import { createStepContext } from "#workflows/init/operations/createStepContext";
 
-test("installs only curation and its agent in a project with an active extension", async () => {
+test("installs only curation, without an agent, in a project with an active extension", async () => {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": [
@@ -46,7 +46,5 @@ test("installs only curation and its agent in a project with an active extension
     ".claude/skills/curation/SKILL.md",
   ]);
 
-  expect(await filesystem.glob(".claude/agents/*.md")).toEqual([
-    ".claude/agents/curator.md",
-  ]);
+  expect(await filesystem.glob(".claude/agents/*.md")).toEqual([]);
 });

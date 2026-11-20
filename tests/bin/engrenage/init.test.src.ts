@@ -826,7 +826,6 @@ test("does not generate agent setup without selected agents", async () => {
     ".ai/backlog/index.md",
     ".ai/scratchpad.md",
     ".claude/rules/backlog.md",
-    ".claude/agents/curator.md",
   ]) {
     expect(existsSync(project.resolve(file))).toBe(false);
   }

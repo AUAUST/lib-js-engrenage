@@ -74,8 +74,8 @@ describe("addAgentSkills", () => {
     ).not.toContain("disable-model-invocation");
 
     expect(
-      await config.context.filesystem.read(".claude/agents/curator.md"),
-    ).toMatch(/name: curator[\s\S]*tools:[\s\S]*# Curation/);
+      await config.context.filesystem.exists(".claude/agents/curator.md"),
+    ).toBe(false);
 
     expect(
       await config.context.filesystem.exists(
@@ -106,7 +106,6 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.glob(".codex/agents/*.toml"),
     ).toEqual([
-      ".codex/agents/curator.toml",
       ".codex/agents/debugger.toml",
       ".codex/agents/debugger_high.toml",
       ".codex/agents/debugger_low.toml",

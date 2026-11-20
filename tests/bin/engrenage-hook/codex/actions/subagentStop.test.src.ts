@@ -36,7 +36,6 @@ test.each([
   "debugger_low",
   "debugger_high",
   "planner",
-  "curator",
 ])(
   "stops the generated %s profile with its canonical gate policy",
   async (name) => {

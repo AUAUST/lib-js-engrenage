@@ -64,3 +64,5 @@
 - `engrenage jscpd`: read the clone pairs from the console report — it prints shortened paths (`structure.ts`, `claude/hook.ts`); reran with `-r json -o <dir>`
 - gh run view --log-failed: read failed job logs of a run — printed nothing for whole runs and single jobs; got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
 - changeset version: reproduced the release step locally — @changesets/changelog-github needs GITHUB_TOKEN, and `pnpm exec` sets pnpm_config_verify_deps_before_run=false for children, hiding the failure; ran node bin.js directly with the default changelog in a scratch clone
+- worktree isolation: compound command with cd and git refused — split into single git commands
+- commit gate codegen --check: prettier layout change left data/apis declarations stale — reran pnpm support codegen
