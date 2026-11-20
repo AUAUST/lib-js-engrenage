@@ -2,8 +2,8 @@ import { entries, freeze } from "@auaust/toolkit/object";
 
 import { filesIn } from "#foundation/filesystem/index";
 import { hasUnignoredFile, readEnvironment } from "#project/environments/index";
+import type { ResolvedStructure } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Globs } from "#types/Globs";
 
 export async function listMappedEnvironments(config: LoadedConfig): Promise<{

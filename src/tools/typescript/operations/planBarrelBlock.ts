@@ -6,7 +6,7 @@ import {
   collectStructureNodes,
   type EnvironmentStructure,
   type StructureNode,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { domainsBlock } from "#tools/typescript/constants";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";

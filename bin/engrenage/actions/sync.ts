@@ -1,7 +1,7 @@
 import {
   listBlockingDiagnostics,
   renderStructureDiagnostic,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import {
   listSyncOptions,
   readSyncFlags,

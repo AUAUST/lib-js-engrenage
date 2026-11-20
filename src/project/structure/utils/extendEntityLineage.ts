@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import type { StructureNode } from "#batiment/structure/index";
 import type { LineageMember } from "#project/structure/types/LineageMember";
-import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { Directory } from "#types/Directory";
 
 export function extendEntityLineage(

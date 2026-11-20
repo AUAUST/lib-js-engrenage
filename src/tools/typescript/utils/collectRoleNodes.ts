@@ -1,4 +1,4 @@
-import type { StructureNode } from "#project/structure/index";
+import type { StructureNode } from "#batiment/structure/index";
 
 export function collectRoleNodes(node: StructureNode): StructureNode[] {
   return node.children

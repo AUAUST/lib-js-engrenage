@@ -3,8 +3,8 @@ import { entries } from "@auaust/toolkit/object";
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
+import type { EnvironmentStructure } from "#batiment/structure/index";
 import type { Alias } from "#project/structure/types/Alias";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 
 // @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {

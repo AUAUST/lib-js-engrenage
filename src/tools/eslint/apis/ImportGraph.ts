@@ -1,8 +1,5 @@
-import type {
-  EntityIndex,
-  ResolvedSpecifier,
-  ResolvedStructure,
-} from "#project/structure/index";
+import type { ResolvedStructure } from "#batiment/structure/index";
+import type { EntityIndex, ResolvedSpecifier } from "#project/structure/index";
 import type { File } from "#types/File";
 
 export interface ImportGraph {

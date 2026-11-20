@@ -15,11 +15,11 @@ import { flat, flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
+import type { ResolvedStructure } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 import type { Directory } from "#types/Directory";
 
 const ignoredDirectories = ["**/.*", "**/node_modules", "**/dist"];

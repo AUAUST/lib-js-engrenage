@@ -3,12 +3,12 @@ import { posix } from "node:path";
 import { iterable } from "@auaust/toolkit";
 import { filter } from "@auaust/toolkit/array";
 
-import { packages } from "#constants";
-import { runGateBinary, type GateResult } from "#project/gate/index";
 import {
   collectStructureNodes,
   type EnvironmentStructure,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
+import { packages } from "#constants";
+import { runGateBinary, type GateResult } from "#project/gate/index";
 import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";

@@ -2,9 +2,9 @@ import { custom, is } from "valibot";
 
 import { isArray, isBoolean, isObject } from "@auaust/toolkit";
 
+import type { EnvironmentStructureOption } from "#batiment/structure/index";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/index";
-import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
 
 // @debt the check covers the fields every structure reads, so the roles, layout and mirror flag a contributed environment resolves are trusted unchecked
 const structureOption = custom<EnvironmentStructureOption>((value) => {

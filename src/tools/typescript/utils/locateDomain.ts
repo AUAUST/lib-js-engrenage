@@ -4,7 +4,7 @@ import { isBelow } from "#tools/typescript/utils/isBelow";
 import type {
   EnvironmentStructure,
   StructureNode,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import type { Directory } from "#types/Directory";
 
 export function locateDomain(

@@ -12,7 +12,7 @@ import {
   type ResolvedRoleContract,
   type ResolvedRoles,
 } from "#batiment/roles/index";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
+import type { ResolvedStructure } from "#batiment/structure/index";
 
 interface RoleRow {
   name: string;

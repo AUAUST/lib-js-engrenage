@@ -1,6 +1,6 @@
 import type { ResolvedRoles } from "#batiment/roles/index";
+import type { NamedFileRole } from "#batiment/structure/index";
 import type { Entity } from "#project/structure/types/Entity";
-import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 
 export interface LocatedEntity {
   readonly entity: Entity;

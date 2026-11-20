@@ -1,6 +1,6 @@
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import type { ResolvedRoles } from "#batiment/roles/index";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
+import type { EnvironmentStructure } from "#batiment/structure/index";
 
 export function getEnvironmentRootRole(
   { entryFile, indexFile }: EnvironmentStructure,

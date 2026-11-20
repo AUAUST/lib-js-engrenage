@@ -1,6 +1,6 @@
+import type { StructureDiagnostic } from "#batiment/report/index";
+import type { ResolvedStructure } from "#batiment/structure/index";
 import type { ImportCycle } from "#project/structure/types/ImportCycle";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
-import type { StructureDiagnostic } from "#project/structure/types/StructureDiagnostic";
 
 /**
  * The structure check's result: the facts it read, the resolved structure and

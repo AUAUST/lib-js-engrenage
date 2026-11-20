@@ -1,4 +1,4 @@
-import type { StructureNode } from "#project/structure/types/StructureNode";
+import type { StructureNode } from "#batiment/structure/index";
 
 function members(node: StructureNode): StructureNode[] {
   return node.children.filter(({ kind }) => {

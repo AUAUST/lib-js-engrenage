@@ -3,11 +3,11 @@ import { join, posix } from "node:path";
 import { flat, map } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
+import type { EnvironmentStructure } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { Alias } from "#project/structure/types/Alias";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";

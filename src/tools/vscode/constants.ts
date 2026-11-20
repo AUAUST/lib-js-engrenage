@@ -1,10 +1,10 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { engrenage, eslint, prettier, typescript } from "#constants";
 import {
   domainMetadataFile,
   namespaceMetadataFile,
-} from "#project/structure/constants";
+} from "#batiment/structure/constants";
+import { engrenage, eslint, prettier, typescript } from "#constants";
 import { eslintFlags } from "#tools/eslint/constants";
 import type { Integration } from "#tools/vscode/types/Integration";
 import type { File } from "#types/File";

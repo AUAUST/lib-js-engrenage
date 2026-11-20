@@ -1,7 +1,7 @@
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import { isModule } from "#tools/typescript/utils/isModule";
+import type { StructureNode } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { StructureNode } from "#project/structure/index";
 import type { Files } from "#types/Files";
 
 export async function listRoleModules(

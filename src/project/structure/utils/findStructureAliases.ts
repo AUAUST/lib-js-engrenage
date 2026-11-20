@@ -1,5 +1,5 @@
+import type { EnvironmentStructure } from "#batiment/structure/index";
 import type { Alias } from "#project/structure/types/Alias";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 
 export function findStructureAliases(
   { root }: EnvironmentStructure,

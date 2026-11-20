@@ -10,7 +10,7 @@ import {
   isPlaced,
   type EnvironmentStructure,
   type StructureNode,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";
 import { isBelow } from "#tools/typescript/utils/isBelow";

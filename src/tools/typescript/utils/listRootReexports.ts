@@ -6,7 +6,7 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   type EnvironmentStructure,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import type { ReexportMode } from "#batiment/roles/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";

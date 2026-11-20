@@ -1,14 +1,14 @@
 import { map } from "@auaust/toolkit/iterable";
 
 import {
+  listBlockingDiagnostics,
+  renderStructureDiagnostic,
+} from "#batiment/structure/index";
+import {
   formatReport,
   type ReportData,
   type Reporter,
 } from "#foundation/reports/index";
-import {
-  listBlockingDiagnostics,
-  renderStructureDiagnostic,
-} from "#project/structure/index";
 import {
   collectChanges,
   formatSyncFailure,

@@ -1,7 +1,7 @@
 import {
   collectStructureNodes,
   type EnvironmentStructure,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { isCollected } from "#tools/typescript/utils/isCollected";
 import type { Filesystem } from "#foundation/filesystem/index";

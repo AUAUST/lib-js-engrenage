@@ -6,7 +6,7 @@ import { values } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   type EnvironmentStructure,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";

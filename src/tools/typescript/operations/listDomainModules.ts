@@ -6,7 +6,7 @@ import {
   isPlaced,
   type EnvironmentStructure,
   type StructureNode,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";

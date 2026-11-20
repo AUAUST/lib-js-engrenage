@@ -1,10 +1,12 @@
 import { flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
-import { renderStructureDiagnostic } from "#project/structure/utils/renderStructureDiagnostic";
+import {
+  renderStructureDiagnostic,
+  type ResolvedStructure,
+} from "#batiment/structure/index";
 import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 import type { Alias } from "#project/structure/types/Alias";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
 
 export function renderStructure(
   structure: ResolvedStructure,

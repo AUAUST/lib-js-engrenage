@@ -1,6 +1,6 @@
 import type { ResolvedRoleContract, RoleLocation } from "#batiment/roles/index";
+import type { StructureKind } from "#batiment/structure/index";
 import type { LineageMember } from "#project/structure/types/LineageMember";
-import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";

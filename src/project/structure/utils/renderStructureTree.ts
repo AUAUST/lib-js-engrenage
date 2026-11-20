@@ -1,11 +1,13 @@
 import { flatMap } from "@auaust/toolkit/array";
 
+import {
+  listNodeViolations,
+  type EnvironmentStructure,
+  type StructureNode,
+} from "#batiment/structure/index";
 import { findStructureAliases } from "#project/structure/utils/findStructureAliases";
-import { listNodeViolations } from "#project/structure/utils/listNodeViolations";
 import { renderStructureLabel } from "#project/structure/utils/renderStructureLabel";
 import type { Alias } from "#project/structure/types/Alias";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
-import type { StructureNode } from "#project/structure/types/StructureNode";
 
 interface TreeRow {
   readonly line: string;

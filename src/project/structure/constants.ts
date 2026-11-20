@@ -1,14 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { ReexportMode } from "#batiment/roles/index";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
-
-export const namespaceMetadataFile = ".namespace.json";
-
-export const domainMetadataFile = ".domain.json";
-
-export const defaultReexport = "namespace" satisfies ReexportMode;
 
 export const sourceEnvironment = "src";
 

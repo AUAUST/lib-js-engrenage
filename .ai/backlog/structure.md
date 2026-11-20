@@ -79,7 +79,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 13. Structure resolvers and index hold loose rules
 
-- sites: `src/project/structure/operations/createStructureDomainResolver.ts:68`, `src/project/structure/operations/createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `src/project/structure/utils/createEntityIndex.ts:101`, `src/project/structure/operations/findImportCycles.ts:238`
+- sites: `src/batiment/structure/operations/createStructureDomainResolver.ts:68`, `src/batiment/structure/operations/createStructureRoleResolver.ts:131`, `src/project/structure/utils/createEntityIndex.ts:96`, `src/project/structure/utils/createEntityIndex.ts:101`, `src/project/structure/operations/findImportCycles.ts:238`
 - why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
 - want: each rule fixed at its site.
 
@@ -103,7 +103,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 17. Namespaces declared under a domain glob are ignored
 
-- sites: `src/project/structure/utils/flattenStructure.ts:75`, `src/project/structure/operations/createStructureDomainResolver.ts:38`
+- sites: `src/batiment/structure/utils/flattenStructure.ts:75`, `src/batiment/structure/operations/createStructureDomainResolver.ts:38`
 - why: `flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches.
 - want: namespaces under globs matched like domains, or rejected by the schema.
 
@@ -119,7 +119,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 20. Structure types restate schema vocabulary and field names
 
-- sites: `src/batiment/environments/types/NamespaceDeclaration.ts:6`, `src/batiment/environments/types/DomainDeclaration.ts:4`, `src/project/structure/types/StructureNode.ts:28`, `src/project/structure/types/StructureOptions.ts:20`, `src/project/structure/types/DeclaredStructure.ts:14`
+- sites: `src/batiment/environments/types/NamespaceDeclaration.ts:6`, `src/batiment/environments/types/DomainDeclaration.ts:4`, `src/batiment/structure/types/StructureNode.ts:28`, `src/batiment/structure/types/StructureOptions.ts:20`, `src/batiment/structure/types/DeclaredStructure.ts:14`
 - why: relation and `children` picklists repeat `declareStructureNodes` and `StructureRelation`; `childKind` differs in name from the `children` option; `DomainDeclaration`, `DeclaredStructure` and `StructureOptions` repeat the domain fields (jscpd).
 - want: types derived from the schemas; `StructureOptions` extends `DeclaredStructure` with `source`.
 
@@ -137,7 +137,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 23. Role file assignments are re-derived by their consumers
 
-- sites: `src/project/structure/utils/groupRoleFiles.ts:5`, `src/project/structure/operations/createStructureDomainResolver.ts:122`, `src/tools/typescript/operations/listDomainModules.ts:20`
+- sites: `src/batiment/structure/utils/groupRoleFiles.ts:5`, `src/batiment/structure/operations/createStructureDomainResolver.ts:122`, `src/tools/typescript/operations/listDomainModules.ts:20`
 - why: `getStructureCardinality` regroups the assignments; `assignRoleFiles` recomputes the static globs; `listDomainModules` re-derives roles from `fileNames` though the walker classifies each file.
 - want: the resolved structure carries each role node's files, groups and globs.
 
@@ -161,7 +161,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 27. Role presets and structure sources leave contracts unstated
 
-- sites: `src/project/roles/presets/schemas.ts:3`, `src/project/roles/presets/testutils.ts:12`, `src/project/structure/types/StructureSource.ts:1`
+- sites: `src/project/roles/presets/schemas.ts:3`, `src/project/roles/presets/testutils.ts:12`, `src/batiment/structure/types/StructureSource.ts:1`
 - why: `schemas` is pure by default though declarer-built schemas import confined utils; `testutils` waits for an observing level; no code produces the `preset` source.
 - want: role levels matching what modules import; the `preset` source produced or removed.
 

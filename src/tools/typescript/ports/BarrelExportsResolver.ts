@@ -1,7 +1,7 @@
 import type { MaybePromise } from "@auaust/toolkit/types";
 
+import type { StructureNode } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { StructureNode } from "#project/structure/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 
 /**

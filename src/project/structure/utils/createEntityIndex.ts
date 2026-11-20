@@ -8,23 +8,25 @@ import {
   indexRoleName,
   noRoles,
 } from "#batiment/roles/constants";
+import {
+  extendRoleLocation,
+  listNamedFileRoles,
+  type EnvironmentStructure,
+  type NamedFileRole,
+  type ResolvedStructure,
+  type StructureNode,
+} from "#batiment/structure/index";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#project/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#project/structure/utils/extendEntityLineage";
-import { extendRoleLocation } from "#project/structure/utils/extendRoleLocation";
 import { getAliasSpecifier } from "#project/structure/utils/getAliasSpecifier";
-import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { EntityIndex } from "#project/structure/apis/EntityIndex";
 import type { Entity } from "#project/structure/types/Entity";
-import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { LocatedEntity } from "#project/structure/types/LocatedEntity";
-import type { NamedFileRole } from "#project/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#project/structure/types/ResolvedAliases";
-import type { ResolvedStructure } from "#project/structure/types/ResolvedStructure";
-import type { StructureNode } from "#project/structure/types/StructureNode";
 import type { TestVariant } from "#project/structure/types/TestVariant";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";

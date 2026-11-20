@@ -1,7 +1,8 @@
 import type { Rule } from "eslint";
 
 import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
-import type { Entity, EnvironmentFileNames } from "#project/structure/index";
+import type { EnvironmentFileNames } from "#batiment/structure/index";
+import type { Entity } from "#project/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 
 /**

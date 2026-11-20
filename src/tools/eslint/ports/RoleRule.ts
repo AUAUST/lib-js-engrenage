@@ -1,7 +1,8 @@
 import type { Rule } from "eslint";
 
 import type { RoleRuleModule } from "#batiment/roles/index";
-import type { Entity, EnvironmentFileNames } from "#project/structure/index";
+import type { EnvironmentFileNames } from "#batiment/structure/index";
+import type { Entity } from "#project/structure/index";
 
 export interface RoleRule extends RoleRuleModule {
   /**

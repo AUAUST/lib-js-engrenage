@@ -1,0 +1,46 @@
+import type { ReexportMode } from "#batiment/roles/index";
+import type { CardinalityViolation } from "#batiment/structure/types/CardinalityViolation";
+import type { StructureKind } from "#batiment/structure/types/StructureKind";
+import type { StructureMirror } from "#batiment/structure/types/StructureMirror";
+import type { StructureRelation } from "#batiment/structure/types/StructureRelation";
+import type { StructureSource } from "#batiment/structure/types/StructureSource";
+import type { UnclassifiedReason } from "#batiment/structure/types/UnclassifiedReason";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
+import type { Globs } from "#types/Globs";
+
+/**
+ * One directory of an environment's structure, with its classification and the
+ * options its declaration or inference sets; violations sit on the node holding
+ * them, as `cardinality`, `twin` or, for an unclassified node, `reason`.
+ *
+ * @experimental
+ */
+export interface StructureNode {
+  readonly path: Directory;
+  readonly name: string;
+  readonly kind: StructureKind;
+  readonly source: StructureSource;
+  readonly role?: string;
+  readonly layers?: readonly string[];
+  readonly layer?: number;
+  readonly relation?: StructureRelation;
+  // @debt named `childKind` because `children` holds the child nodes, so the node field and the namespace option `children` it carries differ in name
+  readonly childKind?: "domains";
+  readonly commands?: true;
+  readonly public?: boolean;
+  readonly specifier?: string;
+  readonly internals?: boolean;
+  readonly reexport?: readonly ReexportMode[];
+  readonly collects?: readonly string[];
+  readonly purpose?: string;
+  readonly effects?: string;
+  readonly mirror?: StructureMirror;
+  readonly reason?: UnclassifiedReason;
+  readonly strays?: readonly Directory[];
+  readonly roleFiles?: Readonly<Record<string, readonly File[]>>;
+  readonly cardinality?: readonly CardinalityViolation[];
+  readonly twin?: File;
+  readonly fileNames?: Readonly<Record<string, Globs>>;
+  readonly children: readonly StructureNode[];
+}

@@ -1,11 +1,11 @@
 import { basename, dirname, join, matchesGlob } from "node:path";
 
 import { indexRoleName } from "#batiment/roles/constants";
-import { relativeWithin } from "#foundation/filesystem/index";
 import {
   listNamedFileRoles,
   type StructureNode,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
+import { relativeWithin } from "#foundation/filesystem/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import type { Directory } from "#types/Directory";

@@ -9,6 +9,10 @@ export {
 } from "#foundation/options/index";
 export { loadConfig, loadValidatedConfig } from "#project/config/index";
 export type {
+  StructureDiagnostic,
+  StructureDiagnosticCode,
+} from "#batiment/report/index";
+export type {
   ReexportMode,
   RoleFileResolver,
   RoleLocation,
@@ -21,6 +25,19 @@ export type {
   ResolvedRoleContract,
   ResolvedRoleExports,
 } from "#batiment/roles/index";
+export type {
+  CardinalityViolation,
+  EnvironmentFileNames,
+  EnvironmentStructure,
+  ResolvedStructure,
+  StructureKind,
+  StructureMirror,
+  StructureNode,
+  StructureRelation,
+  StructureRole,
+  StructureSource,
+  UnclassifiedReason,
+} from "#batiment/structure/index";
 export type { HookEntry } from "#foundation/extensions/index";
 export type { Filesystem } from "#foundation/filesystem/index";
 export type { Section } from "#foundation/options/index";
@@ -44,22 +61,7 @@ export type {
   GateStepEntry,
 } from "#project/gate/index";
 export type { Prompter, Step, StepContext } from "#project/steps/index";
-export type {
-  CardinalityViolation,
-  EnvironmentFileNames,
-  EnvironmentStructure,
-  ResolvedStructure,
-  StructureDiagnostic,
-  StructureDiagnosticCode,
-  StructureKind,
-  StructureMirror,
-  StructureNode,
-  StructureRelation,
-  StructureReport,
-  StructureRole,
-  StructureSource,
-  UnclassifiedReason,
-} from "#project/structure/index";
+export type { StructureReport } from "#project/structure/index";
 export type {
   SyncDone,
   SyncFlags,

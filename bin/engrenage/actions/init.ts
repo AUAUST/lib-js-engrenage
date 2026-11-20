@@ -1,12 +1,12 @@
 import { flat } from "@auaust/toolkit/array";
 
-import { packageJsonFile } from "#constants";
-import { runProcess } from "#foundation/processes/index";
-import { loadConfig, type LoadedConfig } from "#project/config/index";
 import {
   listBlockingDiagnostics,
   renderStructureDiagnostic,
-} from "#project/structure/index";
+} from "#batiment/structure/index";
+import { packageJsonFile } from "#constants";
+import { runProcess } from "#foundation/processes/index";
+import { loadConfig, type LoadedConfig } from "#project/config/index";
 import {
   formatChanges,
   reportSyncResults,

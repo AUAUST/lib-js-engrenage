@@ -1,5 +1,5 @@
+import { renderStructureDiagnostic } from "#batiment/structure/index";
 import { reportStructure } from "#project/structure/operations/reportStructure";
-import { renderStructureDiagnostic } from "#project/structure/utils/renderStructureDiagnostic";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateResult } from "#project/gate/index";
 

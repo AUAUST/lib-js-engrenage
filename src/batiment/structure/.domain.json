@@ -1,0 +1,3 @@
+{
+  "purpose": "Walk each environment, merge its metafiles over its declarations and report what the walk finds."
+}
