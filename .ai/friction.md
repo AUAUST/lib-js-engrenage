@@ -81,3 +81,4 @@
 - published issue complexity: needed #749's complexity for its dispatch effort after `planning issue publish` — publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
 - worktree isolation: `git status` chained after `pnpm engrenage sync` with `&&` — refused as unverifiable; ran it alone
 - grep is ugrep: `grep -o` with `.{0,1800}` context on a minified binary dump — ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`
+- `git reset --hard HEAD` to redo a `cherry-pick -n`: auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
