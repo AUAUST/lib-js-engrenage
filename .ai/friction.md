@@ -112,3 +112,8 @@
 - zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
 - instruction review: the user requests behind past `brain:` commits — no record keeps them; parsed session transcripts under `~/.claude/projects` by hand
 - pnpm engrenage gate --worktree: ran it in the shared main checkout — another editor replaced `isFiniteNumber` mid-run, breaking hooks and the gate; waited for the tree to settle and committed only my paths
+- gh issue edit hook: `--body-file "$TMPDIR/…"` with a variable path — hook rejects it; piped a heredoc into `--body-file -`
+- Agent dispatch hook: `Issue: #779` brief line — refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line
+- Agent dispatch hook: debugger briefed `Issue:` on a Task (#788) — refused, a debugger takes only a Problem; briefed the bug without an `Issue:` line
+- Agent dispatch hook: worker on #789 while its blocker #788 stayed open for a pending hand check — refused; ran the check first with a probe gatherer
+- metalbrain budget hook by hand: passed the subagent transcript as `transcript_path` — the hook derives the subagent path from the main transcript, doubling it; no instruction states the payload shape

@@ -28,6 +28,7 @@ async function readRunBudget(
     return {};
   }
 
+  // @debt a malformed budget file throws here and drops the whole run record; reporting it and recording the run without `budget` would lose only the budget columns
   const {
     level,
     budget,

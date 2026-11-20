@@ -56,6 +56,7 @@ function countThresholds(gain: number, budget: number): number {
  * warning, logged in its budget state, each time the gain crosses the budget
  * or a further half of it.
  */
+// @debt runs synchronously on every subagent tool call, and a metalbrain hook takes ~167 ms per call; its share of agent wall time is unmeasured
 export function checkBudget(fallback: BudgetLevel): HookAction {
   return async (payload, { root, time }) => {
     const { session, agent } = payload;

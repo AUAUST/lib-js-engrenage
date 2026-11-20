@@ -151,3 +151,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: #771 closed with these unanswered.
 - want: a decision on each: a PreToolUse hook flagging `gh issue view` on an issue held in `.ai/issues/` plus a PostToolUse warning past N output characters, or wording only; a "batch independent commands and edits per call" rule for every agent; which MCP servers and connectors to disable here (claude.ai docs, easel, browser, simulator); mergers on Sonnet now or once model-priced units measure the change.
+
+## 28. `agents stats --all` costs disagree between role and model views
+
+- why: at the #785 review, gatherers showed $0.48 but Haiku $0.18 over the same 10 runs; cause unchecked: per-model pricing, runs without a model, or a role/model join.
+- want: both views summing to the same cost for the same runs, or the difference named in the output.

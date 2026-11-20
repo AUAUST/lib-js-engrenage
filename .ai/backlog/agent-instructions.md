@@ -100,3 +100,9 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/sections/analysis.md:21`
 - why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
 - want: a section-level filler rendering the installed path of a shared file for the reading runtime.
+
+## 20. Dropping an agent's work in the main checkout loses its pending debt markers
+
+- sites: `data/metalbrain/shared/worktree-dispatch.md:39`
+- why: reported by a writer: the reset discards the agent's files, markers included; only the friction and discarded logs carry over.
+- want: their markers carried over as backlog entries, or a stated reason to drop them.
