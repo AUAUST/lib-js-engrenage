@@ -136,8 +136,18 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
 - want: failures logged; start times never lost or left behind.
 
-## 26. The implement skill's report kinds omit the budget stop
+## 25. The implement skill's report kinds omit the budget stop
 
 - sites: `data/metalbrain/skills/implement.md:93`
 - why: §Finishing lists a completion or a blocked report; `Budget stop:` lives only in Analysis › Budget levels.
 - want: the skill names it, or defers to the shared rule.
+
+## 26. Agent stats cannot attribute runs to tasks or outcomes
+
+- why: `agents stats` gives cost by role, model and day; units per closed issue or workflow need each run's task, parent, effort, skills, commits and gate outcome. Closed #780–#784 and #786 as speculative: no recorded question needs them yet.
+- want: run records carrying task and outcome, and an `--outcome` aggregate, once a question needs units per closed issue.
+
+## 27. Open questions on token spend from #771
+
+- why: #771 closed with these unanswered.
+- want: a decision on each: a PreToolUse hook flagging `gh issue view` on an issue held in `.ai/issues/` plus a PostToolUse warning past N output characters, or wording only; a "batch independent commands and edits per call" rule for every agent; which MCP servers and connectors to disable here (claude.ai docs, easel, browser, simulator); mergers on Sonnet now or once model-priced units measure the change.

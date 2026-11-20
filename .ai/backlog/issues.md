@@ -98,3 +98,8 @@ GitHub issue drafts, checks and planning commands.
 
 - why: `.claude/rules/issue-drafts.md` › Size forbids items of several outcomes, judged only by agents; #774 passed as one complex issue of ten steps.
 - want: review findings, never count limits: a finding on each `Checkpoint:` line asking for a Size review; a split whose sub-issues and remaining Steps miss a Steps item or Tests case of the pre-split version; a Done when joining several capabilities, or Steps adding modules under several environments or namespaces.
+
+## 18. Planners may order an item's Steps contract-first
+
+- why: #790 rejected a scaffold-first worker rule; its one surviving option is a planner rule ordering **Steps** by dependency, structure and contracts first, never checkpointing stub bodies.
+- want: a decision on adopting it.
