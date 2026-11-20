@@ -1,7 +1,7 @@
+import { declareProgramLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import { declareObject } from "#foundation/options/index";
 import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
-import { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
 import {
   defaultScriptsDirectories,
   disabledCodeEnvironment,

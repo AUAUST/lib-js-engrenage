@@ -54,8 +54,8 @@ bun.lockb
 /src/project/environments/types/BinInput.ts
 /src/project/environments/types/DataInput.ts
 /src/project/environments/types/DefineInput.ts
-/src/project/environments/types/DomainInput.ts
-/src/project/environments/types/NamespaceInput.ts
+/src/batiment/environments/types/DomainInput.ts
+/src/batiment/environments/types/NamespaceInput.ts
 /src/project/environments/types/RuntimeInput.ts
 /src/project/environments/types/ScriptsInput.ts
 /src/project/environments/types/SourceInput.ts

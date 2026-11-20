@@ -4,16 +4,16 @@ import { sort } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import {
+  domainMetadataSchema,
+  namespaceMetadataSchema,
+} from "#batiment/environments/index";
+import {
   filesIn,
   toPosixPath,
   type Filesystem,
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import {
-  domainMetadataSchema,
-  namespaceMetadataSchema,
-} from "#project/environments/index";
 import {
   domainMetadataFile,
   namespaceMetadataFile,

@@ -123,13 +123,13 @@ Project structure description, its report and the tooling generated from it.
 
 ## 21. Structure types restate schema vocabulary and field names
 
-- sites: `src/project/environments/types/NamespaceDeclaration.ts:6`, `src/project/environments/types/DomainDeclaration.ts:4`, `src/project/structure/types/StructureNode.ts:28`, `src/project/structure/types/StructureOptions.ts:20`, `src/project/structure/types/DeclaredStructure.ts:14`
+- sites: `src/batiment/environments/types/NamespaceDeclaration.ts:6`, `src/batiment/environments/types/DomainDeclaration.ts:4`, `src/project/structure/types/StructureNode.ts:28`, `src/project/structure/types/StructureOptions.ts:20`, `src/project/structure/types/DeclaredStructure.ts:14`
 - why: relation and `children` picklists repeat `declareStructureNodes` and `StructureRelation`; `childKind` differs in name from the `children` option; `DomainDeclaration`, `DeclaredStructure` and `StructureOptions` repeat the domain fields (jscpd).
 - want: types derived from the schemas; `StructureOptions` extends `DeclaredStructure` with `source`.
 
 ## 22. Structure node records accept undefined children
 
-- sites: `src/project/environments/config/declarers/declareStructureNodes.ts:134`
+- sites: `src/batiment/environments/config/declarers/declareStructureNodes.ts:135`
 - why: the root `structure` needs optionality, so child records also accept `undefined`, resolved as empty namespaces.
 - want: optional only at the root.
 

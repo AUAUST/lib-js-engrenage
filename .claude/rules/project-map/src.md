@@ -7,7 +7,8 @@ paths:
 
 ```
 src/  foundation < batiment < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
-├─ batiment/  #batiment/…  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+├─ batiment/  #batiment/…  roles < environments  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+│  ├─ environments  Declare environment kinds and the namespace and domain declarations structuring them.
 │  └─ roles  Declare role contracts.
 ├─ foundation/  #foundation/…  Primitives without project knowledge.
 │  ├─ blocks  Composable content blocks for generated files.

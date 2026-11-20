@@ -1,7 +1,7 @@
 import { array, picklist } from "valibot";
 
+import { namespaceSchema } from "#batiment/environments/config/schemas/namespaceSchema";
 import { declare, directorySchema } from "#foundation/options/index";
-import { namespaceSchema } from "#project/environments/config/schemas/namespaceSchema";
 
 export function declareStructureOptions() {
   return {

@@ -1,3 +1,4 @@
+import { declareStructureOptions } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declareList,
@@ -5,7 +6,6 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 import {
   defaultToolingDirectories,
   defaultToolingFiles,

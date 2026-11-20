@@ -1,9 +1,9 @@
+import { declareStructureOptions } from "#batiment/environments/index";
 import {
   declareList,
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareStructureOptions } from "#project/environments/config/declarers/declareStructureOptions";
 import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 

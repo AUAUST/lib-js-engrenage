@@ -1,5 +1,6 @@
 import { record, string } from "valibot";
 
+import { declareProgramLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declare,
@@ -9,7 +10,6 @@ import {
 } from "#foundation/options/index";
 import { nodeMajorSchema } from "#project/baseline/index";
 import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
-import { declareProgramLayout } from "#project/environments/config/declarers/declareProgramLayout";
 import {
   defaultBinDirectories,
   disabledCodeEnvironment,

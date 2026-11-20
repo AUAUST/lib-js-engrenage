@@ -11,6 +11,7 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { structureKeySchema } from "#batiment/environments/config/schemas/structureKeySchema";
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import {
   declare,
@@ -19,9 +20,8 @@ import {
   validate,
   type Declaration,
 } from "#foundation/options/index";
-import { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
-import type { DomainDeclaration } from "#project/environments/types/DomainDeclaration";
-import type { NamespaceDeclaration } from "#project/environments/types/NamespaceDeclaration";
+import type { DomainDeclaration } from "#batiment/environments/types/DomainDeclaration";
+import type { NamespaceDeclaration } from "#batiment/environments/types/NamespaceDeclaration";
 
 type NodeDeclaration<Output> = Declaration<unknown, Output, unknown>;
 
@@ -104,6 +104,7 @@ const namespaceFields = freeze({
   }),
 });
 
+// @debt `specifier`, `reexport`, `public` and `collects` are JavaScript package fields, split out with the language port (#740)
 const domainFields = freeze({
   specifier: declare(string(), {
     description: "Public specifier of the domain, overriding the one derived from its path.",

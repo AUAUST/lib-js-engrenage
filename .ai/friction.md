@@ -84,3 +84,6 @@
 - `engrenage sync` after adding the `batiment` namespace: config load failed on the missing `#batiment/*` alias and stale barrels, which only sync generates — added the alias and barrels by hand, then synced
 - issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there
 - engrenage-hook claude PreToolUse: dispatching workers for #768 and #769 — GET issues/<n>/issue-field-values returned 404, hook checks skipped; dispatched with effort set by hand
+- Claude Code worktree isolation: `cd` plus a git command, several `git mv` in a loop, `git -C .` — refused as unverifiable; ran each git command alone with an absolute `-C`
+- `pnpm support codegen config` after moving declarations into a new domain: failed on the missing `#batiment/environments/index` barrel, which only sync generates — wrote the barrel by hand, then ran codegen and sync
+- `pnpm engrenage gate --worktree`: first run reformatted the generated, moved `NamespaceInput.ts` despite `.prettierignore` listing its new path, then failed `codegen --check` — regenerated it; second run passed
