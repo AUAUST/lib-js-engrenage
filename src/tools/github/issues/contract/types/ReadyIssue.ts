@@ -2,5 +2,5 @@ import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAud
 import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLocation";
 
 export interface ReadyIssue extends IssueLocation {
-  readonly audience: IssueAudience;
+  readonly audience: IssueAudience | "orchestrator";
 }

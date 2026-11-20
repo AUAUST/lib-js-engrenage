@@ -194,6 +194,8 @@ export const questionsSection = "Questions";
 
 export const stepsSection = "Steps";
 
+export const housekeepingSection = "Housekeeping";
+
 export const roadmapSection = "Roadmap";
 
 export const checkpointPrefix = "Checkpoint:";
@@ -211,12 +213,24 @@ export const issueContracts = freeze({
       "Context",
       "Prerequisites",
       "Steps",
+      "Housekeeping",
       "Tests",
       "Done when",
       "Planning",
       "Questions",
     ] as const),
-    required: freeze(["Context", "Steps", "Tests"] as const),
+    required: freeze(["Context"] as const),
+    requiredAny: freeze([freeze(["Steps", "Housekeeping"] as const)] as const),
+    requiredWith: freeze({ Steps: freeze(["Tests"] as const) } as const),
+    exclusive: freeze([
+      freeze(["Steps", "Housekeeping"] as const),
+      freeze(["Housekeeping", "Tests"] as const),
+    ] as const),
+    withSubIssues: freeze(["Housekeeping"] as const),
+    hints: freeze({
+      Steps: "Steps for the work a worker implements: keep Steps or Housekeeping and delete the other.",
+      Housekeeping: "Housekeeping on a parent whose own work is only commands, checks or record edits, applied without a worker once its sub-issues land. Keep Steps or Housekeeping and delete the other.",
+    } as const),
     hasHeader: true,
     subIssues: "references",
   } as const),
@@ -226,6 +240,7 @@ export const issueContracts = freeze({
       "Prerequisites",
       "Steps",
       "Leads",
+      "Housekeeping",
       "Tests",
       "Done when",
       "Planning",
@@ -233,10 +248,15 @@ export const issueContracts = freeze({
     ] as const),
     required: freeze(["Context"] as const),
     requiredWith: freeze({ Steps: freeze(["Tests"] as const) } as const),
-    exclusive: freeze([freeze(["Steps", "Leads"] as const)] as const),
+    exclusive: freeze([
+      freeze(["Steps", "Leads", "Housekeeping"] as const),
+      freeze(["Housekeeping", "Tests"] as const),
+    ] as const),
+    withSubIssues: freeze(["Housekeeping"] as const),
     hints: freeze({
-      Steps: "Steps when the cause is clear and only the fix remains, for a worker: keep Steps or Leads and delete the other.",
-      Leads: "Leads when the cause still needs investigation, for a debugger: facts, symptoms, reproductions and suspected sites. Keep Steps or Leads and delete the other.",
+      Steps: "Steps when the cause is clear and only the fix remains, for a worker: keep one of Steps, Leads or Housekeeping and delete the others.",
+      Leads: "Leads when the cause still needs investigation, for a debugger: facts, symptoms, reproductions and suspected sites. Keep one of Steps, Leads or Housekeeping and delete the others.",
+      Housekeeping: "Housekeeping on a parent whose sub-issues hold the fix and whose own work is only commands, checks or record edits, applied without an agent once they land. Keep one of Steps, Leads or Housekeeping and delete the others.",
     } as const),
     hasHeader: true,
     subIssues: "references",

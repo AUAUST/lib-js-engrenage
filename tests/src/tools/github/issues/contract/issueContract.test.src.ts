@@ -214,6 +214,51 @@ describe("checkIssueBody", () => {
     ]);
   });
 
+  test("accepts Housekeeping in place of Steps on a parent, and rejects it without sub-issues, beside Steps or unnumbered", () => {
+    const parent = "## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n";
+
+    for (const meaning of ["task", "problem"] as const) {
+      expect(
+        checkIssueContract(parent, meaning, contractNames, {
+          subIssues: 1,
+          complete: true,
+        }),
+      ).toEqual([]);
+    }
+
+    expect(
+      checkIssueContract(parent, "task", contractNames, {
+        subIssues: 0,
+        complete: true,
+      }),
+    ).toMatchObject([{ rule: "sub-issues" }]);
+
+    expect(
+      checkIssueContract(
+        task.replace("## Tests", "## Housekeeping\n\n- Run it.\n\n## Tests"),
+        "task",
+        contractNames,
+        { subIssues: 1, complete: true },
+      ).map(({ rule }) => rule),
+    ).toEqual([
+      "exclusive-sections",
+      "exclusive-sections",
+      "housekeeping-numbered",
+    ]);
+
+    expect(
+      checkIssueContract("## Context\n\nx\n", "task", contractNames, {
+        subIssues: 1,
+        complete: true,
+      }),
+    ).toMatchObject([
+      {
+        rule: "missing-section",
+        message: expect.stringContaining("**Steps** or **Housekeeping**"),
+      },
+    ]);
+  });
+
   test("reports pending planning in steps", () => {
     const findings = checkIssueBody(
       "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",
@@ -409,6 +454,24 @@ describe("checkIssue", () => {
     expect(
       (await checkIssue(access, 12, "worker", { dispatch: true })).findings,
     ).toEqual([]);
+  });
+
+  test("denies every agent a parent holding Housekeeping", async () => {
+    mockGithub({
+      11: {
+        body: "## Context\n\nx\n\n## Housekeeping\n\n1. Run it.\n",
+        type: "Problem",
+        subIssues: [{ number: 12, state: "closed" as const }],
+      },
+    });
+
+    for (const audience of ["worker", "debugger"] as const) {
+      expect(
+        (
+          await checkIssue(access, 11, audience, { dispatch: true })
+        ).findings.map(({ rule }) => rule),
+      ).toContain("housekeeping");
+    }
   });
 
   test("a debugger may investigate below Questions while a worker may not", async () => {

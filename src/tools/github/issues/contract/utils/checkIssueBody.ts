@@ -113,5 +113,12 @@ export function checkIssueBody(
     }
   }
 
+  if (parsed.housekeeping?.numbered === false) {
+    findings.push({
+      rule: "housekeeping-numbered",
+      message: "**Housekeeping** must be a numbered list with only `Checkpoint:` lines between items: rewrite it as numbered steps.",
+    });
+  }
+
   return findings;
 }

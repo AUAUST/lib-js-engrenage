@@ -232,6 +232,12 @@ blockedBy: []
 
 ## Steps
 
+<!-- Steps for the work a worker implements: keep Steps or Housekeeping and delete the other. -->
+
+## Housekeeping
+
+<!-- Housekeeping on a parent whose own work is only commands, checks or record edits, applied without a worker once its sub-issues land. Keep Steps or Housekeeping and delete the other. -->
+
 ## Tests
 
 ## Done when
@@ -456,6 +462,7 @@ Goal: the segment
         "Context",
         "Prerequisites",
         "Steps",
+        "Housekeeping",
         "Tests",
         "Done when",
         "Planning",
@@ -477,7 +484,8 @@ Goal: the segment
         .replace("<sections>: <gist>", "Goal: fresh")
         .replace("## Context\n", "## Context\n\nc\n")
         .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
-        .replace("## Steps\n", "## Steps\n\n1. Do.\n")
+        .replace(/## Steps\n[^#]*/, "## Steps\n\n1. Do.\n\n")
+        .replace(/## Housekeeping\n[^#]*/, "")
         .replace("## Tests\n", "## Tests\n\n- t\n")
         .replace("## Done when\n", "## Done when\n\nd\n")
         .replace("\n## Planning\n\n## Questions\n", ""),
@@ -598,7 +606,7 @@ o
     await expect(checkIssues(config, ["new-first"], "worker")).resolves.toEqual(
       {
         lines: [
-          "new-first: **Tests** is missing: write it.",
+          "new-first: **Tests** is missing: write it, as **Steps** requires.",
           "new-first: The text before the first section spans several lines, but `publish` reads it as the header line: keep only `<sections>: <gist>` there and move the rest into a section.",
         ],
         passed: false,

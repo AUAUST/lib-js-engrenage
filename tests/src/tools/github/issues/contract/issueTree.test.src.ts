@@ -92,6 +92,20 @@ const tree: Record<number, MockIssue> = {
     type: "Problem",
     body: `${task(44, "#40 › #41 · Roadmap").body}\n## Leads\n\n- fails\n`,
   },
+  50: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #51\n\n## Decisions\n\nx\n",
+    subIssues: [51],
+  },
+  51: {
+    type: "Task",
+    body: "#50 · Roadmap\n\n## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n",
+    subIssues: [52],
+  },
+  52: {
+    ...task(52, "#50 › #51 · Roadmap"),
+    state: "CLOSED",
+  },
 };
 
 function connection(nodes: readonly unknown[]) {
@@ -263,6 +277,16 @@ describe("checkIssueTree", () => {
     expect(formatIssueTreeCheck(check)).toContain(
       "Ready: #42 debugger, #43 worker",
     );
+  });
+
+  test("names the orchestrator for a ready parent holding Housekeeping", async () => {
+    mockGraphql();
+
+    const check = await checkIssueTree(access, 50, {
+      checkouts: checkoutAt(createWorkingCopy()),
+    });
+
+    expect(formatIssueTreeCheck(check)).toContain("Ready: #51 orchestrator");
   });
 
   test("lists only the first open task of a plan as ready until a local commit closes it", async () => {

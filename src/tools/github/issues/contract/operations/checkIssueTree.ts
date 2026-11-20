@@ -1,3 +1,4 @@
+import { housekeepingSection } from "#tools/github/issues/contract/constants";
 import { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
@@ -7,6 +8,7 @@ import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findIssueAudience } from "#tools/github/issues/contract/utils/findIssueAudience";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
+import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
@@ -253,6 +255,7 @@ export async function checkIssueTree(
       return {
         report,
         audience,
+        housekeeping: hasSection(parsed, housekeepingSection),
         ready,
       };
     },
@@ -264,11 +267,11 @@ export async function checkIssueTree(
     issues: walked.map(({ report }) => report),
     ready: walked
       .filter(({ ready }) => ready)
-      .map(({ report, audience }) => {
+      .map(({ report, audience, housekeeping }) => {
         return {
           repository: report.repository,
           number: report.number,
-          audience,
+          audience: housekeeping ? "orchestrator" : audience,
         };
       }),
     finished: isClosed({

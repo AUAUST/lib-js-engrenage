@@ -3,6 +3,7 @@ import { keys } from "@auaust/toolkit/object";
 import {
   chainSeparator,
   debuggerBlockingOptions,
+  housekeepingSection,
   issueContracts,
   planningSection,
 } from "#tools/github/issues/contract/constants";
@@ -10,6 +11,7 @@ import { checkBlockersField } from "#tools/github/issues/contract/utils/checkBlo
 import { checkIssueAudience } from "#tools/github/issues/contract/utils/checkIssueAudience";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
+import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
@@ -140,6 +142,13 @@ export function checkIssueReadiness(
       findings.push({
         rule: "dispatch-type",
         message: `${self} is a ${issue.type}: a worker takes a ${types.task} or ${types.problem} leaf.`,
+      });
+    }
+
+    if (hasSection(parsed, housekeepingSection)) {
+      findings.push({
+        rule: "housekeeping",
+        message: `${self} holds **Housekeeping**, which no agent takes: apply it yourself once its sub-issues are closed.`,
       });
     }
 

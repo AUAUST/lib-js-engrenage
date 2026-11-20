@@ -21,6 +21,12 @@ export interface ParsedIssueBody {
         readonly items: readonly IssueListItem[];
       }
     | undefined;
+  readonly housekeeping?:
+    | {
+        readonly numbered: boolean;
+        readonly items: readonly IssueListItem[];
+      }
+    | undefined;
   readonly roadmap: readonly {
     readonly repository: string | undefined;
     readonly number: number;

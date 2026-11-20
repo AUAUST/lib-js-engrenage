@@ -45,6 +45,17 @@ export function checkIssueContract(
     }
   }
 
+  for (const group of contract.requiredAny ?? []) {
+    if (!group.some((name) => hasSection(parsed, name))) {
+      findings.push({
+        rule: "missing-section",
+        message: `${group
+          .map((name) => `**${name}**`)
+          .join(" or ")} is missing: write one of them.`,
+      });
+    }
+  }
+
   for (const [section, names] of entries(contract.requiredWith ?? {})) {
     if (!hasSection(parsed, section)) {
       continue;
@@ -57,6 +68,15 @@ export function checkIssueContract(
           message: `**${name}** is missing: write it, as **${section}** requires.`,
         });
       }
+    }
+  }
+
+  for (const name of contract.withSubIssues ?? []) {
+    if (subIssues === 0 && hasSection(parsed, name)) {
+      findings.push({
+        rule: "sub-issues",
+        message: `**${name}** applies once the sub-issues land, and this ${contractNames.types[meaning]} has none: create them, or write its work as **Steps**.`,
+      });
     }
   }
 

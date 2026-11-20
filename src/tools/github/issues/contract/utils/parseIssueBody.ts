@@ -6,6 +6,7 @@ import {
 } from "#foundation/markdown/index";
 import {
   checkpointPrefix,
+  housekeepingSection,
   partSeparator,
   qualifiedReferenceSource,
   roadmapSection,
@@ -146,12 +147,19 @@ export function parseIssueBody(body: string): ParsedIssueBody {
 
   const steps = sections.find(({ name }) => name === stepsSection);
 
+  const housekeeping = sections.find(({ name }) => {
+    return name === housekeepingSection;
+  });
+
   const roadmap = sections.find(({ name }) => name === roadmapSection);
 
   return {
     header: hasHeader ? parseHeader(first) : undefined,
     sections,
     steps: steps === undefined ? undefined : parseList(steps.content),
+    housekeeping: housekeeping === undefined
+      ? undefined
+      : parseList(housekeeping.content),
     roadmap: roadmap === undefined
       ? []
       : parseList(roadmap.content).items.flatMap(({ text }) => {
