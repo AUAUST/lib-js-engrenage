@@ -67,14 +67,14 @@ Project structure description, its report and the tooling generated from it.
 
 ## 11. Global modules own domain vocabulary
 
-- sites: `src/constants.ts:5`, `src/entry.ts:1`
-- why: global constants carry tool knowledge (package names, config file names); the global types role holds block types, sync results, `IgnorePresets` and `GlobGroup`.
+- sites: `src/constants.ts:5`, `src/constants.ts:84`, `src/entry.ts:1`
+- why: global constants carry tool knowledge (package names, config file names, the agents' hook program); the global types role holds block types, sync results, `IgnorePresets` and `GlobGroup`.
 - want: each value and type moved to its owning domain.
 
 ## 12. Role and domain names are hardcoded or collide
 
-- sites: `src/project/roles/constants.ts:9`, `src/tools/eslint/conventions/structure/readonlyConstants.ts:20`, `src/tools/eslint/constants.ts:232`, `src/foundation/data/index.ts:1`
-- why: index and entry roles found by fixed names though a preset's `name` renames them; the constants role found by preset name; the index key repeats `project/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
+- sites: `src/project/roles/constants.ts:9`, `src/tools/eslint/conventions/structure/readonlyConstants.ts:19`, `src/tools/eslint/conventions/docs/documented.ts:21`, `src/tools/eslint/constants.ts:232`, `src/foundation/data/index.ts:1`
+- why: index and entry roles found by fixed names though a preset's `name` renames them; the constants and contract roles found by preset name; the index key repeats `project/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
 - want: roles resolved from declared names; a domain name not colliding with an environment.
 
 ## 13. Structure declaration in `engrenage.config.ts` mixes concerns
@@ -91,21 +91,21 @@ Project structure description, its report and the tooling generated from it.
 
 ## 15. Structure boundary and layer rules miss cases
 
-- sites: `src/project/structure/utils/checkBoundary.ts:47`, `src/project/structure/utils/checkBoundary.ts:111`, `src/project/structure/utils/checkLayers.ts:7`, `src/project/structure/utils/checkSurfaces.ts:8`
-- why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind.
+- sites: `src/project/structure/utils/checkBoundary.ts:47`, `src/project/structure/utils/checkBoundary.ts:111`, `src/project/structure/utils/checkBoundary.ts:201`, `src/project/structure/utils/checkLayers.ts:7`, `src/project/structure/utils/checkSurfaces.ts:8`
+- why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind; the lineage condition never decides.
 - want: index specifier read directly; every environment file checked; rules split by broken relation.
 
 ## 16. Structure reads tsconfig to find output directories
 
-- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `src/project/structure/config/sections/aliasesSection.ts:26`, `src/project/structure/config/sections/entitiesSection.ts:16`
-- why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only.
-- want: output directory resolved without the tsconfig; aliases not keyed by one language name.
+- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `src/project/structure/config/sections/aliasesSection.ts:26`, `src/project/structure/config/sections/entitiesSection.ts:16`, `src/project/structure/utils/createImportResolver.ts:16`, `src/tools/typescript/operations/readTypescriptLanguage.ts:5`, `src/tools/typescript/setup/syncAliases.ts:182`
+- why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only, its lookup repeated in `readTypescriptLanguage`; a `#…` import of a `.tsx` module resolves to the alias's `.ts` target; `syncAliases` strips the first extension to recover a stem.
+- want: output directory resolved without the tsconfig; one language lookup on the environments surface; an `Alias` carrying its stem and every extension.
 
-## 17. Structure and map renderers are ad hoc
+## 17. Map and tree renderers are ad hoc
 
-- sites: `src/project/structure/utils/renderStructure.ts:55`, `src/project/structure/utils/renderStructure.ts:83`, `src/project/structure/utils/renderEnvironmentMap.ts:10`
-- why: path segments recomposed by hand though the node provides them; map renderers repeat code.
-- want: segments from the node; one structured renderer shared by the map renderers.
+- sites: `src/project/structure/utils/renderEnvironmentMap.ts:10`, `src/project/structure/utils/renderStructureTree.ts:15`
+- why: map renderers repeat code; one `detailed` flag branches every tree helper.
+- want: one structured renderer shared by the map renderers; two row policies over one drawing.
 
 ## 18. Namespaces declared under a domain glob are ignored
 
@@ -122,3 +122,57 @@ Project structure description, its report and the tooling generated from it.
 
 - why: since default roles (AUAUST/lib-js-engrenage#629), `listEnvironmentRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/project/structure/utils/registerRoles.ts`.
 - want: `resolveRoles` receives each role's own config position (or none for a default) and errors name it.
+
+## 21. Structure types restate schema vocabulary and field names
+
+- sites: `src/project/environments/types/NamespaceDeclaration.ts:6`, `src/project/environments/types/DomainDeclaration.ts:4`, `src/project/structure/types/StructureNode.ts:28`, `src/project/structure/types/StructureOptions.ts:20`, `src/project/structure/types/DeclaredStructure.ts:14`
+- why: relation and `children` picklists repeat `declareStructureNodes` and `StructureRelation`; `childKind` differs in name from the `children` option; `DomainDeclaration`, `DeclaredStructure` and `StructureOptions` repeat the domain fields (jscpd).
+- want: types derived from the schemas; `StructureOptions` extends `DeclaredStructure` with `source`.
+
+## 22. Structure node records accept undefined children
+
+- sites: `src/project/environments/config/declarers/declareStructureNodes.ts:134`
+- why: the root `structure` needs optionality, so child records also accept `undefined`, resolved as empty namespaces.
+- want: optional only at the root.
+
+## 23. Role contracts stay unfrozen and cannot see their directory
+
+- sites: `src/project/structure/config/sections/structureSection.ts:195`, `src/project/structure/utils/completeRole.ts:96`
+- why: freezing in place would freeze caller-owned preset values; a root role never placed at an environment root passes the contract check.
+- want: frozen copies once toolkit's `constant()` exists (`toolkit.11`); directory context for contracts (planning).
+
+## 24. Resolution errors name the domain path, not the declaring file
+
+- sites: `src/project/structure/operations/resolveEnvironmentStructure.ts:165`
+- why: resolved domain options drop their source, so `collects` errors do not point at `.domain.json` or config.
+- want: the source kept on resolved options and named in the error.
+
+## 25. Role file assignments are re-derived by their consumers
+
+- sites: `src/project/structure/utils/groupRoleFiles.ts:5`, `src/project/structure/operations/createStructureDomainResolver.ts:122`, `src/tools/typescript/operations/listDomainModules.ts:20`
+- why: `getStructureCardinality` regroups the assignments; `assignRoleFiles` recomputes the static globs; `listDomainModules` re-derives roles from `fileNames` though the walker classifies each file.
+- want: the resolved structure carries each role node's files, groups and globs.
+
+## 26. Schemas of data files have no role
+
+- sites: `src/tools/github/issues/api/config/schemas/githubSnapshotSchema.ts:19`, `src/project/sync/config/schemas/syncRecordSchema.ts:3`, `src/tools/pnpm/config/schemas/linkSchema.ts:3`, `src/tools/pnpm/config/schemas/linksSchema.ts:5`
+- why: they validate generated or local state files, not option declarations, so `schemas/` under `config/` misplaces them.
+- done: needs planning: a role for data-file schemas.
+
+## 27. Subdomain re-exports are hand-written
+
+- sites: `src/tools/github/index.ts:1`
+- why: the index lists its subdomains' exports by hand.
+- done: needs planning: generated re-exports for subdomains.
+
+## 28. Barrel blocks hide flat-entry collisions and reload their renderer
+
+- sites: `src/tools/typescript/operations/fillBarrelBlock.ts:5`, `src/tools/typescript/operations/fillBarrelBlock.ts:6`, `src/tools/typescript/setup/syncBarrelFiles.ts:11`
+- why: a block cannot read the names a hand-written flat entry spreads, so collisions surface only in TypeScript; each block builds its own renderer, reloading the `barrels.exports` resolvers.
+- want: one renderer per run; collisions read from the flat entry or forbidden (planning).
+
+## 29. Role presets and structure sources leave contracts unstated
+
+- sites: `src/project/roles/presets/schemas.ts:3`, `src/project/roles/presets/testutils.ts:12`, `src/project/structure/types/StructureSource.ts:1`
+- why: `schemas` is pure by default though declarer-built schemas import confined utils; `testutils` waits for an observing level; no code produces the `preset` source.
+- want: role levels matching what modules import; the `preset` source produced or removed.

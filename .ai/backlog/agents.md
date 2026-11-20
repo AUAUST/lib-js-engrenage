@@ -60,3 +60,61 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: of 8 subagents meeting refusals and retries in one session, one logged friction.
 - want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.
+
+## 12. Hook routers duplicate payload handling and swallow failures
+
+- sites: `bin/engrenage-hook/claude/actions/preToolUse.ts:5`, `bin/engrenage-hook/codex/actions/preToolUse.ts:5`, `bin/engrenage-hook/claude/actions/postToolUse.ts:52`, `src/tools/agents/operations/reportBudgetFindings.ts:25`, `src/tools/agents/operations/checkAgentHooks.ts:25`
+- why: both routers repeat the payload schema and stdin read; post-edit failures (broken config, ESLint crash) vanish; every hook writes its own stdout JSON; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
+- want: one hook-output writer and shared hook schemas; failures reported without disturbing the session.
+
+## 13. The hook directory is resolved twice, in shell and in Node
+
+- sites: `src/tools/agents/utils/createHookCommand.ts:4`, `src/tools/agents/utils/resolveHookDirectory.ts:5`
+- why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
+- want: the config lookup skipping dependencies, read by both.
+
+## 14. Legacy hook shims wait for consumers to sync
+
+- sites: `bin/engrenage/agents/claude/hook.ts:5`, `bin/engrenage/agents/codex/hook.ts:5`, `src/tools/agents/codex/constants.ts:23`
+- why: they keep settings synced before `engrenage-hook` working; the two shims clone each other (jscpd).
+- done: consumers have synced past the release introducing `engrenage-hook`; then delete them.
+
+## 15. Runtime behaviour branches on runtime names
+
+- sites: `src/tools/agents/operations/checkAgents.ts:24`, `src/tools/agents/operations/getSkillTemplates.ts:69`, `src/tools/agents/operations/getSkillTemplates.ts:137`, `src/tools/agents/operations/migrateSkillFiles.ts:225`, `src/tools/agents/utils/createDispatchEnvironment.ts:7`, `src/tools/agents/config/schemas/skillSchema.ts:35`
+- why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude and Codex, so a contributed runtime gets Codex's shape and leaks variables.
+- want: the `agents.runtimes` contribution declares each; per-runtime renderings in separate fields.
+
+## 16. The Codex provenance line has two owners
+
+- sites: `src/tools/agents/codex/operations/syncCodexSkill.ts:60`, `src/tools/agents/operations/migrateSkillFiles.ts:25`
+- why: built in `syncCodexSkill` and `createCodexAgentProfiles`, parsed in `migrateSkillFiles`, ownership judged again in `checkAgents`, which ignores former provenances.
+- want: one owner of the format and the ownership test.
+
+## 17. Agent usage records rest on undocumented Claude transcripts
+
+- sites: `src/tools/agents/claude/operations/readClaudeTranscript.ts:68`, `bin/engrenage-hook/claude/actions/record.ts:34`
+- why: a format change silently zeroes the counters; `SubagentStop` fires for agents without a transcript, so a missing one is skipped unidentified.
+- want: format drift detected and reported. Related: #319.
+
+## 18. Dispatch and resume checks read the wrong names
+
+- sites: `src/tools/agents/operations/dispatchAgent.ts:40`, `src/tools/agents/operations/checkAgentResume.ts:74`
+- why: briefs are checked against the caller's contract names, not the target checkout's; a recipient that is no agent id resolves by role name, so other names escape the resume limit.
+- want: the target's contract names; recipients resolved to agent ids.
+
+## 19. A `gh` body read from a file is not measured
+
+- sites: `src/tools/agents/operations/measureGithubCommand.ts:23`
+- why: `--body-file`, piped or unreadable bodies are measured as the whole command text.
+- want: the body file read.
+
+## 20. The Claude settings prompt lists raw hook matchers
+
+- sites: `src/tools/agents/claude/setup/createClaudeSettingsStep.ts:15`
+- want: the prompt names what each hook checks.
+
+## 21. The worker dispatch hook misreads cross-repository ancestors and stale fields
+
+- why: friction ×4, two from these: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after **Planning** was removed by `gh issue edit`, until claim and publish.
+- want: ancestor references resolved against the issue's own repository; the Blockers check reading the body, not only the field.

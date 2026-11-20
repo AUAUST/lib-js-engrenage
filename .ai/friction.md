@@ -1,98 +1,64 @@
 # Agent friction
 
 - git stash -u: stashing a tree with `git add -N` entries to test HEAD — stash refused, chained pop then half-applied an older stash's untracked files; removed them after cmp against stash^3, used a temporary worktree instead
-- node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory, not the cwd; imported `node_modules/prettier/index.mjs` by absolute path
-- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
-- node scratch scripts: imported `prettier` from a scratchpad `.mjs` — ESM resolves packages from the script directory; ran the code with `node --input-type=module -e` from the repository root
-- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the default reporter hid it; reran with `--silent=false --reporter=verbose`
-- `npm view` in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
+- npm in the repository: queried the registry for the package — `devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad
 - zsh `/usr/bin/time -p node …`: timed CLI runs — reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
 - PreToolUse Bash hook (`git commit --no-verify`): committed a baseline in a scratch copy of another repository — the hook denies it everywhere; used the git index as the baseline and diffed against it
-- shared checkout: ran `engrenage gate --worktree` while another session edited `src/workflows/builtins/index.ts` — its half-done barrel registered every extension twice, breaking config load for gate, vitest, eslint and the Bash hook; stopped with checks unverified
 - eslint `-f unix`: listed repo-wide lint findings with the unix formatter — not bundled in ESLint 9+, used `-f json -o <file>` instead
 - `git ls-files --others --ignored --directory`: list ignored paths — skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
-- Agent worker brief: launched worker without an `Issue: <owner>/<repo>#<n>` first line — PreToolUse hook refused it; retried with that line
 - gh issue edit hook: piped the body from a scratch file, then a `.draft.md` file — hook demands a heredoc and rejects a Decisions section in a Task; used a heredoc and folded decisions into Steps
-- pnpm test type checking: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones — `pnpm exec tsc -b` found them
+- type check of tests: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones — `pnpm exec tsc -b` found them
 - Claude PreToolUse Bash hook: user asked to commit skipping the gate — the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
 - `engrenage eslint:fix`: `auaust/name-replacements` autofix renamed `ref`/`refs` to `reference`/`references` — collided into `references_` and shadowed names; renamed by hand
-- `engrenage tsc`: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
+- type check of tests: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
 - issue-planning skill §GitHub mechanics: posted `"value":["Improvement"]` for single-select Nature as the example shows — GitHub answers 422 "must be a string option name"; posted a bare string
 - `git add` by path list: staged paths from `git status --porcelain` — a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`
 - `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
 - vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
 - engrenage planning CLI: pnpm exec engrenage in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
-- `git add <paths>`: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
+- `git add` by path list: staged by name a deletion already in the index — "pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . ':(exclude)…'` or left staged deletions out of the list
 - Agent `isolation: "worktree"`: dispatched workers expecting a worktree at `HEAD` — each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
 - Agent tool: dispatched a `.claude/agents` file written mid-session — not loaded until restart; probed with `claude -p --agents` instead.
 - claude -p: passed the prompt after `--allowedTools Agent` — the variadic flag swallowed it; piped the prompt on stdin.
 - pnpm: sandboxed package-manager bootstrap stalled on registry access — ran authorized pnpm commands with network access.
-- npm pack: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
+- npm in the repository: inspected a formatter from the repository — devEngines requires pnpm; packed from /private/tmp.
 - repository lookup: guessed config and plugin paths — read the file inventory and installed package sources instead.
-- `engrenage planning issue publish`: published a root Segment with no parent Plan — refused as "parent Plan outside the set"; rooted it under a new Plan
 - listInfoMessages: listed a file's `info` lint messages — no command exposes them; wrote a scratch script importing it
-- `pnpm lint`: first run in a fresh worktree printed other worktrees' lint reports interleaved with its own — rerunning gave clean output for the named paths
-- `pnpm lint`: read its stylish output — lines from other worktrees' concurrent runs interleaved with its own, garbling paths; reran with `--format json -o <file>`
-- `pnpm lint`: listed one reach's `auaust/documented` warnings — output interleaved findings from other agent worktrees' files; filtered on this worktree's path
 - scratchpad: wrote spec files under generic names in the session scratchpad — a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
 - pnpm format:all: rewrapped JSDoc after a layout change — generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen
 - engrenage planning issue check: kept a **Planning** section holding a settled decision — check reads any Planning section as open and demands `Open questions`; moved the decision into Context
-- engrenage sync barrels: ran sync after declaring a new domain — it creates no `index.ts` barrel; seeded empty `@barrel` blocks and ran `sync barrel-blocks`
 - CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
 - `pnpm engrenage gate`: ran it on unstaged changes expecting a type check — it passed silently while tsc failed; `pnpm test` caught it, `--worktree` covers unstaged files
-- `engrenage gate --worktree`: timed the gate on a probe edit — another session's uncommitted files were in the worktree, so its fixes ran on them too; reverted only the probe, stopped benchmarking the gate on the worktree
-- ESLint API from scratchpad: imported `eslint` in a scratch script — bare specifier unresolvable outside the project; imported `node_modules/eslint/lib/api.js` by absolute path
-- engrenage gate --worktree: ran during a parallel session's .ai/issues draft edits — Prettier failed on their vanishing/ignored drafts; covered my files with eslint --fix and typecheck instead
-- `engrenage gate --worktree`: ran while a parallel session published its `.ai/issues` drafts — Prettier failed on the vanished drafts; reran the gate once they were gone
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
-- PreToolUse hook: dispatched a worker for issue-less dogfooding — hook demands an `Issue:` line; used a general-purpose agent
 - gh run view --log-failed: fetched logs of the latest run — returned empty/404 (repo renamed); got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
 - `engrenage planning issue create --repo`: draft an issue for a client repository — only repositories in the planning sheet are registered; kept the client report in chat
 - `prettier --experimental-cli`: checked the repository with engrenage's config — silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
-- BSD sed -i: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
+- BSD sed: subagent edited files with GNU `sed -i` — macOS needs `-i ''`; retried
 - pnpm add in scratchpad: probing TypeScript 7 on the repo — auto mode classifier denied the install; relied on #558 measurements
-- dispatch hook Issue line: briefed `AUAUST/engrenage#555` — 404; repo is `AUAUST/lib-js-engrenage`, found via `gh repo view`
 - deny rule on .env*: moving and reading the Interscript theme .env/.env.example for #581 — blocked even outside the repo; left the move to the user
 - engrenage planning issue create: passed `report` as the type — it takes `resource`; the material is a field
 - changesets rule: wrote a changeset through a Bash heredoc — the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
-- engrenage sync: deleted modules a barrel still exported — sync fails loading the stale barrel; removed its lines by hand
-- `engrenage vitest`: printed exploration output with `console.log` in a scratch test — the run shows no test console output; wrote it to a file instead
-- walking dispatch brief: guessed `AUAUST/engrenage` as `<owner>/<repo>` — dispatch hook 404ed; `gh repo view` gave `AUAUST/lib-js-engrenage`
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
 - `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
-- `engrenage gate --worktree`: gated instruction-only edits — typecheck and codegen --check failed on `src/tools/github/types/GithubInput.ts` from concurrent commit 4b1a3d7e; left it, reported unverified
-- `git commit`: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
-- `engrenage planning issue publish`: published new `subIssues` of a Segment without its Plan — refused as "plan holding it is outside the set"; claimed the Plan and published it with them
+- git index lock: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
 - gh issue edit hook: `--body-file $S/…` with a variable path in a compound command — hook rejects variable paths and the whole command; edited the file in one call, published with a literal path in another
 - PreToolUse Bash hook: zsh `${=files}` word splitting in a lint command — the hook's shell parser rejects it as an invalid parameter name; wrote the list to a file and passed it through `xargs`
 - unicorn/no-incorrect-template-string-interpolation: git revision `${revision}^{commit}` in a template — flagged `^{commit}` as a missed interpolation; moved `^{commit}` into a constant
-- `claude -p --agent`: expected the agent's frontmatter `Stop` hook to fire — it fires only for subagents; probed the payloads in a scratch repository
+- claude -p: expected the agent's frontmatter `Stop` hook to fire — it fires only for subagents; probed the payloads in a scratch repository
 - `codex exec`: probed headless output — ChatGPT token expired, run failed after `thread.started`; Codex dispatch untested live
-- engrenage sync: imported a new barrel member from `bin/engrenage/executable.ts` before syncing — sync runs through that executable and fails on the missing export; added the barrel line by hand
-- `engrenage sync` barrels: imported a new cli operation from `bin/engrenage/executable.ts` before syncing — sync runs through that executable and failed to load; stashed the executable edit, synced, restored it
-- `loadConfig` in tests: deleted a synced file with `rmSync` between two loads of one root — the cached config's filesystem still held its content, so sync staged no write; deleted through `config.context.filesystem` instead
 - `engrenage sync` after moving `data.exports`: ran sync before the build — sync reads fragments through the stale `package.json` exports, which only `pnpm engrenage tsdown` regenerates, and deleted every generated skill and agent file; restored them, built, synced again
-- `loadConfig` in tests: rewrote `engrenage.config.ts` between two loads of one root — Node cached the first config module, so the new option was ignored; set the option at project creation
-- `engrenage planning issue check`: checked a parentless draft with a header line — passed, then `publish` refused it for having no ancestors; removed the header line and republished
-- worktree-isolated Bash: `pnpm … ; git status` in one command — refused as naming git too complexly; reran git alone with `git -C`
-- worktree-isolated Bash: `cat` of several files, one path holding `git.ts` — refused as naming git in a compound command; read them through the Read tool
 - `$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks: no instruction or doc says which checkout it names — logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree
-- worktree-isolated Bash: `sed -i ''` edits chained with `git diff` — refused as too complex to verify; edited through the edit tool
-- `loadConfig` in tests: rewrote `engrenage.config.ts` and removed a `src` directory between two loads of one root — the memoized config kept the old aliases; called `loadConfig.refresh(root)` before each load
-- gh api graphql: queried `AUAUST/engrenage` from the package name — repository not found; the repository is `AUAUST/lib-js-engrenage`
 - tool extension in temporary-project tests: symlinked `node_modules/eslint` alone — `resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`
 - `pnpm engrenage debt --json`: piped stdout into a JSON parse — first line is the echoed command, so parse failed; dropped line 1 and reparsed
 - gh api graphql: read issues' project `complexity` field for dispatch effort — token lacks `read:project`; dispatched at default effort
-- worker dispatch hook: dispatched #710 and #712 under AUAUST/clients-intscr-shopify#52 — refused: open **Planning** in ancestors #49 and #52, bare `#676` there resolving to the client repository; paused for the user
-- worker dispatch hook: dispatched #710 after removing #52's Planning by `gh issue edit` — refused for stale `Open questions` Blockers; cleared it through `planning issue claim` and `publish`
-- BSD sed `\|` alternation: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`
-- `engrenage planning issue publish`: detached #706 from Segment #52 keeping its header line — refused: "header line but no ancestors"; removed the line, moved its origin into Context
+- BSD sed: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`
 - `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
 - git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
-- worktree-isolated Bash: chained `cd` with `git rev-parse` and a log grep — refused as a compound git command; ran git alone
+- `pnpm engrenage debt --json`: dropped stdout's first line as the earlier line says — the echoed command now goes to stderr, so the parse failed; parsed stdout whole
+- `engrenage jscpd`: read the clone pairs from the console report — it prints shortened paths (`structure.ts`, `claude/hook.ts`); reran with `-r json -o <dir>`

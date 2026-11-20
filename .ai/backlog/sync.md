@@ -14,3 +14,8 @@
 
 - why: #473; the generated built-ins list is read before sync regenerates it, so a second sync is needed.
 - want: one sync settles a new built-in extension; related to sync.1.
+
+## 4. Sync cannot run while its executable imports a stale or missing barrel export
+
+- why: friction ×4: sync loads through `bin/engrenage/executable.ts`, so a new barrel member imported before syncing or a deleted module a barrel still exports fails the run; a newly declared domain gets no `index.ts`. Agents edit barrels by hand. Related: `c12.2`.
+- want: barrel regeneration that loads no barrel it regenerates, and creates the index of a new domain.

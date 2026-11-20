@@ -1,0 +1,63 @@
+# prettier
+
+The Prettier tool domain: layout plugin, layout conventions and formatting runs.
+
+## 1. Layout plugin copies Prettier's internal shapes
+
+- sites: `src/tools/prettier/utils/isParenthesized.ts:5`, `src/tools/prettier/utils/keepsOwnBreak.ts:44`, `src/tools/prettier/utils/printAssignment.ts:39`, `src/tools/prettier/utils/printAssignment.ts:152`, `src/tools/prettier/utils/printAssignment.ts:178`, `src/tools/prettier/utils/printConditional.ts:50`, `src/tools/prettier/utils/printConditional.ts:78`, `src/tools/prettier/utils/printLines.ts:5`
+- why: parentheses, assignment layout, union groups, conditional indent and JSX mode are read from the shapes of Prettier's private printers; `fits` reads an undocumented `ifBreak`; sub-docs are printed to text to measure widths.
+- done: needs planning: keep the copies, use an own printer, or drop the layout plugin.
+
+## 2. Assignment layout measures candidates from the wrong column when a statement does not start its line
+
+- sites: `src/tools/prettier/utils/printAssignment.ts:103`
+- why: the text before the left side is read from the syntax tree, so `for (const … =` or a leading comment shifts candidates 2 and 4.
+- want: the column taken from the printed line.
+
+## 3. Layout plugin approximates comment attachment and range offsets
+
+- sites: `src/tools/prettier/plugins/createLayoutPlugin.ts:50`, `src/tools/prettier/plugins/createLayoutPlugin.ts:203`
+- why: the ignored node is the outermost one starting after the comment; the whole text is reformatted before `rangeStart`, `rangeEnd` and `cursorOffset` are read, so they point into the unformatted text.
+- want: Prettier's own attachment; offsets mapped through the reformat.
+
+## 4. Layout parser fails on Flow files
+
+- sites: `src/tools/prettier/plugins/createLayoutPlugin.ts:216`
+- why: the `typescript` parser cannot read Flow syntax the `babel` parser accepts.
+- want: the parser chosen by the file's syntax.
+
+## 5. Convention traversals walk metadata keys and cache across mutations
+
+- sites: `src/tools/prettier/utils/visitNodes.ts:18`, `src/tools/prettier/utils/collectStatementPairs.ts:29`
+- why: the visitor walks every enumerable key but known metadata instead of the parser's visitor keys; cached statement pairs hold only while no convention mutates the program between traversals.
+- want: the parser's visitor keys; pairs recomputed or invalidated on mutation.
+
+## 6. `groupedOverloads` joins signatures of different functions
+
+- sites: `src/tools/prettier/conventions/layout/groupedOverloads.ts:20`
+- why: it groups consecutive signatures of differently named functions, as ESLint's `function-overload` matcher did.
+- want: only overloads of one function grouped.
+
+## 7. Plugins named by a string bypass the layout and printer plugins
+
+- sites: `src/tools/prettier/operations/createPrettierConfig.ts:52`, `src/tools/prettier/ports/PrettierPlugin.ts:19`
+- why: Prettier loads string or URL plugins itself, so the layout plugin cannot wrap their parsers nor the printer chain their `estree` printer, and both shadow them; a contributed plugin's `options` is dropped without `files`, silently. #573 changes the plugin contract the other way (specifiers for the parallel CLI).
+- done: needs planning with #573: wrap named plugins or change the plugin contract; an error for dropped `options`.
+
+## 8. Formatting scope is every changed file and only changed files
+
+- sites: `src/tools/prettier/operations/fixWithPrettier.ts:7`, `src/tools/prettier/operations/fixWithPrettier.ts:8`
+- why: a Prettier config or plugin change leaves unchanged files for CI to reject; changed files outside the declared environments, engrenage's own included, are formatted too.
+- done: needs planning: formatting scope.
+
+## 9. `canonicalJsdoc` approximates Markdown by line prefixes
+
+- sites: `src/tools/prettier/conventions/layout/canonicalJsdoc.ts:65`, `src/tools/prettier/conventions/layout/canonicalJsdoc.ts:164`
+- why: list items, verbatim lines and paragraphs are told apart by prefixes, approximating indented code and lazy continuations; a code body is recovered by slicing the tag text, holding only while `splitDocTag` returns it as the unmodified tail. Related: `docs.2`.
+- want: a Markdown parser; `splitDocTag` returning the body's offset.
+
+## 10. Ignore files repeat Git's hash-comment syntax
+
+- sites: `src/tools/prettier/extension.ts:96`, `src/tools/prettier/extension.ts:109`
+- why: `tools/git` declares the same syntax as `hashBlocks`.
+- want: one shared ignore-file syntax.

@@ -1,0 +1,15 @@
+# git
+
+The Git tool domain: repository layout, commit reading and Git-owned ignore globs.
+
+## 1. Git reads assume a default repository layout
+
+- sites: `src/tools/git/operations/resolveMainWorktree.ts:6`, `src/tools/git/utils/readCommitSubject.ts:1`
+- why: the common directory is assumed to sit in the main worktree, false for submodules and separate git directories; comment lines are recognised by `#` though `core.commentChar` picks another.
+- want: the main worktree from `git worktree list`; the comment character read from config.
+
+## 2. Agent worktree ignores sit in the editor group
+
+- sites: `src/tools/git/constants.ts:60`
+- why: agent worktrees are not editor files.
+- want: an agents group, or the agents domain contributing its own ignores.

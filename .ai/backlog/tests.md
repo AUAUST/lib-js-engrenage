@@ -10,7 +10,7 @@ Test infrastructure and coverage gaps.
 
 ## 2. Test setup reaches the package through workarounds
 
-- sites: `tests/src/tools/eslint/roleRules.test.ts:43`, `tests/tooling/eslint/rules.test.src.ts:21`, `tests/utils/linkSourcePackage.ts:30`, `tests/src/foundation/blocks/syncBlocks.test.src.ts:5`
+- sites: `tests/src/tools/eslint/roleRules.test.ts:42`, `tests/src/tools/eslint/apiInterface.test.src.ts:13`, `tests/tooling/eslint/rules.test.src.ts:21`, `tests/utils/linkSourcePackage.ts:14`, `tests/utils/linkSourcePackage.ts:15`, `tests/src/foundation/blocks/syncBlocks.test.src.ts:5`
 - why: temporary configs cannot import `@auaust/engrenage` or the tooling, so rules cross through `globalThis`; every root entry is linked; a source-only test exists because generated paths resolve `agents/constants` to the index.
 - want: test configs resolve package and tooling; the link limited to published and source-mode entries; the block test through the public entry.
 
@@ -24,3 +24,19 @@ Test infrastructure and coverage gaps.
 - sites: `tests/src/project/environments/environments.test.ts:179`, `tests/src/project/environments/environments.test.ts:203`, `tests/src/project/environments/environments.test.ts:208`, `tests/src/tools/github/syncWorkflowFiles.test.src.ts:133`, `tests/src/tools/prettier/resolvePrettierAllArguments.test.src.ts:60`, `tests/src/tools/vitest/createVitestConfig.test.src.ts:345`, `tests/src/tools/shopify/theme/theme.test.src.ts:101`, `tests/src/tools/github/issues/contract/issueTree.test.src.ts:146`, `tests/src/tools/github/issues/contract/issueContract.test.src.ts:831`, `tests/src/tools/git/hashTree.test.src.ts:38`, `tests/src/tools/git/listExcludeFiles.test.src.ts:11`, `tests/src/tools/git/listIgnoredGlobs.test.src.ts:18`, `tests/src/tools/eslint/createEslintConfig.test.src.ts:1595`
 - why: nine tests repeat the same `git init` beside `createTemporaryProject`, while `createGitRepository` covers only linked-module repositories.
 - want: one test utility, or a `createTemporaryProject` option, creating the repository.
+
+## 5. Test setups clone each other
+
+- sites: `tests/src/tools/eslint/boundaries.test.ts:141`, `tests/src/tools/eslint/noComplexConciseArrows.test.ts:11`, `tests/src/tools/typescript/produceTsconfigInclude.test.src.ts:12`
+- why: temporary projects, ESLint instances and `syncProject` helpers are repeated; jscpd finds 18 test clones, also in `createEslintConfig`, `syncLefthookConfig`, `issueContract`, `issueTree`, `runGateLocalFiles`, `produceTsconfigRuntime` and `enableLinkedSource`/`findSourceExecutable`.
+- want: shared builders in `tests/utils`, starting with the marked sites.
+
+## 6. Console spies silence nothing since #638
+
+- sites: `tests/src/tools/typescript/produceTsconfigSolution.test.src.ts:189`, `tests/src/workflows/cli/runTool.test.src.ts:41`
+- want: the spies removed.
+
+## 7. Tests reloading a project's config get cached state
+
+- why: friction ×3: between two loads of one root, a rewritten `engrenage.config.ts` stays cached by Node, a deleted file stays in the cached filesystem, aliases stay memoized; agents call `loadConfig.refresh` or edit through `config.context.filesystem`. Related: `configuration.6`, #57.
+- want: a test utility that changes a temporary project and returns a freshly loaded config.

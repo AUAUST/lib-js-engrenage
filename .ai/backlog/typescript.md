@@ -61,7 +61,7 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 
 ## 11. TypeScript producers special-case targets
 
-- sites: `src/tools/typescript/operations/tsconfigProducers.ts:15`, `src/tools/typescript/setup/syncTsconfigFiles.ts:48`, `src/tools/typescript/operations/resolveTsconfigEnvironments.ts:13`
+- sites: `src/tools/typescript/operations/tsconfigProducers.ts:15`, `src/tools/typescript/setup/syncTsconfigFiles.ts:48`, `src/tools/typescript/operations/resolveTsconfigEnvironments.ts:13`, `src/tools/typescript/operations/listTsconfigTargets.ts:38`
 - why: most producers open with `key === "base"`; `tests.dist` does not fit the config shape, so it is special-cased in producers and `createResolvedConfig`; producers compute inherited `tests.dist` fields that sync then drops.
 - want: base and environment producers split, or declared targets; one tsconfig-key-to-config-path lookup; inherited fields skipped.
 
@@ -76,3 +76,15 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - sites: `src/project/tsconfig/constants.ts:10`, `src/tools/prettier/operations/resolvePrettierAllArguments.ts:13`
 - why: no environment glob or engrenage resource covers it since #702 replaced the root `env.d.ts` resource; `eslint global.d.ts` reports "File ignored", `prettier:all` skips it.
 - want: the file in the lint and format coverage while it exists.
+
+## 14. Tsconfig types restate the managed fields
+
+- sites: `src/project/tsconfig/types/ManagedEnvironmentTsconfig.ts:9`, `src/project/tsconfig/types/ResolvedEnvironmentTsconfig.ts:7`, `src/project/tsconfig/types/TsconfigTarget.ts:13`, `src/project/workspaces/types/WorkspaceTsconfig.ts:4`
+- why: each repeats `extends`, `include`, `exclude`, `lib`, `types`, `compilerOptions` and `unmanaged` (jscpd).
+- want: one interface of the managed fields, extended by each.
+
+## 15. Default-exported expressions are declared as `const`
+
+- sites: `src/tools/typescript/config/sections/declarationsSection.ts:248`
+- why: `SourceDeclaration.kind` has no member for them.
+- want: a kind for default-exported expressions.

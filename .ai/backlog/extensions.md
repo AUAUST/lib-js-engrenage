@@ -31,3 +31,9 @@ The extension registry and extension declarations.
 - sites: `src/foundation/modules/utils/loadLazy.ts:30`
 - why: bundling adds exports to lazily loaded chunks (0.16.0 shipped `syncPackageJson, t`); built-in loaders select theirs by name, third-party ones may not.
 - want: in a minor release, `loadLazy` rejects namespaces without `default`.
+
+## 6. The lint rule loader in `engrenage.config.ts` is lazy only to skip ESLint tools
+
+- sites: `engrenage.config.ts:36`
+- why: a config load would otherwise import `tools/eslint`.
+- done: #331 injects the tools a run needs; then drop the loader.

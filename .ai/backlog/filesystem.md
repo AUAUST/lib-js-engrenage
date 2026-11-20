@@ -1,0 +1,15 @@
+# filesystem
+
+The filesystem abstraction, globbing and glob anchoring.
+
+## 1. Literal paths are globbed as patterns
+
+- sites: `src/tools/git/operations/listIgnoredGlobs.ts:46`, `src/tools/typescript/extension.ts:74`
+- why: each path becomes a glob unescaped, so a barrel path such as `[id]` matches other files or none.
+- want: literal paths escaped before globbing.
+
+## 2. Glob helpers return or render more than asked
+
+- sites: `src/foundation/filesystem/operations/createFilesystem.ts:185`, `src/foundation/blocks/utils/anchorGlobs.ts:11`
+- why: `globFiles` also yields the directories `patterns` match, so `glob` returns them as files; minimatch's `braceExpand` unescapes `\{`, so an anchored glob for a literal brace renders it unescaped.
+- want: files only from `glob`; literal braces kept escaped.

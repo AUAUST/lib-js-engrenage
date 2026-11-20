@@ -12,3 +12,8 @@ Generated Vitest configuration.
 
 - why: tests live under one tests root only; some projects keep tests beside their sources. The tests environment, its roles and the test variants (#155) assume one root; colocated tests would put test files inside `src` environments, where roles and boundaries (#150) apply.
 - done: colocated tests are supported, or explicitly rejected with a reason.
+
+## 3. `engrenage vitest` hides test console output
+
+- why: friction ×3: exploration `console.log` in a scratch test prints nothing under the default reporter; agents write to files or rerun with `--silent=false --reporter=verbose`.
+- want: a flag of `engrenage vitest` showing console output, or that invocation named in the Environment table.

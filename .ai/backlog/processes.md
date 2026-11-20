@@ -10,6 +10,6 @@ Spawned processes, binary and module resolution.
 
 ## 2. Process and git failures lose or repeat output handling
 
-- sites: `src/foundation/processes/operations/runProcess.ts:6`, `src/tools/git/operations/readHead.ts:4`
-- why: the process error drops the stderr a caller captured; `readHead` repeats `runGit`'s failure handling to accept an unborn HEAD.
-- want: the error keeps the captured stderr; one git failure handler accepting an unborn HEAD.
+- sites: `src/foundation/processes/operations/runProcess.ts:6`, `src/tools/git/operations/readCommit.ts:6`
+- why: the process error drops the stderr a caller captured; `readCommit` repeats `runGit`'s failure handling to accept a revision naming no commit.
+- want: the error keeps the captured stderr; `runGit` taking the accepted exit statuses.

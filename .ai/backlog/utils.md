@@ -13,3 +13,15 @@ Shared helpers and their placement.
 - why: `createTagPreset` (`src/project/docs/utils/createTagPreset.ts`) and `createRolePreset` (`src/project/roles/utils/createRolePreset.ts`) are one generic `(defaults: T) => (options?: Partial<T>) => T` that freezes the merge; a third preset family would copy it again.
 - want: one generic preset factory in the lowest domain both import, the two public names kept as typed aliases or replaced, decided with their `@experimental`/public status.
 - done: one implementation remains, or keeping two is recorded as intended.
+
+## 3. Markdown utilities each repeat the parser options
+
+- sites: `src/foundation/markdown/utils/listCodeRanges.ts:9`
+- why: a shared `parseMarkdown` would join the public barrel, and a `constants.ts` value must be deeply readonly, which the parser's option types reject.
+- want: one parser setup the four utilities share.
+
+## 4. Shell parser types are trusted or flattened
+
+- sites: `src/foundation/shell/operations/parseShell.ts:41`, `src/foundation/shell/types/ShellRedirect.ts:4`
+- why: `createRequire` returns `any`, so `sh-syntax/sync` is trusted to match its declarations; a redirect `operator` is source text, so comparing it to `<` misses an explicit `0<`.
+- want: the module validated or typed by import; a typed operator and descriptor.

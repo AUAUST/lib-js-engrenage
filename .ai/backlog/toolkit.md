@@ -81,3 +81,9 @@ Upstream @auaust/toolkit decisions that may affect engrenage.
 
 - why: `src/tools/typescript/utils/resolveImportSpecifier.ts` collects candidates, destructures `[first, ...others]` and throws on none or several, a pattern that recurs wherever exactly one match is expected.
 - want: a toolkit helper returning the only element and failing with a described error on several (optionally on none); use it here.
+
+## 14. `isArray` does not narrow readonly lists
+
+- sites: `src/project/config/operations/createProjectConfig.ts:50`
+- why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to, so engrenage keeps a local guard.
+- want: `isArray` narrowing readonly lists upstream; then the local guard deleted.

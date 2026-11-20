@@ -4,7 +4,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 1. Attribution rule conflicts go unreported
 
-- sites: `src/tools/agents/setup/syncAgentFiles.ts:40`
+- sites: `src/tools/agents/setup/syncAgentFiles.ts:56`
 - why: a rule file at the wanted path without its reference silently drops the rule.
 - want: sync reports the conflict.
 
@@ -72,3 +72,25 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: Backlog has editing agents record out-of-task bugs at once; two leaves numbering a new entry in one category conflict on cherry-pick or apply, and `worktree-dispatch.md` › Committing work keeps only the agent logs apart.
 - want: a rule or merge step for backlog appends, like the agent logs'.
+
+## 15. Instruction sync keeps or drops rules silently
+
+- sites: `src/tools/agents/setup/syncAgentFiles.ts:74`, `src/tools/agents/setup/syncAgentFiles.ts:131`, `src/tools/agents/setup/syncAgentFiles.ts:222`, `src/tools/agents/operations/getInstructionTemplates.ts:91`, `src/tools/agents/operations/migrateInstructionLocations.ts:34`
+- why: a removed extension leaves its rules installed; a merged former rule loses its project lines; an upgrade cannot tell a deleted default rule from a new one; an unknown `extension` hides a fragment; external extensions' former markers stay unresolvable.
+- want: each case reported or failed by sync.
+
+## 16. Instruction markers have no single definition
+
+- sites: `src/tools/agents/utils/listReferences.ts:4`, `src/tools/agents/utils/filterConditionalBlocks.ts:8`
+- why: `listReferences` counts markers inside code, unlike `listInstructionMarkers`, while `syncBlocks` fills both; the filter guesses blank lines around markers without parsing Markdown.
+- want: one Markdown-aware marker reader.
+
+## 17. Agents guess the repository from the package name
+
+- why: friction ×3 (`AUAUST/engrenage` instead of `AUAUST/lib-js-engrenage`), once after `.claude/rules/github.md` took `--repo` from the planning sheet; dispatch briefs and `gh api graphql` owner/name arguments are outside that rule's wording.
+- want: the rule covering every repository argument, or a hook naming the registered repository on a 404 for an unregistered one.
+
+## 18. Scratch scripts cannot import the project's packages
+
+- why: friction ×3: ESM resolves bare specifiers from the script's directory, so `prettier` or `eslint` imported from a scratchpad `.mjs` fails; agents use absolute `node_modules` paths or `node --input-type=module -e` from the root.
+- want: the Environment table naming the working form.

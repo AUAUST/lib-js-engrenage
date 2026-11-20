@@ -50,6 +50,9 @@ Deferred questions, bugs, tasks and improvements.
 - [cli](cli.md): Command definitions, registration and program runs.
 - [tests](tests.md): Test infrastructure and coverage gaps.
 - [format](format.md): The `format` section, formatter selection and formatting vocabulary.
+- [prettier](prettier.md): The Prettier tool domain: layout plugin, layout conventions and formatting runs.
+- [filesystem](filesystem.md): The filesystem abstraction, globbing and glob anchoring.
+- [git](git.md): The Git tool domain: repository layout, commit reading and Git-owned ignore globs.
 - [agents](agents.md): Agent runtime integrations: hooks, runtime names and skill rendering.
 - [vscode](vscode.md): Synced VS Code files.
 - [lefthook](lefthook.md): Lefthook integration.

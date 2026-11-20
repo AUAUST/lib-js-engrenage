@@ -28,3 +28,15 @@ Generated tsdown build configuration: entries, outputs and declaration files.
 
 - site: `src/tools/tsdown/operations/createTsdownConfig.ts:90` (`build.minify: "keepNames"` maps to minifier `keepNames`; `output.keepNames` also covers bundling renames but its `__name` import survives in `.d.mts`, failing `typecheck:dist`).
 - want: an upstream fix in rolldown-plugin-dts `isHelperImport` (repository not AUAUST's: stays here, no issue), then `output.keepNames`.
+
+## 6. The emitted manifest plugin is written twice
+
+- sites: `src/tools/tsdown/plugins/createEmittedManifestPlugins.ts:16`, `src/tools/vite/plugins/createEmittedManifestPlugin.ts:14`
+- why: tsdown and Vite get identical rollup-style hooks (jscpd).
+- want: one plugin from `project/build`, wrapped by each tool.
+
+## 7. Internal tags are trimmed from declarations without a parser
+
+- sites: `src/tools/tsdown/utils/trimInternalTags.ts:21`
+- why: template literal types rely on hand-tracked braces.
+- want: the declaration emitter or rolldown-plugin-dts exposing the comments it prints (upstream, not AUAUST's).
