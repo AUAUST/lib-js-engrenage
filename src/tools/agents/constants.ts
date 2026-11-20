@@ -148,7 +148,6 @@ export const subagentCacheTtls = freeze(["5m", "1h"] as const);
 export const defaultSubagentCacheTtl = "1h" as const;
 
 export const hookEvents = freeze([
-  "SessionStart",
   "PreToolUse",
   "PostToolUse",
   "Stop",
