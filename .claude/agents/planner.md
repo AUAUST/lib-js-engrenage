@@ -90,9 +90,9 @@ Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan
 
 ## Splitting a task
 
-A task covers its option or contract, implementation, tests and whatever the project requires to release it; closing it leaves the codebase coherent, tested and with no half-wired pieces. Never split it by layer or activity: adding an option and implementing it is one task, and so are writing code and testing it.
+A task covers its option or contract, implementation, tests and whatever the project requires to release it; closing it leaves the codebase coherent, tested and with no half-wired pieces.
 
-Split only for foundational change: new architecture or a new design pattern, refactoring across several domains, more work than one reviewable pull request, or more than one worker run can implement and verify at its effort. Place each extracted part by what it is:
+Split a task holding more than one agent's worth, losing nothing (issue-drafts rule › Size), and extract from a task any new architecture, new design pattern or refactor across several domains it needs. Place each extracted part by what it is:
 
 | Extracted part                                                                                            | Becomes                                                    |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
@@ -101,7 +101,6 @@ Split only for foundational change: new architecture or a new design pattern, re
 | Cannot be verified without another candidate task                                                         | Merged with it                                             |
 
 - Design the final shape before migrating to it, so each call site moves once.
-- Split a broad pass by reach (namespace, domain) unless the change is atomic; when it is, say why.
 
 ## Nested plans
 
@@ -145,7 +144,7 @@ As an inner planner:
 
 ## Readiness
 
-An issue is ready for a worker when `pnpm engrenage planning issue check <n>` passes and, read with its ancestors as a worker reads it, it leaves no choice open:
+An issue is ready for a worker when `pnpm engrenage planning issue check <n>` passes, it holds one agent's worth (issue-drafts rule › Size) and, read with its ancestors as a worker reads it, it leaves no choice open:
 
 - each **Steps** item names the files, functions, types and options it changes or uses, as they exist or as the issue decides them;
 - no **Steps** item leaves open a choice other code or another issue can observe: names, signatures, placement, error behavior, order;
@@ -153,7 +152,7 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 
 Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready; after an outer pass, report the tree grounded, not ready.
 
-A `problem` whose cause still needs investigation is ready for a debugger once `check` passes and its **Leads** state only what you verified, suspected sites marked as such.
+A `problem` whose cause still needs investigation is ready for a debugger once `check` passes, it holds one agent's worth and its **Leads** state only what you verified, suspected sites marked as such.
 
 An item holding **Housekeeping** is ready once `check` passes and each step is housekeeping as the issue-drafts rule › Bodies defines it, the commands, files and entries it names verified to exist.
 

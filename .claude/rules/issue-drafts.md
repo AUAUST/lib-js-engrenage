@@ -24,13 +24,13 @@ Applies, on top of the issues rule, to every issue you file or draft.
 | An internal behavior or contract the project keeps track of                        | `resource`, `material` `specification` |
 | Outside documentation the project relies on                                        | `resource`, `material` `reference`     |
 
-| Field or part          | Set                                                                                                                                                              |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `complexity`           | On `task` and `problem`: `trivial` small and mechanical, `involved` needs analysis but stays contained, `complex` broad or delicate. It sets the dispatch effort |
-| `priority`             | Only for work due before or after normal work                                                                                                                    |
-| `blockers` `questions` | While **Planning** or **Questions** is present; cleared once both are gone. Such an issue is never dispatched: the walker routes it by its open section          |
-| Labels                 | The target repository's labels whose description fits                                                                                                            |
-| Title                  | Its subject, without prefix, in sentence case without trailing punctuation; a `task` or `problem` title states its result                                        |
+| Field or part          | Set                                                                                                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `complexity`           | On `task` and `problem`: `trivial` mechanical, `involved` needs analysis, stays contained, `complex` interacting constraints or real uncertainty. Sets dispatch effort, never size (§Size) |
+| `priority`             | Only for work due before or after normal work                                                                                                                                              |
+| `blockers` `questions` | While **Planning** or **Questions** is present; cleared once both are gone. Such an issue is never dispatched: the walker routes it by its open section                                    |
+| Labels                 | The target repository's labels whose description fits                                                                                                                                      |
+| Title                  | Its subject, without prefix, in sentence case without trailing punctuation; a `task` or `problem` title states its result                                                                  |
 
 ## Repository
 
@@ -75,9 +75,19 @@ Uncertainty lives only under **Planning**, design not finished, **Questions**, w
 
 - Give the other sections no budget: make them as complete as the item's agent needs.
 - Own work after the sub-issues needing a step **Housekeeping** cannot hold, or a choice: all of it under **Steps**.
-- Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing and already change several files. State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
+- Put a line `Checkpoint: <expected state>` between two groups of **Steps**, never after the last, only when the steps up to it leave the codebase coherent with checks passing, already change several files and deliver no outcome of their own (§Size). State what then holds and which checks pass, never a commit message. A trivial or regular task gets none: it is committed once.
 - Never restate the project's instructions: workers follow them for everything an issue does not say.
 - An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
+
+## Size
+
+An item is one agent's worth: it delivers one outcome, a behavior or contract change its **Tests** or **Done when** observe, with no part left unused until another issue lands. Judge size by outcomes, never by counting steps, files or words: items cut to a count lose parts.
+
+- **Several outcomes.** A group of **Steps** that, applied alone, would leave the codebase coherent and deliver a change tests verify on their own is an outcome; so is the expected state of a `Checkpoint:` line stating such a change. Split an item holding several into one sub-issue per outcome, ordered by dependency.
+- **One outcome.** Parts delivering it only together stay one item: never split by layer or activity.
+- **A broad pass**, one change applied across several domains: split by reach, namespace or domain, unless the change is atomic, and then say why in **Context**.
+- **Splitting.** Each **Steps** item, **Tests** case, **Done when** clause and decision of the original lands in one sub-issue or in the parent's remaining **Steps**; the parent keeps its **Done when** for the whole. Never drop, shorten or defer a part to make an item fit; a part whose design is unsettled goes under **Planning**.
+- An item holding more than one agent's worth is never ready, dispatched or handed off as ready, whatever its `complexity` or budget level.
 
 ## Drafts
 

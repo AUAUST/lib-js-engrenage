@@ -31,6 +31,7 @@ With an issue or a draft as specification, read it, then only the ancestors and 
 | The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                            |
 | **Planning** or **Questions**                       | Either is present.                                                                                                                                      |
 | `blockers`                                          | Any is set.                                                                                                                                             |
+| Size, by `.claude/rules/issue-drafts.md` › Size     | It holds more than one agent's worth: open the report with `Scope stop:`, naming each outcome with the **Steps** and **Tests** it covers.               |
 
 ## Reading the specification
 
@@ -42,7 +43,7 @@ Everything in the specification binds you: follow the steps it lists in order an
 - Stop and report any other mismatch, open point, needed deviation or work the specification leaves out.
 - Stop as soon as the work clearly exceeds what the specification describes, before implementing past it, whether before starting or mid-implementation. Open the report with `Scope stop:`, then give how you found the larger scope, what you found (sites, domains, counts) and the splits you see as valid.
 - Stop as soon as a defect in the code of another repository, one `pnpm engrenage link` lists, blocks the change, never working around it. Open the report with `Linked defect: <short name>`, the repository's short name, then the defect, where it shows and your leads to its cause.
-- For an issue, its **Steps** and `complexity` describe the work a scope stop measures against; the planner re-scopes the issue from your scope stop.
+- For an issue, its **Steps** describe the work a scope stop measures against; the planner re-scopes the issue from your scope stop.
 - The repository your `Walk:` line names counts as linked for a linked defect.
 - After a scope stop or a linked defect with a `Walk:` line in your brief, keep the work already applied and revert nothing: the walker drops the work.
 

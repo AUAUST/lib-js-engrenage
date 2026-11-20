@@ -54,6 +54,7 @@ With an issue or a draft as specification, read it, then only the ancestors and 
 | The plan, the reference for shared names and shapes | It disagrees with the issue.                                                                                                                            |
 | **Planning** or **Questions**                       | Either is present.                                                                                                                                      |
 | `blockers`                                          | Any is set.                                                                                                                                             |
+| Size, by `.claude/rules/issue-drafts.md` › Size     | It holds more than one agent's worth: open the report with `Scope stop:`, naming each outcome with the **Steps** and **Tests** it covers.               |
 
 <!-- @end -->
 
@@ -70,7 +71,7 @@ Everything in the specification binds you: follow the steps it lists in order an
 
 <!-- @extension tools/github/issues/planning -->
 
-- For an issue, its **Steps** and `complexity` describe the work a scope stop measures against; the planner re-scopes the issue from your scope stop.
+- For an issue, its **Steps** describe the work a scope stop measures against; the planner re-scopes the issue from your scope stop.
 - The repository your `Walk:` line names counts as linked for a linked defect.
 - After a scope stop or a linked defect with a `Walk:` line in your brief, keep the work already applied and revert nothing: the walker drops the work.
 
