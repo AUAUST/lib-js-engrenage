@@ -67,7 +67,7 @@ Read this file before the first dispatch of an agent changing files, and again a
 
 - Dispatch every agent in the background and keep the discussion going: prerequisites, groundwork and fixes land while the rest is settled.
 - Run gatherers and read-only analysers in the main checkout, outside that file's lifecycle.
-- Brief a file-changing agent with its issue or draft line first, when it has one, then `Base: <dispatch base>`.
+- Brief a file-changing agent with its issue or draft line first, then its `Backlog:` lines, each when it has them, then `Base: <dispatch base>`.
 - Dispatch a worker, debugger or writer for an issue with a `complexity` at the effort §Agent limits gives it, otherwise at its default; in a linked checkout, pass that effort as `--effort`.
 - Treat each tool on a `Denied:` line, and each action an agent reports a permission refused, as undone: do it yourself when it is a change the last row of §Agents names; otherwise tell the user what it blocked.
 - A worker report opening with `Scope stop:` or `Linked defect:`, or a `Budget stop:` report you take as it stands: hold its work, if any (§Holding), and bring its findings into the discussion.

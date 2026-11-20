@@ -225,6 +225,7 @@ Place:
 ## Backlog
 
 - Record out-of-scope findings and user-deferred work in the shared backlog: questions, bugs, tasks and improvements. Start with `.ai/backlog/index.md` and follow its category, entry and numbering instructions.
+- Brief an agent dispatched to work on backlog entries with one `Backlog: <category>.<n>` line per entry, right after its `Issue:` or `Draft:` line when it has one, otherwise first: run records attribute the run to each entry from these lines.
 
 A likely or proven bug outside your task, met while working, as the agent-records rule tells it from debt:
 
