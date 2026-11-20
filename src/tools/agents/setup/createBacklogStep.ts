@@ -20,7 +20,7 @@ import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker
 import type { Step } from "#project/steps/index";
 
 const sectionReference = `${engrenage}/${metalbrain}/sections/backlog.md`;
-const skills = ["curation"];
+const skills = ["analysis", "curation"];
 
 export function createBacklogStep(): Step {
   return {
