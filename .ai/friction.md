@@ -86,3 +86,4 @@
 - `pnpm engrenage planning walk 732`: walking the tree — unknown command; the subcommand is `walk check <n>`
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- published issue complexity: needed #749's complexity for its dispatch effort after `planning issue publish` — publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
