@@ -1,8 +1,6 @@
 import { appendFile, mkdir, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 
-import { isFinite } from "@auaust/toolkit/number";
-
 import {
   callsExtension,
   mainAgent,
@@ -10,6 +8,7 @@ import {
 } from "#tools/agents/metalbrain/constants";
 import { readIssuingMessage } from "#tools/agents/metalbrain/operations/readIssuingMessage";
 import { readModelFacts } from "#tools/agents/metalbrain/operations/readModelFacts";
+import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
 import { isMissingFile } from "#tools/agents/metalbrain/utils/isMissingFile";
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
@@ -34,7 +33,7 @@ async function takeStart(file: File): Promise<number | undefined> {
 
     await rm(file, { force: true });
 
-    return isFinite(start) ? start : undefined;
+    return isFiniteNumber(start) ? start : undefined;
   } catch (error) {
     if (isMissingFile(error)) {
       return;
@@ -89,7 +88,11 @@ function readExitCode(response: unknown): Pick<ToolCall, "exitCode"> {
     return {};
   }
 
-  const code = exitCodeFields.map((field) => response[field]).find(isFinite);
+  const code = exitCodeFields
+    .map((field) => {
+      return response[field];
+    })
+    .find(isFiniteNumber);
 
   return code === undefined ? {} : { exitCode: code };
 }

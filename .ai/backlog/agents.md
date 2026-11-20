@@ -156,9 +156,3 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: at the #785 review, gatherers showed $0.48 but Haiku $0.18 over the same 10 runs; cause unchecked: per-model pricing, runs without a model, or a role/model join.
 - want: both views summing to the same cost for the same runs, or the difference named in the output.
-
-## 29. Metalbrain hook module graph imports `@auaust/toolkit/number`, failing its isolation test
-
-- sites: `tests/bin/metalbrain/executable.test.src.ts:46`, `src/tools/agents/metalbrain/utils/parseBudgets.ts:1`
-- why: the hook graph must load only its domain, the cli workflow and Node builtins; `isFinite` from the toolkit now enters it, failing on `main` at 417f9001.
-- want: the hook graph free of the import, or the test's allowance changed by decision.

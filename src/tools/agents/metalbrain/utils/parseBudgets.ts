@@ -1,5 +1,4 @@
-import { isFinite } from "@auaust/toolkit/number";
-
+import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import type { BudgetLevel } from "#tools/agents/metalbrain/types/BudgetLevel";
 import type { Budgets } from "#tools/agents/metalbrain/types/Budgets";
@@ -24,7 +23,7 @@ export function parseBudgets(value: unknown): Budgets {
   function read(level: BudgetLevel): number {
     const budget = levels[level];
 
-    return isFinite(budget) && budget > 0
+    return isFiniteNumber(budget) && budget > 0
       ? budget
       : fail(`levels.${level}`, "a positive number");
   }

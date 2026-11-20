@@ -1,5 +1,4 @@
-import { isFinite } from "@auaust/toolkit/number";
-
+import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
 import { measureContext } from "#tools/agents/metalbrain/utils/measureContext";
@@ -21,7 +20,7 @@ function parseLine(line: string): unknown {
 }
 
 function count(value: unknown): number {
-  return isFinite(value) ? value : 0;
+  return isFiniteNumber(value) ? value : 0;
 }
 
 function readTokens(usage: Record<string, unknown>): MessageTokens {
