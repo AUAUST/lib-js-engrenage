@@ -48,7 +48,7 @@ export async function resolveEnvironmentStructure({
   defined?: RoleRegistry;
   tests?: TestsContext;
   tree?: ProgramLayout | undefined;
-}): Promise<Omit<EnvironmentStructure, "unreached">> {
+}): Promise<Omit<EnvironmentStructure, "unreached" | "diagnostics">> {
   const { strictness, namespaces } = options;
   const commands = tree === "commands";
 

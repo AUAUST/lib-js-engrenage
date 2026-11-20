@@ -427,6 +427,50 @@ describe("structure", () => {
     );
   });
 
+  test.each([
+    ["one error under strict", declaration, ["src/mystery"]],
+    [
+      "no error under loose",
+      declaration.replace("optOut:", 'strictness: "loose", optOut:'),
+      [],
+    ],
+  ] as const)(
+    "reports %s on an unclassified directory",
+    async (_verdict, options, paths) => {
+      const { structure } = await describeSource(options);
+
+      const unclassified = structure.diagnostics.filter(({ code }) => {
+        return code === "unclassified";
+      });
+
+      expect(
+        unclassified.map(({ severity, path }) => [severity, path]),
+      ).toEqual(paths.map((path) => ["error", path]));
+    },
+  );
+
+  test("warns on a domain without purpose", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "src/index.ts": "",
+      "src/feature/index.ts": "",
+      "engrenage.config.ts": 'export default { src: { strictness: "loose" } };\n',
+    });
+
+    const { src } = await loadStructure(project.root);
+
+    expect(src?.diagnostics).toEqual([
+      {
+        severity: "warning",
+        code: "missing-purpose",
+        message: "has no purpose: set one on its `domains` entry.",
+        environment: "src",
+        path: "src/feature",
+        files: [],
+      },
+    ]);
+  });
+
   describe("tests mirror", () => {
     async function describeTests(mirror: boolean, extra: string[]) {
       const project = createTemporaryProject({

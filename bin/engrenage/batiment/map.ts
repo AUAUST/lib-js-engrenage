@@ -4,9 +4,10 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description("Print how engrenage classifies the project directories.")
+      .option("--check", "exit non-zero on any error diagnostic", false)
       .option(
-        "--check",
-        "exit non-zero on an unclassified directory of a strict environment, a role cardinality violation, a namespace or domain declaration the walk never reaches, a module beside the command group of its name or a runtime import cycle",
+        "--json",
+        "print the report's facts and diagnostics as JSON",
         false,
       );
   },

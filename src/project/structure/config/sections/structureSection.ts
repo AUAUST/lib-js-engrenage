@@ -13,6 +13,7 @@ import { readStructureOption } from "#project/structure/operations/readStructure
 import { resolveEnvironmentStructure } from "#project/structure/operations/resolveEnvironmentStructure";
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
 import { flattenStructure } from "#project/structure/utils/flattenStructure";
+import { listStructureDiagnostics } from "#project/structure/utils/listStructureDiagnostics";
 import { mergeStructureMetadata } from "#project/structure/utils/mergeStructureMetadata";
 import type { ConfigResolver } from "#project/config/index";
 import type { EnvironmentStructureOption } from "#project/structure/ports/EnvironmentStructureOption";
@@ -36,7 +37,7 @@ function listUnreached({
   merged,
   metadata,
 }: {
-  structure: Omit<EnvironmentStructure, "unreached">;
+  structure: Omit<EnvironmentStructure, "unreached" | "diagnostics">;
   declared: DeclaredStructure;
   merged: Pick<StructureOptions, "namespaces" | "domains">;
   metadata: readonly StructureMetadata[];
@@ -145,7 +146,7 @@ async function resolveStructure(
     ...(tests === undefined ? {} : { tests }),
   });
 
-  return {
+  const walked = {
     ...structure,
     unreached: listUnreached({
       structure,
@@ -154,6 +155,8 @@ async function resolveStructure(
       metadata,
     }),
   };
+
+  return { ...walked, diagnostics: listStructureDiagnostics(walked) };
 }
 
 function freezeNode(node: StructureNode): StructureNode {
@@ -218,6 +221,13 @@ function freezeEnvironment(
   }
 
   freeze(structure.unreached);
+
+  for (const diagnostic of structure.diagnostics) {
+    freeze(diagnostic.files);
+    freeze(diagnostic);
+  }
+
+  freeze(structure.diagnostics);
 
   return freeze(structure);
 }

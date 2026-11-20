@@ -138,3 +138,6 @@
 - ResolvedEnvironment move to batiment: structural part split out in #734 — no batiment consumer before #735's walk takes data; moving now would split a config-key contract twice.
 - Structure diagnostics in lint: walk diagnostics reported per file by ESLint — gate and `batiment map --check` already fail on them; lint would re-report metafile findings it cannot locate in code.
 - Sync refusing every error diagnostic: blocking sync on the structure report — an unclassified directory or cycle would block the sync that fixes it; only kept-value diagnostics block.
+- Structure node kind as a field: one path-keyed node record with `kind`, so layering and origins treat kind like any field — reshapes every structure config and metafile schema; #770 reads the node path's origin instead.
+- Kind conflicts blocking whatever the origin: preset or default kind against a metafile — leaves no way to override an inherited kind; yields silently instead (#732 › Decisions).
+- Warning for inherited kind overrides: non-blocking diagnostic when a metafile overrides a preset kind — inconsistent with silent field overrides, unsilenceable noise for a legitimate override.

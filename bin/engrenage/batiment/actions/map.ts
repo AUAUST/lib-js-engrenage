@@ -1,23 +1,59 @@
-import { checkStructure } from "#project/structure/index";
+import {
+  renderImportCycles,
+  renderStructure,
+  renderStructureDiagnostic,
+  reportStructure,
+} from "#project/structure/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function ({ check }: { check: boolean }): Promise<void> {
-  const config = await loadValidatedConfig(undefined, {
-    reporter: getRunContext().reporter,
-  });
+export default async function ({
+  check,
+  json,
+}: {
+  check: boolean;
+  json: boolean;
+}): Promise<void> {
+  const { reporter } = getRunContext();
 
-  const { lines, warnings, violated } = await checkStructure(config);
+  const config = await loadValidatedConfig(undefined, { reporter });
 
-  for (const line of lines) {
-    getRunContext().reporter.log(line);
+  const report = await reportStructure(config);
+
+  if (json) {
+    reporter.log(
+      JSON.stringify(
+        { facts: report.facts, diagnostics: report.diagnostics },
+        null,
+        2,
+      ),
+    );
+  } else {
+    const aliases = await config.resolve("aliases");
+
+    for (const line of [
+      ...renderStructure(report.facts.structure, [
+        ...aliases.global,
+        ...aliases.src,
+      ]),
+      ...renderImportCycles(report.facts.cycles),
+    ]) {
+      reporter.log(line);
+    }
+
+    for (const diagnostic of report.diagnostics) {
+      if (diagnostic.severity === "warning") {
+        reporter.warn(renderStructureDiagnostic(diagnostic));
+      }
+    }
   }
 
-  for (const warning of warnings) {
-    getRunContext().reporter.warn(warning);
-  }
-
-  if (check && violated) {
+  if (
+    check &&
+    report.diagnostics.some(({ severity }) => {
+      return severity === "error";
+    })
+  ) {
     process.exitCode = 1;
   }
 }

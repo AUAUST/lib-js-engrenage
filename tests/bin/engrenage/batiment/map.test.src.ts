@@ -71,6 +71,34 @@ describe("engrenage batiment map", () => {
     expect(process.exitCode).toBeUndefined();
   });
 
+  test("prints the report's facts and diagnostics as JSON", async () => {
+    createProject('{ src: { strictness: "loose" } }');
+
+    const { messages } = await runDefinition(map, "--json");
+
+    expect(messages).toHaveLength(1);
+
+    const [message] = messages;
+
+    expect(JSON.parse(message?.text ?? "")).toMatchObject({
+      facts: {
+        structure: {
+          src: { name: "src" },
+        },
+        cycles: [],
+      },
+      diagnostics: expect.arrayContaining(
+        ["src/feature", "src/mystery"].map((path) => {
+          return expect.objectContaining({
+            severity: "warning",
+            code: "missing-purpose",
+            path,
+          });
+        }),
+      ),
+    });
+  });
+
   test("does not warn on a domain with a purpose", async () => {
     createProject(
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',

@@ -88,3 +88,5 @@
 - `pnpm support codegen config` after moving declarations into a new domain: failed on the missing `#batiment/environments/index` barrel, which only sync generates — wrote the barrel by hand, then ran codegen and sync
 - `pnpm engrenage gate --worktree`: first run reformatted the generated, moved `NamespaceInput.ts` despite `.prettierignore` listing its new path, then failed `codegen --check` — regenerated it; second run passed
 - commit gate vitest: committing #768 while a worker ran its gate — `tests/scripts/codegen/config.test.src.ts` timed out at 5000ms; passed alone, retried the commit
+- `pnpm engrenage sync`: deleted modules a barrel still listed — sync loads the barrel before regenerating it and fails; removed the stale lines by hand, then synced
+- `pnpm engrenage sync`: new operation imported by `bin` through the domain barrel — sync never added its export line, typecheck failed; added the line by hand, sync kept it
