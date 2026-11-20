@@ -1,4 +1,5 @@
 import { flatMap } from "@auaust/toolkit/array";
+import { filter, map } from "@auaust/toolkit/iterable";
 import { values } from "@auaust/toolkit/object";
 
 import { collectStructureNodes } from "#project/structure/utils/collectStructureNodes";
@@ -21,12 +22,15 @@ export function renderStructureViolations(
 
     const found = findStructureAliases(environment, aliases);
 
-    const violating = collectStructureNodes(environment.root).filter((node) =>
-      isViolatingNode(node, environment.strictness),
+    const violating = filter(
+      collectStructureNodes(environment.root),
+      (node) => {
+        return isViolatingNode(node, environment.strictness);
+      },
     );
 
     return [
-      ...violating.map((node) => {
+      ...map(violating, (node) => {
         return [
           node.path,
           renderStructureLabel({
@@ -37,7 +41,7 @@ export function renderStructureViolations(
           ...listNodeViolations(node),
         ].join("  ");
       }),
-      ...environment.unreached.map(renderUnreachedNode),
+      ...map(environment.unreached, renderUnreachedNode),
     ];
   });
 }
