@@ -3,12 +3,11 @@ import { object, optional, string } from "valibot";
 import {
   mainAgent,
   readHookPayload,
+  reconcileClaudeRuns,
   recordClaudeRun,
-  resolveHookDirectory,
+  resolveAgentStatsDirectory,
 } from "#tools/agents/index";
-import { resolveMainWorktree } from "#tools/git/index";
 import { getRunContext } from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
   cwd: string(),
@@ -29,16 +28,13 @@ export default async function (): Promise<void> {
     agent_transcript_path: agentTranscript = transcript,
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  // @debt restates `subagentStart`'s config loading to resolve the stats directory; one shared resolver would own it
-  const config = await loadValidatedConfig(
-    await resolveMainWorktree(resolveHookDirectory(cwd)),
-    { reporter: getRunContext().reporter },
+  const directory = await resolveAgentStatsDirectory(
+    cwd,
+    getRunContext().reporter,
   );
 
-  const resources = await config.resolve("resources");
-
   await recordClaudeRun(
-    resources.path("agents.stats"),
+    directory,
     {
       runtime: "claude",
       session,
@@ -47,4 +43,8 @@ export default async function (): Promise<void> {
     },
     agentTranscript,
   );
+
+  if (agent === mainAgent) {
+    await reconcileClaudeRuns(directory, [session]);
+  }
 }

@@ -3,8 +3,10 @@ import { expect, test } from "vitest";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
   readClaudeAgentMeta,
+  reconcileClaudeRuns,
   resolveClaudeAgentTranscript,
 } from "#tools/agents/claude/index";
+import { readAgentRun } from "#tools/agents/operations/readAgentRun";
 import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 import { startAgentRun } from "#tools/agents/operations/startAgentRun";
 
@@ -47,6 +49,54 @@ test("reads running agents from JSON and legacy plain-text markers", async () =>
   await expect(readRunningAgents(project.resolve("missing"))).resolves.toEqual(
     [],
   );
+});
+
+test("records finished runs left without a stop event and keeps unfinished ones running", async () => {
+  const line = JSON.stringify({
+    type: "assistant",
+    timestamp: "2026-11-12T22:01:00.000Z",
+    message: {
+      id: "m",
+      model: "claude-opus-5-5",
+      content: [],
+      usage: { input_tokens: 1, output_tokens: 1 },
+    },
+  });
+
+  const project = createTemporaryProject({
+    "subagents/agent-done.jsonl": `${line}\n`,
+    "subagents/agent-done.meta.json": JSON.stringify({
+      agentType: "worker",
+      finished: true,
+    }),
+    "subagents/agent-live.jsonl": `${line}\n`,
+    "subagents/agent-live.meta.json": JSON.stringify({ agentType: "worker" }),
+  });
+
+  const directory = project.resolve(".ai/stats");
+
+  for (const agent of ["done", "live"]) {
+    await startAgentRun(directory, {
+      session: "session",
+      agent,
+      role: "worker",
+      transcript: project.resolve(`subagents/agent-${agent}.jsonl`),
+    });
+  }
+
+  await reconcileClaudeRuns(directory, ["session"]);
+
+  const running = await readRunningAgents(project.resolve(".ai/stats/session"));
+
+  expect(running.map((marker) => marker.agent)).toEqual(["live"]);
+
+  await expect(
+    readAgentRun(project.resolve(".ai/stats/session/done.json")),
+  ).resolves.toMatchObject({
+    agent: "done",
+    role: "worker",
+    stops: 0,
+  });
 });
 
 test("reads the meta beside an agent transcript, keeping unknown fields", async () => {

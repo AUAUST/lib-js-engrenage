@@ -2,13 +2,11 @@ import { object, optional, string } from "valibot";
 
 import {
   readHookPayload,
+  resolveAgentStatsDirectory,
   resolveClaudeAgentTranscript,
-  resolveHookDirectory,
   startAgentRun,
 } from "#tools/agents/index";
-import { resolveMainWorktree } from "#tools/git/index";
 import { getRunContext } from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
   cwd: string(),
@@ -29,24 +27,20 @@ export default async function (): Promise<void> {
     agent_transcript_path: agentTranscript,
   } = await readHookPayload(payloadSchema, "Claude Code");
 
-  const config = await loadValidatedConfig(
-    await resolveMainWorktree(resolveHookDirectory(cwd)),
-    { reporter: getRunContext().reporter },
+  await startAgentRun(
+    await resolveAgentStatsDirectory(cwd, getRunContext().reporter),
+    {
+      session,
+      agent,
+      role,
+      transcript: (
+        agentTranscript ??
+        resolveClaudeAgentTranscript({
+          session,
+          agent,
+          transcript,
+        })
+      ),
+    },
   );
-
-  const resources = await config.resolve("resources");
-
-  await startAgentRun(resources.path("agents.stats"), {
-    session,
-    agent,
-    role,
-    transcript: (
-      agentTranscript ??
-      resolveClaudeAgentTranscript({
-        session,
-        agent,
-        transcript,
-      })
-    ),
-  });
 }

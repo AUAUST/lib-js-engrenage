@@ -10,6 +10,7 @@ export async function recordClaudeRun(
   directory: Directory,
   run: Pick<AgentRun, "runtime" | "session" | "agent" | "role">,
   transcript: File,
+  options?: { stopped?: boolean },
 ): Promise<AgentRun | undefined> {
   // @debt Claude Code fires SubagentStop for agents it never writes a transcript for, which agents is unknown, so a missing transcript is skipped instead of identified
   const read = await readClaudeTranscript(transcript).catch(
@@ -24,5 +25,9 @@ export async function recordClaudeRun(
 
   return read === undefined
     ? undefined
-    : writeAgentRun(directory, { ...run, ...summarizeAgentCalls(read) });
+    : writeAgentRun(
+        directory,
+        { ...run, ...summarizeAgentCalls(read) },
+        options,
+      );
 }

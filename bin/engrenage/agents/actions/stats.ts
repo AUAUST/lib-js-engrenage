@@ -1,8 +1,10 @@
 import {
   claudeSessionVariable,
   formatAgentRuns,
+  listAgentSessions,
   readAgentRuns,
   readModelFacts,
+  reconcileClaudeRuns,
 } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -16,7 +18,11 @@ export default async function (requested?: string): Promise<void> {
 
   const resources = await config.resolve("resources");
 
-  const runs = await readAgentRuns(resources.path("agents.stats"));
+  const directory = resources.path("agents.stats");
+
+  await reconcileClaudeRuns(directory, await listAgentSessions(directory));
+
+  const runs = await readAgentRuns(directory);
 
   const latest = runs
     .toSorted((left, right) => {

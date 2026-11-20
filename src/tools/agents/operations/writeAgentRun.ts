@@ -9,12 +9,16 @@ import type { Directory } from "#types/Directory";
 export async function writeAgentRun(
   directory: Directory,
   run: Omit<AgentRun, "stops">,
+  { stopped = true }: { stopped?: boolean } = {},
 ): Promise<AgentRun> {
   const path = resolveAgentRunFile(directory, run, "recorded");
 
   const previous = await readAgentRun(path);
 
-  const recorded = { ...run, stops: (previous?.stops ?? 0) + 1 };
+  const recorded = {
+    ...run,
+    stops: (previous?.stops ?? 0) + (stopped ? 1 : 0),
+  };
 
   await mkdir(dirname(path), { recursive: true });
 

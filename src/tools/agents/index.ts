@@ -5,6 +5,7 @@ export {
   syncClaudeSettings,
 } from "#tools/agents/claude/index";
 export {
+  reconcileClaudeRuns,
   recordClaudeRun,
   resolveClaudeAgentTranscript,
 } from "#tools/agents/claude/index";
@@ -63,6 +64,7 @@ export { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+export { listAgentSessions } from "#tools/agents/operations/listAgentSessions";
 export { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";
@@ -83,6 +85,7 @@ export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindi
 export { reportMissingExtensionRules } from "#tools/agents/operations/reportMissingExtensionRules";
 export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAgentChecks";
 export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
+export { resolveAgentStatsDirectory } from "#tools/agents/operations/resolveAgentStatsDirectory";
 export { startAgentRun } from "#tools/agents/operations/startAgentRun";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
