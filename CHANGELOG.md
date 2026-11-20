@@ -1,5 +1,81 @@
 # @auaust/engrenage
 
+## 0.17.0
+
+### Minor Changes
+
+- [`a8b5ece`](https://github.com/AUAUST/lib-js-engrenage/commit/a8b5ece05be1701fd8228a1e3e6443220d3763f0) Thanks [@apademide](https://github.com/apademide)! - - Resolve `.tsx`, `.mts` and `.cts` modules through the generated `src` aliases of a bundled `src`
+  - Remove generated `src` alias entries from tsconfig `paths`, keeping bundler aliases
+
+- [`2e18dd3`](https://github.com/AUAUST/lib-js-engrenage/commit/2e18dd3101666aaf55ba5cdcfe58aa46a2d21ec4) Thanks [@apademide](https://github.com/apademide)! - - Run agent hooks through the new engrenage-hook bin, one settings entry per event
+  - Let agents work when a hook cannot load or run, with a message naming the fix
+  - Deprecate engrenage agents claude hook and engrenage agents codex hook: they run no check and ask to sync and restart the session
+
+- [`f4bf0f5`](https://github.com/AUAUST/lib-js-engrenage/commit/f4bf0f5eee342b9446f4e4447777d4ce806e2e80) Thanks [@apademide](https://github.com/apademide)! - - Keep hand-declared `package.json` `imports` and tsconfig `paths` entries on `sync` and `init`
+  - Delete generated `imports` and `paths` entries whose alias is gone, bundler aliases included
+  - Fail `sync` on a hand-declared entry whose key an alias generates with another target
+  - Record generated alias keys in the committed `.engrenage/sync.json`
+
+- [`475cb9a`](https://github.com/AUAUST/lib-js-engrenage/commit/475cb9a04f6d3d7e93a68988e0ca5cedb251f77b) Thanks [@apademide](https://github.com/apademide)! - - Write defined globals into src/env.d.ts and include it in the tsconfig of the tests and of every environment importing src
+  - Remove typescript.envFile and the defines option of environments: src/env.d.ts holds the defined globals
+  - Include a root global.d.ts in every generated tsconfig
+
+### Patch Changes
+
+- [`90bd886`](https://github.com/AUAUST/lib-js-engrenage/commit/90bd88680cf2683bed3b603f9a273f706c75da9d) Thanks [@apademide](https://github.com/apademide)! - - Ship a material-neutral analysis method as a shared skill file, read by the analysis, debugging, planning and shape skills
+  - Widen the analyser to any material, outside texts and tool comparisons included
+  - Let a dispatch brief's facts wanted back order a subagent's report
+
+- [`71bbb3b`](https://github.com/AUAUST/lib-js-engrenage/commit/71bbb3be9fbfdd386137e75c273fad55be922ae6) Thanks [@apademide](https://github.com/apademide)! - - Install the analysis skill and its `analyser` agent with the shared backlog
+
+- [`e834058`](https://github.com/AUAUST/lib-js-engrenage/commit/e83405880deb71047ff5f729f9e21eeef66c0518) Thanks [@apademide](https://github.com/apademide)! - - Run the curation skill in the main session, delegating note, log, debt and triage matching to read-only analysers
+  - Remove the `curator` agent; sync deletes its generated Claude Code and Codex files
+
+- [`05a32b8`](https://github.com/AUAUST/lib-js-engrenage/commit/05a32b8a57d64b0ca75cc304622997f641eb5340) Thanks [@apademide](https://github.com/apademide)! - - Block issue dispatch only on open Planning or Questions sections of the direct parent, not of higher ancestors
+
+- [`623ce9b`](https://github.com/AUAUST/lib-js-engrenage/commit/623ce9b143535d5374d2d9d16b2d80f1825ce448) Thanks [@apademide](https://github.com/apademide)! - - Fail `planning issue check` on drafts missing required sections, a segment's sub-issues or a single-line header, as `publish` and `planning walk check` reject them
+  - Resolve draft references and parents in `planning issue check` against every local draft
+
+- [`8ddd759`](https://github.com/AUAUST/lib-js-engrenage/commit/8ddd759fd6c6fbf90731de18b873ecfba0fd3767) Thanks [@apademide](https://github.com/apademide)! - - Run `eslint:fix` and `eslint:suppress` from the project root, so linting files from a subdirectory prunes only their suppressions
+  - Accept `eslint:suppress --prune-suppressions` without adding `--suppress-all`
+
+- [`1ad81a9`](https://github.com/AUAUST/lib-js-engrenage/commit/1ad81a9b7415e5b9127cfab0fa07921284570f7d) Thanks [@apademide](https://github.com/apademide)! - - Fetch the GitHub snapshot in `planning issue` commands when `.engrenage/github.json` is absent
+
+- [`eaa11d4`](https://github.com/AUAUST/lib-js-engrenage/commit/eaa11d4b948a66537364f1c1935380d4e5b7daae) Thanks [@apademide](https://github.com/apademide)! - - Ask agents to log friction from transient failures and tracked defects, and to add missing lines before each final report or turn end
+
+- [`af1e923`](https://github.com/AUAUST/lib-js-engrenage/commit/af1e923f384986aae2aed4c50935d59bf21d3ccd) Thanks [@apademide](https://github.com/apademide)! - - Lead a failing gate's output with the names of the failing steps, then failures, then warnings
+  - Report only the violating directories and import cycles under `structure --check` in the gate, not the whole tree
+
+- [`f0d0a19`](https://github.com/AUAUST/lib-js-engrenage/commit/f0d0a19bfb59ae6b4175b9bf527182563663f340) Thanks [@apademide](https://github.com/apademide)! - - Fix engrenage-hook checks loading a dependency's config from inside `node_modules`, or the main checkout's from a worktree
+
+- [`ce53c31`](https://github.com/AUAUST/lib-js-engrenage/commit/ce53c316a8820db3f35db150e23cd05ba7441669) Thanks [@apademide](https://github.com/apademide)! - - Let agents work when engrenage-hook gets an unknown runtime or event, with a message naming the fix
+
+- [`769521b`](https://github.com/AUAUST/lib-js-engrenage/commit/769521b7f0f1f6b0310ab81fefc4a1bcb75da496) Thanks [@apademide](https://github.com/apademide)! - - Run the root's engrenage-hook for Codex sessions started in a workspace
+
+- [`a8a1872`](https://github.com/AUAUST/lib-js-engrenage/commit/a8a18729f6944f410593cb39c723432b6da74df9) Thanks [@apademide](https://github.com/apademide)! - - Remove illustrative case lists from the analysis method, the analysis skill and agent descriptions, and the curation triage brief
+  - Bar illustrative examples in instructions, including cases a brief gives as context, and add an example catch to the writer's cold read
+
+- [`7950658`](https://github.com/AUAUST/lib-js-engrenage/commit/7950658f23df72edb3b05e6cfd5e2211770114ca) Thanks [@apademide](https://github.com/apademide)! - - Accept a literal workspace `name` when its glob has no wildcard
+  - Add an `assert` option to `declareRecord`, checking the resolved record
+
+- [`2479635`](https://github.com/AUAUST/lib-js-engrenage/commit/2479635f01dd77c95a71e6551e118ed523f6974a) Thanks [@apademide](https://github.com/apademide)! - - Join only overload signatures of the same function in the Prettier layout plugin
+
+- [`84db8dd`](https://github.com/AUAUST/lib-js-engrenage/commit/84db8dd8537f473be53470cc6663e59dae53a318) Thanks [@apademide](https://github.com/apademide)! - - Add `assertResolved` to `declareRecord` to check the resolved record
+
+- [`0d1ea76`](https://github.com/AUAUST/lib-js-engrenage/commit/0d1ea76bd862b540f9963e56817009950fce2cbb) Thanks [@apademide](https://github.com/apademide)! - - Fix the library publish workflow's release step failing when `changeset version` formats the changelog under pnpm's `verifyDepsBeforeRun`
+
+- [`92455e3`](https://github.com/AUAUST/lib-js-engrenage/commit/92455e339ecff1c824a6e3f4dc45b5c2120fb526) Thanks [@apademide](https://github.com/apademide)! - - Retire the instructions rule; sync deletes its installed copy
+
+- [`1fa8b05`](https://github.com/AUAUST/lib-js-engrenage/commit/1fa8b05cb6267091eb83fdf309111c9aa9265ad6) Thanks [@apademide](https://github.com/apademide)! - - Name the unclassified directory as the cause of an unknown path in `auaust/import-specifiers`, instead of suggesting an editor reload
+
+- [`e1b3ced`](https://github.com/AUAUST/lib-js-engrenage/commit/e1b3ced40eb153a6cb4b89a1ec2ff98896ef017d) Thanks [@apademide](https://github.com/apademide)! - - Sync pnpm's `verifyDepsBeforeRun: error` into `pnpm-workspace.yaml`, so every pnpm run fails on a stale install
+
+- [`5d4efdd`](https://github.com/AUAUST/lib-js-engrenage/commit/5d4efdddc20db942669242a9d08d1af72a9c2239) Thanks [@apademide](https://github.com/apademide)! - - Find the workspace root's config from a pnpm workspace package
+
+- [`cf95d41`](https://github.com/AUAUST/lib-js-engrenage/commit/cf95d41e59f8667f5062398fc3159a872d6ddb69) Thanks [@apademide](https://github.com/apademide)! - - Move the instruction-writing rules from the instructions rule into the instruction-writing skill, leaving the rule as a pointer for instruction files only
+  - Let the writer take any request about instructions, derive the rule its cases imply and decide where each rule loads, and audit instructions read-only
+  - Ask issues and backlog entries about instruction changes for the concern, behavior and cases instead of drafted wording
+
 ## 0.16.1
 
 ### Patch Changes
