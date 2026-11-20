@@ -404,6 +404,83 @@ describe("checkIssue", () => {
     },
   );
 
+  describe("open sections above the direct parent", () => {
+    const grandparent = {
+      ...validPlan,
+      body: "## Goal\n\nx\n\n## Roadmap\n\n1. #10\n\n## Decisions\n\nx\n",
+      subIssues: [{ number: 10, state: "open" as const }],
+    };
+
+    const segment = {
+      body: "#9 · Context\n",
+      type: "Segment",
+      parent: 9,
+      subIssues: [{ number: 11, state: "open" as const }],
+    };
+
+    const leaf = {
+      body: task.replace("#10 ·", "#9 › #10 ·"),
+      type: "Task",
+      parent: 10,
+    };
+
+    async function expectRefused(rule: string, text: string) {
+      const { findings } = await checkIssue(access, 11, "worker", {
+        dispatch: true,
+      });
+
+      expect(findings).toContainEqual(
+        expect.objectContaining({
+          rule,
+          message: expect.stringContaining(text),
+        }),
+      );
+    }
+
+    test("a grandparent's open Planning does not block the leaf", async () => {
+      mockGithub({
+        9: {
+          ...grandparent,
+          body: `${grandparent.body}\n## Planning\n\nx\n`,
+          blockers: ["Open questions"],
+        },
+        10: segment,
+        11: leaf,
+      });
+
+      expect(
+        (await checkIssue(access, 11, "worker", { dispatch: true })).findings,
+      ).toEqual([]);
+    });
+
+    test("the direct parent's open Planning still blocks the leaf", async () => {
+      mockGithub({
+        9: grandparent,
+        10: {
+          ...segment,
+          body: `${segment.body}\n## Planning\n\nx\n`,
+          blockers: ["Open questions"],
+        },
+        11: leaf,
+      });
+
+      await expectRefused("open-section", "Ancestor #10");
+    });
+
+    test("a grandparent's missing reference still blocks the leaf", async () => {
+      mockGithub({
+        9: {
+          ...grandparent,
+          body: `${grandparent.body}\nSee #99.\n`,
+        },
+        10: segment,
+        11: leaf,
+      });
+
+      await expectRefused("missing-reference", "#99");
+    });
+  });
+
   test("reports malformed ancestor sections and missing references", async () => {
     mockGithub({
       10: {

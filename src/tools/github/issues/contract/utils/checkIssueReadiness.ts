@@ -31,6 +31,7 @@ interface ReadinessContext {
   readonly commits: LocalCommits;
   readonly dispatch?: boolean;
   readonly ancestor?: boolean;
+  readonly aboveParent?: boolean;
 }
 
 function formatChain(chain: readonly IssueLocation[], repository: string) {
@@ -79,6 +80,7 @@ export function checkIssueReadiness(
     commits,
     dispatch = false,
     ancestor = false,
+    aboveParent = false,
   }: ReadinessContext,
   audience: IssueAudience,
 ): IssueFinding[] {
@@ -146,7 +148,7 @@ export function checkIssueReadiness(
     }
   }
 
-  const openSections = listOpenSections(parsed);
+  const openSections = aboveParent ? [] : listOpenSections(parsed);
 
   for (const name of openSections) {
     if (name === planningSection || audience === "worker") {
@@ -157,13 +159,17 @@ export function checkIssueReadiness(
     }
   }
 
-  if (audience === "worker" || dispatch) {
+  if ((audience === "worker" || dispatch) && !aboveParent) {
     findings.push(
       ...checkBlockersField(openSections, issue.blockers, contractNames),
     );
   }
 
   for (const option of issue.blockers) {
+    if (aboveParent && option === questionsOption) {
+      continue;
+    }
+
     if (
       (audience === "worker" && option !== questionsOption) ||
       (audience === "debugger" &&

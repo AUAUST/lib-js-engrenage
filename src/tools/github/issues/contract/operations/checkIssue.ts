@@ -132,6 +132,7 @@ export async function checkIssue(
             commits,
             dispatch: true,
             ancestor: true,
+            aboveParent: index < chain.length - 1,
           },
           audience,
         ),
