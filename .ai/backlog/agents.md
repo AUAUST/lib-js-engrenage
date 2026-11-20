@@ -112,3 +112,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: friction ×4, two from these: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after **Planning** was removed by `gh issue edit`, until claim and publish.
 - want: ancestor references resolved against the issue's own repository; the Blockers check reading the body, not only the field.
+
+## 21. One init or sync run rebuilds the same agent templates and skill definitions many times
+
+- sites: `src/tools/agents/operations/fillAgentLimits.ts:6`
+- why: a Codex init calls `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
+- want: computed once per run and shared; a run lifecycle contract to decide first.

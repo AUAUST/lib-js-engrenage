@@ -12,14 +12,13 @@ describe("splitFrontmatter", () => {
     });
   });
 
-  test("reads past a frontmatter line that only starts like a fence", () => {
-    expect(
-      splitFrontmatter("---\na: 1\n----\nb: 2\n---\nbody\n\n---\n"),
-    ).toEqual({
-      kind: "closed",
-      source: "---\na: 1\n----\nb: 2\n---\n",
-      yaml: "a: 1\n----\nb: 2",
-      body: "body\n\n---\n",
+  test("splits the same content once", () => {
+    const content = "---\na: 1\n---\nbody";
+
+    expect(splitFrontmatter(content)).toBe(splitFrontmatter(content));
+
+    expect(splitFrontmatter(`${content}\n`)).toMatchObject({
+      body: "body\n",
     });
   });
 

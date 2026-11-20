@@ -3,7 +3,7 @@ import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensi
 import { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
 import type { LoadedConfig } from "#project/config/index";
 
-// @debt each block filled rereads and reparses every shipped skill, and sync steps rebuild the same skill definitions again: one run computes them many times
+// @debt each block filled rereads and revalidates every shipped skill, and sync steps rebuild and rerender the same skill definitions again: one run computes them many times
 export async function fillAgentLimits(
   config: LoadedConfig,
   ...names: string[]
