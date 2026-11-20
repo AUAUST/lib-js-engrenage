@@ -12,6 +12,13 @@ export const sourceGuard = "source-guard";
 
 export const pluginNames = freeze([outDirGuard, sourceGuard] as const);
 
+export const vitestModes: Readonly<
+  Record<"run" | "watch", readonly string[]>
+> = freeze({
+  run: freeze(["run"]),
+  watch: freeze(["watch", "dev"]),
+});
+
 export const vitestTestExtension = ".?(c|m)[jt]s?(x)" satisfies Glob;
 
 export { project as pluginPrefix, vitest } from "#constants";

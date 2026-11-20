@@ -264,25 +264,33 @@ blockedBy: []
     expect(parent?.body).toContain("## Goal");
   });
 
-  test("takes references for the parent and sibling, and a prefixed slug", async () => {
+  test.each([
+    [
+      "references and a prefixed slug",
+      "#{new-plan}",
+      "#{new-first}",
+      "new-foo",
+    ],
+    ["slugs without their prefix", "plan", "first", "foo"],
+  ])("takes the parent and sibling as %s", async (_, parent, after, slug) => {
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan,
     });
 
     await expect(
       createDraft(config, "task", {
-        parent: "#{new-plan}",
-        after: "#{new-first}",
-        slug: "new-foo",
+        parent,
+        after,
+        slug,
       }),
     ).resolves.toBe(".ai/issues/new-foo.draft.md");
 
-    const parent = await readDraft(
+    const draft = await readDraft(
       config.context.filesystem,
       ".ai/issues/new-plan.draft.md",
     );
 
-    expect(parent?.manifest.toJS()).toMatchObject({
+    expect(draft?.manifest.toJS()).toMatchObject({
       subIssues: [{ ref: "#{new-first}" }, { ref: "#{new-foo}" }],
     });
   });

@@ -27,6 +27,7 @@ import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateMode } from "#workflows/gate/types/GateMode";
 import type { GateReport } from "#workflows/gate/types/GateReport";
+import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
@@ -241,6 +242,28 @@ async function checkLocalFiles(
   return runSteps([local], files, { concurrent: false });
 }
 
+async function warnUnstagedChanges(
+  root: Directory,
+  mode: ChangeMode,
+): Promise<readonly GateWarning[]> {
+  if (mode !== "staged") {
+    return [];
+  }
+
+  const unstaged = await listChangedFiles(root, "worktree");
+
+  if (unstaged.length === 0) {
+    return [];
+  }
+
+  return [
+    {
+      step: "staging",
+      output: `No staged file to check, so nothing was checked; --worktree checks the unstaged changes:\n${unstaged.join("\n")}`,
+    },
+  ];
+}
+
 // @debt ESLint runs only on changed files, so a type change that breaks a dependent's type-aware rule passes until `gate --all`
 async function verify(
   config: LoadedConfig,
@@ -274,7 +297,7 @@ async function verify(
   }
 
   if (files.length === 0) {
-    return { failures: [], warnings: [] };
+    return { failures: [], warnings: await warnUnstagedChanges(root, mode) };
   }
 
   const agents = audience === "agents";

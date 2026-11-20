@@ -20,11 +20,11 @@ export default defineLazyCommand({
       )
       .option(
         "--parent <ref>",
-        "the parent: a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`) or a draft stem (`123`, `new-plan`)",
+        "the parent: a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`), a draft stem (`123`, `new-plan`) or a new draft's slug (`plan`)",
       )
       .option(
         "--after <ref>",
-        "sibling in the parent's `subIssues` to place it after, as a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`) or a draft stem (`123`, `new-plan`); defaults to last",
+        "sibling in the parent's `subIssues` to place it after, as a reference (`#123`, `#{new-plan}`, `#{toolkit.new-plan}`), a draft stem (`123`, `new-plan`) or a new draft's slug (`plan`); defaults to last",
       );
   },
   action() {

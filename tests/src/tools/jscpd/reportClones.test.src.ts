@@ -7,6 +7,7 @@ import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { reportClones } from "#tools/jscpd/operations/reportClones";
+import { resolveJscpdArguments } from "#tools/jscpd/operations/resolveJscpdArguments";
 
 function createSource(name: string): string {
   return `export function ${name}(values: number[]): number {
@@ -229,4 +230,17 @@ describe("reportClones", { timeout: binaryTimeout }, () => {
       await reportClones(await loadConfig(project.root), { since: "HEAD~1" }),
     ).toBeUndefined();
   });
+});
+
+test("passes jscpd absolute paths, which it never shortens to file names", async () => {
+  const { project } = await createRepository();
+
+  const args = await resolveJscpdArguments(await loadConfig(project.root), [
+    "--min-tokens",
+    "10",
+  ]);
+
+  expect(args.slice(0, 3)).toEqual(["--min-tokens", "10", "--absolute"]);
+
+  expect(args).toContain(project.resolve("src/first.ts"));
 });

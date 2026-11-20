@@ -2,6 +2,7 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { hasNodeCondition } from "#foundation/processes/operations/hasNodeCondition";
 import { resolveVitestArguments } from "#tools/vitest/operations/resolveVitestArguments";
+import { resolveVitestWatchArguments } from "#tools/vitest/operations/resolveVitestWatchArguments";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -32,4 +33,21 @@ test("loads the Vitest config natively only under the source condition", () => {
   vi.stubEnv("NODE_OPTIONS", "");
 
   expect(resolveVitestArguments([])).not.toContain("--configLoader");
+});
+
+test("reads a leading Vitest mode as the mode, never as a file filter", () => {
+  vi.stubEnv("NODE_OPTIONS", "");
+
+  expect(resolveVitestArguments(["run", "a.test.ts"])).toEqual([
+    "run",
+    "a.test.ts",
+    "--typecheck",
+  ]);
+
+  expect(resolveVitestWatchArguments(["dev"])).toEqual([
+    "watch",
+    "--typecheck",
+  ]);
+
+  expect(() => resolveVitestArguments(["watch"])).toThrow(/watch mode/u);
 });

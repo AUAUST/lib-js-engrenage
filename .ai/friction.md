@@ -13,7 +13,6 @@
 - type check of tests: ran after changing a function signature its tests call — reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
 - issue-planning skill §GitHub mechanics: posted `"value":["Improvement"]` for single-select Nature as the example shows — GitHub answers 422 "must be a string option name"; posted a bare string
 - `git add` by path list: staged paths from `git status --porcelain` — a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`
-- `pnpm engrenage vitest run`: ran the full suite — `run` became a file filter and only 12 files ran; dropped `run`
 - vitest toHaveProperty: asserted a missing "." key with a string path — the string parses as a property path and throws; passed ["."] instead
 - engrenage planning CLI: pnpm exec engrenage in engrenage itself — binary not linked; pnpm engrenage (package script) works
 - engrenage planning CLI: pnpm exec engrenage planning issue claim in engrenage itself — binary not linked; pnpm engrenage (package script) works
@@ -29,7 +28,6 @@
 - pnpm format:all: rewrapped JSDoc after a layout change — generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen
 - engrenage planning issue check: kept a **Planning** section holding a settled decision — check reads any Planning section as open and demands `Open questions`; moved the decision into Context
 - CLAUDE_SCRATCH: redirected output to `$CLAUDE_SCRATCH` — the variable is unset; used the scratchpad's absolute path
-- `pnpm engrenage gate`: ran it on unstaged changes expecting a type check — it passed silently while tsc failed; `pnpm test` caught it, `--worktree` covers unstaged files
 - tsdown build with a scratch `outDir`: built experiment variants outside `dist` — the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
 - rolldown plugin `getModuleInfo(...).isExternal`: marked modules importing packages in `buildEnd` — externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
 - gh run view --log-failed: fetched logs of the latest run — returned empty/404 (repo renamed); got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
@@ -43,7 +41,6 @@
 - zsh `grep --include=*.ts` and `config/*.ts`: unquoted globs in Bash calls, twice — "no matches found" despite the new Shell section; quoted or dropped them
 - `syncAgentFiles` tests: expected a package `@reference` block filled in a temporary project — package specifiers stay unresolved there without a warning; asserted the marker only
 - rm of a module holding uncommitted debt marker: replaced `findPopulatedDirectories.ts` by a new module carrying the marker — auto mode classifier denied the deletion; left the orphan to the caller
-- `pnpm engrenage vitest run`: ran one test file — `run` became a filter and other files ran instead; dropped `run`
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change — retrying the commit passed
 - `engrenage planning issue publish`: published drafts while another session had uncommitted `src` edits — the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
 - git index lock: commit right after `git add` in one call — transient `.git/index.lock` from the editor's git polling; retried alone
@@ -55,13 +52,10 @@
 - `engrenage sync` after moving `data.exports`: ran sync before the build — sync reads fragments through the stale `package.json` exports, which only `pnpm engrenage tsdown` regenerates, and deleted every generated skill and agent file; restored them, built, synced again
 - `$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks: no instruction or doc says which checkout it names — logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree
 - tool extension in temporary-project tests: symlinked `node_modules/eslint` alone — `resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`
-- `pnpm engrenage debt --json`: piped stdout into a JSON parse — first line is the echoed command, so parse failed; dropped line 1 and reparsed
 - gh api graphql: read issues' project `complexity` field for dispatch effort — token lacks `read:project`; dispatched at default effort
 - BSD sed: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`
 - `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
 - git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
-- `pnpm engrenage debt --json`: dropped stdout's first line as the earlier line says — the echoed command now goes to stderr, so the parse failed; parsed stdout whole
-- `engrenage jscpd`: read the clone pairs from the console report — it prints shortened paths (`structure.ts`, `claude/hook.ts`); reran with `-r json -o <dir>`
 - gh run view --log-failed: read failed job logs of a run — printed nothing for whole runs and single jobs; got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
 - changeset version: reproduced the release step locally — @changesets/changelog-github needs GITHUB_TOKEN, and `pnpm exec` sets pnpm_config_verify_deps_before_run=false for children, hiding the failure; ran node bin.js directly with the default changelog in a scratch clone
 - worktree isolation: compound command with cd and git refused — split into single git commands
@@ -71,7 +65,6 @@
 - sync table-cells check: two-row report table in a skill — failed on cells over 25 words, a limit no instruction states; moved the rows into a list
 - commit gate: committing retired-rule change — pre-existing failing agent tests blocked it; left uncommitted
 - commit gate budgets: staging the backlog file — pre-existing over-budget entries 12 and 15 fail the gate
-- `pnpm engrenage vitest run`: ran one test file — `run` became a filter and 34 files ran; used `pnpm exec vitest run`
 - pnpm verifyDepsBeforeRun: running vitest after a concurrent release run in the checkout — "workspace structure has changed"; ran `pnpm install --offline --frozen-lockfile`
 - `git checkout <rev> -- <paths>`: reverting a committed file — the working file kept the committed content while the index took the old one; rewrote it from `git show <rev>:<path>`
 - worktree isolation: git commands on a scratch clone, and any command whose text holds "git" (a `github.com` string) — refused as outside the worktree; reproduced with pnpm alone, renamed the string
@@ -82,5 +75,6 @@
 - worktree isolation: heredocs, and commands naming a `tests/src/tools/github` path or chaining `git status` — refused as unverifiable; used the edit tools and ran each command alone
 - `pnpm engrenage sync`: new utils imported through a barrel — sync loads the barrel before regenerating it and fails; added each export line by hand, as its message says, then synced
 - `pnpm engrenage planning issue publish`: published three drafts — exited 1 though each printed `published` and the drafts and `Drafting` locks were gone; checked GitHub by hand
-- planning issue create: --parent with a bare slug (`batiment-relations`) — rejected; the stem needs its `new-` prefix although `--slug` accepts it without
 - planning issue check: tasks for a shaper, goal and **Planning** only — `check` requires **Steps** and **Tests** and refuses a "settle **Planning**" step; wrote only the known steps
+- worktree isolation: heredoc file writes, a binary path spelled as a glob, and `$(git log …)` in one command — refused as unverifiable; used the edit tools, literal paths and single commands
+- `pnpm engrenage vitest`: a source type error under `--typecheck` — summary printed "Type Errors no errors" beside two unhandled TypeCheckErrors; read the errors section
