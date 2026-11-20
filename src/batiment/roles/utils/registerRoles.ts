@@ -70,7 +70,7 @@ export function registerRoles({
       {
         ...declared,
         roles: nested,
-        scoped: owner === undefined ? declared.scoped : true,
+        optIn: owner === undefined ? declared.optIn : true,
       },
       {
         published,

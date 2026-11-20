@@ -99,7 +99,7 @@ export function resolveRoles({
   const resolved: Record<string, ResolvedRoleContract> = {};
 
   for (const [name, contract] of entries(registry.contracts)) {
-    if (contract.scoped && !scopes.includes(name)) {
+    if (contract.optIn && !scopes.includes(name)) {
       continue;
     }
 

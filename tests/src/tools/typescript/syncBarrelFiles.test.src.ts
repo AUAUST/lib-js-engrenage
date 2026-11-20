@@ -340,7 +340,7 @@ export type * from "#modules/a/utils/isA";
           name: "guards",
           public: true,
           collected: true,
-          scoped: true,
+          optIn: true,
         })(),
       ],
       namespaces: {

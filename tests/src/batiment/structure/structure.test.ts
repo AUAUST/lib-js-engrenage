@@ -379,7 +379,7 @@ describe("structure", () => {
     expect(structure.unclassified).toEqual([]);
   });
 
-  test("enables scoped roles only inside the namespace that declares them", async () => {
+  test("enables opt-in roles only inside the namespace that declares them", async () => {
     const { nodes } = await describeSource(
       declaration.replace(
         'ui: { roles: { enable: ["components"] } },',
@@ -922,7 +922,7 @@ describe("required roles", () => {
   }
 
   test("report a domain missing a required domain file role, unless it holds one or the role is inactive", async () => {
-    const roles = renderCodeRoles(readme({ required: true, scoped: true }));
+    const roles = renderCodeRoles(readme({ required: true, optIn: true }));
 
     const nodes = await describeProject(
       `{ roles: ${roles}, structure: { namespaces: { docs: { roles: { enable: ["readme"] } } } } }`,

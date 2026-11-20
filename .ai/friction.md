@@ -122,3 +122,6 @@
 - Bash cwd after `cd` into an agent worktree: the session moved its primary directory there; removing that worktree failed the next command — reran from the main checkout with `git -C`
 - `pnpm engrenage planning issue check`: crashed on a missing module while another session moved `src/project/structure` to `src/batiment` in the same checkout — left the draft unchecked and unpublished
 - Bash safety check: zsh `${(f)…}` loop with `git mv` in one command — refused as unresolvable removal; moved files with plain `mv` from a bash script file
+- `pnpm engrenage planning issue publish`: closing a detached issue as duplicate with a lead line before `## Context` — refused as a header line without ancestors; moved the line into **Context**
+- `pnpm engrenage planning issue publish`: moving closed segments to a new parent plan — refused until every leaf under them was claimed, their ancestor chain changing; claimed 14 closed leaves and republished, past the 120s Bash timeout
+- worktree isolation: compound command chaining tests and git status — refused as git too complex; split into separate calls

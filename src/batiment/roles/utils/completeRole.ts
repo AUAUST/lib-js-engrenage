@@ -91,10 +91,10 @@ export function completeRole(
     );
   }
 
-  const scoped = definition.scoped ?? roleContractDefaults.scoped;
+  const optIn = definition.optIn ?? roleContractDefaults.optIn;
 
   // @debt a contract cannot see where its directory sits, so a root role never placed at an environment root passes this check
-  if (definition.reexport !== undefined && (index === false || scoped)) {
+  if (definition.reexport !== undefined && (index === false || optIn)) {
     throw new Error(
       `The role ${name} sets \`reexport\` without being a global role with \`index\`: only such a role's barrel sits at an environment root, where the root entry re-exports it`,
     );
@@ -120,7 +120,7 @@ export function completeRole(
     collected: definition.collected ?? roleContractDefaults.collected,
     surface,
     discovered: definition.discovered ?? roleContractDefaults.discovered,
-    scoped,
+    optIn,
     strict: definition.strict ?? roleContractDefaults.strict,
     typeOnly,
     unique: definition.unique ?? roleContractDefaults.unique,

@@ -9,5 +9,5 @@ export const components = createRolePreset({
   purpose: "UI components with their styles.",
   accepts: ["*.tsx", "*.css"],
   exports: "named-match",
-  scoped: true,
+  optIn: true,
 });

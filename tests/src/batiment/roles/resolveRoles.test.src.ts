@@ -78,7 +78,7 @@ describe("resolveRoles", () => {
     expect(resolve({ roles: [] }).roles).toEqual({});
   });
 
-  test("activates a scoped role only where a scope enables it", () => {
+  test("activates an opt-in role only where a scope enables it", () => {
     expect(resolve({ roles: [hooks()] }).roles).not.toHaveProperty("hooks");
 
     expect(
@@ -103,7 +103,7 @@ describe("resolveRoles", () => {
 
     expect(
       resolve({ roles, scopes: ["gql/queries"] }).roles["gql/queries"],
-    ).toMatchObject({ nesting: 2, scoped: true });
+    ).toMatchObject({ nesting: 2, optIn: true });
   });
 
   test("fails on two roles of one list named alike, naming both", () => {

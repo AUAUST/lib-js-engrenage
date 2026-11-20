@@ -101,7 +101,7 @@ export function createEntityIndex({
 
     const entry = publicEntries.get(`${node.path}/${environment.entryFile}`);
 
-    // @debt reads a child role's visibility from the environment's roles, which miss the scoped roles a namespace enables; `environment.roles` holds every role the walk met
+    // @debt reads a child role's visibility from the environment's roles, which miss the opt-in roles a namespace enables; `environment.roles` holds every role the walk met
     const roles = node.children
       .filter((child) => {
         return (

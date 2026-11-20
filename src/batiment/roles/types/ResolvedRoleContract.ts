@@ -29,7 +29,7 @@ export interface ResolvedRoleContract {
   readonly collected: boolean;
   readonly surface: (typeof roleSurfaces)[number];
   readonly discovered: boolean;
-  readonly scoped: boolean;
+  readonly optIn: boolean;
   readonly strict: boolean;
   readonly typeOnly: boolean;
   readonly unique: boolean;

@@ -12,7 +12,7 @@ export interface RoleDefinition extends Omit<
   | "collected"
   | "surface"
   | "discovered"
-  | "scoped"
+  | "optIn"
   | "strict"
   | "typeOnly"
   | "unique"
@@ -27,7 +27,7 @@ export interface RoleDefinition extends Omit<
   readonly collected: boolean | undefined;
   readonly surface: ResolvedRoleContract["surface"] | undefined;
   readonly discovered: boolean | undefined;
-  readonly scoped: boolean | undefined;
+  readonly optIn: boolean | undefined;
   readonly strict: boolean | undefined;
   readonly typeOnly: boolean | undefined;
   readonly unique: boolean | undefined;

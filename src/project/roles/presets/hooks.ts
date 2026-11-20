@@ -8,5 +8,5 @@ export const hooks = createRolePreset({
   name: "hooks",
   purpose: "Reusable stateful logic of components.",
   exports: "named-match",
-  scoped: true,
+  optIn: true,
 });

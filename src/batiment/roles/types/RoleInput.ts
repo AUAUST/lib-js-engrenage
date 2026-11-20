@@ -115,7 +115,7 @@ export interface RoleInput {
    * Whether the role is active only where a structured role or a namespace enables it.
    * @default false
    */
-  scoped?: (boolean | undefined)
+  optIn?: (boolean | undefined)
   /**
    * Accepts at its root only the files its nested roles' `file` globs name, besides their directories.
    * @default false

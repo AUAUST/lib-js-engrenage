@@ -34,7 +34,7 @@ export function renderEnvironmentMap({
       .filter((child) => child.kind === "role")
       .map(({ name: role }) => role),
     ...entries(roles?.roles ?? {}).flatMap(([role, contract]) => {
-      return role === indexRoleName || role === entryRoleName || contract.scoped
+      return role === indexRoleName || role === entryRoleName || contract.optIn
         ? []
         : listStaticFileGlobs(contract.file);
     }),

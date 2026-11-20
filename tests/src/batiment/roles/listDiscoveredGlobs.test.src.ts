@@ -24,7 +24,7 @@ function contract(
     collected: false,
     surface: "barrel",
     discovered: false,
-    scoped: false,
+    optIn: false,
     typeOnly: false,
     strict: false,
     unique: false,

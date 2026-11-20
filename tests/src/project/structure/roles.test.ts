@@ -16,6 +16,18 @@ function createProject(config: object) {
 }
 
 describe("roles", () => {
+  test("reject the former scoped flag as an unknown key", async () => {
+    const project = createProject({
+      src: { roles: [{ name: "hooks", scoped: true }] },
+    });
+
+    const config = await loadConfig(project.root);
+
+    await expect(config.resolve("environmentRoles")).rejects.toThrow(
+      'Unknown key "',
+    );
+  });
+
   test("resolve each environment's default roles extended by its list, and only the layout's roles for a commands environment", async () => {
     const project = createProject({
       src: { roles: [utils({ nesting: 1 })] },

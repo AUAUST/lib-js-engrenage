@@ -8,5 +8,5 @@ export const contexts = createRolePreset({
   name: "contexts",
   purpose: "Shared state providers.",
   exports: "named-match",
-  scoped: true,
+  optIn: true,
 });

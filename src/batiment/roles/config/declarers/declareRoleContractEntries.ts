@@ -125,9 +125,9 @@ export function declareRoleContractEntries<Nested>(
       description: "Whether a consumer discovers its files, so they may export defaults.",
       optional: describedDefault(roleContractDefaults.discovered),
     }),
-    scoped: declare(boolean(), {
+    optIn: declare(boolean(), {
       description: "Whether the role is active only where a structured role or a namespace enables it.",
-      optional: describedDefault(roleContractDefaults.scoped),
+      optional: describedDefault(roleContractDefaults.optIn),
     }),
     strict: declare(boolean(), {
       description: "Accepts at its root only the files its nested roles' `file` globs name, besides their directories.",
