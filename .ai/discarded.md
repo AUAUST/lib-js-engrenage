@@ -143,3 +143,6 @@
 - Warning for inherited kind overrides: non-blocking diagnostic when a metafile overrides a preset kind — inconsistent with silent field overrides, unsilenceable noise for a legitimate override.
 - shell loop values on the word: an expansion `ShellWord` carrying the literal values a loop variable takes — every consumer would fan out views and writes itself; `parseShell` unrolls the loop body instead
 - `while read` loop resolution: binding the variable from a literal here-string, heredoc or `printf` pipe — needs `read` field splitting, `-r` escapes and `printf` formats; left an expansion
+- incremental transcript reading: per-tool-call overrun check (subagent context cap) — a full parse of a 2 MB subagent transcript takes ~12 ms, under node startup; an offset state file would add a race for nothing
+- PostToolBatch `decision: "block"` or `continue: false` as the overrun lockout: end an overrunning subagent — ends the loop before any final report; PreToolUse deny all but the report tool instead
+- elapsed time or tool-call count as lockout signal: cap tunnelling subagents — a 23k→187k analyser took 12 minutes and 55 calls, under any 30-minute cap; context multiple measures the cost freshness already bounds

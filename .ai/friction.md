@@ -89,3 +89,9 @@
 - Claude Code worktree isolation: a heredoc and a loop whose text named `github` or `git` — refused as unverifiable; edited files through the edit tools and ran commands one by one
 - `planning issue check`: passed a new draft as `#{new-<slug>}` — "no draft at" error; bare `new-<slug>` works
 - `engrenage agents stats`: needed live usage of running subagents and the quota window — stats cover stopped runs of one session only; parsed transcripts under `~/.claude/projects` by hand
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- WebFetch on the Anthropic pricing page: asked for 3 model rows — 54 kB output spilled to a file; grepped the spill
+- Claude transcript format: needed effort, thinking, compaction and resume fields for issue design — undocumented; inspected `~/.claude/projects` jsonl by hand with jq
+- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- WebFetch on the Claude Code hooks reference: needed subagent payload and stop-lever fields — 295k-character page answered in three offset calls, the last spilled to a file; grepped the spill
+- Claude transcript format: needed a subagent's transcript path inside PreToolUse — payload carries only the main `transcript_path`; confirmed `<session>/subagents/agent-<id>.jsonl` on disk
