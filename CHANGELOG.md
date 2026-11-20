@@ -1,5 +1,15 @@
 # @auaust/engrenage
 
+## 0.17.1
+
+### Patch Changes
+
+- [`5071ad7`](https://github.com/AUAUST/lib-js-engrenage/commit/5071ad7dc39d53f3883c712d39fef95e825bbe70) Thanks [@apademide](https://github.com/apademide)! - - Render issue references in draft titles on publish, localize them on claim and check them like body references
+
+- [`79f7249`](https://github.com/AUAUST/lib-js-engrenage/commit/79f72493a7c13e6f6e7fa2d50d986b2a5ff7fab5) Thanks [@apademide](https://github.com/apademide)! - - Fix the Lefthook gate commands failing merges and commits under pnpm's `verifyDepsBeforeRun` when the operation changes a package version
+
+- [`4f1e430`](https://github.com/AUAUST/lib-js-engrenage/commit/4f1e4307881842a369406d3ab8dc887b1a4f7ef7) Thanks [@apademide](https://github.com/apademide)! - - Adopt imports a pre-0.17 sync generated as plain strings on the first sync without a record, instead of failing on a collision
+
 ## 0.17.0
 
 ### Minor Changes
