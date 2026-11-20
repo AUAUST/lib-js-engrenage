@@ -101,3 +101,4 @@
 - `engrenage gate --worktree`: barrelDirective test timed out at 5000ms — passed alone; reran the gate
 - `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
 - git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
+- worktree-isolated Bash: chained `cd` with `git rev-parse` and a log grep — refused as a compound git command; ran git alone

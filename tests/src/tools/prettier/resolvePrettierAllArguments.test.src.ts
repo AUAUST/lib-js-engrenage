@@ -17,7 +17,6 @@ const files = {
   }),
   "tsconfig.json": "{}",
   "src/index.ts": "",
-  "env.d.ts": "",
   "lefthook.yml": "",
   "packages/a/package.json": "{}",
   "README.md": "",
@@ -38,7 +37,7 @@ describe("resolvePrettierAllArguments", () => {
 
     expect(paths).toEqual(
       expect.arrayContaining([
-        project.resolve("env.d.ts"),
+        project.resolve("src"),
         project.resolve("lefthook.yml"),
         project.resolve("packages/a"),
       ]),

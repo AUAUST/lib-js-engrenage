@@ -32,6 +32,7 @@ function listMirrors(
   );
 }
 
+// @debt a file with a mirrored domain runs only its mirror's tests, so tests elsewhere asserting its behavior through dependents (`tests/bin`, other domains) run only in CI
 async function partitionFiles(
   config: LoadedConfig,
   files: Files,

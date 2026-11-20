@@ -292,7 +292,7 @@ describe("engrenage init", () => {
     expect(printed()).toContain("Run pnpm changeset init to finish the setup.");
 
     expect(project.read("pnpm-workspace.yaml")).toBe(
-      'allowBuilds:\n  "esbuild": true\n  "lefthook": false\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\n',
+      'allowBuilds:\n  "esbuild": true\n  "lefthook": false\n  "unrs-resolver": true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\nverifyDepsBeforeRun: error\n',
     );
 
     expect(project.read("eslint.config.ts")).toContain(

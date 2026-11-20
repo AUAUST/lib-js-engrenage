@@ -70,3 +70,9 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - sites: `src/tools/typescript/setup/syncTsconfigFiles.ts:106`
 - why: configured `compilerOptions` are only ever set; one removed from the config stays and `sync --check` passes. #701 takes up the `paths` half.
 - want: the generated options recorded in `.engrenage/sync.json` (#701), so removals are deleted and checked.
+
+## 13. The root `global.d.ts` every generated tsconfig includes is neither linted nor formatted
+
+- sites: `src/project/tsconfig/constants.ts:10`, `src/tools/prettier/operations/resolvePrettierAllArguments.ts:13`
+- why: no environment glob or engrenage resource covers it since #702 replaced the root `env.d.ts` resource; `eslint global.d.ts` reports "File ignored", `prettier:all` skips it.
+- want: the file in the lint and format coverage while it exists.
