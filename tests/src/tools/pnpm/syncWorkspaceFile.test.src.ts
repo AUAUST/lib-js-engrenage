@@ -36,9 +36,31 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
       "unrs-resolver": true,
     },
     minimumReleaseAgeExclude: ["@auaust/*"],
+    verifyDepsBeforeRun: "error",
   });
 
   await runCommand("sync", sync, "pnpm", "--check");
 
   expect(process.exitCode).toBeUndefined();
+});
+
+test("sync keeps the stale-install policy a project sets", async () => {
+  const content = 'allowBuilds:\n  esbuild: true\n  lefthook: false\n  unrs-resolver: true\nminimumReleaseAgeExclude:\n  - "@auaust/*"\nverifyDepsBeforeRun: install\n';
+
+  const project = createTemporaryProject({
+    "package.json": JSON.stringify({ name: "app", type: "module" }),
+    "pnpm-workspace.yaml": content,
+  });
+
+  mockCwd(project.root);
+
+  await runCommand("sync", sync, "pnpm", "--check");
+
+  expect(process.exitCode).toBeUndefined();
+
+  await runCommand("sync", sync, "pnpm");
+
+  expect(parse(project.read("pnpm-workspace.yaml"))).toMatchObject({
+    verifyDepsBeforeRun: "install",
+  });
 });

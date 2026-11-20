@@ -39,6 +39,29 @@ describe("createWorkspaceStep", () => {
     expect(await step.isMissing(context)).toBe(false);
   });
 
+  test("renders a missing workspace file with the stale-install policy", async () => {
+    const context = await createStepContext({
+      config: createProjectConfig({
+        root: createTemporaryProject({}).root,
+        raw: {},
+        configFile: undefined,
+      }),
+      prompter: createPrompter({ yes: true }),
+    });
+
+    const step = createWorkspaceStep();
+
+    expect(await step.isMissing(context)).toBe(true);
+
+    await step.plan(context);
+
+    const rendered = await context.filesystem.read("pnpm-workspace.yaml");
+
+    expect(parse(rendered ?? "")).toMatchObject({
+      verifyDepsBeforeRun: "error",
+    });
+  });
+
   test.each(["", "allowBuilds:\n  esbuild: false # Explicit denial\n"])(
     "adds missing approvals and preserves existing choices and comments: %s",
     async (builds) => {
@@ -64,6 +87,7 @@ describe("createWorkspaceStep", () => {
           "unrs-resolver": true,
         },
         minimumReleaseAgeExclude: ["internal-package", "@auaust/*"],
+        verifyDepsBeforeRun: "error",
       });
 
       if (builds !== "") {
@@ -75,7 +99,7 @@ describe("createWorkspaceStep", () => {
   );
 
   test("leaves explicit approvals and denials byte-for-byte unchanged", async () => {
-    const content = 'allowBuilds: {esbuild: false, lefthook: true, unrs-resolver: true, custom: true}\nminimumReleaseAgeExclude: ["@auaust/*"]\n';
+    const content = 'allowBuilds: {esbuild: false, lefthook: true, unrs-resolver: true, custom: true}\nminimumReleaseAgeExclude: ["@auaust/*"]\nverifyDepsBeforeRun: error\n';
 
     const context = await createContext(content);
 

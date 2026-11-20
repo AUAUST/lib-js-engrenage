@@ -10,6 +10,7 @@ import type { WorkspaceSettings } from "#tools/pnpm/types/WorkspaceSettings";
 function renderWorkspace({
   allowBuilds,
   minimumReleaseAgeExclude,
+  verifyDepsBeforeRun,
 }: WorkspaceSettings): string {
   const builds = iterable.map(
     object.entries(allowBuilds),
@@ -27,6 +28,7 @@ function renderWorkspace({
     ...builds,
     "minimumReleaseAgeExclude:",
     ...excluded,
+    `verifyDepsBeforeRun: ${verifyDepsBeforeRun}`,
     "",
   ].join("\n");
 }

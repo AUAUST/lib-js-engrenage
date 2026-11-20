@@ -1,3 +1,4 @@
+import type { VerifyDependenciesBeforeRun } from "#tools/pnpm/types/VerifyDependenciesBeforeRun";
 import type { PackageName } from "#types/PackageName";
 
 /**
@@ -7,4 +8,5 @@ import type { PackageName } from "#types/PackageName";
 export interface WorkspaceSettings {
   allowBuilds: Readonly<Record<PackageName, boolean>>;
   minimumReleaseAgeExclude: readonly string[];
+  verifyDepsBeforeRun: VerifyDependenciesBeforeRun;
 }

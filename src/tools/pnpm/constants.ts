@@ -18,6 +18,7 @@ export const workspaceSettings = freeze({
     "unrs-resolver": true,
   } as const),
   minimumReleaseAgeExclude: freeze([`${organization}/*`] as const),
+  verifyDepsBeforeRun: "error",
 } as const) satisfies WorkspaceSettings;
 
 export const upgradeCommand = "engrenage pnpm upgrade";

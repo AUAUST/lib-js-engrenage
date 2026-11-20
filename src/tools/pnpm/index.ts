@@ -37,5 +37,6 @@ export type * from "#tools/pnpm/types/Link";
 export type * from "#tools/pnpm/types/LinkInspection";
 export type * from "#tools/pnpm/types/Links";
 export type * from "#tools/pnpm/types/LinkState";
+export type * from "#tools/pnpm/types/VerifyDependenciesBeforeRun";
 export type * from "#tools/pnpm/types/WorkspaceSettings";
 // @end

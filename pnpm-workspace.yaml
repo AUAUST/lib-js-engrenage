@@ -6,3 +6,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - "@auaust/*"
   - web-features@3.45.0
+verifyDepsBeforeRun: error

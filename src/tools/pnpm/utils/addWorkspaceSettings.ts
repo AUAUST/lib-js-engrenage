@@ -58,5 +58,11 @@ export function addWorkspaceSettings(document: Document): boolean {
     changed = true;
   }
 
+  if (!document.has("verifyDepsBeforeRun")) {
+    document.set("verifyDepsBeforeRun", workspaceSettings.verifyDepsBeforeRun);
+
+    changed = true;
+  }
+
   return changed;
 }
