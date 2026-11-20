@@ -19,10 +19,11 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: Codex-generated override file goes stale when a rebase brings new instructions; out of the cleanup pass with Codex work (#613 › Decisions). Seen in AUAUST/lib-js-toolkit#325 › Gate.
 - want: sync regenerates it, or `--check` names the command that does.
 
-## 4. Nothing bounds the walker's context in a long walk
+## 4. Nothing bounds a main session's context in a long run
 
-- why: #654: walker context climbed 65k→214k, ~75% of its cost re-reading; `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` is reported ignored in a `settings.json` `env` block, on recent versions and in bridge-attached sessions.
-- want: an enforceable compaction or relay point at each segment close, relying on walking §Context's rebuild from `walk check`.
+- why: #654: walker context 65k→214k, ~75% of cost re-reading; no hook can start a compaction.
+- want: walks: `autoCompactWindow` (≥100k) plus PreCompact stdout "gist of past segments, pending handoffs verbatim"; test it on `auto` triggers.
+- want: interactive: once per threshold crossing, the check hook tells the agent to offer a short `/compact` prompt: impactful and recent facts, pending work verbatim.
 
 ## 5. Sync accepts a skill naming its supporting file by bare name
 

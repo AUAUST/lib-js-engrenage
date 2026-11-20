@@ -95,3 +95,4 @@
 - zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - WebFetch on the Claude Code hooks reference: needed subagent payload and stop-lever fields — 295k-character page answered in three offset calls, the last spilled to a file; grepped the spill
 - Claude transcript format: needed a subagent's transcript path inside PreToolUse — payload carries only the main `transcript_path`; confirmed `<session>/subagents/agent-<id>.jsonl` on disk
+- WebFetch on the Anthropic Messages API reference: needed the response Usage schema — 1.3M-character page, the first 100k characters held only the request side; did not page on, took usage fields from the prompt-caching, fast-mode and compaction pages
