@@ -15,6 +15,9 @@ export const typescriptExtensions = freeze([
   ".cts",
 ] as const);
 
+// @debt the extensions a bundled import resolves are listed by hand instead of derived from the contributed languages (#377)
+export const bundledImportExtensions = freeze([".ts", ".tsx"] as const);
+
 export const barrelsTarget = "barrels";
 
 export const barrelDirective = "barrel";

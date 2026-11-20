@@ -97,3 +97,6 @@
 - worker dispatch hook: dispatched #710 and #712 under AUAUST/clients-intscr-shopify#52 — refused: open **Planning** in ancestors #49 and #52, bare `#676` there resolving to the client repository; paused for the user
 - worker dispatch hook: dispatched #710 after removing #52's Planning by `gh issue edit` — refused for stale `Open questions` Blockers; cleared it through `planning issue claim` and `publish`
 - BSD sed `\|` alternation: deleted lines matching `(true\|false)` with basic regex — silently matched nothing; used `sed -E`
+- `engrenage planning issue publish`: detached #706 from Segment #52 keeping its header line — refused: "header line but no ancestors"; removed the line, moved its origin into Context
+- `engrenage gate --worktree`: barrelDirective test timed out at 5000ms — passed alone; reran the gate
+- `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard

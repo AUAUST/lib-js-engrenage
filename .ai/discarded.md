@@ -134,3 +134,4 @@
 - shared ambient tsconfig extended by environments (#702): one list of `src`'s ambient files — `include` never merges through `extends`; inherited `files` drops silently under any own `files`; a generated file more
 - ambient detection by missing imports and exports (#702): identify `src`'s ambient files — misses `declare global` augmentations, which import; the `declarations` role already names them
 - hook command workspace root: shell repeating the config lookup's `pnpm-workspace.yaml` globs — duplicates #713's lookup in sh; the shell finds the nearest installed engrenage-hook within the repository or workspace, the actions resolve the root from the payload `cwd`
+- delete `syncPaths` (#711): no generated `src` alias needs tsconfig `paths` — non-`#` bundler aliases (`$shopify/*`) resolve only through `paths`, which `imports` cannot hold

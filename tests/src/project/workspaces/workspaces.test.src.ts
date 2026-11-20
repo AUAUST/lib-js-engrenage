@@ -1,12 +1,12 @@
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
-import { build } from "vite";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { checkWorkspaces } from "#project/structure/index";
 import { runSync } from "#project/sync/index";
+import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -313,31 +313,12 @@ describe("workspace modules", () => {
       { cwd: project.root, stdio: "pipe" },
     );
 
-    const output = await build({
-      root: project.root,
-      configFile: false,
-      logLevel: "silent",
-      resolve: {
-        tsconfigPaths: true,
-      },
-      build: {
-        write: false,
-        lib: {
-          entry: "extensions/action-a/src/index.ts",
-          formats: ["es"],
-        },
-      },
-    });
+    const code = await buildLibraryCode(
+      project.root,
+      "extensions/action-a/src/index.ts",
+    );
 
-    const code = [output].flat().flatMap((result) => {
-      return "output" in result
-        ? result.output.map((chunk) => {
-            return "code" in chunk ? chunk.code : "";
-          })
-        : [];
-    });
-
-    expect(code.join("\n")).toContain("hello");
-    expect(code.join("\n")).toContain("helped");
+    expect(code).toContain("hello");
+    expect(code).toContain("helped");
   });
 });

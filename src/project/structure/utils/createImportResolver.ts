@@ -13,6 +13,7 @@ const aliasPrefix = "#";
 const scopePrefix = "@";
 const selfSubpath = ".";
 
+// @debt expands to the alias's single `.ts` target, so a `#…` import of a `.tsx` module resolves to a `.ts` path that does not exist, while a bundled `src` imports it through `types` listing both extensions
 function expandAlias(alias: Alias, specifier: string): string | undefined {
   const star = alias.key.indexOf("*");
 

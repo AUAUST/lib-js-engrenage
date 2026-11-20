@@ -24,12 +24,16 @@ import {
   toTsconfigGlobs,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
-import { selfImports } from "#project/workspaces/constants";
+import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import type { LoadedConfig } from "#project/config/index";
 import type {
   ResolvedWorkspace,
   ResolvedWorkspaceGroup,
 } from "#project/workspaces/index";
+
+const selfImportKey = "#self/*";
+
+const selfImportStem = "./src/*";
 
 interface Field {
   location: readonly [string] | readonly [string, string];
@@ -61,12 +65,13 @@ function createPackageFields(
     fields.push({ location: ["license"], value: license });
   }
 
-  for (const [key, value] of entries(selfImports)) {
-    fields.push({
-      location: ["imports", key],
-      value: toJsonValue(value, "the workspace self imports"),
-    });
-  }
+  fields.push({
+    location: ["imports", selfImportKey],
+    value: toJsonValue(
+      createBundledImport(selfImportStem),
+      "the workspace self imports",
+    ),
+  });
 
   return fields;
 }

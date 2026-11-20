@@ -30,6 +30,11 @@ import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
+import {
+  bundledImportExtensions,
+  importPrefix,
+} from "#tools/typescript/constants";
+import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { LoadedConfig } from "#project/config/index";
 import type { Alias } from "#project/structure/index";
@@ -90,9 +95,10 @@ function mergeGenerated<Value extends JsonValue>(
   return record(sortByKey([...kept, ...entries(generated)]));
 }
 
-async function syncImports(config: LoadedConfig, aliases: readonly Alias[]) {
-  const imports = listSubpathImports(aliases);
-
+async function syncImports(
+  config: LoadedConfig,
+  imports: Readonly<Record<string, ImportTarget>>,
+) {
   const recorded = await readGeneratedKeys(config, importsPart);
 
   await syncFiles(
@@ -146,29 +152,46 @@ async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
     }),
   );
 
+  const current = await readTsconfigPaths(config, file);
+
   const paths = mergeGenerated(
     file,
-    await readTsconfigPaths(config, file),
+    current,
     generated,
     await readGeneratedKeys(config, pathsPart),
   );
 
-  await filesystem.write(
-    file,
-    applyJsonEdits(
-      (await filesystem.read(file)) ?? emptyObjectFile,
+  if (keys(paths).length > 0 || keys(current).length > 0) {
+    await filesystem.write(
       file,
-      [
-        {
-          path: ["compilerOptions", "paths"],
-          value: paths,
-        },
-      ],
-      jsonIndentation,
-    ),
-  );
+      applyJsonEdits(
+        (await filesystem.read(file)) ?? emptyObjectFile,
+        file,
+        [
+          {
+            path: ["compilerOptions", "paths"],
+            value: paths,
+          },
+        ],
+        jsonIndentation,
+      ),
+    );
+  }
 
   await writeGeneratedKeys(config, pathsPart, keys(generated));
+}
+
+// @debt Recovers the stem by stripping the first bundled extension from a target the alias resolver built from the typescript language's extensions; an `Alias` carrying its stem would remove that coupling.
+function toBundledImport({ key, target }: Alias): ImportTarget {
+  const [extension] = bundledImportExtensions;
+
+  if (!target.endsWith(extension)) {
+    throw new Error(
+      `The generated alias ${key} → ${target} targets no ${extension} module`,
+    );
+  }
+
+  return createBundledImport(target.slice(0, -extension.length));
 }
 
 export async function syncAliases(config: LoadedConfig) {
@@ -178,11 +201,29 @@ export async function syncAliases(config: LoadedConfig) {
     return;
   }
 
-  await syncImports(config, [...global, ...src]);
+  const { bundled, aliases } = await config.resolve("src.options");
 
-  const source = await config.resolve("src");
+  const generated = bundled
+    ? src.filter(({ key }) => {
+        return key.startsWith(importPrefix) && !hasOwn(aliases.define, key);
+      })
+    : [];
 
-  if (source.bundled) {
-    await syncPaths(config, src);
+  const imports = {
+    ...listSubpathImports([...global, ...src]),
+    ...record(
+      map(generated, (alias) => {
+        return [alias.key, toBundledImport(alias)] as const;
+      }),
+    ),
+  };
+
+  await syncImports(config, imports);
+
+  if (bundled) {
+    await syncPaths(
+      config,
+      src.filter(({ key }) => !key.startsWith(importPrefix)),
+    );
   }
 }

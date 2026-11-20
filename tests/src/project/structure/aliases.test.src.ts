@@ -1,7 +1,12 @@
+import { execFileSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { entrypoint } from "#project/roles/index";
+import { runSync } from "#project/sync/index";
+import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
 
@@ -102,23 +107,40 @@ describe("aliases", () => {
     ).rejects.toThrow(/#tests\/\*.*src entry src\/tests/);
   });
 
-  test("writes a bundled app's src aliases to the tsconfig paths, with #data", async () => {
+  test("gives a bundled app's src aliases both TypeScript extensions, and only bundler aliases to the tsconfig paths", async () => {
     const { read } = await sync(
       `{ src: { node: 24, bundled: true, aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
       { "data/a.json": "{}" },
     );
 
-    expect((await read("tsconfig.json")).compilerOptions.paths).toMatchObject({
+    expect((await read("tsconfig.json")).compilerOptions.paths).toEqual({
       "$shopify/*": ["./shopify/*.ts"],
-      "#utils/*": ["./src/utils/*.ts"],
     });
 
     expect((await read("package.json")).imports).toMatchObject({
       "#data/*": "./data/*",
+      "#utils/*": {
+        types: ["./src/utils/*.ts", "./src/utils/*.tsx"],
+        default: "./src/utils/*",
+      },
+      "#constants": {
+        types: ["./src/constants.ts", "./src/constants.tsx"],
+        default: "./src/constants",
+      },
     });
 
     expect((await read("package.json")).imports).not.toHaveProperty(
       "$shopify/*",
+    );
+  });
+
+  test("writes no tsconfig paths for a bundled app without bundler aliases", async () => {
+    const { read } = await sync(bundled({ "#shop/*": "./shopify/*.ts" }));
+
+    expect((await read("tsconfig.json")).compilerOptions).toBeUndefined();
+
+    expect((await read("package.json")).imports["#shop/*"]).toBe(
+      "./shopify/*.ts",
     );
   });
 
@@ -184,9 +206,32 @@ describe("aliases", () => {
 
     expect(imports).toHaveProperty("#constants");
     expect(imports).not.toHaveProperty("#shop/*");
-    expect(paths).toHaveProperty("#constants");
-    expect(paths).not.toHaveProperty("#shop/*");
     expect(paths).not.toHaveProperty("$shopify/*");
+  });
+
+  test("removes the src alias paths a previous sync generated, keeping the others", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          paths: {
+            "#constants": ["./src/constants.ts"],
+            "~/*": ["./src/*"],
+          },
+        },
+      }),
+      ".engrenage/sync.json": JSON.stringify({
+        "tsconfig#paths": ["#constants"],
+      }),
+      "engrenage.config.ts": `export default ${bundled({})};\n`,
+      "src/constants.ts": "",
+    });
+
+    await syncOnDisk(project.root);
+
+    expect(
+      JSON.parse(project.read("tsconfig.json")).compilerOptions.paths,
+    ).toEqual({ "~/*": ["./src/*"] });
   });
 
   test("fails on a hand-declared import the aliases generate with another target", async () => {
@@ -200,5 +245,39 @@ describe("aliases", () => {
         "src/config/a.ts": "",
       }),
     ).rejects.toThrow(/#config\/\*/);
+  });
+
+  test("resolves a bundled app's .tsx module, type-checked and built through Vite", async () => {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": `export default {
+        src: { baseline: "2026-10", bundled: true },
+        typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", jsx: "preserve", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
+      };\n`,
+      "package.json": '{ "name": "app", "type": "module" }',
+      "tsconfig.json": "{}",
+      "src/ui/components/FileRouter.tsx": 'export const route: string = "routed";\n',
+      "src/ui/utils/two.ts": "export const two: number = 2;\n",
+      "src/main.ts": "import { route } from '#ui/components/FileRouter';\nimport { two } from '#ui/utils/two';\n\nexport const message: string = `${route} ${two}`;\n",
+    });
+
+    const resolved = await loadConfig(project.root);
+
+    await runSync(resolved, { names: ["tsconfig", "aliases"] });
+
+    await resolved.context.filesystem.flush();
+
+    execFileSync(
+      process.execPath,
+      [
+        fileURLToPath(import.meta.resolve("typescript/bin/tsc")),
+        "-p",
+        "tsconfig.src.json",
+      ],
+      { cwd: project.root, stdio: "pipe" },
+    );
+
+    const code = await buildLibraryCode(project.root, "src/main.ts");
+
+    expect(code).toContain("routed");
   });
 });
