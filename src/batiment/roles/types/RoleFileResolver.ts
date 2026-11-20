@@ -1,4 +1,4 @@
-import type { RoleLocation } from "#project/roles/types/RoleLocation";
+import type { RoleLocation } from "#batiment/roles/types/RoleLocation";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 

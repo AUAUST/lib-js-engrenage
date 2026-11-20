@@ -1,4 +1,4 @@
-import { createRolePreset } from "#project/roles/utils/createRolePreset";
+import { createRolePreset } from "#batiment/roles/index";
 
 /**
  * Preset of the `testsetup` role: a discovered `setup.ts` file.

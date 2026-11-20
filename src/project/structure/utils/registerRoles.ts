@@ -1,7 +1,7 @@
 import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
-import { roleSchema, type Role } from "#project/roles/index";
+import { roleSchema, type Role } from "#batiment/roles/index";
 import { completeRole } from "#project/structure/utils/completeRole";
 import { findFileResolver } from "#project/structure/utils/findFileResolver";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";

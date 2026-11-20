@@ -1,4 +1,4 @@
-import type { ReexportMode } from "#project/roles/index";
+import type { ReexportMode } from "#batiment/roles/index";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { StructureSource } from "#project/structure/types/StructureSource";
 import type { Directory } from "#types/Directory";

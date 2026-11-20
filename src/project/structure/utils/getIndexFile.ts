@@ -1,4 +1,4 @@
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { defaultIndexFile } from "#project/structure/constants";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";

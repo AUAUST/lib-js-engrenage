@@ -11,6 +11,7 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import {
   declare,
   declareObject,
@@ -19,7 +20,6 @@ import {
   type Declaration,
 } from "#foundation/options/index";
 import { structureKeySchema } from "#project/environments/config/schemas/structureKeySchema";
-import { reexportSchema, roleSchema } from "#project/roles/index";
 import type { DomainDeclaration } from "#project/environments/types/DomainDeclaration";
 import type { NamespaceDeclaration } from "#project/environments/types/NamespaceDeclaration";
 

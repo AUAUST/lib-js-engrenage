@@ -22,7 +22,7 @@ ESLint rules and conventions engrenage ships.
 
 ## 4. `readonly-constants` forces schemas to `StandardSchemaV1`, erasing output types
 
-- sites: `src/project/build/constants.ts:10`, `src/project/environments/constants.ts:75`, `src/project/environments/constants.ts:88`, `src/project/format/constants.ts:30`, `src/project/presets/constants.ts:15`, `src/project/roles/constants.ts:30`, `src/project/sync/constants.ts:11`, `src/project/sync/constants.ts:21`, `src/tools/agents/constants.ts:30`, `src/workflows/gate/constants.ts:8`
+- sites: `src/project/build/constants.ts:10`, `src/project/environments/constants.ts:75`, `src/project/environments/constants.ts:88`, `src/project/format/constants.ts:30`, `src/project/presets/constants.ts:15`, `src/project/roles/constants.ts:14`, `src/project/sync/constants.ts:11`, `src/project/sync/constants.ts:21`, `src/tools/agents/constants.ts:30`, `src/workflows/gate/constants.ts:8`
 - want: a readonly-constants form keeping the schema's output type (planning: the rule is shared).
 
 ## 5. The naming rule splits words by hand

@@ -1,7 +1,7 @@
+import type { RolePreset } from "#batiment/roles/index";
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Loadable } from "#foundation/modules/index";
 import type { Trait } from "#project/presets/index";
-import type { RolePreset } from "#project/roles/types/RolePreset";
 
 export interface RolePresetEntry extends EntryShape {
   /**

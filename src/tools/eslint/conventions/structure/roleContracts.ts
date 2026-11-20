@@ -1,7 +1,7 @@
 import { basename, dirname, join, matchesGlob } from "node:path";
 
+import { indexRoleName } from "#batiment/roles/constants";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { indexRoleName } from "#project/roles/constants";
 import {
   listNamedFileRoles,
   type StructureNode,

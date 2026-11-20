@@ -1,4 +1,4 @@
-import { createRolePreset } from "#project/roles/index";
+import { createRolePreset } from "#batiment/roles/index";
 
 /**
  * Preset of the `apis` role: one type-only interface per module, checked by

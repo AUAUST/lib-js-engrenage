@@ -12,8 +12,8 @@ import {
 
 import { isFunction, isObject, isString } from "@auaust/toolkit";
 
-import type { RoleRuleModule } from "#project/roles/ports/RoleRuleModule";
-import type { RoleRuleLoader } from "#project/roles/types/RoleRuleLoader";
+import type { RoleRuleModule } from "#batiment/roles/ports/RoleRuleModule";
+import type { RoleRuleLoader } from "#batiment/roles/types/RoleRuleLoader";
 
 const severitySchema = picklist(["off", "warn", "error", 0, 1, 2]);
 

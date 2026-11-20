@@ -1,5 +1,5 @@
-import { entryRoleName } from "#project/roles/constants";
-import { createRolePreset } from "#project/roles/utils/createRolePreset";
+import { entryRoleName } from "#batiment/roles/constants";
+import { createRolePreset } from "#batiment/roles/index";
 
 /**
  * Preset of the role of `entry.ts` files, named `entrypoint`; structure reads a

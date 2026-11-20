@@ -18,7 +18,7 @@
 /src/project/environments/types/ToolingInput.ts linguist-generated
 /src/project/format/types/FormatInput.ts linguist-generated
 /src/project/presets/types/TraitsInput.ts linguist-generated
-/src/project/roles/types/RoleInput.ts linguist-generated
+/src/batiment/roles/types/RoleInput.ts linguist-generated
 /src/project/structure/types/StructureInput.ts linguist-generated
 /src/project/tsconfig/types/TypescriptInput.ts linguist-generated
 /src/tools/agents/types/AgentsInput.ts linguist-generated

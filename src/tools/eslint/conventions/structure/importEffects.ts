@@ -10,8 +10,8 @@ import type { Rule } from "eslint";
 
 import { getOwn } from "@auaust/toolkit/object";
 
+import { entryRoleName } from "#batiment/roles/constants";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { entryRoleName } from "#project/roles/constants";
 import { rankModule } from "#project/structure/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";

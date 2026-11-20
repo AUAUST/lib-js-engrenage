@@ -9,9 +9,9 @@ import {
 } from "typescript";
 import type { Rule } from "eslint";
 
+import { entryRoleName } from "#batiment/roles/constants";
 import { parseJsdoc } from "#foundation/jsdoc/index";
 import { splitDocTag, type TagDeclaration } from "#project/docs/index";
-import { entryRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { findJsdocBlock } from "#tools/eslint/utils/findJsdocBlock";

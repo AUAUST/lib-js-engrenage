@@ -1,9 +1,10 @@
 import { createProjectConfig } from "#project/config/index";
-import { entrypoint, index, type Role } from "#project/roles/index";
+import { entrypoint, index } from "#project/roles/index";
 import { runSync, settleChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
+import type { Role } from "#batiment/roles/index";
 
 export function createBarrelProject({
   files,

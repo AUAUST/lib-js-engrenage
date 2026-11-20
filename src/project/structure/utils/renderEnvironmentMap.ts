@@ -1,6 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import { renderStructureTree } from "#project/structure/utils/renderStructureTree";
 import type { Alias } from "#project/structure/types/Alias";

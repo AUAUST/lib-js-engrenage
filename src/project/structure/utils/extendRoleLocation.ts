@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { RoleLocation } from "#project/roles/index";
+import type { RoleLocation } from "#batiment/roles/index";
 import type { StructureNode } from "#project/structure/types/StructureNode";
 
 export function extendRoleLocation(

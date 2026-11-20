@@ -1,5 +1,5 @@
+import type { Role } from "#batiment/roles/index";
 import type { NamespaceDeclaration } from "#project/environments/index";
-import type { Role } from "#project/roles/index";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 import type { Directory } from "#types/Directory";
 

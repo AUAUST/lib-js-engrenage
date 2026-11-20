@@ -1,5 +1,5 @@
+import type { ReexportMode } from "#batiment/roles/index";
 import type { NamespaceDeclaration } from "#project/environments/types/NamespaceDeclaration";
-import type { ReexportMode } from "#project/roles/index";
 
 export interface DomainDeclaration {
   readonly specifier: string | undefined;

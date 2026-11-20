@@ -1,4 +1,4 @@
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { isPlaced } from "#project/structure/utils/isPlaced";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";

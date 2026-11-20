@@ -3,8 +3,8 @@ import { extname, matchesGlob, posix, relative } from "node:path";
 import { memoize } from "@auaust/toolkit/function";
 import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
+import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
 import { noRoles } from "#project/structure/constants";
 import { classifyEntityFile } from "#project/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#project/structure/utils/createStructureEntity";

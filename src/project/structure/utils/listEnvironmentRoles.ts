@@ -1,10 +1,5 @@
-import {
-  actions,
-  commands,
-  executable,
-  index,
-  type Role,
-} from "#project/roles/index";
+import { actions, commands, executable, index } from "#project/roles/index";
+import type { Role } from "#batiment/roles/index";
 import type { ProgramLayout } from "#project/structure/types/ProgramLayout";
 
 export function listEnvironmentRoles({

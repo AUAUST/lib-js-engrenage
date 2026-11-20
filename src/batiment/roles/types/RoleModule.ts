@@ -1,4 +1,4 @@
-import type { RoleLocation } from "#project/roles/types/RoleLocation";
+import type { RoleLocation } from "#batiment/roles/types/RoleLocation";
 import type { File } from "#types/File";
 
 /**

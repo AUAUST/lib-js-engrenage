@@ -3,14 +3,8 @@ import { existsSync } from "node:fs";
 import { ESLint } from "eslint";
 import { assert, describe, expect, test } from "vitest";
 
-import {
-  createRolePreset,
-  enums,
-  schemas,
-  types,
-  utils,
-  type Role,
-} from "#project/roles/index";
+import { createRolePreset, type Role } from "#batiment/roles/index";
+import { enums, schemas, types, utils } from "#project/roles/index";
 import { runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
 import { expectSettledSync } from "#tests/utils/expectSettledSync";

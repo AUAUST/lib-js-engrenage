@@ -3,8 +3,8 @@ import { basename, extname, join } from "node:path";
 
 import { toArray } from "@auaust/toolkit/array";
 
+import { indexRoleName } from "#batiment/roles/constants";
 import { relativeWithin } from "#foundation/filesystem/index";
-import { indexRoleName } from "#project/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 

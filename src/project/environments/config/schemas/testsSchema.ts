@@ -1,5 +1,6 @@
 import { boolean } from "valibot";
 
+import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declare,
   declareList,
@@ -17,7 +18,6 @@ import {
   defaultTestsSuffix,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,

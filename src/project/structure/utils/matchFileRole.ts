@@ -2,7 +2,7 @@ import { matchesGlob } from "node:path";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { NamedFileRole } from "#project/structure/types/NamedFileRole";

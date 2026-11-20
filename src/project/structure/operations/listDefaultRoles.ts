@@ -1,6 +1,6 @@
 import { loadLazy } from "#foundation/modules/index";
+import type { Role } from "#batiment/roles/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { Role } from "#project/roles/index";
 
 export async function listDefaultRoles(
   config: ConfigResolver,

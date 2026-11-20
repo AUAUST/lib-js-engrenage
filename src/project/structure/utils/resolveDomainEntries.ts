@@ -2,7 +2,7 @@ import { basename, extname } from "node:path";
 
 import { entries, getOwn, record } from "@auaust/toolkit/object";
 
-import { entryRoleName } from "#project/roles/constants";
+import { entryRoleName } from "#batiment/roles/constants";
 import { isPlaced } from "#project/structure/utils/isPlaced";
 import type { EnvironmentFileNames } from "#project/structure/types/EnvironmentFileNames";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";

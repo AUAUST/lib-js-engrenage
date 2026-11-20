@@ -4,7 +4,7 @@ import {
   entryRoleName,
   executableRoleName,
   indexRoleName,
-} from "#project/roles/constants";
+} from "#batiment/roles/constants";
 import { getImportCategory } from "#project/structure/utils/getImportCategory";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";

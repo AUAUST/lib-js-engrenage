@@ -1,7 +1,7 @@
 import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
-import { roleContractDefaults } from "#project/roles/constants";
+import { roleContractDefaults } from "#batiment/roles/constants";
 import { listReexportModes } from "#project/structure/utils/listReexportModes";
 import { listStaticFileGlobs } from "#project/structure/utils/listStaticFileGlobs";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";

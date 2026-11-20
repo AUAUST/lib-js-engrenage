@@ -9,7 +9,7 @@ import {
   type EnvironmentStructure,
 } from "#project/structure/index";
 import { isBelow } from "#tools/typescript/utils/isBelow";
-import type { ReexportMode } from "#project/roles/index";
+import type { ReexportMode } from "#batiment/roles/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
 import type { Directory } from "#types/Directory";

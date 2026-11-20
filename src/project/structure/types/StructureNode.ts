@@ -1,4 +1,4 @@
-import type { ReexportMode } from "#project/roles/index";
+import type { ReexportMode } from "#batiment/roles/index";
 import type { CardinalityViolation } from "#project/structure/types/CardinalityViolation";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureMirror } from "#project/structure/types/StructureMirror";

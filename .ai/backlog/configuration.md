@@ -91,7 +91,7 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 16. Readonly lists in schemas stay mutable in their JSON Schema
 
-- sites: `src/project/roles/config/schemas/reexportSchema.ts:5`
+- sites: `src/batiment/roles/config/schemas/reexportSchema.ts:5`
 - why: the JSON Schema codegen cannot convert `readonly()`, so the list lacks it and the types restate it as readonly.
 - want: the codegen converts readonly lists.
 

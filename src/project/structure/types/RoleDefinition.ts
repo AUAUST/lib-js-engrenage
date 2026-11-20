@@ -1,4 +1,4 @@
-import type { RoleInput } from "#project/roles/index";
+import type { RoleInput } from "#batiment/roles/index";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 
 export interface RoleDefinition extends Omit<

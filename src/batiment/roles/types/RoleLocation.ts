@@ -1,4 +1,4 @@
-import type { RoleLocationMember } from "#project/roles/types/RoleLocationMember";
+import type { RoleLocationMember } from "#batiment/roles/types/RoleLocationMember";
 
 /**
  * Where a role applies: its environment, the namespaces and domains enclosing

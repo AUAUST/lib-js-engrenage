@@ -1,4 +1,4 @@
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 

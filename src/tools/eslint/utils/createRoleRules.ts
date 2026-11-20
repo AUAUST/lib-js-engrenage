@@ -4,7 +4,7 @@ import { isArray, isNumber, isString } from "@auaust/toolkit";
 import { entries, getOwn, values } from "@auaust/toolkit/object";
 
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
-import type { RoleRuleModule } from "#project/roles/index";
+import type { RoleRuleModule } from "#batiment/roles/index";
 import type { EntityIndex, ResolvedStructure } from "#project/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 import type { Config } from "#tools/eslint/types/Config";

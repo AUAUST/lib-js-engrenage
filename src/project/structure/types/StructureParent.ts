@@ -1,4 +1,4 @@
-import type { RoleLocation } from "#project/roles/index";
+import type { RoleLocation } from "#batiment/roles/index";
 import type { StructureKind } from "#project/structure/types/StructureKind";
 import type { StructureSource } from "#project/structure/types/StructureSource";
 

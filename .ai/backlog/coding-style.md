@@ -16,7 +16,7 @@ Local coding conventions and linting.
 
 ## 3. Repeated types and converters
 
-- sites: `src/project/roles/types/Role.ts:1`, `src/project/tsconfig/utils/toJsonValue.ts:3`
+- sites: `src/batiment/roles/types/Role.ts:1`, `src/project/tsconfig/utils/toJsonValue.ts:3`
 - why: `Role` duplicates the generated `RoleInput`; the JSON-value round trip repeats `serialize` in `defineSchema`.
 - want: `RoleInput` used directly; one shared JSON-value converter.
 

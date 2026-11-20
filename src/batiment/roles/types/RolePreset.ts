@@ -1,4 +1,4 @@
-import type { Role } from "#project/roles/types/Role";
+import type { Role } from "#batiment/roles/types/Role";
 
 /**
  * Builds a frozen role from the preset's defaults, each given option

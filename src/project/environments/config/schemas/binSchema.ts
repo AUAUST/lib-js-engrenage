@@ -1,5 +1,6 @@
 import { record, string } from "valibot";
 
+import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declare,
   declareObject,
@@ -13,7 +14,6 @@ import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(

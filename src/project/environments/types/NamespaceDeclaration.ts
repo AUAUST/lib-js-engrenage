@@ -1,5 +1,5 @@
+import type { Role } from "#batiment/roles/index";
 import type { DomainDeclaration } from "#project/environments/types/DomainDeclaration";
-import type { Role } from "#project/roles/index";
 
 export interface NamespaceDeclaration {
   readonly layers: readonly string[] | undefined;

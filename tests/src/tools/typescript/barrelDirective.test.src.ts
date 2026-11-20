@@ -1,8 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import { schemas, types, utils, type Role } from "#project/roles/index";
+import { schemas, types, utils } from "#project/roles/index";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
+import type { Role } from "#batiment/roles/index";
 
 function createKit({
   files,

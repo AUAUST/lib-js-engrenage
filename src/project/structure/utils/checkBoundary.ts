@@ -1,7 +1,7 @@
 import { min } from "@auaust/toolkit/math";
 import { freeze } from "@auaust/toolkit/object";
 
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import type { BoundaryCause } from "#project/structure/types/BoundaryCause";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";
 import type { Entity } from "#project/structure/types/Entity";

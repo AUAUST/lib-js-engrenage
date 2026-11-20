@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { Role } from "#project/roles/types/Role";
+import type { Role } from "#batiment/roles/types/Role";
 
 /**
  * Declares a project's own role, frozen. For a role other projects override,

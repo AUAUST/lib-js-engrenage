@@ -1,7 +1,7 @@
 import { toJsonSchema } from "@valibot/to-json-schema";
 import { describe, expect, test } from "vitest";
 
-import { roleSchema } from "#project/roles/config/schemas/roleSchema";
+import { roleSchema } from "#batiment/roles/config/schemas/roleSchema";
 
 describe("role contract defaults", () => {
   test("documents boolean and numeric defaults as values, not strings", () => {

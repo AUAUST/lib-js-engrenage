@@ -4,7 +4,7 @@ import type { Scope } from "eslint";
 
 import { getOwn } from "@auaust/toolkit/object";
 
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";

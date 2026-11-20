@@ -1,4 +1,4 @@
-import { entryRoleName, indexRoleName } from "#project/roles/constants";
+import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import type { EnvironmentStructure } from "#project/structure/types/EnvironmentStructure";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 

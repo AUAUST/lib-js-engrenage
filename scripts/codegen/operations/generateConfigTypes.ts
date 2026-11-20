@@ -16,6 +16,11 @@ import {
 import { map, sort } from "@auaust/toolkit/array";
 import { keys, mapValues } from "@auaust/toolkit/object";
 
+import {
+  roleCompanionResolverSchema,
+  roleFileResolverSchema,
+  roleRulesSchema,
+} from "#batiment/roles/index";
 import { globsSchema } from "#foundation/options/index";
 import { buildToolNameSchema } from "#project/build/index";
 import {
@@ -25,11 +30,6 @@ import {
 import { tagDeclarationSchema } from "#project/docs/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
-import {
-  roleCompanionResolverSchema,
-  roleFileResolverSchema,
-  roleRulesSchema,
-} from "#project/roles/index";
 import { effectModuleResolverSchema } from "#project/structure/index";
 import { inheritsSchema } from "#project/tsconfig/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
@@ -67,10 +67,10 @@ const externalTypes = new Map<string, TypeSource>([
     "EffectModuleResolver",
     { domain: "project/structure", specifier: undefined },
   ],
-  ["RoleRules", { domain: "project/roles", specifier: undefined }],
+  ["RoleRules", { domain: "batiment/roles", specifier: undefined }],
   ["TagDeclaration", { domain: "project/docs", specifier: undefined }],
-  ["RoleFileResolver", { domain: "project/roles", specifier: undefined }],
-  ["RoleCompanionResolver", { domain: "project/roles", specifier: undefined }],
+  ["RoleFileResolver", { domain: "batiment/roles", specifier: undefined }],
+  ["RoleCompanionResolver", { domain: "batiment/roles", specifier: undefined }],
   ["Glob", { domain: undefined, specifier: "#types/Glob" }],
   ["Globs", { domain: undefined, specifier: "#types/Globs" }],
 ]);

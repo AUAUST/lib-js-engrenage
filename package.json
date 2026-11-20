@@ -40,6 +40,7 @@
     "watch": "pnpm run engrenage vitest:watch"
   },
   "imports": {
+    "#batiment/*": "./src/batiment/*.ts",
     "#bin/*": "./bin/*.ts",
     "#constants": "./src/constants.ts",
     "#foundation/*": "./src/foundation/*.ts",

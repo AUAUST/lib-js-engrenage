@@ -1,4 +1,4 @@
-import { entryRoleName } from "#project/roles/constants";
+import { entryRoleName } from "#batiment/roles/constants";
 import type { ImportEdge } from "#project/structure/types/ImportEdge";
 
 export function isEntryReference({

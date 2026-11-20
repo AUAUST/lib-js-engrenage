@@ -4,7 +4,7 @@ import {
   roleExportStyles,
   roleTypeExportStyles,
   roleValueExportStyles,
-} from "#project/roles/constants";
+} from "#batiment/roles/constants";
 
 export const roleExportsSchema = union([
   picklist(roleExportStyles),

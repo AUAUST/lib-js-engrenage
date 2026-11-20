@@ -1,4 +1,4 @@
-import { indexRoleName } from "#project/roles/constants";
+import { indexRoleName } from "#batiment/roles/constants";
 import { checkBoundary } from "#project/structure/utils/checkBoundary";
 import { isEntryReference } from "#project/structure/utils/isEntryReference";
 import type { BoundaryViolation } from "#project/structure/types/BoundaryViolation";

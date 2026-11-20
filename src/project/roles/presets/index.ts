@@ -1,5 +1,5 @@
-import { indexRoleName } from "#project/roles/constants";
-import { createRolePreset } from "#project/roles/utils/createRolePreset";
+import { indexRoleName } from "#batiment/roles/constants";
+import { createRolePreset } from "#batiment/roles/index";
 
 /**
  * Preset of the role of `index.ts` files; structure reads a domain's

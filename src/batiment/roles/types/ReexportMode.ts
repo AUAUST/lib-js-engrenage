@@ -1,4 +1,4 @@
-import type { reexportModes } from "#project/roles/constants";
+import type { reexportModes } from "#batiment/roles/constants";
 
 /**
  * How a generated root entry re-exports a role's barrel: `namespace` under its

@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 import type { DeepReadonly } from "@auaust/toolkit/types";
 
-import type { ReexportMode } from "#project/roles/index";
+import type { ReexportMode } from "#batiment/roles/index";
 import type { ImportCategory } from "#project/structure/types/ImportCategory";
 import type { ImportRelation } from "#project/structure/types/ImportRelation";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";

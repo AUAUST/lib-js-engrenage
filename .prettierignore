@@ -63,7 +63,7 @@ bun.lockb
 /src/project/environments/types/ToolingInput.ts
 /src/project/format/types/FormatInput.ts
 /src/project/presets/types/TraitsInput.ts
-/src/project/roles/types/RoleInput.ts
+/src/batiment/roles/types/RoleInput.ts
 /src/project/structure/types/StructureInput.ts
 /src/project/tsconfig/types/TypescriptInput.ts
 /src/tools/agents/types/AgentsInput.ts

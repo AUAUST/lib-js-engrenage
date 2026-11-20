@@ -1,9 +1,9 @@
 import { lazy, type GenericSchema } from "valibot";
 
+import { declareRoleContractEntries } from "#batiment/roles/config/declarers/declareRoleContractEntries";
+import { roleNameSchema } from "#batiment/roles/config/schemas/roleNameSchema";
 import { declare, declareObject } from "#foundation/options/index";
-import { declareRoleContractEntries } from "#project/roles/config/declarers/declareRoleContractEntries";
-import { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
-import type { Role } from "#project/roles/types/Role";
+import type { Role } from "#batiment/roles/types/Role";
 
 export const roleSchema = declareObject(
   {

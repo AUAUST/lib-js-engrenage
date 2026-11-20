@@ -1,4 +1,4 @@
-import { createRolePreset } from "#project/roles/utils/createRolePreset";
+import { createRolePreset } from "#batiment/roles/index";
 
 // @debt pure by default, yet schemas built with the `foundation/options` declarers import confined utils, so a project using them overrides it as confined
 /**

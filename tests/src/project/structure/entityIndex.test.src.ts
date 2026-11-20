@@ -2,10 +2,10 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
+import { createRolePreset } from "#batiment/roles/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
   constants,
-  createRolePreset,
   entrypoint,
   errors,
   index,

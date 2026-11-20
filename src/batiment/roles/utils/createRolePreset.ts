@@ -1,6 +1,6 @@
-import { role } from "#project/roles/utils/role";
-import type { Role } from "#project/roles/types/Role";
-import type { RolePreset } from "#project/roles/types/RolePreset";
+import { role } from "#batiment/roles/utils/role";
+import type { Role } from "#batiment/roles/types/Role";
+import type { RolePreset } from "#batiment/roles/types/RolePreset";
 
 /**
  * Creates a role preset declaring a role with `defaults`, for a project or an

@@ -14,8 +14,8 @@ import { getStructureCardinality } from "#project/structure/utils/getStructureCa
 import { listNamedFileRoles } from "#project/structure/utils/listNamedFileRoles";
 import { matchFileRole } from "#project/structure/utils/matchFileRole";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
+import type { RoleLocation } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { RoleLocation } from "#project/roles/index";
 import type { EnvironmentRoles } from "#project/structure/types/EnvironmentRoles";
 import type { ResolvedRoles } from "#project/structure/types/ResolvedRoles";
 import type { RoleRegistry } from "#project/structure/types/RoleRegistry";

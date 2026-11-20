@@ -1,4 +1,4 @@
-import type { ReexportMode } from "#project/roles/index";
+import type { ReexportMode } from "#batiment/roles/index";
 import type { MetadataField } from "#project/structure/types/MetadataField";
 import type { StructureRelation } from "#project/structure/types/StructureRelation";
 import type { Directory } from "#types/Directory";

@@ -1,7 +1,7 @@
 import { parse } from "valibot";
 import { expect, test } from "vitest";
 
-import { role, rolesSchema } from "#project/roles/index";
+import { role, rolesSchema } from "#batiment/roles/index";
 
 test("role returns its definition frozen, accepted as a source role", () => {
   const definition = {

@@ -88,3 +88,6 @@
 - commit gate vitest: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel — each passed alone; retried the commit
 - worktree isolation: `git diff` chained after a printf file write and the gate — refused as unverifiable; wrote the file with the edit tools and ran each command alone
 - commit-msg hook: 77-character subject rejected — no git rule states the 72-character limit; shortened the subject
+- worktree isolation: a `git mv` loop and a heredoc writing a metafile — refused as unverifiable; moved with plain `mv` and wrote through the edit tools
+- `engrenage sync` after adding the `batiment` namespace: config load failed on the missing `#batiment/*` alias and stale barrels, which only sync generates — added the alias and barrels by hand, then synced
+- issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there

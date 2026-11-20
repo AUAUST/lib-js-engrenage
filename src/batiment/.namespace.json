@@ -1,0 +1,3 @@
+{
+  "purpose": "The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives."
+}

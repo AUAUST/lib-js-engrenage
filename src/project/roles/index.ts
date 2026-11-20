@@ -1,41 +1,13 @@
-// @barrel config/schemas
-export { omitRolesSchema } from "#project/roles/config/schemas/omitRolesSchema";
-export { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
-export { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleCompanionResolverSchema";
-export { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
-export { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
-export { roleNameSchema } from "#project/roles/config/schemas/roleNameSchema";
-export { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
-export { roleSchema } from "#project/roles/config/schemas/roleSchema";
-export { rolesSchema } from "#project/roles/config/schemas/rolesSchema";
-// @end
-
-// @barrel config/declarers
-export { declareRoleContractEntries } from "#project/roles/config/declarers/declareRoleContractEntries";
-// @end
-
-// @barrel types
-export type * from "#project/roles/types/ReexportMode";
-export type * from "#project/roles/types/Role";
-export type * from "#project/roles/types/RoleCompanionResolver";
-export type * from "#project/roles/types/RoleFileResolver";
-export type * from "#project/roles/types/RoleInput";
-export type * from "#project/roles/types/RoleLocation";
-export type * from "#project/roles/types/RoleLocationMember";
-export type * from "#project/roles/types/RoleModule";
-export type * from "#project/roles/types/RolePreset";
-export type * from "#project/roles/types/RoleRuleLoader";
-export type * from "#project/roles/types/RoleRules";
-// @end
+export { createRolePreset, role } from "#batiment/roles/index";
+export type {
+  Role,
+  RoleCompanionResolver,
+  RoleModule,
+  RolePreset,
+} from "#batiment/roles/index";
 
 // @barrel ports
 export type * from "#project/roles/ports/RolePresetEntry";
-export type * from "#project/roles/ports/RoleRuleModule";
-// @end
-
-// @barrel utils
-export { createRolePreset } from "#project/roles/utils/createRolePreset";
-export { role } from "#project/roles/utils/role";
 // @end
 
 // @barrel presets

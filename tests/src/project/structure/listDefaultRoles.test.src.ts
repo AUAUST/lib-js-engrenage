@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
+import { createRolePreset } from "#batiment/roles/index";
 import { createProjectConfig } from "#project/config/index";
-import { createRolePreset } from "#project/roles/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 

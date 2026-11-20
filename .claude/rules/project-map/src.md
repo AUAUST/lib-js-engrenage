@@ -6,7 +6,9 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
+src/  foundation < batiment < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
+├─ batiment/  #batiment/…  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+│  └─ roles  Declare role contracts.
 ├─ foundation/  #foundation/…  Primitives without project knowledge.
 │  ├─ blocks  Composable content blocks for generated files.
 │  ├─ data  Resolve files shipped with the package.
@@ -32,7 +34,7 @@ src/  foundation < project < tools < workflows  (global roles: types constants.t
 │  ├─ gate  Contract of the steps the gate runs.
 │  ├─ package*  Read and synchronize the project package manifest.
 │  ├─ presets  Project presets and their resolved traits.
-│  ├─ roles*  Declare role contracts and presets.
+│  ├─ roles*  Contribute the generic role presets and own the `roles` slot.
 │  ├─ steps  Contracts and helpers for project initialization steps.
 │  ├─ structure  Resolve project structure and enforce its boundaries.
 │  ├─ sync  Run the sync targets and settle the files they change.

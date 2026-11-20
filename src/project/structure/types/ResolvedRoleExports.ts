@@ -1,7 +1,7 @@
 import type {
   roleTypeExportStyles,
   roleValueExportStyles,
-} from "#project/roles/constants";
+} from "#batiment/roles/constants";
 
 /**
  * The export style a role's modules must follow for values and for types;

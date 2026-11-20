@@ -2,15 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import {
-  adapters,
-  constants,
-  createRolePreset,
-  hooks,
-  index,
-  utils,
-  type Role,
-} from "#project/roles/index";
+import { createRolePreset, type Role } from "#batiment/roles/index";
+import { adapters, constants, hooks, index, utils } from "#project/roles/index";
 import { getIndexFile } from "#project/structure/utils/getIndexFile";
 import { resolveRoles } from "#project/structure/utils/resolveRoles";
 import type { RoleEffects } from "#project/structure/types/RoleEffects";

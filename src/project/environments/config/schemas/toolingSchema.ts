@@ -1,3 +1,4 @@
+import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declareList,
   declareObject,
@@ -9,7 +10,6 @@ import {
   defaultToolingDirectories,
   defaultToolingFiles,
 } from "#project/environments/constants";
-import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 import {
   declareEnvironmentTsconfig,
   unmanagedTsconfig,

@@ -11,6 +11,12 @@ import {
   type GenericSchema,
 } from "valibot";
 
+import { reexportSchema } from "#batiment/roles/config/schemas/reexportSchema";
+import { roleCompanionResolverSchema } from "#batiment/roles/config/schemas/roleCompanionResolverSchema";
+import { roleExportsSchema } from "#batiment/roles/config/schemas/roleExportsSchema";
+import { roleFileResolverSchema } from "#batiment/roles/config/schemas/roleFileResolverSchema";
+import { roleRulesSchema } from "#batiment/roles/config/schemas/roleRulesSchema";
+import { roleContractDefaults, roleSurfaces } from "#batiment/roles/constants";
 import {
   declare,
   describeDefault,
@@ -18,17 +24,12 @@ import {
   globsSchema,
   unset,
 } from "#foundation/options/index";
-import { reexportSchema } from "#project/roles/config/schemas/reexportSchema";
-import { roleCompanionResolverSchema } from "#project/roles/config/schemas/roleCompanionResolverSchema";
-import { roleExportsSchema } from "#project/roles/config/schemas/roleExportsSchema";
-import { roleFileResolverSchema } from "#project/roles/config/schemas/roleFileResolverSchema";
-import { roleRulesSchema } from "#project/roles/config/schemas/roleRulesSchema";
-import { roleContractDefaults, roleSurfaces } from "#project/roles/constants";
 
 function describedDefault(value: unknown) {
   return unset(describeDefault({ value }));
 }
 
+// @debt `exports`, `reexport`, `surface`, `typeOnly`, `aliases` and `effects` describe JavaScript modules, not a language-agnostic role, until the language port splits them out (#740, #684)
 export function declareRoleContractEntries<Nested>(
   nested: GenericSchema<Nested>,
 ) {

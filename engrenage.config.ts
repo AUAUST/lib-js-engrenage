@@ -1,6 +1,7 @@
 import { pascal } from "@auaust/toolkit";
 
-import { role, utils, type RoleLocation } from "#project/roles/index";
+import { role, type RoleLocation } from "#batiment/roles/index";
+import { utils } from "#project/roles/index";
 import { extension } from "#tools/eslint/roles/index";
 import { defineConfig } from "#workflows/config/index";
 
@@ -202,7 +203,7 @@ export default defineConfig({
       "project/environments/types/ToolingInput.ts",
       "project/format/types/FormatInput.ts",
       "project/presets/types/TraitsInput.ts",
-      "project/roles/types/RoleInput.ts",
+      "batiment/roles/types/RoleInput.ts",
       "project/structure/types/StructureInput.ts",
       "project/tsconfig/types/TypescriptInput.ts",
       "tools/agents/types/AgentsInput.ts",

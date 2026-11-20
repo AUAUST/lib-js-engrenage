@@ -8,6 +8,15 @@ export {
   declareSection,
 } from "#foundation/options/index";
 export { loadConfig, loadValidatedConfig } from "#project/config/index";
+export type {
+  ReexportMode,
+  RoleFileResolver,
+  RoleLocation,
+  RoleLocationMember,
+  RoleRuleLoader,
+  RoleRuleModule,
+  RoleRules,
+} from "#batiment/roles/index";
 export type { HookEntry } from "#foundation/extensions/index";
 export type { Filesystem } from "#foundation/filesystem/index";
 export type { Section } from "#foundation/options/index";
@@ -30,15 +39,6 @@ export type {
   GateStage,
   GateStepEntry,
 } from "#project/gate/index";
-export type {
-  ReexportMode,
-  RoleFileResolver,
-  RoleLocation,
-  RoleLocationMember,
-  RoleRuleLoader,
-  RoleRuleModule,
-  RoleRules,
-} from "#project/roles/index";
 export type { Prompter, Step, StepContext } from "#project/steps/index";
 export type {
   CardinalityViolation,

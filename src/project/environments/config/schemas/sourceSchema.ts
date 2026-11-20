@@ -4,6 +4,7 @@ import { iterable } from "@auaust/toolkit";
 import { join } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
+import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declare,
   declareList,
@@ -24,7 +25,6 @@ import {
   disabledCodeEnvironment,
 } from "#project/environments/constants";
 import { exposedFilesSchema } from "#project/package/index";
-import { omitRolesSchema, rolesSchema } from "#project/roles/index";
 
 function describeApiGroups(): string {
   const roots = iterable.map(entries(apiGroupRoots), ([group, globals]) => {

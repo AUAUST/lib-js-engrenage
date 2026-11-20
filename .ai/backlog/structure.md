@@ -71,8 +71,8 @@ Project structure description, its report and the tooling generated from it.
 
 ## 12. Role and domain names are hardcoded or collide
 
-- sites: `src/project/roles/constants.ts:9`, `src/tools/eslint/conventions/structure/readonlyConstants.ts:19`, `src/tools/eslint/conventions/docs/documented.ts:21`, `src/tools/eslint/constants.ts:232`, `src/foundation/data/index.ts:1`
-- why: index and entry roles found by fixed names though a preset's `name` renames them; the constants and contract roles found by preset name; the index key repeats `project/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
+- sites: `src/batiment/roles/constants.ts:3`, `src/tools/eslint/conventions/structure/readonlyConstants.ts:19`, `src/tools/eslint/conventions/docs/documented.ts:21`, `src/tools/eslint/constants.ts:232`, `src/foundation/data/index.ts:1`
+- why: index and entry roles found by fixed names though a preset's `name` renames them; the constants and contract roles found by preset name; the index key repeats `batiment/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
 - want: roles resolved from declared names; a domain name not colliding with an environment.
 
 ## 13. Structure declaration in `engrenage.config.ts` mixes concerns

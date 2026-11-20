@@ -1,4 +1,4 @@
-import { createRolePreset } from "#project/roles/index";
+import { createRolePreset } from "#batiment/roles/index";
 
 /**
  * Preset of the `extension` role: a domain's `extension.ts` default-exporting

@@ -1,4 +1,4 @@
-import type { RoleLocation } from "#project/roles/index";
+import type { RoleLocation } from "#batiment/roles/index";
 import type { LineageMember } from "#project/structure/types/LineageMember";
 import type { ResolvedRoleContract } from "#project/structure/types/ResolvedRoleContract";
 import type { StructureKind } from "#project/structure/types/StructureKind";
