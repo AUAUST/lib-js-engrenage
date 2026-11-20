@@ -13,15 +13,24 @@ const groupedTypes: ReadonlySet<string> = new Set([
   AST_NODE_TYPES.TSDeclareFunction,
 ]);
 
-function getFunctionType(node: TSESTree.Node): string {
-  return unwrapExports(unwrapLabels(node)).type;
+function getFunctionName(node: TSESTree.Node): string | undefined {
+  const unwrapped = unwrapExports(unwrapLabels(node));
+
+  return unwrapped.type === AST_NODE_TYPES.FunctionDeclaration ||
+    unwrapped.type === AST_NODE_TYPES.TSDeclareFunction
+    ? unwrapped.id?.name
+    : undefined;
 }
 
-// @debt groups consecutive signatures of differently named functions, as the ESLint `function-overload` matcher did, instead of only overloads of one function
 function isGrouped(previous: TSESTree.Node, next: TSESTree.Node): boolean {
+  const previousName = getFunctionName(previous);
+
   return (
-    getFunctionType(previous) === AST_NODE_TYPES.TSDeclareFunction &&
-    groupedTypes.has(getFunctionType(next))
+    unwrapExports(unwrapLabels(previous)).type ===
+      AST_NODE_TYPES.TSDeclareFunction &&
+    groupedTypes.has(unwrapExports(unwrapLabels(next)).type) &&
+    previousName !== undefined &&
+    previousName === getFunctionName(next)
   );
 }
 

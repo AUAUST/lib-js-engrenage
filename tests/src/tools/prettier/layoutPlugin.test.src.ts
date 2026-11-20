@@ -410,6 +410,12 @@ function other(value: unknown): unknown {
 }
 `);
   });
+
+  test("keeps the blank line between signatures of different functions", async () => {
+    const input = "function a(value: string): string;\n\nfunction b(value: unknown): unknown {\n  return value;\n}\n";
+
+    expect(await formatWithPrettierConfig(input)).toBe(input);
+  });
 });
 
 describe("canonicalJsdoc", () => {
