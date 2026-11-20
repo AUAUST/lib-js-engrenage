@@ -93,3 +93,8 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the instructions limit Housekeeping to edits outside code and tests, enforced only when an orchestrator applies it.
 - want: a `check` finding for a Housekeeping step naming a path under a code or test environment.
+
+## 17. `planning issue check` finds no oversized item
+
+- why: `.claude/rules/issue-drafts.md` › Size forbids items of several outcomes, judged only by agents; #774 passed as one complex issue of ten steps.
+- want: review findings, never count limits: a finding on each `Checkpoint:` line asking for a Size review; a split whose sub-issues and remaining Steps miss a Steps item or Tests case of the pre-split version; a Done when joining several capabilities, or Steps adding modules under several environments or namespaces.
