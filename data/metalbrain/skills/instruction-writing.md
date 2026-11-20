@@ -8,6 +8,7 @@ agent:
   description: Writer that reads a request about agent instructions as a symptom, derives the behavior it implies, writes it where each target agent loads it, grounded in current model guidance, and reads the result as each target would to remove misreadings, conflicts and gaps; under a read-only brief, it audits instructions for them without fixing. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the request as it came and the reach the consent covers, and read-only to audit instructions; never write those instructions yourself, beyond the self-writing cases Instruction maintenance sets.
   model: opus
   effort: medium
+  budget: standard
   efforts:
     trivial: low
     complex: high

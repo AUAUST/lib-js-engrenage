@@ -38,7 +38,7 @@ export const claudeHookMarkers = freeze([
   "engrenage agents claude hook ",
 ] as const);
 
-const metalbrainHook = freeze({
+export const metalbrainHook = freeze({
   name: metalbrainProgram,
   source: metalbrainProgramSource,
 } as const);
@@ -92,6 +92,8 @@ export const claudeHooks = freeze([
 export const claudeStopHook = freeze({
   args: "claude Stop skill",
 } as const);
+
+export const claudeBudgetHookArgs = "hook claude budget --level";
 
 // @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)
 export const claudePermissions = freeze({

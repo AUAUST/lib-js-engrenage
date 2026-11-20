@@ -1,5 +1,5 @@
 import { appendFile, mkdir, readFile, rm } from "node:fs/promises";
-import { basename, dirname, join } from "node:path";
+import { join } from "node:path";
 
 import {
   callsExtension,
@@ -14,6 +14,7 @@ import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
 import { priceMessage } from "#tools/agents/metalbrain/utils/priceMessage";
 import { resolveStartFile } from "#tools/agents/metalbrain/utils/resolveStartFile";
+import { resolveTranscript } from "#tools/agents/metalbrain/utils/resolveTranscript";
 import type { HookContext } from "#tools/agents/metalbrain/types/HookContext";
 import type { ToolCall } from "#tools/agents/metalbrain/types/ToolCall";
 import type { ToolPayload } from "#tools/agents/metalbrain/types/ToolPayload";
@@ -92,17 +93,6 @@ function readExitCode(response: unknown): Pick<ToolCall, "exitCode"> {
     .find(isFiniteNumber);
 
   return code === undefined ? {} : { exitCode: code };
-}
-
-function resolveTranscript({ transcript, agent }: ToolPayload): File {
-  return agent === undefined
-    ? transcript
-    : join(
-        dirname(transcript),
-        basename(transcript, ".jsonl"),
-        "subagents",
-        `agent-${agent}.jsonl`,
-      );
 }
 
 async function readMessage(

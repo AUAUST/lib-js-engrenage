@@ -1,4 +1,8 @@
-import { claudeStopHook } from "#tools/agents/claude/constants";
+import {
+  claudeBudgetHookArgs,
+  claudeStopHook,
+  metalbrainHook,
+} from "#tools/agents/claude/constants";
 import { createCodexAgentProfiles } from "#tools/agents/codex/index";
 import {
   claudeAgentFrontmatterKeys,
@@ -167,12 +171,32 @@ export async function getSkillTemplates({
 
       const { reference, body } = rendering;
 
-      const { gate, efforts: _efforts, ...definition } = agent;
+      const {
+        gate,
+        efforts: _efforts,
+        budget = "standard",
+        ...definition
+      } = agent;
 
       const values = {
         ...definition,
-        ...(gate === true && {
-          hooks: {
+        hooks: {
+          // @debt unverified whether Claude Code reruns frontmatter hooks for an agent resumed through SendMessage, which would leave resumed agents unchecked
+          PreToolUse: [
+            {
+              matcher: "*",
+              hooks: [
+                {
+                  type: "command",
+                  command: createHookCommand(
+                    `${claudeBudgetHookArgs} ${budget}`,
+                    metalbrainHook,
+                  ),
+                },
+              ],
+            },
+          ],
+          ...(gate === true && {
             Stop: [
               {
                 hooks: [
@@ -183,8 +207,8 @@ export async function getSkillTemplates({
                 ],
               },
             ],
-          },
-        }),
+          }),
+        },
       };
 
       files.push({

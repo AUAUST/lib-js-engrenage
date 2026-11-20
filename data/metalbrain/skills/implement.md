@@ -11,6 +11,7 @@ agent:
   description: Worker that implements one specified change (an issue, a draft, a brief or a request) as specified and stops to report what it leaves unclear or what outgrows it. Dispatch it only when a skill you follow or the user asks for a worker; otherwise do the work yourself.
   model: opus
   effort: low
+  budget: standard
   efforts:
     involved: medium
     complex: medium

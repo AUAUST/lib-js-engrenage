@@ -7,6 +7,22 @@ description: Worker that implements one specified change (an issue, a draft, a
 model: opus
 effort: low
 hooks:
+  PreToolUse:
+    - matcher: "*"
+      hooks:
+        - type: command
+          command: "r=\"${CLAUDE_PROJECT_DIR:-}\"; if [ -z \"$r\" ]; then
+            r=\"${PWD%%/node_modules/*}\"; while [ ! -x
+            \"$r/node_modules/.bin/metalbrain\" ] && [ ! -f
+            \"$r/bin/metalbrain/executable.ts\" ] && [ ! -e \"$r/.git\" ] && [ !
+            -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname
+            -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x
+            node_modules/.bin/metalbrain ]; then exec
+            node_modules/.bin/metalbrain hook claude budget --level standard;
+            fi; if [ -f bin/metalbrain/executable.ts ]; then exec node
+            bin/metalbrain/executable.ts hook claude budget --level standard;
+            fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off:
+            metalbrain is not installed in this project; run pnpm install\"}'"
   Stop:
     - hooks:
         - type: command

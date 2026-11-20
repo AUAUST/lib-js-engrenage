@@ -15,3 +15,10 @@ export const mainAgent = "main";
 export const callsExtension = ".calls.jsonl";
 
 export const startsDirectory = "starts";
+
+// @debt restates the package name `#constants` owns, as importing it would load `@auaust/toolkit` into the hook
+export const budgetsSpecifier = "@auaust/engrenage/metalbrain/budgets.json";
+
+export const budgetLevels = ["scoped", "standard"] as const;
+
+export const budgetExtension = ".budget.json";

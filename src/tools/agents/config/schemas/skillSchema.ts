@@ -12,6 +12,7 @@ import {
 } from "valibot";
 
 import { efforts } from "#tools/agents/constants";
+import { budgetLevels } from "#tools/agents/metalbrain/constants";
 
 const effortSchema = picklist(efforts);
 
@@ -36,6 +37,7 @@ export const skillSchema = looseObject({
       tools: optional(array(string())),
       disallowedTools: optional(array(string())),
       gate: optional(boolean()),
+      budget: optional(picklist(budgetLevels)),
       freshness: optional(pipe(number(), minValue(1))),
     }),
   ),

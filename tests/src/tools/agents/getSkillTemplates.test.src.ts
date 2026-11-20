@@ -3,7 +3,11 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { claudeStopHook } from "#tools/agents/claude/constants";
+import {
+  claudeBudgetHookArgs,
+  claudeStopHook,
+  metalbrainHook,
+} from "#tools/agents/claude/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -38,6 +42,21 @@ vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
     },
   };
 });
+
+const budgetHook = [
+  {
+    matcher: "*",
+    hooks: [
+      {
+        type: "command",
+        command: createHookCommand(
+          `${claudeBudgetHookArgs} standard`,
+          metalbrainHook,
+        ),
+      },
+    ],
+  },
+];
 
 function mockSkill(name: string, agent: object) {
   skill.name = name;
@@ -161,6 +180,7 @@ describe("getSkillTemplates", () => {
       name: "worker",
       description: "Worker",
       hooks: {
+        PreToolUse: budgetHook,
         Stop: [
           {
             hooks: [
@@ -175,12 +195,13 @@ describe("getSkillTemplates", () => {
     });
   });
 
-  test("renders no hooks for an ungated agent", async () => {
+  test("renders only the budget hook for an ungated agent", async () => {
     mockSkill("ungated", { name: "helper", description: "Helper" });
 
     expect(await renderAgentFrontmatter()).toEqual({
       name: "helper",
       description: "Helper",
+      hooks: { PreToolUse: budgetHook },
     });
   });
 
@@ -195,6 +216,7 @@ describe("getSkillTemplates", () => {
       name: "helper",
       description: "Helper",
       tools: ["Bash", "Read"],
+      hooks: { PreToolUse: budgetHook },
     });
 
     const [template] = await renderSkills(["codex"]);
