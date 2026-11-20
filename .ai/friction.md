@@ -68,3 +68,4 @@
 - commit gate codegen --check: prettier layout change left data/apis declarations stale — reran pnpm support codegen
 - Write tool on instruction sources: writing `data/metalbrain/shared/analysis.md` as a subagent — harness refused it as a report file; wrote it through a shell heredoc
 - `@shared-file` marker: indented inside a list item — sync left it unrendered and installed no copy; moved it to a paragraph at column 0
+- sync table-cells check: two-row report table in a skill — failed on cells over 25 words, a limit no instruction states; moved the rows into a list

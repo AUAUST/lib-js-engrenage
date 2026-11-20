@@ -100,3 +100,8 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/sections/analysis.md:21`
 - why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
 - want: a section-level filler rendering the installed path of a shared file for the reading runtime.
+
+## 20. The instructions rule survives as a pointer stub
+
+- why: the instruction-writing skill now holds its rules; retiring it needs sync to remove installed copies and their override rows, and init and its tests to stop offering it.
+- want: the rule retired; Instruction maintenance alone points to the skill.

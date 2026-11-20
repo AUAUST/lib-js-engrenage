@@ -8,19 +8,17 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then write it:
 
-| Context                            | Write the change                                                                                          |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `writer` agent you can dispatch    | Dispatch it with the decided behavior and the reach the consent covers; review its diff before committing |
-| No `writer` agent you can dispatch | Load the instruction-writing skill and follow it yourself                                                 |
-
-Without that skill, follow `.claude/rules/instructions.md` yourself.
+| Context                            | Write the change                                                                                            |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `writer` agent you can dispatch    | Dispatch it with the request as it came and the reach the consent covers; review its diff before committing |
+| No `writer` agent you can dispatch | Load the instruction-writing skill and follow it yourself                                                   |
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/writing.md -->
 
 ## Writing
 
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
-- Before proposing instruction wording in an issue or backlog entry, read `.claude/rules/instructions.md`: it refines these rules for it.
+- In an issue or backlog entry asking for an agent instruction change: the concern, the behavior wanted and the cases it must cover; the instruction-writing skill settles the rule, its wording and placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State each idea exactly, with its reason in one clause, in the fewest words that keep it: fragments and keywords over sentences, no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
 

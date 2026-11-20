@@ -6,11 +6,11 @@
 
 Handle each request of the user by its kind:
 
-| Request                                                         | Handling                                                                                                                                                    |
-| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Code change                                                     | Write it into the issue owning it. Implement only when the user explicitly asks you to leave planning for that piece of work                                |
-| Agent instructions or project context for the current structure | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                                     |
-| Instructions for a change not yet made                          | Write into the **Steps** of the task making that change each rule's intent, constraints and target file, with proposed wording only for a one-sentence rule |
+| Request                                                         | Handling                                                                                                                                |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Code change                                                     | Write it into the issue owning it. Implement only when the user explicitly asks you to leave planning for that piece of work            |
+| Agent instructions or project context for the current structure | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                 |
+| Instructions for a change not yet made                          | Write the instruction change into the **Steps** of the task making that change, in the form Writing sets for backlog entries and issues |
 
 ## Outer pass
 
