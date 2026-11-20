@@ -29,7 +29,7 @@ Turn a decided behavior into instructions that make every agent reading them pro
 
 - Missing the decided behavior, or the user's consent and the reach it covers: stop and report; never infer either.
 - Missing the target agents and situations: derive them from the inventory.
-- Proposed wording: a candidate under `instructions.md` › Wording, never binding.
+- Proposed wording, and cases or scenarios given as context: weighed under `instructions.md` › Wording, never binding.
 
 ## Process
 
@@ -49,6 +49,7 @@ Turn a decided behavior into instructions that make every agent reading them pro
 | Overreach   | Fires in contexts it was not meant for, or words a rule so strongly that the model overapplies it              |
 | Unbounded   | Leaves fan-out, batching, waiting or retries without a stop where time or cost can grow                        |
 | Transferred | Carries a reason, limit or mode that holds for one role or mode into another where it does not                 |
+| Example     | Holds an example `instructions.md` › Wording bars                                                              |
 
 ## Scope
 

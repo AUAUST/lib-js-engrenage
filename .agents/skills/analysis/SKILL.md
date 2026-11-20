@@ -1,12 +1,10 @@
 ---
 name: analysis
-description: Examine any material (a concern, design or part of the project,
-  instructions, an outside text such as a law or a contract, tools compared for
-  a job) for contradictions, gaps, costs and dependencies, and record or report
-  the findings with a recommendation. Use only when a skill you follow or the
-  user asks for an analyser to analyse, assess, compare, rethink or review
-  material; never for implementing a decided change, for reviewing a diff or
-  pull request for bugs, or for reviewing planned issues.
+description: Examine any material for contradictions, gaps, costs and
+  dependencies, and record or report the findings with a recommendation. Use
+  only when a skill you follow or the user asks for an analyser; never for
+  implementing a decided change, for reviewing a diff or pull request for bugs,
+  or for reviewing planned issues.
 ---
 
 <!-- @reference @auaust/engrenage/metalbrain/skills/analysis.md -->
@@ -21,7 +19,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 
 ## Outside material
 
-- Reading material outside the repository, the web included, is no work in another repository under Environment: read it without stopping.
+- Reading material outside the repository is no work in another repository under Environment: read it without stopping.
 - A finding with no owner in the repository stays in your report: no issue or backlog entry.
 
 ## Outcome

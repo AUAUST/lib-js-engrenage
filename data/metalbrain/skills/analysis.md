@@ -1,12 +1,12 @@
 ---
 title: Analysis
-description: Examine any material (a concern, design or part of the project, instructions, an outside text such as a law or a contract, tools compared for a job) for contradictions, gaps, costs and dependencies, and record or report the findings with a recommendation. Use only when a skill you follow or the user asks for an analyser to analyse, assess, compare, rethink or review material; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
+description: Examine any material for contradictions, gaps, costs and dependencies, and record or report the findings with a recommendation. Use only when a skill you follow or the user asks for an analyser; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues.
 category: workflow
 order: 5
 invocation: explicit
 agent:
   name: analyser
-  description: Analyser that examines any material, in the project or outside it, for contradictions, gaps, costs and dependencies, works out the ideal solution and reach when the subject is a change, applies that change when it stays within the request, and otherwise records its findings as issues or backlog entries, or only reports them under a read-only brief. Dispatch it only when a skill you follow or the user asks for an analyser, at high effort only when the user asks for it; otherwise do the work yourself.
+  description: Analyser that examines any material for contradictions, gaps, costs and dependencies, works out the ideal solution and reach when the subject is a change, applies that change when it stays within the request, and otherwise records its findings as issues or backlog entries, or only reports them under a read-only brief. Dispatch it only when a skill you follow or the user asks for an analyser, at high effort only when the user asks for it; otherwise do the work yourself.
   model: opus
   effort: medium
   tools:
@@ -31,7 +31,7 @@ Read `.claude/rules/issues.md` before deciding the outcome or writing anything u
 
 ## Outside material
 
-- Reading material outside the repository, the web included, is no work in another repository under Environment: read it without stopping.
+- Reading material outside the repository is no work in another repository under Environment: read it without stopping.
 - A finding with no owner in the repository stays in your report: no issue or backlog entry.
 
 ## Outcome

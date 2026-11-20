@@ -40,8 +40,8 @@ Refines the writing rules' structure table:
 
 - Write each rule as its trigger and the behavior it must produce; cut connectives and subjects the rule's heading, column or list already states.
 - Give a reason only when it changes how the rule is applied, in one clause.
-- Reuse the request's wording only where it is already the clearest and shortest; never carry over its examples or the cases that motivated it.
-- Phrase a rule so that applying it precisely produces the right outcome; add an example only when the rule cannot be stated without one.
+- Reuse the wording of the request or brief only where it is already the clearest and shortest. The cases it lists, as wording or as context, are what the rule must cover, never its text.
+- Phrase a rule so that applying it precisely produces the right outcome, without examples: no list of cases or sample ranking that illustrates a rule instead of defining it, whether in parentheses, after `such as` or `e.g.`, or in a description. Add an example only when the rule cannot be stated without one.
 - Merge a rule into any rule sharing its trigger or its action instead of adding it alongside.
 - Name each concept by one term across every source.
 - Define a skill's role by what its agent does and the limits of its own scope, never by contrast with or exclusion of another role or skill. A description's trigger exclusions and naming an agent to dispatch, route or hand work to are no contrast.

@@ -2,11 +2,11 @@
 
 # Analysis method
 
-Examines any material (code, a design, instructions, an outside text such as a law or a contract, tools compared for a job) for contradictions, gaps, costs and dependencies; `§…` names this file's sections.
+Examines any material for contradictions, gaps, costs and dependencies; `§…` names this file's sections.
 
 ## Scope
 
-- The scope your request or brief names sets the depth: read the material it names and each source sharing its subject within that scope; past it, only a source a finding's basis needs, such as a cited text, a definition or a caller.
+- The scope your request or brief names sets the depth: read the material it names and each source sharing its subject within that scope; past it, only a source a finding's basis needs.
 - Stop once each fact your brief wants back is settled or, without such a list, once every pass of §Passes has covered the scope. Report what you left unread that could change a finding.
 
 ## Material
@@ -14,7 +14,7 @@ Examines any material (code, a design, instructions, an outside text such as a l
 Before calling anything a conflict:
 
 1. List the sources, each with its owner, and its version or date where it has one.
-2. Rank them where they can disagree: law over contract, a specification over the code implementing it, a recorded decision over the code following it. A disagreement between sources with no rank between them is a question, never a conflict you settle.
+2. Rank them where they can disagree: a source ranks above each source it binds. A disagreement between sources with no rank between them is a question, never a conflict you settle.
 
 ## Passes
 
@@ -24,15 +24,15 @@ Before calling anything a conflict:
 | Gaps and coverage     | Terms used undefined or defined twice differently; cases no rule or branch covers; rules or branches nothing reaches                                          |
 | Cost and dependencies | Per change or option: effort, risk, reversibility, maintenance, the debt it adds or removes; what it depends on and what depends on it                        |
 
-- Compare options, tools included, by the same criteria against the need they serve.
+- Compare options by the same criteria against the need they serve.
 - The Analysis section's Concern and Reach steps apply to any material: the question asked of it, and what each finding affects. Its Ideal, Fit and Outcome steps apply when the subject is a change or options for one.
 
 ## Findings
 
 Give each finding:
 
-- **Site.** File and line, section or clause, or the source and passage.
-- **Severity.** `high`: breaks a law, contract, rule or the outcome the request names; `medium`: costs rework or misleads a reader; `low`: local or cosmetic.
+- **Site.** The narrowest location the source offers.
+- **Severity.** `high`: breaks a binding source or the outcome the request names; `medium`: costs rework or misleads a reader; `low`: local or cosmetic.
 - **Confidence and basis.** `proven`: the material, a run or a check shows it; `likely`: inferred from evidence you name; `possible`: plausible, unverified. Name the passage, run or reasoning it rests on. A stated grade replaces hedging words; it is not hedging.
 
 ## Decisions
