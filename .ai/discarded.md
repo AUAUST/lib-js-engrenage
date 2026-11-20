@@ -147,3 +147,5 @@
 - PostToolBatch `decision: "block"` or `continue: false` as the overrun lockout: end an overrunning subagent — ends the loop before any final report; PreToolUse deny all but the report tool instead
 - elapsed time or tool-call count as lockout signal: cap tunnelling subagents — a 23k→187k analyser took 12 minutes and 55 calls, under any 30-minute cap; context multiple measures the cost freshness already bounds
 - dispatch budget defaults: per-role default level for omitted `Budget:` lines — kept as an AGENTS.md table; an `agent:` frontmatter `budget` field the hook could read needs schema and renderer code beyond an instruction change
+- budget handover in the stopped agent's worktree: fresh agent continuing uncommitted work — `agents dispatch` runs headless, denying every prompt; a handover commit towards the task reuses walk check's checkpoint commits
+- budget handover via snap hold branch as successor `Base:`: carry uncommitted work to a fresh worktree — the snap commit would be cherry-picked onto the working branch

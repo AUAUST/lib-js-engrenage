@@ -96,3 +96,5 @@
 - WebFetch on the Claude Code hooks reference: needed subagent payload and stop-lever fields — 295k-character page answered in three offset calls, the last spilled to a file; grepped the spill
 - Claude transcript format: needed a subagent's transcript path inside PreToolUse — payload carries only the main `transcript_path`; confirmed `<session>/subagents/agent-<id>.jsonl` on disk
 - WebFetch on the Anthropic Messages API reference: needed the response Usage schema — 1.3M-character page, the first 100k characters held only the request side; did not page on, took usage fields from the prompt-caching, fast-mode and compaction pages
+- WebFetch on code.claude.com docs: fetched long pages — truncated at 100k chars, needed offset re-fetches; PreCompact subagent behaviour not documented
+- Claude Code worktree isolation: sed edit chained with a gate run whose text named git — refused as unverifiable; edited through the edit tool, ran the gate alone

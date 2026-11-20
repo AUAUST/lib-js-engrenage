@@ -2,4 +2,4 @@
 "@auaust/engrenage": patch
 ---
 
-- Add `Budget:` levels to dispatch briefs, with per-role defaults, that cap how far a dispatched agent digs before it reports a budget stop
+- Add `Budget:` levels to dispatch briefs, with per-role defaults, that cap how far a dispatched agent digs before it reports a budget stop, its remaining work then handed to a fresh agent

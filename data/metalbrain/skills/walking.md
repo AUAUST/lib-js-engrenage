@@ -39,7 +39,7 @@ walk check ──► route the ready set (§Handling table)
   │
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
   │              ├─ blocked ──► consultant ──► resume the agent
-  │              ├─ budget stop ──► resume it once at the next level (Analysis › Budget levels)
+  │              ├─ budget stop ──► review, handover commit ──► new agent for the rest (§Dispatching)
   │              ├─ scope stop ──► consultant splits the issue ──► drop the leaf's work ──► walk check
   │              └─ completion
   │                   ▼
@@ -94,6 +94,7 @@ Before the first `walk check`, and again after each compaction, read this file: 
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then its `Budget:` line, then the checkpoint commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
+- Handle a budget stop by Analysis › Budget levels: integrate or review its work as a completion's, commit it as a handover commit (§Commit), then dispatch the issue to a new agent once `walk check` reports it ready, briefed as the first with the checkpoint commits, the handover commit among them, plus the stopped agent's progress and the gaps and leaf findings of that review instead of a resume.
 - Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 
 ## Integration
@@ -119,6 +120,8 @@ When no integration merger runs:
 2. Commit the leaf by `worktree-dispatch.md` › Committing work, its commit being the closing commit: made under the project's git rules, closing the issue and every segment or parent it completes but the walked issue. Do not run the checks: the commit gate runs them.
 3. Once the closing commit exists, run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first, and what is ordered after it waits.
 4. Send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
+
+A handover commit, after a budget stop: steps 2 to 4, with `Towards #<n>` for the issue instead of closing anything.
 
 ## Housekeeping
 

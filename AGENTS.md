@@ -95,17 +95,16 @@ In the main session, weighing options or examining material for contradictions, 
 
 ### Budget levels
 
-A dispatch brief's `Budget: <level>` line, after its other `<Name>:` lines, sets how far its receiver digs; a main session has no level.
+A dispatch brief's `Budget: <level>` line, after its other `<Name>:` lines, sets how far its receiver digs; a main session has no level. No level licenses sprawling: work deeper than one agent's level is iterated across fresh agents, each taking over from its predecessor's handoff.
 
 | Level      | Expected depth                                                                                                      | Default for                                       |
 | ---------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `scoped`   | A precise question or a contained change: the material the brief names and only what answering or applying it needs | Gatherers, analysers, mergers in integration mode |
 | `standard` | A task whose sources lead further: also the sources sharing its subject, and the leads they open within it          | Every other dispatched agent                      |
-| `open`     | Work the dispatcher expects to sprawl: also leads into neighbouring subjects, as far as the brief's goal needs      | None                                              |
 
-- **Dispatching.** Brief every agent a `Budget:` line: the level your skill sets for it; otherwise, for an issue with a `complexity`, `scoped` when `trivial`, `standard` when `involved`, `open` when `complex`; otherwise the agent's default, unless you know its work needs another. A resume message's `Budget:` line replaces the level.
-- **Dispatched.** Your brief's level, or your default without one, is a ceiling, never a target: stop once the work is done, however little of the level it used. It bounds every rule asking you to go further. When the next step would read or change past it, stop and open your report with `Budget stop:`, then report your progress in the stop-record shape (Writing › Stop records), without the record's steps.
-- **A report opening with `Budget stop:`.** When what remains is part of what you dispatched the agent for, resume it once at the next level. Otherwise, when it stopped at `open`, or on its second budget stop, take its report as it stands and handle what remains as your skill handles a blocked report or one missing what you asked.
+- **Dispatching.** Brief every agent a `Budget:` line: the level your skill sets for it; otherwise, for an issue with a `complexity`, `scoped` when `trivial`, `standard` when `involved` or `complex`; otherwise the agent's default, unless you know its work needs the other level.
+- **Dispatched.** Your brief's level, or your default without one, is a ceiling, never a target: stop once the work is done, however little of the level it used. It bounds every rule asking you to go further. When the next step would read or change past it, stop, leaving the files you changed in a state whose checks pass, and open your report with `Budget stop:`, then report your progress in the stop-record shape (Writing › Stop records), without the record's steps.
+- **A report opening with `Budget stop:`.** Never resume the stopped agent for what remains. When what remains is part of what you dispatched it for, commit the files it changed as your skill commits an agent's work, otherwise under the git rules, towards the task without completing it, then dispatch a new agent of the same role at the same level for what remains: its brief as the stopped agent's was, from the new dispatch base, plus that report's progress and the gaps your review of that work found. Otherwise, or when a successor's budget stop reports nothing done that its predecessor's report left remaining, take the report as it stands and handle what remains as your skill handles a blocked report or one missing what you asked.
 
 ### Dependencies
 
