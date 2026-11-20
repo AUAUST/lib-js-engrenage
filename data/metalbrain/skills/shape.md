@@ -45,7 +45,7 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 | Connecting facts: causes, designs, reach                                                                   | Analyser briefed read-only, at low or medium effort                 |
 | A specified change                                                                                         | Worker                                                              |
 | Wrong behavior within the current goal                                                                     | Debugger, at once, as soon as it is found                           |
-| A likely or proven bug outside the current goal, found by you or named in an agent's report                | Yourself, as Backlog states                                         |
+| A finding outside the current goal, found by you or named in an agent's report                             | Yourself, under the agent-records rule and Backlog                  |
 | Agent instructions                                                                                         | Writer, under Instruction maintenance                               |
 | A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                                            |
 
@@ -81,7 +81,7 @@ For work in another registered repository, once the user confirmed the location 
 
 Review each returned diff lightly against what you briefed: `git diff --stat` from its dispatch base, then the hunks your brief concerns, skipping generated files and lockfiles.
 
-- Look for gaps against the brief, duplication, missed reuse, debt and a missing changeset the Environment table requires; add the `@debt` markers and the changeset the agent missed.
+- Look for gaps against the brief, duplication, missed reuse, debt and a missing changeset the Environment table requires; add the `@debt` markers and the changeset the agent missed, and handle each finding outside the brief, from the diff or the report, by §Agents.
 - Close a gap yourself when §Agents lets you make the change; resume the agent with every other gap in one message.
 
 ## Commit

@@ -117,3 +117,5 @@
 - Agent dispatch hook: debugger briefed `Issue:` on a Task (#788) — refused, a debugger takes only a Problem; briefed the bug without an `Issue:` line
 - Agent dispatch hook: worker on #789 while its blocker #788 stayed open for a pending hand check — refused; ran the check first with a probe gatherer
 - metalbrain budget hook by hand: passed the subagent transcript as `transcript_path` — the hook derives the subagent path from the main transcript, doubling it; no instruction states the payload shape
+- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
+- worktree-isolated Bash: `echo $?; git status; git diff` in one call — refused as too complex; ran git status alone

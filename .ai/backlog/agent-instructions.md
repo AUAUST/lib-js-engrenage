@@ -106,3 +106,20 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/shared/worktree-dispatch.md:39`
 - why: reported by a writer: the reset discards the agent's files, markers included; only the friction and discarded logs carry over.
 - want: their markers carried over as backlog entries, or a stated reason to drop them.
+
+## 21. Out-of-reach copies of the record-before-telling rule lag behind it
+
+- sites: `data/metalbrain/skills/walking.md:114`, `data/metalbrain/rules/issues.md:30`
+- why: the agent-records rule now covers findings told in chat and those an agent reports; walking §Review still names only missed debt, and issues › Recording restates the chat rule for analysis and planning.
+- want: both pointing at the agent-records rule.
+
+## 22. A shaper's review markers have no settled checkout
+
+- sites: `data/metalbrain/skills/shape.md:54`
+- why: shape bars edits while an agent changes files in the main checkout, and markers added before a worktree agent's cherry-pick can conflict with it.
+- want: §Review stating where and when to add markers.
+
+## 23. No hook reminds a main session of records due at turn end
+
+- why: proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only.
+- want: a decision on that hook.

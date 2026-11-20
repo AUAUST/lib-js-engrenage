@@ -22,7 +22,7 @@ Each commit of an agent's work, made in the main checkout:
 1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3. When the main checkout holds uncommitted records (git rules › Commits), stash them by path before the cherry-picks and pop the stash after the apply: a cherry-pick refuses a dirty file it touches.
 2. Make the commit your skill sets.
 3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
-4. Once the commit exists, remove the agent's worktree, when it has one.
+4. Once the commit exists, remove the agent's worktree, when it has one, and write the backlog entries its report leaves you (Backlog).
 
 ## Holding work
 
@@ -40,7 +40,7 @@ Takes an agent's work off the working branch, keeping the new lines in `.ai/fric
 2. Return the main checkout to the working branch as it stood before the agent:
    - **Agent in the main checkout.** Switch back to the working branch when on another one, reset it to the agent's dispatch base, dropping the agent's commits, and discard the files the agent changed or added.
    - **Agent in a worktree.** Undo the agent's cherry-picks and apply in the main checkout, when any, discarding only the files they changed; then remove the agent's worktree with `--force`, since it may hold uncommitted work.
-3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit.
+3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit, and write the backlog entries the agent's report leaves you (Backlog).
 
 ## Stopping
 
