@@ -11,6 +11,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
+import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 import { map, sort } from "@auaust/toolkit/array";
 import { entries, hasOwn, keys, record } from "@auaust/toolkit/object";
 
@@ -65,16 +66,30 @@ function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
   });
 }
 
+function matchesImport(current: ImportTarget, generated: ImportTarget) {
+  if (isDeepStrictEqual(current, generated)) {
+    return true;
+  }
+
+  return (
+    isString(current) &&
+    isPlainObject(generated) &&
+    isArray(generated.types) &&
+    generated.types.includes(current)
+  );
+}
+
 function mergeGenerated<Value extends JsonValue>(
   file: File,
   current: Readonly<Record<string, Value>>,
   generated: Readonly<Record<string, Value>>,
   recorded: readonly string[] | undefined,
+  matches: (current: Value, generated: Value) => boolean,
 ): Record<string, Value> {
   const previous = (
     recorded ??
     keys(current).filter((key) => {
-      return isDeepStrictEqual(current[key], generated[key]);
+      return hasOwn(generated, key) && matches(current[key], generated[key]);
     })
   );
 
@@ -127,6 +142,7 @@ async function syncImports(
               current ?? {},
               imports,
               recorded,
+              matchesImport,
             ),
             jsonIndentation,
           );
@@ -157,6 +173,7 @@ async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
     current,
     generated,
     await readGeneratedKeys(config, pathsPart),
+    isDeepStrictEqual,
   );
 
   if (keys(paths).length > 0 || keys(current).length > 0) {

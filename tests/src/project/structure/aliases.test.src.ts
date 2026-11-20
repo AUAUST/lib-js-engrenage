@@ -257,6 +257,47 @@ describe("aliases", () => {
     ).rejects.toThrow(/#config\/\*/);
   });
 
+  function createUnrecordedBundledProject(config: string) {
+    return createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "project",
+        type: "module",
+        imports: { "#config/*": config },
+      }),
+      "tsconfig.json": "{}",
+      "engrenage.config.ts": `export default ${bundled({})};\n`,
+      "src/config/a.ts": "",
+    });
+  }
+
+  test("adopts an unrecorded import in the pre-bundled shape the aliases generate", async () => {
+    const project = createUnrecordedBundledProject("./src/config/*.ts");
+
+    await syncOnDisk(project.root);
+
+    expect(
+      JSON.parse(project.read("package.json")).imports["#config/*"],
+    ).toEqual({
+      types: [
+        "./src/config/*.ts",
+        "./src/config/*.tsx",
+        "./src/config/*.mts",
+        "./src/config/*.cts",
+      ],
+      default: "./src/config/*",
+    });
+
+    expect(
+      JSON.parse(project.read(".engrenage/sync.json"))["package.json#imports"],
+    ).toContain("#config/*");
+  });
+
+  test("fails on an unrecorded string import outside the generated types", async () => {
+    const project = createUnrecordedBundledProject("./config/*.ts");
+
+    await expect(syncOnDisk(project.root)).rejects.toThrow(/#config\/\*/);
+  });
+
   test("resolves a bundled app's .tsx module, type-checked and built through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
