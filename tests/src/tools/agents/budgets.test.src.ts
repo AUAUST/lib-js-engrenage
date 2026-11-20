@@ -5,6 +5,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+import { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 
 const words = (count: number) => {
   return Array.from({ length: count }, () => "word").join(" ");
@@ -176,4 +177,12 @@ describe("budgets", () => {
 
     expect(deny?.hookSpecificOutput.permissionDecision).toBe("deny");
   });
+});
+
+test("findOutputOverrun warns only on an output past the limit", () => {
+  expect(findOutputOverrun("x".repeat(10), 10)).toBeUndefined();
+
+  expect(findOutputOverrun("x".repeat(12_000), 10_000)).toContain(
+    "printed 12k characters, past the 10k output limit",
+  );
 });

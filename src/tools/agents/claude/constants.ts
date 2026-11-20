@@ -41,7 +41,7 @@ export const claudeHooks = freeze([
   },
   {
     event: "PostToolUse",
-    matcher: "Edit|MultiEdit|Write",
+    matcher: "Bash|Edit|MultiEdit|Write",
     args: "claude PostToolUse",
     async: true,
   },

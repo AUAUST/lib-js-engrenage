@@ -13,6 +13,7 @@ export {
 } from "#tools/agents/codex/index";
 export { agentShellVariables, mainAgent } from "#tools/agents/constants";
 export { filterAgents } from "#tools/agents/utils/filterAgents";
+export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 export { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";

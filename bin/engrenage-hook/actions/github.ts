@@ -7,7 +7,11 @@ import {
   resolveHookDirectory,
   validateHookPayload,
 } from "#tools/agents/index";
-import { checkGithubWrite } from "#tools/github/index";
+import {
+  checkGithubWrite,
+  checkIssueViews,
+  resolveCurrentRepository,
+} from "#tools/github/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -36,11 +40,19 @@ export default async function (
     contract: contractNames,
   } = await config.resolve("github");
 
-  const reason = await checkGithubWrite(
+  const writeReason = await checkGithubWrite(
     shellCommand,
     cwd,
     repositories,
     contractNames,
+  );
+
+  const reason = (
+    writeReason ??
+    (await checkIssueViews(shellCommand, config.context.root, {
+      repository: await resolveCurrentRepository(config.context.root),
+      registry: await repositories(),
+    }))
   );
 
   if (reason !== undefined) {

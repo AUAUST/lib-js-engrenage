@@ -1,55 +1,27 @@
-import { object, string } from "valibot";
+import { text } from "node:stream/consumers";
 
-import {
-  readHookPayload,
-  resolveHookDirectory,
-  writeHookContext,
-} from "#tools/agents/index";
-import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
-import { formatInfoMessages, listInfoMessages } from "#tools/eslint/index";
-import { getRunContext } from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
+import { looseObject, parse, string } from "valibot";
 
-const payloadSchema = object({
-  cwd: string(),
-  tool_input: object({
-    file_path: string(),
-  }),
+const payloadSchema = looseObject({
+  tool_name: string(),
 });
 
-async function reportInfoMessages() {
-  const {
-    cwd,
-    tool_input: { file_path: file },
-  } = await readHookPayload(payloadSchema, "Claude Code");
-
-  const context = formatInfoMessages(
-    file,
-    await listInfoMessages(
-      await loadValidatedConfig(resolveHookDirectory(cwd), {
-        reporter: getRunContext().reporter,
-      }),
-      file,
-    ),
-  );
-
-  if (context !== undefined) {
-    writeHookContext({
-      event: "PostToolUse",
-      context,
-    });
-  }
-}
-
 export default async function (): Promise<void> {
-  try {
-    await reportInfoMessages();
-  } catch (error) {
-    if (error instanceof MissingEslintError) {
-      return;
-    }
+  const payload = parse(payloadSchema, JSON.parse(await text(process.stdin)));
 
-    // @debt Every other failure is swallowed without a diagnostic, so a broken config or ESLint crash goes unnoticed; report it without disturbing the session.
-    process.exitCode = 0;
+  if (payload.tool_name === "Bash") {
+    const {
+      default: output,
+    } = await import("#bin/engrenage-hook/claude/actions/output");
+
+    await output(payload);
+
+    return;
   }
+
+  const {
+    default: lint,
+  } = await import("#bin/engrenage-hook/claude/actions/lint");
+
+  await lint(payload);
 }

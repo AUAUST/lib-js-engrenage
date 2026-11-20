@@ -7,6 +7,10 @@ import {
   type ShellCommand,
   type ShellWord,
 } from "#foundation/shell/index";
+import { readIssueNumber } from "#tools/github/issues/contract/utils/readIssueNumber";
+import { readRepositoryFlag } from "#tools/github/issues/contract/utils/readRepositoryFlag";
+import { readShellFlag } from "#tools/github/issues/contract/utils/readShellFlag";
+import { readShellLiteral } from "#tools/github/issues/contract/utils/readShellLiteral";
 import type { GithubBodySource } from "#tools/github/issues/contract/types/GithubBodySource";
 import type { GithubWrite } from "#tools/github/issues/contract/types/GithubWrite";
 
@@ -43,10 +47,6 @@ const valueFlags = new Set([
   "-T",
 ]);
 
-const numberPattern = /^(?:\S*\/issues\/|#)?(\d+)$/;
-
-const repositoryPattern = /([\w.-]+\/[\w.-]+)$/;
-
 const unreadable = { kind: "unreadable" } as const;
 
 type ShellDirectory = string | undefined | typeof unreadable;
@@ -68,12 +68,12 @@ function readDirectory(
   command: ShellCommand,
   directory: ShellDirectory,
 ): ShellDirectory {
-  if (readLiteral(command.words[0]) !== "cd") {
+  if (readShellLiteral(command.words[0]) !== "cd") {
     return directory;
   }
 
   const path = command.words.length === 2
-    ? readLiteral(command.words[1])
+    ? readShellLiteral(command.words[1])
     : undefined;
 
   if (path === undefined || path === "-" || path.startsWith("~")) {
@@ -89,49 +89,22 @@ function readDirectory(
     : unreadable;
 }
 
-function readLiteral(word: ShellWord | undefined): string | undefined {
-  return word?.kind === "literal" ? word.text : undefined;
-}
-
-function readFlag(
-  words: readonly ShellWord[],
-  names: readonly string[],
-): ShellWord | undefined {
-  for (const [index, word] of words.entries()) {
-    if (word.kind !== "literal") {
-      continue;
-    }
-
-    if (names.includes(word.text)) {
-      return words[index + 1];
-    }
-
-    const name = names.find((candidate) => {
-      return (
-        candidate.startsWith("--") && word.text.startsWith(`${candidate}=`)
-      );
-    });
-
-    if (name !== undefined) {
-      return { kind: "literal", text: word.text.slice(name.length + 1) };
-    }
-  }
-}
-
 function isBareCat(command: ShellCommand) {
-  return command.words.length === 1 && readLiteral(command.words[0]) === "cat";
+  return (
+    command.words.length === 1 && readShellLiteral(command.words[0]) === "cat"
+  );
 }
 
 function readHeredoc(command: ShellCommand): GithubBodySource | undefined {
   for (const { operator, target, heredoc } of command.redirects) {
     if (heredoc !== undefined) {
-      const text = readLiteral(heredoc);
+      const text = readShellLiteral(heredoc);
 
       return text === undefined ? unreadable : { kind: "text", text };
     }
 
     if (operator === "<<<") {
-      const text = readLiteral(target);
+      const text = readShellLiteral(target);
 
       return text === undefined ? unreadable : { kind: "text", text };
     }
@@ -151,7 +124,7 @@ function readStandardInput(
   const file = command.redirects.find(({ operator }) => operator === "<");
 
   if (file !== undefined) {
-    const path = readLiteral(file.target);
+    const path = readShellLiteral(file.target);
 
     return path === undefined ? unreadable : resolvePath(path, directory);
   }
@@ -182,13 +155,13 @@ function readBody(
   words: readonly ShellWord[],
   directory: ShellDirectory,
 ): GithubBodySource | undefined {
-  const body = readFlag(words, ["--body", "-b"]);
+  const body = readShellFlag(words, ["--body", "-b"]);
 
   if (body !== undefined) {
     return readBodyText(body);
   }
 
-  const file = readFlag(words, ["--body-file", "-F"]);
+  const file = readShellFlag(words, ["--body-file", "-F"]);
 
   if (file === undefined) {
     const input = readStandardInput(command, directory);
@@ -196,7 +169,7 @@ function readBody(
     return input.kind === "text" ? input : undefined;
   }
 
-  const path = readLiteral(file);
+  const path = readShellLiteral(file);
 
   if (path === "-") {
     return readStandardInput(command, directory);
@@ -205,30 +178,11 @@ function readBody(
   return path === undefined ? unreadable : resolvePath(path, directory);
 }
 
-function readNumber(words: readonly ShellWord[]): number | undefined {
-  for (const [index, word] of words.entries()) {
-    const text = readLiteral(word);
-    const previous = readLiteral(words[index - 1]);
-
-    if (
-      text === undefined ||
-      text.startsWith("-") ||
-      (previous !== undefined && valueFlags.has(previous))
-    ) {
-      continue;
-    }
-
-    const number = numberPattern.exec(text)?.[1];
-
-    return number === undefined ? undefined : Number(number);
-  }
-}
-
 function readWrite(
   command: ShellCommand,
   directory: ShellDirectory,
 ): GithubWrite | undefined {
-  const texts = command.words.map(readLiteral);
+  const texts = command.words.map(readShellLiteral);
 
   const start = texts.findIndex((text, index) => {
     return text === "gh" && texts[index + 1] === "issue";
@@ -243,15 +197,14 @@ function readWrite(
   }
 
   const words = command.words.slice(start + 3);
-  const repository = readLiteral(readFlag(words, ["--repo", "-R"]));
 
   return {
     action,
-    number: action === "create" ? undefined : readNumber(words),
-    repository: repository === undefined
+    number: action === "create"
       ? undefined
-      : repositoryPattern.exec(repository)?.[1],
-    title: readLiteral(readFlag(words, ["--title", "-t"])),
+      : readIssueNumber(words, valueFlags),
+    repository: readRepositoryFlag(words),
+    title: readShellLiteral(readShellFlag(words, ["--title", "-t"])),
     body: readBody(command, words, directory),
   };
 }

@@ -135,6 +135,8 @@ export const defaultBudgets = freeze({
   backlogEntry: 60,
 } as const);
 
+export const defaultOutputLimit = 10_000;
+
 export const efforts = freeze([
   "low",
   "medium",

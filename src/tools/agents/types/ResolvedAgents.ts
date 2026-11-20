@@ -17,6 +17,7 @@ export interface ResolvedAgents {
   readonly claudeSettings: boolean | undefined;
   readonly attribution: boolean | undefined;
   readonly subagentCacheTtl: SubagentCacheTtl;
+  readonly outputLimit: number;
   readonly budgets: Budgets;
   readonly gate: Gate;
 }

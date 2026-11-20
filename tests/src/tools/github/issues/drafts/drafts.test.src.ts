@@ -4,6 +4,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { fetchGithubSnapshot } from "#tools/github/issues/api/operations/fetchGithubSnapshot";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
+import { checkIssueViews } from "#tools/github/issues/drafts/operations/checkIssueViews";
 import { createDraft } from "#tools/github/issues/drafts/operations/createDraft";
 import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { splitBodySections } from "#tools/github/issues/drafts/utils/splitBodySections";
@@ -711,5 +712,46 @@ describe("without a current repository", () => {
     await expect(checkIssues(config, ["new-y"], "worker")).rejects.toThrow(
       "new-y needs the current repository",
     );
+  });
+});
+
+describe("checkIssueViews", () => {
+  const context = {
+    repository: "o/r",
+    registry: new Map([["toolkit", "o/toolkit"]]),
+  };
+
+  test("denies a view the local copy holds, in the current or a registered repository", async () => {
+    const project = createTemporaryProject({
+      ".ai/issues/5.md": "",
+      ".ai/issues/toolkit.7.md": "",
+    });
+
+    await expect(
+      checkIssueViews(
+        "gh issue view 5 --json title,body",
+        project.root,
+        context,
+      ),
+    ).resolves.toContain(".ai/issues/5.md");
+
+    await expect(
+      checkIssueViews("gh issue view 7 -R o/toolkit", project.root, context),
+    ).resolves.toContain(".ai/issues/toolkit.7.md");
+  });
+
+  test("allows comments, fields the copy lacks and issues without a copy", async () => {
+    const project = createTemporaryProject({ ".ai/issues/5.md": "" });
+
+    for (const command of [
+      "gh issue view 5 --comments",
+      "gh issue view 5 --json body,comments",
+      "gh issue view 5 --json assignees",
+      "gh issue view 6 --json title",
+    ]) {
+      await expect(
+        checkIssueViews(command, project.root, context),
+      ).resolves.toBeUndefined();
+    }
   });
 });

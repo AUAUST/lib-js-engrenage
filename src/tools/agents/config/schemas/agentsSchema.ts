@@ -16,6 +16,7 @@ import {
   defaultBudgetMode,
   defaultBudgets,
   defaultInstructionFiles,
+  defaultOutputLimit,
   defaultSubagentCacheTtl,
   subagentCacheTtls,
 } from "#tools/agents/constants";
@@ -67,6 +68,13 @@ export const agentsSchema = declareObject(
         "`1h` keeps a resumed subagent's cache across a review or a consultant answer.",
       ],
       optional: { value: defaultSubagentCacheTtl },
+    }),
+    outputLimit: declare(budgetSchema, {
+      description: [
+        "Characters of a shell command's output past which the Claude PostToolUse hook asks the agent to bound its output.",
+        "An output stays in context and is read again by every later call of the session.",
+      ],
+      optional: { value: defaultOutputLimit },
     }),
     gate: declareObject(
       {

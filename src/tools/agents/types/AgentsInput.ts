@@ -45,6 +45,12 @@ export interface AgentsInput {
    */
   subagentCacheTtl?: (("5m" | "1h") | undefined)
   /**
+   * Characters of a shell command's output past which the Claude PostToolUse hook asks the agent to bound its output.
+   * An output stays in context and is read again by every later call of the session.
+   * @default 10000
+   */
+  outputLimit?: (number | undefined)
+  /**
    * The gate that fixes and checks the files an agent changed (`engrenage gate`).
    */
   gate?: ({

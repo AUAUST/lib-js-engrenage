@@ -6,6 +6,7 @@ export {
   isMissingResource,
   readGithubSnapshot,
   readOriginRepository,
+  resolveCurrentRepository,
   resolveRepository,
   type GithubSnapshot,
 } from "#tools/github/issues/api/index";
@@ -29,6 +30,7 @@ export { issueDraftsDirectory } from "#tools/github/issues/drafts/constants";
 export {
   checkDraftFile,
   checkIssues,
+  checkIssueViews,
   claimIssues,
   createDraft,
   publishIssues,
