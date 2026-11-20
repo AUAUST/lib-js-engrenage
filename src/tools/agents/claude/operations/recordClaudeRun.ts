@@ -1,10 +1,47 @@
-import { isMissingError } from "#foundation/filesystem/index";
+import {
+  isMissingError,
+  readTextFile,
+  resolveWithin,
+} from "#foundation/filesystem/index";
+import { parseJson } from "#foundation/json/index";
 import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
+import {
+  budgetExtension,
+  parseBudgetState,
+} from "#tools/agents/metalbrain/index";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
+import type { AgentRunBudget } from "#tools/agents/types/AgentRunBudget";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+
+async function readRunBudget(
+  directory: Directory,
+  { session, agent }: Pick<AgentRun, "session" | "agent">,
+): Promise<{ budget?: AgentRunBudget }> {
+  const path = resolveWithin(directory, session, `${agent}${budgetExtension}`);
+
+  const content = await readTextFile(path);
+
+  if (content === undefined) {
+    return {};
+  }
+
+  const {
+    level,
+    budget,
+    warnings,
+  } = parseBudgetState(parseJson(content, path));
+
+  return {
+    budget: {
+      level,
+      budget,
+      warnings,
+    },
+  };
+}
 
 export async function recordClaudeRun(
   directory: Directory,
@@ -27,7 +64,11 @@ export async function recordClaudeRun(
     ? undefined
     : writeAgentRun(
         directory,
-        { ...run, ...summarizeAgentCalls(read) },
+        {
+          ...run,
+          ...summarizeAgentCalls(read),
+          ...(await readRunBudget(directory, run)),
+        },
         options,
       );
 }

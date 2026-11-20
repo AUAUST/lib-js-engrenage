@@ -1,9 +1,12 @@
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 
 import { expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { readClaudeTranscript } from "#tools/agents/claude/index";
+import {
+  readClaudeTranscript,
+  recordClaudeRun,
+} from "#tools/agents/claude/index";
 import { findModelFact, readModelFacts } from "#tools/agents/metalbrain/index";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
@@ -420,6 +423,42 @@ test("reads only run records, never an agent's other stats files", async () => {
   await expect(
     writeAgentRun(directory, { ...run, agent: "agent.budget" }),
   ).rejects.toThrow('Invalid agent id "agent.budget"');
+});
+
+test("records the budget warnings a run received", async () => {
+  const { project, directory, run } = await createRecordedProject();
+
+  const budget = {
+    level: "standard",
+    budget: 1000,
+    warnings: [
+      { time: "2026-11-12T22:05:00.000Z", gain: 1200 },
+      { time: "2026-11-12T22:08:00.000Z", gain: 1600 },
+    ],
+  } as const;
+
+  await mkdir(project.resolve(".ai/stats/session"), { recursive: true });
+
+  await writeFile(
+    project.resolve(".ai/stats/session/agent.budget.json"),
+    JSON.stringify({ start: 500, ...budget }),
+  );
+
+  await recordClaudeRun(directory, run, project.resolve("agent.jsonl"));
+
+  const runs = await readAgentRuns(directory);
+
+  expect(runs).toEqual([
+    {
+      ...run,
+      stops: 1,
+      budget,
+    },
+  ]);
+
+  expect(formatAgentRuns(runs, await readModelFacts())).toMatch(
+    /\| agent \|.*\| standard \| 1k \| 2 \| [\d.?]+ \|/u,
+  );
 });
 
 test("aggregates runs of several sessions by role, model and day", async () => {

@@ -1,3 +1,4 @@
+import type { AgentRunBudget } from "#tools/agents/types/AgentRunBudget";
 import type { AgentUsage } from "#tools/agents/types/AgentUsage";
 
 export interface AgentRun extends AgentUsage {
@@ -6,4 +7,5 @@ export interface AgentRun extends AgentUsage {
   readonly agent: string;
   readonly role: string;
   readonly stops: number;
+  readonly budget?: AgentRunBudget;
 }

@@ -124,6 +124,7 @@ export type * from "#tools/agents/types/AgentPrice";
 export type * from "#tools/agents/types/AgentReport";
 export type * from "#tools/agents/types/AgentResultTotals";
 export type * from "#tools/agents/types/AgentRun";
+export type * from "#tools/agents/types/AgentRunBudget";
 export type * from "#tools/agents/types/AgentRunState";
 export type * from "#tools/agents/types/AgentSections";
 export type * from "#tools/agents/types/AgentsInput";
