@@ -25,3 +25,13 @@
 - sites: `src/foundation/data/operations/listDataFiles.ts:44`, `src/foundation/data/operations/listDataFiles.ts:68`
 - why: a missing export subpath returns `[]`, read as no templates; seen after moving `data.exports` unbuilt.
 - want: fail when the synced package's own data export resolves to nothing; packages without one still pass (contract decision).
+
+## 6. Sync fails on a stale barrel it would regenerate
+
+- why: config loading imports the domain barrels before sync rewrites them, so a module added, moved or deleted makes sync refuse until the barrel is edited by hand (friction ×4); related c12.2.
+- want: sync regenerating barrels before loading the config, or loading it without them.
+
+## 7. Sync omits a barrel export only `bin` imports
+
+- why: in #769, `reportStructure`, imported by `bin` through `#project/structure/index`, never got its export line; typecheck failed until it was added by hand.
+- want: barrel blocks counting imports from every environment.
