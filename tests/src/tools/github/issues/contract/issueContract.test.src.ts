@@ -910,10 +910,19 @@ describe("parseGithubCommand", () => {
     });
 
     expect(
-      readBody(
+      parseGithubCommand(
         "for n in 4 5; do sed 1d .ai/issues/$n.draft.md | gh issue edit $n --body-file -; done",
       ),
-    ).toEqual({ kind: "unreadable" });
+    ).toMatchObject([
+      {
+        number: 4,
+        body: { kind: "unreadable" },
+      },
+      {
+        number: 5,
+        body: { kind: "unreadable" },
+      },
+    ]);
   });
 
   test("resolves relative body files from literal `cd`s", () => {

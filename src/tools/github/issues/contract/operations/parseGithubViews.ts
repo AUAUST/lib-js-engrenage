@@ -42,7 +42,6 @@ function readView(command: ShellCommand): GithubView | undefined {
   };
 }
 
-// @debt a `for` loop over literal issue numbers reaches `gh issue view` as `$n`, an expansion the shell parser does not resolve, so such views stay unparsed
 export function parseGithubViews(command: string): readonly GithubView[] {
   return parseShell(command).flatMap((shellCommand) => {
     const view = readView(shellCommand);

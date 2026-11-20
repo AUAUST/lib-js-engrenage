@@ -738,6 +738,14 @@ describe("checkIssueViews", () => {
     await expect(
       checkIssueViews("gh issue view 7 -R o/toolkit", project.root, context),
     ).resolves.toContain(".ai/issues/toolkit.7.md");
+
+    await expect(
+      checkIssueViews(
+        "for n in 4 5; do gh issue view $n --json body; done",
+        project.root,
+        context,
+      ),
+    ).resolves.toContain(".ai/issues/5.md");
   });
 
   test("allows comments, fields the copy lacks and issues without a copy", async () => {

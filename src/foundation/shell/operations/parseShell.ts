@@ -3,7 +3,8 @@ import { createRequire } from "node:module";
 import type {
   CallExpr,
   DeclClause,
-  Node,
+  File,
+  ForClause,
   Redirect,
   Stmt,
   Word,
@@ -18,9 +19,13 @@ import type {
   RedirOperator,
 } from "sh-syntax/sync";
 
-import { isArray, isObject, isString } from "@auaust/toolkit";
+import { isArray } from "@auaust/toolkit";
 
 import { ShellSyntaxError } from "#foundation/shell/errors/ShellSyntaxError";
+import { isNode } from "#foundation/shell/utils/isNode";
+import { isRebound } from "#foundation/shell/utils/isRebound";
+import { readLiteral } from "#foundation/shell/utils/readLiteral";
+import { unescapeShell } from "#foundation/shell/utils/unescapeShell";
 import type { ShellAssignment } from "#foundation/shell/types/ShellAssignment";
 import type { ShellCommand } from "#foundation/shell/types/ShellCommand";
 import type { ShellRedirect } from "#foundation/shell/types/ShellRedirect";
@@ -44,49 +49,6 @@ function loadParser(): Parser {
   return parser;
 }
 
-function isNode(value: unknown): value is Node {
-  return isObject(value) && isString(Reflect.get(value, "type"));
-}
-
-const escapes = {
-  unquoted: /\\(.|\n)/g,
-  quoted: /\\([$`"\\\n])/g,
-  heredoc: /\\([$`\\\n])/g,
-};
-
-function unescape(text: string, escape: RegExp) {
-  return text.replaceAll(escape, (_, char: string) => {
-    return char === "\n" ? "" : char;
-  });
-}
-
-function readLiteral(
-  parts: readonly WordPart[],
-  quoted: boolean,
-): string | undefined {
-  let text = "";
-
-  for (const part of parts) {
-    if (part.type === "Lit") {
-      text += unescape(part.value, quoted ? escapes.quoted : escapes.unquoted);
-    } else if (part.type === "SglQuoted" && !part.dollar && !quoted) {
-      text += part.value;
-    } else if (part.type === "DblQuoted" && !part.dollar && !quoted) {
-      const inner = readLiteral(part.parts, true);
-
-      if (inner === undefined) {
-        return;
-      }
-
-      text += inner;
-    } else {
-      return;
-    }
-  }
-
-  return text;
-}
-
 function isQuotedDelimiter(delimiter: Word | null) {
   return (
     delimiter?.parts.some((part) => {
@@ -106,7 +68,7 @@ function readHeredocBody(
       return;
     }
 
-    text += quoted ? part.value : unescape(part.value, escapes.heredoc);
+    text += quoted ? part.value : unescapeShell(part.value, "heredoc");
   }
 
   return text;
@@ -134,6 +96,7 @@ function readSubstitution(word: Word) {
 
 function createReader(
   source: string,
+  file: File,
   { BinCmdOperator, RedirOperator, createSourceIndex }: Parser,
 ) {
   const pipeOperators = new Set<number>([
@@ -142,6 +105,7 @@ function createReader(
   ]);
 
   const toIndex = createSourceIndex(source);
+  const bindings = new Map<string, string>();
 
   function slice(start: number, end: number) {
     return source.slice(toIndex(start), toIndex(end));
@@ -184,7 +148,7 @@ function createReader(
   }
 
   function readWord(word: Word, sink: ShellCommand[]): ShellWord {
-    const text = readLiteral(word.parts, false);
+    const text = readLiteral(word.parts, false, bindings);
 
     return text === undefined
       ? readExpansion(word, sink)
@@ -310,6 +274,51 @@ function createReader(
     return simple;
   }
 
+  // @debt only `for` loops over literal words bind their variable: `while read`, `xargs`, arrays, `seq` and C-style loops leave it an expansion, and `isRebound` misses a binding hidden in an `eval` string past its start, a sourced file or a `declare -n` reference
+  function readLoopValues({ select, loop }: ForClause) {
+    if (
+      select ||
+      loop?.type !== "WordIter" ||
+      loop.name == null ||
+      loop.names.length > 0 ||
+      loop.items.length === 0 ||
+      isRebound(file.stmts, loop.name.value, loop.name)
+    ) {
+      return;
+    }
+
+    const values = [];
+
+    for (const item of loop.items) {
+      const value = readLiteral(item.parts, false, bindings);
+
+      if (value === undefined) {
+        return;
+      }
+
+      values.push(value);
+    }
+
+    return { name: loop.name.value, values };
+  }
+
+  function readLoop(command: ForClause, sink: ShellCommand[]) {
+    const loop = readLoopValues(command);
+
+    if (loop === undefined) {
+      return false;
+    }
+
+    for (const value of loop.values) {
+      bindings.set(loop.name, value);
+      readStatements(command.do, sink, []);
+    }
+
+    bindings.delete(loop.name);
+
+    return true;
+  }
+
   function readStatement(
     statement: Stmt,
     input: ShellCommand | undefined,
@@ -342,7 +351,10 @@ function createReader(
       return right;
     }
 
-    walk(command, sink);
+    if (command.type !== "ForClause" || !readLoop(command, sink)) {
+      walk(command, sink);
+    }
+
     walk(statement.redirs, sink);
   }
 
@@ -360,8 +372,9 @@ function readColumn(
 }
 
 /**
- * Lists every simple command the Bash `source` runs, in source order, each
- * command nested in a substitution following the command holding it.
+ * Lists every simple command the Bash `source` runs, in source order, each command
+ * nested in a substitution following the command holding it. A `for` loop over
+ * literal words lists its body once per word, the loop variable read as that word.
  */
 export function parseShell(source: string): readonly ShellCommand[] {
   const loaded = loadParser();
@@ -385,7 +398,7 @@ export function parseShell(source: string): readonly ShellCommand[] {
 
   const commands: ShellCommand[] = [];
 
-  createReader(source, loaded).readStatements(file.stmts, commands, []);
+  createReader(source, file, loaded).readStatements(file.stmts, commands, []);
 
   return commands;
 }

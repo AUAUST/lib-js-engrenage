@@ -22,6 +22,12 @@ Shared helpers and their placement.
 
 ## 4. Shell parser types are trusted or flattened
 
-- sites: `src/foundation/shell/operations/parseShell.ts:41`, `src/foundation/shell/types/ShellRedirect.ts:4`
+- sites: `src/foundation/shell/operations/parseShell.ts:45`, `src/foundation/shell/types/ShellRedirect.ts:4`
 - why: `createRequire` returns `any`, so `sh-syntax/sync` is trusted to match its declarations; a redirect `operator` is source text, so comparing it to `<` misses an explicit `0<`.
 - want: the module validated or typed by import; a typed operator and descriptor.
+
+## 5. The shell parser reads brace expansions and tildes as literal words
+
+- sites: `src/foundation/shell/operations/parseShell.ts:108`
+- why: `readLiteral` keeps an unquoted `{770,731}`, `{1..3}` or `~/x` as one literal, though Bash expands it, so `gh issue view {770,731}` or `for n in {770,731}` yields a wrong literal instead of its words or an expansion.
+- want: such words expanded to their words, or kept an expansion.

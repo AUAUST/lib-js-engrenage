@@ -141,3 +141,5 @@
 - Structure node kind as a field: one path-keyed node record with `kind`, so layering and origins treat kind like any field — reshapes every structure config and metafile schema; #770 reads the node path's origin instead.
 - Kind conflicts blocking whatever the origin: preset or default kind against a metafile — leaves no way to override an inherited kind; yields silently instead (#732 › Decisions).
 - Warning for inherited kind overrides: non-blocking diagnostic when a metafile overrides a preset kind — inconsistent with silent field overrides, unsilenceable noise for a legitimate override.
+- shell loop values on the word: an expansion `ShellWord` carrying the literal values a loop variable takes — every consumer would fan out views and writes itself; `parseShell` unrolls the loop body instead
+- `while read` loop resolution: binding the variable from a literal here-string, heredoc or `printf` pipe — needs `read` field splitting, `-r` escapes and `printf` formats; left an expansion

@@ -63,6 +63,43 @@ describe("parseShell", () => {
     ]);
   });
 
+  test("lists a loop body once per literal word, reading its variable", () => {
+    const commands = parseShell(
+      `for n in 1 "2 3"; do for r in a; do gh "$n" \${r}x$n; done; done`,
+    );
+
+    expect(commands.map(({ words }) => words)).toEqual([
+      [
+        { kind: "literal", text: "gh" },
+        { kind: "literal", text: "1" },
+        { kind: "literal", text: "ax1" },
+      ],
+      [
+        { kind: "literal", text: "gh" },
+        { kind: "literal", text: "2 3" },
+        { kind: "expansion", source: "${r}x$n" },
+      ],
+    ]);
+  });
+
+  test("keeps a loop variable an expansion when the source may rebind it", () => {
+    for (const source of [
+      "for n in 1; do read n; gh $n; done",
+      "for n in 1; do gh $n; done; for n in 2; do :; done",
+      "for n in $(seq 2); do gh $n; done",
+      "for n in 1; do gh ${n:-2}; done",
+    ]) {
+      expect(parseShell(source)).toContainEqual(
+        expect.objectContaining({
+          words: [
+            { kind: "literal", text: "gh" },
+            expect.objectContaining({ kind: "expansion" }),
+          ],
+        }),
+      );
+    }
+  });
+
   test("keeps the body of a heredoc with a quoted delimiter raw", () => {
     expect(readHeredoc("cat <<'EOF'\na\\$b \\\\ \\x \\\nc\nEOF")).toEqual({
       kind: "literal",
