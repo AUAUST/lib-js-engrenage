@@ -100,3 +100,4 @@
 - `engrenage planning issue publish`: detached #706 from Segment #52 keeping its header line — refused: "header line but no ancestors"; removed the line, moved its origin into Context
 - `engrenage gate --worktree`: barrelDirective test timed out at 5000ms — passed alone; reran the gate
 - `execFileSync` tsc in temporary-project tests: failure printed only "Command failed" — logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
+- git index lock: committed in the main checkout while a worktree debugger ran — `index.lock` existed; it was gone on retry
