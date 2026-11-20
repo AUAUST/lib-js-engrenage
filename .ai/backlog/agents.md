@@ -118,3 +118,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `src/tools/agents/operations/fillAgentLimits.ts:6`
 - why: a Codex init calls `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
 - want: computed once per run and shared; a run lifecycle contract to decide first.
+
+## 22. An indented `@shared-file` marker is silently left unrendered
+
+- why: block markers match at column 0 only, so an indented one in an agent fragment renders nothing and sync passes.
+- want: sync rejecting marker-like indented lines in agent fragments.

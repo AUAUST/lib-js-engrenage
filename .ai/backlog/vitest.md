@@ -17,3 +17,8 @@ Generated Vitest configuration.
 
 - why: friction ×3: exploration `console.log` in a scratch test prints nothing under the default reporter; agents write to files or rerun with `--silent=false --reporter=verbose`.
 - want: a flag of `engrenage vitest` showing console output, or that invocation named in the Environment table.
+
+## 4. `vitest --typecheck` summary prints "Type Errors no errors" beside unhandled TypeCheckErrors
+
+- why: friction ×1, maybe ×3 with the "type check of tests" lines; the run fails while the summary says it passed.
+- want: the summary counting errors in source files; investigate the engrenage Vitest config or reporter.

@@ -176,3 +176,9 @@ Project structure description, its report and the tooling generated from it.
 - sites: `src/project/roles/presets/schemas.ts:3`, `src/project/roles/presets/testutils.ts:12`, `src/project/structure/types/StructureSource.ts:1`
 - why: `schemas` is pure by default though declarer-built schemas import confined utils; `testutils` waits for an observing level; no code produces the `preset` source.
 - want: role levels matching what modules import; the `preset` source produced or removed.
+
+## 30. Layer and surface checks skip package self-references
+
+- sites: `src/project/structure/utils/checkLayers.ts:14`, `src/project/structure/utils/getImportCategory.ts:11`
+- why: only `relative` and `alias` imports are checked; `@auaust/engrenage/...` counts as `public-entries`, granted to `src`, so a lower layer importing a workflows entry passes lint.
+- want: self-references resolved to their source domain and checked like aliases.

@@ -19,3 +19,9 @@
 
 - why: friction ×4: sync loads through `bin/engrenage/executable.ts`, so a new barrel member imported before syncing or a deleted module a barrel still exports fails the run; a newly declared domain gets no `index.ts`. Agents edit barrels by hand. Related: `c12.2`.
 - want: barrel regeneration that loads no barrel it regenerates, and creates the index of a new domain.
+
+## 5. Sync deletes every generated skill and agent when the synced package's data export is stale
+
+- sites: `src/foundation/data/operations/listDataFiles.ts:44`, `src/foundation/data/operations/listDataFiles.ts:68`
+- why: a missing export subpath returns `[]`, read as no templates; seen after moving `data.exports` unbuilt.
+- want: fail when the synced package's own data export resolves to nothing; packages without one still pass (contract decision).

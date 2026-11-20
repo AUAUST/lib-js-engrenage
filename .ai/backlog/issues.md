@@ -72,3 +72,13 @@ GitHub issue drafts, checks and planning commands.
 - sites: `src/tools/github/issues/drafts/operations/createDraft.ts:269`, `src/foundation/markdown/utils/stripComments.ts:3`
 - why: `create problem` writes HTML hint comments above **Steps** and **Leads**; `check` strips them, `publish` keeps any the author left.
 - want: hint comments stripped from the published body, or `check` failing on one left.
+
+## 13. `planning issue publish` exits 1 after printing `published` for every draft
+
+- why: friction ×1; `publishIssues` returns `passed: true` on that path, so the code comes from later; not reproduced without GitHub writes.
+- want: the exit code matching the outcome; needs live-GitHub debugging.
+
+## 14. `planning issue check` treats every **Planning** section as open
+
+- why: friction ×2: any **Planning** section counts as open, and a task for a shaper is refused without **Steps** and **Tests**.
+- want: a decision on which issues may leave **Planning** open and need no **Steps**/**Tests** (planning-contract policy).
