@@ -100,3 +100,9 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/sections/analysis.md:21`
 - why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
 - want: a section-level filler rendering the installed path of a shared file for the reading runtime.
+
+## 20. Records set-aside names a patch path Claude Code refuses to delete
+
+- sites: `data/metalbrain/shared/worktree-dispatch.md:50`
+- why: removing a patch path held in a shell variable from `git rev-parse --git-path records.patch` trips Claude Code's rm safety check.
+- want: a literal path, or a step that overwrites instead of deleting the patch.
