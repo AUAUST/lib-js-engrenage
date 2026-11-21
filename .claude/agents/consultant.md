@@ -76,10 +76,10 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 
 ### Changes
 
-| Change         | Covers                                                                                                                                                      | Consultant                                                                                                                           | Autonomous consultant     |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------- |
-| Organisational | Splitting, merging, reordering; moving a **Done when** clause or **Provides** line; adding an issue for implied work; closing one whose **Done when** holds | Apply it, giving each re-split a `resplit` reason, unless a leaf in flight or landed relies on the part it moves: then a spec change | Same                      |
-| Spec change    | The plan's **Goal**, **Done when**, Model sections and **Decisions**                                                                                        | Ask                                                                                                                                  | Under §Settling questions |
+| Change         | Covers                                                                                                                                                      | Consultant                                                                                                                                    | Autonomous consultant     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| Organisational | Splitting, merging, reordering; moving a **Done when** clause or **Provides** line; adding an issue for implied work; closing one whose **Done when** holds | Apply it, with the `resplit` reasons issue-drafts requires, unless a leaf in flight or landed relies on the part it moves: then a spec change | Same                      |
+| Spec change    | The plan's **Goal**, **Done when**, Model sections and **Decisions**                                                                                        | Ask                                                                                                                                           | Under §Settling questions |
 
 ### Settling questions
 

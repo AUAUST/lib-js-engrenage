@@ -35,3 +35,9 @@ Test infrastructure and coverage gaps.
 
 - why: friction ×3: between two loads of one root, a rewritten `engrenage.config.ts` stays cached by Node, a deleted file stays in the cached filesystem, aliases stay memoized; agents call `loadConfig.refresh` or edit through `config.context.filesystem`. Related: `configuration.6`, #57.
 - want: a test utility that changes a temporary project and returns a freshly loaded config.
+
+## 7. No test covers a resumed re-split logging once
+
+- sites: `tests/src/tools/github/issues/drafts/publish.test.src.ts:809`
+- why: the interrupted-publish test checked the Re-split log written once on resume through a child addition, which S.1 no longer counts as a re-split.
+- want: one case resuming a failed publish of a genuine re-split, expecting a single log line.

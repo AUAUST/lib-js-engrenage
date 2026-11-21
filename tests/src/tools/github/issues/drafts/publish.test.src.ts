@@ -333,6 +333,14 @@ function route(method: string, path: string, body: Record<string, unknown>) {
       return respond(renderIssue(issue), 201);
     }
 
+    case "DELETE /sub_issue": {
+      const child = toNumber(body.sub_issue_id);
+
+      issue.subIssues = issue.subIssues.filter((entry) => entry !== child);
+
+      return respond(renderIssue(issue));
+    }
+
     case "PATCH /sub_issues/priority": {
       const child = toNumber(body.sub_issue_id);
 
@@ -646,10 +654,10 @@ ${planBody}
     expect(listIssueFiles(root, ["10.md", "10.draft.md"])).toEqual([]);
   });
 
-  test("creates a new Task listed in a claimed Plan at its position and deletes all four files", async () => {
+  test("creates a new Task listed in a claimed Plan at its position without a resplit reason and deletes all four files", async () => {
     const root = createProject();
 
-    await claimPlanWithExtra(root, "the extra splits off the task");
+    await claimPlanWithExtra(root);
 
     requests = [];
 
@@ -671,9 +679,7 @@ ${planBody}
 
     expect(findIssue(10).body).toContain("2. #14: the extra\n3. #12: the task");
 
-    expect(findIssue(10).body).toMatch(
-      /\n## Decisions\n\nd\n\n## Re-split log\n\n- \d{4}-\d{2}-\d{2} · #10: the extra splits off the task\n\n## Done when\n/,
-    );
+    expect(findIssue(10).body).not.toContain("## Re-split log");
 
     expect(findIssue(14)).toMatchObject({
       title: "Extra",
@@ -772,10 +778,53 @@ ${planBody}
     ).toEqual([]);
   });
 
-  test("fails a claimed issue whose subIssues change without a resplit reason before any write", async () => {
+  async function claimTaskWithoutChild(resplit?: string) {
+    issues.set(12, { ...findIssue(12), subIssues: [20] });
+
+    issues.set(
+      20,
+      createIssue(20, { body: taskBody.replace("#10 · ", "#10 › #12 · ") }),
+    );
+
+    const { root, config } = await claimEdited(
+      ["12", "20"],
+      "12",
+      'subIssues:\n  - "#20"',
+      "subIssues: []",
+      resplit,
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/20.draft.md",
+      read(root, "20.draft.md").replace("Goal: the extra\n\n", ""),
+    );
+
+    await config.context.filesystem.flush();
+
+    requests = [];
+
+    return publishIssues(await loadConfig(root), ["12", "20"]);
+  }
+
+  test("fails a claimed issue removing a published child without a resplit reason before any write", async () => {
+    const { lines, passed } = await claimTaskWithoutChild();
+
+    expect({ lines, passed }).toEqual({
+      lines: [
+        "12: removes a published child from its `subIssues` without a reason: set `resplit:` to why, which publish logs in the Plan's **Re-split log**",
+      ],
+      passed: false,
+    });
+
+    expect(requests.filter((request) => !request.startsWith("GET"))).toEqual(
+      [],
+    );
+  });
+
+  test("fails a resplit reason on a claimed issue only gaining a new child before any write", async () => {
     const root = createProject();
 
-    await claimPlanWithExtra(root);
+    await claimPlanWithExtra(root, "the extra splits off the task");
 
     requests = [];
 
@@ -786,7 +835,7 @@ ${planBody}
 
     expect({ lines, passed }).toEqual({
       lines: [
-        "10: changes the published issue's `subIssues` without a reason: set `resplit:` to why, which publish logs in the Plan's **Re-split log**",
+        "10: sets `resplit` but neither removes a published child from its `subIssues` nor moves the published issue to another parent: remove it",
       ],
       passed: false,
     });
@@ -797,30 +846,17 @@ ${planBody}
   });
 
   test("logs a re-split under a Plan outside the set in its Re-split log", async () => {
-    const { root, config } = await claimEdited(
-      ["12"],
-      "12",
-      "subIssues: []",
-      'subIssues: ["#{new-step}"]',
-      "the step splits off the task",
-    );
-
-    await config.context.filesystem.write(
-      ".ai/issues/new-step.draft.md",
-      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
-    );
-
-    await config.context.filesystem.flush();
-
     const {
       lines,
       passed,
-    } = await publishIssues(await loadConfig(root), ["12", "new-step"]);
+    } = await claimTaskWithoutChild("the step folds into the task");
 
     expect({ lines, passed }).toMatchObject({ passed: true });
 
+    expect(findIssue(12).subIssues).toEqual([]);
+
     expect(findIssue(10).body).toMatch(
-      /\n## Decisions\n\nd\n\n## Re-split log\n\n- \d{4}-\d{2}-\d{2} · #12: the step splits off the task\n\n## Done when\n/,
+      /\n## Decisions\n\nd\n\n## Re-split log\n\n- \d{4}-\d{2}-\d{2} · #12: the step folds into the task\n\n## Done when\n/,
     );
   });
 
@@ -970,7 +1006,7 @@ ${segmentDoneWhen}
   async function failCreatingExtra(request: string) {
     const root = createProject();
 
-    await claimPlanWithExtra(root, "the extra splits off the task");
+    await claimPlanWithExtra(root);
 
     failing = request;
 
@@ -1024,8 +1060,6 @@ ${segmentDoneWhen}
 
     expect(findIssue(10).subIssues).toEqual([11, 14, 12]);
 
-    expect(findIssue(10).body.match(/the extra splits off/g)).toHaveLength(1);
-
     expect(findIssue(14).fields.has("Blockers")).toBe(false);
 
     expect(
@@ -1062,7 +1096,6 @@ ${segmentDoneWhen}
       "10",
       '  - ref: "#12"',
       '  - ref: "#{new-group}"\n    gist: the group\n    sections: []\n  - ref: "#12"',
-      "the group splits off the task",
     );
 
     await config.context.filesystem.write(
@@ -1162,12 +1195,9 @@ ${segmentDoneWhen}
 
     await config.context.filesystem.write(
       ".ai/issues/10.draft.md",
-      withResplit(
-        read(root, "10.draft.md").replace(
-          '  - ref: "#12"',
-          '  - ref: "#20"\n    gist: the moved\n    sections: []\n  - ref: "#12"',
-        ),
-        "the moved stands alone",
+      read(root, "10.draft.md").replace(
+        '  - ref: "#12"',
+        '  - ref: "#20"\n    gist: the moved\n    sections: []\n  - ref: "#12"',
       ),
     );
 
@@ -1534,7 +1564,6 @@ After ${reference}.
       "11",
       '  - "#13"',
       '  - "#13"\n  - "#{toolkit.new-port}"',
-      "the port joins the segment",
     );
 
     await config.context.filesystem.write(

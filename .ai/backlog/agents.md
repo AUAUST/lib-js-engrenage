@@ -190,3 +190,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: the budget hook measures context gained since an agent's first call, across every resume, so a resumed consultant or merger nears budget warnings through accumulated contacts alone; a level means per-dispatch depth, which a resume never resets.
 - want (user decided 2026-11-21): the budget hook measures depth per contact, each resume opening a new window, plus a cumulative context cap (Agent limits › Fresh up to) that retires the agent to a fresh one with a handoff, so resumes stay cheaper than a fresh agent.
+
+## 35. The Codex setup is unused and half done
+
+- why: created early, no longer used; it silently misbehaves (e.g. Codex never loads the issue-drafts rule its consultant points to). S.25 defers its removal until #809's spec lands.
+- want: remove the Codex agents, skills, sync targets and the instructions naming Codex, with the backlog entries only Codex needs.

@@ -124,7 +124,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 | `blockedBy`    | Prerequisites, as references                                                                                                                      |
 | `state`        | `open`, `completed`, `not planned` or `duplicate`                                                                                                 |
 | `claim`        | `existing` when another maintainer held `drafting` at claim                                                                                       |
-| `resplit`      | On a claimed issue in a plan's tree whose `subIssues` (added, removed or reordered) or parent the draft changes: why, in one line. Omit otherwise |
+| `resplit`      | On a claimed issue in a plan's tree whose draft drops a published child from `subIssues` or reparents the issue: why, in one line. Omit otherwise |
 
 | Reference            | Means                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------ |
@@ -140,7 +140,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 - Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
 - Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep working.
 - Fill or remove every section `create` writes, to match the §Bodies shape you mean the item to take.
-- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree, and appends each `resplit` reason to the plan's **Re-split log**, refusing a re-split without one. Write none of them by hand.
+- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree, and appends each `resplit` reason to the plan's **Re-split log**, refusing a re-split without one; adding or reordering children takes no reason. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each question you asked.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
 - Publish when your skill says, by default before ending each turn, holding back the drafts any question you ask in that turn, to the user or your caller, concerns; an issue's own **Questions** never delay it. Run `pnpm engrenage planning issue publish <refs>` on every draft due in one call. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your next report.

@@ -41,7 +41,6 @@ function createChangeFinder({ drafts, context }: Publication) {
       : remote;
   }
 
-  // @debt a draft left as a claim by an interrupted first publish counts its first sub-issue links as a re-split, since nothing marks an issue whose first publish has not finished.
   function listChanges({ stem, remote, manifest }: PublishedDraft) {
     if (remote === undefined) {
       return [];
@@ -53,6 +52,8 @@ function createChangeFinder({ drafts, context }: Publication) {
       ? attached
       : listDraftReferences(manifest.subIssues).map(normalize);
 
+    const dropped = attached.some((child) => !listed.includes(child));
+
     const parent = remote.parent === undefined
       ? undefined
       : toReference(remote.parent);
@@ -63,8 +64,8 @@ function createChangeFinder({ drafts, context }: Publication) {
     );
 
     return [
-      ...(listed.join() === attached.join() ? [] : ["`subIssues`"]),
-      ...(moved ? ["parent"] : []),
+      ...(dropped ? ["removes a published child from its `subIssues`"] : []),
+      ...(moved ? ["moves the published issue to another parent"] : []),
     ];
   }
 
@@ -124,11 +125,11 @@ export async function resolveResplits(publication: Publication): Promise<{
       });
     } else if (plan !== undefined) {
       lines.push(
-        `${draft.stem}: changes the published issue's ${changes.join(" and ")} without a reason: set \`resplit:\` to why, which publish logs in the Plan's **${resplitSection}**`,
+        `${draft.stem}: ${changes.join(" and ")} without a reason: set \`resplit:\` to why, which publish logs in the Plan's **${resplitSection}**`,
       );
     } else if (reason !== undefined && changes.length === 0) {
       lines.push(
-        `${draft.stem}: sets \`resplit\` but changes neither the \`subIssues\` nor the parent of a published issue: remove it`,
+        `${draft.stem}: sets \`resplit\` but neither removes a published child from its \`subIssues\` nor moves the published issue to another parent: remove it`,
       );
     } else if (reason !== undefined) {
       lines.push(
