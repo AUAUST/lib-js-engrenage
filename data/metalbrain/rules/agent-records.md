@@ -17,7 +17,7 @@ formerly:
 - **Debt**, a comment at the code: code that could be better and that you are not fixing. Form: `@debt <statement>` at the start of its own comment, one per comment, stating what could be better as you see it; a fix only when you already know one.
 
 - Write each record yourself as soon as you find what it records, without asking or awaiting review, whatever your role, mode or brief; only in the current repository. Report instead what you notice elsewhere.
-- Telling the user or your caller of a finding, in chat or a report, records nothing: record it first, under this rule or Backlog, and name where. Only a finding Backlog leaves to your caller goes in your report alone; one whose entry Backlog defers, name as pending.
+- Telling the user or your caller of a finding, in chat or a report, records nothing: record it first, under this rule or Backlog, and name where. Only a finding Backlog leaves to your caller goes in your report alone; one whose entry waits on a dispatched agent's work, name as pending.
 - Before your final report as a subagent, and in the main session before ending a turn, ahead of any closing step your harness asks for, write each record and backlog entry due and still missing since your dispatch, resume or turn began.
 - Create a log when absent, under its heading. Write each line a few words per part, so repeated mentions of a subject match.
 - Before weighing a solution or writing a friction line, search its log for the subject. A subject with three or more lines is recurring: report it as a candidate with its line count and the needs it records.

@@ -98,8 +98,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 19. AGENTS.md cannot name a shared file's path for every runtime
 
-- sites: `data/metalbrain/sections/analysis.md:21`
-- why: the main-session pointer to the analysis method names `.claude/skills/analysis/analysis.md` inside an `@file` block; a Codex-only project installs it under `.agents/skills/` and loses the pointer, and `@shared-file` renders only in a skill.
+- sites: `data/metalbrain/sections/analysis.md:21`, `data/metalbrain/sections/analysis.md:38`, `data/metalbrain/sections/analysis.md:44`
+- why: `@shared-file` renders only in a skill, so section pointers name one skill's copy in `@file` blocks: the analysis method's Claude-only, `dispatching.md`'s lost without the shape skill.
 - want: a section-level filler rendering the installed path of a shared file for the reading runtime.
 
 ## 20. Dropping an agent's work in the main checkout loses its pending debt markers

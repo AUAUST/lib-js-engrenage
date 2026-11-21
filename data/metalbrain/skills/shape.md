@@ -56,7 +56,10 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 
 ## Briefing
 
-Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for analysers). Writing › Transfer texts owns the rest.
+Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for analysers). Writing › Transfer texts owns the rest, and this file the brief lines, budget stops and the findings a report names:
+
+<!-- @shared-file dispatching.md -->
+<!-- @end -->
 
 ## Dispatching
 

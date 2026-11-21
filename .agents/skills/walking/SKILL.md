@@ -84,12 +84,16 @@ Before the first `walk check`, and again after each compaction, read this file: 
 
 `.agents/skills/walking/worktree-dispatch.md`
 
+Read this file with it, for the brief lines, budget stops and the findings a report names:
+
+`.agents/skills/walking/dispatching.md`
+
 - Keep up to K leaves of the ready set in flight.
 - Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then its `Budget:` line, then the checkpoint commits the check lists towards the issue. Never paste issue or plan content: the agent reads it itself.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the sub-issues it split the issue into to new agents.
-- Handle a budget stop by Analysis › Budget levels: integrate or review its work as a completion's, commit it as a handover commit (§Commit), then dispatch the successor once `walk check` reports the issue ready, briefed with the handover commit among its checkpoint commits and that review's leaf findings among its gaps.
+- Handle a budget stop by `dispatching.md` › Budget levels: integrate or review its work as a completion's, commit it as a handover commit (§Commit), then dispatch the successor once `walk check` reports the issue ready, briefed with the handover commit among its checkpoint commits and that review's leaf findings among its gaps.
 - Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 
 ## Integration

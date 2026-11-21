@@ -138,3 +138,4 @@
 - ls in `~/.claude/projects`: piped `ls -d */` to find a session's project directory — a `-`-prefixed directory name read as an option again; used `find -maxdepth 2 -name`
 - Bash cat on long scratchpad reports: read a 45 kB synthesis with cat — output spilled to a file twice; re-read it with Read
 - Run records for budget-hook coverage: needed when `checkBudget` started to judge "0 budget stops" — no record or doc dates the hook; took it from `git log` on `checkBudget.ts` (6331641f3, 2026-11-20 23:01)
+- engrenage gate backlog-sites: a `file:36-46` line range in a sites bullet — refused, only `file:line` spans; listed each line

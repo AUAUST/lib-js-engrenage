@@ -29,6 +29,10 @@ Every path, name and reference the issues state matches reality or is an explici
 
 ## Inner dispatch
 
+Read this file before the first inner dispatch, for the brief lines, budget stops and the findings a report names:
+
+`.claude/skills/planning/dispatching.md`
+
 Outer mode, once the groundwork holds:
 
 - the plan has no **Planning** or **Questions**, and the user confirmed its goal, **Decisions** and tree;

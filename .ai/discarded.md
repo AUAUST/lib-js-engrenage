@@ -160,3 +160,4 @@
 - pure decompose-on-failure without upfront plan: lowest planning cost — leaves no plan to validate first; kept only as split-on-stop
 - raising consultant `freshness`: keep one consultant per walk — each resume re-writes the whole context on the 5-minute cache; absolute ceiling and small agent file instead
 - convert-on-touch migration of Steps issues: spread conversion cost — dual-format checks, routing and worker rules for 57 issues cost more than one triaged sweep
+- section pointer to a shared file: a dedicated dispatching skill as install host — adding a skill needs user approval; shape's copy hosts it
