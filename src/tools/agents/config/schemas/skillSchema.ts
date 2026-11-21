@@ -1,6 +1,7 @@
 import {
   array,
   boolean,
+  integer,
   looseObject,
   minValue,
   number,
@@ -38,7 +39,7 @@ export const skillSchema = looseObject({
       disallowedTools: optional(array(string())),
       gate: optional(boolean()),
       budget: optional(picklist(budgetLevels)),
-      freshness: optional(pipe(number(), minValue(1))),
+      ceiling: optional(pipe(number(), integer(), minValue(1))),
     }),
   ),
 });

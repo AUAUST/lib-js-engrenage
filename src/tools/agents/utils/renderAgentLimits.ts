@@ -1,3 +1,4 @@
+import { formatCount } from "#tools/agents/utils/formatCount";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 
 export function renderAgentLimits(
@@ -16,7 +17,7 @@ export function renderAgentLimits(
     "| --- | --- | --- | --- |",
   ];
 
-  for (const { name, effort, efforts, freshness } of agents) {
+  for (const { name, effort, efforts, ceiling } of agents) {
     const byComplexity = Object.entries(efforts ?? {})
       .map(([complexity, value]) => {
         return `\`${complexity}\`: ${value}`;
@@ -25,9 +26,7 @@ export function renderAgentLimits(
 
     lines.push(
       `| \`${name}\` | ${effort ?? "inherited"} | ${byComplexity || "none"} | ${
-        freshness === undefined
-          ? "no limit"
-          : `${freshness}× its starting context`
+        ceiling === undefined ? "no limit" : `${formatCount(ceiling)} context`
       } |`,
     );
   }

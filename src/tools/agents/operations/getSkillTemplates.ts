@@ -171,9 +171,11 @@ export async function getSkillTemplates({
 
       const { reference, body } = rendering;
 
+      // @debt the agent block's keys Claude Code lacks are listed here by hand, so a new one leaks into a newly created agent file's frontmatter until added; picking `claudeAgentFrontmatterKeys` would close it
       const {
         gate,
         efforts: _efforts,
+        ceiling: _ceiling,
         budget = "standard",
         ...definition
       } = agent;

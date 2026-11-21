@@ -79,7 +79,7 @@ test("reports missing profiles, disabled hooks and duplicate hook representation
 
   const filesystem = config.context.filesystem;
 
-  await filesystem.remove(".codex/agents/worker_medium.toml");
+  await filesystem.remove(".codex/agents/worker.toml");
 
   await filesystem.write(
     ".codex/config.toml",
@@ -92,7 +92,7 @@ test("reports missing profiles, disabled hooks and duplicate hook representation
     expect.arrayContaining([
       expect.objectContaining({
         status: "conflicting",
-        message: expect.stringContaining("worker_medium.toml"),
+        message: expect.stringContaining("worker.toml"),
       }),
       expect.objectContaining({
         status: "disabled",

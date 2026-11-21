@@ -11,7 +11,7 @@ agent:
   model: opus
   effort: medium
   budget: standard
-  freshness: 2
+  ceiling: 100000
   tools:
     - Bash
     - Read

@@ -54,45 +54,49 @@ async function setUp() {
   };
 }
 
-test("denies resuming a planner past twice its start, by id or by role", async () => {
+test("denies resuming a consultant past its context ceiling, by id or by role", async () => {
   const { record, check } = await setUp();
 
-  await record("a1", "planner", 33_000, 70_000);
+  await record("c1", "consultant", 20_000, 140_000);
 
-  for (const recipient of ["a1", "planner", "planner [3fa9c1]"]) {
+  for (const recipient of ["c1", "consultant", "consultant [3fa9c1]"]) {
     await expect(check(recipient)).resolves.toMatch(
-      /grew from 33k to 70k context, past 2× its start/u,
+      /reached 140k context, past its 100k ceiling/u,
     );
   }
 });
 
-test("passes a worker past its start, a planner under the limit, a running planner and an unknown agent", async () => {
+test("passes an agent without a ceiling, a consultant under it, a running consultant and an unknown agent", async () => {
   const { directory, record, check } = await setUp();
 
-  await record("w1", "worker", 10_000, 90_000);
+  await record("w1", "worker", 10_000, 190_000);
 
-  await record("p1", "planner", 33_000, 66_000);
+  await record("p1", "planner", 30_000, 190_000);
 
-  await record("p2", "planner", 33_000, 70_000);
+  await record("c1", "consultant", 60_000, 100_000);
+
+  await record("c2", "consultant", 20_000, 140_000);
 
   await startAgentRun(directory, {
     session: "session",
-    agent: "p2",
-    role: "planner",
-    transcript: "session/subagents/agent-p2.jsonl",
+    agent: "c2",
+    role: "consultant",
+    transcript: "session/subagents/agent-c2.jsonl",
   });
 
   await expect(check("w1")).resolves.toBeUndefined();
 
   await expect(check("p1")).resolves.toBeUndefined();
 
-  await expect(check("p2")).resolves.toBeUndefined();
+  await expect(check("c1")).resolves.toBeUndefined();
 
-  await expect(check("planner")).resolves.toBeUndefined();
+  await expect(check("c2")).resolves.toBeUndefined();
+
+  await expect(check("consultant")).resolves.toBeUndefined();
 
   await expect(check("missing")).resolves.toBeUndefined();
 
-  await record("p2", "planner", 33_000, 70_000);
+  await record("c2", "consultant", 20_000, 140_000);
 
-  await expect(check("p2")).resolves.toMatch(/Start a new planner/u);
+  await expect(check("c2")).resolves.toMatch(/Start a new consultant/u);
 });

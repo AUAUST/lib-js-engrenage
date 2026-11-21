@@ -204,7 +204,3 @@ export const agentOutcomes = freeze([
   "linked",
   "unreported",
 ] as const);
-
-export const plannerRole = "planner";
-
-export const plannerModes = freeze(["inner", "consultant", "reshape"] as const);

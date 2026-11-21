@@ -19,13 +19,17 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 - why: routing names **Steps**, sends `Scope stop:` to the consultant as a size split (now `Budget stop:`), reviews against **Steps**; reshape still starts a full planner; drafting still loads `steps-migration.md`.
 - want: batch 3 (walking, merging, housekeeping, curation) rewrites them with no Steps routing (S.18).
 
-## 4. The consultant still runs as the `planner` agent
+## 4. The walker still briefs a `planner` as consultant
 
-- why: its own agent file (M.6.1) and absolute context ceiling (M.6.4, M.13.7) need `src/tools/agents/constants.ts` `plannerModes`, run records, Codex dispatch text and `checkAgentResume.ts`; the walker briefs `planner`.
-- want: the consultant agent with its ceiling, the walker briefing it.
+- why: the `consultant` agent exists with a 100k ceiling (M.6.4), but the walker (`walking.md` §Consultant) and the sweep (`planning.md` Steps sweep) still start a `planner` briefed `consultant`, which has no consultant text or ceiling now; the consultant skill still calls itself the planner and cites `planning §…`.
+- want: the consultant writer pass (M.6.1, I.5.1).
 
-## 5. Tooling still accepts the dropped `reshape` planner mode
+## 5. Housekeeping parents holding Tests are refused
 
-- sites: `src/tools/agents/constants.ts:210`, `src/tools/agents/codex/operations/createCodexDispatch.ts:69`
-- why: batch 3 dropped reshape from the instructions (M.5.4); `plannerModes` and the Codex dispatch text still name it, so a reshape brief passes the hooks with no instruction behind it.
-- want: `reshape` removed from both, with the consultant agent work of entry 4.
+- why: S.6 (46072c6d) forbids **Tests** on a Task or Problem whose own work is only **Housekeeping**; ancestors are checked, so their leaves fail readiness too. Unknown whether open issues hold both sections.
+- want: query open issues holding both; move each **Tests** into the sub-issue owning it, with the P.3.2 sweep.
+
+## 6. Consumers lack the consultant agent and reject `freshness`
+
+- why: sync installs no new skill, so a consumer's walker briefs a `consultant` that does not exist; agent blocks still setting `freshness` fail schema validation.
+- want: toolkit and interscript run `pnpm engrenage agents skills add consultant` and drop `freshness` when the user migrates them (S.23).

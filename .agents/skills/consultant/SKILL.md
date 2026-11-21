@@ -1,4 +1,11 @@
-<!-- @reference @auaust/engrenage/metalbrain/skills/planning/consultant.md -->
+---
+name: consultant
+description: Settle, against the plan and its issues, what a walk raises that
+  the code and the plan can settle, and update the issues it changes. Use only
+  when the walker dispatches a consultant.
+---
+
+<!-- @reference @auaust/engrenage/metalbrain/skills/consultant.md -->
 
 # Consultant mode
 

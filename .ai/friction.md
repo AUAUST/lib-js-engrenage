@@ -146,3 +146,4 @@
 - Agent dispatch hook: worker resuming a brief-only pass on #809 (a Resource with open **Questions**) — refused the `Issue:` line; dispatched as a brief without it, no instruction says a brief may cite a non-leaf issue
 - Agent dispatch hook: worker briefed `Issue: AUAUST/lib-js-engrenage#809` for one decision of a Resource report — refused, not a ready Task or Problem; dispatched on a plain brief without Issue line
 - Claude Code worktree isolation: a heredoc python edit chained with `cd ../..` and a sync and git status — refused as unverifiable; ran the edit and the sync as separate commands
+- `engrenage sync agents`: regenerating a deleted `.claude/agents/<name>.md` — sync reports it conflicting and never recreates it; reran `engrenage agents skills add <skill>`

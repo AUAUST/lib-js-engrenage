@@ -1,4 +1,25 @@
-<!-- @reference @auaust/engrenage/metalbrain/skills/planning/consultant.md -->
+---
+title: Consultant
+description: Settle, against the plan and its issues, what a walk raises that the code and the plan can settle, and update the issues it changes. Use only when the walker dispatches a consultant.
+category: workflow
+extension: tools/github/issues/planning
+order: 26
+invocation: explicit
+agent:
+  name: consultant
+  description: Consultant subagent, never for direct requests. The walker starts it on first need and resumes it to settle the stops, deviations and plan findings the code and the plan settle, and to update issues after them.
+  model: opus
+  effort: medium
+  budget: standard
+  ceiling: 100000
+  tools:
+    - Bash
+    - Read
+    - Edit
+    - Write
+    - Skill
+    - ToolSearch
+---
 
 # Consultant mode
 
@@ -57,5 +78,3 @@ In autonomous mode, handle a question under planning §Latitude with these chang
 
 - **Within your latitude**: also record it where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode; a changed **Decision** names the one it replaces.
 - **Beyond it**: leave it under the issue's **Questions** instead of asking: the walker sets the issue aside.
-
-<!-- @end -->

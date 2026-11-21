@@ -185,3 +185,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `.claude/settings.json:33`
 - why: the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.
 - want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
+
+## 34. The budget counts context gained across resumes
+
+- why: the budget hook measures context gained since an agent's first call, across every resume, so a resumed consultant or merger nears budget warnings through accumulated contacts alone; a level means per-dispatch depth, which a resume never resets.
+- want: decide whether a resume starts a new budget window, and measure it per contact if so.

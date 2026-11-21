@@ -18,7 +18,7 @@ export default defineLazyCommand({
       )
       .option(
         "--outcome",
-        "aggregate the runs of every session, or those since --since, by hand-back outcome and by role and planner mode with outcome",
+        "aggregate the runs of every session, or those since --since, by hand-back outcome and by role with outcome",
         false,
       );
   },

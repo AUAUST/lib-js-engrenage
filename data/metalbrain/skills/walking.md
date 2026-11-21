@@ -184,7 +184,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 ## Agent limits
 
-<!-- @agent-limits worker debugger merger planner -->
+<!-- @agent-limits worker debugger merger planner consultant -->
 <!-- @end -->
 
 ## Stops and restarts

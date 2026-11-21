@@ -107,7 +107,7 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
 
   const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
 
-  expect(summarizeAgentTask({ agent: "agent", role: "worker" }, read)).toEqual({
+  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
     issue: "AUAUST/lib-js-toolkit#204",
     outcome: "completion",
   });
@@ -526,7 +526,7 @@ test("aggregates runs of several sessions by role, model and day", async () => {
   expect(output).toMatch(/\| 2026-11-19 \| 1 \| 2 \|/u);
 });
 
-test("attributes a run to its brief lines, planner mode and hand-back outcome", async () => {
+test("attributes a run to its brief lines and hand-back outcome", async () => {
   const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: agents.26\nBacklog: agents.24\nBudget: standard\n\nconsultant for plan #800; Backlog: agents.1 is quoted.";
 
   const handback = [
@@ -562,20 +562,16 @@ test("attributes a run to its brief lines, planner mode and hand-back outcome", 
 
   const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
 
-  expect(summarizeAgentTask({ agent: "agent", role: "planner" }, read)).toEqual(
-    {
-      issue: "AUAUST/lib-js-engrenage#809",
-      backlog: ["agents.26", "agents.24"],
-      mode: "consultant",
-      outcome: "budget",
-    },
-  );
+  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
+    issue: "AUAUST/lib-js-engrenage#809",
+    backlog: ["agents.26", "agents.24"],
+    outcome: "budget",
+  });
 
   expect(
     summarizeAgentTask(
       {
         agent: "agent",
-        role: "worker",
       },
       {
         brief: "Draft: /x/.ai/issues/a.md\n\ninner parts",
@@ -584,9 +580,9 @@ test("attributes a run to its brief lines, planner mode and hand-back outcome", 
     ),
   ).toEqual({ draft: "/x/.ai/issues/a.md", outcome: "scope" });
 
-  expect(
-    summarizeAgentTask({ agent: "main", role: "main" }, { report: "Done." }),
-  ).toEqual({});
+  expect(summarizeAgentTask({ agent: "main" }, { report: "Done." })).toEqual(
+    {},
+  );
 });
 
 test("records no report for a transcript ending on a tool call", async () => {
@@ -620,12 +616,12 @@ test("records no report for a transcript ending on a tool call", async () => {
 
   expect(read.report).toBeUndefined();
 
-  expect(summarizeAgentTask({ agent: "agent", role: "worker" }, read)).toEqual({
+  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
     outcome: "unreported",
   });
 });
 
-test("aggregates runs by outcome and by role with planner mode", async () => {
+test("aggregates runs by outcome and by role", async () => {
   function run(agent: string, role: string, task: object) {
     return {
       runtime: "claude",
@@ -646,7 +642,7 @@ test("aggregates runs by outcome and by role with planner mode", async () => {
     [
       run("a", "worker", { outcome: "completion" }),
       run("b", "worker", { outcome: "budget" }),
-      run("c", "planner", { mode: "inner", outcome: "completion" }),
+      run("c", "consultant", { outcome: "completion" }),
       run("main", "main", {}),
     ],
     await readModelFacts(),
@@ -656,7 +652,7 @@ test("aggregates runs by outcome and by role with planner mode", async () => {
 
   expect(output).toMatch(/\| - \| 1 \|/u);
 
-  expect(output).toMatch(/\| planner inner: completion \| 1 \|/u);
+  expect(output).toMatch(/\| consultant: completion \| 1 \|/u);
 
   expect(output).toMatch(/\| worker: budget \| 1 \|/u);
 });

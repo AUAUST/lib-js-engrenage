@@ -6,7 +6,7 @@ import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import type { LoadedConfig } from "#project/config/index";
 
-async function resolveFreshness(
+async function resolveCeiling(
   config: LoadedConfig,
   role: string,
 ): Promise<number | undefined> {
@@ -14,8 +14,7 @@ async function resolveFreshness(
     extensions: await listActiveExtensions(config),
   });
 
-  return definitions.find(({ agent }) => agent?.name === role)?.agent
-    ?.freshness;
+  return definitions.find(({ agent }) => agent?.name === role)?.agent?.ceiling;
 }
 
 export async function checkAgentResume(
@@ -58,14 +57,11 @@ export async function checkAgentResume(
     return;
   }
 
-  const freshness = await resolveFreshness(config, run.role);
+  const ceiling = await resolveCeiling(config, run.role);
 
-  if (
-    freshness === undefined ||
-    run.peakContext <= freshness * run.startContext
-  ) {
+  if (ceiling === undefined || run.peakContext <= ceiling) {
     return;
   }
 
-  return `This ${run.role} grew from ${formatCount(run.startContext)} to ${formatCount(run.peakContext)} context, past ${freshness}× its start: resuming it re-reads more history than a fresh start costs. Start a new ${run.role} instead, briefed as walking §Resumed agents states.`;
+  return `This ${run.role} reached ${formatCount(run.peakContext)} context, past its ${formatCount(ceiling)} ceiling: resuming it re-reads more history than a fresh start costs. Start a new ${run.role} instead, briefed as walking §Resumed agents states.`;
 }

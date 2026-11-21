@@ -148,7 +148,6 @@ export type * from "#tools/agents/types/GeneratedFrontmatter";
 export type * from "#tools/agents/types/HookDefinition";
 export type * from "#tools/agents/types/HookEvent";
 export type * from "#tools/agents/types/HookProgram";
-export type * from "#tools/agents/types/PlannerMode";
 export type * from "#tools/agents/types/ResolvedAgents";
 export type * from "#tools/agents/types/SkillDefinition";
 export type * from "#tools/agents/types/SkillRendering";

@@ -1,3 +1,13 @@
+---
+name: consultant
+description: Settle, against the plan and its issues, what a walk raises that
+  the code and the plan can settle, and update the issues it changes. Use only
+  when the walker dispatches a consultant.
+disable-model-invocation: true
+---
+
+<!-- @reference @auaust/engrenage/metalbrain/skills/consultant.md -->
+
 # Consultant mode
 
 `planning §…` names the planning skill's sections, a bare `§…` this file's.
@@ -55,3 +65,5 @@ In autonomous mode, handle a question under planning §Latitude with these chang
 
 - **Within your latitude**: also record it where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode; a changed **Decision** names the one it replaces.
 - **Beyond it**: leave it under the issue's **Questions** instead of asking: the walker sets the issue aside.
+
+<!-- @end -->

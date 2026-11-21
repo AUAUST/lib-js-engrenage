@@ -20,7 +20,6 @@ import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import {
   agentOutcomes,
-  plannerModes,
   standardTier,
   unknownModel,
 } from "#tools/agents/constants";
@@ -52,7 +51,6 @@ const runEntries = {
   issue: exactOptional(string()),
   draft: exactOptional(string()),
   backlog: exactOptional(array(string())),
-  mode: exactOptional(picklist(plannerModes)),
   outcome: exactOptional(picklist(agentOutcomes)),
   started: exactOptional(string()),
   ended: exactOptional(string()),

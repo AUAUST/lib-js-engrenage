@@ -12,11 +12,9 @@ test("renders the limits of shipped agents although a skill holds its own marker
 
   const limits = await fillAgentLimits(await loadConfig(project.root));
 
-  expect(limits).toContain("| `worker` | low |");
+  expect(limits).toContain("| `worker` | medium |");
 
-  expect(limits).toContain(
-    "| `merger` | medium | none | 2× its starting context |",
-  );
+  expect(limits).toContain("| `consultant` | medium | none | 100k context |");
 });
 
 test("renders only the named installed agents, in the order given", async () => {

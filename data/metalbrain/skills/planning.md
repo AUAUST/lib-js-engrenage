@@ -8,11 +8,10 @@ formerly:
   - issue-planning
 agent:
   name: planner
-  description: Planner subagent, never for direct requests. The walker starts it as its consultant on first need and resumes it to settle what the code and the plan settle and to update issues after a deviation, or starts a fresh one to reorder the tree around an issue nobody can settle yet; an outer planning session starts one per item to deepen it.
+  description: Planner subagent, never for direct requests. An outer planning session starts one per item to deepen it.
   model: opus
   effort: medium
   budget: standard
-  freshness: 2
   tools:
     - Bash
     - Read
@@ -34,21 +33,15 @@ Edit nothing but issues, instruction or context files, the backlog and the agent
 
 ## Modes
 
-| Mode       | Started by                                                                                         | Scope                               | Runs                                                                                                 | Asks through                      | Publishes                                                                                                             |
-| ---------- | -------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Single     | The user, by default                                                                               | The tree                            | The outer pass of `main-session.md` and §Inner pass on each item, together, revisiting either freely | The user                          | By the issue-drafts rule's default                                                                                    |
-| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one         | The tree                            | `main-session.md`: its outer pass, then its inner dispatch                                           | The user                          | As single                                                                                                             |
-| Inner      | An outer session, briefed `inner`                                                                  | The briefed item and its sub-issues | §Inner pass                                                                                          | The outer session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
-| Consultant | The walker, briefed `consultant`; `autonomous` in the brief widens your latitude (`consultant.md`) | The issues the walker sends         | `consultant.md`                                                                                      | The walker                        | Each issue once ready or left set aside: the walker needs it on GitHub before it resumes                              |
+| Mode   | Started by                                                                                 | Scope                               | Runs                                                                                                 | Asks through                      | Publishes                                                                                                             |
+| ------ | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Single | The user, by default                                                                       | The tree                            | The outer pass of `main-session.md` and §Inner pass on each item, together, revisiting either freely | The user                          | By the issue-drafts rule's default                                                                                    |
+| Outer  | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | `main-session.md`: its outer pass, then its inner dispatch                                           | The user                          | As single                                                                                                             |
+| Inner  | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                                          | The outer session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
 
 Started by the user, in single or outer mode: read this file first, which holds request handling, the outer pass and the inner dispatch:
 
 <!-- @skill-file main-session.md -->
-<!-- @end -->
-
-Briefed `consultant`: read this file first, which holds that mode:
-
-<!-- @skill-file consultant.md -->
 <!-- @end -->
 
 Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.

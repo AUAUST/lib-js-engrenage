@@ -64,6 +64,7 @@ Use the installed workflows below when their descriptions match the request.
 | `debugging` | Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger. Delegate to `debugger` when its description allows; otherwise run the skill yourself. |
 | `implement` | Implement one specified change (a GitHub issue, an issue draft, a brief or a request), designing the code that delivers the end state its specification states. Use only when the user invokes it or asks for a worker, or a skill you follow asks for one. Delegate to `worker` when its description allows; otherwise run the skill yourself. |
 | `walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
+| `consultant` | Settle, against the plan and its issues, what a walk raises that the code and the plan can settle, and update the issues it changes. Use only when the walker dispatches a consultant. Delegate to `consultant` when its description allows; otherwise run the skill yourself. |
 | `merging` | Review what a walk landed across its leaves, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger. Delegate to `merger` when its description allows; otherwise run the skill yourself. |
 | `curation` | Run its skill in the main session. Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries, filing the ready ones as issues where GitHub planning is on. Use when the user asks to triage the scratchpad, harvest debt markers or friction, or update, settle or file backlog entries. |
 | `instruction-writing` | Turn a request about agent instructions, in whatever form it arrives, into the instructions it implies, grounded in current model guidance, and read them as each target agent would before reporting; or audit instructions for conflicts, gaps and misplaced rules without changing them. Use for every change to instructions that determine agent behavior, and for audits of them. Delegate to `writer` when its description allows; otherwise run the skill yourself. |
@@ -77,6 +78,7 @@ Use the installed workflows below when their descriptions match the request.
 | `debugger_low` | `debugger` | low | `trivial` |
 | `debugger_high` | `debugger` | high | `complex` |
 | `worker` | `worker` | medium | any other |
+| `consultant` | `consultant` | medium | any other |
 | `merger` | `merger` | medium | any other |
 | `writer` | `writer` | medium | any other |
 | `writer_low` | `writer` | low | `trivial` |
@@ -85,6 +87,6 @@ Use the installed workflows below when their descriptions match the request.
 Spawn the named profile with Codex's spawn_agent tool (agent_type). Profiles inherit the session's selected model; do not supply another model. For a leaf, select the role's profile whose Complexity lists the leaf's `complexity`; otherwise its unsuffixed profile. A profile's effort takes precedence over a spawn effort override.
 Spawn each leaf and the consultant with fork_turns: "none" and the brief the dispatching skill states, never pasting issue or plan content. Use send_input with its id to return questions, review gaps and gate failures to that same agent; use resume_agent first if it is closed. In clients exposing collaboration tools, use spawn_agent with the named role when supported, send_message for a running agent and followup_task for an idle agent. A client without named-profile selection cannot establish profile loading; report that unsupported path.
 
-Spawn the planner profile only as the walker's consultant or reshaper, or as an inner planner an outer planning session dispatches; resume a running one with its existing id.
+Spawn the planner profile only as an inner planner an outer planning session dispatches; resume a running one with its existing id.
 
 <!-- @end -->

@@ -4,10 +4,6 @@ import type { AgentRun } from "#tools/agents/types/AgentRun";
 
 const unrecorded = "-";
 
-function nameRole({ role, mode }: AgentRun): string {
-  return mode === undefined ? role : `${role} ${mode}`;
-}
-
 export function formatAgentOutcomes(
   runs: readonly AgentRun[],
   facts: ModelFacts,
@@ -23,7 +19,7 @@ export function formatAgentOutcomes(
   const byRole = runs.map((run) => {
     return {
       run,
-      group: `${nameRole(run)}: ${run.outcome ?? unrecorded}`,
+      group: `${run.role}: ${run.outcome ?? unrecorded}`,
       usage: run.models,
     };
   });

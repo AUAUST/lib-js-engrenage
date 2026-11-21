@@ -66,7 +66,7 @@ export function createCodexDispatch(
   if (profiles.some((profile) => profile.role === "planner")) {
     lines.push(
       "",
-      "Spawn the planner profile only as the walker's consultant or reshaper, or as an inner planner an outer planning session dispatches; resume a running one with its existing id.",
+      "Spawn the planner profile only as an inner planner an outer planning session dispatches; resume a running one with its existing id.",
     );
   }
 

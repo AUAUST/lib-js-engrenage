@@ -1,5 +1,4 @@
 import type { AgentOutcome } from "#tools/agents/types/AgentOutcome";
-import type { PlannerMode } from "#tools/agents/types/PlannerMode";
 
 /**
  * What a run worked on and how it handed back, read from its brief and
@@ -18,6 +17,5 @@ export interface AgentTask {
    * The `<category>.<n>` of each of the brief's `Backlog:` lines.
    */
   readonly backlog?: readonly string[];
-  readonly mode?: PlannerMode;
   readonly outcome?: AgentOutcome;
 }

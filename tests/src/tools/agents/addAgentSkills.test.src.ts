@@ -57,7 +57,7 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
     ).toMatch(
-      /name: worker[\s\S]*model: opus\neffort: low[\s\S]*# Implementation/,
+      /name: worker[\s\S]*model: opus\neffort: medium[\s\S]*# Implementation/,
     );
   });
 
@@ -86,7 +86,7 @@ describe("addAgentSkills", () => {
     ).toBe(true);
   });
 
-  test("installs six canonical roles selectively with their complexity effort variants", async () => {
+  test("installs canonical roles selectively with their complexity effort variants", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
@@ -98,10 +98,7 @@ describe("addAgentSkills", () => {
 
     expect(
       await config.context.filesystem.glob(".codex/agents/*.toml"),
-    ).toEqual([
-      ".codex/agents/worker.toml",
-      ".codex/agents/worker_medium.toml",
-    ]);
+    ).toEqual([".codex/agents/worker.toml"]);
 
     await addAgentSkills(config, ["debugging", "planning", "curation"]);
 
@@ -113,7 +110,6 @@ describe("addAgentSkills", () => {
       ".codex/agents/debugger_low.toml",
       ".codex/agents/planner.toml",
       ".codex/agents/worker.toml",
-      ".codex/agents/worker_medium.toml",
     ]);
 
     await config.context.filesystem.flush();

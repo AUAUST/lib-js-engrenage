@@ -176,12 +176,13 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 ## Agent limits
 
-| Agent      | Default effort | Effort by complexity            | Fresh up to             |
-| ---------- | -------------- | ------------------------------- | ----------------------- |
-| `worker`   | medium         | none                            | no limit                |
-| `debugger` | medium         | `trivial`: low, `complex`: high | no limit                |
-| `merger`   | medium         | none                            | 2× its starting context |
-| `planner`  | medium         | none                            | 2× its starting context |
+| Agent        | Default effort | Effort by complexity            | Fresh up to  |
+| ------------ | -------------- | ------------------------------- | ------------ |
+| `worker`     | medium         | none                            | no limit     |
+| `debugger`   | medium         | `trivial`: low, `complex`: high | no limit     |
+| `merger`     | medium         | none                            | 100k context |
+| `planner`    | medium         | none                            | no limit     |
+| `consultant` | medium         | none                            | 100k context |
 
 ## Stops and restarts
 
