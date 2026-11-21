@@ -179,3 +179,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: landed 2026-11-20 (`6331641f3`); none of the 44 workers since crossed 120k (max 117.7k), while 11 of 99 before it did unstopped.
 - want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.
+
+## 33. Self-hosted hooks go off while an agent refactors the checkout
+
+- sites: `.claude/settings.json:33`
+- why: the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.
+- want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.

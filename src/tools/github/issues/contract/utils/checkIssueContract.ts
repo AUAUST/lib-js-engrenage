@@ -1,7 +1,6 @@
-import { entries } from "@auaust/toolkit/object";
-
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
+import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
 import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
@@ -19,7 +18,7 @@ export function checkIssueContract(
     draft = false,
   }: { subIssues: number; complete: boolean; draft?: boolean },
 ): IssueFinding[] {
-  const findings = checkIssueBody(body, meaning, contractNames);
+  const findings = checkIssueBody(body, meaning, contractNames, subIssues);
 
   if (!complete || meaning === undefined) {
     return findings;
@@ -27,9 +26,15 @@ export function checkIssueContract(
 
   const contract: IssueContract = issueContracts[meaning];
   const parsed = parseIssueBody(body);
+  const shape = findIssueShape(meaning, parsed, subIssues);
   const generated = new Set<string>(contract.generated);
 
-  for (const name of contract.required) {
+  const required = [
+    ...shape.required,
+    ...(draft ? (shape.draftRequired ?? []) : []),
+  ];
+
+  for (const name of required) {
     if (draft && generated.has(name)) {
       if (subIssues === 0) {
         findings.push({
@@ -41,41 +46,6 @@ export function checkIssueContract(
       findings.push({
         rule: "missing-section",
         message: `**${name}** is missing: write it.`,
-      });
-    }
-  }
-
-  for (const group of contract.requiredAny ?? []) {
-    if (!group.some((name) => hasSection(parsed, name))) {
-      findings.push({
-        rule: "missing-section",
-        message: `${group
-          .map((name) => `**${name}**`)
-          .join(" or ")} is missing: write one of them.`,
-      });
-    }
-  }
-
-  for (const [section, names] of entries(contract.requiredWith ?? {})) {
-    if (!hasSection(parsed, section)) {
-      continue;
-    }
-
-    for (const name of names) {
-      if (!hasSection(parsed, name)) {
-        findings.push({
-          rule: "missing-section",
-          message: `**${name}** is missing: write it, as **${section}** requires.`,
-        });
-      }
-    }
-  }
-
-  for (const name of contract.withSubIssues ?? []) {
-    if (subIssues === 0 && hasSection(parsed, name)) {
-      findings.push({
-        rule: "sub-issues",
-        message: `**${name}** applies once the sub-issues land, and this ${contractNames.types[meaning]} has none: create them, or write its work as **Steps**.`,
       });
     }
   }

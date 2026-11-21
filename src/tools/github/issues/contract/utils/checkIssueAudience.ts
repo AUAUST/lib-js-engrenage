@@ -1,31 +1,35 @@
-import { findIssueAudience } from "#tools/github/issues/contract/utils/findIssueAudience";
+import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
+import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueAudience } from "#tools/github/issues/contract/types/IssueAudience";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
-import type { IssueType } from "#tools/github/issues/contract/types/IssueType";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
+// @debt A debugger briefed on a Task leaf gets this finding beside readiness's `type` finding, two messages for one misroute.
 export function checkIssueAudience(
-  meaning: IssueType | undefined,
+  meaning: ContractMeaning | undefined,
   parsed: ParsedIssueBody,
+  subIssues: number,
   audience: IssueAudience,
   contractNames: ContractNames,
 ): IssueFinding[] {
+  if (meaning === undefined) {
+    return [];
+  }
+
+  const shape = findIssueShape(meaning, parsed, subIssues);
+
   if (
-    meaning !== "problem" ||
-    findIssueAudience(meaning, parsed) === audience
+    shape.audience === audience ||
+    (shape.audience !== "worker" && shape.audience !== "debugger")
   ) {
     return [];
   }
 
-  const typeName = contractNames.types.problem;
-
   return [
     {
       rule: "audience",
-      message: audience === "worker"
-        ? `A ${typeName} without **Steps** goes to a debugger: dispatch one, or write **Steps** once the cause is clear.`
-        : `A ${typeName} with **Steps** goes to a worker: dispatch one.`,
+      message: `A ${contractNames.types[meaning]} ${shape.summary} goes to a ${shape.audience}: dispatch one.`,
     },
   ];
 }

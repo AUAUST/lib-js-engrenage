@@ -108,7 +108,7 @@ describe("budgets", () => {
     const budgets = await loadBudgets(project.root);
 
     const task = (context: string) => {
-      return `gh issue create --title "tools: x" --body-file - <<'EOF'\n#1 · [Gates](#gates): x\n\n## Context\n\n${context}\n\n## Steps\n\n1. ${words(300)}\n\n## Tests\n\n- x\nEOF`;
+      return `gh issue create --title "tools: x" --body-file - <<'EOF'\n#1 · [Gates](#gates): x\n\n## Context\n\n${context}\n\n## Prerequisites\n\n- ${words(300)}\n\n## Tests\n\n- x\nEOF`;
     };
 
     expect(measureGithubCommand(task(words(40)), budgets)).toEqual([]);

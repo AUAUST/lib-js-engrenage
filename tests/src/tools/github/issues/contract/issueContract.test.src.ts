@@ -53,12 +53,9 @@ const task = `#10 · [Gates](https://example.com/10#gates)
 
 Why.
 
-## Steps
+## Done when
 
-1. Write \`a\`.
-Checkpoint: a exists.
-
-2. Write b, see #11.
+- \`a\` and b exist, see #11.
 
 ## Tests
 
@@ -75,6 +72,11 @@ Why.
 
 - Fails on b.
 `;
+
+const fixProblem = task.replace(
+  "## Done when",
+  "## Fix\n\n- Guard b.\n\n## Done when",
+);
 
 describe("parseIssueBody", () => {
   test("parses a rendered header, which stripHeaderChain removes the chain of", () => {
@@ -96,7 +98,7 @@ describe("parseIssueBody", () => {
     );
   });
 
-  test("reads header, sections, steps and references outside code", () => {
+  test("reads header, sections and references outside code", () => {
     const parsed = parseIssueBody(`${task}\n\`#99\`\n`);
 
     expect(parsed.header?.ancestors).toEqual([
@@ -105,13 +107,9 @@ describe("parseIssueBody", () => {
 
     expect(parsed.sections.map(({ name }) => name)).toEqual([
       "Context",
-      "Steps",
+      "Done when",
       "Tests",
     ]);
-
-    expect(parsed.steps?.numbered).toBe(true);
-
-    expect(parsed.steps?.items[0]?.checkpoints).toEqual(["a exists."]);
 
     expect(parsed.references).toEqual([10, 11]);
   });
@@ -120,14 +118,12 @@ describe("parseIssueBody", () => {
     const parsed = parseIssueBody("## Context\n\n```md\n## Steps\n```\n");
 
     expect(parsed.sections.map(({ name }) => name)).toEqual(["Context"]);
-
-    expect(parsed.steps).toBeUndefined();
   });
 });
 
 describe("checkIssueBody", () => {
   test("accepts a task", () => {
-    expect(checkIssueBody(task, "task", contractNames)).toEqual([]);
+    expect(checkIssueBody(task, "task", contractNames, 0)).toEqual([]);
   });
 
   test("rejects a Scope section on a task, naming it", () => {
@@ -135,6 +131,7 @@ describe("checkIssueBody", () => {
       `${task}\n## Scope\n\nx\n`,
       "task",
       contractNames,
+      0,
     );
 
     expect(findings).toMatchObject([
@@ -145,19 +142,56 @@ describe("checkIssueBody", () => {
     ]);
   });
 
-  test("rejects steps on a segment", () => {
+  test("refuses Steps on every type and Checkpoint lines, naming the conversion", () => {
+    for (const meaning of ["task", "problem", "segment"] as const) {
+      expect(
+        checkIssueBody(
+          "## Context\n\nx\n\n## Steps\n\n1. Do.\n",
+          meaning,
+          contractNames,
+          0,
+        ),
+      ).toEqual([
+        {
+          rule: "steps",
+          message: expect.stringContaining("**Done when**"),
+        },
+      ]);
+    }
+
     expect(
       checkIssueBody(
-        "## Context\n\nx\n\n## Steps\n\n1. Do.\n",
+        `${task}\nCheckpoint: a exists.\n`,
+        "task",
+        contractNames,
+        0,
+      ),
+    ).toMatchObject([{ rule: "checkpoint" }]);
+  });
+
+  test("rejects Provides and Tests on a segment", () => {
+    expect(
+      checkIssueBody(
+        "## Context\n\nx\n\n## Provides\n\ny\n\n## Tests\n\n- t\n",
         "segment",
         contractNames,
+        1,
       ),
-    ).toMatchObject([{ rule: "segment-section" }]);
+    ).toMatchObject([
+      {
+        rule: "forbidden-section",
+        message: expect.stringContaining("Provides"),
+      },
+      {
+        rule: "forbidden-section",
+        message: expect.stringContaining("Tests"),
+      },
+    ]);
   });
 
   test("checks a body only against its declared type's contract, never a guessed one", () => {
     expect(
-      checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined, contractNames),
+      checkIssueBody(`${task}\n## Scope\n\nx\n`, undefined, contractNames, 0),
     ).toEqual([]);
 
     expect(
@@ -165,6 +199,7 @@ describe("checkIssueBody", () => {
         "## Context\n\nx\n\n## Direction\n\ny\n",
         "segment",
         contractNames,
+        1,
       ),
     ).toMatchObject([
       {
@@ -174,8 +209,8 @@ describe("checkIssueBody", () => {
     ]);
   });
 
-  test("accepts a Problem with Leads and no Steps or Tests, and one with Steps and Tests", () => {
-    for (const body of [problem, task]) {
+  test("accepts a Problem with Leads and one with Fix and Done when, and rejects both together", () => {
+    for (const body of [problem, fixProblem]) {
       expect(
         checkIssueContract(body, "problem", contractNames, {
           subIssues: 0,
@@ -183,47 +218,66 @@ describe("checkIssueBody", () => {
         }),
       ).toEqual([]);
     }
-  });
 
-  test("rejects a Problem holding both Steps and Leads, naming both", () => {
     expect(
       checkIssueContract(
-        task.replace("## Tests", "## Leads\n\n- x\n\n## Tests"),
+        fixProblem.replace("## Fix", "## Leads\n\n- x\n\n## Fix"),
         "problem",
         contractNames,
         { subIssues: 0, complete: true },
       ),
     ).toEqual([
       {
-        rule: "exclusive-sections",
-        message: expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+        rule: "forbidden-section",
+        message: expect.stringMatching(/\*\*Fix\*\*.*\*\*Leads\*\*/),
       },
     ]);
   });
 
-  test("requires Tests on a Problem with Steps", () => {
+  test("requires Done when on a leaf Task, and on a Problem only in a draft", () => {
+    const leaf = "## Context\n\nx\n\n## Tests\n\n- t\n";
+
     expect(
-      checkIssueContract(
-        "## Context\n\nx\n\n## Steps\n\n1. Fix.\n",
-        "problem",
-        contractNames,
-        { subIssues: 0, complete: true },
-      ),
+      checkIssueContract(leaf, "task", contractNames, {
+        subIssues: 0,
+        complete: true,
+      }),
     ).toMatchObject([
-      { rule: "missing-section", message: expect.stringContaining("Tests") },
+      {
+        rule: "missing-section",
+        message: expect.stringContaining("Done when"),
+      },
+    ]);
+
+    expect(
+      checkIssueContract(problem, "problem", contractNames, {
+        subIssues: 0,
+        complete: true,
+        draft: true,
+      }),
+    ).toMatchObject([
+      {
+        rule: "missing-section",
+        message: expect.stringContaining("Done when"),
+      },
     ]);
   });
 
-  test("accepts Housekeeping in place of Steps on a parent, and rejects it without sub-issues, beside Steps or unnumbered", () => {
-    const parent = "## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n";
+  test("accepts a parent with Done when and optional Housekeeping, accepts Tests on it, and rejects Housekeeping without sub-issues or unnumbered", () => {
+    const parent = "## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n\n## Done when\n\n- d\n";
 
     for (const meaning of ["task", "problem"] as const) {
-      expect(
-        checkIssueContract(parent, meaning, contractNames, {
-          subIssues: 1,
-          complete: true,
-        }),
-      ).toEqual([]);
+      for (const body of [
+        parent,
+        parent.replace(/## Housekeeping\n[^#]*/, ""),
+      ]) {
+        expect(
+          checkIssueContract(body, meaning, contractNames, {
+            subIssues: 1,
+            complete: true,
+          }),
+        ).toEqual([]);
+      }
     }
 
     expect(
@@ -231,39 +285,29 @@ describe("checkIssueBody", () => {
         subIssues: 0,
         complete: true,
       }),
-    ).toMatchObject([{ rule: "sub-issues" }]);
+    ).toMatchObject([
+      {
+        rule: "forbidden-section",
+        message: expect.stringContaining("sub-issues"),
+      },
+    ]);
 
     expect(
       checkIssueContract(
-        task.replace("## Tests", "## Housekeeping\n\n- Run it.\n\n## Tests"),
+        `${parent.replace("1. Run", "- Run")}\n## Tests\n\n- t\n`,
         "task",
         contractNames,
         { subIssues: 1, complete: true },
       ).map(({ rule }) => rule),
-    ).toEqual([
-      "exclusive-sections",
-      "exclusive-sections",
-      "housekeeping-numbered",
-    ]);
-
-    expect(
-      checkIssueContract("## Context\n\nx\n", "task", contractNames, {
-        subIssues: 1,
-        complete: true,
-      }),
-    ).toMatchObject([
-      {
-        rule: "missing-section",
-        message: expect.stringContaining("**Steps** or **Housekeeping**"),
-      },
-    ]);
+    ).toEqual(["housekeeping-numbered"]);
   });
 
-  test("reports pending planning in steps", () => {
+  test("reports pending planning in Done when", () => {
     const findings = checkIssueBody(
-      "## Context\n\nx\n\n## Steps\n\n1. Create the tasks as sub-issues.\n\n## Tests\n\n- t\n",
+      "## Context\n\nx\n\n## Done when\n\n- Create the tasks as sub-issues.\n",
       "task",
       contractNames,
+      0,
     );
 
     expect(findings).toMatchObject([
@@ -363,7 +407,7 @@ describe("checkIssue", () => {
   const plan = { body: "## Goal\n\nx\n", type: "Plan" };
 
   const validPlan = {
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     type: "Plan",
     subIssues: [{ number: 11, state: "open" as const }],
   };
@@ -417,14 +461,14 @@ describe("checkIssue", () => {
     },
   );
 
-  test("denies a worker a Problem without Steps, and a debugger one with them", async () => {
+  test("denies a worker a Problem without Fix, and a debugger one with it", async () => {
     mockGithub({
       11: {
         body: "## Context\n\nA failure.\n\n## Leads\n\n- x\n",
         type: "Problem",
       },
       12: {
-        body: task.replace("#10 ·", "Standalone"),
+        body: fixProblem.replace("#10 ·", "Standalone"),
         type: "Problem",
       },
     });
@@ -456,7 +500,30 @@ describe("checkIssue", () => {
     ).toEqual([]);
   });
 
-  test("denies every agent a parent holding Housekeeping", async () => {
+  async function listDispatchFindings(audience: "worker" | "debugger") {
+    const { findings } = await checkIssue(access, 11, audience, {
+      dispatch: true,
+    });
+
+    return findings;
+  }
+
+  test("sends a Problem still holding Steps to a debugger and refuses it to a worker", async () => {
+    mockGithub({
+      11: {
+        body: "## Context\n\nA failure.\n\n## Steps\n\n1. Fix.\n",
+        type: "Problem",
+      },
+    });
+
+    expect(await listDispatchFindings("debugger")).toEqual([]);
+
+    expect(await listDispatchFindings("worker")).toContainEqual(
+      expect.objectContaining({ rule: "steps" }),
+    );
+  });
+
+  test("denies every agent a parent holding Housekeeping, and gives a worker one without", async () => {
     mockGithub({
       11: {
         body: "## Context\n\nx\n\n## Housekeeping\n\n1. Run it.\n",
@@ -466,12 +533,22 @@ describe("checkIssue", () => {
     });
 
     for (const audience of ["worker", "debugger"] as const) {
-      expect(
-        (
-          await checkIssue(access, 11, audience, { dispatch: true })
-        ).findings.map(({ rule }) => rule),
-      ).toContain("housekeeping");
+      expect(await listDispatchFindings(audience)).toContainEqual(
+        expect.objectContaining({
+          message: expect.stringContaining("**Housekeeping**"),
+        }),
+      );
     }
+
+    mockGithub({
+      11: {
+        body: "## Context\n\nx\n\n## Done when\n\n- d\n",
+        type: "Task",
+        subIssues: [{ number: 12, state: "closed" as const }],
+      },
+    });
+
+    expect(await listDispatchFindings("worker")).toEqual([]);
   });
 
   test("a debugger may investigate below Questions while a worker may not", async () => {
@@ -515,7 +592,7 @@ describe("checkIssue", () => {
           blockedBy: [{ number: 12, state: "open" }],
         },
         11: {
-          body: audience === "worker" ? task : problem,
+          body: audience === "worker" ? fixProblem : problem,
           type: "Problem",
           parent: 10,
         },
@@ -540,7 +617,7 @@ describe("checkIssue", () => {
   describe("open sections above the direct parent", () => {
     const grandparent = {
       ...validPlan,
-      body: "## Goal\n\nx\n\n## Roadmap\n\n1. #10\n\n## Decisions\n\nx\n",
+      body: "## Goal\n\nx\n\n## Roadmap\n\n1. #10\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
       subIssues: [{ number: 10, state: "open" as const }],
     };
 

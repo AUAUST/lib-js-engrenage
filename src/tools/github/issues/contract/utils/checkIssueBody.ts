@@ -1,8 +1,14 @@
+import { stripCode } from "#foundation/markdown/index";
 import {
+  checkpointPrefix,
+  housekeepingSection,
   issueContracts,
-  segmentForbiddenSections,
+  pendingPlanningSections,
+  stepsSection,
 } from "#tools/github/issues/contract/constants";
+import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import { parseIssueList } from "#tools/github/issues/contract/utils/parseIssueList";
 import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
@@ -12,6 +18,8 @@ const pendingPlanningPatterns = [
   /^settle\b/i,
   /^(?:create|write|file|open|plan|split|break)\b.*\b(?:sub-?issues?|tasks)\b/i,
 ] as const;
+
+const conversion = "state what they make true under **Done when**, move the code facts they verified into **Context**, and drop the procedure";
 
 function getRank(contract: IssueContract, name: string) {
   const index = contract.sections.indexOf(name);
@@ -29,28 +37,34 @@ export function checkIssueBody(
   body: string,
   meaning: ContractMeaning | undefined,
   contractNames: ContractNames,
+  subIssues: number,
 ): IssueFinding[] {
   if (meaning === undefined) {
     return [];
   }
 
   const parsed = parseIssueBody(body);
-  const names = parsed.sections.map(({ name }) => name);
   const contract: IssueContract = issueContracts[meaning];
+  const { forbidden = {} } = findIssueShape(meaning, parsed, subIssues);
   const typeName = contractNames.types[meaning];
   const findings: IssueFinding[] = [];
 
   let highest: { rank: number; name: string } | undefined;
 
-  for (const name of names) {
-    if (
-      meaning === "segment" &&
-      (segmentForbiddenSections as readonly string[]).includes(name)
-    ) {
+  for (const { name, content } of parsed.sections) {
+    if (name === stepsSection) {
       findings.push({
-        rule: "segment-section",
-        message: `A ${typeName} has no **${name}**: remove it and write it in the sub-issue that owns it.`,
+        rule: "steps",
+        message: `**${stepsSection}** is no longer a section: convert it: ${conversion}.`,
       });
+
+      continue;
+    }
+
+    const reason = forbidden[name];
+
+    if (reason !== undefined) {
+      findings.push({ rule: "forbidden-section", message: reason });
 
       continue;
     }
@@ -78,45 +92,38 @@ export function checkIssueBody(
     } else {
       highest = { rank, name };
     }
-  }
 
-  for (const group of contract.exclusive ?? []) {
-    const present = group.filter((name) => names.includes(name));
-
-    if (present.length > 1) {
-      findings.push({
-        rule: "exclusive-sections",
-        message: `A ${typeName} holds ${present
-          .map((name) => `**${name}**`)
-          .join(
-            " and ",
-          )}, which exclude each other: keep one and delete the others.`,
-      });
-    }
-  }
-
-  if (parsed.steps !== undefined) {
-    if (!parsed.steps.numbered) {
-      findings.push({
-        rule: "steps-numbered",
-        message: "**Steps** must be a numbered list with only `Checkpoint:` lines between items: rewrite it as numbered steps.",
-      });
+    if (!(pendingPlanningSections as readonly string[]).includes(name)) {
+      continue;
     }
 
-    for (const { text } of parsed.steps.items) {
+    const list = parseIssueList(content);
+
+    for (const text of list.items) {
       if (pendingPlanningPatterns.some((pattern) => pattern.test(text))) {
         findings.push({
           rule: "pending-planning",
-          message: `**Steps** item "${text.split("\n")[0]}" reads as pending planning: move it under **Planning**.`,
+          message: `**${name}** item "${text.split("\n")[0]}" reads as pending planning: move it under **Planning**.`,
         });
       }
     }
+
+    if (name === housekeepingSection && !list.numbered) {
+      findings.push({
+        rule: "housekeeping-numbered",
+        message: `**${housekeepingSection}** must be a numbered list: rewrite it as numbered steps.`,
+      });
+    }
   }
 
-  if (parsed.housekeeping?.numbered === false) {
+  const checkpoints = stripCode(body)
+    .split("\n")
+    .some((line) => line.trimStart().startsWith(checkpointPrefix));
+
+  if (checkpoints) {
     findings.push({
-      rule: "housekeeping-numbered",
-      message: "**Housekeeping** must be a numbered list with only `Checkpoint:` lines between items: rewrite it as numbered steps.",
+      rule: "checkpoint",
+      message: `\`${checkpointPrefix}\` lines are no longer part of an issue: delete them; for the work they split, ${conversion}.`,
     });
   }
 

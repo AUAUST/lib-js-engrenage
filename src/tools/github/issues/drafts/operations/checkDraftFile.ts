@@ -65,7 +65,7 @@ export async function checkDraftFile(
 
   const checked = checkDrafts(new Map([[stem, draft]]), context, {
     known,
-    complete: audience === "worker",
+    complete: true,
     audience,
   });
 

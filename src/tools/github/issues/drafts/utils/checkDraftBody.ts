@@ -45,7 +45,13 @@ export function checkDraftBody(
     }),
     ...(audience === undefined
       ? []
-      : checkIssueAudience(meaning, parsed, audience, contractNames)),
+      : checkIssueAudience(
+          meaning,
+          parsed,
+          subIssues,
+          audience,
+          contractNames,
+        )),
     ...checkBlockersField(listOpenSections(parsed), blockers, contractNames),
     ...sections
       .filter(({ content }) => content === "")

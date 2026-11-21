@@ -120,7 +120,11 @@ g
 
 ## Decisions
 
-d`;
+d
+
+## Done when
+
+- d`;
 
 const taskBody = `#10 · Goal: the extra
 
@@ -128,9 +132,9 @@ const taskBody = `#10 · Goal: the extra
 
 c
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 
@@ -559,7 +563,7 @@ async function claimTable(root: string, remote: string | undefined) {
 
   await filesystem.write(
     ".ai/issues/13.draft.md",
-    read(root, "13.draft.md").replace("1. Do.", "1. Do more."),
+    read(root, "13.draft.md").replace("- Done.", "- Done more."),
   );
 
   await filesystem.flush();
@@ -783,7 +787,7 @@ Goal: the group
 
   test("publishes a new Segment listed by a new Task", async () => {
     const root = createProject({
-      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "")}\n`,
+      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
       ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
       ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
     });
@@ -1114,7 +1118,7 @@ Goal: the group
       passed: true,
     });
 
-    expect(findIssue(13).body).toContain("1. Do more.");
+    expect(findIssue(13).body).toContain("- Done more.");
   });
 
   test("still reports a body conflict when GitHub changed another section", async () => {
@@ -1159,9 +1163,9 @@ Nature: Feature
 
 Follows #{app.12} and #{toolkit.45}.
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 
@@ -1178,9 +1182,9 @@ blockedBy: ["#{toolkit.new-port}"]
 
 Follows #{app.7}.
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 
@@ -1222,9 +1226,9 @@ Nature: Feature
 
 See #{unknown.1}.
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 
@@ -1256,7 +1260,7 @@ See #{unknown.1}.
     findIssue(
       45,
       "toolkit",
-    ).body = "## Context\n\nAfter #186 and AUAUST/app#5.\n\n## Steps\n\n1. Do.\n\n## Tests\n\n- t";
+    ).body = "## Context\n\nAfter #186 and AUAUST/app#5.\n\n## Done when\n\n- Done.\n\n## Tests\n\n- t";
 
     findIssue(45, "toolkit").title = "Port after AUAUST/app#5";
 
@@ -1295,7 +1299,7 @@ See #{unknown.1}.
 
     await config.context.filesystem.write(
       ".ai/issues/toolkit.45.draft.md",
-      read(root, "toolkit.45.draft.md").replace("1. Do.", "1. Do more."),
+      read(root, "toolkit.45.draft.md").replace("- Done.", "- Done more."),
     );
 
     await config.context.filesystem.flush();
@@ -1314,7 +1318,7 @@ See #{unknown.1}.
 
     expect(findIssue(45, "toolkit").title).toBe("Remote");
 
-    expect(findIssue(45, "toolkit").body).toContain("1. Do more.");
+    expect(findIssue(45, "toolkit").body).toContain("- Done more.");
 
     expect(listBlockersWrites()).toEqual([]);
   });
@@ -1359,9 +1363,9 @@ Nature: Feature
 
 After ${reference}.
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 

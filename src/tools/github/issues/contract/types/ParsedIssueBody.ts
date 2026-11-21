@@ -1,5 +1,3 @@
-import type { IssueListItem } from "#tools/github/issues/contract/types/IssueListItem";
-
 // @debt A plain `#<n>` entry carries `repository: undefined`, leaving each caller to substitute the issue's own repository; parsing against a base repository would make every entry carry it.
 export interface ParsedIssueBody {
   readonly header?:
@@ -15,18 +13,6 @@ export interface ParsedIssueBody {
     readonly name: string;
     readonly content: string;
   }[];
-  readonly steps?:
-    | {
-        readonly numbered: boolean;
-        readonly items: readonly IssueListItem[];
-      }
-    | undefined;
-  readonly housekeeping?:
-    | {
-        readonly numbered: boolean;
-        readonly items: readonly IssueListItem[];
-      }
-    | undefined;
   readonly roadmap: readonly {
     readonly repository: string | undefined;
     readonly number: number;

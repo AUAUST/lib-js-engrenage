@@ -140,7 +140,7 @@ export async function checkIssues(
 
     const checked = checkDrafts(drafts, context, {
       known,
-      complete: audience === "worker",
+      complete: true,
       audience,
     });
 

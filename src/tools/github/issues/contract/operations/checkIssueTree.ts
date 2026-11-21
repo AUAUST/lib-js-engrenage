@@ -1,4 +1,3 @@
-import { housekeepingSection } from "#tools/github/issues/contract/constants";
 import { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
@@ -6,9 +5,7 @@ import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIss
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
 import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
-import { findIssueAudience } from "#tools/github/issues/contract/utils/findIssueAudience";
-import { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMeaning";
-import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
+import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
@@ -18,6 +15,7 @@ import type { IssueLocation } from "#tools/github/issues/contract/types/IssueLoc
 import type { IssueTree } from "#tools/github/issues/contract/types/IssueTree";
 import type { IssueTreeCheck } from "#tools/github/issues/contract/types/IssueTreeCheck";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
+import type { ReadyIssue } from "#tools/github/issues/contract/types/ReadyIssue";
 import type { WalkedIssue } from "#tools/github/issues/contract/types/WalkedIssue";
 
 interface PlacedIssue {
@@ -188,10 +186,14 @@ export async function checkIssueTree(
     }) => {
       const closed = isClosed({ ...location, state: issue.state });
 
-      const audience = findIssueAudience(
-        findTypeMeaning(access.contractNames, issue.type),
-        parsed,
-      );
+      const meaning = findContractMeaning(access.contractNames, issue.type);
+
+      const shapeAudience = meaning === undefined
+        ? undefined
+        : findIssueShape(meaning, parsed, issue.subIssues.length).audience;
+
+      // @debt Readiness takes only an agent audience, so a Housekeeping parent (orchestrator) or a plan or segment (verification) is checked as a worker's leaf would be.
+      const audience = shapeAudience === "debugger" ? "debugger" : "worker";
 
       const closedBy = issue.state === "open"
         ? commits.closedBy(location)
@@ -208,15 +210,13 @@ export async function checkIssueTree(
           ? []
           : [
               ...checkNesting(
-                findContractMeaning(access.contractNames, issue.type),
+                meaning,
                 findContractMeaning(access.contractNames, parentType),
               ),
-              ...checkIssueContract(
-                issue.body,
-                findContractMeaning(access.contractNames, issue.type),
-                access.contractNames,
-                { subIssues: issue.subIssues.length, complete: true },
-              ),
+              ...checkIssueContract(issue.body, meaning, access.contractNames, {
+                subIssues: issue.subIssues.length,
+                complete: true,
+              }),
               ...checkIssueReadiness(
                 {
                   issue,
@@ -245,19 +245,17 @@ export async function checkIssueTree(
         closes: commits.closes(location),
       };
 
-      const ready = (
+      const ready: ReadyIssue | undefined = (
         inTurn &&
         !closed &&
         issue.subIssues.every(isClosed) &&
-        report.findings.length === 0
-      );
+        report.findings.length === 0 &&
+        shapeAudience !== undefined
+      )
+        ? { ...location, audience: shapeAudience }
+        : undefined;
 
-      return {
-        report,
-        audience,
-        housekeeping: hasSection(parsed, housekeepingSection),
-        ready,
-      };
+      return { report, ready };
     },
   );
 
@@ -266,14 +264,8 @@ export async function checkIssueTree(
     checkouts,
     issues: walked.map(({ report }) => report),
     ready: walked
-      .filter(({ ready }) => ready)
-      .map(({ report, audience, housekeeping }) => {
-        return {
-          repository: report.repository,
-          number: report.number,
-          audience: housekeeping ? "orchestrator" : audience,
-        };
-      }),
+      .map(({ ready }) => ready)
+      .filter((issue): issue is ReadyIssue => issue !== undefined),
     finished: isClosed({
       repository: tree.repository,
       number: tree.issue.number,

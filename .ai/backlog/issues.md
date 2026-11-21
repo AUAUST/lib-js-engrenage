@@ -98,13 +98,3 @@ GitHub issue drafts, checks and planning commands.
 
 - why: Size forbids items of several outcomes, judged only by agents; #774 passed with ten steps.
 - want: review findings, never count limits: on each `Checkpoint:` line; on a split dropping a Steps item or Tests case; on a Done when joining several capabilities. Under #809, the same on spec leaves.
-
-## 18. Planners may order an item's Steps contract-first
-
-- why: #790 rejected a scaffold-first worker rule; its one surviving option is a planner rule ordering **Steps** by dependency, structure and contracts first, never checkpointing stub bodies.
-- want: a decision on adopting it.
-
-## 19. `segmentForbiddenSections` names a `Scope` section no contract defines
-
-- sites: `src/tools/github/issues/contract/constants.ts:206`
-- want: the entry removed, or `Scope` defined where the issue contracts define sections.

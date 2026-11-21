@@ -125,7 +125,7 @@ export const agentsSchema = declareObject(
       {
         description: [
           "Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog entries.",
-          "Sections such as **Steps** and **Tests** have no budget.",
+          "Sections such as **Prerequisites** and **Tests** have no budget.",
         ],
         optional: true,
       },

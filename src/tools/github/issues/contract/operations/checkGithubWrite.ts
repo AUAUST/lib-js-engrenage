@@ -54,6 +54,7 @@ async function checkWrite(
     body,
     findContractMeaning(contractNames, issue?.type),
     contractNames,
+    issue?.subIssues.length ?? 0,
   );
 
   return findings.length === 0

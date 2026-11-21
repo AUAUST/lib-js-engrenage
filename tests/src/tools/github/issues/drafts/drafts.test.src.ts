@@ -86,6 +86,10 @@ g
 ## Decisions
 
 d
+
+## Done when
+
+- d
 `;
 
 const first = `---
@@ -102,9 +106,9 @@ Goal: the first step
 
 c
 
-## Steps
+## Done when
 
-1. Do.
+- Done.
 
 ## Tests
 
@@ -231,17 +235,17 @@ blockedBy: []
 
 ## Prerequisites
 
-## Steps
+## Provides
 
-<!-- Steps for the work a worker implements: keep Steps or Housekeeping and delete the other. -->
+<!-- Provides only for what a plan's Model contracts or a user-facing surface expect from this issue; delete it otherwise. -->
 
 ## Housekeeping
 
-<!-- Housekeeping on a parent whose own work is only commands, checks or record edits, applied without a worker once its sub-issues land. Keep Steps or Housekeeping and delete the other. -->
-
-## Tests
+<!-- Housekeeping only on a parent whose own work, once its sub-issues land, is commands, checks or record edits applied without an agent; delete it otherwise. -->
 
 ## Done when
+
+## Tests
 
 ## Planning
 
@@ -391,7 +395,7 @@ describe("checkIssues", () => {
     const config = await createProject({
       ".ai/issues/new-x.draft.md": first
         .replace("Nature: Feature", "Nature: Bogus\nDefect: Bug")
-        .replace("1. Do.", "1. Do after #{new-missing}."),
+        .replace("- Done.", "- Done after #{new-missing}."),
     });
 
     const { lines, passed } = await checkIssues(config, ["new-x"], "worker");
@@ -462,10 +466,10 @@ Goal: the segment
       [
         "Context",
         "Prerequisites",
-        "Steps",
+        "Provides",
         "Housekeeping",
-        "Tests",
         "Done when",
+        "Tests",
         "Planning",
         "Questions",
       ].map((name) => `new-fresh: **${name}** is empty: fill it or remove it.`),
@@ -485,7 +489,7 @@ Goal: the segment
         .replace("<sections>: <gist>", "Goal: fresh")
         .replace("## Context\n", "## Context\n\nc\n")
         .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
-        .replace(/## Steps\n[^#]*/, "## Steps\n\n1. Do.\n\n")
+        .replace(/## Provides\n[^#]*/, "")
         .replace(/## Housekeeping\n[^#]*/, "")
         .replace("## Tests\n", "## Tests\n\n- t\n")
         .replace("## Done when\n", "## Done when\n\nd\n")
@@ -497,7 +501,7 @@ Goal: the segment
     );
   });
 
-  test("writes a fresh Problem with both Steps and Leads, each under its comment, which check reads as empty", async () => {
+  test("writes a fresh Problem with both Leads and Fix, each under its comment, which check reads as empty", async () => {
     const config = await createProject({});
 
     const file = await createDraft(config, "problem", { slug: "fresh" });
@@ -505,16 +509,15 @@ Goal: the segment
     const content = await config.context.filesystem.read(file);
 
     expect(content).toMatch(
-      /## Steps\n\n<!-- Steps when the cause is clear[^\n]*-->\n\n## Leads\n\n<!-- Leads when the cause still needs investigation[^\n]*-->\n/,
+      /## Leads\n\n<!-- Leads only when genuine directions[^\n]*-->\n\n## Fix\n\n<!-- Fix only when several fixes are possible[^\n]*-->\n/,
     );
 
-    const { lines } = await checkIssues(config, ["new-fresh"], "debugger");
+    const { lines } = await checkIssues(config, ["new-fresh"], "worker");
 
     expect(lines).toEqual(
       expect.arrayContaining([
-        "new-fresh: **Steps** is empty: fill it or remove it.",
-        "new-fresh: **Leads** is empty: fill it or remove it.",
-        expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+        "new-fresh: **Fix** is empty: fill it or remove it.",
+        expect.stringMatching(/\*\*Fix\*\*.*\*\*Leads\*\*/),
       ]),
     );
   });
@@ -600,14 +603,14 @@ o
       ".ai/issues/new-plan.draft.md": plan,
       ".ai/issues/new-first.draft.md": first
         .replace("Goal: the first step", "A plain paragraph\nover two lines.")
-        .replace("1. Do.", "1. Do after #{new-plan}.")
-        .replace("\n## Tests\n\n- t\n", ""),
+        .replace("## Context\n\nc\n", "## Context\n\nc after #{new-plan}.\n")
+        .replace("\n## Done when\n\n- Done.\n", ""),
     });
 
     await expect(checkIssues(config, ["new-first"], "worker")).resolves.toEqual(
       {
         lines: [
-          "new-first: **Tests** is missing: write it, as **Steps** requires.",
+          "new-first: **Done when** is missing: write it.",
           "new-first: The text before the first section spans several lines, but `publish` reads it as the header line: keep only `<sections>: <gist>` there and move the rest into a section.",
         ],
         passed: false,
@@ -615,7 +618,7 @@ o
     );
   });
 
-  test("requires a plan's generated Roadmap through subIssues, and Tests only for a worker", async () => {
+  test("requires a plan's generated Roadmap through subIssues, and no Tests", async () => {
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan.replace(
         /subIssues:[\s\S]*?sections: \[\]\n/,
@@ -631,9 +634,9 @@ o
       passed: false,
     });
 
-    await expect(
-      checkIssues(config, ["new-first"], "debugger"),
-    ).resolves.toEqual({ lines: ["new-first: ready"], passed: true });
+    await expect(checkIssues(config, ["new-first"], "worker")).resolves.toEqual(
+      { lines: ["new-first: ready"], passed: true },
+    );
   });
 
   test("reports a cycle through subIssues and blockedBy", async () => {

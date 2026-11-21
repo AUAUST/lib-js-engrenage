@@ -192,44 +192,72 @@ export const planningSection = "Planning";
 
 export const questionsSection = "Questions";
 
-export const stepsSection = "Steps";
-
 export const housekeepingSection = "Housekeeping";
 
 export const roadmapSection = "Roadmap";
 
+export const stepsSection = "Steps";
+
 export const checkpointPrefix = "Checkpoint:";
 
-export const segmentForbiddenSections = freeze([
-  "Steps",
-  "Tests",
-  "Scope",
-  "Decisions",
+export const pendingPlanningSections = freeze([
+  "Fix",
+  housekeepingSection,
+  "Done when",
 ] as const);
+
+const housekeepingHint = "Housekeeping only on a parent whose own work, once its sub-issues land, is commands, checks or record edits applied without an agent; delete it otherwise.";
+
+const leafHousekeeping = "**Housekeeping** applies once the sub-issues land, and this issue has none: create them, or state the outcome under **Done when**.";
+
+const problemParentForbidden = freeze({
+  Leads: "**Leads** on a parent belong to the sub-issue investigating them: move them there.",
+  Fix: "**Fix** on a parent belongs to the sub-issue applying it: move it there.",
+});
+
+function createParentShapes(forbidden: Readonly<Record<string, string>> = {}) {
+  return [
+    freeze({
+      summary: "with sub-issues and **Housekeeping**",
+      audience: "orchestrator",
+      when: freeze({ subIssues: true, section: housekeepingSection }),
+      required: freeze(["Context", "Done when"] as const),
+      forbidden,
+    } as const),
+    freeze({
+      summary: "with sub-issues",
+      audience: "worker",
+      when: freeze({ subIssues: true }),
+      required: freeze(["Context", "Done when"] as const),
+      forbidden,
+    } as const),
+  ] as const;
+}
 
 export const issueContracts = freeze({
   task: freeze({
     sections: freeze([
       "Context",
       "Prerequisites",
-      "Steps",
-      "Housekeeping",
-      "Tests",
+      "Provides",
+      housekeepingSection,
       "Done when",
-      "Planning",
-      "Questions",
+      "Tests",
+      planningSection,
+      questionsSection,
     ] as const),
-    required: freeze(["Context"] as const),
-    requiredAny: freeze([freeze(["Steps", "Housekeeping"] as const)] as const),
-    requiredWith: freeze({ Steps: freeze(["Tests"] as const) } as const),
-    exclusive: freeze([
-      freeze(["Steps", "Housekeeping"] as const),
-      freeze(["Housekeeping", "Tests"] as const),
+    shapes: freeze([
+      ...createParentShapes(),
+      freeze({
+        summary: "without sub-issues",
+        audience: "worker",
+        required: freeze(["Context", "Done when"] as const),
+        forbidden: freeze({ [housekeepingSection]: leafHousekeeping }),
+      }),
     ] as const),
-    withSubIssues: freeze(["Housekeeping"] as const),
     hints: freeze({
-      Steps: "Steps for the work a worker implements: keep Steps or Housekeeping and delete the other.",
-      Housekeeping: "Housekeeping on a parent whose own work is only commands, checks or record edits, applied without a worker once its sub-issues land. Keep Steps or Housekeeping and delete the other.",
+      Provides: "Provides only for what a plan's Model contracts or a user-facing surface expect from this issue; delete it otherwise.",
+      [housekeepingSection]: housekeepingHint,
     } as const),
     hasHeader: true,
     subIssues: "references",
@@ -238,25 +266,38 @@ export const issueContracts = freeze({
     sections: freeze([
       "Context",
       "Prerequisites",
-      "Steps",
       "Leads",
-      "Housekeeping",
-      "Tests",
+      "Fix",
+      housekeepingSection,
       "Done when",
-      "Planning",
-      "Questions",
+      "Tests",
+      planningSection,
+      questionsSection,
     ] as const),
-    required: freeze(["Context"] as const),
-    requiredWith: freeze({ Steps: freeze(["Tests"] as const) } as const),
-    exclusive: freeze([
-      freeze(["Steps", "Leads", "Housekeeping"] as const),
-      freeze(["Housekeeping", "Tests"] as const),
+    shapes: freeze([
+      ...createParentShapes(problemParentForbidden),
+      freeze({
+        summary: "with **Fix**",
+        audience: "worker",
+        when: freeze({ section: "Fix" }),
+        required: freeze(["Context", "Done when"] as const),
+        forbidden: freeze({
+          Leads: "**Fix** settles the direction **Leads** would investigate: delete **Leads**, or delete **Fix** to send the issue to a debugger.",
+          [housekeepingSection]: leafHousekeeping,
+        }),
+      }),
+      freeze({
+        summary: "without **Fix**",
+        audience: "debugger",
+        required: freeze(["Context"] as const),
+        draftRequired: freeze(["Done when"] as const),
+        forbidden: freeze({ [housekeepingSection]: leafHousekeeping }),
+      }),
     ] as const),
-    withSubIssues: freeze(["Housekeeping"] as const),
     hints: freeze({
-      Steps: "Steps when the cause is clear and only the fix remains, for a worker: keep one of Steps, Leads or Housekeeping and delete the others.",
-      Leads: "Leads when the cause still needs investigation, for a debugger: facts, symptoms, reproductions and suspected sites. Keep one of Steps, Leads or Housekeeping and delete the others.",
-      Housekeeping: "Housekeeping on a parent whose sub-issues hold the fix and whose own work is only commands, checks or record edits, applied without an agent once they land. Keep one of Steps, Leads or Housekeeping and delete the others.",
+      Leads: "Leads only when genuine directions to investigate exist, for a debugger: symptoms, reproductions, suspected sites. Keep at most one of Leads and Fix.",
+      Fix: "Fix only when several fixes are possible: the direction the fix must take, for a worker. Keep at most one of Leads and Fix.",
+      [housekeepingSection]: housekeepingHint,
     } as const),
     hasHeader: true,
     subIssues: "references",
@@ -266,24 +307,46 @@ export const issueContracts = freeze({
       "Context",
       "Prerequisites",
       "Done when",
-      "Planning",
-      "Questions",
+      planningSection,
+      questionsSection,
     ] as const),
-    required: freeze([] as const),
+    shapes: freeze([
+      freeze({
+        summary: "grouping sub-issues",
+        audience: "verification",
+        required: freeze([] as const),
+        forbidden: freeze({
+          Provides: "A segment provides nothing of its own: write **Provides** in the sub-issue that owns it.",
+          Tests: "A segment has no **Tests**: write them in the sub-issue that owns them.",
+          Decisions: "A segment has no **Decisions**: write them in the plan, or the sub-issue that owns them.",
+        }),
+      }),
+    ] as const),
     hasHeader: true,
     subIssues: "references",
   } as const),
   plan: freeze({
     sections: freeze([
       "Goal",
-      "Roadmap",
+      roadmapSection,
       "Decisions",
       "Done when",
-      "Planning",
-      "Questions",
+      planningSection,
+      questionsSection,
     ] as const),
-    required: freeze(["Goal", "Roadmap", "Decisions"] as const),
-    modelsAfter: "Roadmap",
+    shapes: freeze([
+      freeze({
+        summary: "with a **Roadmap**",
+        audience: "verification",
+        required: freeze([
+          "Goal",
+          roadmapSection,
+          "Decisions",
+          "Done when",
+        ] as const),
+      }),
+    ] as const),
+    modelsAfter: roadmapSection,
     hasHeader: false,
     generated: freeze([roadmapSection] as const),
     subIssues: "roadmap",

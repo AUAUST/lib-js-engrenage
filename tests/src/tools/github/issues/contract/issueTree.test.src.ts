@@ -33,14 +33,14 @@ interface MockIssue {
 const task = (number: number, header = "#10 › #11 · Roadmap") => {
   return {
     type: "Task",
-    body: `${header}\n\n## Context\n\nx\n\n## Steps\n\n1. Do #${number}.\n\n## Tests\n\n- works\n`,
+    body: `${header}\n\n## Context\n\nx\n\n## Done when\n\n- #${number} done.\n\n## Tests\n\n- works\n`,
   };
 };
 
 const tree: Record<number, MockIssue> = {
   10: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [11],
   },
   11: {
@@ -53,26 +53,26 @@ const tree: Record<number, MockIssue> = {
   14: task(14),
   20: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #21\n2. #22\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #21\n2. #22\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [21, 22],
   },
   21: task(21, "#20 · Roadmap"),
   22: task(22, "#20 · Roadmap"),
   30: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #31\n2. #33\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #31\n2. #33\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [31, 33],
   },
   31: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #32\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #32\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [32],
   },
   32: task(32, "#31 · Roadmap"),
   33: task(33, "#30 · Roadmap"),
   40: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #41\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #41\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [41],
   },
   41: {
@@ -85,25 +85,45 @@ const tree: Record<number, MockIssue> = {
     body: "#40 › #41 · Roadmap\n\n## Context\n\nx\n\n## Leads\n\n- fails\n",
   },
   43: {
-    ...task(43, "#40 › #41 · Roadmap"),
     type: "Problem",
+    body: task(43, "#40 › #41 · Roadmap").body.replace(
+      "## Done when",
+      "## Fix\n\n- Guard it.\n\n## Done when",
+    ),
   },
   44: {
     type: "Problem",
-    body: `${task(44, "#40 › #41 · Roadmap").body}\n## Leads\n\n- fails\n`,
+    body: task(44, "#40 › #41 · Roadmap").body.replace(
+      "## Done when",
+      "## Leads\n\n- fails\n\n## Fix\n\n- Guard it.\n\n## Done when",
+    ),
   },
   50: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #51\n\n## Decisions\n\nx\n",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #51\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [51],
   },
   51: {
     type: "Task",
-    body: "#50 · Roadmap\n\n## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n",
+    body: "#50 · Roadmap\n\n## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n\n## Done when\n\n- d\n",
     subIssues: [52],
   },
   52: {
     ...task(52, "#50 › #51 · Roadmap"),
+    state: "CLOSED",
+  },
+  60: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #61\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    subIssues: [61],
+  },
+  61: {
+    type: "Task",
+    body: "#60 · Roadmap\n\n## Context\n\nx\n\n## Done when\n\n- d\n",
+    subIssues: [62],
+  },
+  62: {
+    ...task(62, "#60 › #61 · Roadmap"),
     state: "CLOSED",
   },
 };
@@ -245,7 +265,7 @@ describe("checkIssueTree", () => {
     ]);
   });
 
-  test("names each ready Problem's agent from its shape and holds back one with both Steps and Leads", async () => {
+  test("names each ready Problem's agent from its shape and holds back one with both Leads and Fix", async () => {
     mockGraphql();
 
     const check = await checkIssueTree(access, 40, {
@@ -269,8 +289,8 @@ describe("checkIssueTree", () => {
       check.issues.find(({ number }) => number === 44)?.findings,
     ).toContainEqual(
       expect.objectContaining({
-        rule: "exclusive-sections",
-        message: expect.stringMatching(/\*\*Steps\*\* and \*\*Leads\*\*/),
+        rule: "forbidden-section",
+        message: expect.stringMatching(/\*\*Fix\*\*.*\*\*Leads\*\*/),
       }),
     );
 
@@ -279,14 +299,22 @@ describe("checkIssueTree", () => {
     );
   });
 
-  test("names the orchestrator for a ready parent holding Housekeeping", async () => {
+  test("names the orchestrator for a ready parent holding Housekeeping, and a worker for one without", async () => {
     mockGraphql();
 
-    const check = await checkIssueTree(access, 50, {
+    const housekeeping = await checkIssueTree(access, 50, {
       checkouts: checkoutAt(createWorkingCopy()),
     });
 
-    expect(formatIssueTreeCheck(check)).toContain("Ready: #51 orchestrator");
+    expect(formatIssueTreeCheck(housekeeping)).toContain(
+      "Ready: #51 orchestrator",
+    );
+
+    const plain = await checkIssueTree(access, 60, {
+      checkouts: checkoutAt(createWorkingCopy()),
+    });
+
+    expect(formatIssueTreeCheck(plain)).toContain("Ready: #61 worker");
   });
 
   test("lists only the first open task of a plan as ready until a local commit closes it", async () => {
@@ -553,7 +581,7 @@ function renderCrossIssue(
   hasNextPage = false,
 ) {
   const body = repository === toolkit
-    ? `${engrenage}#10 › ${engrenage}#11 · Roadmap\n\n## Context\n\nx\n\n## Steps\n\n1. Do it.\n\n## Tests\n\n- works\n`
+    ? `${engrenage}#10 › ${engrenage}#11 · Roadmap\n\n## Context\n\nx\n\n## Done when\n\n- Done.\n\n## Tests\n\n- works\n`
     : (tree[number]?.body ?? "");
 
   return {

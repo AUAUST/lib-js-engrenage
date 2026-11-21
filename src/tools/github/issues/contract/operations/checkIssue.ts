@@ -104,6 +104,7 @@ export async function checkIssue(
     ),
   );
 
+  // @debt Debugger dispatch skips the issue's own contract but still checks each ancestor's, so an old-format parent or a plan without **Done when** refuses a debugger the leniency its leaf gets.
   if (dispatch) {
     for (const [index, ancestor] of chain.entries()) {
       const body = parseIssueBody(ancestor.body);

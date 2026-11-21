@@ -1,10 +1,8 @@
+import type { IssueShape } from "#tools/github/issues/contract/types/IssueShape";
+
 export interface IssueContract {
   readonly sections: readonly string[];
-  readonly required: readonly string[];
-  readonly requiredAny?: readonly (readonly string[])[];
-  readonly requiredWith?: Readonly<Record<string, readonly string[]>>;
-  readonly exclusive?: readonly (readonly string[])[];
-  readonly withSubIssues?: readonly string[];
+  readonly shapes: readonly IssueShape[];
   readonly hints?: Readonly<Record<string, string>>;
   readonly modelsAfter?: string;
   readonly hasHeader: boolean;
