@@ -12,9 +12,11 @@ import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
 import { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
+import { formatAgentOutcomes } from "#tools/agents/utils/formatAgentOutcomes";
 import { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
+import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
 
 const usage = {
   input_tokens: 2,
@@ -105,8 +107,12 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
 
   const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
 
-  expect(summarizeAgentCalls(read)).toMatchObject({
+  expect(summarizeAgentTask({ agent: "agent", role: "worker" }, read)).toEqual({
     issue: "AUAUST/lib-js-toolkit#204",
+    outcome: "completion",
+  });
+
+  expect(summarizeAgentCalls(read)).toMatchObject({
     started: "2026-11-12T22:00:00.000Z",
     ended: "2026-11-12T22:12:00.000Z",
     turns: 3,
@@ -373,17 +379,22 @@ test("finds model facts through aliases and dated ids", async () => {
 async function createRecordedProject() {
   const project = createTemporaryProject({ "agent.jsonl": transcript });
 
+  const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
+
+  const identity = {
+    runtime: "claude",
+    session: "session",
+    agent: "agent",
+    role: "worker",
+  };
+
   return {
     project,
     directory: project.resolve(".ai/stats"),
     run: {
-      runtime: "claude",
-      session: "session",
-      agent: "agent",
-      role: "worker",
-      ...summarizeAgentCalls(
-        await readClaudeTranscript(project.resolve("agent.jsonl")),
-      ),
+      ...identity,
+      ...summarizeAgentCalls(read),
+      ...summarizeAgentTask(identity, read),
     },
   };
 }
@@ -513,4 +524,139 @@ test("aggregates runs of several sessions by role, model and day", async () => {
   expect(output).toMatch(/\| 2026-11-18 \| 2 \| 4 \|/u);
 
   expect(output).toMatch(/\| 2026-11-19 \| 1 \| 2 \|/u);
+});
+
+test("attributes a run to its brief lines, planner mode and hand-back outcome", async () => {
+  const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: agents.26\nBacklog: agents.24\nBudget: standard\n\nconsultant for plan #800; Backlog: agents.1 is quoted.";
+
+  const handback = [
+    {
+      type: "user",
+      message: { content: brief },
+    },
+    {
+      type: "assistant",
+      message: {
+        id: "first",
+        model: "claude-opus-5-5",
+        content: [
+          {
+            type: "text",
+            text: "Done.",
+          },
+          {
+            type: "tool_use",
+            id: "handback",
+            name: "SubagentHandback",
+            input: { message: "**Budget stop:** half the sites moved." },
+          },
+        ],
+        usage,
+      },
+    },
+  ]
+    .map((entry) => JSON.stringify(entry))
+    .join("\n");
+
+  const project = createTemporaryProject({ "agent.jsonl": handback });
+
+  const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
+
+  expect(summarizeAgentTask({ agent: "agent", role: "planner" }, read)).toEqual(
+    {
+      issue: "AUAUST/lib-js-engrenage#809",
+      backlog: ["agents.26", "agents.24"],
+      mode: "consultant",
+      outcome: "budget",
+    },
+  );
+
+  expect(
+    summarizeAgentTask(
+      {
+        agent: "agent",
+        role: "worker",
+      },
+      {
+        brief: "Draft: /x/.ai/issues/a.md\n\ninner parts",
+        report: "Scope stop: two issues",
+      },
+    ),
+  ).toEqual({ draft: "/x/.ai/issues/a.md", outcome: "scope" });
+
+  expect(
+    summarizeAgentTask({ agent: "main", role: "main" }, { report: "Done." }),
+  ).toEqual({});
+});
+
+test("records no report for a transcript ending on a tool call", async () => {
+  const interrupted = [
+    {
+      type: "assistant",
+      message: {
+        id: "first",
+        model: "claude-opus-5-5",
+        content: [
+          {
+            type: "text",
+            text: "Let me run the tests.",
+          },
+          {
+            type: "tool_use",
+            id: "bash",
+            name: "Bash",
+          },
+        ],
+        usage,
+      },
+    },
+  ]
+    .map((entry) => JSON.stringify(entry))
+    .join("\n");
+
+  const project = createTemporaryProject({ "agent.jsonl": interrupted });
+
+  const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
+
+  expect(read.report).toBeUndefined();
+
+  expect(summarizeAgentTask({ agent: "agent", role: "worker" }, read)).toEqual({
+    outcome: "unreported",
+  });
+});
+
+test("aggregates runs by outcome and by role with planner mode", async () => {
+  function run(agent: string, role: string, task: object) {
+    return {
+      runtime: "claude",
+      session: "session",
+      agent,
+      role,
+      stops: 1,
+      turns: 1,
+      tools: {},
+      models: [],
+      startContext: 0,
+      peakContext: 0,
+      ...task,
+    };
+  }
+
+  const output = formatAgentOutcomes(
+    [
+      run("a", "worker", { outcome: "completion" }),
+      run("b", "worker", { outcome: "budget" }),
+      run("c", "planner", { mode: "inner", outcome: "completion" }),
+      run("main", "main", {}),
+    ],
+    await readModelFacts(),
+  );
+
+  expect(output).toMatch(/\| completion \| 2 \|/u);
+
+  expect(output).toMatch(/\| - \| 1 \|/u);
+
+  expect(output).toMatch(/\| planner inner: completion \| 1 \|/u);
+
+  expect(output).toMatch(/\| worker: budget \| 1 \|/u);
 });

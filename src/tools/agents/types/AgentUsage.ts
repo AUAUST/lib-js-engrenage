@@ -6,7 +6,6 @@ import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
 import type { AgentResultTotals } from "#tools/agents/types/AgentResultTotals";
 
 export interface AgentUsage {
-  readonly issue?: string;
   readonly started?: string;
   readonly ended?: string;
   // @debt `turns` counts API calls, not user turns, and `AgentRun.stops` counts stop events: names that mislead readers of the stats

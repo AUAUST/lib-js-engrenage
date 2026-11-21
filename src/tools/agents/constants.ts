@@ -129,11 +129,11 @@ export const budgetModes = freeze(["warn", "deny"] as const);
 export const defaultBudgetMode = "warn" as const;
 
 export const defaultBudgets = freeze({
-  goal: 60,
-  context: 80,
-  doneWhen: 60,
+  goal: 150,
+  context: 150,
+  doneWhen: 150,
   comment: 150,
-  backlogEntry: 60,
+  backlogEntry: 100,
 } as const);
 
 export const defaultOutputLimit = 10_000;
@@ -190,3 +190,21 @@ export const agentRunExtensions = freeze({
   recorded: ".json",
   running: ".running",
 } as const);
+
+export const reportMarkers = freeze([
+  { outcome: "budget", marker: "Budget stop:" },
+  { outcome: "scope", marker: "Scope stop:" },
+  { outcome: "linked", marker: "Linked defect:" },
+] as const);
+
+export const agentOutcomes = freeze([
+  "completion",
+  "budget",
+  "scope",
+  "linked",
+  "unreported",
+] as const);
+
+export const plannerRole = "planner";
+
+export const plannerModes = freeze(["inner", "consultant", "reshape"] as const);

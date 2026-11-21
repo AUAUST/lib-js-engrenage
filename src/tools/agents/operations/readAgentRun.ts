@@ -18,7 +18,12 @@ import {
 import { readTextFile } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { standardTier, unknownModel } from "#tools/agents/constants";
+import {
+  agentOutcomes,
+  plannerModes,
+  standardTier,
+  unknownModel,
+} from "#tools/agents/constants";
 import { budgetLevels } from "#tools/agents/metalbrain/index";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { File } from "#types/File";
@@ -45,6 +50,10 @@ const runEntries = {
   role: string(),
   stops: count,
   issue: exactOptional(string()),
+  draft: exactOptional(string()),
+  backlog: exactOptional(array(string())),
+  mode: exactOptional(picklist(plannerModes)),
+  outcome: exactOptional(picklist(agentOutcomes)),
   started: exactOptional(string()),
   ended: exactOptional(string()),
   turns: count,

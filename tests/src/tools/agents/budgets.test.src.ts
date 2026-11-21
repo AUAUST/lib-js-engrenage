@@ -28,11 +28,11 @@ describe("budgets", () => {
 
     expect(await loadBudgets(project.root)).toEqual({
       mode: "warn",
-      goal: 60,
-      context: 80,
-      doneWhen: 60,
+      goal: 150,
+      context: 150,
+      doneWhen: 150,
       comment: 150,
-      backlogEntry: 60,
+      backlogEntry: 100,
     });
   });
 
@@ -49,7 +49,7 @@ describe("budgets", () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": "export default {};\n",
-      ".ai/backlog/tools.md": `# tools\n\n## 1. Short\n\n- why: ${words(5)}\n\n## 2. Long\n\n- why: ${words(80)}\n`,
+      ".ai/backlog/tools.md": `# tools\n\n## 1. Short\n\n- why: ${words(5)}\n\n## 2. Long\n\n- why: ${words(120)}\n`,
     });
 
     const findings = await measureEditedFile(
@@ -62,7 +62,7 @@ describe("budgets", () => {
       {
         subject: "2. Long",
         kind: "backlogEntry",
-        budget: 60,
+        budget: 100,
       },
     ]);
   });
@@ -71,7 +71,7 @@ describe("budgets", () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": "export default {};\n",
-      ".ai/backlog/tools.md": `# tools\n\n## 1. Fenced\n\n- why: ${words(70)}\n\n\`\`\`md\n## Not an entry\n${words(70)}\n\`\`\`\n`,
+      ".ai/backlog/tools.md": `# tools\n\n## 1. Fenced\n\n- why: ${words(110)}\n\n\`\`\`md\n## Not an entry\n${words(110)}\n\`\`\`\n`,
     });
 
     const findings = await measureEditedFile(
@@ -113,18 +113,18 @@ describe("budgets", () => {
 
     expect(measureGithubCommand(task(words(40)), budgets)).toEqual([]);
 
-    expect(measureGithubCommand(task(words(120)), budgets)).toEqual([
+    expect(measureGithubCommand(task(words(200)), budgets)).toEqual([
       {
         subject: "gh issue create, Context",
         kind: "context",
-        words: 120,
-        budget: 80,
+        words: 200,
+        budget: 150,
       },
     ]);
 
     expect(
       measureGithubCommand(
-        task(`${words(70)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
+        task(`${words(140)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
         budgets,
       ),
     ).toEqual([]);

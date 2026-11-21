@@ -1,0 +1,31 @@
+import { formatAgentCost } from "#tools/agents/utils/formatAgentCost";
+import { formatCount } from "#tools/agents/utils/formatCount";
+import { formatMarkdownTable } from "#tools/agents/utils/formatMarkdownTable";
+import { priceAgentUsage } from "#tools/agents/utils/priceAgentUsage";
+import { weighAgentUsage } from "#tools/agents/utils/weighAgentUsage";
+import type { ModelFacts } from "#tools/agents/metalbrain/index";
+import type { AgentGroupEntry } from "#tools/agents/types/AgentGroupEntry";
+
+export function formatAgentGroups(
+  label: string,
+  entries: readonly AgentGroupEntry[],
+  facts: ModelFacts,
+): string {
+  const groups = Map.groupBy(entries, ({ group }) => group);
+
+  const rows = [...groups]
+    .toSorted(([left], [right]) => left.localeCompare(right))
+    .map(([group, members]) => {
+      const usage = members.flatMap((member) => member.usage);
+
+      return [
+        group,
+        String(new Set(members.map((member) => member.run)).size),
+        String(usage.reduce((sum, entry) => sum + entry.calls, 0)),
+        formatCount(weighAgentUsage(usage)),
+        formatAgentCost(priceAgentUsage(facts, usage)),
+      ];
+    });
+
+  return formatMarkdownTable([label, "Runs", "Calls", "Units", "Cost"], rows);
+}

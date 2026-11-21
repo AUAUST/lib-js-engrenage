@@ -11,6 +11,7 @@ import {
 } from "#tools/agents/metalbrain/index";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
+import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { AgentRunBudget } from "#tools/agents/types/AgentRunBudget";
 import type { Directory } from "#types/Directory";
@@ -68,6 +69,7 @@ export async function recordClaudeRun(
         {
           ...run,
           ...summarizeAgentCalls(read),
+          ...summarizeAgentTask(run, read),
           ...(await readRunBudget(directory, run)),
         },
         options,

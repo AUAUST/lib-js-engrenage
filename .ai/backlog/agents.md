@@ -142,10 +142,11 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: §Finishing lists a completion or a blocked report; `Budget stop:` lives only in Analysis › Budget levels.
 - want: the skill names it, or defers to the shared rule.
 
-## 26. Agent stats cannot attribute runs to tasks or outcomes
+## 26. Run records cannot tell blocked reports or every planner mode
 
-- why: `agents stats` gives cost by role, model and day only; #809's experiments need outcomes per run.
-- want: run records carrying task, hand-back outcome (completion, budget, scope or blocked stop) and planner mode (inner, consultant, reshape), and an `--outcome` aggregate.
+- sites: `src/tools/agents/utils/summarizeAgentTask.ts:39`, `src/tools/agents/utils/summarizeAgentTask.ts:46`
+- why: blocked reports open with no marker, so run records count them as completions; planner briefs state their mode as a bare word, read from its first occurrence.
+- want: a `Blocked:` report opening and a `Mode:` brief line in the instructions, then their detection.
 
 ## 27. Open questions on token spend from #771
 

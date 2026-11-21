@@ -22,7 +22,6 @@ import {
   type ModelFacts,
 } from "#tools/agents/metalbrain/index";
 import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
-import { findBriefedIssue } from "#tools/github/index";
 import type { AgentCall } from "#tools/agents/types/AgentCall";
 import type { AgentCompaction } from "#tools/agents/types/AgentCompaction";
 import type { AgentToolResult } from "#tools/agents/types/AgentToolResult";
@@ -40,7 +39,12 @@ const blockSchema = looseObject({
   name: optional(string()),
   text: optional(string()),
   input: fallback(
-    optional(looseObject({ command: fallback(optional(string()), undefined) })),
+    optional(
+      looseObject({
+        command: fallback(optional(string()), undefined),
+        message: fallback(optional(string()), undefined),
+      }),
+    ),
     undefined,
   ),
   tool_use_id: optional(string()),
@@ -92,6 +96,8 @@ const entrySchema = looseObject({
 });
 
 const syntheticModel = "<synthetic>";
+
+const handbackTool = "SubagentHandback";
 
 interface ResultEntry extends AgentToolResult {
   chars: number;
@@ -153,7 +159,8 @@ export async function readClaudeTranscript(
 
   const compactions: AgentCompaction[] = [];
 
-  let issue: string | undefined;
+  let brief: string | undefined;
+  let report: string | undefined;
   let started: string | undefined;
   let ended: string | undefined;
   let briefed = false;
@@ -192,15 +199,9 @@ export async function readClaudeTranscript(
       if (!briefed) {
         briefed = true;
 
-        const brief = isString(message.content)
+        brief = isString(message.content)
           ? message.content
           : message.content?.find((block) => block.type === "text")?.text;
-
-        const found = brief == null ? undefined : findBriefedIssue(brief);
-
-        issue = found === undefined
-          ? undefined
-          : `${found.repository}#${found.number}`;
       }
 
       for (const block of isArray(message.content) ? message.content : []) {
@@ -229,6 +230,16 @@ export async function readClaudeTranscript(
     entries.set(message.id, entry);
 
     for (const block of isArray(message.content) ? message.content : []) {
+      if (
+        block.type === "text" &&
+        block.text !== undefined &&
+        block.text.trim() !== ""
+      ) {
+        report = block.text;
+      } else if (block.type === "tool_use") {
+        report = block.name === handbackTool ? block.input?.message : undefined;
+      }
+
       if (
         block.type !== "tool_use" ||
         block.id === undefined ||
@@ -307,7 +318,8 @@ export async function readClaudeTranscript(
   return {
     calls,
     compactions,
-    ...(issue === undefined ? {} : { issue }),
+    ...(brief === undefined ? {} : { brief }),
+    ...(report === undefined ? {} : { report }),
     ...(started === undefined ? {} : { started }),
     ...(ended === undefined ? {} : { ended }),
   };

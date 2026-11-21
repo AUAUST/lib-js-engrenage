@@ -80,7 +80,8 @@ function measureGap(previous: AgentCall, call: AgentCall): number | undefined {
 export function summarizeAgentCalls({
   calls,
   compactions,
-  ...run
+  started,
+  ended,
 }: AgentTranscript): AgentUsage {
   const tools: Record<string, number> = {};
 
@@ -159,7 +160,8 @@ export function summarizeAgentCalls({
   }
 
   return {
-    ...run,
+    ...(started === undefined ? {} : { started }),
+    ...(ended === undefined ? {} : { ended }),
     turns: calls.length,
     tools,
     models: summarizeModels(calls),

@@ -493,7 +493,10 @@ describe("fragment fillers", () => {
 
     expect(
       await filesystem.glob([".claude/skills/*/*", ".claude/agents/*"]),
-    ).toEqual([".claude/skills/curation/SKILL.md"]);
+    ).toEqual([
+      ".claude/skills/curation/SKILL.md",
+      ".claude/skills/curation/dispatching.md",
+    ]);
 
     expect(await filesystem.read(".claude/skills/curation/SKILL.md")).toContain(
       "@reference @auaust/engrenage/metalbrain/skills/curation.md",

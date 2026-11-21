@@ -15,6 +15,11 @@ export default defineLazyCommand({
       .option(
         "--since <date>",
         "aggregate the runs started on or after this date by role, model and day",
+      )
+      .option(
+        "--outcome",
+        "aggregate the runs of every session, or those since --since, by hand-back outcome and by role and planner mode with outcome",
+        false,
       );
   },
   action() {

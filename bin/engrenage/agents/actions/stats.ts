@@ -1,6 +1,7 @@
 import {
   claudeSessionVariable,
   formatAgentAggregate,
+  formatAgentOutcomes,
   formatAgentRuns,
   listAgentSessions,
   readAgentRuns,
@@ -58,7 +59,7 @@ function selectSession(
 
 export default async function (
   requested: string | undefined,
-  { all, since }: { all: boolean; since?: string },
+  { all, since, outcome }: { all: boolean; since?: string; outcome: boolean },
 ): Promise<void> {
   const config = await loadValidatedConfig(
     await resolveMainWorktree(process.cwd()),
@@ -75,15 +76,17 @@ export default async function (
 
   const facts = await readModelFacts();
 
-  if (all || since !== undefined) {
+  if (all || outcome || since !== undefined) {
     const selected = selectSince(runs, since);
 
     if (selected.length === 0) {
       throw new Error("No agent run recorded");
     }
 
+    const format = outcome ? formatAgentOutcomes : formatAgentAggregate;
+
     getRunContext().reporter.log(
-      `${since === undefined ? "Every session" : `Since ${since}`}\n\n${formatAgentAggregate(selected, facts)}`,
+      `${since === undefined ? "Every session" : `Since ${since}`}\n\n${format(selected, facts)}`,
     );
 
     return;

@@ -139,3 +139,4 @@
 - Bash cat on long scratchpad reports: read a 45 kB synthesis with cat — output spilled to a file twice; re-read it with Read
 - Run records for budget-hook coverage: needed when `checkBudget` started to judge "0 budget stops" — no record or doc dates the hook; took it from `git log` on `checkBudget.ts` (6331641f3, 2026-11-20 23:01)
 - engrenage gate backlog-sites: a `file:36-46` line range in a sites bullet — refused, only `file:line` spans; listed each line
+- engrenage gate --worktree in the main checkout: gated agents.26 work — failed on another session's uncommitted budget defaults (`budgets.test.src.ts`) and on a test failing at HEAD; checked each failure against my diff

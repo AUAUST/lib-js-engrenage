@@ -78,17 +78,17 @@ export interface AgentsInput {
     mode?: (("warn" | "deny") | undefined)
     /**
      * Words of the **Goal** section of an issue.
-     * @default 60
+     * @default 150
      */
     goal?: (number | undefined)
     /**
      * Words of the **Context** section of an issue.
-     * @default 80
+     * @default 150
      */
     context?: (number | undefined)
     /**
      * Words of the **Done when** section of an issue.
-     * @default 60
+     * @default 150
      */
     doneWhen?: (number | undefined)
     /**
@@ -98,7 +98,7 @@ export interface AgentsInput {
     comment?: (number | undefined)
     /**
      * Words of one entry of `.ai/backlog/*.md`.
-     * @default 60
+     * @default 100
      */
     backlogEntry?: (number | undefined)
   } | undefined)
