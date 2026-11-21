@@ -114,18 +114,24 @@ Shared agent instructions, skills and the backlog conventions.
 - why: the agent-records rule now covers findings told in chat and those an agent reports; walking §Review still names only missed debt, and issues › Recording restates the chat rule for analysis and planning.
 - want: both pointing at the agent-records rule.
 
-## 22. A shaper's review markers have no settled checkout
-
-- sites: `data/metalbrain/skills/shape.md:54`
-- why: shape bars edits while an agent changes files in the main checkout, and markers added before a worktree agent's cherry-pick can conflict with it.
-- want: §Review stating where and when to add markers.
-
-## 23. No hook reminds a main session of records due at turn end
+## 22. No hook reminds a main session of records due at turn end
 
 - why: proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only.
 - want: a decision on that hook.
 
-## 24. Nothing bounds the always-loaded instruction words per role
+## 23. Nothing bounds the always-loaded instruction words per role
 
 - why: since 2026-11-10, `data/metalbrain/` and `AGENTS.md` grew 5,345 lines for 1,260 deleted; every agent starts with ~5k words, planners ~12k. Instruction count lowers adherence (IFScale, ManyIFEval; AGENTS.md study, ICLR 2026).
 - want: a sync check reporting each role's always-loaded words against a budget that only a decision raises.
+
+## 24. The issue-drafts section budgets lag the configured defaults
+
+- sites: `data/metalbrain/rules/issue-drafts.md:74`
+- why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` in `src/tools/agents/constants.ts` became 150 each in 0fd960a2; a project's configured budgets can differ from both.
+- want: the rule rendering the configured values through an `agents.fillers` filler, as `agent-limits` does, also for the budgets rule.
+
+## 25. Shape's per-pool K leaves a writer's checkout unsettled
+
+- sites: `data/metalbrain/skills/shape.md:17`, `data/metalbrain/shared/worktree-dispatch.md:10`
+- why: worktree dispatch puts agents in the main checkout at K = 1; shape's writers pool has K = 1 beside implementers at 2, so a writer may edit the main checkout while worktree work is cherry-picked or reviewed gaps are closed there.
+- want: shape stating which checkout each pool's agents use.

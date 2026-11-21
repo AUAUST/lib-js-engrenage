@@ -10,7 +10,7 @@ description: Shape, with the user, an idea whose definition or approach is not
 
 # Shape
 
-Turn the user's idea into settled work over one conversation: you keep the overview, settle the requirements with the user and compare the facts agents bring back, while agents investigate and implement in the background. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it. The idea may concern any part of the project.
+Turn the user's idea into settled work over one conversation: you keep the overview, settle the requirements with the user and compare the facts agents bring back, while agents investigate and implement in the background. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it.
 
 Keep this role for the whole session.
 
@@ -80,10 +80,10 @@ For work in another registered repository, once the user confirmed the location 
 
 ## Review
 
-Review each returned diff lightly against what you briefed: `git diff --stat` from its dispatch base, then the hunks your brief concerns, skipping generated files and lockfiles.
+Check each returned diff against its brief and its issue's outcome sections, those stating what must hold once done: `git diff --stat` from its dispatch base, then the hunks they concern, skipping generated files and lockfiles.
 
-- Look for gaps against the brief, duplication, missed reuse, debt and a missing changeset the Environment table requires; add the `@debt` markers and the changeset the agent missed, and handle each finding outside the brief, from the diff or the report, by §Agents.
-- Close a gap yourself when §Agents lets you make the change; resume the agent with every other gap in one message.
+- Look for gaps against them, duplication, missed reuse, debt and a missing changeset the Environment table requires; handle each finding outside the brief by §Agents.
+- Close each gap §Agents lets you change, `@debt` markers included, between `worktree-dispatch.md` › Committing work, steps 1 and 2; resume the agent with every other gap in one message.
 
 ## Commit
 

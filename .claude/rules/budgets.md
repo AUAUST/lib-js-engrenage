@@ -8,7 +8,7 @@ paths:
 
 # Writing budgets
 
-Backlog entry budget: ~60 words.
+Backlog entry budget: ~100 words.
 
 - Treat every word budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
 - Cut repetition to meet a budget, never decisions.
