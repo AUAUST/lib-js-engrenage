@@ -126,3 +126,6 @@
 - `pnpm engrenage planning issue publish`: moving closed segments to a new parent plan — refused until every leaf under them was claimed, their ancestor chain changing; claimed 14 closed leaves and republished, past the 120s Bash timeout
 - worktree isolation: compound command chaining tests and git status — refused as git too complex; split into separate calls
 - Claude Code worktree isolation: a shell function running several sed reads, naming no git — refused as too complex; ran plain sed reads per directory
+- `pnpm engrenage sync` before `pnpm run support codegen schemas`: a new `metadataSchemas` entry — sync failed on the missing schema file; ran codegen first, then sync
+- worktree isolation: python heredoc editing files, naming `git` as a string — refused as git too complex; edited through the edit tools
+- `pnpm engrenage gate --worktree`: `tests/scripts/codegen/config.test.src.ts` hit its 5s timeout under the gate load, twice in four runs, and passed alone — reran the gate

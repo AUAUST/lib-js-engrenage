@@ -1,7 +1,8 @@
+import { map } from "@auaust/toolkit/array";
 import { unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
-import { rootScope } from "#batiment/scopes/constants";
+import { rootScope, workspaceMetadataFile } from "#batiment/scopes/constants";
 import { getEnvironmentId } from "#batiment/scopes/utils/getEnvironmentId";
 import type {
   StructureDiagnostic,
@@ -11,6 +12,7 @@ import type { Scope } from "#batiment/scopes/types/Scope";
 import type { ScopeTree } from "#batiment/scopes/types/ScopeTree";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
+import type { Glob } from "#types/Glob";
 
 const noFiles = freeze([]);
 
@@ -35,6 +37,7 @@ function createDiagnostic(
 export function createScopeTree({
   environments,
   workspaces,
+  missing,
 }: {
   environments: readonly {
     readonly name: string;
@@ -42,8 +45,16 @@ export function createScopeTree({
     readonly dirs: Directories;
   }[];
   workspaces: Directories;
+  missing: readonly { readonly dir: Directory; readonly glob: Glob }[];
 }): ScopeTree {
-  const diagnostics: StructureDiagnostic[] = [];
+  const diagnostics: StructureDiagnostic[] = map(missing, ({ dir, glob }) => {
+    return createDiagnostic(
+      "missing-workspace",
+      dir,
+      `directory matched by workspaces.${glob} holds no ${workspaceMetadataFile}`,
+    );
+  });
+
   const dirs = [...unique(workspaces)];
 
   const scopes: Record<string, Scope> = {

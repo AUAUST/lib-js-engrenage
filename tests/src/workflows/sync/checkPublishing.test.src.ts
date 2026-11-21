@@ -43,6 +43,7 @@ async function check(
 
 function createWorkspace(manifest: object) {
   return {
+    "extensions/a/.workspace.json": "{}",
     "extensions/a/src/index.ts": "",
     "extensions/a/package.json": JSON.stringify({
       name: "ext-a",

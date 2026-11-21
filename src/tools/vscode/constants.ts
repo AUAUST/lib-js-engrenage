@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { workspaceMetadataFile } from "#batiment/scopes/constants";
 import {
   domainMetadataFile,
   namespaceMetadataFile,
@@ -21,6 +22,10 @@ export const metadataSchemas = freeze([
   {
     file: domainMetadataFile,
     schema: `${engrenage}/schemas/domain.schema.json`,
+  },
+  {
+    file: workspaceMetadataFile,
+    schema: `${engrenage}/schemas/workspace.schema.json`,
   },
 ] as const);
 

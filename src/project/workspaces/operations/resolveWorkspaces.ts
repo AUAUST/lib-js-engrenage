@@ -18,6 +18,7 @@ import type { OutputOf } from "#foundation/options/index";
 import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
@@ -35,12 +36,14 @@ export async function resolveWorkspaces({
   options,
   typescriptFiles,
   entryGlob,
+  discoveredDirs,
 }: {
   root: Directory;
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
   entryGlob: Glob;
+  discoveredDirs: Directories;
 }): Promise<readonly ResolvedWorkspaceGroup[]> {
   const claimed = new Map<Directory, Glob>();
 
@@ -70,7 +73,8 @@ export async function resolveWorkspaces({
     return {
       glob,
       option,
-      dirs,
+      dirs: dirs.filter((dir) => discoveredDirs.includes(dir)),
+      missing: dirs.filter((dir) => !discoveredDirs.includes(dir)),
     };
   });
 
@@ -118,13 +122,14 @@ export async function resolveWorkspaces({
 
   return freeze(
     await Promise.all(
-      iterable.map(matched, async ({ glob, option, dirs }) => {
+      iterable.map(matched, async ({ glob, option, dirs, missing }) => {
         const { generated, discovered, tsconfig } = option;
 
         return freeze({
           glob,
           active: dirs.length > 0,
           dirs,
+          missing,
           generated,
           discovered,
           globs: flatMap(dirs, (dir) => filesIn(dir, typescriptFiles)),

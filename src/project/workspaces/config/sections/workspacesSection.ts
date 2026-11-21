@@ -1,4 +1,4 @@
-import { flatMap } from "@auaust/toolkit/array";
+import { flatMap, map } from "@auaust/toolkit/array";
 
 import { withExtensions } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
@@ -16,7 +16,10 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const { files } = await config.resolve("typescript.options");
+    const [{ files }, discovery] = await Promise.all([
+      config.resolve("typescript.options"),
+      config.resolve("scopes.discovery"),
+    ]);
 
     const languages = await config.context.registry.contributions(
       "languages",
@@ -37,6 +40,7 @@ export const workspacesSection = declareSection({
       ),
       typescriptFiles: files,
       entryGlob: withExtensions(workspaceEntryStem, extensions),
+      discoveredDirs: map(discovery.workspaces, ({ dir }) => dir),
     });
   },
 });

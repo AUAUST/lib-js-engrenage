@@ -119,7 +119,11 @@ async function indexProject(root: string) {
     },
     roles,
     testPatterns: tests.patterns,
-    scopes: createScopeTree({ environments: [], workspaces: [] }),
+    scopes: createScopeTree({
+      environments: [],
+      workspaces: [],
+      missing: [],
+    }),
     outDir: "dist",
     aliases,
     packageName: "library",

@@ -5,6 +5,7 @@ export type * from "#project/workspaces/types/WorkspaceTsconfig";
 // @end
 
 // @barrel config/schemas
+export { workspaceSchema } from "#project/workspaces/config/schemas/workspaceSchema";
 export { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 // @end
 
@@ -13,6 +14,7 @@ export { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspa
 // @end
 
 // @barrel config/sections
+export { discoverySection } from "#project/workspaces/config/sections/discoverySection";
 export { scopesSection } from "#project/workspaces/config/sections/scopesSection";
 export { workspacesSection } from "#project/workspaces/config/sections/workspacesSection";
 // @end

@@ -41,8 +41,10 @@ function createApp({
     "tsconfig.json": "{}",
     ...(app ? { "shopify.app.toml": "" } : {}),
     ".prettierignore": "# @ignore project\n# @end\n",
+    "extensions/a/.workspace.json": "{}",
     "extensions/a/package.json": JSON.stringify({}),
     "extensions/a/src/index.tsx": "",
+    "extensions/b/.workspace.json": "{}",
     "extensions/b/package.json": JSON.stringify({}),
     "extensions/b/src/index.tsx": "",
   });

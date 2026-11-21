@@ -2,7 +2,6 @@ import {
   array,
   boolean,
   lazy,
-  optional,
   picklist,
   string,
   union,
@@ -11,13 +10,13 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { schemaReferenceSchema } from "#batiment/environments/config/schemas/schemaReferenceSchema";
 import { structureKeySchema } from "#batiment/environments/config/schemas/structureKeySchema";
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import {
   declare,
   declareObject,
   declareRecord,
-  validate,
   type Declaration,
 } from "#foundation/options/index";
 import type { DomainDeclaration } from "#batiment/environments/types/DomainDeclaration";
@@ -65,25 +64,6 @@ function declareChildren() {
     ),
   };
 }
-
-const schemaReference = optional(string());
-
-function resolveSchemaReference(
-  input: unknown,
-  _context: unknown,
-  path: string,
-): string | undefined {
-  return validate(schemaReference, input, path);
-}
-
-const $schema: Declaration<
-  string | undefined,
-  string | undefined,
-  unknown
-> = freeze({
-  schema: schemaReference,
-  resolve: resolveSchemaReference,
-});
 
 const namespaceFields = freeze({
   layers: declare(array(string()), {
@@ -176,8 +156,11 @@ const nodes = freeze({
   namespace: namespaceNode,
   domain: domainNode,
   metadata: freeze({
-    namespace: declareObject({ $schema, ...namespaceFields }),
-    domain: declareObject({ $schema, ...domainFields }),
+    namespace: declareObject({
+      $schema: schemaReferenceSchema,
+      ...namespaceFields,
+    }),
+    domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),
   }),
 });
 

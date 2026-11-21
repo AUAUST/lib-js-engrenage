@@ -1,13 +1,13 @@
 import type { Extension } from "#project/config/index";
 
 /**
- * Owns the `workspaces` and `scopes` config keys.
+ * Owns the `workspaces`, `scopes` and `scopes.discovery` config keys.
  */
 export default {
   name: "project/workspaces",
   owns: {
     keys: {
-      workspaces: {
+      "workspaces": {
         input: "workspaces",
         async load() {
           const {
@@ -17,13 +17,22 @@ export default {
           return workspacesSection;
         },
       },
-      scopes: {
+      "scopes": {
         async load() {
           const {
             scopesSection,
           } = await import("#project/workspaces/config/sections/scopesSection");
 
           return scopesSection;
+        },
+      },
+      "scopes.discovery": {
+        async load() {
+          const {
+            discoverySection,
+          } = await import("#project/workspaces/config/sections/discoverySection");
+
+          return discoverySection;
         },
       },
     },

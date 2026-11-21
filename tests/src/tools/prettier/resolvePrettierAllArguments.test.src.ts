@@ -18,6 +18,7 @@ const files = {
   "tsconfig.json": "{}",
   "src/index.ts": "",
   "lefthook.yml": "",
+  "packages/a/.workspace.json": "{}",
   "packages/a/package.json": "{}",
   "README.md": "",
   "notes/todo.md": "",

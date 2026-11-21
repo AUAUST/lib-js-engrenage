@@ -127,6 +127,10 @@
     {
       "fileMatch": ["**/.domain.json"],
       "url": "./data/schemas/domain.schema.json"
+    },
+    {
+      "fileMatch": ["**/.workspace.json"],
+      "url": "./data/schemas/workspace.schema.json"
     }
   ],
   "eslint.codeActionsOnSave.mode": "problems",

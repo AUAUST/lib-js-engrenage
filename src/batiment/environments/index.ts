@@ -21,5 +21,6 @@ export { domainMetadataSchema } from "#batiment/environments/config/schemas/doma
 export { domainSchema } from "#batiment/environments/config/schemas/domainSchema";
 export { namespaceMetadataSchema } from "#batiment/environments/config/schemas/namespaceMetadataSchema";
 export { namespaceSchema } from "#batiment/environments/config/schemas/namespaceSchema";
+export { schemaReferenceSchema } from "#batiment/environments/config/schemas/schemaReferenceSchema";
 export { structureKeySchema } from "#batiment/environments/config/schemas/structureKeySchema";
 // @end

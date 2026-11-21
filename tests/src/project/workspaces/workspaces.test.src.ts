@@ -40,12 +40,15 @@ const files = {
   }),
   "tsconfig.json": "{}",
   "src/index.ts": "",
+  "extensions/action-a/.workspace.json": "{}",
   "extensions/action-a/src/index.tsx": "",
   "extensions/action-a/package.json": JSON.stringify({
     shopify: { handle: "a" },
     dependencies: { "@scope/app-action-b": "workspace:*" },
   }),
+  "extensions/action-b/.workspace.json": "{}",
   "extensions/action-b/src/index.ts": "",
+  "extensions/functions-c/.workspace.json": "{}",
   "extensions/functions-c/src/index.ts": "",
 };
 
@@ -154,6 +157,7 @@ describe("workspaces", () => {
   test("detects the entry of a workspace holding only JavaScript", async () => {
     const project = createTemporaryProject({
       ...files,
+      "extensions/action-d/.workspace.json": "{}",
       "extensions/action-d/src/index.js": "",
     });
 
@@ -170,6 +174,7 @@ describe("workspaces", () => {
     const project = createTemporaryProject({
       ...files,
       "engrenage.config.ts": `export default { src: { node: 24 }, workspaces: { "theme": { name: "@scope/theme" } } };\n`,
+      "theme/.workspace.json": "{}",
       "theme/src/index.ts": "",
     });
 
@@ -310,6 +315,7 @@ describe("workspace modules", () => {
       "tsconfig.json": "{}",
       "src/index.ts": "",
       "shared/greeting.ts": 'export const greeting: string = "hello";\n',
+      "extensions/action-a/.workspace.json": "{}",
       "extensions/action-a/src/helper.ts": "export const helper: string = 'helped';\n",
       "extensions/action-a/src/index.ts": "import { greeting } from '$shared/greeting';\nimport { helper } from '#self/helper';\n\nexport const message: string = `${greeting} ${helper}`;\n",
     });

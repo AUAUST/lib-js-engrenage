@@ -15,6 +15,13 @@ function schemaUrl(root: string, name: string): string {
   return `./${relative(root, fileURLToPath(new URL(`../../../../data/schemas/${name}.schema.json`, import.meta.url)))}`;
 }
 
+function schemaEntry(root: string, name: string) {
+  return {
+    fileMatch: [`**/.${name}.json`],
+    url: schemaUrl(root, name),
+  };
+}
+
 async function syncSchemas(
   config: Awaited<ReturnType<typeof loadConfig>>,
   read: (path: string) => string,
@@ -96,6 +103,12 @@ describe("syncVscodeFiles", () => {
         "**/.domain.json"
       ],
       "url": "${schemaUrl(project.root, "domain")}"
+    },
+    {
+      "fileMatch": [
+        "**/.workspace.json"
+      ],
+      "url": "${schemaUrl(project.root, "workspace")}"
     }
   ]
 }
@@ -124,14 +137,9 @@ describe("syncVscodeFiles", () => {
 
     expect(await syncSchemas(config, project.read)).toEqual([
       own,
-      {
-        fileMatch: ["**/.namespace.json"],
-        url: schemaUrl(project.root, "namespace"),
-      },
-      {
-        fileMatch: ["**/.domain.json"],
-        url: schemaUrl(project.root, "domain"),
-      },
+      schemaEntry(project.root, "namespace"),
+      schemaEntry(project.root, "domain"),
+      schemaEntry(project.root, "workspace"),
     ]);
   });
 
@@ -182,10 +190,8 @@ describe("syncVscodeFiles", () => {
         fileMatch: ["*.namespace-like.json", "**/.namespace.json"],
         url: schemaUrl(project.root, "namespace"),
       },
-      {
-        fileMatch: ["**/.domain.json"],
-        url: schemaUrl(project.root, "domain"),
-      },
+      schemaEntry(project.root, "domain"),
+      schemaEntry(project.root, "workspace"),
     ]);
 
     await syncVscodeFiles(config);

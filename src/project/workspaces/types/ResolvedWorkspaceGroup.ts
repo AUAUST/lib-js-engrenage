@@ -8,6 +8,7 @@ export interface ResolvedWorkspaceGroup {
   readonly glob: Glob;
   readonly active: boolean;
   readonly dirs: Directories;
+  readonly missing: Directories;
   readonly generated: Globs;
   readonly discovered: Globs;
   readonly globs: Globs;
