@@ -152,3 +152,4 @@
 - `#workflows/cli` (commander) for the metalbrain CLI: route `metalbrain hook claude <event>` (#370) — the command layer roughly doubles a no-op hook call; a lookup table of hook actions instead
 - `valibot` and `@auaust/toolkit` guards in the metalbrain hook: validate model facts and payloads (#370) — the hook loads only Node builtins; hand-written guards marked as debt instead
 - scaffold-first workers: surface placement early, reviewable partial diffs (#790) — Steps already fix order and placement; stubs are debt and break Size; Size and budget stops cover both
+- per-scope alias tables in batiment: #741 alias ownership — `#…` aliases are language-bound and stay in `project/structure` until the language port (#732 › Batiment)
