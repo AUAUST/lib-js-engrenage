@@ -140,6 +140,8 @@ c
 
 - t → passes`;
 
+const segmentDoneWhen = "## Done when\n\n- The later items can start.";
+
 let issues: Map<number, MockIssue>;
 let toolkitIssues: Map<number, MockIssue>;
 let requests: string[];
@@ -397,7 +399,7 @@ beforeEach(() => {
       11,
       createIssue(11, {
         type: "Segment",
-        body: "#10 · Goal: the segment",
+        body: `#10 · Goal: the segment\n\n${segmentDoneWhen}`,
         subIssues: [13],
       }),
     ],
@@ -831,6 +833,8 @@ subIssues: ["#13"]
 ---
 
 Goal: the group
+
+${segmentDoneWhen}
 `,
     });
 
@@ -853,7 +857,7 @@ Goal: the group
   test("publishes a new Segment listed by a new Task", async () => {
     const root = createProject({
       ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
-      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
+      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n\n${segmentDoneWhen}\n`,
       ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
     });
 
@@ -866,6 +870,32 @@ Goal: the group
     expect({ lines, passed }).toMatchObject({ passed: true });
   });
 
+  test("publishes a Segment missing **Done when**, which only check and readiness refuse", async () => {
+    const root = createProject({
+      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
+      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
+      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+    });
+
+    const check = await checkIssues(
+      await loadConfig(root),
+      ["new-parent", "new-group", "new-step"],
+      "worker",
+    );
+
+    expect(check.lines).toContain(
+      "new-group: **Done when** is missing: write it.",
+    );
+
+    const { passed } = await publishIssues(await loadConfig(root), [
+      "new-parent",
+      "new-group",
+      "new-step",
+    ]);
+
+    expect(passed).toBe(true);
+  });
+
   async function changeClaimedSegment(parent: MockIssue) {
     issues.set(parent.number, parent);
 
@@ -873,7 +903,7 @@ Goal: the group
       31,
       createIssue(31, {
         type: "Segment",
-        body: `#${parent.number} · Goal: the segment`,
+        body: `#${parent.number} · Goal: the segment\n\n${segmentDoneWhen}`,
         subIssues: [32],
       }),
     );
@@ -918,8 +948,8 @@ Goal: the group
 
   test("fails checking a Segment draft listing another Segment draft", async () => {
     const root = createProject({
-      ".ai/issues/new-outer.draft.md": `---\ntitle: Outer\ntype: Segment\nsubIssues: ["#{new-inner}"]\n---\n\nGoal: the outer\n`,
-      ".ai/issues/new-inner.draft.md": `---\ntitle: Inner\ntype: Segment\nsubIssues: ["#13"]\n---\n\nGoal: the inner\n`,
+      ".ai/issues/new-outer.draft.md": `---\ntitle: Outer\ntype: Segment\nsubIssues: ["#{new-inner}"]\n---\n\nGoal: the outer\n\n${segmentDoneWhen}\n`,
+      ".ai/issues/new-inner.draft.md": `---\ntitle: Inner\ntype: Segment\nsubIssues: ["#13"]\n---\n\nGoal: the inner\n\n${segmentDoneWhen}\n`,
     });
 
     const { lines, passed } = await checkIssues(
@@ -1037,7 +1067,7 @@ Goal: the group
 
     await config.context.filesystem.write(
       ".ai/issues/new-group.draft.md",
-      `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
+      `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n\n${segmentDoneWhen}\n`,
     );
 
     await config.context.filesystem.write(
@@ -1059,7 +1089,7 @@ Goal: the group
 
     const step = [...issues.values()].find(({ title }) => title === "Step");
 
-    expect(group?.body).toBe("#10 · Goal: the group");
+    expect(group?.body).toBe(`#10 · Goal: the group\n\n${segmentDoneWhen}`);
 
     expect(step?.body.split("\n")[0]).toBe(
       `#10 › #${group?.number} · Goal: the step`,

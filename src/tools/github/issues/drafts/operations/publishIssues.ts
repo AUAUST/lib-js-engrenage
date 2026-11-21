@@ -194,6 +194,7 @@ export async function publishIssues(
 
   const context = await resolveDraftsContext(config);
 
+  // @debt `complete: false` alone states that publish leaves required sections, a Segment's sub-issue count and the audience to readiness; the contract check could expose its readiness part apart instead of a flag.
   const findings = [
     ...checkDrafts(read.drafts, context, {
       complete: false,

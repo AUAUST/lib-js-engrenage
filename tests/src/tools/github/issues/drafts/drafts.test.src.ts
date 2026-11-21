@@ -444,6 +444,10 @@ Complexity: null
 ---
 
 Goal: the segment
+
+## Done when
+
+- The later items can start.
 `,
     });
 
