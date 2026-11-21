@@ -6,9 +6,8 @@ export interface ImportGrants {
   readonly environments: Readonly<
     Partial<Record<string, readonly ImportCategory[]>>
   >;
-  readonly data: readonly string[];
   readonly elements: readonly string[];
-  readonly consumers: readonly string[];
+  readonly surface: Readonly<Partial<Record<string, readonly string[]>>>;
   readonly variants: Readonly<
     Partial<Record<TestVariant, readonly ImportCategory[]>>
   >;

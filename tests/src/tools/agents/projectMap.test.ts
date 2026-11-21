@@ -258,7 +258,7 @@ describe("project map", () => {
 
       const column = cells("| from / to |")?.indexOf("data") ?? -1;
 
-      expect(cells("| `src` |")?.[column]).toBe(published ? "never" : "yes");
+      expect(cells("| `src` |")?.[column]).toBe("yes");
 
       expect(overview.includes("## Test files")).toBe(published);
       expect(overview).toContain("the package name and its subpaths");

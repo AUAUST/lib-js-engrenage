@@ -95,7 +95,7 @@ function createLiquid(owns: readonly string[] = []): Extension {
           name: "liquid",
           level: "described",
           structure: "roles",
-          imports: [],
+          imports: {},
         },
       ],
       environments: [

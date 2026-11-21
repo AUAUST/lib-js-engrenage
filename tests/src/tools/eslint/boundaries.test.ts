@@ -535,6 +535,27 @@ describe("structure boundaries", () => {
     ).toEqual(["auaust/import-environments"]);
   });
 
+  test("keeps bin from importing the data environment", async () => {
+    const lint = await createLinter(
+      "auaust/import-environments",
+      createTemporaryProject({
+        "package.json": '{ "name": "app", "type": "module" }',
+        "engrenage.config.ts": 'export default { src: { structure: { layers: ["feature"] } } };\n',
+        "tsconfig.json": "{}",
+        "src/feature/index.ts": exported,
+        "bin/command.ts": exported,
+        "data/value.json": "{}",
+      }),
+    );
+
+    expect(
+      await lint(
+        "bin/command.ts",
+        'import value from "../data/value.json";\n\nexport { value };\n',
+      ),
+    ).toEqual(["auaust/import-environments"]);
+  });
+
   test("names the alias of a relative specifier and reports unknown paths", async () => {
     const lint = await createLinter("auaust/import-specifiers");
 

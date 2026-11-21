@@ -132,3 +132,5 @@
 - Claude Code worktree isolation: a python heredoc editing files, after two that ran — refused as unverifiable on the third; used the edit tools
 - `declare` `optional: true`: issue spec gave it for a leaf option — `true` only fits `declareObject`, crashed with `in` on a boolean; used `optional: { value: undefined }`
 - tsc with file arguments: `pnpm exec tsc --noEmit a.ts b.ts` in the repo — TS5112 refuses files beside a tsconfig; passed `--ignoreConfig`
+- commit gate vitest: `config.test.src.ts` "passes the check on the committed interface" timed out at 5000ms under parallel agent load — passed on retry
+- consultant brief `leaf in flight (integrating)`: read the leaf's shapes from its worktree and stash — the leaf had landed on main meanwhile; read main instead

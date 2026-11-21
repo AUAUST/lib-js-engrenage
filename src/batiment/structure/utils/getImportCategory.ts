@@ -1,4 +1,4 @@
-import { sourceEnvironment } from "#batiment/structure/constants";
+import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
 import { isEntryReference } from "#batiment/structure/utils/isEntryReference";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportEdge } from "#batiment/structure/types/ImportEdge";
@@ -15,10 +15,6 @@ export function getImportCategory(
   const environment = target?.environment;
 
   switch (environment) {
-    case sourceEnvironment: {
-      return "internal-aliases";
-    }
-
     case "dist": {
       return "dist-artefacts";
     }
@@ -28,7 +24,7 @@ export function getImportCategory(
     }
 
     default: {
-      return environment;
+      return getEnvironmentCategory(environment);
     }
   }
 }

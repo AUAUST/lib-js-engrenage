@@ -1,4 +1,4 @@
-import { array, boolean, optional, picklist, string } from "valibot";
+import { optional, picklist, record, string } from "valibot";
 
 import { freeze } from "@auaust/toolkit/object";
 
@@ -8,8 +8,8 @@ export const environmentKindFields = freeze({
   name: string(),
   level: picklist(["foreign", "described", "enforced"] as const),
   structure: optional(picklist(["domains", "roles"] as const)),
-  consumesSource: optional(boolean()),
-  imports: optional(array(string())),
+  imports: optional(record(string(), picklist(["whole", "surface"] as const))),
+  inward: optional(picklist(["open", "surface", "sealed"] as const)),
   layout: optional(string()),
 });
 

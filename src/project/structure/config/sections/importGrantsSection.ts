@@ -6,6 +6,7 @@ import {
   type ImportGrants,
 } from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
+import { listEnvironmentInstances } from "#project/structure/operations/listEnvironmentInstances";
 import type { ConfigResolver } from "#project/config/index";
 
 export const importGrantsSection = declareSection({
@@ -13,21 +14,12 @@ export const importGrantsSection = declareSection({
     const [traits, groups, environments] = await Promise.all([
       config.resolve("traits"),
       config.resolve("workspaces"),
-      config.resolve("environments"),
+      listEnvironmentInstances(config),
     ]);
 
     return freeze({
       published: traits.published,
-      ...resolveEnvironmentGrants(
-        traits.published,
-        environments.map(({ entry, kind }) => {
-          return {
-            name: entry.name,
-            title: entry.title,
-            kind,
-          };
-        }),
-      ),
+      ...resolveEnvironmentGrants(traits.published, environments),
       scopes: new Map(
         flatMap(groups, (group) => {
           return group.workspaces.map(({ dir, dependencies }) => {

@@ -67,10 +67,6 @@ export interface AuaustRules {
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
-   * bin, tooling and a published package's src never import data directories.
-   */
-  "auaust/import-data"?: Rule<[]>;
-  /**
    * A module of a ranked role imports at runtime only bindings declared in roles
    * of its effect level or purer, and external modules ranked likewise.
    */

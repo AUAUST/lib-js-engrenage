@@ -92,7 +92,7 @@ export function checkBoundary(
   importer: Entity,
   target: Entity,
   kind: ImportKind,
-  { elements, consumers }: ImportGrants,
+  { elements, surface }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { environment } = importer;
 
@@ -100,7 +100,10 @@ export function checkBoundary(
     return;
   }
 
-  if (consumers.includes(environment) && target.environment === "src") {
+  if (
+    target.environment !== undefined &&
+    surface[environment]?.includes(target.environment) === true
+  ) {
     return checkConsumerReach(importer, target, kind);
   }
 

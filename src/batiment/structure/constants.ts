@@ -8,8 +8,6 @@ export const defaultReexport = "namespace" satisfies ReexportMode;
 
 export const sourceEnvironment = "src";
 
-export const dataEnvironment = "data";
-
 export const importRelations = freeze({
   "own-roles": "its own roles and files, excluding its index and entry",
   "global-roles": "the global roles of the environment root",

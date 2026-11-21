@@ -1,4 +1,5 @@
 import { renderProjectMap } from "#batiment/structure/index";
+import { listEnvironmentInstances } from "#project/structure/operations/listEnvironmentInstances";
 import { listMappedEnvironments } from "#project/structure/operations/listMappedEnvironments";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -16,7 +17,7 @@ export async function fillProjectMap(
   const [{ structure }, environments, grants, roles, tests] = await Promise.all(
     [
       listMappedEnvironments(config),
-      config.resolve("environments"),
+      listEnvironmentInstances(config),
       config.resolve("importGrants"),
       config.resolve("environmentRoles"),
       config.resolve("tests"),
@@ -25,13 +26,7 @@ export async function fillProjectMap(
 
   return renderProjectMap({
     structure,
-    environments: environments.map(({ entry, kind }) => {
-      return {
-        name: entry.name,
-        title: entry.title,
-        kind,
-      };
-    }),
+    environments,
     grants,
     roles,
     patterns: tests.patterns,

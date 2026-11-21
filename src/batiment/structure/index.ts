@@ -64,7 +64,6 @@ export { resolveStructure } from "#batiment/structure/operations/resolveStructur
 
 // @barrel utils
 export { checkBoundary } from "#batiment/structure/utils/checkBoundary";
-export { checkData } from "#batiment/structure/utils/checkData";
 export { checkEnvironments } from "#batiment/structure/utils/checkEnvironments";
 export { checkLayers } from "#batiment/structure/utils/checkLayers";
 export { checkSurfaces } from "#batiment/structure/utils/checkSurfaces";
@@ -81,6 +80,7 @@ export { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation
 export { findStructureAliases } from "#batiment/structure/utils/findStructureAliases";
 export { flattenStructure } from "#batiment/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
+export { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
 export { getEnvironmentRootRole } from "#batiment/structure/utils/getEnvironmentRootRole";
 export { getImportCategory } from "#batiment/structure/utils/getImportCategory";
 export { getLocalRoleName } from "#batiment/structure/utils/getLocalRoleName";

@@ -1,3 +1,6 @@
+import type { EnvironmentRelation } from "#batiment/environments/types/EnvironmentRelation";
+import type { InwardPolicy } from "#batiment/environments/types/InwardPolicy";
+
 export interface EnvironmentKind {
   /**
    * Names the kind, which each environment of this kind names as its `kind`.
@@ -16,15 +19,16 @@ export interface EnvironmentKind {
    */
   readonly structure?: "domains" | "roles";
   /**
-   * Whether the kind's environments import `src` only through a domain's `index`,
+   * The kinds whose environments in the same scope the kind's environments
+   * import, by relation: `whole` any file, `surface` only a domain's `index`,
    * `entry` and public roles.
    */
-  readonly consumesSource?: boolean;
+  readonly imports?: Readonly<Record<string, EnvironmentRelation>>;
   /**
-   * The other kinds whose environments' files the kind's environments may
-   * import, besides their own.
+   * What other environments' grants into the kind's environments yield: `open` the
+   * grant as given, `surface` at most surface, `sealed`, the default, nothing.
    */
-  readonly imports?: readonly string[];
+  readonly inward?: InwardPolicy;
   /**
    * The layout the kind's environments take unless their options name another.
    */

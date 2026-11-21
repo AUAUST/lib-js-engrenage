@@ -44,7 +44,7 @@ The matrix states environment grants; domain and role boundaries still apply. No
 
 | from / to | public-entries | internal-aliases | tests | bin | scripts | tooling | data | dist-artefacts | map |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `src` | yes | yes | never | never | never | never | never | yes | `.claude/rules/project-map/src.md` |
+| `src` | yes | yes | never | never | never | never | yes | yes | `.claude/rules/project-map/src.md` |
 | `tests` | per variant | per variant | yes | per variant | per variant | per variant | yes | yes | `.claude/rules/project-map/tests.md` |
 | `bin` | yes | yes | never | yes | never | never | never | yes | `.claude/rules/project-map/bin.md` |
 | `scripts` | yes | yes | never | never | yes | never | yes | yes | `.claude/rules/project-map/scripts.md` |

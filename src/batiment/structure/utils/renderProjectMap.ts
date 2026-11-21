@@ -1,7 +1,6 @@
 import { entries, values } from "@auaust/toolkit/object";
 
 import {
-  dataEnvironment,
   importCategories,
   importRelations,
   sourceEnvironment,
@@ -29,10 +28,7 @@ function renderCell(
   category: ImportCategory,
   grants: ImportGrants,
 ): string {
-  // @debt the data column is found by the environment name `data`, while grants tell data apart by kind, so an environment of the data kind under another name renders as allowed
-  const forbidden = category === dataEnvironment
-    ? grants.data.includes(name)
-    : grants.environments[name]?.includes(category) === true;
+  const forbidden = grants.environments[name]?.includes(category) === true;
 
   if (forbidden) {
     return "never";
@@ -53,6 +49,22 @@ function renderCell(
   }
 
   return "yes";
+}
+
+function renderSurface({ surface }: ImportGrants): string {
+  const importers = new Map<string, string[]>();
+
+  for (const [importer, targets] of entries(surface)) {
+    for (const target of targets ?? []) {
+      importers.set(target, [...(importers.get(target) ?? []), importer]);
+    }
+  }
+
+  return [...importers]
+    .map(([target, names]) => {
+      return `${list(names)} import ${code(target)} only through a domain's \`index.ts\`, \`entry.ts\` and public roles.`;
+    })
+    .join(" ");
 }
 
 function listCategories(
@@ -130,7 +142,7 @@ export function renderProjectMap({
     "",
     "## Environments",
     "",
-    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${list(grants.consumers)} import \`src\` only through a domain's \`index.ts\`, \`entry.ts\` and public roles.`,
+    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),
     "",
     "| Category | Meaning |",
     "| --- | --- |",
