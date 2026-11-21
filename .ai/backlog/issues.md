@@ -122,3 +122,8 @@ GitHub issue drafts, checks and planning commands.
 - sites: `data/metalbrain/skills/walking.md:202`
 - why: to brief `Concurrent:` lines, the walker reads each leaf's header and **Provides**, an exception to relaying no issue content (C.1).
 - want: `walk check` prints each open leaf's Model sections (Provides parsing exists in `checkIssueSpec.ts`), then drop the walker's read exception.
+
+## 22. `walk check` never flags open Planning as due
+
+- why: the walking row sends open **Planning** to the consultant only once the first row skips every issue ordered before it, a timing the walker derives by hand.
+- want: `walk check` flags each open-**Planning** issue in turn, and the walking row drops its timing clause.

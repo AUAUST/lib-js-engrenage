@@ -52,13 +52,13 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state (open, closed, or closed by an unpushed commit), `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker` or `debugger`, or `orchestrator`, you, for one holding **Housekeeping**, and the next issue, or `Next: none, walk finished` once the walked issue is closed; it exits 1 only on a stuck walk, the walked issue open with an empty ready set.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker` or `debugger`, or `orchestrator`, you, for one holding **Housekeeping**, and the next issue, or `Next: none, walk finished` once the walked issue is closed; it exits 1 only on a stuck walk, the walked issue open with an empty ready set.
 
 A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. On a foreign leaf or a worker report opening with `Linked defect:`, first read this file, which replaces each step of this skill it covers:
 
 `.agents/skills/walking/cross-repository.md`
 
-Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Every issue ordered after a set-aside one waits, left out of the ready set: keep walking the rest.
+Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Every issue ordered after a set-aside one waits: keep walking the rest.
 
 | Issue                                                                                    | Walker                                                                                                                                      |
 | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,7 +70,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 | `blockers` `drafting`, with no local draft                                               | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows |
 | `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                    | Set aside and report                                                                                                                        |
 | Check findings for **Steps** or `Checkpoint:` lines                                      | Set aside, never sent to the consultant; report it as a Steps-migration breakage, which the planning skill's Steps sweep converts           |
-| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant                                                                                                        |
+| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant, open **Planning** once the first row skips every issue ordered before it                              |
 | Open **Questions**                                                                       | Set aside; batch the questions to the user                                                                                                  |
 | Foreign `task` or `problem` whose repository `pnpm engrenage link` lists no checkout for | Set aside and report                                                                                                                        |
 | `walk check` names `orchestrator` beside it in the ready set                             | Apply its **Housekeeping** yourself (§Housekeeping)                                                                                         |

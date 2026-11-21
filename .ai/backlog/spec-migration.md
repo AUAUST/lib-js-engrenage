@@ -27,3 +27,8 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 
 - why: #778 and #684 set who owns most of their remains (agent commands, init's agent steps, the issue-write hook); #382 and #765 also overlap on workspace entries in `createTsdownConfig`.
 - want: decide #778 and #684 before those sweeps.
+
+## 6. Rolling-wave planning changes how planned items reach their planners
+
+- why: the planning skill dropped outer mode; § Waves routes each item (main-session.md). `outer`, `foundation` and `scaffold` no longer send every item to inner planners; items published with **Planning** for an inner pass now reach the walk's consultant, and only once every issue ordered before them lands, so walks run slower.
+- want: the P.3.2 sweep states each kept item's **Planning** for the consultant, not an inner pass.

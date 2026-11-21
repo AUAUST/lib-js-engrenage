@@ -21,7 +21,7 @@ Proposals are `idea` issues the plan relates to, never sub-issues. Before a plan
 
 A task covers its option or contract, implementation, tests and whatever the project requires to release it; closing it leaves the codebase coherent, tested and with no half-wired pieces.
 
-Split a task holding more than one agent's worth, losing nothing (issue-drafts rule › Size), and extract from a task any new architecture, new design pattern or refactor across several domains it needs. Place each extracted part by what it is:
+Split a task holding more than one agent's worth (issue-drafts rule › Size), and extract from a task any new architecture, new design pattern or refactor across several domains it needs. Place each extracted part by what it is:
 
 | Extracted part                                                                                            | Becomes                                                    |
 | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
@@ -30,6 +30,7 @@ Split a task holding more than one agent's worth, losing nothing (issue-drafts r
 | Cannot be verified without another candidate task                                                         | Merged with it                                             |
 
 - Design the final shape before migrating to it, so each call site moves once.
+- Split one level at a time: a sub-issue still over one agent's worth keeps its split under **Planning** until the walk reaches it.
 
 ## Ordering
 
@@ -50,12 +51,12 @@ Order expresses urgency, not importance: a task comes first because later work s
 
 ## Deepening an item
 
-Deepen an item until it is ready (§Readiness): for a worker, its outcome and the contracts others rely on settled, the code's design left to the worker; for a `problem` without **Fix**, until a debugger starts from its **Leads**; for one holding **Housekeeping**, until its orchestrator applies it as written.
+Deepen an item until it is ready for its agent (§Readiness).
 
 1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
-2. **Ground** what the item states in the code it touches: verify every path, name and shape in its **Context**, and each contract it fixes or relies on against the code providing it.
-3. **Write** **Done when**, the **Tests** cases it needs and its **Provides** (issue-drafts rule › Bodies); for a `problem`, **Fix** or **Leads**; for an item whose own work after its sub-issues is only housekeeping, **Housekeeping**; splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled.
-4. **Review** the item under §Readiness.
+2. **Ground** in code only what the item states, the rest left to its worker: each path, name and shape in its **Context**, and each contract it fixes or relies on, against the code providing it.
+3. **Write** **Done when**, the **Tests** cases it needs and its **Provides** (issue-drafts rule › Bodies); for a `problem`, **Fix** or **Leads**; for an item whose own work after its sub-issues is only housekeeping, **Housekeeping**; splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled; keep under it design resting on code another open item writes beyond Model-section contracts, which that code's landing would rewrite.
+4. **Review** the item and each sub-issue you wrote under §Readiness.
 
 ## Readiness
 
@@ -66,7 +67,7 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 - it fixes no procedure: placement, helpers, reuse and internal shapes stay the worker's;
 - its **Context** states only verified facts.
 
-Move whatever falls short under **Planning** or **Questions**, never leave it implied. Review every issue you write or deepen this way before reporting it ready.
+Move whatever falls short under **Planning** or **Questions**, never leave it implied.
 
 A `problem` without **Fix** is ready for a debugger once `check` passes, it holds one agent's worth and its **Leads** state only what you verified, suspected sites marked as such.
 

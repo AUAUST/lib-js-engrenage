@@ -1,6 +1,6 @@
 ---
 title: Planning
-description: Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
+description: Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, as a rolling wave that makes ready the items whose foundation exists and leaves the rest to deepen once the work they build on lands. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
 category: workflow
 extension: tools/github/issues/planning
 order: 10
@@ -8,7 +8,7 @@ formerly:
   - issue-planning
 agent:
   name: planner
-  description: Planner subagent, never for direct requests. An outer planning session starts one per item to deepen it.
+  description: Planner subagent, never for direct requests. A planning session starts one to deepen an item over one agent's worth or tied to a Model-section contract.
   model: opus
   effort: medium
   budget: standard
@@ -36,18 +36,15 @@ Edit nothing but issues, instruction or context files, the backlog and the agent
 
 ## Modes
 
-| Mode   | Started by                                                                                 | Scope                               | Runs                                                                                                 | Asks through                      | Publishes                                                                                                             |
-| ------ | ------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Single | The user, by default                                                                       | The tree                            | The outer pass of `main-session.md` and §Inner pass on each item, together, revisiting either freely | The user                          | By the issue-drafts rule's default                                                                                    |
-| Outer  | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one | The tree                            | `main-session.md`: its outer pass, then its inner dispatch                                           | The user                          | As single                                                                                                             |
-| Inner  | An outer session, briefed `inner`                                                          | The briefed item and its sub-issues | §Inner pass                                                                                          | The outer session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
+| Mode         | Started by                          | Scope                               | Runs              | Asks through                         | Publishes                                                                                                             |
+| ------------ | ----------------------------------- | ----------------------------------- | ----------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Main session | The user                            | The tree                            | `main-session.md` | The user                             | By the issue-drafts rule's default                                                                                    |
+| Inner        | A planning session, briefed `inner` | The briefed item and its sub-issues | §Inner pass       | The planning session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
 
-Started by the user, in single or outer mode: read this file first, which holds request handling, the outer pass and the inner dispatch:
+Started by the user: read this file first, which holds request handling, the outer pass, the waves and the inner dispatch:
 
 <!-- @skill-file main-session.md -->
 <!-- @end -->
-
-Propose outer mode when the goal spans several segments or domains: deepening every item there in one pass outgrows one context and hides the items left shallow.
 
 ## Decisions and questions
 
@@ -65,10 +62,10 @@ Investigate every question in the code, configuration, history, documentation, d
 
 ### Latitude
 
-| Mode          | Settle yourself                                                  | Never settle                                                                                               |
-| ------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Single, outer | What investigation settles, or makes obvious or reasonably clear | Changes to the plan's **Goal**, **Done when**, Model sections or **Decisions**; genuinely balanced options |
-| Inner         | The same, within your scope                                      | Also what the plan, a sibling or a shared contract owns                                                    |
+| Mode         | Settle yourself                                                  | Never settle                                                                                               |
+| ------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Main session | What investigation settles, or makes obvious or reasonably clear | Changes to the plan's **Goal**, **Done when**, Model sections or **Decisions**; genuinely balanced options |
+| Inner        | The same, within your scope                                      | Also what the plan, a sibling or a shared contract owns                                                    |
 
 Handle each question, after investigation:
 
@@ -84,7 +81,6 @@ Extract a part of a plan into its own plan when the Roadmap grows too long to sc
 - A nested plan works on its own: its goal, design and decisions cover its part without reading the plans that reference it.
 - Move into it every fact only its part uses; link with their gist the facts it shares with other plans.
 - Other plans treat it as a task: one Roadmap entry, never expanded, with a gist stating what it contributes there.
-- Like any issue, it can sit in another plan's sequence or segment, under a task as a sub-issue, or serve as a prerequisite.
 
 ## Inner pass
 
@@ -92,16 +88,12 @@ Deepen the item by `issue-tree.md` › Deepening an item.
 
 As an inner planner:
 
-- Edit only the briefed item and its sub-issues. A finding against the plan, a sibling or a shared contract goes into your report with a recommendation: the outer session owns it.
+- Edit only the briefed item and its sub-issues. A finding against the plan, a sibling or a shared contract goes into your report with a recommendation: the planning session owns it.
 - Report the issues you published, each decision you settled, the batched questions and the plan findings.
 
 ## How workers read issues
 
 Workers implement one issue at a time under the implement skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
-
-## Writing rules
-
-- Keep each fact in the issue that owns it: the plan for what several items share, the item for what only it needs. When a change surfaces, edit only that issue.
 
 ## Steps migration
 
