@@ -45,7 +45,7 @@ const tree: Record<number, MockIssue> = {
   },
   11: {
     type: "Segment",
-    body: "#10 · Roadmap\n\n## Context\n\nx\n",
+    body: "#10 · Roadmap\n\n## Context\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [12, 13, 14],
   },
   12: task(12),
@@ -77,7 +77,7 @@ const tree: Record<number, MockIssue> = {
   },
   41: {
     type: "Segment",
-    body: "#40 · Roadmap\n\n## Context\n\nx\n",
+    body: "#40 · Roadmap\n\n## Context\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [42, 43, 44],
   },
   42: {

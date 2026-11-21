@@ -314,7 +314,7 @@ export const issueContracts = freeze({
       freeze({
         summary: "grouping sub-issues",
         audience: "verification",
-        required: freeze([] as const),
+        required: freeze(["Done when"] as const),
         forbidden: freeze({
           Provides: "A segment provides nothing of its own: write **Provides** in the sub-issue that owns it.",
           Tests: "A segment has no **Tests**: write them in the sub-issue that owns them.",

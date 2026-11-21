@@ -144,3 +144,4 @@
 - Agent `isolation: "worktree"`: dispatched a writer and a worker expecting a worktree at `HEAD` — branch started at `6ab2fc08`, an older commit; agents checked out the briefed `Base:` detached
 - Agent dispatch hook: `Issue: #809` brief line — refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line
 - Agent dispatch hook: worker resuming a brief-only pass on #809 (a Resource with open **Questions**) — refused the `Issue:` line; dispatched as a brief without it, no instruction says a brief may cite a non-leaf issue
+- Agent dispatch hook: worker briefed `Issue: AUAUST/lib-js-engrenage#809` for one decision of a Resource report — refused, not a ready Task or Problem; dispatched on a plain brief without Issue line

@@ -263,6 +263,36 @@ describe("checkIssueBody", () => {
     ]);
   });
 
+  test("requires Done when on a Segment, draft or published", () => {
+    for (const draft of [true, false]) {
+      expect(
+        checkIssueContract("## Context\n\nx\n", "segment", contractNames, {
+          subIssues: 1,
+          complete: true,
+          draft,
+        }),
+      ).toEqual([
+        {
+          rule: "missing-section",
+          message: "**Done when** is missing: write it.",
+        },
+      ]);
+
+      expect(
+        checkIssueContract(
+          "## Context\n\nx\n\n## Done when\n\n- d\n",
+          "segment",
+          contractNames,
+          {
+            subIssues: 1,
+            complete: true,
+            draft,
+          },
+        ),
+      ).toEqual([]);
+    }
+  });
+
   test("accepts a parent with Done when and optional Housekeeping, accepts Tests on it, and rejects Housekeeping without sub-issues or unnumbered", () => {
     const parent = "## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n\n## Done when\n\n- d\n";
 
@@ -631,7 +661,7 @@ describe("checkIssue", () => {
     };
 
     const segment = {
-      body: "#9 · Context\n",
+      body: "#9 · Context\n\n## Done when\n\n- d\n",
       type: "Segment",
       parent: 9,
       subIssues: [{ number: 11, state: "open" as const }],
