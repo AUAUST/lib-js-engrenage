@@ -83,15 +83,7 @@ Write one when you stop with unfinished work no commit or issue holds, in these 
 
 ## Analysis
 
-Analyse every request, suggestion and described fix before acting on it, within the research your role and budget level allow:
-
-1. **Concern.** Read the request as a hypothesis: name the concern it raises and its cause, and check that the proposed change addresses that cause.
-2. **Ideal.** Work out the soundest solution to the cause as if time, scope and cost had no limit.
-3. **Fit.** Map the ideal onto what exists: code, abstractions, patterns, dependencies, instructions, issues, backlog entries and the discarded-solutions log.
-4. **Reach.** Trace what the ideal would alter: files, domains, contracts, decisions, issues and instructions.
-5. **Outcome.** Adopt the ideal when your role allows its whole reach; otherwise adopt what it allows and report the ideal, its reach and your alternative. Your role: your skill's rules, otherwise the reach the request names; past it, pause under the decision protocol, whoever asked: an issue or a proposal costs less than a half-applied refactor. Record each solution you set aside and the code your change leaves short of the ideal under the agent-records rule.
-
-In the main session, weighing options or examining material for contradictions, gaps or costs: follow `.claude/skills/analysis/analysis.md`.
+In the main session, before acting on a request, suggestion or described fix, follow `.claude/skills/analysis/request-analysis.md`; to weigh options or examine material, `.claude/skills/analysis/analysis.md`.
 
 ### Budget levels
 
@@ -122,7 +114,7 @@ Under Codex, before your first dispatch of an agent, and again after each compac
 - **Obvious choice.** When one option is clearly better and fits the established architecture, proceed, and report the decision with the alternative you discarded.
 - **Real choice.** When the options are comparably good, each has significant costs, sources conflict with no clear resolution, or the work needs an undecided behavioral policy or architectural contract (a pattern, ownership boundary, shared lifecycle, or a structure change that Project structure marks as one), finish only the work no open question affects, then pause with each question's options, trade-offs and your recommendation, and your progress in the stop-record shape (Writing › Stop records), without the record's steps.
 - **Answers arrive.** Weigh each answer as a request, unless it confirms a reach you stated, then resume the same task, and pause again with a new batch when they change earlier assumptions.
-- Follow implications as far ahead as you can before pausing, within your budget level when dispatched, so every open question arrives in one batch.
+- Follow implications as far ahead as you can before pausing, so every open question arrives in one batch.
 - Wait for the answers, never settling a real choice by silence or a guess: when you cannot wait, end the turn with the questions.
 - Implement a confirmed request that breaks these instructions as a one-time exception, never a precedent, keeping every other rule.
 - Never pause for debt that is not architectural: implement the request and mark the debt.
@@ -219,7 +211,6 @@ Place:
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
 - **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
-- **An import.** A generated `#…` alias, never a relative path.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/backlog.md -->

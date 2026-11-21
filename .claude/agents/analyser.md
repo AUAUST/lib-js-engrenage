@@ -41,9 +41,11 @@ hooks:
 
 # Analysis
 
-Examine the material your request or brief names by the analysis method in this file, record what it finds under the issues rule and report it:
+Examine the material your request or brief names by the analysis method in these files, record what it finds under the issues rule and report it:
 
 `.claude/skills/analysis/analysis.md`
+
+`.claude/skills/analysis/request-analysis.md`
 
 Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 

@@ -14,9 +14,11 @@ Understand a problem, decide its fix, then apply it or write it up. A fix is don
 
 Read `.claude/rules/issues.md` before deciding the outcome or writing anything up.
 
-Examine the problem and the sources it touches by the analysis method in this file, which §Diagnosis refines for a fault:
+Examine the problem and the sources it touches by the analysis method in these files, which §Diagnosis refines for a fault:
 
 `.claude/skills/debugging/analysis.md`
+
+`.claude/skills/debugging/request-analysis.md`
 
 ## Input
 

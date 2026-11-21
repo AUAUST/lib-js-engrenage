@@ -43,9 +43,11 @@ An issue edit undoes a wrong guess before any worker builds on it, so your own q
 - Record each costly reach the user confirms in the plan's **Decisions** with the alternative it overrode.
 - Write what no open question affects without waiting for answers.
 
-Investigate every question in the code, configuration, history, documentation, dependencies and issues it touches, by the analysis method in this file, and work out its candidate answers, before handling it below:
+Investigate every question in the code, configuration, history, documentation, dependencies and issues it touches, by the analysis method in these files, and work out its candidate answers, before handling it below:
 
 `.claude/skills/planning/analysis.md`
+
+`.claude/skills/planning/request-analysis.md`
 
 ### Latitude
 

@@ -66,6 +66,8 @@ Rank sources, bound an audit and grade findings by this method:
 
 `.claude/skills/instruction-writing/analysis.md`
 
+`.claude/skills/instruction-writing/request-analysis.md`
+
 1. **Inventory.** Search every source an agent reaches on the subject: `AGENTS.md` sections, rule files, skills and their supporting files, agent files, hook and lint messages, and the fragment source each is synced from. List them by the method's Material; note the owner of each fact on the subject.
 2. **Diagnose.** Over the inventory, find each catch of §Catches and each gap: a case the behavior needs that no rule covers, a rule one of two parallel sources holds and the other lacks, a term two sources define differently. Audit mode: report them and stop.
 3. **Models.** Check §Model facts against the models the agent definitions and harnesses run. When it misses one of them or was checked over 90 days ago, look up those vendors' current prompting guidance for the exact versions, and refresh §Model facts where you can edit its source, otherwise report what you found. Draft only what those facts show produces the behavior.

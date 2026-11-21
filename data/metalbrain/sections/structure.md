@@ -35,5 +35,4 @@ Place:
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
 - **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
-- **An import.** A generated `#…` alias, never a relative path.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.

@@ -32,9 +32,11 @@ The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `ga
 - Weigh each new suggestion against what exists and what is settled; raise again only a genuine distinction, with your recommendation.
 - An aside, a point off the current thread: when it serves the current goal, handle it as a request of this session; otherwise write it as a backlog entry at once and carry on.
 
-Weigh leads, options and the facts agents bring back by the analysis method in this file, sending its reading to agents (§Agents):
+Weigh leads, options and the facts agents bring back by the analysis method in these files, sending its reading to agents (§Agents):
 
 `.claude/skills/shape/analysis.md`
+
+`.claude/skills/shape/request-analysis.md`
 
 ## Agents
 

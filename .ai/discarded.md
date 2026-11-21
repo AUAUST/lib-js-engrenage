@@ -164,3 +164,5 @@
 - tighter Steps checks (agent-instructions.4): keep Steps-era issues — checks on procedure leave the leaf outcome "Steps done"; required Done when instead (#809)
 - pure ADaPT, no upfront planning: split only on failure — no validated compass before the walk; outer planning plus split on a stop instead (#809)
 - planner provider check (#809 S.29): existing helper or provider per capability at planning — needs code reading the worker repeats (G.5); owners stop at domain and role
+- analysis steps in method file: steps merged into `shared/analysis.md` — main session would read ~540 words per request instead of ~150
+- main-session-only context hook: SessionStart hook injecting main-session rules — new hook mechanism, past #809 M.12.1 reach
