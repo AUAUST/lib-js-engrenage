@@ -32,7 +32,7 @@ import {
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
 import { importPrefix } from "#tools/typescript/constants";
-import { readTypescriptLanguage } from "#tools/typescript/operations/readTypescriptLanguage";
+import { readTypescriptExtensions } from "#tools/typescript/operations/readTypescriptExtensions";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { Alias } from "#batiment/structure/index";
@@ -227,7 +227,7 @@ export async function syncAliases(config: LoadedConfig) {
       })
     : [];
 
-  const { extensions } = await readTypescriptLanguage(config);
+  const extensions = await readTypescriptExtensions(config);
 
   const imports = {
     ...listSubpathImports([...global, ...src]),

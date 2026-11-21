@@ -411,7 +411,7 @@ export const values = [things[key], things.two];
 `,
         {
           filePath: "src/index.js",
-          engrenageConfig: `export default { typescript: { files: ["**/*.{ts,js}"] } };\n`,
+          engrenageConfig: `export default { src: { languages: ["typescript", "javascript"] } };\n`,
         },
       ),
     ).toEqual(["import-x/namespace"]);

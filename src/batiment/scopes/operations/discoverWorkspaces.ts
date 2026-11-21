@@ -123,11 +123,13 @@ async function readEnvironment({
   file,
   scopes,
   kinds,
+  languages,
 }: {
   filesystem: Filesystem;
   file: File;
   scopes: ReadonlySet<Directory>;
   kinds: ReadonlySet<string>;
+  languages: ReadonlySet<string>;
 }): Promise<{
   readonly environment?: DiscoveredEnvironment;
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -187,12 +189,29 @@ async function readEnvironment({
     );
   }
 
+  const selected = metadata.languages?.filter((name) => {
+    if (languages.has(name)) {
+      return true;
+    }
+
+    diagnostics.push(
+      createDiagnostic(
+        "unknown-language",
+        file,
+        `${file} selects the language "${name}", which no language declares; ignoring it`,
+      ),
+    );
+
+    return false;
+  });
+
   return {
     environment: freeze({
       dir,
       file,
       ...(kind === undefined || !known ? {} : { kind }),
-      namespace: freeze(omit(metadata, "$schema", "kind")),
+      ...(selected === undefined ? {} : { languages: freeze(selected) }),
+      namespace: freeze(omit(metadata, "$schema", "kind", "languages")),
     }),
     diagnostics,
   };
@@ -202,10 +221,12 @@ export async function discoverWorkspaces({
   filesystem,
   ignored,
   kinds,
+  languages,
 }: {
   filesystem: Filesystem;
   ignored: Globs;
   kinds: readonly string[];
+  languages: readonly string[];
 }): Promise<{
   readonly workspaces: readonly DiscoveredWorkspace[];
   readonly environments: readonly DiscoveredEnvironment[];
@@ -239,6 +260,8 @@ export async function discoverWorkspaces({
 
   const known = new Set(kinds);
 
+  const registered = new Set(languages);
+
   const discovered = await Promise.all(
     files
       .filter((file) => posix.basename(file) === environmentMetadataFile)
@@ -248,6 +271,7 @@ export async function discoverWorkspaces({
           file,
           scopes,
           kinds: known,
+          languages: registered,
         });
       }),
   );

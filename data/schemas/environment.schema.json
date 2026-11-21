@@ -9,6 +9,13 @@
       "type": "string",
       "description": "Kind of the environment, naming an `environmentKinds` entry. Unset in a workspace's environment, its directory name.\n@default none"
     },
+    "languages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Names of the registered languages the environment holds; overrides its options' and its kind's `languages`.\n@default none"
+    },
     "layers": {
       "type": "array",
       "items": {

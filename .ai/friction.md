@@ -134,3 +134,5 @@
 - tsc with file arguments: `pnpm exec tsc --noEmit a.ts b.ts` in the repo — TS5112 refuses files beside a tsconfig; passed `--ignoreConfig`
 - commit gate vitest: `config.test.src.ts` "passes the check on the committed interface" timed out at 5000ms under parallel agent load — passed on retry
 - consultant brief `leaf in flight (integrating)`: read the leaf's shapes from its worktree and stash — the leaf had landed on main meanwhile; read main instead
+- gh issue edit hook: `--body-file $D/…` with a variable path at the end of a compound command — hook rejects the whole command, so the earlier steps never ran; prepared the file in one call, published with a literal path in another
+- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran without the filter

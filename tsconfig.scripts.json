@@ -2,11 +2,13 @@
   "extends": "./tsconfig.json",
   "include": [
     "scripts/**/*.ts",
-    "scripts/**/*.tsx",
+    "scripts/**/*.mts",
+    "scripts/**/*.cts",
     "*.config.ts",
     ".*.ts",
     "tooling/**/*.ts",
-    "tooling/**/*.tsx",
+    "tooling/**/*.mts",
+    "tooling/**/*.cts",
     "global.d.ts"
   ],
   "compilerOptions": {

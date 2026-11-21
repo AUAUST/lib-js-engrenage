@@ -9,19 +9,19 @@ export function resolveCodeEnvironment({
   dirs,
   generated,
   discovered,
-  typescriptFiles,
+  files,
 }: {
   active: boolean;
   dirs: Directories;
   generated: Globs;
   discovered: Globs;
-  typescriptFiles: Globs;
+  files: Globs;
 }) {
   return freeze({
     active,
     dirs,
     generated,
     discovered,
-    globs: filesIn(dirs, typescriptFiles),
+    globs: filesIn(dirs, files),
   });
 }

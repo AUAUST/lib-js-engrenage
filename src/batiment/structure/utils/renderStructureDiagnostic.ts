@@ -35,6 +35,7 @@ const separators = {
   "misplaced-environment-metafile": "  ",
   "environment-metafile-beside-namespace": "  ",
   "unknown-environment-kind": "  ",
+  "unknown-language": "  ",
 } as const satisfies Record<StructureDiagnosticCode, string>;
 
 function renderOrigin(origin: ValueOrigin): string {

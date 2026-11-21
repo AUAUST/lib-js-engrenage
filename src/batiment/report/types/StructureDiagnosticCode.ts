@@ -10,7 +10,8 @@
  * key equal to a root environment name, a workspace inside another, a directory a
  * `workspaces` glob matches without a `.workspace.json`, an `.environment.json`
  * outside a scope's direct child directory or beside a `.namespace.json`, or an
- * environment kind no `environmentKinds` entry names.
+ * environment kind no `environmentKinds` entry names, or an `.environment.json`
+ * language no `languages` entry names.
  *
  * @experimental
  */
@@ -43,4 +44,5 @@ export type StructureDiagnosticCode =
   | "missing-workspace"
   | "misplaced-environment-metafile"
   | "environment-metafile-beside-namespace"
-  | "unknown-environment-kind";
+  | "unknown-environment-kind"
+  | "unknown-language";

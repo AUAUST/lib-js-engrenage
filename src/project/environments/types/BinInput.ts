@@ -26,7 +26,12 @@ export interface BinInput {
    */
   strictness?: (("strict" | "loose") | undefined)
   /**
-   * Directories of the bin environment: its TypeScript files (`typescript.files`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
+   * Names of the registered languages the environment holds; defaults to its kind's `languages`.
+   * @default none
+   */
+  languages?: (string[] | undefined)
+  /**
+   * Directories of the bin environment: its files of the languages it selects (`languages`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
    * The environment is inactive when none holds a file Git does not ignore.
    * @default `bin`
    */

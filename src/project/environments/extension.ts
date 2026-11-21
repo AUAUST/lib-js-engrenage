@@ -215,6 +215,7 @@ export default {
         imports: { data: "whole" },
         inward: "open",
         tsconfig: true,
+        languages: ["typescript", "tsx"],
       },
       {
         name: "tests",
@@ -230,6 +231,7 @@ export default {
         },
         layout: "mirror",
         tsconfig: true,
+        languages: ["typescript", "tsx"],
       },
       {
         name: "bin",
@@ -240,6 +242,7 @@ export default {
         inward: "open",
         layout: "commands",
         tsconfig: true,
+        languages: ["typescript"],
       },
       {
         name: "scripts",
@@ -250,6 +253,7 @@ export default {
         inward: "open",
         layout: "commands",
         tsconfig: true,
+        languages: ["typescript"],
       },
       {
         name: "tooling",
@@ -258,6 +262,7 @@ export default {
         imports: { src: "surface" },
         inward: "open",
         tsconfig: true,
+        languages: ["typescript"],
       },
       {
         name: "data",

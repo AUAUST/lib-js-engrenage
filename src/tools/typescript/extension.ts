@@ -2,6 +2,8 @@ import {
   barrelDirective,
   barrelExportsEntry,
   barrelsTarget,
+  tsx,
+  tsxExtensions,
   typescript,
   typescriptBlocks,
   typescriptExtensions,
@@ -140,11 +142,18 @@ export default {
         modules: true,
         declarations: ".d.ts",
       },
+      {
+        name: tsx,
+        extensions: tsxExtensions,
+        modules: true,
+      },
     ],
     "blocks.syntaxes": [
       {
         name: "typescript",
-        files: typescriptExtensions.map((extension) => `**/*${extension}`),
+        files: [...typescriptExtensions, ...tsxExtensions].map((extension) => {
+          return `**/*${extension}`;
+        }),
         ...typescriptBlocks,
       },
     ],

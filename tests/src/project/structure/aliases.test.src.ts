@@ -122,18 +122,18 @@ describe("aliases", () => {
       "#utils/*": {
         types: [
           "./src/utils/*.ts",
-          "./src/utils/*.tsx",
           "./src/utils/*.mts",
           "./src/utils/*.cts",
+          "./src/utils/*.tsx",
         ],
         default: "./src/utils/*",
       },
       "#constants": {
         types: [
           "./src/constants.ts",
-          "./src/constants.tsx",
           "./src/constants.mts",
           "./src/constants.cts",
+          "./src/constants.tsx",
         ],
         default: "./src/constants",
       },
@@ -280,9 +280,9 @@ describe("aliases", () => {
     ).toEqual({
       types: [
         "./src/config/*.ts",
-        "./src/config/*.tsx",
         "./src/config/*.mts",
         "./src/config/*.cts",
+        "./src/config/*.tsx",
       ],
       default: "./src/config/*",
     });

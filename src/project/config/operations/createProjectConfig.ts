@@ -100,7 +100,7 @@ function describeRemovedKey(key: string, value: unknown): string | undefined {
     }
 
     case "code": {
-      return "replaced by `typescript.files`, `tooling.files` and each environment's `generated` and `discovered`";
+      return "replaced by each environment's `languages`, `tooling.files`, `generated` and `discovered`";
     }
 
     case "directories":

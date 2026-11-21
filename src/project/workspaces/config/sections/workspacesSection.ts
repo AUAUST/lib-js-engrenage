@@ -1,7 +1,8 @@
-import { flatMap, map } from "@auaust/toolkit/array";
+import { flatMap, map, toDeduplicated } from "@auaust/toolkit/array";
 
 import { withExtensions } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
+import { listLanguageFiles } from "#project/environments/index";
 import { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import { workspaceEntryStem } from "#project/workspaces/constants";
 import { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
@@ -16,15 +17,23 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const [{ files }, discovery] = await Promise.all([
-      config.resolve("typescript.options"),
+    const [discovery, kinds, languages] = await Promise.all([
       config.resolve("scopes.discovery"),
+      config.context.registry.contributions("environmentKinds", config),
+      config.context.registry.contributions("languages", config),
     ]);
 
-    const languages = await config.context.registry.contributions(
-      "languages",
-      config,
-    );
+    const byName = new Map(languages.map(({ entry }) => [entry.name, entry]));
+
+    const selected = toDeduplicated(
+      flatMap(kinds, ({ entry }) => {
+        return entry.languages ?? [];
+      }),
+    ).flatMap((name) => {
+      const language = byName.get(name);
+
+      return language === undefined ? [] : [language];
+    });
 
     const extensions = flatMap(languages, ({ entry }) => {
       return entry.modules === true ? entry.extensions : [];
@@ -38,7 +47,8 @@ export const workspacesSection = declareSection({
         { reporter: config.context.reporter },
         "workspaces",
       ),
-      typescriptFiles: files,
+      // @debt a workspace's globs take every kind's default languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
+      typescriptFiles: listLanguageFiles(selected),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
       discoveredDirs: map(discovery.workspaces, ({ dir }) => dir),
     });

@@ -1,8 +1,10 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
+import { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
 import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
+import { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 import type { ConfigResolver } from "#project/config/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
@@ -16,8 +18,6 @@ export async function resolveEnvironment(
   },
   name: string,
 ) {
-  const { files } = await config.resolve("typescript.options");
-
   const { dirs, active } = await discoverDeclaredEnvironment(config, name, {
     dirs: option.dirs,
     files: [],
@@ -28,7 +28,7 @@ export async function resolveEnvironment(
       ...option,
       dirs,
       active,
-      typescriptFiles: files,
+      files: listLanguageFiles(await readEnvironmentLanguages(config, name)),
     }),
     tsconfig: await resolveEnvironmentTsconfig(config, name),
   });

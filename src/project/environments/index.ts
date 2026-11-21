@@ -5,6 +5,7 @@ export { declareCodeEnvironment } from "#project/environments/config/declarers/d
 // @barrel utils
 export { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
 export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
+export { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";
 // @end
 
@@ -61,6 +62,7 @@ export { createDefine } from "#project/environments/operations/createDefine";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
+export { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";

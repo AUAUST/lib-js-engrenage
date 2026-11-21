@@ -20,9 +20,10 @@ export const discoverySection = declareSection({
     readonly diagnostics: readonly StructureDiagnostic[];
     readonly ignored: Globs;
   }> {
-    const [repository, kinds] = await Promise.all([
+    const [repository, kinds, languages] = await Promise.all([
       config.resolve("git"),
       config.context.registry.contributions("environmentKinds", config),
+      config.context.registry.contributions("languages", config),
     ]);
 
     const ignored = await repository.ignored;
@@ -31,6 +32,7 @@ export const discoverySection = declareSection({
       filesystem: config.context.filesystem,
       ignored,
       kinds: kinds.map(({ entry }) => entry.name),
+      languages: languages.map(({ entry }) => entry.name),
     });
 
     return freeze({

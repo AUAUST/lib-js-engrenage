@@ -163,6 +163,27 @@ describe("reconcileEnvironmentDirs", () => {
 });
 
 describe("discoverWorkspaces", () => {
+  test("drops an environment metafile's unknown language and keeps the others", async () => {
+    const project = createTemporaryProject({
+      "src/.environment.json": '{ "languages": ["vue", "typescript"] }',
+    });
+
+    const { environments, diagnostics } = await discoverWorkspaces({
+      filesystem: createFilesystem(project.root),
+      ignored: [],
+      kinds: ["src"],
+      languages: ["typescript"],
+    });
+
+    expect(environments[0]?.languages).toEqual(["typescript"]);
+
+    expect(
+      diagnostics.map(({ code, path }) => {
+        return { code, path };
+      }),
+    ).toEqual([{ code: "unknown-language", path: "src" }]);
+  });
+
   test("reads the purpose and returns the other keys raw", async () => {
     const project = createTemporaryProject({
       "extensions/a/.workspace.json": JSON.stringify({
@@ -175,6 +196,7 @@ describe("discoverWorkspaces", () => {
       filesystem: createFilesystem(project.root),
       ignored: [],
       kinds: [],
+      languages: [],
     });
 
     expect(workspaces).toEqual([

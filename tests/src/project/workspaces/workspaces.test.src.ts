@@ -83,7 +83,7 @@ describe("workspaces", () => {
       license: "MIT",
       imports: {
         "#self/*": {
-          types: ["./src/*.ts", "./src/*.tsx", "./src/*.mts", "./src/*.cts"],
+          types: ["./src/*.ts", "./src/*.mts", "./src/*.cts", "./src/*.tsx"],
           default: "./src/*",
         },
       },
@@ -103,7 +103,7 @@ describe("workspaces", () => {
       JSON.parse(project.read("extensions/action-b/tsconfig.json")),
     ).toEqual({
       extends: "../../tsconfig.json",
-      include: ["**/*.ts", "**/*.tsx"],
+      include: ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx"],
     });
 
     expect(
@@ -212,9 +212,12 @@ describe("workspaces", () => {
     const scopes = await resolveScopeSources(resolved);
 
     expect(resolveScope(scopes, ["files.workspaces"])).toEqual([
-      "extensions/action-a/**/*.{ts,tsx}",
-      "extensions/action-b/**/*.{ts,tsx}",
-      "extensions/functions-c/**/*.{ts,tsx}",
+      "extensions/action-a/**/*{.ts,.mts,.cts}",
+      "extensions/action-a/**/*.tsx",
+      "extensions/action-b/**/*{.ts,.mts,.cts}",
+      "extensions/action-b/**/*.tsx",
+      "extensions/functions-c/**/*{.ts,.mts,.cts}",
+      "extensions/functions-c/**/*.tsx",
     ]);
 
     expect(resolveScope(scopes, ["files.code"])).toEqual(

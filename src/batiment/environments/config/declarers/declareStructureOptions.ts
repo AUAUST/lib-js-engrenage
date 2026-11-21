@@ -1,4 +1,4 @@
-import { array, picklist } from "valibot";
+import { array, picklist, string } from "valibot";
 
 import { namespaceSchema } from "#batiment/environments/config/schemas/namespaceSchema";
 import { declare, directorySchema } from "#foundation/options/index";
@@ -13,6 +13,10 @@ export function declareStructureOptions() {
     strictness: declare(picklist(["strict", "loose"]), {
       description: "`strict` expects every directory to be classified; under `loose`, unclassified directories count as plain domains.",
       optional: { value: "strict" },
+    }),
+    languages: declare(array(string()), {
+      description: "Names of the registered languages the environment holds; defaults to its kind's `languages`.",
+      optional: { value: undefined },
     }),
   };
 }

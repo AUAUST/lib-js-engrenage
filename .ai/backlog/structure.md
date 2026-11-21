@@ -91,7 +91,7 @@ Project structure description, its report and the tooling generated from it.
 
 ## 15. Structure reads tsconfig to find output directories
 
-- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `src/project/structure/config/sections/aliasesSection.ts:26`, `src/project/structure/config/sections/entitiesSection.ts:16`, `src/project/structure/utils/createImportResolver.ts:16`, `src/tools/typescript/operations/readTypescriptLanguage.ts:5`, `src/tools/typescript/setup/syncAliases.ts:182`
+- sites: `src/project/structure/config/sections/aliasesSection.ts:22`, `src/project/structure/config/sections/aliasesSection.ts:26`, `src/project/structure/config/sections/entitiesSection.ts:16`, `src/project/structure/utils/createImportResolver.ts:16`, `src/tools/typescript/operations/readTypescriptExtensions.ts:5`, `src/tools/typescript/setup/syncAliases.ts:182`
 - why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only, its lookup repeated in `readTypescriptLanguage`; a `#…` import of a `.tsx` module resolves to the alias's `.ts` target; `syncAliases` strips the first extension to recover a stem.
 - want: output directory resolved without the tsconfig; one language lookup on the environments surface; an `Alias` carrying its stem and every extension.
 

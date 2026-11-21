@@ -15,7 +15,9 @@ import {
   discoverDeclaredEnvironment,
   getOptionsKey,
   listEnvironmentEntries,
+  listLanguageFiles,
   readEnvironment,
+  readEnvironmentLanguages,
   readInputDirs,
 } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -54,6 +56,7 @@ const liquidOptionsSection = declareSection({
   declaration: liquidSchema,
   resolve() {
     return {
+      dirs: [],
       enabled: true,
       roles: [],
       structure: {
@@ -218,6 +221,42 @@ function createConfig(
   };
 }
 
+describe("environment languages", () => {
+  test("follow an environment metafile over the kind's defaults, in globs and lint scopes", async () => {
+    const { config } = createConfig(
+      {},
+      {
+        "src/.environment.json": '{ "languages": ["typescript"] }',
+        "src/index.ts": "",
+      },
+    );
+
+    const [
+      source,
+      scopes,
+    ] = await Promise.all([config.resolve("src"), resolveScopeSources(config)]);
+
+    expect(source.globs).toEqual(["src/**/*{.ts,.mts,.cts}"]);
+
+    expect(resolveScope(scopes, ["files.code"])).not.toContain("src/**/*.tsx");
+  });
+
+  test("fail on an option naming a language no extension contributes", async () => {
+    const { config } = createConfig(
+      {
+        src: { languages: ["vue"] },
+      },
+      {
+        "src/index.ts": "",
+      },
+    );
+
+    await expect(config.resolve("src")).rejects.toThrow(
+      "The src environment selects the language vue, which no active extension contributes",
+    );
+  });
+});
+
 describe("contributed environments", () => {
   test("get a matrix row, a column no other environment imports and their own project map", async () => {
     const { project, config, reporter } = createConfig(
@@ -330,6 +369,14 @@ describe("contributed environments", () => {
     expect(resolveScope(scopes, ["files.code.private"])).toContain(
       "workers/**/*.ts",
     );
+  });
+
+  test("select no language when their kind and options name none", async () => {
+    const config = createWorkersConfig(createWorkers("enforced"));
+
+    expect(
+      listLanguageFiles(await readEnvironmentLanguages(config, "workers")),
+    ).toEqual([]);
   });
 
   test("get no alias when described", async () => {

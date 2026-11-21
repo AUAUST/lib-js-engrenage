@@ -17,6 +17,7 @@ import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import {
   pluginName,
   rolesPluginName,
+  tsxLanguage,
   typescriptLanguage,
 } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
@@ -52,7 +53,12 @@ async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
     );
   }
 
-  return withExtensions("**/*", typescript.entry.extensions);
+  const tsx = languages.find(({ entry }) => entry.name === tsxLanguage);
+
+  return withExtensions("**/*", [
+    ...typescript.entry.extensions,
+    ...(tsx?.entry.extensions ?? []),
+  ]);
 }
 
 /**

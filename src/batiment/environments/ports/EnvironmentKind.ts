@@ -33,4 +33,9 @@ export interface EnvironmentKind {
    * The layout the kind's environments take unless their options name another.
    */
   readonly layout?: string;
+  /**
+   * The languages the kind's environments select unless their options or
+   * `.environment.json` name others.
+   */
+  readonly languages?: readonly string[];
 }

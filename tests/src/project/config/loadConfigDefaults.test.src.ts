@@ -26,10 +26,6 @@ describe("loadConfig", () => {
 
     expect(config.context.root).toBe(first);
 
-    expect((await config.resolve("typescript")).files).toEqual([
-      "**/*.{ts,tsx}",
-    ]);
-
     expect((await config.resolve("files")).generated).toEqual([
       ".engrenage/sync.json",
       "pnpm-lock.yaml",

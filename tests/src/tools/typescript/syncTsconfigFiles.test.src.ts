@@ -54,7 +54,7 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
-      include: ["src/**/*.ts", "src/**/*.tsx"],
+      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts", "src/**/*.tsx"],
       exclude: ["dist"],
       compilerOptions: {
         target: "ESNext",
@@ -154,6 +154,8 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.src.json")).include).toEqual([
       "src/**/*.ts",
+      "src/**/*.mts",
+      "src/**/*.cts",
       "src/**/*.tsx",
     ]);
 

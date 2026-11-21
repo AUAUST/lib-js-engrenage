@@ -8,8 +8,9 @@ export interface DiscoveredEnvironment {
   readonly dir: Directory;
   readonly file: File;
   readonly kind?: string;
+  readonly languages?: readonly string[];
   readonly namespace: Omit<
     InferOutput<typeof environmentMetadataSchema>,
-    "$schema" | "kind"
+    "$schema" | "kind" | "languages"
   >;
 }

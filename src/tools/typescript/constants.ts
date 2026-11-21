@@ -8,12 +8,11 @@ import type { Glob } from "#types/Glob";
 
 export const barrelFiles = "**/{index,entry}.ts" satisfies Glob;
 
-export const typescriptExtensions = freeze([
-  ".ts",
-  ".tsx",
-  ".mts",
-  ".cts",
-] as const);
+export const typescriptExtensions = freeze([".ts", ".mts", ".cts"] as const);
+
+export const tsxExtensions = freeze([".tsx"] as const);
+
+export const tsx = "tsx";
 
 export const barrelsTarget = "barrels";
 

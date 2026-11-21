@@ -180,7 +180,6 @@ describe(
         dir: ".cache",
       },
       typescript: {
-        files: "**/*.ts",
         tsconfig: { extends: false, compilerOptions: options },
       },
     };

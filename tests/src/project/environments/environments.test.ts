@@ -31,7 +31,7 @@ describe("environments", () => {
       dirs: ["src"],
       generated: [],
       discovered: [],
-      globs: ["src/**/*.{ts,tsx}"],
+      globs: ["src/**/*{.ts,.mts,.cts}", "src/**/*.tsx"],
     });
 
     expect(await config.resolve("tests")).toMatchObject({
@@ -39,7 +39,7 @@ describe("environments", () => {
       dirs: ["tests"],
       generated: [],
       discovered: [],
-      globs: ["tests/**/*.{ts,tsx}"],
+      globs: ["tests/**/*{.ts,.mts,.cts}", "tests/**/*.tsx"],
       files: [
         "**/*.test.{ts,tsx}",
         "**/*.test.src.{ts,tsx}",
@@ -63,7 +63,7 @@ describe("environments", () => {
       active: true,
       dirs: ["tooling"],
       rootFiles: ["*.config.ts", ".*.ts"],
-      globs: ["*.config.ts", ".*.ts", "tooling/**/*.{ts,tsx}"],
+      globs: ["*.config.ts", ".*.ts", "tooling/**/*{.ts,.mts,.cts}"],
     });
 
     expect((await config.resolve("files")).fixtures).toEqual([
@@ -71,13 +71,15 @@ describe("environments", () => {
     ]);
 
     expect((await config.resolve("files")).published).toEqual([
-      "src/**/*.{ts,tsx}",
-      "bin/**/*.{ts,tsx}",
+      "src/**/*{.ts,.mts,.cts}",
+      "src/**/*.tsx",
+      "bin/**/*{.ts,.mts,.cts}",
     ]);
 
     expect((await config.resolve("files")).private).toEqual([
-      "tests/**/*.{ts,tsx}",
-      "scripts/**/*.{ts,tsx}",
+      "tests/**/*{.ts,.mts,.cts}",
+      "tests/**/*.tsx",
+      "scripts/**/*{.ts,.mts,.cts}",
     ]);
   });
 
@@ -115,7 +117,8 @@ describe("environments", () => {
     });
 
     expect((await config.resolve("files")).published).toEqual([
-      "src/**/*.{ts,tsx}",
+      "src/**/*{.ts,.mts,.cts}",
+      "src/**/*.tsx",
     ]);
   });
 
@@ -210,22 +213,20 @@ describe("environments", () => {
     expect((await keptConfig.resolve("tooling")).active).toBe(true);
   });
 
-  test("adjust a default list and the TypeScript files", async () => {
+  test("adjust a default list and the selected languages", async () => {
     const project = createProject(`{
-      typescript: { files: "**/*.ts" },
+      src: { languages: ["tsx"] },
       tooling: { files: { prepend: "a.ts", exclude: ".*.ts" } },
     }`);
 
     const config = await loadConfig(project.root);
-
-    expect((await config.resolve("typescript")).files).toEqual(["**/*.ts"]);
 
     expect((await config.resolve("tooling")).rootFiles).toEqual([
       "a.ts",
       "*.config.ts",
     ]);
 
-    expect((await config.resolve("src")).globs).toEqual(["src/**/*.ts"]);
+    expect((await config.resolve("src")).globs).toEqual(["src/**/*.tsx"]);
   });
 });
 

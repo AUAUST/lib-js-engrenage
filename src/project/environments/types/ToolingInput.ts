@@ -26,7 +26,12 @@ export interface ToolingInput {
    */
   strictness?: (("strict" | "loose") | undefined)
   /**
-   * Directories of the tooling environment: all their TypeScript files are included and walked like `src`. `.` contributes only the files matched by `files`.
+   * Names of the registered languages the environment holds; defaults to its kind's `languages`.
+   * @default none
+   */
+  languages?: (string[] | undefined)
+  /**
+   * Directories of the tooling environment: all their files of the languages it selects (`languages`) are included and walked like `src`. `.` contributes only the files matched by `files`.
    * @default `.`, `tooling`
    */
   dirs?: (ListOption<string> | undefined)

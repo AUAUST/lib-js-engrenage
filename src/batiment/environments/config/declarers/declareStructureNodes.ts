@@ -167,6 +167,10 @@ const nodes = freeze({
         description: "Kind of the environment, naming an `environmentKinds` entry. Unset in a workspace's environment, its directory name.",
         optional: { value: undefined },
       }),
+      languages: declare(array(string()), {
+        description: "Names of the registered languages the environment holds; overrides its options' and its kind's `languages`.",
+        optional: { value: undefined },
+      }),
       ...namespaceFields,
     }),
   }),

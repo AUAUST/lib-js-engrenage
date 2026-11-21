@@ -15,7 +15,7 @@ export function declareCodeEnvironment(
     ...declareStructureOptions(),
     dirs: declareList(directorySchema, {
       description: [
-        `Directories of the ${name} environment: its TypeScript files (\`typescript.files\`) are included in its tsconfig, linted with its rules and, for \`src\` and \`bin\`, published.`,
+        `Directories of the ${name} environment: its files of the languages it selects (\`languages\`) are included in its tsconfig, linted with its rules and, for \`src\` and \`bin\`, published.`,
         "The environment is inactive when none holds a file Git does not ignore.",
       ],
       optional: { value: defaults.dirs },

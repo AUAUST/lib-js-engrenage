@@ -37,7 +37,6 @@ export const typescriptSection = declareSection({
     return object.freeze(
       compose(
         {
-          files: option.files,
           verbatimModuleSyntax,
         },
         compose.getters({

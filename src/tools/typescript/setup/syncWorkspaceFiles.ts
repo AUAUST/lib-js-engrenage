@@ -24,7 +24,7 @@ import {
   toTsconfigGlobs,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
-import { readTypescriptLanguage } from "#tools/typescript/operations/readTypescriptLanguage";
+import { readTypescriptExtensions } from "#tools/typescript/operations/readTypescriptExtensions";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import type { LoadedConfig } from "#project/config/index";
 import type {
@@ -153,7 +153,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     packageJson,
     traits,
     visibility,
-    language,
+    extensions,
   ] = await Promise.all([
     config.resolve("workspaces"),
     config.context.filesystem,
@@ -161,7 +161,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     config.resolve("packageJson"),
     config.resolve("traits"),
     config.resolve("visibility"),
-    readTypescriptLanguage(config),
+    readTypescriptExtensions(config),
   ]);
 
   const access = traits.published ? accessByVisibility[visibility] : undefined;
@@ -173,12 +173,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
 
       await filesystem.write(
         packageFile,
-        createPackageFields(
-          packageJson,
-          workspace,
-          access,
-          language.extensions,
-        ).reduce(
+        createPackageFields(packageJson, workspace, access, extensions).reduce(
           (current, { location, value }) => {
             return writePackageJsonValue(
               current,

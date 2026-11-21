@@ -36,9 +36,4 @@ export interface TypescriptInput {
    * @default true
    */
   verbatimModuleSyntax?: (boolean | undefined)
-  /**
-   * Globs of the TypeScript files inside every environment directory, feeding the tsconfig `include` and the published file scopes.
-   * @default `** /*.{ts,tsx}`
-   */
-  files?: (ListOption<string> | undefined)
 }
