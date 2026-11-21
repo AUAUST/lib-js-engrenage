@@ -20,7 +20,7 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 4. `planning issue check` passes underspecified items
 
-- why: it checks section presence and order only; underspecified items surfaced mid-walk.
+- why: it checks section presence and order only.
 - want: a finding per **Steps** item naming no path or identifier in code spans, and per **Tests** case without an expected outcome.
 - done: obsolete once #809's spec leaves land; then a finding per leaf without **Done when** or a contract line per dependent.
 

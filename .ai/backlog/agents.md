@@ -22,7 +22,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 ## 4. Nothing bounds a main session's context in a long run
 
 - why: #654: walker context 65k→214k, ~75% of cost re-reading; main sessions are 43% of cost, starting at 65k, mostly harness (#809).
-- want: walks: `autoCompactWindow` (≥100k) plus PreCompact stdout keeping past segments' gist and pending handoffs verbatim.
+- want: walks: `autoCompactWindow` (≥100k), PreCompact stdout keeping segment gists and pending handoffs.
 - want: interactive: one short `/compact` offer per threshold crossing; a smaller harness start (plugins, MCP servers).
 
 ## 5. Sync accepts a skill naming its supporting file by bare name
@@ -149,8 +149,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 27. Open questions on token spend from #771
 
-- why: #771 closed with these unanswered; #791 measured the desktop base context at ~43k tokens against the CLI's 22k.
-- want: a decision on each: a hook flagging `gh issue view` on issues held in `.ai/issues/` and long outputs, or wording only; a "batch independent calls" rule for every agent; which base-context parts to disable; mergers on Sonnet (#809 H9).
+- why: #771 closed with these open; desktop base context is ~43k tokens against the CLI's 22k (#791).
+- want: a decision on each: a hook flagging `gh issue view` on drafted issues and long outputs, or wording; a "batch independent calls" rule for every agent; which base-context parts to disable; mergers on Sonnet (#809 H9).
 
 ## 28. `agents stats --all` costs disagree between role and model views
 

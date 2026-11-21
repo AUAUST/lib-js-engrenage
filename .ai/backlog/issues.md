@@ -96,8 +96,8 @@ GitHub issue drafts, checks and planning commands.
 
 ## 17. `planning issue check` finds no oversized item
 
-- why: Size (`issue-drafts.md`) forbids items of several outcomes, judged only by agents; #774 passed as one complex issue of ten steps.
-- want: review findings, never count limits: on each `Checkpoint:` line; on a split dropping a Steps item or Tests case; on a Done when joining several capabilities. Under #809's spec leaves, the same on Done when and Tests.
+- why: Size forbids items of several outcomes, judged only by agents; #774 passed with ten steps.
+- want: review findings, never count limits: on each `Checkpoint:` line; on a split dropping a Steps item or Tests case; on a Done when joining several capabilities. Under #809, the same on spec leaves.
 
 ## 18. Planners may order an item's Steps contract-first
 
