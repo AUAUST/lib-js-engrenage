@@ -93,8 +93,3 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the instructions limit Housekeeping to edits outside code and tests, enforced only when an orchestrator applies it.
 - want: a `check` finding for a Housekeeping step naming a path under a code or test environment.
-
-## 17. `planning issue check` finds no oversized item
-
-- why: Size forbids items of several outcomes, judged only by agents; #774 passed with ten steps.
-- want: review findings, never count limits: on each `Checkpoint:` line; on a split dropping a Steps item or Tests case; on a Done when joining several capabilities. Under #809, the same on spec leaves.

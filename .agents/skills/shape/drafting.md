@@ -4,6 +4,10 @@
 
 Read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md` before your first draft.
 
+An issue still holding **Steps**: convert it by this file before editing or dispatching it:
+
+`.agents/skills/shape/steps-migration.md`
+
 1. Create the issue draft as soon as a request's scope is clear, and update it each time the discussion settles a point, so the user follows the direction in the draft as it forms.
 2. Once the draft is settled, check it against the issue-drafts rule › Size: when it holds more than one agent's worth, follow the shape skill's §Growing scope instead of splitting it yourself. Otherwise offer the user in one message the choice between publishing it then dispatching, and dispatching straight from the draft. Publish only on that choice: it replaces the issue-drafts rule's default publishing.
 3. Dispatch only issues of one agent's worth: an issue split into sub-issues through them one at a time in order, then the issue itself for any work the issue-drafts rule leaves to the parent. Brief the worker with `Issue: <owner>/<repo>#<n>` for a published issue, `Draft: <absolute path>` for a draft.

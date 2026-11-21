@@ -18,6 +18,10 @@ Turn a goal into a tree of GitHub issues that workers walk in order and implemen
 
 You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first. Read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md` before writing any issue.
 
+An issue still holding **Steps**: convert it by this file before anything else:
+
+`.agents/skills/planning/steps-migration.md`
+
 Edit nothing but issues, instruction or context files, the backlog and the agent records, apart from code the user explicitly asked you to implement.
 
 ## Modes
