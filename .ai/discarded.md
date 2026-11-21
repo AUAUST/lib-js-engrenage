@@ -153,3 +153,5 @@
 - `valibot` and `@auaust/toolkit` guards in the metalbrain hook: validate model facts and payloads (#370) — the hook loads only Node builtins; hand-written guards marked as debt instead
 - scaffold-first workers: surface placement early, reviewable partial diffs (#790) — Steps already fix order and placement; stubs are debt and break Size; Size and budget stops cover both
 - per-scope alias tables in batiment: #741 alias ownership — `#…` aliases are language-bound and stay in `project/structure` until the language port (#732 › Batiment)
+- package-name edges in the cycle check: cross-workspace file cycles (#744) — needs a package `exports` resolver over the filesystem port; #743's `scope-cycle` and direction rule already fail on every such cycle
+- per-scope cycle graphs: cycles inside and across scopes (#744) — one graph resolving each importer from its scope finds both in one pass
