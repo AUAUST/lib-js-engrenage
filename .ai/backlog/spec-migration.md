@@ -29,7 +29,12 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 - why: sync installs no new skill, so a consumer's walker and Steps sweep brief a `consultant` that does not exist; agent blocks still setting `freshness` fail schema validation.
 - want: toolkit and interscript run `pnpm engrenage agents skills add consultant` and drop `freshness` when the user migrates them (S.23).
 
-## 6. Publish refuses re-splits the instructions do not name
+## 7. Routine planning needs a `resplit` reason
 
-- why: since 84adf127, publish refuses a claimed issue under a plan whose `subIssues` or parent changes without a manifest `resplit:` reason; the issue-drafts Manifest table and the consultant skill do not name the key yet.
-- want: the re-split log writer pass (M.6.3, M.13.6).
+- why: `resolveResplits.ts` counts any `subIssues` change under a plan as a re-split, so an inner planner deepening a published item, a planner adding items and a Steps-sweep conversion all need `resplit:` and fill the **Re-split log**.
+- want: user decides whether deepening and first child additions are exempt (S.1 says any structural change after first publish).
+
+## 8. Codex never loads the issue-drafts rule
+
+- why: sync writes `issue-drafts.md` only as `.claude/rules/issue-drafts.md`; the Codex consultant's §Changes row points to a rule it never loads.
+- want: decide whether Codex gets the rule, then an instruction or sync change.

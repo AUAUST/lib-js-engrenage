@@ -190,3 +190,4 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: the budget hook measures context gained since an agent's first call, across every resume, so a resumed consultant or merger nears budget warnings through accumulated contacts alone; a level means per-dispatch depth, which a resume never resets.
 - want: decide whether a resume starts a new budget window, and measure it per contact if so.
+- user concern: a per-contact window must not license costly resumes; pair it with a cumulative context cap (Agent limits › Fresh up to) retiring the agent to a fresh one.

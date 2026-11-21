@@ -147,3 +147,4 @@
 - Agent dispatch hook: worker briefed `Issue: AUAUST/lib-js-engrenage#809` for one decision of a Resource report — refused, not a ready Task or Problem; dispatched on a plain brief without Issue line
 - Claude Code worktree isolation: a heredoc python edit chained with `cd ../..` and a sync and git status — refused as unverifiable; ran the edit and the sync as separate commands
 - `engrenage sync agents`: regenerating a deleted `.claude/agents/<name>.md` — sync reports it conflicting and never recreates it; reran `engrenage agents skills add <skill>`
+- Claude Code worktree isolation: a grep whose pattern held the word `complete`, and a vitest call on a path through `tools/github` — refused as running a string through `complete` or naming git; split the grep from git commands and filtered vitest by `issues/drafts/`
