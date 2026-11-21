@@ -1,5 +1,119 @@
 # @auaust/engrenage
 
+## 0.18.0
+
+### Minor Changes
+
+- [`5bd76d6`](https://github.com/AUAUST/lib-js-engrenage/commit/5bd76d67294f7377185ad49af6393e33d053118d) Thanks [@apademide](https://github.com/apademide)! - - Derive environment import rights from each kind's `imports` relations and `inward` policy, replacing `consumesSource`
+  - Check data imports through `import-environments`, removing `import-data`
+  - Let `src` import `data` in published packages too
+
+- [`4efd1af`](https://github.com/AUAUST/lib-js-engrenage/commit/4efd1af5393c532288c6f679ae44f44b8280a16e) Thanks [@apademide](https://github.com/apademide)! - - Contribute environment kinds to the `environmentKinds` slot; an `environments` entry names its `kind`
+  - Resolve the `environments` config key to `{ entry, kind }` pairs
+
+- [`6ab2fc0`](https://github.com/AUAUST/lib-js-engrenage/commit/6ab2fc0872bfcaef5a21c15fd917e62de233dc7e) Thanks [@apademide](https://github.com/apademide)! - - Select each environment's languages with `languages`, in its options or `.environment.json`, replacing `typescript.files`
+  - Register TSX as the `tsx` language, selected by default in `src` and `tests` only
+
+- [`af2da6a`](https://github.com/AUAUST/lib-js-engrenage/commit/af2da6ad8154d11d3adc0d22a7925d726a3d08ba) Thanks [@apademide](https://github.com/apademide)! - - Declare an environment's root namespace in its `.environment.json`, with a `kind`, in place of its `.namespace.json`
+  - Report an `.environment.json` outside a scope's direct child directory, beside a `.namespace.json` or naming an unknown kind
+  - Register a workspace's environments from the `.environment.json` in its direct child directories
+  - Replace `resolveEnvironmentDirs` and `hasUnignoredFile` with `discoverDeclaredEnvironment` for contributed environments
+
+- [`1e86dd9`](https://github.com/AUAUST/lib-js-engrenage/commit/1e86dd9b071456d80d7b11d48aec42c1dca41555) Thanks [@apademide](https://github.com/apademide)! - - Rename the `environment` config key to `dependencies`
+
+- [`700684c`](https://github.com/AUAUST/lib-js-engrenage/commit/700684c51b432c1fd3b6689a0d8f6c78ee1f0011) Thanks [@apademide](https://github.com/apademide)! - - Apply default roles to every environment of a kind: a `roles` contribution's `environments` lists environment kinds, no longer environment names
+
+- [`206a9fa`](https://github.com/AUAUST/lib-js-engrenage/commit/206a9fac4db6edc9fd9a95a0e224254f19f59938) Thanks [@apademide](https://github.com/apademide)! - - Rename the role contract's `scoped` flag to `optIn`
+
+- [`ac3e328`](https://github.com/AUAUST/lib-js-engrenage/commit/ac3e328a052a1228077e3bc9be3064d3f8c85262) Thanks [@apademide](https://github.com/apademide)! - - Remove the role names and role contract constants from the `@auaust/engrenage/roles/constants` subpath
+
+- [`77f87c5`](https://github.com/AUAUST/lib-js-engrenage/commit/77f87c5682e06b755cd6e61034f701805b27d15d) Thanks [@apademide](https://github.com/apademide)! - - Discover workspaces by their `.workspace.json`, reporting a `workspaces` glob match without one
+
+- [`670bdee`](https://github.com/AUAUST/lib-js-engrenage/commit/670bdee0a629dadd3fd9605faae1cab7c54fb1c2) Thanks [@apademide](https://github.com/apademide)! - - Replace `Entity.workspace` with `Entity.scope` and make `Entity.environment` optional, unset for a file outside every environment of its scope
+  - Name the scope in the lint message refusing an import of an undeclared workspace dependency
+  - List scope dependencies under `## Scopes` in the generated project map
+
+### Patch Changes
+
+- [`ae9f9eb`](https://github.com/AUAUST/lib-js-engrenage/commit/ae9f9eb6608de597541acee84c63368f429ba62e) Thanks [@apademide](https://github.com/apademide)! - - Show thinking share, batched calls and 5-minute cache misses per agent in `engrenage agents stats`
+  - Show tool results by family and the largest tool results in `engrenage agents stats`
+  - Count calls per model in `engrenage agents stats`
+
+- [`16c66c5`](https://github.com/AUAUST/lib-js-engrenage/commit/16c66c52180171e4da2afd09acbe03266b177b88) Thanks [@apademide](https://github.com/apademide)! - - Show each agent run's budget level, budget and warning count in agent stats
+
+- [`9165227`](https://github.com/AUAUST/lib-js-engrenage/commit/916522706eb1d975df5207b87dea68bf5795eb56) Thanks [@apademide](https://github.com/apademide)! - - Show dollar cost per role, agent and model in `engrenage agents stats`
+  - Record agent run tokens per model and price tier
+  - Match model facts through aliases and dated model ids
+
+- [`9ccfdf4`](https://github.com/AUAUST/lib-js-engrenage/commit/9ccfdf4ab50319f6a2466030f92a1e0bc8f8c6cc) Thanks [@apademide](https://github.com/apademide)! - - Add `--all` and `--since <date>` to `engrenage agents stats`, aggregating runs across sessions by role, model and day
+
+- [`92d187b`](https://github.com/AUAUST/lib-js-engrenage/commit/92d187b7dde7ecc5377c4040f9db293998ebe14f) Thanks [@apademide](https://github.com/apademide)! - - Tell agents which actions Claude Code's auto mode denies in the scratchpad and what to do instead
+
+- [`693103e`](https://github.com/AUAUST/lib-js-engrenage/commit/693103ea3361772e3aceaf5392c3fe47e8cf54b7) Thanks [@apademide](https://github.com/apademide)! - - Add `engrenage batiment map --json`, printing the structure report's facts and diagnostics
+
+- [`2756e81`](https://github.com/AUAUST/lib-js-engrenage/commit/2756e81b80fab0010008145914e5e35fd3c50f55) Thanks [@apademide](https://github.com/apademide)! - - Rename `engrenage structure` to `engrenage batiment map` and its gate step to `batiment map --check`
+
+- [`bcbd18b`](https://github.com/AUAUST/lib-js-engrenage/commit/bcbd18b66cd37ac6a33e3aee3afe85f056bfaa10) Thanks [@apademide](https://github.com/apademide)! - - Read a leading `run` in `vitest`, `vitest:coverage` and `vitest:dist`, and `watch` or `dev` in `vitest:watch`, as the mode they already run instead of a file filter, and reject a leading mode they never run
+  - Print full paths in `jscpd` clone reports instead of bare file names
+  - Warn when `gate` finds no staged file while unstaged changes exist, naming them and `--worktree`
+  - Take a new draft's slug without its `new-` prefix in `planning issue create --parent` and `--after`
+
+- [`3db2a94`](https://github.com/AUAUST/lib-js-engrenage/commit/3db2a9471be10752edcfc50f55b81b01f08fb174) Thanks [@apademide](https://github.com/apademide)! - - Add `Budget:` levels to dispatch briefs, with per-role defaults, that cap how far a dispatched agent digs before it reports a budget stop, its remaining work then handed to a fresh agent
+
+- [`c0244bd`](https://github.com/AUAUST/lib-js-engrenage/commit/c0244bd974b49c70ac1bdd602d439b2d80e5e471) Thanks [@apademide](https://github.com/apademide)! - - Deny a worker or debugger dispatch whose briefed issue cannot be read from GitHub, naming the registered repositories when the briefed one is unknown
+
+- [`4953221`](https://github.com/AUAUST/lib-js-engrenage/commit/49532216cddeed407c38c1eff6e83753d27036c7) Thanks [@apademide](https://github.com/apademide)! - - Select an environment's layout by name, the CLI tree being the commands layout
+
+- [`417f900`](https://github.com/AUAUST/lib-js-engrenage/commit/417f900132060ef584cf3f44a876d5388755b891) Thanks [@apademide](https://github.com/apademide)! - - Require agents to record a finding before telling anyone of it, and to write every due record and backlog entry before a turn ends
+  - Have callers record the bugs, gaps and unmarked debt their agents report
+
+- [`020a7bb`](https://github.com/AUAUST/lib-js-engrenage/commit/020a7bb49c88ea4ce09dd43a9c9562fa05a97488) Thanks [@apademide](https://github.com/apademide)! - - Add a **Housekeeping** section to Tasks and Problems for a parent's trivial follow-up work, exclusive with **Steps**, **Leads** and **Tests**, and requiring sub-issues
+  - Require a Task to hold **Steps** or **Housekeeping**, with **Tests** only alongside **Steps**
+  - Deny every agent an issue with **Housekeeping**, and name the orchestrator for it in `planning walk check`
+  - Write **Housekeeping** with a guiding comment in fresh Task and Problem drafts
+  - Have planners write trivial follow-up work as **Housekeeping**, and walking and shape sessions apply it themselves, only as written
+
+- [`77538cc`](https://github.com/AUAUST/lib-js-engrenage/commit/77538ccdab615b631360852b3fd81205ad75fb12) Thanks [@apademide](https://github.com/apademide)! - - Size issues to as many whole outcomes as one worker run can deliver, splitting only what exceeds it into the fewest sub-issues
+
+- [`72be223`](https://github.com/AUAUST/lib-js-engrenage/commit/72be2233d2a344d59e67f3e1fe547db5022e538f) Thanks [@apademide](https://github.com/apademide)! - - Deny `gh issue view` of an issue whose copy `.ai/issues/` already holds, unless it asks for comments or fields the copy lacks
+  - Warn Claude agents when a shell command's output passes `agents.outputLimit` characters
+
+- [`7f61e8b`](https://github.com/AUAUST/lib-js-engrenage/commit/7f61e8bc40cbe44fd9585ad598c5b71d8942df78) Thanks [@apademide](https://github.com/apademide)! - - Add the `metalbrain` binary, whose Claude Code PreToolUse and PostToolUse hooks log each tool call with its duration, output size and dollar cost to `.ai/stats/<session>/<agent>.calls.jsonl`
+  - Ship Claude model facts and prices as `@auaust/engrenage/metalbrain/models.json`
+
+- [`bcc02c0`](https://github.com/AUAUST/lib-js-engrenage/commit/bcc02c088ced4b7fd436a4b5d74a81df2cfc834c) Thanks [@apademide](https://github.com/apademide)! - - Report failing `metalbrain` hooks as a hook `systemMessage` instead of silently skipping the call log
+
+- [`90ab589`](https://github.com/AUAUST/lib-js-engrenage/commit/90ab58902f454b68aca2d16888335f77eba81d79) Thanks [@apademide](https://github.com/apademide)! - - Add `origin` to option resolvers, naming the layer each input value came from
+
+- [`7551aea`](https://github.com/AUAUST/lib-js-engrenage/commit/7551aeabd6f299b31107ca2c5a6403f4cbaf11d4) Thanks [@apademide](https://github.com/apademide)! - - Route walked leaves to the agent `walk check` names
+  - Describe the two `problem` shapes and **Leads** in the issue-drafts rule
+
+- [`7551aea`](https://github.com/AUAUST/lib-js-engrenage/commit/7551aeabd6f299b31107ca2c5a6403f4cbaf11d4) Thanks [@apademide](https://github.com/apademide)! - - Add an optional **Leads** section to Problems, exclusive with **Steps**, with **Tests** required only alongside **Steps**
+  - Deny a worker a Problem without **Steps** and a debugger one with them
+  - Name each ready issue's agent in `planning walk check`
+  - Write both **Steps** and **Leads** with guiding comments in a fresh Problem draft, which `check` ignores
+
+- [`4b4bce7`](https://github.com/AUAUST/lib-js-engrenage/commit/4b4bce772c7377d8759082301f02b07907f30ee6) Thanks [@apademide](https://github.com/apademide)! - - Never commit agent records alone: leave them for the next commit, unless a handoff is sent
+  - Stash pending agent records around the cherry-picks of agent work instead of committing them first
+
+- [`3687c90`](https://github.com/AUAUST/lib-js-engrenage/commit/3687c90252ef9cc68f01cb1f275373278fa45294) Thanks [@apademide](https://github.com/apademide)! - - Report workspaces inside a root environment, named after one or nested in another workspace in `engrenage batiment map --check`
+
+- [`2eddc48`](https://github.com/AUAUST/lib-js-engrenage/commit/2eddc48c6df2ec9b9442a20901b98e3ccac210d5) Thanks [@apademide](https://github.com/apademide)! - - Resolve `for` loops over literal words in hook shell checks, so issue views, GitHub writes and hook bypasses inside them are caught
+
+- [`627ac71`](https://github.com/AUAUST/lib-js-engrenage/commit/627ac71f1b338f131deb6b7fea791a47c6fe3707) Thanks [@apademide](https://github.com/apademide)! - - State the foundation, support and binding concepts in the structure instructions
+
+- [`1620f74`](https://github.com/AUAUST/lib-js-engrenage/commit/1620f74039f9db11e8d19d9fde6566cef8550ea9) Thanks [@apademide](https://github.com/apademide)! - - Report structure findings as diagnostics instead of failing the config load
+  - Let a metafile override a structure field or node kind a preset sets
+  - Report a namespace metafile under a namespace whose children are domains
+
+- [`6331641`](https://github.com/AUAUST/lib-js-engrenage/commit/6331641f369a04a3e9afb1e5281e8f01d72c4a1a) Thanks [@apademide](https://github.com/apademide)! - - Warn generated subagents once their context outgrows their brief's token budget, logging each warning under the agent stats
+
+- [`16479e0`](https://github.com/AUAUST/lib-js-engrenage/commit/16479e03e61ffd07fe2f1b5d6b28552d3a5eef3a) Thanks [@apademide](https://github.com/apademide)! - - Default `agents.subagentCacheTtl` to `5m`
+
+- [`ccb6eff`](https://github.com/AUAUST/lib-js-engrenage/commit/ccb6eff6ec396e0c1381a9aab29489a86aca184c) Thanks [@apademide](https://github.com/apademide)! - - Record agent runs that never fired a stop event in `engrenage agents stats`
+
+- [`6dad961`](https://github.com/AUAUST/lib-js-engrenage/commit/6dad961616776713c7a24e8286fabff6d2e4657e) Thanks [@apademide](https://github.com/apademide)! - - Declare a workspace's `purpose` on its `workspaces` glob or its `.workspace.json`
+
 ## 0.17.1
 
 ### Patch Changes
