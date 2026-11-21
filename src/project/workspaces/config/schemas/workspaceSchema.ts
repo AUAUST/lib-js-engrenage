@@ -17,6 +17,10 @@ export const workspaceSchema = declareObject(
         "Sync writes it as the `name` of the workspace `package.json`.",
       ],
     }),
+    purpose: declare(string(), {
+      description: "Purpose of every workspace the glob matches, unless its `.workspace.json` sets one.",
+      optional: { value: undefined },
+    }),
     generated: declareList(globSchema, {
       description: "Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.",
       optional: { value: [] },

@@ -16,7 +16,7 @@ Test infrastructure and coverage gaps.
 
 ## 3. Process-spawning tests time out under concurrent agents' load
 
-- why: under load, spawn-based tests fail while passing alone: `runGateLocks`, `hookFailures`, `syncVscodeFiles`, `init`, `checkAgents`, `barrelDirective`, `syncDirectiveBlocks` and others hit 5000 ms in both gates and `pnpm build`, up to 4 commit attempts beside parallel sessions (friction ×11).
+- why: under load, spawn-based tests fail while passing alone: `runGateLocks`, `hookFailures`, `syncVscodeFiles`, `init`, `checkAgents`, `barrelDirective`, `syncDirectiveBlocks`, `codegen/config` and others hit 5000 ms in both gates and `pnpm build`, up to 4 commit attempts beside parallel sessions (friction ×11).
 - want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
 
 ## 4. Tests initialize Git repositories by hand

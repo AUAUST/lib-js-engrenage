@@ -7,6 +7,7 @@ import type { Globs } from "#types/Globs";
 export interface ResolvedWorkspaceGroup {
   readonly glob: Glob;
   readonly active: boolean;
+  readonly purpose?: string;
   readonly dirs: Directories;
   readonly missing: Directories;
   readonly generated: Globs;

@@ -116,6 +116,11 @@ export interface BuiltinConfigInput {
        */
       name: string
       /**
+       * Purpose of every workspace the glob matches, unless its `.workspace.json` sets one.
+       * @default none
+       */
+      purpose?: (string | undefined)
+      /**
        * Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.
        * @default none
        */

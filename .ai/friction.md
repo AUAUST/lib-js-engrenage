@@ -129,3 +129,5 @@
 - `pnpm engrenage sync` before `pnpm run support codegen schemas`: a new `metadataSchemas` entry — sync failed on the missing schema file; ran codegen first, then sync
 - worktree isolation: python heredoc editing files, naming `git` as a string — refused as git too complex; edited through the edit tools
 - `pnpm engrenage gate --worktree`: `tests/scripts/codegen/config.test.src.ts` hit its 5s timeout under the gate load, twice in four runs, and passed alone — reran the gate
+- Claude Code worktree isolation: a python heredoc editing files, after two that ran — refused as unverifiable on the third; used the edit tools
+- `declare` `optional: true`: issue spec gave it for a leaf option — `true` only fits `declareObject`, crashed with `in` on a boolean; used `optional: { value: undefined }`

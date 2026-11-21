@@ -8,8 +8,10 @@ import {
   getEnvironmentId,
 } from "#batiment/scopes/index";
 import { createFilesystem } from "#foundation/filesystem/index";
+import { createProjectConfig } from "#project/config/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
 const placeholder = "{dir}";
 
@@ -23,6 +25,42 @@ async function resolveScopes(files: Record<string, string>) {
   });
 
   return (await loadConfig(project.root)).resolve("scopes");
+}
+
+function resolvePresetScopes({
+  input,
+  preset,
+  files,
+}: {
+  input: Readonly<Record<string, unknown>>;
+  preset: Readonly<Record<string, unknown>>;
+  files: Record<string, string>;
+}) {
+  const fixture = {
+    name: "scopes-fixture",
+    contributes: {
+      presets: [
+        {
+          name: "fixture",
+          traits: [],
+          load() {
+            return Promise.resolve(preset);
+          },
+        },
+      ],
+    },
+  };
+
+  return createProjectConfig({
+    root: createTemporaryProject({ "package.json": packageJson, ...files })
+      .root,
+    raw: withSourceRuntime({
+      extensions: [fixture],
+      preset: "fixture",
+      ...input,
+    }),
+    configFile: undefined,
+  }).resolve("scopes");
 }
 
 function summarize(
@@ -51,7 +89,17 @@ describe("createScopeTree", () => {
           dirs: ["src"],
         },
       ],
-      workspaces: ["src/theme", "extensions/a", "extensions/a/b"],
+      workspaces: [
+        {
+          dir: "src/theme",
+        },
+        {
+          dir: "extensions/a",
+        },
+        {
+          dir: "extensions/a/b",
+        },
+      ],
       missing: [],
     });
 
@@ -139,5 +187,67 @@ describe("scopes", () => {
       { code: "unreadable-metafile", path: "extensions/d" },
       { code: "missing-workspace", path: "extensions/d" },
     ]);
+  });
+
+  test("takes the purpose of a metafile under a glob without one", async () => {
+    const { scopes, diagnostics } = await resolveScopes({
+      "extensions/a/.workspace.json": JSON.stringify({ purpose: "theme" }),
+    });
+
+    expect(diagnostics).toEqual([]);
+
+    expect(scopes["extensions/a"]?.purpose).toBe("theme");
+  });
+
+  test("reports a purpose set by both the config and the metafile", async () => {
+    const { scopes, diagnostics } = await resolvePresetScopes({
+      input: {
+        workspaces: {
+          "extensions/*": { name: `@x/${placeholder}`, purpose: "config" },
+        },
+      },
+      preset: {},
+      files: {
+        "extensions/a/.workspace.json": JSON.stringify({ purpose: "theme" }),
+      },
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        severity: "error",
+        code: "config-metafile-conflict",
+        message: "extensions/a sets purpose in both workspaces.extensions/*.purpose and extensions/a/.workspace.json; keeping the value of extensions/a/.workspace.json",
+        path: "extensions/a",
+        files: ["extensions/a/.workspace.json"],
+        config: {
+          key: "workspaces",
+          path: "workspaces.extensions/*.purpose",
+          origin: { layer: "input" },
+        },
+      },
+    ]);
+
+    expect(scopes["extensions/a"]?.purpose).toBe("theme");
+  });
+
+  test("overrides a preset's purpose without a diagnostic", async () => {
+    const { scopes, diagnostics } = await resolvePresetScopes({
+      input: {},
+      preset: {
+        workspaces: {
+          "extensions/*": { name: `@x/${placeholder}`, purpose: "preset" },
+        },
+      },
+      files: {
+        "extensions/a/.workspace.json": JSON.stringify({ purpose: "theme" }),
+        "extensions/b/.workspace.json": "{}",
+      },
+    });
+
+    expect(diagnostics).toEqual([]);
+
+    expect(scopes["extensions/a"]?.purpose).toBe("theme");
+
+    expect(scopes["extensions/b"]?.purpose).toBe("preset");
   });
 });

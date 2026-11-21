@@ -123,11 +123,12 @@ export async function resolveWorkspaces({
   return freeze(
     await Promise.all(
       iterable.map(matched, async ({ glob, option, dirs, missing }) => {
-        const { generated, discovered, tsconfig } = option;
+        const { purpose, generated, discovered, tsconfig } = option;
 
         return freeze({
           glob,
           active: dirs.length > 0,
+          ...(purpose === undefined ? {} : { purpose }),
           dirs,
           missing,
           generated,
