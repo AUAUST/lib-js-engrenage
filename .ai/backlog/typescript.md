@@ -82,3 +82,9 @@ Generated tsconfigs: checks, variant resolution and shipped type declarations.
 - sites: `src/tools/typescript/config/sections/declarationsSection.ts:248`
 - why: `SourceDeclaration.kind` has no member for them.
 - want: a kind for default-exported expressions.
+
+## 15. `typecheck` misses declaration-emit errors that only `build` reports
+
+- sites: `data/tsconfig/base.json:4`
+- why: generated tsconfigs set `declaration: false`, so a published signature naming an unexported type (TS4023, TS4082) passes `typecheck` and the gate, failing only `pnpm build`, as `LayoutContext` did; `tsc --noEmit --declaration` reports them.
+- want: `declaration: true` in the generated tsconfig of each environment whose code ships declarations, or `isolatedDeclarations` where its explicit-type cost is accepted.

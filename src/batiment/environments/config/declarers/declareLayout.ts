@@ -1,13 +1,9 @@
 import { picklist, string } from "valibot";
 
 import { declare } from "#foundation/options/index";
+import type { LayoutContext } from "#batiment/environments/types/LayoutContext";
 
 const domainsLayout = "domains";
-
-interface LayoutContext {
-  readonly layouts: readonly string[];
-  readonly layout: string | undefined;
-}
 
 export function declareLayout() {
   return declare(string(), {

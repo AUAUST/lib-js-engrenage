@@ -12,6 +12,7 @@ export type * from "#batiment/environments/ports/EnvironmentKind";
 export type * from "#batiment/environments/types/DomainDeclaration";
 export type * from "#batiment/environments/types/DomainInput";
 export type * from "#batiment/environments/types/EnvironmentInstance";
+export type * from "#batiment/environments/types/LayoutContext";
 export type * from "#batiment/environments/types/NamespaceDeclaration";
 export type * from "#batiment/environments/types/NamespaceInput";
 // @end

@@ -1,3 +1,4 @@
+import type { LayoutContext } from "#batiment/environments/index";
 import type { ConfigResolver } from "#project/config/index";
 
 /**
@@ -7,10 +8,7 @@ import type { ConfigResolver } from "#project/config/index";
 export async function readLayoutContext(
   config: ConfigResolver,
   environment: string,
-): Promise<{
-  readonly layouts: readonly string[];
-  readonly layout: string | undefined;
-}> {
+): Promise<LayoutContext> {
   const { registry } = config.context;
 
   const [layouts, environments, kinds] = await Promise.all([
