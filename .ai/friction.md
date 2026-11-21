@@ -141,3 +141,6 @@
 - engrenage gate backlog-sites: a `file:36-46` line range in a sites bullet — refused, only `file:line` spans; listed each line
 - engrenage gate --worktree in the main checkout: gated agents.26 work — failed on another session's uncommitted budget defaults (`budgets.test.src.ts`) and on a test failing at HEAD; checked each failure against my diff
 - `pnpm engrenage sync` after deleting a module a barrel lists: sync and codegen both failed loading the stale barrel — removed its export line by hand, then ran sync and codegen
+- Agent `isolation: "worktree"`: dispatched a writer and a worker expecting a worktree at `HEAD` — branch started at `6ab2fc08`, an older commit; agents checked out the briefed `Base:` detached
+- Agent dispatch hook: `Issue: #809` brief line — refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line
+- Agent dispatch hook: worker resuming a brief-only pass on #809 (a Resource with open **Questions**) — refused the `Issue:` line; dispatched as a brief without it, no instruction says a brief may cite a non-leaf issue

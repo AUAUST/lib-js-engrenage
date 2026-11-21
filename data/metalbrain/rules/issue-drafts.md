@@ -67,7 +67,7 @@ An item states its outcome and boundaries, never the procedure. Uncertainty live
 | **Prerequisites** | segment, item                | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                            |
 | **Provides**      | `task`                       | Only what a Model section of the nearest plan expects from the item, one line each: `<Model heading>: <what it provides>`                       |
 | **Leads**         | `problem` without **Fix**    | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                            |
-| **Fix**           | `problem` without sub-issues | Only when several fixes are possible: the direction the fix takes                                                                               |
+| **Fix**           | `problem` without sub-issues | Exactly when the cause is identified and its fix decided: that fix                                                                              |
 | **Housekeeping**  | item with sub-issues         | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests              |
 | **Done when**     | plan                         | The capabilities that must exist to serve the **Goal**, never implementation                                                                    |
 | **Done when**     | segment, item                | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |

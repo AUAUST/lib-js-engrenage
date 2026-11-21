@@ -510,7 +510,7 @@ Goal: the segment
     const content = await config.context.filesystem.read(file);
 
     expect(content).toMatch(
-      /## Leads\n\n<!-- Leads only when genuine directions[^\n]*-->\n\n## Fix\n\n<!-- Fix only when several fixes are possible[^\n]*-->\n/,
+      /## Leads\n\n<!-- Leads only when genuine directions[^\n]*-->\n\n## Fix\n\n<!-- Fix exactly when the cause is identified and its fix decided[^\n]*-->\n/,
     );
 
     const { lines } = await checkIssues(config, ["new-fresh"], "worker");

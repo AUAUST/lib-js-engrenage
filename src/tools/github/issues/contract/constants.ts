@@ -296,7 +296,7 @@ export const issueContracts = freeze({
     ] as const),
     hints: freeze({
       Leads: "Leads only when genuine directions to investigate exist, for a debugger: symptoms, reproductions, suspected sites. Keep at most one of Leads and Fix.",
-      Fix: "Fix only when several fixes are possible: the direction the fix must take, for a worker. Keep at most one of Leads and Fix.",
+      Fix: "Fix exactly when the cause is identified and its fix decided: that fix, for a worker. Keep at most one of Leads and Fix.",
       [housekeepingSection]: housekeepingHint,
     } as const),
     hasHeader: true,

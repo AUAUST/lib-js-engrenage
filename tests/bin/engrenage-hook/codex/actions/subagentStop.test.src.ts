@@ -29,14 +29,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-test.each([
-  "worker",
-  "worker_medium",
-  "debugger",
-  "debugger_low",
-  "debugger_high",
-  "planner",
-])(
+test.each(["worker", "debugger", "debugger_low", "debugger_high", "planner"])(
   "stops the generated %s profile with its canonical gate policy",
   async (name) => {
     const project = createTemporaryProject({

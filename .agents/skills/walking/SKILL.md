@@ -181,12 +181,12 @@ Reshape around each set-aside issue once per settlement attempt: run it again on
 
 ## Agent limits
 
-| Agent      | Default effort | Effort by complexity                  | Fresh up to             |
-| ---------- | -------------- | ------------------------------------- | ----------------------- |
-| `worker`   | low            | `involved`: medium, `complex`: medium | no limit                |
-| `debugger` | medium         | `trivial`: low, `complex`: high       | no limit                |
-| `merger`   | medium         | none                                  | 2× its starting context |
-| `planner`  | medium         | none                                  | 2× its starting context |
+| Agent      | Default effort | Effort by complexity            | Fresh up to             |
+| ---------- | -------------- | ------------------------------- | ----------------------- |
+| `worker`   | medium         | none                            | no limit                |
+| `debugger` | medium         | `trivial`: low, `complex`: high | no limit                |
+| `merger`   | medium         | none                            | 2× its starting context |
+| `planner`  | medium         | none                            | 2× its starting context |
 
 ## Stops and restarts
 

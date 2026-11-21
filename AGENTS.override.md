@@ -62,7 +62,7 @@ Use the installed workflows below when their descriptions match the request.
 | `analysis` | Examine any material for contradictions, gaps, costs and dependencies, and record or report the findings with a recommendation. Use only when a skill you follow or the user asks for an analyser; never for implementing a decided change, for reviewing a diff or pull request for bugs, or for reviewing planned issues. Delegate to `analyser` when its description allows; otherwise run the skill yourself. |
 | `planning` | Run its skill in the main session. Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, in one pass or as an outer groundwork pass that inner planners deepen. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly. |
 | `debugging` | Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger. Delegate to `debugger` when its description allows; otherwise run the skill yourself. |
-| `implement` | Implement one specified change (a GitHub issue, an issue draft, a brief or a request) as its specification states, without redesigning it. Use only when the user invokes it or asks for a worker, or a skill you follow asks for one. Delegate to `worker` when its description allows; otherwise run the skill yourself. |
+| `implement` | Implement one specified change (a GitHub issue, an issue draft, a brief or a request), designing the code that delivers the end state its specification states. Use only when the user invokes it or asks for a worker, or a skill you follow asks for one. Delegate to `worker` when its description allows; otherwise run the skill yourself. |
 | `walking` | Run its skill in the main session. Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree. |
 | `merging` | Review what a walk landed across its leaves, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger. Delegate to `merger` when its description allows; otherwise run the skill yourself. |
 | `curation` | Run its skill in the main session. Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries, filing the ready ones as issues where GitHub planning is on. Use when the user asks to triage the scratchpad, harvest debt markers or friction, or update, settle or file backlog entries. |
@@ -76,8 +76,7 @@ Use the installed workflows below when their descriptions match the request.
 | `debugger` | `debugger` | medium | any other |
 | `debugger_low` | `debugger` | low | `trivial` |
 | `debugger_high` | `debugger` | high | `complex` |
-| `worker` | `worker` | low | any other |
-| `worker_medium` | `worker` | medium | `involved`, `complex` |
+| `worker` | `worker` | medium | any other |
 | `merger` | `merger` | medium | any other |
 | `writer` | `writer` | medium | any other |
 | `writer_low` | `writer` | low | `trivial` |

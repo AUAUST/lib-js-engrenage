@@ -133,12 +133,12 @@ When the user asks to report back with split handoffs, write as chat handoffs:
 
 ## Agent limits
 
-| Agent      | Default effort | Effort by complexity                  | Fresh up to |
-| ---------- | -------------- | ------------------------------------- | ----------- |
-| `worker`   | low            | `involved`: medium, `complex`: medium | no limit    |
-| `debugger` | medium         | `trivial`: low, `complex`: high       | no limit    |
-| `writer`   | medium         | `trivial`: low, `complex`: high       | no limit    |
-| `analyser` | medium         | none                                  | no limit    |
-| `gatherer` | low            | none                                  | no limit    |
+| Agent      | Default effort | Effort by complexity            | Fresh up to |
+| ---------- | -------------- | ------------------------------- | ----------- |
+| `worker`   | medium         | none                            | no limit    |
+| `debugger` | medium         | `trivial`: low, `complex`: high | no limit    |
+| `writer`   | medium         | `trivial`: low, `complex`: high | no limit    |
+| `analyser` | medium         | none                            | no limit    |
+| `gatherer` | low            | none                            | no limit    |
 
 <!-- @end -->

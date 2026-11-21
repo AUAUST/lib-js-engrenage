@@ -187,35 +187,32 @@ async function installed(
   };
 }
 
-test.each([
-  "worker",
-  "worker_medium",
-  "debugger",
-  "debugger_low",
-  "debugger_high",
-])("maps exact generated profile %s", async (name) => {
-  const { project, filesystem } = await installed();
+test.each(["worker", "debugger", "debugger_low", "debugger_high"])(
+  "maps exact generated profile %s",
+  async (name) => {
+    const { project, filesystem } = await installed();
 
-  await filesystem.flush();
+    await filesystem.flush();
 
-  payload = {
-    cwd: project.root,
-    tool_name: "spawn_agent",
-    tool_input: {
-      agent_type: name,
-      message: "Issue: o/r#1\nContext",
-    },
-  };
+    payload = {
+      cwd: project.root,
+      tool_name: "spawn_agent",
+      tool_input: {
+        agent_type: name,
+        message: "Issue: o/r#1\nContext",
+      },
+    };
 
-  await runCheck(codexDispatch);
+    await runCheck(codexDispatch);
 
-  expect(checkIssue).toHaveBeenCalledWith(
-    expect.anything(),
-    1,
-    name.startsWith("worker") ? "worker" : "debugger",
-    { dispatch: true, checkouts: [] },
-  );
-});
+    expect(checkIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      1,
+      name.startsWith("worker") ? "worker" : "debugger",
+      { dispatch: true, checkouts: [] },
+    );
+  },
+);
 
 test("passes the checkouts the project links with the local one", async () => {
   const checkout = createCheckout("acme/tool");
@@ -295,10 +292,10 @@ test("checks a first-line draft of the checkout, denying its findings or another
 test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
   const { config, filesystem } = await installed();
 
-  await filesystem.remove(".codex/agents/worker_medium.toml");
+  await filesystem.remove(".codex/agents/debugger_low.toml");
 
-  await expect(resolveCodexProfile(config, "worker_medium")).rejects.toThrow(
-    ".codex/agents/worker_medium.toml",
+  await expect(resolveCodexProfile(config, "debugger_low")).rejects.toThrow(
+    ".codex/agents/debugger_low.toml",
   );
 
   await filesystem.write(".codex/agents/worker.toml", 'name = "mine"');
