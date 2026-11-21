@@ -93,3 +93,26 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the instructions limit Housekeeping to edits outside code and tests, enforced only when an orchestrator applies it.
 - want: a `check` finding for a Housekeeping step naming a path under a code or test environment.
+
+## 17. No command briefs an agent on its issue per role
+
+- why: agents fetch and read whole issues and ancestors to find what their role needs; `planning walk check` and `planning issue check` already serve the walker and the planner.
+- want: an agent-facing command printing, per role, only the facts it needs: for a worker the issue's **Done when**, **Context** and **Tests**, the ancestor chain and the plan's **Goal** and **Decisions**, skipping sections its role never uses.
+- done: a worker starts from that command's output alone.
+
+## 18. Agents fetch issues to read them instead of reading a local copy
+
+- why: each `gh issue view` puts the whole issue in context through tool output; a local copy read by path may cost fewer tokens.
+- want: a command fetching an issue when missing or stale and printing the path of its local copy.
+- done: measured first: a session reading by path spends fewer tokens than one fetching; dropped otherwise, since saving tokens is its only purpose.
+
+## 19. `planning issue check` cannot check a draft by path
+
+- sites: `data/metalbrain/skills/implement.md:45`
+- why: it takes only draft stems under the current checkout's `.ai/issues/`; a `Draft:` brief carries an absolute path, often outside the worker's worktree, so the worker cannot check its draft before implementing.
+- want: the command accepting a draft path, then the implement rule covering `Draft:` briefs too.
+
+## 20. `planning issue check` names no published issue of another registered repository
+
+- why: the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form.
+- want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.

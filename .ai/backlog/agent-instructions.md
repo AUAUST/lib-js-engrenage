@@ -135,3 +135,9 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/skills/shape.md:17`, `data/metalbrain/shared/worktree-dispatch.md:10`
 - why: worktree dispatch puts agents in the main checkout at K = 1; shape's writers pool has K = 1 beside implementers at 2, so a writer may edit the main checkout while worktree work is cherry-picked or reviewed gaps are closed there.
 - want: shape stating which checkout each pool's agents use.
+
+## 26. Handoffs and carry-overs travel as text an orchestrator rereads and repeats
+
+- why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
+- want: handoffs and carry-overs written to files, the orchestrator receiving and forwarding only their paths.
+- done: measured first: fewer tokens than inline handoffs, counting the rereads skipped each turn; dropped otherwise, since saving tokens is its only purpose.
