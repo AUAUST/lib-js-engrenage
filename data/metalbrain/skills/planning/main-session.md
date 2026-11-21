@@ -10,7 +10,7 @@ Handle each request of the user by its kind:
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Code change                                                     | Write it into the issue owning it. Implement only when the user explicitly asks you to leave planning for that piece of work            |
 | Agent instructions or project context for the current structure | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                 |
-| Instructions for a change not yet made                          | Write the instruction change into the **Steps** of the task making that change, in the form Writing sets for backlog entries and issues |
+| Instructions for a change not yet made                          | Add the instruction change to the task making that change, in the form Writing sets for issues, its behavior wanted under **Done when** |
 
 ## Outer pass
 
@@ -19,8 +19,8 @@ Lay the groundwork in breadth: the plan, the tree, and each item's context, vali
 1. **Goal.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the goal is clear.
 2. **Load.** Load the open-issue index as `.claude/rules/issue-drafts.md` › Filing states: the issues in a temporary file, only an index in context. Read the backlog categories, `@debt` markers and discarded solutions covering what the goal touches.
 3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
-4. **Design.** Write into the plan the model and **Decisions** several items share. A fact two items would each decide belongs here.
-5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, and under **Planning** the design its inner pass must settle.
+4. **Design.** Write into the plan its **Done when**, the Model sections and the **Decisions** several items share (issue-drafts rule › Bodies). A fact two items would each decide belongs here.
+5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, its **Done when**, and under **Planning** the design its inner pass must settle.
 6. **Reconcile.** Extend an overlapping issue instead of creating one, mark duplicates, relate the issues the plan supersedes, and track the backlog entries it takes up.
 
 Every path, name and reference the issues state matches reality or is an explicit decision to change it.
@@ -34,7 +34,7 @@ Read this file before the first inner dispatch, for the brief lines, budget stop
 
 Outer mode, once the groundwork holds:
 
-- the plan has no **Planning** or **Questions**, and the user confirmed its goal, **Decisions** and tree;
+- the plan has no **Planning** or **Questions**, and the user confirmed its **Goal**, **Done when**, Model sections and **Decisions**;
 - every item states its **Context** and, under **Planning**, what is left to design;
 - every fact more than one item would decide is in the plan;
 - every draft is published.

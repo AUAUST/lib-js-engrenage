@@ -66,7 +66,8 @@ An item states its outcome and boundaries, never the procedure. Uncertainty live
 | **Fix**           | `problem` without sub-issues | Exactly when the cause is identified and its fix decided: that fix                                                                              |
 | **Housekeeping**  | item with sub-issues         | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests              |
 | **Done when**     | plan                         | The capabilities that must exist to serve the **Goal**, never implementation                                                                    |
-| **Done when**     | segment, item                | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |
+| **Done when**     | segment                      | What the rest of the plan requires from it, in general terms: what it blocks                                                                    |
+| **Done when**     | item                         | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |
 | **Tests**         | item                         | Optional: only cases **Done when** does not imply, each with its expected outcome; a fix's regression case states its reproduction              |
 | **Planning**      | plan, segment, item          | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                         |
 | **Questions**     | plan, segment, item          | What investigation could not settle: the findings and the candidate answers                                                                     |
@@ -78,6 +79,7 @@ An item states its outcome and boundaries, never the procedure. Uncertainty live
 | **Done when** | ~60             |
 
 - Other sections: as complete as the item's agent needs.
+- A segment's **Done when**: often one member delivers what it blocks, the others beside it as independent work; never the next item's or the parent's requirement, nor a restatement of its members' facts.
 - Never restate the project's instructions: agents follow them for everything an issue does not say.
 - An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
 
