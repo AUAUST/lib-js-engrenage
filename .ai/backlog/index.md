@@ -62,3 +62,4 @@ Deferred questions, bugs, tasks and improvements.
 - [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
 - [docs](docs.md): Doc tag declarations and the readers of tagged source.
 - [issues](issues.md): GitHub issue drafts, checks and planning commands.
+- [spec-migration](spec-migration.md): Breakage the #809 spec-leaf migration knowingly causes, until handled.

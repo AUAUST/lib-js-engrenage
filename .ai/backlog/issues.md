@@ -116,3 +116,8 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form.
 - want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.
+
+## 21. `planning issue publish` may publish a segment draft missing a required section
+
+- why: since segments require **Done when** (#809 S.8), the segment drafts in `publish.test.src.ts` and `drafts.test.src.ts` (`tests/src/tools/github/issues/drafts/`) still pass without it, so publish may not run the full issue contract.
+- want: confirm whether publish refuses drafts failing `planning issue check`; if not, make it refuse, and give the fixtures **Done when**.
