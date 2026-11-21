@@ -5,8 +5,8 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 ## 1. Every existing plan holding Steps is refused at dispatch
 
 - why: the dispatch hook refuses any issue with **Steps** (P.3.3); 57 open issues hold them (engrenage 48, toolkit 2, interscript 7), under #675, #732, #338, #308 and 11 standalone.
-- want: the P.3.2 sweep (planning skill › Steps migration) converts them, each batch reviewed by the user; toolkit and interscript at their sync (P.3.4).
-- done: no open issue holds **Steps**; then delete `steps-migration.md` and the planning section loading it.
+- want: the P.3.2 sweep (planning skill › Steps migration) converts engrenage's, each batch reviewed by the user; the user migrates toolkit and interscript (S.23).
+- done: no open engrenage issue holds **Steps**; then delete `steps-migration.md` with the planner's and shaper's conversion mentions.
 
 ## 2. Leaves under a published segment without Done when are refused
 
