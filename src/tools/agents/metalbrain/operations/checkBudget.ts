@@ -17,7 +17,9 @@ import type { BudgetState } from "#tools/agents/metalbrain/types/BudgetState";
 import type { HookAction } from "#tools/agents/metalbrain/types/HookAction";
 import type { File } from "#types/File";
 
-const budgetLine = /^Budget:\s*(?<level>\S+)\s*$/mv;
+const budgetLine = /^Budget:\s*(?<level>\w+)\s*$/gmv;
+
+const budgetMention = /\bBudget:\s*(?<level>\w+)\b/gv;
 
 async function readState(file: File): Promise<BudgetState | undefined> {
   try {
@@ -31,12 +33,35 @@ async function readState(file: File): Promise<BudgetState | undefined> {
   }
 }
 
+function findLastLevel(
+  prompt: string,
+  pattern: RegExp,
+  known: readonly string[],
+): string | undefined {
+  return Array.from(prompt.matchAll(pattern), (match) => {
+    return match.groups?.level;
+  })
+    .filter((level) => {
+      return level !== undefined && known.includes(level);
+    })
+    .at(-1);
+}
+
+/**
+ * The level a brief names: the last known level on a `Budget:` line of its own,
+ * otherwise the last one named anywhere, otherwise `fallback`.
+ */
 async function readLevel(
   transcript: File,
+  known: readonly string[],
   fallback: BudgetLevel,
 ): Promise<BudgetLevel> {
-  const level = budgetLine.exec((await readFirstPrompt(transcript)) ?? "")
-    ?.groups?.level;
+  const prompt = (await readFirstPrompt(transcript)) ?? "";
+
+  const level = (
+    findLastLevel(prompt, budgetLine, known) ??
+    findLastLevel(prompt, budgetMention, known)
+  );
 
   return isBudgetLevel(level) ? level : fallback;
 }
@@ -81,9 +106,9 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
     const stored = await readState(file);
 
     if (stored === undefined) {
-      const level = await readLevel(transcript, fallback);
-
       const { levels } = await readBudgets();
+
+      const level = await readLevel(transcript, Object.keys(levels), fallback);
 
       const state: BudgetState = {
         start: context,

@@ -144,6 +144,36 @@ test("a first prompt's Budget: line sets the level over the default", async () =
   });
 });
 
+test("a Budget: level ending a prose line sets the level", async () => {
+  const project = createTemporaryProject({
+    [transcriptFile]: createTranscript(
+      "Fix it. Report the paths. Budget: scoped.",
+      5000,
+    ),
+  });
+
+  await runCheck(project);
+
+  expect(JSON.parse(project.read(stateFile))).toMatchObject({
+    level: "scoped",
+  });
+});
+
+test("quoted placeholders, Budget stop: and quoted levels yield to the brief's own line", async () => {
+  const project = createTemporaryProject({
+    [transcriptFile]: createTranscript(
+      "Budget: scoped\n\nQuote `Budget: <level>` and `Budget stop:`; brief it `Budget: standard` later.",
+      5000,
+    ),
+  });
+
+  await runCheck(project);
+
+  expect(JSON.parse(project.read(stateFile))).toMatchObject({
+    level: "scoped",
+  });
+});
+
 test("a transcript without an assistant message yet waits for one", async () => {
   const project = createTemporaryProject({
     [transcriptFile]: createTranscript("Budget: scoped\n\nGo."),

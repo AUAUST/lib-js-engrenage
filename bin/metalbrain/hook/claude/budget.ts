@@ -8,7 +8,7 @@ export default defineLazyCommand({
       )
       .requiredOption(
         "--level <level>",
-        "budget level of a brief without a Budget: line",
+        "budget level of a brief naming no known Budget: level",
       );
   },
   action() {

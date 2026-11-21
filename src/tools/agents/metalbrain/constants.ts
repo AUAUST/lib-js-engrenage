@@ -19,6 +19,7 @@ export const startsDirectory = "starts";
 // @debt restates the package name `#constants` owns, as importing it would load `@auaust/toolkit` into the hook
 export const budgetsSpecifier = "@auaust/engrenage/metalbrain/budgets.json";
 
+// @debt restates the level names `data/metalbrain/budgets.json` › `levels` owns, so a level added there alone is dropped by `parseBudgets`
 export const budgetLevels = ["scoped", "standard"] as const;
 
 export const budgetExtension = ".budget.json";
