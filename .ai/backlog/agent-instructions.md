@@ -147,3 +147,20 @@ Shared agent instructions, skills and the backlog conventions.
 - sites: `data/metalbrain/rules/git.md:31`
 - why: #218 › Decisions merge `files` into `cq`, split `ci` from `meta` and gate `css` and `content` by project traits; the table does none of it and adds `snap`, `config` and `debug`, which no decision names. #213 cannot write "today's table, amended by #218" until one wins.
 - want: the user settles the authoritative vocabulary on #218.
+
+## 28. Hard rules stay prose where a check could enforce them
+
+- why: #809 D.9 (delete before adding; hard rules into hooks). The c0dbefc4 writer listed candidates; none built.
+- want: per rule, a check, then the prose deleted:
+  - commit subject type, `Closes`/`Towards`-only body, attribution trailers (`git.md`, `no-attribution.md`): `runMessageGate.ts`
+  - never push: `Bash(git push*)` deny in `claudePermissions`
+  - staged `.ai/issues/`, `.ai/handoffs/`; major changesets; new `eslint-suppressions.json` entries: commit-gate checks
+  - `any`, `@ts-*`, `eslint-disable` without reason; interfaces for shapes: `no-explicit-any`, `ban-ts-comment`, eslint-comments description, `consistent-type-definitions` (off in `src/tools/eslint/constants.ts`)
+  - mutable-list aliases; allowed comment kinds: custom lint rules
+  - Shell table traps; `eslint:fix` without files: Bash PreToolUse hook
+
+## 29. The main session's request analysis depends on the analysis skill being installed
+
+- sites: `data/metalbrain/sections/analysis.md:13`
+- why: the trigger names `.claude/skills/analysis/request-analysis.md`; a consumer without the analysis skill gets no request analysis (the old options line had the same gap).
+- want: sync installs `request-analysis.md` for the main session whatever skills are installed (writer's recommendation), or the trigger names whichever copy exists.
