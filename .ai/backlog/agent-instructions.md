@@ -20,8 +20,9 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 4. `planning issue check` passes underspecified items
 
-- why: it checks section presence and order only; items whose **Steps** left choices open surfaced mid-walk. The planning skill's §Readiness states the bar in prose.
+- why: it checks section presence and order only; underspecified items surfaced mid-walk.
 - want: a finding per **Steps** item naming no path or identifier in code spans, and per **Tests** case without an expected outcome.
+- done: obsolete once #809's spec leaves land; then a finding per leaf without **Done when** or a contract line per dependent.
 
 ## 5. Whether an issue's text counts as consent to change instructions is undecided
 
@@ -46,7 +47,7 @@ Shared agent instructions, skills and the backlog conventions.
 ## 9. Codex has no low-effort merger for integration
 
 - why: `walking.md` dispatches the integration merger with `effort: low`; `merging.md` declares no `efforts`, and a Codex profile's effort overrides the spawn's.
-- want: `efforts: { integration: low }` in the merging frontmatter, generating `merger_low`, routed by mode.
+- want: `efforts: { integration: low }` in the merging frontmatter, generating `merger_low`, routed by mode; merger effort stated once, today `medium` in the frontmatter against `low` in walking › Integration.
 
 ## 10. A restarted walk holds completed leaf work instead of integrating it
 
@@ -123,3 +124,8 @@ Shared agent instructions, skills and the backlog conventions.
 
 - why: proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only.
 - want: a decision on that hook.
+
+## 24. Nothing bounds the always-loaded instruction words per role
+
+- why: since 2026-11-10, `data/metalbrain/` and `AGENTS.md` grew 5,345 lines for 1,260 deleted; every agent starts with ~5k words, planners ~12k. Instruction count lowers adherence (IFScale, ManyIFEval; AGENTS.md study, ICLR 2026).
+- want: a sync check reporting each role's always-loaded words against a budget that only a decision raises.

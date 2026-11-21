@@ -21,9 +21,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 4. Nothing bounds a main session's context in a long run
 
-- why: #654: walker context 65k→214k, ~75% of cost re-reading; no hook can start a compaction.
-- want: walks: `autoCompactWindow` (≥100k) plus PreCompact stdout "gist of past segments, pending handoffs verbatim"; test it on `auto` triggers.
-- want: interactive: once per threshold crossing, the check hook tells the agent to offer a short `/compact` prompt: impactful and recent facts, pending work verbatim.
+- why: #654: walker context 65k→214k, ~75% of cost re-reading; main sessions are 43% of cost, starting at 65k, mostly harness (#809).
+- want: walks: `autoCompactWindow` (≥100k) plus PreCompact stdout keeping past segments' gist and pending handoffs verbatim.
+- want: interactive: one short `/compact` offer per threshold crossing; a smaller harness start (plugins, MCP servers).
 
 ## 5. Sync accepts a skill naming its supporting file by bare name
 
@@ -111,8 +111,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 20. The worker dispatch hook misreads cross-repository ancestors and stale fields
 
-- why: friction ×4, two from these: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after **Planning** was removed by `gh issue edit`, until claim and publish.
-- want: ancestor references resolved against the issue's own repository; the Blockers check reading the body, not only the field.
+- why: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after `gh issue edit` removed **Planning**, until claim and publish.
+- want: ancestors resolved against the issue's own repository; the Blockers check reading the body too.
 
 ## 21. One init or sync run rebuilds the same agent templates and skill definitions many times
 
@@ -144,15 +144,37 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 ## 26. Agent stats cannot attribute runs to tasks or outcomes
 
-- why: `agents stats` gives cost by role, model and day; units per closed issue or workflow need each run's task, parent, effort, skills, commits and gate outcome. Closed #780–#784 and #786 as speculative: no recorded question needs them yet.
-- want: run records carrying task and outcome, and an `--outcome` aggregate, once a question needs units per closed issue.
+- why: `agents stats` gives cost by role, model and day only; #809's experiments need outcomes per run.
+- want: run records carrying task, hand-back outcome (completion, budget, scope or blocked stop) and planner mode (inner, consultant, reshape), and an `--outcome` aggregate.
 
 ## 27. Open questions on token spend from #771
 
-- why: #771 closed with these unanswered.
-- want: a decision on each: a PreToolUse hook flagging `gh issue view` on an issue held in `.ai/issues/` plus a PostToolUse warning past N output characters, or wording only; a "batch independent commands and edits per call" rule for every agent; which base-context parts to disable (#791: desktop adds ~43k tokens over the CLI's 22k; `deny` keeps `Artifact` and connector instructions); mergers on Sonnet now or once model-priced units measure the change.
+- why: #771 closed with these unanswered; #791 measured the desktop base context at ~43k tokens against the CLI's 22k.
+- want: a decision on each: a hook flagging `gh issue view` on issues held in `.ai/issues/` and long outputs, or wording only; a "batch independent calls" rule for every agent; which base-context parts to disable; mergers on Sonnet (#809 H9).
 
 ## 28. `agents stats --all` costs disagree between role and model views
 
 - why: at the #785 review, gatherers showed $0.48 but Haiku $0.18 over the same 10 runs; cause unchecked: per-model pricing, runs without a model, or a role/model join.
 - want: both views summing to the same cost for the same runs, or the difference named in the output.
+
+## 29. Forked sessions count their shared opening twice in run records
+
+- why: 6 session pairs in `.ai/stats/` share their opening transcript; about $21.6, 2% of main cost, counted twice by `agents stats`.
+- want: a forked session's record counting only what follows the fork.
+
+## 30. No hook catches unquoted globs in Bash calls
+
+- sites: `data/metalbrain/sections/shell.md:13`
+- why: 12 friction lines on unquoted `grep --include=*.ts` despite the Shell rule; wording does not fix it.
+- want: a PreToolUse Bash check warning on an unquoted glob argument.
+
+## 31. Consultant freshness forces fresh consultants mid-walk
+
+- sites: `data/metalbrain/skills/planning.md:15`, `src/tools/agents/operations/checkAgentResume.ts:61`
+- why: `freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809).
+- want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
+
+## 32. The budget hook's stop path has never fired on a worker
+
+- why: landed 2026-11-20 (`6331641f3`); none of the 44 workers since crossed 120k (max 117.7k), while 11 of 99 before it did unstopped.
+- want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.

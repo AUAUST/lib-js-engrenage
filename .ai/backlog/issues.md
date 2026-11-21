@@ -53,8 +53,8 @@ GitHub issue drafts, checks and planning commands.
 ## 9. Issue commands duplicate resolution and requests
 
 - sites: `src/tools/github/issues/drafts/operations/releaseIssues.ts:20`, `src/tools/github/issues/drafts/operations/resolvePublishedAncestors.ts:23`, `src/tools/github/issues/contract/utils/formatIssueTreeCheck.ts:100`, `bin/engrenage/planning/issue/actions/claim.ts:1`
-- why: `releaseIssues` repeats `claimIssues`' stem resolution, which already differs from `toClaimedIssue`'s; sub-issue paging repeats in three places; the tree check rebuilds a tree it flattened; the claim, publish and release actions clone each other (jscpd).
-- want: one stem resolver; a contract operation fetching sub-issue locations; the check returning its tree.
+- why: `releaseIssues` repeats `claimIssues`' stem resolution, itself unlike `toClaimedIssue`'s; sub-issue paging repeats thrice; the tree check rebuilds a tree it flattened; claim, publish and release clone each other.
+- want: one stem resolver; one sub-issue location fetch; the check returning its tree.
 
 ## 10. Draft checks and reads fail silently or on wording
 
@@ -86,8 +86,8 @@ GitHub issue drafts, checks and planning commands.
 ## 15. `planning walk check` lists a leaf ready that the dispatch hook refuses for its ancestors
 
 - sites: `src/tools/github/issues/contract/operations/checkIssueTree.ts:233`, `src/tools/github/issues/contract/operations/checkIssue.ts:103`
-- why: the walk checks each issue alone; dispatch also checks ancestors (a direct parent's **Questions**, any ancestor's `Drafting`). #733 was listed `Ready` under #732 holding both.
-- want: the walk applies the dispatch hook's ancestor checks, so its ready set matches what dispatch accepts.
+- why: the walk checks each issue alone; dispatch also checks ancestors (a parent's **Questions**, any ancestor's `Drafting`): #733 was listed `Ready` under #732 holding both.
+- want: the walk's ready set matching what dispatch accepts.
 
 ## 16. `check` lets a **Housekeeping** step name source or test paths
 
@@ -96,10 +96,15 @@ GitHub issue drafts, checks and planning commands.
 
 ## 17. `planning issue check` finds no oversized item
 
-- why: `.claude/rules/issue-drafts.md` › Size forbids items of several outcomes, judged only by agents; #774 passed as one complex issue of ten steps.
-- want: review findings, never count limits: a finding on each `Checkpoint:` line asking for a Size review; a split whose sub-issues and remaining Steps miss a Steps item or Tests case of the pre-split version; a Done when joining several capabilities, or Steps adding modules under several environments or namespaces.
+- why: Size (`issue-drafts.md`) forbids items of several outcomes, judged only by agents; #774 passed as one complex issue of ten steps.
+- want: review findings, never count limits: on each `Checkpoint:` line; on a split dropping a Steps item or Tests case; on a Done when joining several capabilities. Under #809's spec leaves, the same on Done when and Tests.
 
 ## 18. Planners may order an item's Steps contract-first
 
 - why: #790 rejected a scaffold-first worker rule; its one surviving option is a planner rule ordering **Steps** by dependency, structure and contracts first, never checkpointing stub bodies.
 - want: a decision on adopting it.
+
+## 19. `segmentForbiddenSections` names a `Scope` section no contract defines
+
+- sites: `src/tools/github/issues/contract/constants.ts:206`
+- want: the entry removed, or `Scope` defined where the issue contracts define sections.

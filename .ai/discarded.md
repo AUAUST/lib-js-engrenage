@@ -155,3 +155,8 @@
 - per-scope alias tables in batiment: #741 alias ownership — `#…` aliases are language-bound and stay in `project/structure` until the language port (#732 › Batiment)
 - package-name edges in the cycle check: cross-workspace file cycles (#744) — needs a package `exports` resolver over the filesystem port; #743's `scope-cycle` and direction rule already fail on every such cycle
 - per-scope cycle graphs: cycles inside and across scopes (#744) — one graph resolving each importer from its scope finds both in one pass
+- tighter Steps readiness checks: catch underspecified items (`agent-instructions.4`) — Steps fix procedure; spec leaves with required Done when replace them
+- flat ExecPlan per goal: executor-written living plan — no validated compass before the walk; poor fit with the issue tree and worker pool
+- pure decompose-on-failure without upfront plan: lowest planning cost — leaves no plan to validate first; kept only as split-on-stop
+- raising consultant `freshness`: keep one consultant per walk — each resume re-writes the whole context on the 5-minute cache; absolute ceiling and small agent file instead
+- convert-on-touch migration of Steps issues: spread conversion cost — dual-format checks, routing and worker rules for 57 issues cost more than one triaged sweep

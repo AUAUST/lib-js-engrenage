@@ -76,8 +76,6 @@
 - published issue complexity: needed #749's complexity for its dispatch effort after `planning issue publish` — publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
 - grep is ugrep: `grep -o` with `.{0,1800}` context on a minified binary dump — ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`
 - `git reset --hard HEAD` to redo a `cherry-pick -n`: auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - commit gate vitest: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel — each passed alone; retried the commit
 - commit-msg hook: 77-character subject rejected — no git rule states the 72-character limit; shortened the subject
 - issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there
@@ -89,10 +87,8 @@
 - Claude Code worktree isolation: a heredoc and a loop whose text named `github` or `git` — refused as unverifiable; edited files through the edit tools and ran commands one by one
 - `planning issue check`: passed a new draft as `#{new-<slug>}` — "no draft at" error; bare `new-<slug>` works
 - `engrenage agents stats`: needed live usage of running subagents and the quota window — stats cover stopped runs of one session only; parsed transcripts under `~/.claude/projects` by hand
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - WebFetch on the Anthropic pricing page: asked for 3 model rows — 54 kB output spilled to a file; grepped the spill
 - Claude transcript format: needed effort, thinking, compaction and resume fields for issue design — undocumented; inspected `~/.claude/projects` jsonl by hand with jq
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - WebFetch on the Claude Code hooks reference: needed subagent payload and stop-lever fields — 295k-character page answered in three offset calls, the last spilled to a file; grepped the spill
 - Claude transcript format: needed a subagent's transcript path inside PreToolUse — payload carries only the main `transcript_path`; confirmed `<session>/subagents/agent-<id>.jsonl` on disk
 - WebFetch on the Anthropic Messages API reference: needed the response Usage schema — 1.3M-character page, the first 100k characters held only the request side; did not page on, took usage fields from the prompt-caching, fast-mode and compaction pages
@@ -101,15 +97,10 @@
 - Claude Code worktree isolation: a heredoc writing source files and a chained command naming git — refused as unverifiable; wrote files through the edit tools and split the commands
 - `pnpm engrenage` after sync adds a `bin` entry: ran typecheck — `ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace bins changed since install; ran `pnpm install --offline`
 - `engrenage sync` after changing `data.exports`: added an export and synced — sync left `package.json` exports stale, so self-referencing the new subpath failed; ran `pnpm engrenage tsdown`
-- zsh glob: grep --include=*.ts in a gatherer shell — "no matches found" from zsh glob — quoted the pattern or used grep -r on the directory
 - gh api graphql: read #772/#773 `Complexity` field before dispatch — token lacks `read:project`; read it from a claimed draft's manifest instead
 - Bash cd into an agent worktree: `cd <worktree> && git diff` moved the session cwd there; removing the worktree broke the next command — use `git -C` with absolute paths
-- zsh `grep --include=*.ts`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
 - Claude Code worktree isolation: `prettier --check` over a `git diff --name-only` substitution — refused as naming git; listed the files by hand
 - Claude Code worktree isolation: heredocs writing scratch and bin files, naming no git — refused as unverifiable; wrote each file through the write tool
-- zsh glob: grep --include=*.ts over repo root — "no matches found" from zsh glob expansion — re-ran with quoted patterns and -e flags
-- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
-- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
 - instruction review: the user requests behind past `brain:` commits — no record keeps them; parsed session transcripts under `~/.claude/projects` by hand
 - pnpm engrenage gate --worktree: ran it in the shared main checkout — another editor replaced `isFiniteNumber` mid-run, breaking hooks and the gate; waited for the tree to settle and committed only my paths
 - gh issue edit hook: `--body-file "$TMPDIR/…"` with a variable path — hook rejects it; piped a heredoc into `--body-file -`
@@ -117,7 +108,6 @@
 - Agent dispatch hook: debugger briefed `Issue:` on a Task (#788) — refused, a debugger takes only a Problem; briefed the bug without an `Issue:` line
 - Agent dispatch hook: worker on #789 while its blocker #788 stayed open for a pending hand check — refused; ran the check first with a probe gatherer
 - metalbrain budget hook by hand: passed the subagent transcript as `transcript_path` — the hook derives the subagent path from the main transcript, doubling it; no instruction states the payload shape
-- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran with -e patterns and no filter
 - worktree-isolated Bash: `echo $?; git status; git diff` in one call — refused as too complex; ran git status alone
 - Bash cwd after `cd` into an agent worktree: the session moved its primary directory there; removing that worktree failed the next command — reran from the main checkout with `git -C`
 - `pnpm engrenage planning issue check`: crashed on a missing module while another session moved `src/project/structure` to `src/batiment` in the same checkout — left the draft unchecked and unpublished
@@ -135,4 +125,16 @@
 - commit gate vitest: `config.test.src.ts` "passes the check on the committed interface" timed out at 5000ms under parallel agent load — passed on retry
 - consultant brief `leaf in flight (integrating)`: read the leaf's shapes from its worktree and stash — the leaf had landed on main meanwhile; read main instead
 - gh issue edit hook: `--body-file $D/…` with a variable path at the end of a compound command — hook rejects the whole command, so the earlier steps never ran; prepared the file in one call, published with a literal path in another
-- zsh `grep --include=*.md`: unquoted glob in a Bash call again — "no matches found"; reran without the filter
+- commit gate verification: "Files changed while the gate verified them" on `.ai/friction.md` — re-staged and retried, passed
+- zsh `"$c:AGENTS.md"`: git show of a revision held in a variable — zsh read `:A` as its absolute-path modifier and mangled the revision; wrote `"${c}:AGENTS.md"`
+- `.ai/stats` transcripts: matching run records to Claude transcripts — 70 of 155 sessions live under other `~/.claude/projects/*` directories (repository moved from the Desktop path); globbed every project directory
+- Claude transcripts `*.jsonl`: counting Agent, SendMessage and SubagentHandback tool uses — each block repeats across streamed lines, doubling counts; deduplicated by tool-use id
+- WebFetch on moved provider pages: fetched cognition.ai, docs.claude.com and cookbook.openai.com URLs — each answered with a cross-host redirect, not followed; re-fetched the redirect URL
+- WebFetch on an OpenAI PDF guide: needed the text of a 7 MB PDF — returned raw binary, `pdftotext` not installed; took the guide's claims from search results instead
+- WebFetch on platform.claude.com and code.claude.com guides: fetched long prompting and best-practice pages — 51–77 kB output spilled to files; grepped headings and read sections with sed
+- grep is ugrep: `grep -o` with `[^"]\{0,160\}` context on a transcript JSONL — ugrep rejects it as exceeding complexity limits; used a Python regex scan instead
+- Bash cat on long scratchpad reports: read two 40–49 kB Markdown reports — output spilled to a file; re-read them with Read `allow_large`
+- ls in `~/.claude/projects`: piped `ls -d */` to iterate project directories — a directory name starting with `-` read as an option; used `find -maxdepth 2 -name` instead
+- ls in `~/.claude/projects`: piped `ls -d */` to find a session's project directory — a `-`-prefixed directory name read as an option again; used `find -maxdepth 2 -name`
+- Bash cat on long scratchpad reports: read a 45 kB synthesis with cat — output spilled to a file twice; re-read it with Read
+- Run records for budget-hook coverage: needed when `checkBudget` started to judge "0 budget stops" — no record or doc dates the hook; took it from `git log` on `checkBudget.ts` (6331641f3, 2026-11-20 23:01)
