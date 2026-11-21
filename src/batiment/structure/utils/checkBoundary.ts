@@ -94,10 +94,13 @@ export function checkBoundary(
   kind: ImportKind,
   { elements, consumers }: ImportGrants,
 ): BoundaryViolation | undefined {
-  if (
-    consumers.includes(importer.environment) &&
-    target.environment === "src"
-  ) {
+  const { environment } = importer;
+
+  if (environment === undefined) {
+    return;
+  }
+
+  if (consumers.includes(environment) && target.environment === "src") {
     return checkConsumerReach(importer, target, kind);
   }
 
@@ -110,7 +113,7 @@ export function checkBoundary(
 
   // @debt a file at an environment root outside the global roles and the root entry is never checked, and neither is an import between two directories of one environment
   if (
-    !elements.includes(importer.environment) ||
+    !elements.includes(environment) ||
     owner === undefined ||
     targetOwner === undefined ||
     importerLineage[0] !== targetLineage[0] ||

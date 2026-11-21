@@ -6,4 +6,4 @@ export type ImportRelation =
   | "lower-layer"
   | "peer"
   | "root-entry"
-  | "workspace";
+  | "scope";

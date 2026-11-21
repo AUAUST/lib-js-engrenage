@@ -3,18 +3,17 @@ import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
 import type { TestVariant } from "#batiment/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
-import type { Glob } from "#types/Glob";
 
 /**
- * Where a file sits in the project: its environment, `workspace` or `dist`,
- * the directory and kind of its nearest structure node, the namespaces and
- * domains above it, its nearest domain with that domain's public specifiers and
- * collected roles, and the role and contract it holds, if any. `variant` is
- * set only for test files.
+ * Where a file sits in the project: its scope key, its environment ID or `dist`,
+ * `undefined` in a scope outside every environment of it, the directory and
+ * kind of its nearest structure node, the namespaces and domains above it, its
+ * nearest domain with that domain's public specifiers and collected roles, and
+ * the role and contract it holds, if any. `variant` is set only for test files.
  */
 export interface Entity {
-  readonly environment: string;
-  readonly workspace: Glob | undefined;
+  readonly scope: string;
+  readonly environment: string | undefined;
   readonly path: Directory;
   readonly kind: StructureKind | undefined;
   readonly commands: boolean;

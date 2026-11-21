@@ -3,24 +3,24 @@ import { freeze } from "@auaust/toolkit/object";
 import type { Entity } from "#batiment/structure/types/Entity";
 import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { Directory } from "#types/Directory";
-import type { Glob } from "#types/Glob";
 
 const noLineage: readonly LineageMember[] = freeze([]);
 
 export function createStructureEntity(
   environment: Entity["environment"],
   path: Directory,
-  workspace?: Glob,
+  scope: Entity["scope"],
 ): Entity {
   return freeze({
+    scope,
     environment,
-    workspace,
     path,
     kind: undefined,
     commands: false,
     lineage: noLineage,
     location: freeze({
-      environment,
+      // @debt a file outside every environment of its scope gets a role location with an empty environment, where it should get no role location
+      environment: environment ?? "",
       lineage: freeze([]),
       roles: freeze([]),
     }),

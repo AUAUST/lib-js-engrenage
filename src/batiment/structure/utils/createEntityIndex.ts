@@ -8,6 +8,7 @@ import {
   indexRoleName,
   noRoles,
 } from "#batiment/roles/constants";
+import { rootScope } from "#batiment/scopes/constants";
 import { classifyEntityFile } from "#batiment/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#batiment/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
@@ -16,6 +17,7 @@ import { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
+import type { ScopeTree } from "#batiment/scopes/index";
 import type { EntityIndex } from "#batiment/structure/apis/EntityIndex";
 import type { Entity } from "#batiment/structure/types/Entity";
 import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
@@ -29,7 +31,6 @@ import type { TestVariant } from "#batiment/structure/types/TestVariant";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
-import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 interface CodeEnvironment {
@@ -48,7 +49,7 @@ export function createEntityIndex({
   environments,
   roles: environmentRoles,
   testPatterns,
-  workspaces,
+  scopes,
   outDir,
   aliases,
   packageName,
@@ -62,11 +63,7 @@ export function createEntityIndex({
     readonly source: Globs;
     readonly dist: Globs;
   };
-  workspaces: readonly {
-    readonly glob: Glob;
-    readonly active: boolean;
-    readonly dirs: Directories;
-  }[];
+  scopes: ScopeTree;
   outDir: Directory | undefined;
   aliases: ResolvedAliases;
   packageName: string | undefined;
@@ -212,12 +209,12 @@ export function createEntityIndex({
 
     for (const directory of environment.dirs) {
       const entity: Entity = freeze({
-        ...createStructureEntity(name, directory),
+        ...createStructureEntity(name, directory, rootScope),
         kind: tree.kind,
         commands: tree.commands === true,
         lineage: extendEntityLineage(noLineage, tree, directory),
         location: extendRoleLocation(
-          createStructureEntity(name, directory).location,
+          createStructureEntity(name, directory, rootScope).location,
           {
             kind: "namespace",
             name: posix.basename(directory),
@@ -245,7 +242,7 @@ export function createEntityIndex({
     if (active) {
       for (const directory of dirs) {
         register(directory, {
-          entity: createStructureEntity(name, directory),
+          entity: createStructureEntity(name, directory, rootScope),
           roles: rolesOf(name),
           named: noNamedFileRoles,
           covers: true,
@@ -254,22 +251,20 @@ export function createEntityIndex({
     }
   }
 
-  for (const { glob, active, dirs } of workspaces) {
-    if (active) {
-      for (const directory of dirs) {
-        register(directory, {
-          entity: createStructureEntity("workspace", directory, glob),
-          roles: undefined,
-          named: noNamedFileRoles,
-          covers: true,
-        });
-      }
+  for (const { key, dir } of values(scopes.scopes)) {
+    if (key !== rootScope) {
+      register(dir, {
+        entity: createStructureEntity(undefined, dir, key),
+        roles: undefined,
+        named: noNamedFileRoles,
+        covers: true,
+      });
     }
   }
 
   if (outDir !== undefined) {
     register(outDir, {
-      entity: createStructureEntity("dist", outDir),
+      entity: createStructureEntity("dist", outDir, rootScope),
       roles: undefined,
       named: noNamedFileRoles,
       covers: true,

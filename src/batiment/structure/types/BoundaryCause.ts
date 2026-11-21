@@ -9,7 +9,7 @@ export type BoundaryCause =
   | "environment"
   | "rootEntry"
   | "testVariant"
-  | "workspace"
+  | "scope"
   | "relativePath"
   | "selfImport"
   | "unknownPath"

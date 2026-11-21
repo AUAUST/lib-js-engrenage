@@ -14,7 +14,7 @@ export function checkData(
 
   const { environment } = importer;
 
-  return data.includes(environment)
+  return environment !== undefined && data.includes(environment)
     ? freeze({
         cause: "environment",
         boundary: undefined,

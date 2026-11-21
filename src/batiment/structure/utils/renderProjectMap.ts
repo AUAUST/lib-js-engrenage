@@ -125,7 +125,7 @@ export function renderProjectMap({
     "| Relation | A domain may import |",
     "| --- | --- |",
     ...entries(importRelations)
-      .filter(([relation]) => relation !== "workspace")
+      .filter(([relation]) => relation !== "scope")
       .map(([relation, meaning]) => `| ${code(relation)} | ${meaning} |`),
     "",
     "## Environments",
@@ -157,17 +157,17 @@ export function renderProjectMap({
           ...variantRows,
         ]
       : []),
-    ...(grants.workspaces.size === 0
+    ...(grants.scopes.size === 0
       ? []
       : [
           "",
-          "## Workspaces",
+          "## Scopes",
           "",
-          importRelations.workspace,
-          "Root src never imports a workspace.",
+          importRelations.scope,
+          "Root src never imports another scope.",
           "",
-          ...[...grants.workspaces].map(([path, dependencies]) => {
-            return `- ${code(path)}: ${dependencies.length === 0 ? "no workspace dependencies" : list(dependencies)}`;
+          ...[...grants.scopes].map(([scope, dependencies]) => {
+            return `- ${code(scope)}: ${dependencies.length === 0 ? "no scope dependencies" : list(dependencies)}`;
           }),
         ]),
     ...renderProjectMapRoles(structure, roles),

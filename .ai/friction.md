@@ -125,3 +125,4 @@
 - `pnpm engrenage planning issue publish`: closing a detached issue as duplicate with a lead line before `## Context` — refused as a header line without ancestors; moved the line into **Context**
 - `pnpm engrenage planning issue publish`: moving closed segments to a new parent plan — refused until every leaf under them was claimed, their ancestor chain changing; claimed 14 closed leaves and republished, past the 120s Bash timeout
 - worktree isolation: compound command chaining tests and git status — refused as git too complex; split into separate calls
+- Claude Code worktree isolation: a shell function running several sed reads, naming no git — refused as too complex; ran plain sed reads per directory

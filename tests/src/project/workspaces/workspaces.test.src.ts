@@ -7,6 +7,7 @@ import { checkWorkspaces } from "#batiment/structure/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
+import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -263,6 +264,11 @@ describe("workspaces", () => {
     const actionB = "extensions/action-b/src/index.ts";
     const functionsC = "extensions/functions-c/src/index.ts";
 
+    expect(entities.entityOf(project.resolve(actionA))).toMatchObject({
+      scope: "extensions/action-a",
+      environment: undefined,
+    });
+
     expect(check(actionA, actionB)).toBeUndefined();
     expect(check(actionA, actionA)).toBeUndefined();
 
@@ -274,8 +280,21 @@ describe("workspaces", () => {
       ["src/index.ts", actionB],
       ["src/index.ts", functionsC],
     ] as const) {
-      expect(check(file, target)?.cause).toBe("workspace");
+      expect(check(file, target)?.cause).toBe("scope");
     }
+  });
+
+  test("refuses with the scope message an import of a workspace from the root src", async () => {
+    const { lint } = await createProjectLinter(config, {
+      ...files,
+      "src/index.ts": 'import "../extensions/action-a/src/index.tsx";\n',
+    });
+
+    const messages = await lint("src/index.ts", "auaust/import-workspaces");
+
+    expect(messages.map(({ message }) => message)).toEqual([
+      "`.` imports `extensions/action-a`, not a declared dependency of `.`.",
+    ]);
   });
 });
 

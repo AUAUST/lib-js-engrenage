@@ -22,7 +22,7 @@ export const importRelations = freeze({
   "lower-layer": "the target's `index.ts` and public roles, through a domain in a lower layer",
   "peer": "the target's `index.ts` and public roles, through a peer domain (same layer, unless isolated)",
   "root-entry": "any public surface, from the environment root file",
-  "workspace": "another workspace, only through a declared dependency",
+  "scope": "another scope, only through a declared dependency",
 } as const satisfies Record<ImportRelation, string>);
 
 export const importCategories = freeze({

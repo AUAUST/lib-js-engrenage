@@ -41,7 +41,7 @@ export async function createRoleRules(
       create(context) {
         const entity = entities.entityOf(context.filename);
 
-        if (entity === undefined) {
+        if (entity?.environment === undefined) {
           return {};
         }
 

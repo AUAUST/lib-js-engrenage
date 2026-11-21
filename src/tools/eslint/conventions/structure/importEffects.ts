@@ -31,7 +31,9 @@ export default defineConvention({
       create(context, { environment, role: roleName, effects: level }) {
         const services = context.sourceCode.parserServices;
 
-        const environmentRoles = getOwn(roles, environment);
+        const environmentRoles = environment === undefined
+          ? undefined
+          : getOwn(roles, environment);
 
         if (
           environmentRoles === undefined ||

@@ -3,8 +3,8 @@ import type { File } from "#types/File";
 
 export interface EntityIndex {
   /**
-   * Describes where `file`, absolute or relative to the project root, sits in the
-   * structure of its environment, workspace or build output; `undefined` when
+   * Describes where `file`, absolute or relative to the project root, sits in
+   * the structure of its environment, scope or build output; `undefined` when
    * it lies in none of them or in a directory the structure leaves uncovered.
    * Memoized per file.
    */
@@ -15,8 +15,8 @@ export interface EntityIndex {
    */
   specifierOf(file: File): string | undefined;
   /**
-   * Whether `file` lies under the directory of an environment, a workspace or
-   * the build output, even one `entityOf` leaves uncovered.
+   * Whether `file` lies under the directory of an environment, a scope or the
+   * build output, even one `entityOf` leaves uncovered.
    */
   withinEnvironment(file: File): boolean;
 }

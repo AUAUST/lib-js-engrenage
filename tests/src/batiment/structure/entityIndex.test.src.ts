@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { createRolePreset } from "#batiment/roles/index";
+import { createScopeTree } from "#batiment/scopes/index";
 import { createEntityIndex } from "#batiment/structure/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
@@ -118,7 +119,7 @@ async function indexProject(root: string) {
     },
     roles,
     testPatterns: tests.patterns,
-    workspaces: [],
+    scopes: createScopeTree({ environments: [], workspaces: [] }),
     outDir: "dist",
     aliases,
     packageName: "library",

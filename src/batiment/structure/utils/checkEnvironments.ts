@@ -16,6 +16,7 @@ function isRootFile(
   elements: ImportGrants["elements"],
 ): boolean {
   return (
+    environment !== undefined &&
     elements.includes(environment) &&
     lineage.length === 1 &&
     lineage[0]?.path === path &&
@@ -55,6 +56,7 @@ export function checkEnvironments(
   const category = getImportCategory(edge);
 
   return category !== undefined &&
+    importer.environment !== undefined &&
     environments[importer.environment]?.includes(category) === true
     ? freeze({
         cause: "environment",

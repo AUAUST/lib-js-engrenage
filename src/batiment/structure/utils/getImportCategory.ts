@@ -23,7 +23,6 @@ export function getImportCategory(
       return "dist-artefacts";
     }
 
-    case "workspace":
     case undefined: {
       return;
     }

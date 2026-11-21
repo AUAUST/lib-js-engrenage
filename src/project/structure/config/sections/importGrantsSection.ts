@@ -28,7 +28,7 @@ export const importGrantsSection = declareSection({
           };
         }),
       ),
-      workspaces: new Map(
+      scopes: new Map(
         flatMap(groups, (group) => {
           return group.workspaces.map(({ dir, dependencies }) => {
             return [dir, dependencies] as const;

@@ -67,7 +67,9 @@ export default defineConvention({
 
         const name = basename(file, extname(file));
 
-        const structure = getOwn(structures, environment);
+        const structure = environment === undefined
+          ? undefined
+          : getOwn(structures, environment);
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 

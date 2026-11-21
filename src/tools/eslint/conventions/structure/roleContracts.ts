@@ -40,7 +40,7 @@ export default defineConvention({
         if (
           environment === "data" ||
           environment === "dist" ||
-          environment === "workspace" ||
+          environment === undefined ||
           kind !== "role" ||
           role === undefined ||
           contract === undefined

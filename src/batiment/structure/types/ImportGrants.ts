@@ -1,19 +1,16 @@
-import type { Entity } from "#batiment/structure/types/Entity";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { TestVariant } from "#batiment/structure/types/TestVariant";
-import type { Directories } from "#types/Directories";
-import type { Directory } from "#types/Directory";
 
 export interface ImportGrants {
   readonly published: boolean;
   readonly environments: Readonly<
-    Partial<Record<Entity["environment"], readonly ImportCategory[]>>
+    Partial<Record<string, readonly ImportCategory[]>>
   >;
-  readonly data: readonly Entity["environment"][];
-  readonly elements: readonly Entity["environment"][];
-  readonly consumers: readonly Entity["environment"][];
+  readonly data: readonly string[];
+  readonly elements: readonly string[];
+  readonly consumers: readonly string[];
   readonly variants: Readonly<
     Partial<Record<TestVariant, readonly ImportCategory[]>>
   >;
-  readonly workspaces: ReadonlyMap<Directory, Directories>;
+  readonly scopes: ReadonlyMap<string, readonly string[]>;
 }

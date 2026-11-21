@@ -61,7 +61,10 @@ async function partitionFiles(
     }
 
     const { environment, domain } = entity;
-    const dirs = structure[environment]?.dirs ?? [];
+
+    const dirs = environment === undefined
+      ? []
+      : (structure[environment]?.dirs ?? []);
 
     if (!dirs.some((directory) => mirrors.has(directory))) {
       return;
