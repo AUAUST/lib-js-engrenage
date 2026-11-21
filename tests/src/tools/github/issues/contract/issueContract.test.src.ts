@@ -293,13 +293,14 @@ describe("checkIssueBody", () => {
     }
   });
 
-  test("accepts a parent with Done when and optional Housekeeping, accepts Tests on it, and rejects Housekeeping without sub-issues or unnumbered", () => {
+  test("accepts a parent with Done when and optional Housekeeping, accepts Tests only without Housekeeping, and rejects Housekeeping without sub-issues or unnumbered", () => {
     const parent = "## Context\n\nx\n\n## Housekeeping\n\n1. Run `pnpm engrenage sync`.\n\n## Done when\n\n- d\n";
 
     for (const meaning of ["task", "problem"] as const) {
       for (const body of [
         parent,
         parent.replace(/## Housekeeping\n[^#]*/, ""),
+        `${parent.replace(/## Housekeeping\n[^#]*/, "")}\n## Tests\n\n- t → passes\n`,
       ]) {
         expect(
           checkIssueContract(body, meaning, contractNames, {
@@ -328,8 +329,16 @@ describe("checkIssueBody", () => {
         "task",
         contractNames,
         { subIssues: 1, complete: true },
-      ).map(({ rule }) => rule),
-    ).toEqual(["housekeeping-numbered"]);
+      ),
+    ).toMatchObject([
+      {
+        rule: "housekeeping-numbered",
+      },
+      {
+        rule: "forbidden-section",
+        message: expect.stringContaining("**Housekeeping** has no **Tests**"),
+      },
+    ]);
   });
 
   test("reports pending planning in Done when", () => {

@@ -210,6 +210,8 @@ const housekeepingHint = "Housekeeping only on a parent whose own work, once its
 
 const leafHousekeeping = "**Housekeeping** applies once the sub-issues land, and this issue has none: create them, or state the outcome under **Done when**.";
 
+const housekeepingTests = "A parent whose own work is only **Housekeeping** has no **Tests**: write them in the sub-issue that owns them.";
+
 const problemParentForbidden = freeze({
   Leads: "**Leads** on a parent belong to the sub-issue investigating them: move them there.",
   Fix: "**Fix** on a parent belongs to the sub-issue applying it: move it there.",
@@ -222,7 +224,7 @@ function createParentShapes(forbidden: Readonly<Record<string, string>> = {}) {
       audience: "orchestrator",
       when: freeze({ subIssues: true, section: housekeepingSection }),
       required: freeze(["Context", "Done when"] as const),
-      forbidden,
+      forbidden: freeze({ ...forbidden, Tests: housekeepingTests }),
     } as const),
     freeze({
       summary: "with sub-issues",
