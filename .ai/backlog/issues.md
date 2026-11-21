@@ -116,3 +116,9 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form.
 - want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.
+
+## 21. `walk check` omits the Model sections each open leaf touches
+
+- sites: `data/metalbrain/skills/walking.md:202`
+- why: to brief `Concurrent:` lines, the walker reads each leaf's header and **Provides**, an exception to relaying no issue content (C.1).
+- want: `walk check` prints each open leaf's Model sections (Provides parsing exists in `checkIssueSpec.ts`), then drop the walker's read exception.

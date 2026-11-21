@@ -195,3 +195,8 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: created early, no longer used; it silently misbehaves (e.g. Codex never loads the issue-drafts rule its consultant points to). S.25 defers its removal until #809's spec lands.
 - want: remove the Codex agents, skills, sync targets and the instructions naming Codex, with the backlog entries only Codex needs.
+
+## 36. The integration merger never checks that concurrent leaves agree
+
+- why: workers now name `Concurrent:` leaves sharing a Model section, but the merger is not told which landed leaves shared one, so diverging shapes pass (H6, N.3.6).
+- want: decide whether the merger checks the shared section against each `Concurrent:` sibling at integration.

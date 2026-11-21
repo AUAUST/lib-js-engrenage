@@ -50,6 +50,8 @@ With an issue or a draft as specification, read it, then only the ancestors and 
 - The plans' **Goal** and **Decisions** and the issue's **Context**: the intent and facts your design serves.
 - The contracts it fixes: its own, and those of each Model section of a plan above it.
 
+Each `Concurrent: <owner>/<repo>#<n>` line in your brief names a leaf another worker builds at the same time, sharing a Model section with yours; its work is not on your base. Read its header line, **Provides** and **Done when**; build on the shared section as stated, and deliver none of that leaf's **Done when** or **Provides**.
+
 <!-- @end -->
 
 ## Design
@@ -89,7 +91,7 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 
 - The change is done when the specification's outcome holds, with the release work the Environment table requires.
 - As a subagent, your final report is a completion or a blocked report; a blocked report carries a stop record (Writing › Stop records).
-- Report whether the outcome holds; each deviation from the specification, with its reason; each shape you fixed that other work will build on; each discovery that sibling work or the plan above your specification must account for.
+- Report whether the outcome holds; each deviation from the specification, with its reason; each shape you fixed that other work will build on, naming each `Concurrent:` leaf it concerns; each discovery that sibling work or the plan above your specification must account for.
 
 <!-- @extension tools/github/issues/planning -->
 
