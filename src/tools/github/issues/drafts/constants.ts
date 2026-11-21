@@ -21,6 +21,7 @@ export const reservedKeys = object.freeze([
   "blockedBy",
   "state",
   "claim",
+  "resplit",
 ] as const);
 
 export const draftStates = object.freeze([

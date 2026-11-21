@@ -196,6 +196,8 @@ export const housekeepingSection = "Housekeeping";
 
 export const roadmapSection = "Roadmap";
 
+export const resplitSection = "Re-split log";
+
 export const stepsSection = "Steps";
 
 export const checkpointPrefix = "Checkpoint:";
@@ -332,6 +334,7 @@ export const issueContracts = freeze({
       "Goal",
       roadmapSection,
       "Decisions",
+      resplitSection,
       "Done when",
       planningSection,
       questionsSection,
@@ -350,7 +353,10 @@ export const issueContracts = freeze({
     ] as const),
     modelsAfter: roadmapSection,
     hasHeader: false,
-    generated: freeze([roadmapSection] as const),
+    generated: freeze({
+      [roadmapSection]: "`subIssues`",
+      [resplitSection]: "the `resplit:` reasons of its tree's drafts",
+    }),
     subIssues: "roadmap",
   } as const),
 } as const) satisfies Partial<Record<IssueType, IssueContract>>;

@@ -18,8 +18,10 @@ export { releaseIssues } from "#tools/github/issues/drafts/operations/releaseIss
 export { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 export { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 export { resolvePublishedAncestors } from "#tools/github/issues/drafts/operations/resolvePublishedAncestors";
+export { resolveResplits } from "#tools/github/issues/drafts/operations/resolveResplits";
 export { updatePublishedIssue } from "#tools/github/issues/drafts/operations/updatePublishedIssue";
 export { writeFieldValue } from "#tools/github/issues/drafts/operations/writeFieldValue";
+export { writeResplitLogs } from "#tools/github/issues/drafts/operations/writeResplitLogs";
 // @end
 
 // @barrel utils
@@ -31,12 +33,14 @@ export { findBlockersField } from "#tools/github/issues/drafts/utils/findBlocker
 export { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 export { findShortName } from "#tools/github/issues/drafts/utils/findShortName";
 export { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId";
+export { insertResplitLog } from "#tools/github/issues/drafts/utils/insertResplitLog";
 export { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
 export { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
 export { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 export { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 export { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";
 export { listPublishedFieldValues } from "#tools/github/issues/drafts/utils/listPublishedFieldValues";
+export { listResplitLogs } from "#tools/github/issues/drafts/utils/listResplitLogs";
 export { localizeReferences } from "#tools/github/issues/drafts/utils/localizeReferences";
 export { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 export { locateFetchedIssue } from "#tools/github/issues/drafts/utils/locateFetchedIssue";
@@ -76,4 +80,6 @@ export type * from "#tools/github/issues/drafts/types/ManifestTarget";
 export type * from "#tools/github/issues/drafts/types/Publication";
 export type * from "#tools/github/issues/drafts/types/PublishedDraft";
 export type * from "#tools/github/issues/drafts/types/ReleasedIssue";
+export type * from "#tools/github/issues/drafts/types/Resplit";
+export type * from "#tools/github/issues/drafts/types/ResplitLog";
 // @end

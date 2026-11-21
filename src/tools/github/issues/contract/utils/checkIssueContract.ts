@@ -1,3 +1,5 @@
+import { keys } from "@auaust/toolkit/object";
+
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
@@ -27,7 +29,7 @@ export function checkIssueContract(
   const contract: IssueContract = issueContracts[meaning];
   const parsed = parseIssueBody(body);
   const shape = findIssueShape(meaning, parsed, subIssues);
-  const generated = new Set<string>(contract.generated);
+  const generated = new Set(keys(contract.generated ?? {}));
 
   const required = [
     ...shape.required,

@@ -12,5 +12,6 @@ export interface DraftManifest {
   readonly blockedBy?: readonly string[] | undefined;
   readonly state?: (typeof draftStates)[number] | undefined;
   readonly claim?: (typeof claimStates)[number] | undefined;
+  readonly resplit?: string | undefined;
   readonly [field: string]: unknown;
 }

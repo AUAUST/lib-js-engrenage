@@ -1,3 +1,5 @@
+import { entries } from "@auaust/toolkit/object";
+
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkBlockersField,
@@ -31,7 +33,7 @@ export function checkDraftBody(
     | IssueContract
     | undefined = meaning === undefined ? undefined : issueContracts[meaning];
 
-  const generated = contract?.generated ?? [];
+  const generated = contract?.generated ?? {};
 
   const parsed = parseIssueBody(body);
   const { sections } = parsed;
@@ -61,12 +63,12 @@ export function checkDraftBody(
           message: `**${name}** is empty: fill it or remove it.`,
         };
       }),
-    ...generated
-      .filter((name) => names.has(name))
-      .map((name) => {
+    ...entries(generated)
+      .filter(([name]) => names.has(name))
+      .map(([name, source]) => {
         return {
           rule: "generated-section",
-          message: `**${name}** is generated at publish from \`subIssues\`: remove it from the body.`,
+          message: `**${name}** is generated at publish from ${source}: remove it from the body.`,
         };
       }),
   ];

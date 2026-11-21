@@ -12,6 +12,7 @@ import {
   checkNesting,
   findContractMeaning,
   isBlockingFinding,
+  isSameIssue,
   type IssueContract,
 } from "#tools/github/issues/contract/index";
 import { createIssueLookup } from "#tools/github/issues/drafts/operations/createIssueLookup";
@@ -24,11 +25,15 @@ import { readDraft } from "#tools/github/issues/drafts/operations/readDraft";
 import { renderPublishedBody } from "#tools/github/issues/drafts/operations/renderPublishedBody";
 import { resolveDraftsContext } from "#tools/github/issues/drafts/operations/resolveDraftsContext";
 import { resolvePublishedAncestors } from "#tools/github/issues/drafts/operations/resolvePublishedAncestors";
+import { resolveResplits } from "#tools/github/issues/drafts/operations/resolveResplits";
 import { updatePublishedIssue } from "#tools/github/issues/drafts/operations/updatePublishedIssue";
+import { writeResplitLogs } from "#tools/github/issues/drafts/operations/writeResplitLogs";
 import { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
+import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
+import { listResplitLogs } from "#tools/github/issues/drafts/utils/listResplitLogs";
 import { locateDraft } from "#tools/github/issues/drafts/utils/locateDraft";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
 import { parseStem } from "#tools/github/issues/drafts/utils/parseStem";
@@ -41,6 +46,7 @@ import type { DraftsContext } from "#tools/github/issues/drafts/types/DraftsCont
 import type { IssuesCheck } from "#tools/github/issues/drafts/types/IssuesCheck";
 import type { Publication } from "#tools/github/issues/drafts/types/Publication";
 import type { PublishedDraft } from "#tools/github/issues/drafts/types/PublishedDraft";
+import type { Resplit } from "#tools/github/issues/drafts/types/Resplit";
 
 function failed(lines: readonly string[]): IssuesCheck {
   return { lines, passed: false };
@@ -264,8 +270,14 @@ export async function publishIssues(
     return failed(chains);
   }
 
+  const { resplits, lines } = await resolveResplits(publication);
+
+  if (lines.length > 0) {
+    return failed(lines);
+  }
+
   try {
-    return await writeDrafts(publication);
+    return await writeDrafts(publication, resplits);
   } catch (error) {
     throw explainRefusal(error, context.repository);
   }
@@ -307,17 +319,35 @@ function explainRefusal(error: unknown, current: string | undefined) {
   return error;
 }
 
-async function writeDrafts(publication: Publication): Promise<IssuesCheck> {
-  const { drafts } = publication;
+async function writeDrafts(
+  publication: Publication,
+  resplits: readonly Resplit[],
+): Promise<IssuesCheck> {
+  const { drafts, context, numbers } = publication;
 
   for (const draft of drafts.filter(({ stem }) => !isClaimedStem(stem))) {
     await createPublishedIssue(publication, draft);
   }
 
+  const logs = listResplitLogs(
+    resplits,
+    context,
+    numbers,
+    new Date().toISOString().slice(0, 10),
+  );
+
   const bodies = new Map<PublishedDraft, string>();
 
   for (const draft of drafts) {
-    const body = await renderPublishedBody(publication, draft);
+    const location = findPublishedLocation(draft, context, numbers);
+
+    const log = logs.find(({ plan }) => isSameIssue(plan, location));
+
+    const body = await renderPublishedBody(
+      publication,
+      draft,
+      log?.lines ?? [],
+    );
 
     bodies.set(draft, body);
 
@@ -331,6 +361,8 @@ async function writeDrafts(publication: Publication): Promise<IssuesCheck> {
   for (const draft of drafts) {
     await linkPublishedIssue(publication, draft);
   }
+
+  await writeResplitLogs(publication, logs);
 
   const diffs: string[] = [];
 

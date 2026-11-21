@@ -1,3 +1,5 @@
+import { keys } from "@auaust/toolkit/object";
+
 import {
   stripHeaderChain,
   type IssueContract,
@@ -12,7 +14,7 @@ export function toDraftBody(
   context: Pick<DraftsContext, "repository" | "registry">,
   contract: IssueContract | undefined,
 ): string {
-  const generated = new Set(contract?.generated);
+  const generated = new Set(keys(contract?.generated ?? {}));
 
   const kept = splitBodySections(body)
     .filter(({ name }) => {

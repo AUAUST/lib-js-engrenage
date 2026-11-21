@@ -6,6 +6,6 @@ export interface IssueContract {
   readonly hints?: Readonly<Record<string, string>>;
   readonly modelsAfter?: string;
   readonly hasHeader: boolean;
-  readonly generated?: readonly string[];
+  readonly generated?: Readonly<Record<string, string>>;
   readonly subIssues: "roadmap" | "references";
 }

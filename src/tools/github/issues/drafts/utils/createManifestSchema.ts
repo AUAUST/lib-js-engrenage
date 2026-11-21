@@ -167,6 +167,7 @@ export function createManifestSchema(
     blockedBy: optional(array(referenceSchema)),
     state: optional(picklist(draftStates)),
     claim: optional(picklist(claimStates)),
+    resplit: optional(filled("write why the issues are re-split")),
   };
 
   const typeNames = target.types.map(({ name }) => name);

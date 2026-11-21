@@ -1,10 +1,14 @@
 import { isString } from "@auaust/toolkit";
+import { hasOwn } from "@auaust/toolkit/object";
 
 import {
   readApiRepository,
   splitRepository,
 } from "#tools/github/issues/api/index";
-import { roadmapSection } from "#tools/github/issues/contract/constants";
+import {
+  resplitSection,
+  roadmapSection,
+} from "#tools/github/issues/contract/constants";
 import {
   isSameIssue,
   parseIssueBody,
@@ -15,6 +19,7 @@ import {
   type RoadmapEntry,
 } from "#tools/github/issues/contract/index";
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
+import { insertResplitLog } from "#tools/github/issues/drafts/utils/insertResplitLog";
 import { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
@@ -105,10 +110,10 @@ function renderBodyHeader(
     .trimEnd();
 }
 
-export async function renderPublishedBody(
+async function renderRoadmapBody(
   publication: Publication,
   draft: PublishedDraft,
-): Promise<string> {
+) {
   const { contract, manifest, access } = draft;
 
   const { context, numbers } = publication;
@@ -158,4 +163,16 @@ export async function renderPublishedBody(
     renderRoadmap(entries, headings, members),
     contract.sections,
   );
+}
+
+export async function renderPublishedBody(
+  publication: Publication,
+  draft: PublishedDraft,
+  log: readonly string[],
+): Promise<string> {
+  const body = await renderRoadmapBody(publication, draft);
+
+  return hasOwn(draft.contract?.generated ?? {}, resplitSection)
+    ? insertResplitLog(body, draft.remote?.body, log)
+    : body;
 }

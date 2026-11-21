@@ -1,7 +1,7 @@
 import { Document, isMap, isScalar, isSeq } from "yaml";
 
 import { isString } from "@auaust/toolkit";
-import { keys, record } from "@auaust/toolkit/object";
+import { hasOwn, keys, record } from "@auaust/toolkit/object";
 
 import {
   issueContracts,
@@ -264,7 +264,7 @@ export async function createDraft(
   const body = [
     ...header,
     ...(contract?.sections ?? [])
-      .filter((section) => !(contract?.generated ?? []).includes(section))
+      .filter((section) => !hasOwn(contract?.generated ?? {}, section))
       .map((section) => {
         const hint = contract?.hints?.[section];
 
