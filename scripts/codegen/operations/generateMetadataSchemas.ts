@@ -5,6 +5,7 @@ import { keys, mapValues, omit } from "@auaust/toolkit/object";
 
 import {
   domainMetadataSchema,
+  environmentMetadataSchema,
   namespaceMetadataSchema,
 } from "#batiment/environments/index";
 import { workspaceMetadataSchema } from "#batiment/scopes/index";
@@ -27,6 +28,7 @@ function createWorkspaceFileSchema(): GenericSchema {
 const schemas = [
   ["data/schemas/namespace.schema.json", namespaceMetadataSchema],
   ["data/schemas/domain.schema.json", domainMetadataSchema],
+  ["data/schemas/environment.schema.json", environmentMetadataSchema],
   ["data/schemas/workspace.schema.json", createWorkspaceFileSchema()],
 ] as const;
 

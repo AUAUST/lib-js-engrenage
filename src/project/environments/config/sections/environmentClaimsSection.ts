@@ -6,8 +6,8 @@ import { declareSection } from "#foundation/options/index";
 import { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 import { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 import { readInputDirs } from "#project/environments/utils/readInputDirs";
+import type { EnvironmentClaim } from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { EnvironmentClaim } from "#project/environments/types/EnvironmentClaim";
 import type { Directories } from "#types/Directories";
 
 const adjustedItems = optional(union([string(), array(string())]));

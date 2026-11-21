@@ -2,8 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { staticSchema } from "#project/environments/config/schemas/staticSchema";
-import { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
-import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
+import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedStatic } from "#project/environments/types/ResolvedStatic";
 
@@ -19,10 +18,16 @@ export const staticSection = declareSection({
       "static",
     );
 
-    const dirs = await resolveEnvironmentDirs(config, "static", option.dirs);
+    const {
+      dirs,
+      active,
+    } = await discoverDeclaredEnvironment(config, "static", {
+      dirs: option.dirs,
+      files: [],
+    });
 
     return freeze({
-      active: await hasUnignoredFile(config, { dirs }),
+      active,
       dirs,
     });
   },

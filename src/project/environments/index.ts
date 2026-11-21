@@ -23,7 +23,6 @@ export type * from "#project/environments/types/ContributedEnvironmentEntry";
 export type * from "#project/environments/types/DataInput";
 export type * from "#project/environments/types/DefineContext";
 export type * from "#project/environments/types/DefineInput";
-export type * from "#project/environments/types/EnvironmentClaim";
 export type * from "#project/environments/types/GlobalsFactory";
 export type * from "#project/environments/types/ResolvedBin";
 export type * from "#project/environments/types/ResolvedCodeEnvironment";
@@ -59,14 +58,13 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
-export { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
+export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
-export { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
 export { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 // @end
 

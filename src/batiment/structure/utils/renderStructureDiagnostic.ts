@@ -32,6 +32,9 @@ const separators = {
   "workspace-environment-name": "  ",
   "nested-workspace": "  ",
   "missing-workspace": "  ",
+  "misplaced-environment-metafile": "  ",
+  "environment-metafile-beside-namespace": "  ",
+  "unknown-environment-kind": "  ",
 } as const satisfies Record<StructureDiagnosticCode, string>;
 
 function renderOrigin(origin: ValueOrigin): string {

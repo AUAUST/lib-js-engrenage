@@ -1,8 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import { isNonEmptyArray } from "@auaust/toolkit/array";
-
-import { findDirectories } from "#foundation/filesystem/index";
 import {
   declareList,
   declareObject,
@@ -15,11 +12,11 @@ import {
   type Extension,
 } from "#project/config/index";
 import {
+  discoverDeclaredEnvironment,
   getOptionsKey,
   listEnvironmentEntries,
   readEnvironment,
   readInputDirs,
-  resolveEnvironmentDirs,
 } from "#project/environments/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
@@ -41,18 +38,15 @@ const liquidSchema = declareObject(
 
 const liquidSection = declareSection({
   async resolve(_input, config: ConfigResolver) {
-    const dirs = await resolveEnvironmentDirs(
-      config,
-      "liquid",
-      readInputDirs(await config.input("liquid.options")) ?? ["liquid"],
-    );
-
-    return {
-      active: isNonEmptyArray(
-        await findDirectories(config.context.filesystem, dirs),
-      ),
+    const {
       dirs,
-    };
+      active,
+    } = await discoverDeclaredEnvironment(config, "liquid", {
+      dirs: readInputDirs(await config.input("liquid.options")) ?? ["liquid"],
+      files: [],
+    });
+
+    return { active, dirs };
   },
 });
 
@@ -122,16 +116,16 @@ function createWorkers(
 ): Extension {
   const workersSection = declareSection({
     async resolve(_input, config: ConfigResolver) {
-      const dirs = await resolveEnvironmentDirs(
-        config,
-        "workers",
-        readInputDirs(await config.input("workers.options")) ?? defaults,
-      );
+      const {
+        dirs,
+        active,
+      } = await discoverDeclaredEnvironment(config, "workers", {
+        dirs: readInputDirs(await config.input("workers.options")) ?? defaults,
+        files: [],
+      });
 
       return {
-        active: isNonEmptyArray(
-          await findDirectories(config.context.filesystem, dirs),
-        ),
+        active,
         dirs,
         globs: dirs.map((dir) => `${dir}/**/*.ts`),
         generated: ["**/*.gen.ts"],

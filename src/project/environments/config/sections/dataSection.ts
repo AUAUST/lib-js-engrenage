@@ -2,8 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import { dataSchema } from "#project/environments/config/schemas/dataSchema";
-import { hasUnignoredFile } from "#project/environments/operations/hasUnignoredFile";
-import { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";
+import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedData } from "#project/environments/types/ResolvedData";
 
@@ -16,10 +15,13 @@ export const dataSection = declareSection({
       "data",
     );
 
-    const dirs = await resolveEnvironmentDirs(config, "data", option.dirs);
+    const { dirs, active } = await discoverDeclaredEnvironment(config, "data", {
+      dirs: option.dirs,
+      files: [],
+    });
 
     return freeze({
-      active: await hasUnignoredFile(config, { dirs }),
+      active,
       dirs,
       exports: option.exports,
     });

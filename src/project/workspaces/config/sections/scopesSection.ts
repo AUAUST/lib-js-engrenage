@@ -1,7 +1,14 @@
+import { posix } from "node:path";
+
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
-import { createScopeTree, type ScopeTree } from "#batiment/scopes/index";
+import {
+  createScopeTree,
+  discoverEnvironment,
+  getEnvironmentId,
+  type ScopeTree,
+} from "#batiment/scopes/index";
 import { declareSection } from "#foundation/options/index";
 import { readEnvironment } from "#project/environments/index";
 import type { OptionSource } from "#batiment/report/index";
@@ -46,6 +53,35 @@ export const scopesSection = declareSection({
       discovery.workspaces.map(async ({ dir, file, purpose }) => {
         const group = groups.find(({ dirs }) => dirs.includes(dir));
 
+        // @debt a workspace's environments are only its `.environment.json` dirs, with no defaults or multi-dir environments, until its child resolver declares them (#745)
+        const found = await Promise.all(
+          discovery.environments
+            .filter((environment) => posix.dirname(environment.dir) === dir)
+            .map(async ({ dir: environmentDir, kind }) => {
+              const name = posix.basename(environmentDir);
+              const dirs = [environmentDir];
+
+              const { active } = await discoverEnvironment({
+                name: getEnvironmentId(dir, name),
+                dirs,
+                files: [],
+                claims: {},
+                ignored: discovery.ignored,
+                filesystem: config.context.filesystem,
+              });
+
+              return kind === undefined || !active
+                ? []
+                : [
+                    {
+                      name,
+                      kind,
+                      dirs,
+                    },
+                  ];
+            }),
+        );
+
         const declared = group?.purpose === undefined
           ? undefined
           : {
@@ -55,6 +91,7 @@ export const scopesSection = declareSection({
 
         return {
           dir,
+          environments: found.flat(),
           ...(purpose === undefined
             ? {}
             : {

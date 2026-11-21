@@ -2,6 +2,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import {
   discoverWorkspaces,
+  type DiscoveredEnvironment,
   type DiscoveredWorkspace,
 } from "#batiment/scopes/index";
 import { declareSection } from "#foundation/options/index";
@@ -15,20 +16,26 @@ export const discoverySection = declareSection({
     config: ConfigResolver,
   ): Promise<{
     readonly workspaces: readonly DiscoveredWorkspace[];
+    readonly environments: readonly DiscoveredEnvironment[];
     readonly diagnostics: readonly StructureDiagnostic[];
     readonly ignored: Globs;
   }> {
-    const repository = await config.resolve("git");
+    const [repository, kinds] = await Promise.all([
+      config.resolve("git"),
+      config.context.registry.contributions("environmentKinds", config),
+    ]);
 
     const ignored = await repository.ignored;
 
-    const { workspaces, diagnostics } = await discoverWorkspaces({
+    const { workspaces, environments, diagnostics } = await discoverWorkspaces({
       filesystem: config.context.filesystem,
       ignored,
+      kinds: kinds.map(({ entry }) => entry.name),
     });
 
     return freeze({
       workspaces,
+      environments,
       diagnostics,
       ignored,
     });

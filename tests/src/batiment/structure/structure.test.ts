@@ -298,6 +298,23 @@ describe("structure", () => {
     });
   });
 
+  test("reads the root namespace from the environment metafile", async () => {
+    const { structure } = await describeSource(declaration, {
+      "src/.environment.json": '{ "layers": ["*", "zone"] }',
+    });
+
+    expect(structure.root).toMatchObject({ layers: ["*", "zone"] });
+  });
+
+  test("keeps the environment metafile over a namespace metafile beside it", async () => {
+    const { structure } = await describeSource(declaration, {
+      "src/.environment.json": '{ "layers": ["*", "zone"] }',
+      "src/.namespace.json": '{ "layers": ["zone", "*"] }',
+    });
+
+    expect(structure.root).toMatchObject({ layers: ["*", "zone"] });
+  });
+
   test("lets a domain file override the fields of a matching config glob", async () => {
     const { nodes } = await describeSource(
       declaration.replace(

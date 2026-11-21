@@ -12,3 +12,9 @@ export const environmentKindFields = freeze({
   imports: optional(array(string())),
   layout: optional(string()),
 });
+
+export const environmentMetadataFile = ".environment.json";
+
+export const namespaceMetadataFile = ".namespace.json";
+
+export const domainMetadataFile = ".domain.json";

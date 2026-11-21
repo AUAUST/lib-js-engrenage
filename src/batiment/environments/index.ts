@@ -20,6 +20,7 @@ export type * from "#batiment/environments/types/NamespaceInput";
 // @barrel config/schemas
 export { domainMetadataSchema } from "#batiment/environments/config/schemas/domainMetadataSchema";
 export { domainSchema } from "#batiment/environments/config/schemas/domainSchema";
+export { environmentMetadataSchema } from "#batiment/environments/config/schemas/environmentMetadataSchema";
 export { namespaceMetadataSchema } from "#batiment/environments/config/schemas/namespaceMetadataSchema";
 export { namespaceSchema } from "#batiment/environments/config/schemas/namespaceSchema";
 export { schemaReferenceSchema } from "#batiment/environments/config/schemas/schemaReferenceSchema";

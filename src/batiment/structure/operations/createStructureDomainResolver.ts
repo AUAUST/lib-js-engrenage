@@ -3,15 +3,15 @@ import { basename, extname, join, matchesGlob } from "node:path";
 import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import {
+  domainMetadataFile,
+  namespaceMetadataFile,
+} from "#batiment/environments/constants";
+import {
   listReexportModes,
   listStaticFileGlobs,
   type ResolvedRoles,
 } from "#batiment/roles/index";
-import {
-  defaultReexport,
-  domainMetadataFile,
-  namespaceMetadataFile,
-} from "#batiment/structure/constants";
+import { defaultReexport } from "#batiment/structure/constants";
 import { assignRoleFiles } from "#batiment/structure/operations/assignRoleFiles";
 import { constrainsFileRole } from "#batiment/structure/utils/constrainsFileRole";
 import { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";

@@ -1,10 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { workspaceMetadataFile } from "#batiment/scopes/constants";
 import {
   domainMetadataFile,
+  environmentMetadataFile,
   namespaceMetadataFile,
-} from "#batiment/structure/constants";
+} from "#batiment/environments/constants";
+import { workspaceMetadataFile } from "#batiment/scopes/constants";
 import { engrenage, eslint, prettier, typescript } from "#constants";
 import { eslintFlags } from "#tools/eslint/constants";
 import type { Integration } from "#tools/vscode/types/Integration";
@@ -22,6 +23,10 @@ export const metadataSchemas = freeze([
   {
     file: domainMetadataFile,
     schema: `${engrenage}/schemas/domain.schema.json`,
+  },
+  {
+    file: environmentMetadataFile,
+    schema: `${engrenage}/schemas/environment.schema.json`,
   },
   {
     file: workspaceMetadataFile,

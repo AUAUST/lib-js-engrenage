@@ -7,6 +7,7 @@ import {
   discoverWorkspaces,
   getEnvironmentId,
 } from "#batiment/scopes/index";
+import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { createProjectConfig } from "#project/config/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -92,12 +93,15 @@ describe("createScopeTree", () => {
       workspaces: [
         {
           dir: "src/theme",
+          environments: [],
         },
         {
           dir: "extensions/a",
+          environments: [],
         },
         {
           dir: "extensions/a/b",
+          environments: [],
         },
       ],
       missing: [],
@@ -126,6 +130,38 @@ describe("createScopeTree", () => {
   });
 });
 
+describe("reconcileEnvironmentDirs", () => {
+  test("drops a default dir another environment owns or names, unless explicit", () => {
+    const claims = {
+      a: {
+        owns: ["shared"],
+        dirs: undefined,
+        named: [],
+      },
+      b: {
+        owns: [],
+        dirs: undefined,
+        named: ["named"],
+      },
+    };
+
+    expect(
+      reconcileEnvironmentDirs("c", ["shared", "named", "own"], claims),
+    ).toEqual(["own"]);
+
+    expect(
+      reconcileEnvironmentDirs("c", ["shared"], {
+        ...claims,
+        c: {
+          owns: [],
+          dirs: ["shared"],
+          named: [],
+        },
+      }),
+    ).toEqual(["shared"]);
+  });
+});
+
 describe("discoverWorkspaces", () => {
   test("reads the purpose and returns the other keys raw", async () => {
     const project = createTemporaryProject({
@@ -138,6 +174,7 @@ describe("discoverWorkspaces", () => {
     const { workspaces, diagnostics } = await discoverWorkspaces({
       filesystem: createFilesystem(project.root),
       ignored: [],
+      kinds: [],
     });
 
     expect(workspaces).toEqual([
@@ -165,6 +202,54 @@ describe("scopes", () => {
     ]);
 
     expect(keys(scopes).sort()).toEqual([".", "tools/c"]);
+  });
+
+  test("registers a workspace's environment metafiles of known kinds", async () => {
+    const { scopes, diagnostics } = await resolveScopes({
+      "theme/.workspace.json": "{}",
+      "theme/src/.environment.json": "{}",
+      "theme/src/a.ts": "",
+      "theme/assets/.environment.json": "{}",
+      "theme/assets/a.png": "",
+    });
+
+    expect(summarize(diagnostics)).toEqual([
+      { code: "unknown-environment-kind", path: "theme/assets" },
+    ]);
+
+    expect(scopes.theme?.environments).toEqual([
+      {
+        id: "theme/src",
+        scope: "theme",
+        name: "src",
+        kind: "src",
+        dirs: ["theme/src"],
+      },
+    ]);
+  });
+
+  test("reports an environment metafile outside a scope's direct child", async () => {
+    const { diagnostics } = await resolveScopes({
+      "src/foo/.environment.json": "{}",
+    });
+
+    expect(summarize(diagnostics)).toEqual([
+      {
+        code: "misplaced-environment-metafile",
+        path: "src/foo",
+      },
+    ]);
+  });
+
+  test("reports an environment metafile beside a namespace metafile", async () => {
+    const { diagnostics } = await resolveScopes({
+      "src/.environment.json": "{}",
+      "src/.namespace.json": "{}",
+    });
+
+    expect(summarize(diagnostics)).toEqual([
+      { code: "environment-metafile-beside-namespace", path: "src" },
+    ]);
   });
 
   test("reports a workspace inside another", async () => {

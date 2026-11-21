@@ -106,6 +106,12 @@ describe("syncVscodeFiles", () => {
     },
     {
       "fileMatch": [
+        "**/.environment.json"
+      ],
+      "url": "${schemaUrl(project.root, "environment")}"
+    },
+    {
+      "fileMatch": [
         "**/.workspace.json"
       ],
       "url": "${schemaUrl(project.root, "workspace")}"
@@ -139,6 +145,7 @@ describe("syncVscodeFiles", () => {
       own,
       schemaEntry(project.root, "namespace"),
       schemaEntry(project.root, "domain"),
+      schemaEntry(project.root, "environment"),
       schemaEntry(project.root, "workspace"),
     ]);
   });
@@ -191,6 +198,7 @@ describe("syncVscodeFiles", () => {
         url: schemaUrl(project.root, "namespace"),
       },
       schemaEntry(project.root, "domain"),
+      schemaEntry(project.root, "environment"),
       schemaEntry(project.root, "workspace"),
     ]);
 

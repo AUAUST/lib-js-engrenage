@@ -30,10 +30,16 @@ async function readOrigins(
 
 export const structureSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedStructure> {
-    const [environments, { internals }, { published }] = await Promise.all([
+    const [
+      environments,
+      { internals },
+      { published },
+      discovery,
+    ] = await Promise.all([
       config.resolve("environments"),
       config.resolve("structure.options"),
       config.resolve("traits"),
+      config.resolve("scopes.discovery"),
     ]);
 
     const { filesystem } = config.context;
@@ -75,6 +81,7 @@ export const structureSection = declareSection({
             environment: name,
             filesystem,
             dirs,
+            metafiles: discovery.environments,
           });
 
           const origins = layout?.nature !== "derived"

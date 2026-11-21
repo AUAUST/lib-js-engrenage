@@ -161,6 +161,14 @@ const nodes = freeze({
       ...namespaceFields,
     }),
     domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),
+    environment: declareObject({
+      $schema: schemaReferenceSchema,
+      kind: declare(string(), {
+        description: "Kind of the environment, naming an `environmentKinds` entry. Unset in a workspace's environment, its directory name.",
+        optional: { value: undefined },
+      }),
+      ...namespaceFields,
+    }),
   }),
 });
 

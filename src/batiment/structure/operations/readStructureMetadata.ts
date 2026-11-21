@@ -1,16 +1,18 @@
 import { posix } from "node:path";
 
+import type { InferOutput } from "valibot";
+
 import { sort } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import {
+  domainMetadataFile,
+  namespaceMetadataFile,
+} from "#batiment/environments/constants";
+import {
   domainMetadataSchema,
   namespaceMetadataSchema,
 } from "#batiment/environments/index";
-import {
-  domainMetadataFile,
-  namespaceMetadataFile,
-} from "#batiment/structure/constants";
 import {
   filesIn,
   toPosixPath,
@@ -19,6 +21,7 @@ import {
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
+import type { DiscoveredEnvironment } from "#batiment/scopes/index";
 import type { MetadataField } from "#batiment/structure/types/MetadataField";
 import type { StructureMetadata } from "#batiment/structure/types/StructureMetadata";
 import type { Directories } from "#types/Directories";
@@ -37,6 +40,34 @@ function locate<Value>(
   return value === undefined ? undefined : freeze({ value, file });
 }
 
+function createNamespaceMetadata(
+  path: Directory,
+  {
+    purpose,
+    layers,
+    relation,
+    children,
+  }: Omit<InferOutput<typeof namespaceMetadataSchema>, "$schema">,
+  file: File,
+): StructureMetadata {
+  return {
+    path,
+    kind: "namespace",
+    fields: {
+      purpose: locate(purpose, file),
+      layers: locate(layers, file),
+      relation: locate(relation, file),
+      children: locate(children, file),
+      specifier: undefined,
+      internals: undefined,
+      reexport: undefined,
+      collects: undefined,
+      public: undefined,
+    },
+    files: [file],
+  };
+}
+
 function parseFileMetadata(
   text: string,
   directory: Directory,
@@ -47,29 +78,11 @@ function parseFileMetadata(
   const path = posix.dirname(match);
 
   if (posix.basename(match) === namespaceMetadataFile) {
-    const {
-      purpose,
-      layers,
-      relation,
-      children,
-    } = validate(namespaceMetadataSchema, content, file);
-
-    return {
+    return createNamespaceMetadata(
       path,
-      kind: "namespace",
-      fields: {
-        purpose: locate(purpose, file),
-        layers: locate(layers, file),
-        relation: locate(relation, file),
-        children: locate(children, file),
-        specifier: undefined,
-        internals: undefined,
-        reexport: undefined,
-        collects: undefined,
-        public: undefined,
-      },
-      files: [file],
-    };
+      validate(namespaceMetadataSchema, content, file),
+      file,
+    );
   }
 
   const {
@@ -208,10 +221,12 @@ export async function readStructureMetadata({
   environment,
   filesystem,
   dirs,
+  metafiles,
 }: {
   environment: string;
   filesystem: Filesystem;
   dirs: Directories;
+  metafiles: readonly DiscoveredEnvironment[];
 }): Promise<{
   readonly metadata: readonly StructureMetadata[];
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -246,12 +261,28 @@ export async function readStructureMetadata({
       }),
     );
 
-    const parsed: StructureMetadata[] = [];
+    const metafile = metafiles.find(({ dir }) => {
+      return dir === toPosixPath(directory);
+    });
+
+    const parsed: StructureMetadata[] = metafile === undefined
+      ? []
+      : [
+          createNamespaceMetadata(
+            environmentRoot,
+            metafile.namespace,
+            metafile.file,
+          ),
+        ];
 
     for (const result of read) {
       if ("code" in result) {
         report(result);
-      } else {
+      } else if (
+        metafile === undefined ||
+        result.kind !== "namespace" ||
+        result.path !== environmentRoot
+      ) {
         parsed.push(result);
       }
     }

@@ -9,6 +9,7 @@ import type {
   StructureDiagnosticCode,
 } from "#batiment/report/index";
 import type { Scope } from "#batiment/scopes/types/Scope";
+import type { ScopedEnvironment } from "#batiment/scopes/types/ScopedEnvironment";
 import type { ScopeTree } from "#batiment/scopes/types/ScopeTree";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -17,8 +18,15 @@ import type { Glob } from "#types/Glob";
 
 const noFiles = freeze([]);
 
+interface ScopeTreeEnvironment {
+  readonly name: string;
+  readonly kind: string;
+  readonly dirs: Directories;
+}
+
 interface ScopeTreeWorkspace {
   readonly dir: Directory;
+  readonly environments: readonly ScopeTreeEnvironment[];
   readonly purpose?: { readonly value: string; readonly file: File };
   readonly declared?: { readonly value: string; readonly config: OptionSource };
 }
@@ -39,6 +47,23 @@ function createDiagnostic(
     path,
     files: noFiles,
   });
+}
+
+function createEnvironments(
+  scope: Directory,
+  environments: readonly ScopeTreeEnvironment[],
+): readonly ScopedEnvironment[] {
+  return freeze(
+    environments.map(({ name, kind, dirs }) => {
+      return freeze({
+        id: getEnvironmentId(scope, name),
+        scope,
+        name,
+        kind,
+        dirs,
+      });
+    }),
+  );
 }
 
 function resolvePurpose(
@@ -70,11 +95,7 @@ export function createScopeTree({
   workspaces,
   missing,
 }: {
-  environments: readonly {
-    readonly name: string;
-    readonly kind: string;
-    readonly dirs: Directories;
-  }[];
+  environments: readonly ScopeTreeEnvironment[];
   workspaces: readonly ScopeTreeWorkspace[];
   missing: readonly { readonly dir: Directory; readonly glob: Glob }[];
 }): ScopeTree {
@@ -101,17 +122,7 @@ export function createScopeTree({
       key: rootScope,
       dir: rootScope,
       parent: undefined,
-      environments: freeze(
-        environments.map(({ name, kind, dirs: environmentDirs }) => {
-          return freeze({
-            id: getEnvironmentId(rootScope, name),
-            scope: rootScope,
-            name,
-            kind,
-            dirs: environmentDirs,
-          });
-        }),
-      ),
+      environments: createEnvironments(rootScope, environments),
     }),
   };
 
@@ -168,7 +179,7 @@ export function createScopeTree({
       dir,
       parent: rootScope,
       ...(purpose === undefined ? {} : { purpose }),
-      environments: freeze([]),
+      environments: createEnvironments(dir, workspace.environments),
     });
   }
 

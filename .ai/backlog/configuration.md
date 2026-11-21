@@ -32,8 +32,8 @@ Project configuration contract: loading, environments, option shapes and list op
 
 ## 6. Config loads do avoidable work and keep past results
 
-- sites: `src/project/tsconfig/operations/createTsconfig.ts:2`, `src/tools/git/config/sections/gitSection.ts:18`, `src/project/environments/operations/hasUnignoredFile.ts:19`, `src/project/config/operations/loadConfig.ts:20`, `src/project/config/operations/loadConfig.ts:110`, `src/project/config/operations/loadConfig.ts:121`
-- why: the static `typescript` import costs ~0.2 s per load; the git section globs the whole tree; `git.ignored` reruns `git status` per read; `loadConfig` keeps an entry per directory forever, and a read pending at `refresh` caches the stale config; `refresh` rides on `loadConfig` for want of a module-state role.
+- sites: `src/project/tsconfig/operations/createTsconfig.ts:2`, `src/tools/git/config/sections/gitSection.ts:18`, `src/project/config/operations/loadConfig.ts:20`, `src/project/config/operations/loadConfig.ts:110`, `src/project/config/operations/loadConfig.ts:121`
+- why: the static `typescript` import costs ~0.2 s per load; the git section globs the whole tree; `loadConfig` keeps an entry per directory forever, and a read pending at `refresh` caches the stale config; `refresh` rides on `loadConfig` for want of a module-state role.
 - want: lazy compiler import; Git asked once per load; bounded, refresh-safe caches in a module-state role (planning).
 
 ## 7. Option sections and tsconfig paths are cast or unchecked
