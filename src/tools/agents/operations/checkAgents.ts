@@ -212,6 +212,7 @@ export async function checkAgents(
         `${agent}: client version unavailable (${version.error?.message ?? version.stderr.trim()}); install a supported local client`,
       );
     } else {
+      // @debt hardcodes the inspected client versions, so every newer client reports runtime-unverified until someone edits them
       const inspected = agent === "codex"
         ? /\b0\.159\.2\b/.test(version.stdout)
         : /\b2\.1\.318\b/.test(version.stdout);

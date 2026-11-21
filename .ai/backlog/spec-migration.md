@@ -22,3 +22,8 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 
 - why: sync installs no new skill, so a consumer's walker and Steps sweep brief a `consultant` that does not exist; agent blocks still setting `freshness` fail schema validation.
 - want: toolkit and interscript run `pnpm engrenage agents skills add consultant` and drop `freshness` when the user migrates them (S.23).
+
+## 5. Sweeping #338 and #308 before #778 and #684 rewrites them twice
+
+- why: #778 and #684 set who owns most of their remains (agent commands, init's agent steps, the issue-write hook); #382 and #765 also overlap on workspace entries in `createTsdownConfig`.
+- want: decide #778 and #684 before those sweeps.

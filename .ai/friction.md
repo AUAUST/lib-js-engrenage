@@ -148,3 +148,4 @@
 - Claude Code worktree isolation: a heredoc python edit chained with `cd ../..` and a sync and git status — refused as unverifiable; ran the edit and the sync as separate commands
 - `engrenage sync agents`: regenerating a deleted `.claude/agents/<name>.md` — sync reports it conflicting and never recreates it; reran `engrenage agents skills add <skill>`
 - Claude Code worktree isolation: a grep whose pattern held the word `complete`, and a vitest call on a path through `tools/github` — refused as running a string through `complete` or naming git; split the grep from git commands and filtered vitest by `issues/drafts/`
+- metalbrain budget hook: brief ended a prose line with `Budget: standard.` — the hook reads only a whole `Budget: <level>` line and silently fell back to scoped (80000), forcing a budget stop mid-triage; put the line alone, no period

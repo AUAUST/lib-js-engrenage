@@ -141,3 +141,9 @@ Shared agent instructions, skills and the backlog conventions.
 - why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
 - want: handoffs and carry-overs written to files, the orchestrator receiving and forwarding only their paths.
 - done: measured first: fewer tokens than inline handoffs, counting the rereads skipped each turn; dropped otherwise, since saving tokens is its only purpose.
+
+## 27. The commit-type table diverges from #218's decisions
+
+- sites: `data/metalbrain/rules/git.md:31`
+- why: #218 › Decisions merge `files` into `cq`, split `ci` from `meta` and gate `css` and `content` by project traits; the table does none of it and adds `snap`, `config` and `debug`, which no decision names. #213 cannot write "today's table, amended by #218" until one wins.
+- want: the user settles the authoritative vocabulary on #218.

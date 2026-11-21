@@ -200,3 +200,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: workers now name `Concurrent:` leaves sharing a Model section, but the merger is not told which landed leaves shared one, so diverging shapes pass (H6, N.3.6).
 - want: decide whether the merger checks the shared section against each `Concurrent:` sibling at integration.
+
+## 37. Walk tuning awaits the first spec walks
+
+- why: #809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5).
+- want: from the first walks' measurements, decide K = 3, the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).
+- done: each decided, or dropped as unneeded by the walk data.

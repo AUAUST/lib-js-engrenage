@@ -45,9 +45,9 @@ Project structure description, its report and the tooling generated from it.
 
 ## 7. No way to detect unused code
 
-- why: ESLint's `no-unused-vars` sees only file-local symbols; exported symbols never imported, and symbols reachable only through cycles, need a cross-file reference graph (ESLint alone cannot build it; the TypeScript language service or a tool like knip can).
-- want: a `structure` subcommand or health-check command reporting, per symbol, one of: local and unused; exported and re-exported from an entrypoint only (matched through `export { x } from` or `export *`; not used as code); exported and never referenced. Used symbols are not reported; test usage does not count. Ideally also report symbols unreachable from every public entrypoint by traversing references from the entrypoints (cycles unreachable from a root included).
-- done: the command runs, with a report in the spirit of the structure report.
+- why: `no-unused-vars` sees file-local symbols only; exports never imported and symbols reachable only through cycles need a cross-file reference graph (TypeScript language service, or knip).
+- want: a `structure` subcommand reporting each symbol that is local and unused, exported and only re-exported from an entrypoint, or exported and never referenced; test usage does not count. Ideally also symbols unreachable from every public entrypoint, cycles included.
+- done: the command runs, reporting like the structure report.
 
 ## 8. `discovered` (role, `<env>.discovered`, `files.discovered`) loses its only lint consumer in #150
 
@@ -170,3 +170,24 @@ Project structure description, its report and the tooling generated from it.
 - sites: `src/batiment/structure/utils/checkLayers.ts:14`, `src/batiment/structure/utils/getImportCategory.ts:11`
 - why: only `relative` and `alias` imports are checked; `@auaust/engrenage/...` counts as `public-entries`, granted to `src`, so a lower layer importing a workflows entry passes lint.
 - want: self-references resolved to their source domain and checked like aliases.
+
+## 29. No issue owns walking workspace environments' structure
+
+- sites: `src/project/structure/config/sections/structureSection.ts:31`
+- why: the section resolves root environments only, yet #741 (`structure[id]`), #758, #760 and #761 assume a per-scope walk (#732 › Resolution).
+- want: one issue owns the per-scope walk, as a first leaf of #757 or an item under #732.
+
+## 30. The workspaces schema describes each glob as one environment
+
+- sites: `src/project/workspaces/config/schemas/workspacesSchema.ts:13`
+- why: since #793 environments come from `.environment.json`, so the description is stale.
+
+## 31. Workspace `imports` declared in two places
+
+- why: #675 › Decisions puts a workspace's `imports` in `.workspace.json` (#729, read by #714); #739 and #802 put per-environment opt-ins in `.environment.json`.
+- want: one owner; recommended: #802's opt-ins, #729 deriving from them, #675 and #714 updated.
+
+## 32. Workspace tests cannot reach root test helpers past sealed `tests`
+
+- why: #675 › Decisions lets nested tests import root `tests` helpers; #800 and #743 › Decisions seal `tests` inward.
+- want: decide among an opt-in per workspace tests environment, `inward: "surface"` for `tests` (`tests/utils`, `tests/fixtures`, as #728 recommends), or a separate helpers kind.

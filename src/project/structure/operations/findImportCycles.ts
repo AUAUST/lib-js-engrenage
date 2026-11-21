@@ -24,6 +24,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { Directory } from "#types/Directory";
 
+// @debt keeps its own skip list, apart from the structure walk's, so the cycle check skips neither git-ignored files nor the shared skip constants
 const ignoredDirectories = ["**/.*", "**/node_modules", "**/dist"];
 
 interface ModuleFiles {
