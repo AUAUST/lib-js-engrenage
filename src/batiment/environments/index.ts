@@ -1,5 +1,5 @@
 // @barrel config/declarers
-export { declareProgramLayout } from "#batiment/environments/config/declarers/declareProgramLayout";
+export { declareLayout } from "#batiment/environments/config/declarers/declareLayout";
 export { declareStructureNodes } from "#batiment/environments/config/declarers/declareStructureNodes";
 export { declareStructureOptions } from "#batiment/environments/config/declarers/declareStructureOptions";
 // @end
@@ -14,7 +14,6 @@ export type * from "#batiment/environments/types/DomainInput";
 export type * from "#batiment/environments/types/EnvironmentInstance";
 export type * from "#batiment/environments/types/NamespaceDeclaration";
 export type * from "#batiment/environments/types/NamespaceInput";
-export type * from "#batiment/environments/types/ProgramLayout";
 // @end
 
 // @barrel config/schemas

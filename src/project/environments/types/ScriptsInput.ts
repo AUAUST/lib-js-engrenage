@@ -108,11 +108,11 @@ export interface ScriptsInput {
     check?: (boolean | undefined)
   }) | undefined)
   /**
-   * How the directories of the environment are classified.
-   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` names its subcommands and their aliases, the root group's `executable.ts` runs it, and each other module is one command; `domains` classifies them as domains.
-   * @default `commands`
+   * The layout shaping the environment's tree, by name: one the `layouts` slot holds, or `domains` for the namespace and domain walk.
+   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` names its subcommands and their aliases, the root group's `executable.ts` runs it, and each other module is one command.
+   * @default the layout of the environment's kind, otherwise `domains`
    */
-  tree?: (("commands" | "domains") | undefined)
+  layout?: (string | undefined)
   /**
    * Roles added to the environment's default roles, a role replacing the default of its name.
    * @default none

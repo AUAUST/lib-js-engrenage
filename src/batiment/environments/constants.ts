@@ -10,4 +10,5 @@ export const environmentKindFields = freeze({
   structure: optional(picklist(["domains", "roles"] as const)),
   consumesSource: optional(boolean()),
   imports: optional(array(string())),
+  layout: optional(string()),
 });

@@ -1,16 +1,20 @@
-import { projectMapRule } from "#project/structure/constants";
+import { layoutEntry, projectMapRule } from "#project/structure/constants";
 import type { Extension } from "#project/config/index";
 
 /**
- * Owns the `structure`, `structure.options`, `aliases`, `effectModules`,
- * `entities`, `environmentRoles`, `files`, `importGrants`, `importResolver` and
- * `src.exports` config keys. Contributes the project map and environment map
- * agent fillers, the project map rule files, and the `batiment map --check` gate
- * step run for agents only.
+ * Owns the `layouts` slot and the `structure`, `structure.options`, `aliases`,
+ * `effectModules`, `entities`, `environmentRoles`, `files`, `importGrants`,
+ * `importResolver` and `src.exports` config keys. Contributes the project
+ * map and environment map agent fillers, the project map rule files, the
+ * `batiment map --check` gate step run for agents only, and the `commands`
+ * and `mirror` layouts.
  */
 export default {
   name: "project/structure",
   owns: {
+    slots: {
+      layouts: { entry: layoutEntry, cardinality: "one" },
+    },
     keys: {
       "structure": {
         async load() {
@@ -107,6 +111,26 @@ export default {
     },
   },
   contributes: {
+    "layouts": [
+      {
+        name: "commands",
+        async load() {
+          const {
+            commands,
+          } = await import("#project/structure/presets/commands");
+
+          return commands;
+        },
+      },
+      {
+        name: "mirror",
+        async load() {
+          const { mirror } = await import("#project/structure/presets/mirror");
+
+          return mirror;
+        },
+      },
+    ],
     "agents.fillers": [
       {
         name: "project-map",

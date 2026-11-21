@@ -31,12 +31,15 @@ function inline(node: StructureNode): string {
 function describeKind(
   node: StructureNode,
   detailed: boolean,
+  groupLabel: string | undefined,
 ): string | undefined {
   const effects = node.effects === undefined ? "" : ` (${node.effects})`;
 
   const kinds = {
     namespace: undefined,
-    domain: node.commands === true ? "command group" : "domain",
+    domain: node.group === true && groupLabel !== undefined
+      ? groupLabel
+      : "domain",
     role: node.role === undefined || node.role === node.name
       ? `role${effects}`
       : `role ${node.role}${effects}`,
@@ -53,6 +56,7 @@ export function renderStructureLabel({
   node,
   aliases,
   detailed,
+  groupLabel,
   name,
   inlined = false,
   extras = [],
@@ -60,6 +64,7 @@ export function renderStructureLabel({
   node: StructureNode;
   aliases: ReadonlyMap<string, string>;
   detailed: boolean;
+  groupLabel?: string | undefined;
   name?: string;
   inlined?: boolean;
   extras?: readonly string[];
@@ -73,7 +78,7 @@ export function renderStructureLabel({
     node.relation === "isolated" ? "[isolated]" : undefined,
     node.childKind === "domains" ? "[domains]" : undefined,
     plain.length === 0 ? undefined : plain.map(inline).join(" "),
-    describeKind(node, detailed),
+    describeKind(node, detailed, groupLabel),
     detailed ? `[${node.source}]` : undefined,
     node.purpose,
     ...extras,

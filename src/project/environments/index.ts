@@ -63,6 +63,7 @@ export { hasUnignoredFile } from "#project/environments/operations/hasUnignoredF
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
+export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 export { resolveEnvironmentDirs } from "#project/environments/operations/resolveEnvironmentDirs";

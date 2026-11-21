@@ -170,7 +170,7 @@ export function createEntityIndex({
       ...parent,
       path: node.path,
       kind: node.kind,
-      commands: node.commands === true,
+      group: node.group === true,
       lineage: extendEntityLineage(parent.lineage, node, node.path),
       location: extendRoleLocation(parent.location, node),
       domain: node.kind === "domain"
@@ -211,7 +211,7 @@ export function createEntityIndex({
       const entity: Entity = freeze({
         ...createStructureEntity(name, directory, rootScope),
         kind: tree.kind,
-        commands: tree.commands === true,
+        group: tree.group === true,
         lineage: extendEntityLineage(noLineage, tree, directory),
         location: extendRoleLocation(
           createStructureEntity(name, directory, rootScope).location,

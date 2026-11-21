@@ -1,6 +1,6 @@
 import { join } from "node:path";
 
-import { freeze } from "@auaust/toolkit/object";
+import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { listStructureDirectories } from "#batiment/structure/operations/listStructureDirectories";
 import { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";
@@ -8,6 +8,7 @@ import { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
 import type { ResolvedRoles, RoleLocation } from "#batiment/roles/index";
 import type { createStructureDomainResolver } from "#batiment/structure/operations/createStructureDomainResolver";
 import type { createStructureRoleResolver } from "#batiment/structure/operations/createStructureRoleResolver";
+import type { StaticLayout } from "#batiment/structure/ports/StaticLayout";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
@@ -22,7 +23,8 @@ const environmentRoot = ".";
 export function createStructureWalker({
   filesystem,
   options,
-  commands,
+  group,
+  layoutEntries,
   indexFile,
   rolesIn,
   roleResolver,
@@ -31,7 +33,8 @@ export function createStructureWalker({
 }: {
   filesystem: Filesystem;
   options: StructureOptions;
-  commands: boolean;
+  group: boolean;
+  layoutEntries: StaticLayout["entries"] | undefined;
   indexFile: File;
   rolesIn: Map<StructureNode, ResolvedRoles>;
   roleResolver: ReturnType<typeof createStructureRoleResolver>;
@@ -136,21 +139,13 @@ export function createStructureWalker({
       );
     }
 
-    const mirrorClass = (
-      classifyMirror === undefined ||
-      declared !== undefined ||
-      parent.kind === "role"
-    )
-      ? undefined
-      : classifyMirror(directory, parent);
-
-    const role = (
-      parent.mirrored === undefined ||
-      mirrorClass === undefined ||
-      mirrorClass.counterpart?.kind === "role"
-    )
-      ? roleOf(directory, parent)
+    const layoutEntry = parent.kind === "root" && layoutEntries !== undefined
+      ? { listed: getOwn(layoutEntries, directory) }
       : undefined;
+
+    if (layoutEntry !== undefined && layoutEntry.listed === undefined) {
+      return node("unclassified", "inferred", {}, { children: [] });
+    }
 
     if (namespace !== undefined) {
       return node(
@@ -173,6 +168,30 @@ export function createStructureWalker({
           owned: [...namespace.roles.enable, ...parent.owned],
         },
       );
+    }
+
+    const mirrorClass = (
+      classifyMirror === undefined ||
+      declared !== undefined ||
+      parent.kind === "role"
+    )
+      ? undefined
+      : classifyMirror(directory, parent);
+
+    const inferredRole = (
+      parent.mirrored === undefined ||
+      mirrorClass === undefined ||
+      mirrorClass.counterpart?.kind === "role"
+    )
+      ? roleOf(directory, parent)
+      : undefined;
+
+    const role = layoutEntry === undefined
+      ? inferredRole
+      : layoutEntry.listed?.role;
+
+    if (layoutEntry !== undefined && role === undefined) {
+      return node("namespace", "inferred", {});
     }
 
     if (exact !== undefined) {
@@ -243,7 +262,7 @@ export function createStructureWalker({
       );
     }
 
-    if (commands || (await filesystem.exists(join(path, indexFile)))) {
+    if (group || (await filesystem.exists(join(path, indexFile)))) {
       return domain("inferred");
     }
 

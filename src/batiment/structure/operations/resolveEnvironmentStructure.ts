@@ -1,7 +1,7 @@
 import { basename } from "node:path";
 
 import { flat, sort } from "@auaust/toolkit/array";
-import { freeze, getOwn, keys } from "@auaust/toolkit/object";
+import { entries, freeze, getOwn, keys } from "@auaust/toolkit/object";
 
 import {
   getEntryFile,
@@ -19,8 +19,8 @@ import { createMirrorClassifier } from "#batiment/structure/utils/createMirrorCl
 import { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
 import { listStructureRoles } from "#batiment/structure/utils/listStructureRoles";
 import { loosenStructureNode } from "#batiment/structure/utils/loosenStructureNode";
-import type { ProgramLayout } from "#batiment/environments/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
+import type { Layout } from "#batiment/structure/ports/Layout";
 import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
@@ -55,7 +55,7 @@ export async function resolveEnvironmentStructure({
   roles,
   defined,
   tests,
-  tree,
+  layout,
   internals = false,
 }: {
   name: string;
@@ -66,7 +66,7 @@ export async function resolveEnvironmentStructure({
   roles?: EnvironmentRoles | undefined;
   defined?: RoleRegistry;
   tests?: TestsContext;
-  tree?: ProgramLayout | undefined;
+  layout?: Layout | undefined;
 }): Promise<{
   readonly structure: Omit<
     EnvironmentStructure,
@@ -75,7 +75,7 @@ export async function resolveEnvironmentStructure({
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
   const { strictness, namespaces } = options;
-  const commands = tree === "commands";
+  const group = layout?.nature === "recursive";
   const diagnostics: StructureDiagnostic[] = [];
 
   function report(diagnostic: StructureDiagnostic) {
@@ -98,7 +98,7 @@ export async function resolveEnvironmentStructure({
     name,
     filesystem,
     options,
-    commands,
+    group,
     indexFile,
     entryFile,
     internals,
@@ -109,7 +109,8 @@ export async function resolveEnvironmentStructure({
   const walk = createStructureWalker({
     filesystem,
     options,
-    commands,
+    group,
+    layoutEntries: layout?.nature === "static" ? layout.entries : undefined,
     indexFile,
     rolesIn,
     roleResolver,
@@ -153,6 +154,40 @@ export async function resolveEnvironmentStructure({
     ),
   );
 
+  if (layout?.nature === "static") {
+    const present = new Set(children.map((child) => child.name));
+
+    for (const child of children) {
+      if (getOwn(layout.entries, child.name) === undefined) {
+        report(
+          freeze({
+            severity: "error",
+            code: "unlisted-layout-entry",
+            message: `${child.path} is no entry of the ${layout.name} layout of ${name}: ${keys(layout.entries).join(", ")}`,
+            blocking: true,
+            environment: name,
+            files: freeze([]),
+          }),
+        );
+      }
+    }
+
+    for (const [entry, { required }] of entries(layout.entries)) {
+      if (required === true && !present.has(entry)) {
+        report(
+          freeze({
+            severity: "error",
+            code: "missing-layout-entry",
+            message: `${name} lacks ${entry}, a required entry of its ${layout.name} layout`,
+            blocking: true,
+            environment: name,
+            files: freeze([]),
+          }),
+        );
+      }
+    }
+  }
+
   const rootRoleFiles = groupRoleFiles(
     flat(
       await Promise.all(
@@ -168,7 +203,7 @@ export async function resolveEnvironmentStructure({
     name,
     kind: "namespace",
     source: rootDeclaration?.source ?? "inferred",
-    ...(commands ? { commands: true as const } : {}),
+    ...(group ? { group: true as const } : {}),
     ...(rootDeclaration?.layers === undefined
       ? {}
       : { layers: rootDeclaration.layers }),
@@ -228,7 +263,10 @@ export async function resolveEnvironmentStructure({
     : dropCollects(resolvedRoot, dropped);
 
   const rootNode = strictness === "loose"
-    ? loosenStructureNode(collectedRoot, name === "tests" ? "mirror" : "domain")
+    ? loosenStructureNode(
+        collectedRoot,
+        layout?.nature === "derived" ? "mirror" : "domain",
+      )
     : collectedRoot;
 
   const sorted = sort(diagnostics, (left, right) => {
@@ -242,6 +280,7 @@ export async function resolveEnvironmentStructure({
       indexFile,
       entryFile,
       strictness,
+      ...(layout === undefined ? {} : { layout }),
       root: rootNode,
       unclassified: collectStructureNodes(rootNode).filter(
         ({ kind }) => kind === "unclassified",

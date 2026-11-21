@@ -28,3 +28,7 @@ export { sourceExportsSection } from "#project/structure/config/sections/sourceE
 export { structureOptionsSection } from "#project/structure/config/sections/structureOptionsSection";
 export { structureSection } from "#project/structure/config/sections/structureSection";
 // @end
+
+// @barrel ports
+export type * from "#project/structure/ports/LayoutEntry";
+// @end

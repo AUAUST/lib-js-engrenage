@@ -996,3 +996,52 @@ describe("required roles", () => {
     expect(nodes.get("src/one/config")?.cardinality).toBeUndefined();
   });
 });
+
+describe("layouts", () => {
+  const sections = createRolePreset({
+    name: "sections",
+    purpose: "Theme sections.",
+  });
+
+  const layout = {
+    nature: "static",
+    name: "theme",
+    entries: {
+      sections: { role: "sections" },
+      layout: { required: true },
+    },
+  };
+
+  test("a contributed static layout, selected by name, classifies its entries and reports the rest", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": [
+        "export default {",
+        `  scripts: { layout: "theme", roles: ${renderCodeRoles(sections())} },`,
+        "  extensions: [{",
+        '    name: "fixture",',
+        `    contributes: { layouts: [{ name: "theme", load: () => Promise.resolve(${JSON.stringify(layout)}) }] },`,
+        "  }],",
+        "};",
+      ].join("\n"),
+      "scripts/sections/a.ts": "",
+      "scripts/widgets/b.ts": "",
+    });
+
+    const structure = await loadStructure(project.root);
+
+    const children = record(
+      structure.scripts!.root.children.map((child) => {
+        return [child.name, child.kind] as const;
+      }),
+    );
+
+    expect(children).toEqual({ sections: "role", widgets: "unclassified" });
+
+    const codes = structure.scripts!.diagnostics.map(({ code }) => code);
+
+    expect(codes).toEqual(
+      expect.arrayContaining(["unlisted-layout-entry", "missing-layout-entry"]),
+    );
+  });
+});

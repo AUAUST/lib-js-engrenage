@@ -1,6 +1,7 @@
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { EnvironmentRoles, RoleRegistry } from "#batiment/roles/index";
 import type { EnvironmentStructureOption } from "#batiment/structure/ports/EnvironmentStructureOption";
+import type { Layout } from "#batiment/structure/ports/Layout";
 import type { DeclaredStructure } from "#batiment/structure/types/DeclaredStructure";
 import type { StructureMetadata } from "#batiment/structure/types/StructureMetadata";
 import type { ValueOrigin } from "#foundation/options/index";
@@ -14,6 +15,7 @@ export interface DeclaredEnvironment {
   readonly dirs: Directories;
   readonly active: boolean;
   readonly option: EnvironmentStructureOption;
+  readonly layout: Layout | undefined;
   readonly roles: EnvironmentRoles | undefined;
   readonly declared:
     | (DeclaredStructure & {

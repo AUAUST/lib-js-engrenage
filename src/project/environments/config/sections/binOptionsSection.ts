@@ -1,5 +1,6 @@
 import { declareSection, type OutputOf } from "#foundation/options/index";
 import { binSchema } from "#project/environments/config/schemas/binSchema";
+import { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 import type { ConfigResolver } from "#project/config/index";
 
 export const binOptionsSection = declareSection({
@@ -11,6 +12,7 @@ export const binOptionsSection = declareSection({
     return binSchema.resolve(
       input,
       {
+        ...(await readLayoutContext(config, "bin")),
         runtime: await config.resolve("runtime"),
         reporter: config.context.reporter,
       },

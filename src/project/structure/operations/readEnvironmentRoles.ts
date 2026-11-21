@@ -3,7 +3,6 @@ import {
   type EnvironmentRoles,
 } from "#batiment/roles/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
-import { actions, commands, executable, index } from "#project/roles/index";
 import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 
@@ -15,7 +14,7 @@ async function createEnvironmentRoles(
   config: ConfigResolver,
   environment: string,
 ): Promise<EnvironmentRoles | undefined> {
-  const option = await readStructureOption(config, environment);
+  const { option, layout } = await readStructureOption(config, environment);
 
   if (!option.enabled) {
     return;
@@ -40,9 +39,7 @@ async function createEnvironmentRoles(
       ...option,
       environment,
       defaults,
-      layoutRoles: option.tree === "commands"
-        ? [index(), executable(), commands(), actions()]
-        : [],
+      layoutRoles: layout?.nature === "recursive" ? layout.roles : [],
     }),
     effects,
     defaultModules,

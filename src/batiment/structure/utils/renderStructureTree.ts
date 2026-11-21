@@ -16,6 +16,7 @@ interface TreeRow {
 interface TreeOptions {
   readonly aliases: ReadonlyMap<string, string>;
   readonly detailed: boolean;
+  readonly groupLabel: string | undefined;
 }
 
 function listDiagnostics(node: StructureNode): TreeRow[] {
@@ -101,6 +102,9 @@ export function renderStructureTree({
   const options = {
     aliases: findStructureAliases(environment, aliases),
     detailed,
+    groupLabel: environment.layout?.nature === "recursive"
+      ? environment.layout.node.label
+      : undefined,
   };
 
   return [

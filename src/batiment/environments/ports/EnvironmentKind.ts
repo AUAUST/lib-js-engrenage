@@ -25,4 +25,8 @@ export interface EnvironmentKind {
    * import, besides their own.
    */
   readonly imports?: readonly string[];
+  /**
+   * The layout the kind's environments take unless their options name another.
+   */
+  readonly layout?: string;
 }

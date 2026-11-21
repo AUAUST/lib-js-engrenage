@@ -220,6 +220,7 @@ export default {
         code: "private",
         structure: "roles",
         imports: ["bin", "scripts", "data", "tooling"],
+        layout: "mirror",
         tsconfig: true,
       },
       {
@@ -228,6 +229,7 @@ export default {
         code: "published",
         structure: "roles",
         consumesSource: true,
+        layout: "commands",
         tsconfig: true,
       },
       {
@@ -237,6 +239,7 @@ export default {
         structure: "domains",
         consumesSource: true,
         imports: ["data"],
+        layout: "commands",
         tsconfig: true,
       },
       {

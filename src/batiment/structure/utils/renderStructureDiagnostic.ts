@@ -26,6 +26,8 @@ const separators = {
   "private-domain-entry": "  ",
   "collected-role-not-public": "  ",
   "shared-specifier": "  ",
+  "unlisted-layout-entry": "  ",
+  "missing-layout-entry": "  ",
   "workspace-in-environment": "  ",
   "workspace-environment-name": "  ",
   "nested-workspace": "  ",

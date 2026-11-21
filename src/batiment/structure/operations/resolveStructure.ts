@@ -88,7 +88,16 @@ async function resolveEnvironment({
   environment: DeclaredEnvironment;
   tests?: TestsContext;
 }): Promise<EnvironmentStructure | undefined> {
-  const { name, key, dirs, active, option, roles, origins } = environment;
+  const {
+    name,
+    key,
+    dirs,
+    active,
+    option,
+    layout,
+    roles,
+    origins,
+  } = environment;
 
   if (!option.enabled || !active) {
     return;
@@ -142,7 +151,7 @@ async function resolveEnvironment({
     roles,
     defined,
     internals,
-    tree: option.tree,
+    layout,
     ...(tests === undefined ? {} : { tests }),
   });
 
@@ -255,8 +264,15 @@ function freezeEnvironment(
   return freeze(structure);
 }
 
-function mirrorOf({ option }: DeclaredEnvironment): boolean | undefined {
-  return option.enabled ? option.mirror : undefined;
+function mirrorOf({
+  option,
+  layout,
+}: DeclaredEnvironment): boolean | undefined {
+  if (layout?.nature !== "derived") {
+    return;
+  }
+
+  return option.enabled && option.mirror === true;
 }
 
 export async function resolveStructure({

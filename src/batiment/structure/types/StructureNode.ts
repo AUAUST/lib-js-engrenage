@@ -27,7 +27,7 @@ export interface StructureNode {
   readonly relation?: StructureRelation;
   // @debt named `childKind` because `children` holds the child nodes, so the node field and the namespace option `children` it carries differ in name
   readonly childKind?: "domains";
-  readonly commands?: true;
+  readonly group?: true;
   readonly public?: boolean;
   readonly specifier?: string;
   readonly internals?: boolean;

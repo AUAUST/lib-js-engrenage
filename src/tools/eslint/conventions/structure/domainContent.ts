@@ -12,12 +12,12 @@ export default defineConvention({
         domain: "A domain holds only role directories, sub-domains and the files of its roles; move this file into the role directory it belongs to.",
         namespace: "A namespace holds only domains and namespaces; move this file into a domain.",
       },
-      create(context, { kind, commands, fileRole }) {
+      create(context, { kind, group, fileRole }) {
         return {
           Program(program) {
             if (
               (kind === "domain" || kind === "namespace") &&
-              !commands &&
+              !group &&
               fileRole === undefined
             ) {
               context.report({ node: program, messageId: kind });

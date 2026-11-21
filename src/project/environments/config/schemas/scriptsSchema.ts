@@ -1,4 +1,4 @@
-import { declareProgramLayout } from "#batiment/environments/index";
+import { declareLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import { declareObject } from "#foundation/options/index";
 import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
@@ -12,7 +12,7 @@ export const scriptsSchema = declareObject(
     ...declareCodeEnvironment("scripts", {
       dirs: defaultScriptsDirectories,
     }),
-    tree: declareProgramLayout(),
+    layout: declareLayout(),
     roles: rolesSchema,
     omitRoles: omitRolesSchema,
   },
@@ -22,7 +22,6 @@ export const scriptsSchema = declareObject(
       "`false` disables it.",
     ],
     optional: true,
-    renamed: { layout: "tree" },
     disable: { value: disabledCodeEnvironment },
   },
 );

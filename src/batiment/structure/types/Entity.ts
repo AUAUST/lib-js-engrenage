@@ -16,7 +16,7 @@ export interface Entity {
   readonly environment: string | undefined;
   readonly path: Directory;
   readonly kind: StructureKind | undefined;
-  readonly commands: boolean;
+  readonly group: boolean;
   readonly lineage: readonly LineageMember[];
   readonly location: RoleLocation;
   readonly domain: string | undefined;

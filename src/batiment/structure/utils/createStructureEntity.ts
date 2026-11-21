@@ -16,7 +16,7 @@ export function createStructureEntity(
     environment,
     path,
     kind: undefined,
-    commands: false,
+    group: false,
     lineage: noLineage,
     location: freeze({
       // @debt a file outside every environment of its scope gets a role location with an empty environment, where it should get no role location

@@ -1,4 +1,5 @@
 import type { StructureDiagnostic } from "#batiment/report/index";
+import type { Layout } from "#batiment/structure/ports/Layout";
 import type { EnvironmentFileNames } from "#batiment/structure/types/EnvironmentFileNames";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { StructureRole } from "#batiment/structure/types/StructureRole";
@@ -13,7 +14,8 @@ import type { File } from "#types/File";
  * namespace or domain the config (`config`) or metadata `files` declare where
  * the walk builds no node, a violation under either strictness. `entries` maps
  * each package subpath its domains and roles expose to its file. `diagnostics`
- * lists the walk's findings.
+ * lists the walk's findings. `layout` is the layout shaping the tree, absent for
+ * the namespace and domain walk.
  *
  * @experimental
  */
@@ -21,6 +23,7 @@ export interface EnvironmentStructure extends EnvironmentFileNames {
   readonly name: string;
   readonly dirs: Directories;
   readonly strictness: "strict" | "loose";
+  readonly layout?: Layout;
   readonly root: StructureNode;
   readonly unclassified: readonly StructureNode[];
   readonly roles: Readonly<Record<string, StructureRole>>;

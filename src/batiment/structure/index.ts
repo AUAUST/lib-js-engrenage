@@ -42,7 +42,11 @@ export type * from "#batiment/structure/types/UnclassifiedReason";
 
 export type * from "#batiment/structure/types/DeclaredEnvironment";
 // @barrel ports
+export type * from "#batiment/structure/ports/DerivedLayout";
 export type * from "#batiment/structure/ports/EnvironmentStructureOption";
+export type * from "#batiment/structure/ports/Layout";
+export type * from "#batiment/structure/ports/RecursiveLayout";
+export type * from "#batiment/structure/ports/StaticLayout";
 // @end
 
 // @barrel operations

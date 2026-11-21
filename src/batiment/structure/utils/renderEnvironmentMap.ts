@@ -1,4 +1,5 @@
 import { entries } from "@auaust/toolkit/object";
+import { capitalize } from "@auaust/toolkit/string";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
@@ -26,7 +27,7 @@ export function renderEnvironmentMap({
   roles: ResolvedRoles | undefined;
   aliases: readonly Alias[];
 }): string {
-  const { root } = environment;
+  const { root, layout } = environment;
 
   // @debt "global roles" mixes role directories present at the root with file roles allowed there
   const globalRoles = [
@@ -65,11 +66,8 @@ export function renderEnvironmentMap({
             }),
           )}`,
         ]),
-    ...(name === "bin" && root.commands === true
-      ? [
-          "",
-          "Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.",
-        ]
+    ...(layout?.nature === "recursive" && root.group === true
+      ? ["", `${capitalize(layout.name)}: ${layout.node.description}`]
       : []),
   ].join("\n");
 }

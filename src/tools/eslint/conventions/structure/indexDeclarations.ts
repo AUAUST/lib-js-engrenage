@@ -14,8 +14,8 @@ export default defineConvention({
       messages: {
         value: "An index.ts only re-exports; move this code into a module of the domain's roles, or into its entry.ts if consumers need it at import.",
       },
-      create(context, { fileRole, commands }) {
-        if (fileRole !== indexRoleName || commands) {
+      create(context, { fileRole, group }) {
+        if (fileRole !== indexRoleName || group) {
           return {};
         }
 

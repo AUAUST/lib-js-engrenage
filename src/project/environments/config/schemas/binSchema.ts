@@ -1,6 +1,6 @@
 import { record, string } from "valibot";
 
-import { declareProgramLayout } from "#batiment/environments/index";
+import { declareLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
 import {
   declare,
@@ -21,7 +21,7 @@ export const binSchema = declareObject(
     ...declareCodeEnvironment("bin", {
       dirs: defaultBinDirectories,
     }),
-    tree: declareProgramLayout(),
+    layout: declareLayout(),
     roles: rolesSchema,
     omitRoles: omitRolesSchema,
     entries: declare(record(string(), fileSchema), {
@@ -50,7 +50,6 @@ export const binSchema = declareObject(
     ],
     optional: true,
     renamed: {
-      layout: "tree",
       commands: "entries",
     },
     disable: {

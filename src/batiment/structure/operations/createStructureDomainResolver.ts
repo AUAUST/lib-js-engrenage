@@ -31,7 +31,7 @@ export function createStructureDomainResolver({
   name,
   filesystem,
   options,
-  commands,
+  group,
   indexFile,
   entryFile,
   internals,
@@ -41,7 +41,7 @@ export function createStructureDomainResolver({
   name: string;
   filesystem: Filesystem;
   options: StructureOptions;
-  commands: boolean;
+  group: boolean;
   indexFile: File;
   entryFile: File | undefined;
   internals: boolean;
@@ -144,7 +144,7 @@ export function createStructureDomainResolver({
     });
 
     // @debt `assignRoleFiles` computes the same static file globs again; it could return them with its assignments
-    const assigned = commands
+    const assigned = group
       ? []
       : await assignRoleFiles(filesystem, path, roles);
 
@@ -166,17 +166,15 @@ export function createStructureDomainResolver({
       undefined,
     ).filter(constrainsFileRole);
 
-    const cardinality = commands
-      ? {}
-      : getStructureCardinality(assigned, owned);
+    const cardinality = group ? {} : getStructureCardinality(assigned, owned);
 
     const roleFiles = groupRoleFiles(assigned);
 
     const twin = `${path}${extname(indexFile)}`;
 
     return {
-      ...(commands ? { commands: true as const } : {}),
-      ...(commands && (await filesystem.exists(twin)) ? { twin } : {}),
+      ...(group ? { group: true as const } : {}),
+      ...(group && (await filesystem.exists(twin)) ? { twin } : {}),
       ...(strays.length === 0 ? {} : { strays }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),

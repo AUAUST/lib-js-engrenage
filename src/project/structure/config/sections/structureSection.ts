@@ -47,7 +47,7 @@ export const structureSection = declareSection({
 
           const { dirs, active } = await readEnvironment(config, name);
 
-          const option = await readStructureOption(config, name);
+          const { option, layout } = await readStructureOption(config, name);
 
           if (!option.enabled || !active) {
             return {
@@ -56,6 +56,7 @@ export const structureSection = declareSection({
               dirs,
               active,
               option,
+              layout,
               roles: undefined,
               declared: undefined,
               read: undefined,
@@ -76,7 +77,7 @@ export const structureSection = declareSection({
             dirs,
           });
 
-          const origins = option.mirror === undefined
+          const origins = layout?.nature !== "derived"
             ? await readOrigins(
                 config,
                 key,
@@ -94,6 +95,7 @@ export const structureSection = declareSection({
             dirs,
             active,
             option,
+            layout,
             roles: await readEnvironmentRoles(config, name),
             declared: flattened,
             read,
