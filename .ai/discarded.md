@@ -163,3 +163,4 @@
 - section pointer to a shared file: a dedicated dispatching skill as install host — adding a skill needs user approval; shape's copy hosts it
 - tighter Steps checks (agent-instructions.4): keep Steps-era issues — checks on procedure leave the leaf outcome "Steps done"; required Done when instead (#809)
 - pure ADaPT, no upfront planning: split only on failure — no validated compass before the walk; outer planning plus split on a stop instead (#809)
+- planner provider check (#809 S.29): existing helper or provider per capability at planning — needs code reading the worker repeats (G.5); owners stop at domain and role

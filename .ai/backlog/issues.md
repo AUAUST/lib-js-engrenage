@@ -127,3 +127,8 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the walking row sends open **Planning** to the consultant only once the first row skips every issue ordered before it, a timing the walker derives by hand.
 - want: `walk check` flags each open-**Planning** issue in turn, and the walking row drops its timing clause.
+
+## 23. `planning issue check` never checks named owners
+
+- why: items name owning domains and roles in **Context** (issue-drafts › Owners); nothing verifies they exist in the project maps.
+- want: `planning issue check` reports each named domain or role the project maps lack.

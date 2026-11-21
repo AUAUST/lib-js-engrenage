@@ -32,3 +32,8 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 
 - why: the planning skill dropped outer mode; § Waves routes each item (main-session.md). `outer`, `foundation` and `scaffold` no longer send every item to inner planners; items published with **Planning** for an inner pass now reach the walk's consultant, and only once every issue ordered before them lands, so walks run slower.
 - want: the P.3.2 sweep states each kept item's **Planning** for the consultant, not an inner pass.
+
+## 7. Published items name no owners
+
+- why: readiness now requires each item's **Context** to name the owning domain and role (issue-drafts › Owners, S.29), so reviews move published items under **Planning**; a worker given a capability without owner stops with `Scope stop:` (S.30).
+- want: the P.3.2 sweep names owners in each kept item's **Context**.

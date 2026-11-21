@@ -11,30 +11,30 @@ Applies, on top of the issues rule, to every issue you file or draft.
 
 ## Filing
 
-- Search the target repository's issues for one on the concern, with `gh issue list --state all --search "<keywords>"` (`--repo` as the git and github rules set), and extend it before creating one.
-- Input issue whose fix the current repository owns: write the fix into that issue, condensing its original report into **Context**, instead of filing a new one.
+- Search the target repository's issues for one on the concern, with `gh issue list --state all --search "<keywords>"`, and extend it before creating one.
+- Input issue whose fix the current repository owns: write the fix into that issue rather than a new one, condensing its original report into **Context**.
 - Open-issue index, under a skill loading one: write `gh issue list --state open --limit 500 --json number,title,labels,body` to a temporary file outside the repository, and keep in context only each issue's number, title, labels, parent and header gist.
 
-| Finding                                                                            | Type                                   |
-| ---------------------------------------------------------------------------------- | -------------------------------------- |
-| A defect, settled fix or not                                                       | `problem`, with its `defect`           |
-| Positive work the request or the user accepted, that you do not apply              | `task`, with its `nature`              |
-| Positive work worth considering, not accepted yet                                  | `idea`, with its `nature`              |
-| An analysis later work draws on: a study, a comparison, an audit, a recommendation | `resource`, `material` `report`        |
-| An internal behavior or contract the project keeps track of                        | `resource`, `material` `specification` |
-| Outside documentation the project relies on                                        | `resource`, `material` `reference`     |
+| Finding                                                               | Type                                   |
+| --------------------------------------------------------------------- | -------------------------------------- |
+| A defect, settled fix or not                                          | `problem`, with its `defect`           |
+| Positive work the request or the user accepted, that you do not apply | `task`, with its `nature`              |
+| Positive work worth considering, not accepted yet                     | `idea`, with its `nature`              |
+| An analysis later work draws on                                       | `resource`, `material` `report`        |
+| An internal behavior or contract the project keeps track of           | `resource`, `material` `specification` |
+| Outside documentation the project relies on                           | `resource`, `material` `reference`     |
 
-| Field or part          | Set                                                                                                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `complexity`           | On `task` and `problem`: `trivial` mechanical, `involved` needs analysis, stays contained, `complex` interacting constraints or real uncertainty. Sets dispatch effort, never size (§Size) |
-| `priority`             | Only for work due before or after normal work                                                                                                                                              |
-| `blockers` `questions` | While **Planning** or **Questions** is present; cleared once both are gone                                                                                                                 |
-| Labels                 | The target repository's labels whose description fits                                                                                                                                      |
-| Title                  | Its subject, without prefix, in sentence case without trailing punctuation; a `task` or `problem` title states its result                                                                  |
+| Field or part          | Set                                                                                                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `complexity`           | On `task` and `problem`, by the planning sheet's option descriptions. Sets dispatch effort, never size (§Size)            |
+| `priority`             | Only for work due before or after normal work                                                                             |
+| `blockers` `questions` | While **Planning** or **Questions** is present; cleared once both are gone                                                |
+| Labels                 | The target repository's labels whose description fits                                                                     |
+| Title                  | Its subject, without prefix, in sentence case without trailing punctuation; a `task` or `problem` title states its result |
 
 ## Repository
 
-- File each issue in the repository owning the code it changes, a `resource` in the repository acting on it. When that repository is not the one you work in, the new issue names where you found the finding, and the issue or draft that led you to the finding links to the new issue.
+- File each issue in the repository owning the code it changes, a `resource` in the repository acting on it. Filed outside your repository: the new issue names where you found the finding, and the issue or draft leading to it links to the new issue.
 - Filing in a registered repository (planning sheet › Repositories) counts as explicit cross-repository work under Environment: no confirmation needed.
 - Owner not registered, or the owner is the current repository and it has no GitHub remote: write a backlog entry naming the owner instead.
 
@@ -51,27 +51,27 @@ Items are `task` and `problem` issues. Write each issue complete, through its an
 | `problem` with **Leads** or neither            | Debugger: finds the cause and the fix                                                     |
 | `plan` or `segment`                            | None: its orchestrator checks its **Done when** once its sub-issues close                 |
 
-An item states its outcome and boundaries, never the procedure. Uncertainty lives only under **Planning**, design not finished, **Questions**, what the user owes, and a `problem`'s **Leads**, what investigation starts from; never in a vague **Done when**, **Fix** or **Housekeeping**.
+An item states its outcome and boundaries, never the procedure: its end state's owners, patterns and structure are outcome; steps, helpers, reuse and internal shapes are procedure. Uncertainty lives only under **Planning**, **Questions** and a `problem`'s **Leads**, never in a vague **Done when**, **Fix** or **Housekeeping**.
 
-| Section           | Types                         | Holds                                                                                                                                           |
-| ----------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header line       | segment, item                 | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                      |
-| **Goal**          | plan                          | The general outcome and why it is needed, in sentences, never as technical features                                                             |
-| Model sections    | plan                          | Exact contracts only for surfaces items share while built concurrently, and for user-facing APIs; as tables, trees and diagrams                 |
-| **Decisions**     | plan                          | Architectural decisions and constraints spanning several items, each with its reason in one clause; never file names or layout                  |
-| **Re-split log**  | plan                          | Generated by `publish` from `resplit` reasons (§Drafts): never written by hand                                                                  |
-| **Context**       | segment, item                 | A segment: what it adds. An item: the problem, its cause, every site sharing it, then the verified code facts and decisions, naming exact paths |
-| **Prerequisites** | segment, item                 | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                            |
-| **Provides**      | `task`                        | Only what a Model section of the nearest plan expects from the item, one line each: `<Model heading>: <what it provides>`                       |
-| **Leads**         | `problem` without **Fix**     | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                            |
-| **Fix**           | `problem` without sub-issues  | Exactly when the cause is identified and its fix decided: that fix                                                                              |
-| **Housekeeping**  | item with sub-issues          | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests              |
-| **Done when**     | plan                          | The capabilities that must exist to serve the **Goal**, never implementation                                                                    |
-| **Done when**     | segment                       | What the rest of the plan requires from it, in general terms: what it blocks                                                                    |
-| **Done when**     | item                          | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |
-| **Tests**         | item without **Housekeeping** | Optional: only cases **Done when** does not imply, each with its expected outcome; a fix's regression case states its reproduction              |
-| **Planning**      | plan, segment, item           | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                         |
-| **Questions**     | plan, segment, item           | What investigation could not settle: the findings and the candidate answers                                                                     |
+| Section           | Types                         | Holds                                                                                                                                                     |
+| ----------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header line       | segment, item                 | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                                |
+| **Goal**          | plan                          | The general outcome and why it is needed, in sentences; never as technical features, unless a structure is the outcome                                    |
+| Model sections    | plan                          | Exact contracts only for surfaces items share while built concurrently, and for user-facing APIs; as tables, trees and diagrams                           |
+| **Decisions**     | plan                          | Architectural decisions and constraints spanning several items, each with its reason in one clause; file names or layout only when they are the decision  |
+| **Re-split log**  | plan                          | Generated by `publish` from `resplit` reasons (§Drafts): never written by hand                                                                            |
+| **Context**       | segment, item                 | A segment: what it adds. An item: the problem, its cause, every site sharing it, verified code facts, decisions, rabbit holes, no-gos, naming exact paths |
+| **Prerequisites** | segment, item                 | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                                      |
+| **Provides**      | `task`                        | Only what a Model section of the nearest plan expects from the item, one line each: `<Model heading>: <what it provides>`                                 |
+| **Leads**         | `problem` without **Fix**     | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                                      |
+| **Fix**           | `problem` without sub-issues  | Exactly when the cause is identified and its fix decided: that fix                                                                                        |
+| **Housekeeping**  | item with sub-issues          | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests                        |
+| **Done when**     | plan                          | The capabilities that must exist to serve the **Goal**, and the structure the plan settles, placement included; never other implementation                |
+| **Done when**     | segment                       | What the rest of the plan requires from it, in general terms: what it blocks                                                                              |
+| **Done when**     | item                          | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                          |
+| **Tests**         | item without **Housekeeping** | Optional: only cases **Done when** does not imply, each with its expected outcome; a fix's regression case states its reproduction                        |
+| **Planning**      | plan, segment, item           | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                                   |
+| **Questions**     | plan, segment, item           | What investigation could not settle: the findings and the candidate answers                                                                               |
 
 | Section       | Budget in words |
 | ------------- | --------------- |
@@ -80,13 +80,17 @@ An item states its outcome and boundaries, never the procedure. Uncertainty live
 | **Done when** | ~60             |
 
 - Other sections: as complete as the item's agent needs.
-- A segment's **Done when**: often one member delivers what it blocks, the others beside it as independent work; never the next item's or the parent's requirement, nor a restatement of its members' facts.
+- A segment's **Done when**: never the next item's or the parent's requirement, nor a restatement of its members' facts.
 - Never restate the project's instructions: agents follow them for everything an issue does not say.
 - An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
 
+## Owners
+
+Name in an item's **Context** the domain and role owning each capability it adds or moves, never a file, from the project maps (Project structure): the root map and each touched environment's. No purpose covers one, or it needs a new layer, namespace, role or public domain: unless the plan's **Decisions** settle it, ask the user, then record the settled structure in the plan's **Decisions**, when there is one, and the **Done when** of the issue building it.
+
 ## Size
 
-An item is one agent's worth: as many whole outcomes as one worker run can deliver and verify within its budget level (Analysis › Budget levels), with no part left unused until another issue lands. An outcome: a change that, made alone, leaves the codebase coherent and delivers a behavior or contract change its **Done when** observes. Judge size by outcomes, never by a count of files or words, which cuts parts off.
+An item is one agent's worth: as many whole outcomes as one worker run can deliver and verify within its budget level (Analysis › Budget levels), with no part left unused until another issue lands. An outcome: a change that, made alone, leaves the codebase coherent and delivers a behavior or contract change its **Done when** observes. Judge size by outcomes, never by counting files or words.
 
 - **More than one agent's worth.** Split it into the fewest items, each holding whole outcomes, ordered by dependency.
 - **One outcome.** Parts delivering it only together stay one item: never split by layer or activity.
@@ -125,13 +129,12 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 | `#{toolkit.new-foo}` | Local draft created in `toolkit`                                                                       |
 
 - Use only the types, fields, options and labels the planning sheet lists, by their GitHub names; it loads with the first draft you read.
-- Start by reading `.ai/issues/`. Other sessions draft there too: resume only the drafts of your task, those the user names or those of the issues you were given.
-- Your drafts are those you created, claimed or resumed. Edit, check and publish only them, never another session's.
+- Start by reading `.ai/issues/`, where other sessions draft too: resume only the drafts of your task, those the user names or those of the issues you were given. Edit, check and publish only those you created, claimed or resumed.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest with each field's options and the body skeleton, and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, another maintainer is drafting the issue: report it and keep working.
+- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest and body skeleton and lists the draft in its parent's `subIssues`.
+- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, report it and keep working.
 - Fill or remove every section `create` writes, to match the §Bodies shape you mean the item to take.
-- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues, renders a plan's **Roadmap** from them and each header's ancestor chain from the tree, and appends each `resplit` reason to the plan's **Re-split log**, refusing a re-split without one; adding or reordering children takes no reason. Write none of them by hand.
+- Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues and renders a plan's **Roadmap**, each header's ancestor chain and the **Re-split log**, refusing a re-split without its `resplit` reason. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each question you asked.
 - Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
 - Publish when your skill says, by default before ending each turn, holding back the drafts any question you ask in that turn, to the user or your caller, concerns; an issue's own **Questions** never delay it. Run `pnpm engrenage planning issue publish <refs>` on every draft due in one call. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your next report.

@@ -27,7 +27,7 @@ The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `ga
 ## Reading the user
 
 - Read each message whole before acting on any part: the user comments while reading, so a later part supersedes an earlier one.
-- Treat each request and each repeated statement as a lead to investigate (its cost, how it maps onto what exists, whether it is a simple addition or needs a plan, what it connects to), never as settled.
+- Treat each request and each repeated statement as a lead to investigate, never as settled.
 - Weigh each new suggestion against what exists and what is settled; raise again only a genuine distinction, with your recommendation.
 - An aside, a point off the current thread: when it serves the current goal, handle it as a request of this session; otherwise write it as a backlog entry at once and carry on.
 
@@ -37,7 +37,7 @@ Weigh leads, options and the facts agents bring back by the analysis method in t
 
 ## Agents
 
-You compare facts; agents do the scans and the changes. Beyond the diffs you review and the backlog, read only what an agent's report points to, at the lines it names; send any wider reading to a gatherer.
+You compare facts; agents do the scans and the changes. Beyond the diffs you review, the backlog and the project maps an issue draft needs (issue-drafts rule › Owners), read only what an agent's report points to, at the lines it names; send any wider reading to a gatherer.
 
 | Need                                                                                                       | Dispatch                                                            |
 | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ Write for a reader without deep knowledge of the codebase:
 
 When the user asks to report back with split handoffs, write as chat handoffs:
 
-- One per issue, or per group of closely related bugs, ready for a debugger: neither one per small bug nor unrelated bugs together.
+- One per issue or group of closely related bugs, ready for a debugger.
 - One per clearly specified task, ready for a worker.
 - One for a planner: what was discussed, the goals, implications and findings.
 

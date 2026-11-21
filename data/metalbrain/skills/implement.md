@@ -44,7 +44,7 @@ Implement one specified change: its specification states the end state and the c
 
 With an issue as specification, first run `pnpm engrenage planning issue check <n>`, `<n>` its number. When it fails, stop with a blocked report holding its findings and that command, to run again once they are settled.
 
-With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when you believe it holds information the issue needs.
+With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when it holds information the issue needs.
 
 - The issue's outcome: its **Done when** and each **Tests** case.
 - The plans' **Goal** and **Decisions** and the issue's **Context**: the intent and facts your design serves.
@@ -56,13 +56,14 @@ Each `Concurrent: <owner>/<repo>#<n>` line in your brief names a leaf another wo
 
 ## Design
 
-Everything the specification states binds you: deliver its outcome and write each test case it lists. Design the rest: placement, helpers, reuse, internal names and shapes, changing only what the outcome needs. Where a code fact the specification states no longer holds, design from the code and report the difference.
+Everything the specification states binds you: deliver its outcome and write each test case it lists. Design the rest within the owners the specification names and Project structure: placement, helpers, reuse, internal names and shapes, changing only what the outcome needs. Where a code fact the specification states no longer holds, design from the code and report the difference.
 
 ## Stops
 
 Stop as soon as you find one of these, before applying any change it concerns, and report it:
 
-- part of the outcome, or a contract the specification fixes, cannot hold as written;
+- part of the outcome, a stated structure included, or a contract the specification fixes, cannot hold as written;
+- no domain's purpose covers a capability the outcome needs, or it needs a new layer, namespace, role or public domain the specification does not state;
 - the outcome needs a user-facing change, as the Environment table defines it, that the specification does not state;
 
 <!-- @extension tools/github/issues/planning -->
@@ -78,14 +79,14 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 <!-- @extension tools/github/issues/planning -->
 
 - The repository your `Walk:` line names counts as linked for a linked defect.
-- After a scope stop or a linked defect with a `Walk:` line in your brief, keep the work already applied and revert nothing: the walker drops the work.
+- After a scope stop or a linked defect with a `Walk:` line in your brief, keep the work applied, revert nothing and write no stop record: the walker drops the work.
 
 <!-- @end -->
 
 ## Commits
 
 - **As a subagent.** Leave your work uncommitted: your caller commits it.
-- **Invoked by the user in the main session.** Commit under the git rules each coherent state the work reaches with its checks passing, not only the finished work: each commit passes the commit gate, keeping the work validated and its diff reviewable. A small change reaches one such state, committed once.
+- **Invoked by the user in the main session.** Commit under the git rules each coherent state the work reaches with its checks passing, not only the finished work.
 
 ## Finishing
 
@@ -95,7 +96,6 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 
 <!-- @extension tools/github/issues/planning -->
 
-- A scope stop or a linked defect with a `Walk:` line in your brief carries no stop record.
 - When resumed with a merger's findings, fix each one your issue covers, and report the rest with the reason.
 - Never edit, comment on, set types or fields on, close or publish issues or drafts.
 

@@ -1,6 +1,6 @@
 # Issue tree
 
-Shaping a tree of planned issues: its issue types, splitting, ordering, deepening an item and readiness. `§…` names this file's sections.
+Shaping a tree of planned issues. `§…` names this file's sections.
 
 ## The tree
 
@@ -32,7 +32,7 @@ Split a task holding more than one agent's worth (issue-drafts rule › Size), a
 
 ## Ordering
 
-Order expresses urgency, not importance: a task comes first because later work stands on it. The walker runs a segment's members at once and a sequence's members one at a time, so place an item after another only for a dependency you can name.
+The walker runs a segment's members at once and a sequence's one at a time: place an item after another only for a dependency you can name, never for importance.
 
 | Situation                                                                               | Placement                                                                                                                              |
 | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -52,7 +52,7 @@ Order expresses urgency, not importance: a task comes first because later work s
 Deepen an item until it is ready for its agent (§Readiness).
 
 1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
-2. **Ground** in code only what the item states, the rest left to its worker: each path, name and shape in its **Context**, and each contract it fixes or relies on, against the code providing it.
+2. **Ground** in code only what the item states, the rest left to its worker: each path, name and shape in its **Context**, and each contract it fixes or relies on, against the code providing it; each owner against the project maps.
 3. **Write** **Done when**, the **Tests** cases it needs and its **Provides** (issue-drafts rule › Bodies); for a `problem`, **Fix** or **Leads**; for an item whose own work after its sub-issues is only housekeeping, **Housekeeping**; splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled; keep under it design resting on code another open item writes beyond Model-section contracts, which that code's landing would rewrite.
 4. **Review** the item and each sub-issue you wrote under §Readiness.
 
@@ -62,10 +62,10 @@ An issue is ready for a worker when `pnpm engrenage planning issue check <n>` pa
 
 - its **Done when** states an observable end state serving the plan's **Done when** within its **Goal** and **Decisions**;
 - each contract other items or users rely on is stated, in a Model section or the item's **Provides**;
-- it fixes no procedure: placement, helpers, reuse and internal shapes stay the worker's;
+- it names each capability's owner and fixes no procedure (issue-drafts rule › Bodies, Owners);
 - its **Context** states only verified facts.
 
-Move whatever falls short under **Planning** or **Questions**, never leave it implied.
+Move whatever falls short under **Planning** or **Questions**.
 
 A `problem` without **Fix** is ready for a debugger once `check` passes, it holds one agent's worth and its **Leads** state only what you verified, suspected sites marked as such.
 
