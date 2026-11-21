@@ -12,6 +12,7 @@ export interface RolePresetEntry extends EntryShape {
    * Loads the preset.
    */
   load(): Promise<Loadable<RolePreset>>;
+  // @debt holds environment kinds under the `environments` name, so a contribution written against the earlier environment-name contract still type-checks and silently stops applying; `kinds`, typed against the contributed kind names, would reject it
   /**
    * The environment kinds the role is a default role of.
    */

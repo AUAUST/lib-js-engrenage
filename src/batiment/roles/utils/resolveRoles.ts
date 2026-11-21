@@ -59,6 +59,7 @@ function resolveEffects(
   });
 }
 
+// @debt `scopes` names the opt-in roles a namespace or structured role enables, as `StructureParent.scopes` and the structure resolvers do, colliding with the `batiment/scopes` scope tree the `optIn` rename cleared the flag from; `enabled` would match `roles.enable`
 export function resolveRoles({
   environment,
   roles,

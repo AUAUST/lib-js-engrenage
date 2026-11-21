@@ -18,6 +18,7 @@ const librarySection = declareSection({
   },
 });
 
+// @debt near-twin of the `site` fixture in `contributedEnvironments.test.src.ts`: an extension owning an environment key and its options key and contributing it under a kind; a shared test util would build both
 const library: Extension = {
   name: "fixture/lib",
   owns: {

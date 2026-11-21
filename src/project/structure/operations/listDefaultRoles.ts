@@ -21,10 +21,8 @@ export async function listDefaultRoles(
 
   const entries = contributions
     .map(({ entry }) => entry)
-    .filter(({ environments, traits: required = [] }) => {
-      return (
-        environments.includes(kind) && required.every((trait) => traits[trait])
-      );
+    .filter(({ environments: kinds, traits: required = [] }) => {
+      return kinds.includes(kind) && required.every((trait) => traits[trait]);
     });
 
   return Promise.all(
