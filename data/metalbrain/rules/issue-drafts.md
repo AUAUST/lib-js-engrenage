@@ -57,24 +57,24 @@ Items are `task` and `problem` issues. Write each issue complete, through its an
 
 An item states its outcome and boundaries, never the procedure. Uncertainty lives only under **Planning**, design not finished, **Questions**, what the user owes, and a `problem`'s **Leads**, what investigation starts from; never in a vague **Done when**, **Fix** or **Housekeeping**.
 
-| Section           | Types                        | Holds                                                                                                                                           |
-| ----------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Header line       | segment, item                | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                      |
-| **Goal**          | plan                         | The general outcome and why it is needed, in sentences, never as technical features                                                             |
-| Model sections    | plan                         | Exact contracts only for surfaces items share while built concurrently, and for user-facing APIs; as tables, trees and diagrams                 |
-| **Decisions**     | plan                         | Architectural decisions and constraints spanning several items, each with its reason in one clause; never file names or layout                  |
-| **Context**       | segment, item                | A segment: what it adds. An item: the problem, its cause, every site sharing it, then the verified code facts and decisions, naming exact paths |
-| **Prerequisites** | segment, item                | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                            |
-| **Provides**      | `task`                       | Only what a Model section of the nearest plan expects from the item, one line each: `<Model heading>: <what it provides>`                       |
-| **Leads**         | `problem` without **Fix**    | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                            |
-| **Fix**           | `problem` without sub-issues | Exactly when the cause is identified and its fix decided: that fix                                                                              |
-| **Housekeeping**  | item with sub-issues         | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests              |
-| **Done when**     | plan                         | The capabilities that must exist to serve the **Goal**, never implementation                                                                    |
-| **Done when**     | segment                      | What the rest of the plan requires from it, in general terms: what it blocks                                                                    |
-| **Done when**     | item                         | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |
-| **Tests**         | item                         | Optional: only cases **Done when** does not imply, each with its expected outcome; a fix's regression case states its reproduction              |
-| **Planning**      | plan, segment, item          | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                         |
-| **Questions**     | plan, segment, item          | What investigation could not settle: the findings and the candidate answers                                                                     |
+| Section           | Types                         | Holds                                                                                                                                           |
+| ----------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header line       | segment, item                 | Inside a tree only: `<plan sections it builds on>: <gist>`                                                                                      |
+| **Goal**          | plan                          | The general outcome and why it is needed, in sentences, never as technical features                                                             |
+| Model sections    | plan                          | Exact contracts only for surfaces items share while built concurrently, and for user-facing APIs; as tables, trees and diagrams                 |
+| **Decisions**     | plan                          | Architectural decisions and constraints spanning several items, each with its reason in one clause; never file names or layout                  |
+| **Context**       | segment, item                 | A segment: what it adds. An item: the problem, its cause, every site sharing it, then the verified code facts and decisions, naming exact paths |
+| **Prerequisites** | segment, item                 | Only the issues tree order does not imply, each as `#<n>: <what this issue needs from it>` and listed in `blockedBy`                            |
+| **Provides**      | `task`                        | Only what a Model section of the nearest plan expects from the item, one line each: `<Model heading>: <what it provides>`                       |
+| **Leads**         | `problem` without **Fix**     | Facts a debugger starts from beyond what **Context** holds: symptoms, reproductions, suspected sites                                            |
+| **Fix**           | `problem` without sub-issues  | Exactly when the cause is identified and its fix decided: that fix                                                                              |
+| **Housekeeping**  | item with sub-issues          | Numbered steps left once the sub-issues land: commands to run, and edits stating their file and exact text, outside code and tests              |
+| **Done when**     | plan                          | The capabilities that must exist to serve the **Goal**, never implementation                                                                    |
+| **Done when**     | segment                       | What the rest of the plan requires from it, in general terms: what it blocks                                                                    |
+| **Done when**     | item                          | The observable end state, serving the plan's **Done when** within its **Goal** and **Decisions**                                                |
+| **Tests**         | item without **Housekeeping** | Optional: only cases **Done when** does not imply, each with its expected outcome; a fix's regression case states its reproduction              |
+| **Planning**      | plan, segment, item           | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                         |
+| **Questions**     | plan, segment, item           | What investigation could not settle: the findings and the candidate answers                                                                     |
 
 | Section       | Budget in words |
 | ------------- | --------------- |
