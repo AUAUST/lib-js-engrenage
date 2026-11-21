@@ -127,7 +127,7 @@ When no integration merger runs:
 
 ## Commit
 
-1. When the closing commit will close a nested plan, first send that plan to the consultant to move its facts worth keeping (planning §The tree), and go on once it returns.
+1. When the closing commit will close a nested plan, first send that plan to the consultant to move its facts worth keeping, and go on once it returns.
 2. Commit the leaf by `worktree-dispatch.md` › Committing work, its commit being the closing commit: made under the project's git rules, closing the issue and every segment or parent it completes but the walked issue. Do not run the checks: the commit gate runs them.
 3. Once the closing commit exists, run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first, and what is ordered after it waits.
 4. Send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
@@ -169,22 +169,21 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 ## Consultant
 
-- Start the `planner` subagent on first need, briefed `consultant` with the plan number; resume it under §Resumed agents.
+- Start the `consultant` subagent on first need, briefed with the plan number; resume it under §Resumed agents.
 - Call it only for a blocked report the issue's text does not answer, a scope or budget stop, plan findings, **Housekeeping** you stopped on, a deviation a report names from its issue's **Done when** or a stated contract (a choice its issue leaves to design is none), a plan your next commit closes, an issue whose **Questions** the user leaves open while issues ordered after it wait, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run (the planning skill's consultant mode). Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run. Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 
 ## Resumed agents
 
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
-- Start a new consultant or integration merger instead when a segment closes, or, under Codex, once its reported context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs.
-- Under Claude Code, a hook refuses a resume past the growth the agent's definition allows: on a refusal, start a new one as below; never retry the resume.
+- Start a new consultant or integration merger instead when a segment closes, or once its context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs. Under Codex, compare its reported context yourself; under Claude Code, a hook refuses such a resume: on a refusal, start a new one as below, never retrying the resume.
 - Brief a new consultant as the first one was briefed, adding the previous one's last carry-over; a new integration merger as merging §Brief states.
 
 ## Agent limits
 
-<!-- @agent-limits worker debugger merger planner consultant -->
+<!-- @agent-limits worker debugger merger consultant -->
 <!-- @end -->
 
 ## Stops and restarts
