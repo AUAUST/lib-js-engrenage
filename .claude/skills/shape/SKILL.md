@@ -81,10 +81,12 @@ For work in another registered repository, once the user confirmed the location 
 
 ## Review
 
-Check each returned diff against its brief and its issue's outcome sections, those stating what must hold once done: `git diff --stat` from its dispatch base, then the hunks they concern, skipping generated files and lockfiles.
+Review each returned diff by this file: `git diff --stat` from its dispatch base, then the hunks its specification's outcome concerns, skipping generated files and lockfiles:
 
-- Look for gaps against them, duplication, missed reuse, debt and a missing changeset the Environment table requires; handle each finding outside the brief by §Agents.
-- Close each gap §Agents lets you change, `@debt` markers included, between `worktree-dispatch.md` › Committing work, steps 1 and 2; resume the agent with every other gap in one message.
+`.claude/skills/shape/review.md`
+
+- Look for debt as well; handle each finding outside the brief by §Agents.
+- Close each leaf finding §Agents lets you change, `@debt` markers included, between `worktree-dispatch.md` › Committing work, steps 1 and 2; resume the agent with every other leaf finding in one message; bring each plan finding into the discussion.
 
 ## Commit
 

@@ -23,3 +23,9 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 
 - why: its own agent file (M.6.1) and absolute context ceiling (M.6.4, M.13.7) need `src/tools/agents/constants.ts` `plannerModes`, run records, Codex dispatch text and `checkAgentResume.ts`; the walker briefs `planner`.
 - want: the consultant agent with its ceiling, the walker briefing it.
+
+## 5. Tooling still accepts the dropped `reshape` planner mode
+
+- sites: `src/tools/agents/constants.ts:210`, `src/tools/agents/codex/operations/createCodexDispatch.ts:69`
+- why: batch 3 dropped reshape from the instructions (M.5.4); `plannerModes` and the Codex dispatch text still name it, so a reshape brief passes the hooks with no instruction behind it.
+- want: `reshape` removed from both, with the consultant agent work of entry 4.

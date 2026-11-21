@@ -34,20 +34,19 @@ Edit nothing but issues, instruction or context files, the backlog and the agent
 
 ## Modes
 
-| Mode       | Started by                                                                                         | Scope                                              | Runs                                                                                                 | Asks through                      | Publishes                                                                                                             |
-| ---------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Single     | The user, by default                                                                               | The tree                                           | The outer pass of `main-session.md` and §Inner pass on each item, together, revisiting either freely | The user                          | By the issue-drafts rule's default                                                                                    |
-| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one         | The tree                                           | `main-session.md`: its outer pass, then its inner dispatch                                           | The user                          | As single                                                                                                             |
-| Inner      | An outer session, briefed `inner`                                                                  | The briefed item and its sub-issues                | §Inner pass                                                                                          | The outer session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
-| Consultant | The walker, briefed `consultant`; `autonomous` in the brief widens your latitude (`consultant.md`) | The issues the walker sends                        | `consultant.md`                                                                                      | The walker                        | Each issue once ready or left set aside: the walker needs it on GitHub before it resumes                              |
-| Reshape    | The walker, briefed `reshape`                                                                      | The order of issues waiting behind a set-aside one | `consultant.md` › Reshaping                                                                          | Nobody                            | The moves, at once                                                                                                    |
+| Mode       | Started by                                                                                         | Scope                               | Runs                                                                                                 | Asks through                      | Publishes                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Single     | The user, by default                                                                               | The tree                            | The outer pass of `main-session.md` and §Inner pass on each item, together, revisiting either freely | The user                          | By the issue-drafts rule's default                                                                                    |
+| Outer      | The user saying `outer`, `foundation` or `scaffold`, or accepting your proposal to run one         | The tree                            | `main-session.md`: its outer pass, then its inner dispatch                                           | The user                          | As single                                                                                                             |
+| Inner      | An outer session, briefed `inner`                                                                  | The briefed item and its sub-issues | §Inner pass                                                                                          | The outer session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
+| Consultant | The walker, briefed `consultant`; `autonomous` in the brief widens your latitude (`consultant.md`) | The issues the walker sends         | `consultant.md`                                                                                      | The walker                        | Each issue once ready or left set aside: the walker needs it on GitHub before it resumes                              |
 
 Started by the user, in single or outer mode: read this file first, which holds request handling, the outer pass and the inner dispatch:
 
 <!-- @skill-file main-session.md -->
 <!-- @end -->
 
-Briefed `consultant` or `reshape`: read this file first, which holds those modes:
+Briefed `consultant`: read this file first, which holds that mode:
 
 <!-- @skill-file consultant.md -->
 <!-- @end -->
@@ -176,10 +175,11 @@ Workers implement one issue at a time under the implement skill, and the walker 
 
 Transitional: delete this section with `steps-migration.md` once no open issue holds **Steps**.
 
-Convert an issue holding **Steps** or `Checkpoint:` lines by this file before any other edit to it:
+Only a run briefed `Steps sweep: <refs>` converts an issue holding **Steps** or `Checkpoint:` lines, by this file:
 
 <!-- @shared-file steps-migration.md -->
 <!-- @end -->
 
 - **The user asks to convert the issues holding Steps.** Dispatch one `planner` per parent holding some, and one for the standalone ones, each briefed `consultant` with `Steps sweep: <refs>` as its first line, by the dispatching file `main-session.md` names. Show the user each draft's diff from its report, then resume and publish the drafts the user approves.
 - **Briefed `Steps sweep: <refs>`.** This bullet replaces `consultant.md`, which you skip. Convert each open issue holding **Steps** among the refs and in their sub-issue trees, changing nothing else, and publish none: report each converted draft with its `git diff --no-index <ref>.md <ref>.draft.md` output, and each conversion needing a decision as a question with its candidate answers.
+- **Any other run meeting an issue holding Steps or `Checkpoint:` lines.** Edit nothing in it and leave it set aside; report it to whoever started you as a Steps-migration breakage, for them to record, which a Steps sweep converts.

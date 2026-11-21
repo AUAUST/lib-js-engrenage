@@ -28,7 +28,7 @@ Before the first foreign dispatch, extending walking §Stops and restarts:
 
 ## Housekeeping
 
-A foreign issue's **Housekeeping**: walking §Housekeeping in its linked checkout, once no agent is in flight there, running each command from that checkout and each git command with `git -C <checkout>`; its commits by §Review and commit.
+A foreign issue's **Housekeeping**: walking §Housekeeping in its linked checkout, once no agent is in flight there, running each command from that checkout and each git command with `git -C <checkout>`; its commit by §Review and commit.
 
 ## Holding and dropping
 

@@ -16,7 +16,6 @@ order: 10
 | Only records are uncommitted                                            | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff               |
 | A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies            |
 | Your work covers several tasks                                          | One commit per task                                                                                                      |
-| An issue marks a checkpoint                                             | Commit at it                                                                                                             |
 | Staging                                                                 | Only your changes and the records, whoever wrote them, by path, never `.ai/issues/` or `.ai/handoffs/`, which stay local |
 | Any commit                                                              | Never push                                                                                                               |
 

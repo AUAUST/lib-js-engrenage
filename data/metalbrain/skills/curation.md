@@ -93,7 +93,7 @@ Run every stage, in this order; each feeds the next.
 6. **File** under the issues and issue-drafts rules:
    - Ready entry: needs no further decision, as a located bug with its expected behavior, a settled single task or a settled request to another repository. Leave work needing several ordered tasks in its entry and report it as needing planning.
    - Create an issue draft for each ready entry, writing for a maintainer of the target repository.
-   - Turn stage-5 findings into draft edits: `state: completed` only when the issue's **Done when**, or its **Steps** or **Housekeeping**, holds on `origin/<default branch>`; `duplicate` with the duplicate linked; parent moves through `subIssues`.
+   - Turn stage-5 findings into draft edits: `state: completed` only when the issue's **Done when** holds on `origin/<default branch>`; `duplicate` with the duplicate linked; parent moves through `subIssues`.
 
 <!-- @end -->
 
