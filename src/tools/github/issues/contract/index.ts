@@ -26,6 +26,7 @@ export { checkIssueAudience } from "#tools/github/issues/contract/utils/checkIss
 export { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBody";
 export { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 export { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+export { checkIssueSpec } from "#tools/github/issues/contract/utils/checkIssueSpec";
 export { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 export { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 export { findClosingCommits } from "#tools/github/issues/contract/utils/findClosingCommits";
@@ -35,6 +36,7 @@ export { findTypeMeaning } from "#tools/github/issues/contract/utils/findTypeMea
 export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 export { hasSection } from "#tools/github/issues/contract/utils/hasSection";
+export { isBlockingFinding } from "#tools/github/issues/contract/utils/isBlockingFinding";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";

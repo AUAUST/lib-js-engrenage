@@ -1,5 +1,6 @@
 import { entries } from "@auaust/toolkit/object";
 
+import { isBlockingFinding } from "#tools/github/issues/contract/utils/isBlockingFinding";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 import type { IssueCheck } from "#tools/github/issues/contract/types/IssueCheck";
 import type { RelatedIssue } from "#tools/github/issues/contract/types/RelatedIssue";
@@ -61,10 +62,17 @@ export function formatIssueCheck(
 
   const subject = context.length === 0 ? `#${number}` : `#${number} itself:`;
 
+  const warnings = findings
+    .filter((finding) => !isBlockingFinding(finding))
+    .map(({ message }) => `${subject} warning: ${message}`);
+
+  const blocking = findings.filter(isBlockingFinding);
+
   return [
     ...context,
-    ...(findings.length === 0
+    ...(blocking.length === 0
       ? [`${subject} ready`]
-      : findings.map(({ message }) => `${subject} ${message}`)),
+      : blocking.map(({ message }) => `${subject} ${message}`)),
+    ...warnings,
   ];
 }

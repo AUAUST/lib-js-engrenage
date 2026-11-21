@@ -109,10 +109,11 @@ c
 ## Done when
 
 - Done.
+- Checked.
 
 ## Tests
 
-- t
+- t → passes
 `;
 
 vi.mock(
@@ -491,7 +492,7 @@ Goal: the segment
         .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
         .replace(/## Provides\n[^#]*/, "")
         .replace(/## Housekeeping\n[^#]*/, "")
-        .replace("## Tests\n", "## Tests\n\n- t\n")
+        .replace("## Tests\n", "## Tests\n\n- t → passes\n")
         .replace("## Done when\n", "## Done when\n\nd\n")
         .replace("\n## Planning\n\n## Questions\n", ""),
     );
@@ -604,7 +605,7 @@ o
       ".ai/issues/new-first.draft.md": first
         .replace("Goal: the first step", "A plain paragraph\nover two lines.")
         .replace("## Context\n\nc\n", "## Context\n\nc after #{new-plan}.\n")
-        .replace("\n## Done when\n\n- Done.\n", ""),
+        .replace("\n## Done when\n\n- Done.\n- Checked.\n", ""),
     });
 
     await expect(checkIssues(config, ["new-first"], "worker")).resolves.toEqual(
@@ -612,10 +613,61 @@ o
         lines: [
           "new-first: **Done when** is missing: write it.",
           "new-first: The text before the first section spans several lines, but `publish` reads it as the header line: keep only `<sections>: <gist>` there and move the rest into a section.",
+          "new-first: warning: A trivial leaf with at most one **Done when** clause and one **Tests** case: merge into a sibling.",
         ],
         passed: false,
       },
     );
+  });
+
+  test("checks a draft's Provides against its local plan's Model headings", async () => {
+    const withProvides = (heading: string) => {
+      return first.replace("## Done when", () => {
+        return `## Provides\n\n- ${heading}: the step\n\n## Done when`;
+      });
+    };
+
+    const model = plan.replace(
+      "## Done when",
+      "## Storage\n\ns\n\n## Done when",
+    );
+
+    const passing = await createProject({
+      ".ai/issues/new-plan.draft.md": model,
+      ".ai/issues/new-first.draft.md": withProvides("Storage"),
+    });
+
+    await expect(
+      checkIssues(passing, ["new-first"], "worker"),
+    ).resolves.toEqual({ lines: ["new-first: ready"], passed: true });
+
+    const failing = await createProject({
+      ".ai/issues/new-plan.draft.md": model,
+      ".ai/issues/new-first.draft.md": withProvides("Cache"),
+    });
+
+    await expect(
+      checkIssues(failing, ["new-first"], "worker"),
+    ).resolves.toEqual({
+      lines: [
+        "new-first: **Provides** names `Cache`, no Model section of the nearest plan: use one of its Model headings: `Storage`.",
+      ],
+      passed: false,
+    });
+  });
+
+  test("prints a trivial draft leaf's merge warning without failing", async () => {
+    const config = await createProject({
+      ".ai/issues/new-x.draft.md": first.replace("- Checked.\n", ""),
+    });
+
+    await expect(checkIssues(config, ["new-x"], "worker")).resolves.toEqual({
+      lines: [
+        "new-x: ready",
+        "new-x: warning: A trivial leaf with at most one **Done when** clause and one **Tests** case: merge into a sibling.",
+      ],
+      passed: true,
+    });
   });
 
   test("requires a plan's generated Roadmap through subIssues, and no Tests", async () => {
@@ -624,7 +676,10 @@ o
         /subIssues:[\s\S]*?sections: \[\]\n/,
         "",
       ),
-      ".ai/issues/new-first.draft.md": first.replace("\n## Tests\n\n- t\n", ""),
+      ".ai/issues/new-first.draft.md": first.replace(
+        "\n## Tests\n\n- t → passes\n",
+        "",
+      ),
     });
 
     await expect(checkIssues(config, ["new-plan"], "worker")).resolves.toEqual({

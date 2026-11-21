@@ -4,6 +4,7 @@ import { findMissingReferences } from "#tools/github/issues/contract/operations/
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
 import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIssueReadiness";
+import { checkIssueSpec } from "#tools/github/issues/contract/utils/checkIssueSpec";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 import { renderReference } from "#tools/github/issues/contract/utils/renderReference";
@@ -74,6 +75,9 @@ export async function checkIssue(
 
   const { chain, findings } = await findAncestors(access, issue);
 
+  const { contractNames } = access;
+  const [topmost] = chain;
+
   const missingReferences = await findMissingReferences(
     access,
     parsed.references.filter((reference) => reference !== number),
@@ -102,6 +106,16 @@ export async function checkIssue(
       },
       audience,
     ),
+    ...checkIssueSpec(parsed, {
+      plan: topmost?.type === contractNames.types.plan
+        ? parseIssueBody(topmost.body)
+        : undefined,
+      trivial: (
+        issue.fields[contractNames.fields.complexity] ===
+        contractNames.options.trivial
+      ),
+      subIssues: issue.subIssues.length,
+    }),
   );
 
   // @debt Debugger dispatch skips the issue's own contract but still checks each ancestor's, so an old-format parent or a plan without **Done when** refuses a debugger the leniency its leaf gets.

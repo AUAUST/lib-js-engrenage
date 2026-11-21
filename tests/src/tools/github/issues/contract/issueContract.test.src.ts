@@ -59,7 +59,7 @@ Why.
 
 ## Tests
 
-- a works
+- a → works
 `;
 
 const problem = `#10 · [Gates](https://example.com/10#gates)
@@ -326,6 +326,7 @@ function mockGithub(
       body: string;
       type: string;
       blockers?: string[];
+      complexity?: string;
       parent?: number;
       subIssues?: { number: number; state: "open" | "closed" }[];
       blockedBy?: { number: number; state: "open" | "closed" }[];
@@ -366,6 +367,14 @@ function mockGithub(
               return { name };
             }),
           },
+          ...(issue.complexity === undefined
+            ? []
+            : [
+                {
+                  issue_field_name: "Complexity",
+                  single_select_option: { name: issue.complexity },
+                },
+              ]),
         ];
       } else if (rest === "/sub_issues") {
         json = (issue.subIssues ?? []).map((child) => {
@@ -783,6 +792,100 @@ describe("checkIssue", () => {
     const findings = (await checkIssue(access, 11)).findings;
 
     expect(findings.map(({ rule }) => rule)).toEqual(["open-section"]);
+  });
+
+  describe("specification readiness", () => {
+    const modelPlan = {
+      ...validPlan,
+      body: validPlan.body.replace(
+        "## Decisions",
+        "## Gate contract\n\nx\n\n## Decisions",
+      ),
+    };
+
+    function leaf(sections: string) {
+      return `#10 · [Gates](https://example.com/10#gates)\n\n## Context\n\nWhy.\n\n${sections}`;
+    }
+
+    test("accepts Provides naming a Model heading and rejects another, listing the headings", async () => {
+      mockGithub({
+        10: modelPlan,
+        11: {
+          body: leaf(
+            "## Provides\n\n- Gate contract: the step list.\n\n## Done when\n\n- a\n- b\n",
+          ),
+          type: "Task",
+          parent: 10,
+        },
+        12: {
+          body: leaf(
+            "## Provides\n\n- Other: x.\n\n## Done when\n\n- a\n- b\n",
+          ),
+          type: "Task",
+          parent: 10,
+        },
+      });
+
+      expect((await checkIssue(access, 11)).findings).toEqual([]);
+
+      expect((await checkIssue(access, 12)).findings).toMatchObject([
+        {
+          rule: "provides",
+          message: expect.stringContaining("`Gate contract`"),
+        },
+      ]);
+    });
+
+    test("requires an expected outcome on each Tests case", async () => {
+      mockGithub({
+        10: modelPlan,
+        11: {
+          body: leaf(
+            "## Done when\n\n- a\n\n## Tests\n\n- empty input → rejected\n- big input\n",
+          ),
+          type: "Task",
+          parent: 10,
+        },
+      });
+
+      expect((await checkIssue(access, 11)).findings).toMatchObject([
+        {
+          rule: "test-outcome",
+          message: expect.stringContaining("`big input`"),
+        },
+      ]);
+    });
+
+    test("warns a trivial leaf with one clause to merge, without blocking dispatch", async () => {
+      mockGithub({
+        10: modelPlan,
+        11: {
+          body: leaf("## Done when\n\n- a\n"),
+          type: "Task",
+          parent: 10,
+          complexity: "Trivial",
+        },
+        12: {
+          body: leaf("## Done when\n\n- a\n- b\n"),
+          type: "Task",
+          parent: 10,
+          complexity: "Trivial",
+        },
+      });
+
+      const check = await checkIssue(access, 11, "worker", { dispatch: true });
+
+      expect(check.findings).toEqual([
+        expect.objectContaining({ rule: "leaf-floor", severity: "warning" }),
+      ]);
+
+      expect(formatIssueCheck(11, check)).toEqual([
+        "#11 ready",
+        expect.stringContaining("#11 warning: "),
+      ]);
+
+      expect((await checkIssue(access, 12)).findings).toEqual([]);
+    });
   });
 
   test("Questions without Blockers reports the stale field", async () => {

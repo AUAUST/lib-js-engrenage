@@ -17,6 +17,7 @@ export {
   findBriefedIssue,
   formatIssueCheck,
   formatIssueTreeCheck,
+  isBlockingFinding,
   parseGithubCommand,
   parseIssueBody,
   resolveIssueCheckouts,

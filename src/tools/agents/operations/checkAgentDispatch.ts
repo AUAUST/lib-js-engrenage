@@ -3,6 +3,7 @@ import {
   checkIssue,
   createGithubClient,
   findBriefedIssue,
+  isBlockingFinding,
   isMissingResource,
   resolveIssueCheckouts,
   type IssueAudience,
@@ -78,7 +79,7 @@ async function checkBriefedIssue(
   );
 
   try {
-    const { findings } = await checkIssue(
+    const { findings: found } = await checkIssue(
       {
         repository: issue.repository,
         client: await createGithubClient(),
@@ -91,6 +92,8 @@ async function checkBriefedIssue(
         checkouts,
       },
     );
+
+    const findings = found.filter(isBlockingFinding);
 
     return findings.length === 0
       ? undefined

@@ -6,8 +6,10 @@ import { stripCode } from "#foundation/markdown/index";
 import { splitRepository } from "#tools/github/issues/api/index";
 import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
+  checkIssueSpec,
   checkNesting,
   findContractMeaning,
+  parseIssueBody,
   type ContractMeaning,
   type ContractNames,
   type IssueAudience,
@@ -288,6 +290,29 @@ export function checkDrafts(
     );
   }
 
+  function findPlan(stem: string) {
+    const seen = new Set([stem]);
+
+    for (
+      let parent = parents.get(stem);
+      parent !== undefined;
+      parent = parents.get(parent)
+    ) {
+      const ancestor = described.get(parent);
+
+      if (ancestor === undefined || seen.has(parent)) {
+        // @debt The nearest plan above a published ancestor is never fetched, so a draft under one skips the **Provides** check.
+        return "unresolved";
+      }
+
+      if (ancestor.meaning === "plan") {
+        return parseIssueBody(ancestor.draft.body);
+      }
+
+      seen.add(parent);
+    }
+  }
+
   for (const [
     stem,
     { draft, findings: manifestFindings, meaning, manifest },
@@ -322,6 +347,14 @@ export function checkDrafts(
           audience,
         },
       ),
+      ...checkIssueSpec(parseIssueBody(draft.body), {
+        plan: findPlan(stem),
+        trivial: (
+          manifest?.[context.contractNames.fields.complexity] ===
+          context.contractNames.options.trivial
+        ),
+        subIssues: listDraftReferences(manifest?.subIssues).length,
+      }),
       ...checkNesting(meaning, described.get(parents.get(stem) ?? "")?.meaning),
       ...checkDraftHeader(
         draft.body,

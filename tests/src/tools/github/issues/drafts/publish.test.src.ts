@@ -138,7 +138,7 @@ c
 
 ## Tests
 
-- t`;
+- t → passes`;
 
 let issues: Map<number, MockIssue>;
 let toolkitIssues: Map<number, MockIssue>;
@@ -1169,7 +1169,7 @@ Follows #{app.12} and #{toolkit.45}.
 
 ## Tests
 
-- t
+- t → passes
 `,
       ".ai/issues/new-local.draft.md": `---
 title: "Local after #{toolkit.new-port}, #{app.7} and \`#{app.8}\`"
@@ -1188,7 +1188,7 @@ Follows #{app.7}.
 
 ## Tests
 
-- t
+- t → passes
 `,
     });
 
@@ -1232,7 +1232,7 @@ See #{unknown.1}.
 
 ## Tests
 
-- t
+- t → passes
 `,
     });
 
@@ -1369,7 +1369,7 @@ After ${reference}.
 
 ## Tests
 
-- t
+- t → passes
 `,
     });
   }

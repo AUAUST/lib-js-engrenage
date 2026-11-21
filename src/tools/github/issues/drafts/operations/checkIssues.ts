@@ -7,6 +7,7 @@ import {
 import {
   checkIssue,
   formatIssueCheck,
+  isBlockingFinding,
   resolveIssueCheckouts,
   type IssueAudience,
   type IssueCheckout,
@@ -55,7 +56,7 @@ async function checkPublished(
 
     lines.push(...formatIssueCheck(number, check));
 
-    passed &&= check.findings.length === 0;
+    passed &&= !check.findings.some(isBlockingFinding);
   }
 
   return { lines, passed };
@@ -145,13 +146,18 @@ export async function checkIssues(
     });
 
     for (const [stem, found] of checked) {
+      const blocking = found.filter(isBlockingFinding);
+
       lines.push(
-        ...(found.length === 0
+        ...(blocking.length === 0
           ? [`${stem}: ready`]
-          : found.map(({ message }) => `${stem}: ${message}`)),
+          : blocking.map(({ message }) => `${stem}: ${message}`)),
+        ...found
+          .filter((finding) => !isBlockingFinding(finding))
+          .map(({ message }) => `${stem}: warning: ${message}`),
       );
 
-      passed &&= found.length === 0;
+      passed &&= blocking.length === 0;
     }
   }
 

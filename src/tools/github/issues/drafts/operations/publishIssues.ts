@@ -11,6 +11,7 @@ import { issueContracts } from "#tools/github/issues/contract/constants";
 import {
   checkNesting,
   findContractMeaning,
+  isBlockingFinding,
   type IssueContract,
 } from "#tools/github/issues/contract/index";
 import { createIssueLookup } from "#tools/github/issues/drafts/operations/createIssueLookup";
@@ -192,7 +193,9 @@ export async function publishIssues(
       complete: false,
     }),
   ].flatMap(([stem, found]) => {
-    return found.map(({ message }) => `${stem}: ${message}`);
+    return found
+      .filter(isBlockingFinding)
+      .map(({ message }) => `${stem}: ${message}`);
   });
 
   if (findings.length > 0) {
