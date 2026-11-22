@@ -1,0 +1,22 @@
+{
+  "agent:analyser": 4927,
+  "agent:consultant": 5892,
+  "agent:debugger": 5364,
+  "agent:gatherer": 4689,
+  "agent:merger": 5741,
+  "agent:planner": 5514,
+  "agent:worker": 5363,
+  "agent:writer": 6438,
+  "main": 4587,
+  "skill:analysis": 4927,
+  "skill:consultant": 5892,
+  "skill:curation": 5976,
+  "skill:debugging": 5364,
+  "skill:gathering": 4689,
+  "skill:implement": 5363,
+  "skill:instruction-writing": 6438,
+  "skill:merging": 5741,
+  "skill:planning": 5514,
+  "skill:shape": 5979,
+  "skill:walking": 7689
+}

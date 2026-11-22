@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { hookProgram } from "#constants";
+import { stateDirectory } from "#project/config/constants";
 import {
   metalbrainProgram,
   metalbrainProgramSource,
@@ -117,5 +118,9 @@ export const claudeRulesGlob = ".claude/rules/**/*.md";
 export const claudeSkillsDir = ".claude/skills" satisfies Directory;
 
 export const claudeAgentsDir = ".claude/agents" satisfies Directory;
+
+export const wordBudgetsFile = `${stateDirectory}/word-budgets.json` satisfies File;
+
+export const mainRole = "main";
 
 export const claudeTarget = "claude";

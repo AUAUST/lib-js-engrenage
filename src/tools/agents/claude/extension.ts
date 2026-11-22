@@ -4,12 +4,14 @@ import {
   claudeSettingsFile,
   claudeSkillsDir,
   claudeTarget,
+  wordBudgetsFile,
 } from "#tools/agents/claude/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns `CLAUDE.md` and `.claude/settings.json`, registers the `claude` agent
- * runtime and syncs Claude's settings.
+ * Owns `CLAUDE.md`, `.claude/settings.json` and `.engrenage/word-budgets.json`,
+ * registers the `claude` agent runtime, syncs Claude's settings and checks
+ * each role's word budget.
  */
 export default {
   name: "tools/agents/claude",
@@ -25,6 +27,12 @@ export default {
         title: "Claude",
         locate(): FileLocation {
           return { file: claudeSettingsFile };
+        },
+      },
+      "state.wordBudgets": {
+        title: "Word budgets",
+        locate(): FileLocation {
+          return { file: wordBudgetsFile };
         },
       },
     },
@@ -60,6 +68,18 @@ export default {
           } = await import("#tools/agents/claude/setup/syncClaudeSettings");
 
           return syncClaudeSettings;
+        },
+      },
+      {
+        name: "word-budgets",
+        stage: "check",
+        reads: ["agents.instructions"],
+        async load() {
+          const {
+            checkWordBudgets,
+          } = await import("#tools/agents/claude/setup/checkWordBudgets");
+
+          return checkWordBudgets;
         },
       },
     ],

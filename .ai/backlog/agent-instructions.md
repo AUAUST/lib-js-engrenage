@@ -119,36 +119,31 @@ Shared agent instructions, skills and the backlog conventions.
 - why: proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only.
 - want: a decision on that hook.
 
-## 23. Nothing bounds the always-loaded instruction words per role
-
-- why: since 2026-11-10, `data/metalbrain/` and `AGENTS.md` grew 5,345 lines for 1,260 deleted; every agent starts with ~5k words, planners ~12k. Instruction count lowers adherence (IFScale, ManyIFEval; AGENTS.md study, ICLR 2026).
-- want: a sync check reporting each role's always-loaded words against a budget that only a decision raises.
-
-## 24. The issue-drafts section budgets lag the configured defaults
+## 23. The issue-drafts section budgets lag the configured defaults
 
 - sites: `data/metalbrain/rules/issue-drafts.md:74`
 - why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` in `src/tools/agents/constants.ts` became 150 each in 0fd960a2; a project's configured budgets can differ from both.
 - want: the rule rendering the configured values through an `agents.fillers` filler, as `agent-limits` does, also for the budgets rule.
 
-## 25. Shape's per-pool K leaves a writer's checkout unsettled
+## 24. Shape's per-pool K leaves a writer's checkout unsettled
 
 - sites: `data/metalbrain/skills/shape.md:17`, `data/metalbrain/shared/worktree-dispatch.md:10`
 - why: worktree dispatch puts agents in the main checkout at K = 1; shape's writers pool has K = 1 beside implementers at 2, so a writer may edit the main checkout while worktree work is cherry-picked or reviewed gaps are closed there.
 - want: shape stating which checkout each pool's agents use.
 
-## 26. Handoffs and carry-overs travel as text an orchestrator rereads and repeats
+## 25. Handoffs and carry-overs travel as text an orchestrator rereads and repeats
 
 - why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
 - want: handoffs and carry-overs written to files, the orchestrator receiving and forwarding only their paths.
 - done: measured first: fewer tokens than inline handoffs, counting the rereads skipped each turn; dropped otherwise, since saving tokens is its only purpose.
 
-## 27. The commit-type table diverges from #218's decisions
+## 26. The commit-type table diverges from #218's decisions
 
 - sites: `data/metalbrain/rules/git.md:31`
 - why: #218 › Decisions merge `files` into `cq`, split `ci` from `meta` and gate `css` and `content` by project traits; the table does none of it and adds `snap`, `config` and `debug`, which no decision names. #213 cannot write "today's table, amended by #218" until one wins.
 - want: the user settles the authoritative vocabulary on #218.
 
-## 28. Hard rules stay prose where a check could enforce them
+## 27. Hard rules stay prose where a check could enforce them
 
 - why: #809 D.9 (delete before adding; hard rules into hooks). The c0dbefc4 writer listed candidates; none built.
 - want: per rule, a check, then the prose deleted:
@@ -159,8 +154,8 @@ Shared agent instructions, skills and the backlog conventions.
   - mutable-list aliases; allowed comment kinds: custom lint rules
   - Shell table traps; `eslint:fix` without files: Bash PreToolUse hook
 
-## 29. The main session's request analysis depends on the analysis skill being installed
+## 28. The main session's request analysis depends on the analysis skill being installed
 
 - sites: `data/metalbrain/sections/analysis.md:13`
 - why: the trigger names `.claude/skills/analysis/request-analysis.md`; a consumer without the analysis skill gets no request analysis (the old options line had the same gap).
-- want: sync installs `request-analysis.md` for the main session whatever skills are installed (writer's recommendation), or the trigger names whichever copy exists.
+- want: decided (#809 S.31): sync installs `request-analysis.md` for the main session whatever skills are installed; the trigger names that one path.

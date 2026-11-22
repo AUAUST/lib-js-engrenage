@@ -10,7 +10,7 @@ paths:
 
 Backlog entry budget: ~100 words.
 
-- Treat every word budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
+- Treat each issue or backlog word budget as a signal: past it, link to where the detail lives or split the text, never truncate it.
 - Cut repetition to meet a budget, never decisions.
 
 <!-- @end -->

@@ -25,7 +25,7 @@ agent:
 
 # Instruction writing
 
-Turn a request about agent instructions into instructions that make every agent reading them produce the behavior the request implies. Read every request as a bug report, whatever its form: its cases, examples, scenarios and proposed wording show what the instructions must produce, never text to copy; find the rule they share, then the conflicts, gaps and misplaced rules around it in what agents load. `§…` names this skill's sections.
+Turn a request about agent instructions into instructions that make every agent reading them produce the behavior the request implies. Read every request as a bug report, whatever its form: its cases, examples, scenarios and proposed wording show what the instructions must produce, never text to copy. `§…` names this skill's sections.
 
 ## Modes
 
@@ -35,11 +35,12 @@ Turn a request about agent instructions into instructions that make every agent 
 | A change, with the user's consent and the reach it covers | Write | The instruction sources that reach covers, plus the changeset the Environment table requires for them |
 | A change missing the consent or its reach                 | None  | Nothing: stop and report what is missing; never infer either                                          |
 
+Commit nothing: whoever dispatched you reviews your diff and commits it.
+
 ## Request
 
 - Name the behavior the request implies: the concern behind it, the outcome wanted, and the agents and situations it reaches, derived from the inventory where the request names none.
 - Generalize from its cases: the rule is the narrowest statement covering every case and serving the reason the request gives. Check that each case follows from applying it, then find the cases it reaches that the request does not name.
-- Reuse the request's wording only where it is already the clearest and shortest.
 - Readings of the request leading to different behavior, or a behavior beyond the consent's reach: ask whoever sent the request. You own the rule, its wording and placement, never a choice between behaviors.
 
 ## Process
@@ -56,9 +57,10 @@ Rank sources, bound an audit and grade findings by this method:
 2. **Diagnose.** Over the inventory, find each catch of §Catches and each gap: a case the behavior needs that no rule covers, a rule one of two parallel sources holds and the other lacks, a term two sources define differently. Audit mode: report them and stop.
 3. **Models.** Check §Model facts against the models the agent definitions and harnesses run. When it misses one of them or was checked over 90 days ago, look up those vendors' current prompting guidance for the exact versions, and refresh §Model facts where you can edit its source, otherwise report what you found. Draft only what those facts show produces the behavior.
 4. **Placement.** Apply §Placement to each rule you write and to each rule the sources you edit hold on the subject.
-5. **Enforcement.** Apply §Form to each rule a lint rule, type, hook or test could check, and list the proposed checks in your report.
-6. **Draft.** Group the rules by shape, pick each group's form under §Form, write under §Wording, resolving each step-2 finding under §Conflicts, then diff against the previous version: account for each removed rule as kept, merged, moved or dropped on purpose.
-7. **Cold read.** For each target agent, read only what it has loaded when the rule should fire (`AGENTS.md`, its skill or agent file, the rules loaded by then, its brief) and list every catch of §Catches. Rewrite until a full cold read of the final text finds none.
+5. **Enforcement.** Apply §Form to each rule a lint rule, type, hook or test could check.
+6. **Draft.** Delete before adding: remove or merge each inventoried rule on the subject that a check enforces, another rule states, or that prevents no failure you can name, observed or in §Model facts; then add only what the behavior still lacks, each rule against a named failure. Group the rules by shape, pick each group's form under §Form, write under §Wording, resolving each step-2 finding under §Conflicts, then diff against the previous version: account for each removed rule as merged, moved or dropped on purpose.
+7. **Word budget.** Run `pnpm engrenage sync`: its `word-budgets` check caps each role's words loaded at start (`AGENTS.md`, rules without `paths`, its agent file or skill) in `.engrenage/word-budgets.json`, fails past a cap and lowers each cap its role went under. End every role you touch under its cap as your change found it; raise a cap only on the user's decision, otherwise cut, or report the cuts you would need.
+8. **Cold read.** For each target agent, read only what it has loaded when the rule should fire (`AGENTS.md`, its skill or agent file, the rules loaded by then, its brief) and list every catch of §Catches. Rewrite until a full cold read of the final text finds none.
 
 ## Catches
 
@@ -86,11 +88,10 @@ Put each rule with its owner, at the narrowest location every agent acting on it
 | The agents of several skills                   | A shared file, reached from each of those skills         |
 
 - Claude Code loads a `paths` rule only when its Read tool opens a matching file, never on a Bash read or write; Codex reads one only when it follows its override's mapping. A rule an agent needs before touching such a file belongs in `AGENTS.md` or the agent's skill.
-- A rule at a broader row than its acting agents' moves to their row, unless that location loads too late for one of them. Deciding each such split is your job: weigh it for every rule you write or edit and for the other rules of the sections you edit, and report each split you made or left.
+- A rule at a broader row than its acting agents' moves to their row, unless that location loads too late for one of them: weigh each such split for every rule you write or edit and the other rules of the sections you edit.
 - A narrower location refines a broader one: name the source it refines and state only what changes for its scope, never restating the broader rule or contradicting it silently.
 - Keep feature documentation, file inventories, API details and records of recent changes out of `AGENTS.md` and rule files.
 - A `<!-- @reference <reference> -->` marker opens a block that `pnpm engrenage sync agents` fills with the referenced file, up to the next `@reference` or `<!-- @end -->` marker. Never edit blocks in place: add project rules after an `@end` marker, or change the referenced source.
-- A `<!-- @extension <name> -->` or `<!-- @file <path> -->` marker opens a block of an engrenage instruction fragment, closed by the next `<!-- @end -->`: sync keeps its text, without the markers, only while that extension is active or that project file exists. Wrap text that applies only under that extension or file; never nest these blocks.
 
 ## Form
 
@@ -102,11 +103,11 @@ Refines the Writing section's structure table:
 | A principle the other rules derive from                       | One or two sentences of prose, before the rules  |
 
 - Such rules needing sentences, which the Writing section moves to a list: one `**Context.** action` item per context.
-- A rule a tool can check: propose the check, and keep the rule as prose until the check exists. Then delete the prose, or keep it under "Enforced by tooling" when its fix is manual and it shapes how code is first written.
+- A rule a tool could check: propose the check, keeping the rule as prose until it exists. Then keep prose only where it costs less than the failures and rework it spares agents before the check runs, as the shortest general rule, under "Enforced by tooling"; delete the rest.
 
 ## Wording
 
-Refines the Writing section for instructions: each rule exact, stated once by its owner, in the densest form that keeps its meaning, contradicting no other.
+Refines the Writing section for instructions.
 
 - Write each rule as its trigger and the behavior it must produce; cut connectives and subjects the rule's heading, column or list already states.
 - Give a reason only when it changes how the rule is applied, in one clause.
@@ -120,11 +121,6 @@ Refines the Writing section for instructions: each rule exact, stated once by it
 - A conflict is two rules prescribing different behavior for one context, or one rule stated in two places that can drift apart.
 - Resolve every conflict you find, in your text or beyond it: in the same change when the consent's reach covers it, otherwise as a backlog entry you report; in audit mode, report it. Never leave one unrecorded.
 - Where a conflict can recur, propose a check that fails on it.
-
-## Scope
-
-- Edit only what §Modes gives your mode.
-- Commit nothing: whoever dispatched you reviews your diff and commits it.
 
 ## Model facts
 
@@ -149,5 +145,5 @@ Checked 2026-11-18.
 
 ## Report
 
-- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split decided; proposed checks, deliberate drops, backlog entries added and facts refreshed.
+- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split made or left; each rule added with the failure it prevents; words removed and added per role; proposed checks, deliberate drops, backlog entries added and facts refreshed.
 - **Audit.** Each catch and gap, grouped by subject and graded by the method's Findings, with whether its fix needs a behavior decision or only wording and placement; the backlog entries they would lead to, for your caller to record; proposed checks.
