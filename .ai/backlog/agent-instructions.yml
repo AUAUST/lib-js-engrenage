@@ -137,3 +137,8 @@ entries:
     want:
       - every record (friction, discarded, todo, others) written and listed through a metalbrain command, stored as YAML like the backlog, so any agent records regardless of permission and stats group by keys
       - the agent-records rule naming the commands instead of file forms
+  - id: 261122-c050
+    title: Agents edit backlog files by hand for every operation but create and add
+    why: "closing, moving, updating, searching and listing mean reading and editing the YAML files and Markdown index: read-only agents cannot, others pay a file read each time"
+    want: "metalbrain backlog subcommands for each operation the conventions name: list categories, search by keyword, show, update, move, close; closing a category's last entry deletes its file and index line, the category list moving from index.md to YAML the command owns"
+    done: "no agent instruction asks to read or edit .ai/backlog files. Related: 261122-f4f4."
