@@ -1,72 +1,20 @@
-import {
-  array,
-  check,
-  exactOptional,
-  getDotPath,
-  minLength,
-  nonEmpty,
-  pipe,
-  regex,
-  safeParse,
-  strictObject,
-  string,
-  union,
-  unknown,
-  type BaseIssue,
-} from "valibot";
+import { getDotPath, type BaseIssue } from "valibot";
 
-import { isArray, isPlainObject, isString } from "@auaust/toolkit";
+import { isString } from "@auaust/toolkit";
 
 import { backlogDetailKeys, backlogDetailLimit } from "#tools/agents/constants";
 import { readBacklogCategories } from "#tools/agents/operations/readBacklogCategories";
 import { countWords } from "#tools/agents/utils/countWords";
 import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
-import { isBacklogId } from "#tools/agents/utils/isBacklogId";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { BacklogCategoryFile } from "#tools/agents/types/BacklogCategoryFile";
 
-function strictMessage(issue: BaseIssue<unknown>): string {
-  return issue.expected === "never"
-    ? `unknown key ${issue.received}`
-    : `expected an object, received ${issue.received}`;
-}
+type LooseEntry = Extract<
+  BacklogCategoryFile,
+  { kind: "parsed" }
+>["entries"][number]["loose"];
 
-const textSchema = pipe(string(), nonEmpty("expected text"));
-
-const detailSchema = union(
-  [textSchema, pipe(array(textSchema), minLength(1, "expected items"))],
-  "expected text or a list of texts",
-);
-
-const sitePattern = /^([^\s:]+):[1-9]\d*$/u;
-
-const categorySchema = strictObject(
-  {
-    purpose: textSchema,
-    entries: array(unknown()),
-  },
-  strictMessage,
-);
-
-const entrySchema = strictObject(
-  {
-    id: pipe(
-      string(),
-      check(isBacklogId, "expected an ID as YYMMDD-xxxx, 4 hex characters"),
-    ),
-    title: textSchema,
-    sites: exactOptional(
-      pipe(
-        array(pipe(string(), regex(sitePattern, "expected <path>:<line>"))),
-        minLength(1, "expected sites"),
-      ),
-    ),
-    why: exactOptional(detailSchema),
-    want: exactOptional(detailSchema),
-    done: exactOptional(detailSchema),
-  },
-  strictMessage,
-);
-
+// @debt the unknown-key message and the dot-path issue lines repeat what `validate` in `foundation/options` and `checkDrafts` in `tools/github` each build their own way; one valibot issue formatter would serve all three
 function formatIssues(
   subject: string,
   issues: readonly BaseIssue<unknown>[],
@@ -80,13 +28,15 @@ function formatIssues(
   });
 }
 
-function countDetails(entry: Record<string, unknown>): number {
+function countDetails(entry: LooseEntry): number {
   let count = 0;
 
   for (const key of backlogDetailKeys) {
     const value = entry[key];
 
-    count += isArray(value) ? value.length : Number(isString(value));
+    if (value !== undefined) {
+      count += isString(value) ? 1 : value.length;
+    }
   }
 
   return count;
@@ -115,20 +65,16 @@ export async function findBacklogViolations(
       continue;
     }
 
-    const parsed = safeParse(categorySchema, category.data);
-
-    if (!parsed.success) {
-      violations.push(...formatIssues(file, parsed.issues));
+    if (category.issues.length > 0) {
+      violations.push(...formatIssues(file, category.issues));
 
       continue;
     }
 
-    for (const [index, raw] of parsed.output.entries.entries()) {
-      const id = isPlainObject(raw) && isString(raw.id) ? raw.id : undefined;
+    for (const [index, entry] of category.entries.entries()) {
+      const subject = `${file}: entry ${entry.loose.id ?? `#${index + 1}`}`;
 
-      const subject = `${file}: entry ${id ?? `#${index + 1}`}`;
-
-      const details = isPlainObject(raw) ? countDetails(raw) : 0;
+      const details = countDetails(entry.loose);
 
       if (details > backlogDetailLimit) {
         violations.push(
@@ -136,15 +82,13 @@ export async function findBacklogViolations(
         );
       }
 
-      const entry = safeParse(entrySchema, raw);
-
-      if (!entry.success) {
+      if (!entry.valid) {
         violations.push(...formatIssues(subject, entry.issues));
 
         continue;
       }
 
-      const { output } = entry;
+      const output = entry.entry;
 
       const owner = owners.get(output.id);
 
@@ -155,7 +99,7 @@ export async function findBacklogViolations(
       }
 
       for (const site of output.sites ?? []) {
-        const [, path = ""] = sitePattern.exec(site) ?? [];
+        const [path = ""] = site.split(":");
 
         if (!(await filesystem.exists(path))) {
           violations.push(

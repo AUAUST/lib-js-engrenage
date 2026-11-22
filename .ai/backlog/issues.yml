@@ -73,7 +73,9 @@ entries:
     want: the resolution failure reported in every check; detection by error code or structure.
   - id: 261122-966f
     title: "`planning issue check` passes trees `publish` refuses"
-    why: "friction ×4: a header line without ancestors and a Segment or new `subIssues` whose Plan is outside the published set pass `check`, then `publish` refuses them."
+    sites:
+      - src/tools/github/issues/drafts/operations/publishIssues.ts:199
+    why: "friction ×4: a header line without ancestors and a Segment or new `subIssues` whose Plan is outside the published set pass `check`, then `publish` refuses them. Also a **Provides** line whose Plan draft is outside the published set: `publish` calls `checkDrafts` without `known`, so the plan reads as having no Model headings (#815, walk of #811)."
     want: "`check` applies `publish`'s tree preconditions to the refs it checks."
   - id: 261122-9d66
     title: "`publish` sends the skeleton's hint comments to GitHub"

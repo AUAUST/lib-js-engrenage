@@ -167,3 +167,4 @@
 - pnpm remove confbox: removed it from node_modules too — stashed HEAD code then failed to import it at the gate; reinstalled offline from the lockfile before and after the stash
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache right after `pnpm install --offline`, twice — retrying the commit passed
 - engrenage-hook claude: config invalid while #814 removed Codex mid-change — every hook reported "did not run", checks off for the rest of #814
+- `pnpm engrenage planning issue publish`: published three leaves with **Provides** lines — refused as naming no Model section, `check` passing; published again with the plan draft in the set

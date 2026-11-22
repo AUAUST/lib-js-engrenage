@@ -2,7 +2,7 @@ import { posix } from "node:path";
 
 import { stringify } from "yaml";
 
-import { isArray, isPlainObject, isString } from "@auaust/toolkit";
+import { isString } from "@auaust/toolkit";
 
 import { splitSections } from "#foundation/markdown/index";
 import {
@@ -16,6 +16,7 @@ import {
 import { createBacklogId } from "#tools/agents/operations/createBacklogId";
 import { readBacklogCategories } from "#tools/agents/operations/readBacklogCategories";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { Globs } from "#types/Globs";
 
 type LegacyValue = string | readonly string[];
 
@@ -185,15 +186,13 @@ async function listTakenIds(filesystem: Filesystem): Promise<Set<string>> {
   const taken = new Set<string>();
 
   for (const category of await readBacklogCategories(filesystem)) {
-    if (category.kind !== "parsed" || !isPlainObject(category.data)) {
+    if (category.kind === "invalid") {
       continue;
     }
 
-    const { entries } = category.data;
-
-    for (const entry of isArray(entries) ? entries : []) {
-      if (isPlainObject(entry) && isString(entry.id)) {
-        taken.add(entry.id);
+    for (const { loose } of category.entries) {
+      if (loose.id !== undefined) {
+        taken.add(loose.id);
       }
     }
   }
@@ -202,14 +201,17 @@ async function listTakenIds(filesystem: Filesystem): Promise<Set<string>> {
 }
 
 // @debt a `<category>.<n>` reference to an entry renumbered or removed before the migration is rewritten to the entry holding that number today.
+// @debt references outside the agent records and instruction files, such as code comments, stay stale
 async function rewriteReferences(
   filesystem: Filesystem,
   ids: ReadonlyMap<string, string>,
+  instructionFiles: Globs,
 ) {
   const pattern = /(?<![\w.-])([\w-]+\.\w+)(?![\w-])/gu;
 
   const files = await filesystem.glob([
     ...backlogReferenceFiles,
+    ...instructionFiles,
     `${backlogDirectory}/*${backlogCategoryExtension}`,
   ]);
 
@@ -234,13 +236,14 @@ async function rewriteReferences(
  * Converts each legacy `.ai/backlog/<category>.md` into its `.yml` category,
  * giving each entry an ID of `day` and taking the purpose from the index's link
  * when the file states none, then rewrites the `<category>.<n>` references of
- * the agent records to these IDs.
+ * the agent records and `instructionFiles` to these IDs.
  *
  * @throws {Error} When a legacy category's `.yml` file already exists.
  */
 export async function migrateBacklogCategories(
   filesystem: Filesystem,
   day: Date,
+  instructionFiles: Globs,
 ): Promise<void> {
   const legacy = await filesystem.glob(
     `${backlogDirectory}/*${legacyBacklogExtension}`,
@@ -309,5 +312,5 @@ export async function migrateBacklogCategories(
     await filesystem.remove(file);
   }
 
-  await rewriteReferences(filesystem, ids);
+  await rewriteReferences(filesystem, ids, instructionFiles);
 }

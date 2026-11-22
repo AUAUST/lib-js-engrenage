@@ -113,6 +113,7 @@ describe("backlog migration", () => {
           "",
         ].join("\n"),
         ".ai/friction.md": "# Agent friction\n\n- x: tools.1 and tools.12 — y\n",
+        ".claude/rules/tools.md": "# Tools\n\nSee tools.2.\n",
       },
     );
 
@@ -150,6 +151,10 @@ describe("backlog migration", () => {
 
     expect(project.read(".ai/friction.md")).toBe(
       `# Agent friction\n\n- x: ${first.id} and tools.12 — y\n`,
+    );
+
+    expect(project.read(".claude/rules/tools.md")).toBe(
+      `# Tools\n\nSee ${second.id}.\n`,
     );
 
     expect(project.read(backlogIndex)).toContain(

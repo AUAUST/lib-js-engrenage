@@ -1,12 +1,9 @@
-import type { File } from "#types/File";
+import type { readBacklogCategories } from "#tools/agents/operations/readBacklogCategories";
 
 /**
- * A backlog category file: its parsed YAML, unvalidated, or the error parsing it.
+ * A backlog category file: the error parsing it, or its schema issues, its
+ * purpose and its entries, each valid or holding its issues.
  */
-export type BacklogCategoryFile = {
-  readonly file: File;
-  readonly name: string;
-} & (
-  | { readonly kind: "parsed"; readonly data: unknown }
-  | { readonly kind: "invalid"; readonly error: unknown }
-);
+export type BacklogCategoryFile = Awaited<
+  ReturnType<typeof readBacklogCategories>
+>[number];

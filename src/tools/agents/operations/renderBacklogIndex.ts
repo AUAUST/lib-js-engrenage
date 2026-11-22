@@ -1,7 +1,5 @@
 import { posix } from "node:path";
 
-import { isPlainObject, isString } from "@auaust/toolkit";
-
 import {
   backlogCategoriesHeading,
   backlogIndex,
@@ -18,11 +16,9 @@ async function listCategoryLines(filesystem: Filesystem): Promise<string[]> {
   const lines = categories.map((category) => {
     const link = `- [${category.name}](${posix.basename(category.file)})`;
 
-    const purpose = category.kind === "parsed" && isPlainObject(category.data)
-      ? category.data.purpose
-      : undefined;
-
-    return isString(purpose) ? `${link}: ${purpose}` : link;
+    return category.kind === "parsed" && category.purpose !== undefined
+      ? `${link}: ${category.purpose}`
+      : link;
   });
 
   return [

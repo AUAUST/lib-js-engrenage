@@ -26,7 +26,7 @@ function isEngrenageSkillReference(reference: string): boolean {
   );
 }
 
-const generatedSkillFiles = [skillFileName, "agents/openai.yaml"];
+const generatedSkillFiles = [skillFileName, formerCodexFiles.skillMetadata];
 
 async function removeSupportingFiles(
   filesystem: Filesystem,

@@ -247,7 +247,11 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await removeCodexFiles(config);
 
-  await migrateBacklogCategories(config.filesystem, new Date());
+  await migrateBacklogCategories(
+    config.filesystem,
+    new Date(),
+    config.agents.instructionFiles,
+  );
 
   await renderBacklogIndex(config.filesystem);
 
