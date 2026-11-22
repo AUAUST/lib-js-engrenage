@@ -44,7 +44,7 @@ The commit gate and its process locks.
 
 ## 8. Message checks are listed in the gate
 
-- sites: `src/workflows/gate/operations/runMessageGate.ts:14`
+- sites: `src/workflows/gate/operations/runMessageGate.ts:81`
 - why: gate steps are contributed by their domains; message checks are not. Related: #375.
 - want: domains owning commit conventions contribute their message checks.
 

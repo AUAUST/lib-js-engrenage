@@ -94,6 +94,26 @@ export const gitDirectory = ".git";
 
 export const commitSubjectLimit = 72;
 
+// @debt the git rule's type table (`data/metalbrain/rules/git.md`) restates this list by hand instead of being rendered from it
+export const commitTypes = freeze([
+  "feat",
+  "fix",
+  "imp",
+  "cq",
+  "docs",
+  "brain",
+  "css",
+  "tests",
+  "update",
+  "content",
+  "assets",
+  "files",
+  "snap",
+  "config",
+  "debug",
+  "meta",
+] as const);
+
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const ignoreFileEntry: StandardSchemaV1 = looseObject({
   name: string(),

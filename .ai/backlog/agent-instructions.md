@@ -139,17 +139,16 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 26. The commit-type table diverges from #218's decisions
 
-- sites: `data/metalbrain/rules/git.md:31`
+- sites: `data/metalbrain/rules/git.md:31`, `src/tools/git/constants.ts:98`
 - why: #218 › Decisions merge `files` into `cq`, split `ci` from `meta` and gate `css` and `content` by project traits; the table does none of it and adds `snap`, `config` and `debug`, which no decision names. #213 cannot write "today's table, amended by #218" until one wins.
 - want: the user settles the authoritative vocabulary on #218.
 
 ## 27. Hard rules stay prose where a check could enforce them
 
-- why: #809 D.9 (delete before adding; hard rules into hooks). The c0dbefc4 writer listed candidates; none built.
-- want: per rule, a check, then the prose deleted:
-  - commit subject type, `Closes`/`Towards`-only body, attribution trailers (`git.md`, `no-attribution.md`): `runMessageGate.ts`
-  - never push: `Bash(git push*)` deny in `claudePermissions`
-  - staged `.ai/issues/`, `.ai/handoffs/`; major changesets; new `eslint-suppressions.json` entries: commit-gate checks
+- why: #809 D.9 (delete before adding; hard rules into hooks). Built: message gate (type, body, attribution), `git push` deny, `eslint suppressions` gate step; staged `.ai/issues/`, `.ai/handoffs/` were already refused.
+- want:
+  - the prose these checks enforce deleted: `data/metalbrain/rules/git.md:19-20`, the `<type>` clause of `:26`, `:29`; `data/metalbrain/rules/no-attribution.md:11` for commits; the suppressions sentence of `data/metalbrain/sections/typescript.md:13`
+  - major changesets (`data/metalbrain/rules/changesets.md:13`): a check once the user chooses how the gate tells their decision apart
   - `any`, `@ts-*`, `eslint-disable` without reason; interfaces for shapes: `no-explicit-any`, `ban-ts-comment`, eslint-comments description, `consistent-type-definitions` (off in `src/tools/eslint/constants.ts`)
   - mutable-list aliases; allowed comment kinds: custom lint rules
   - Shell table traps; `eslint:fix` without files: Bash PreToolUse hook

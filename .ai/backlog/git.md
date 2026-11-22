@@ -4,7 +4,7 @@ The Git tool domain: repository layout, commit reading and Git-owned ignore glob
 
 ## 1. Git reads assume a default repository layout
 
-- sites: `src/tools/git/operations/resolveMainWorktree.ts:6`, `src/tools/git/utils/readCommitSubject.ts:1`
+- sites: `src/tools/git/operations/resolveMainWorktree.ts:6`, `src/tools/git/utils/readCommitMessage.ts:5`
 - why: the common directory is assumed to sit in the main worktree, false for submodules and separate git directories; comment lines are recognised by `#` though `core.commentChar` picks another.
 - want: the main worktree from `git worktree list`; the comment character read from config.
 

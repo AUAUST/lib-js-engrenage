@@ -104,6 +104,7 @@ export const claudePermissions = freeze({
     "Bash(LEFTHOOK=0 *)",
     "Bash(LEFTHOOK=false *)",
     "Bash(git config core.hooksPath*)",
+    "Bash(git push*)",
   ],
 } as const);
 

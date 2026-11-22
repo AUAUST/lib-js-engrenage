@@ -8,7 +8,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 // @debt the extension owns no config key, so its options come only from definer arguments
 /**
  * Active when `eslint` is installed; owns the `eslint.conventions` slot and the
- * suppressions file, contributes the `apis` role and runs ESLint in the gate.
+ * suppressions file, contributes the `apis` role, runs ESLint in the gate and
+ * refuses new suppressions from agents.
  */
 export default {
   name: "tools/eslint",
@@ -63,6 +64,18 @@ export default {
 
             return checkWithEslint;
           },
+        },
+      },
+      {
+        name: "eslint suppressions",
+        stage: "checks",
+        audience: "agents",
+        async load() {
+          const {
+            checkSuppressions,
+          } = await import("#tools/eslint/operations/checkSuppressions");
+
+          return checkSuppressions;
         },
       },
     ],

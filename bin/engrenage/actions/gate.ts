@@ -5,7 +5,27 @@ import {
   formatGateSummary,
   runGate,
   runMessageGate,
+  type GateReport,
 } from "#workflows/gate/index";
+
+function loadConfig() {
+  return loadValidatedConfig(undefined, { reporter: getRunContext().reporter });
+}
+
+async function checkMessage(
+  message: string,
+  audience: "everyone" | "agents",
+): Promise<GateReport> {
+  if (audience === "everyone") {
+    return runMessageGate(message, { audience });
+  }
+
+  const config = await loadConfig();
+
+  const { attribution } = await config.resolve("agents");
+
+  return runMessageGate(message, { audience, attribution });
+}
 
 export default async function ({
   all,
@@ -21,20 +41,11 @@ export default async function ({
   const audience = everyone === true ? "everyone" : "agents";
 
   const { failures, warnings } = message === undefined
-    ? await runGate(
-        await loadValidatedConfig(undefined, {
-          reporter: getRunContext().reporter,
-        }),
-        {
-          mode: all === true
-            ? "all"
-            : worktree === true
-              ? "worktree"
-              : "staged",
-          audience,
-        },
-      )
-    : await runMessageGate(message, audience);
+    ? await runGate(await loadConfig(), {
+        mode: all === true ? "all" : worktree === true ? "worktree" : "staged",
+        audience,
+      })
+    : await checkMessage(message, audience);
 
   const { reporter } = getRunContext();
 

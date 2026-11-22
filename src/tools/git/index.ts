@@ -1,6 +1,5 @@
 // @barrel utils
-export { hasSeparatedIssueReferences } from "#tools/git/utils/hasSeparatedIssueReferences";
-export { readCommitSubject } from "#tools/git/utils/readCommitSubject";
+export { readCommitMessage } from "#tools/git/utils/readCommitMessage";
 // @end
 
 // @barrel setup
@@ -28,6 +27,7 @@ export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
 export { locateIgnoreFiles } from "#tools/git/operations/locateIgnoreFiles";
 export { readCommit } from "#tools/git/operations/readCommit";
+export { readCommittedFile } from "#tools/git/operations/readCommittedFile";
 export { readHead } from "#tools/git/operations/readHead";
 export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { resolveMainWorktree } from "#tools/git/operations/resolveMainWorktree";
@@ -44,6 +44,7 @@ export type * from "#tools/git/ports/IgnoreFileEntry";
 
 // @barrel types
 export type * from "#tools/git/types/ChangeMode";
+export type * from "#tools/git/types/CommitMessage";
 export type * from "#tools/git/types/GitInput";
 export type * from "#tools/git/types/IssueCommit";
 export type * from "#tools/git/types/ResolvedGit";

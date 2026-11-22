@@ -195,6 +195,7 @@ describe("agents.attribution", () => {
             "Bash(LEFTHOOK=0 *)",
             "Bash(LEFTHOOK=false *)",
             "Bash(git config core.hooksPath*)",
+            "Bash(git push*)",
           ],
         },
         attribution: hidden,

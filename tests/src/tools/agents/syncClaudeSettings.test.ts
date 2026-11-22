@@ -36,7 +36,8 @@ describe("syncClaudeSettings", () => {
       "Bash(git commit -n*)",
       "Bash(LEFTHOOK=0 *)",
       "Bash(LEFTHOOK=false *)",
-      "Bash(git config core.hooksPath*)"
+      "Bash(git config core.hooksPath*)",
+      "Bash(git push*)"
     ]
   },
   "subagentPromptCacheTtl": "5m"
