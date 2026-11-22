@@ -72,6 +72,7 @@ agents:
     - 261122-e4e9
     - 261122-861f
     - 261122-49d9
+    - 261122-fd50
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:

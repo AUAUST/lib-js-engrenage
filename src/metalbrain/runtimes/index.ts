@@ -40,6 +40,7 @@ export {
 } from "#metalbrain/runtimes/hooks/index";
 
 // @barrel operations
+export { checkAgentHooks } from "#metalbrain/runtimes/operations/checkAgentHooks";
 export { findShellTrap } from "#metalbrain/runtimes/operations/findShellTrap";
 export { listAgentSessions } from "#metalbrain/runtimes/operations/listAgentSessions";
 export { readAgentRun } from "#metalbrain/runtimes/operations/readAgentRun";
@@ -47,7 +48,11 @@ export { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
 export { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
 export { readClaudeTranscript } from "#metalbrain/runtimes/operations/readClaudeTranscript";
 export { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+export { reconcileClaudeRuns } from "#metalbrain/runtimes/operations/reconcileClaudeRuns";
+export { recordClaudeRun } from "#metalbrain/runtimes/operations/recordClaudeRun";
+export { removeCodexFiles } from "#metalbrain/runtimes/operations/removeCodexFiles";
 export { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
+export { syncHooks } from "#metalbrain/runtimes/operations/syncHooks";
 export { validateHookPayload } from "#metalbrain/runtimes/operations/validateHookPayload";
 export { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 // @end
@@ -83,6 +88,7 @@ export type * from "#metalbrain/runtimes/types/HookContext";
 export type * from "#metalbrain/runtimes/types/HookDefinition";
 export type * from "#metalbrain/runtimes/types/HookEvent";
 export type * from "#metalbrain/runtimes/types/HookProgram";
+export type * from "#metalbrain/runtimes/types/HookRoots";
 export type * from "#metalbrain/runtimes/types/HookVerdict";
 export type * from "#metalbrain/runtimes/types/MessagePrice";
 export type * from "#metalbrain/runtimes/types/MessageTokens";
@@ -102,6 +108,8 @@ export type * from "#metalbrain/runtimes/types/ToolPayload";
 // @end
 
 // @barrel utils
+export { createDispatchEnvironment } from "#metalbrain/runtimes/utils/createDispatchEnvironment";
+export { createHookCommand } from "#metalbrain/runtimes/utils/createHookCommand";
 export { findCommandFamily } from "#metalbrain/runtimes/utils/findCommandFamily";
 export { findOutputOverrun } from "#metalbrain/runtimes/utils/findOutputOverrun";
 export { findWordCapVerdict } from "#metalbrain/runtimes/utils/findWordCapVerdict";
@@ -114,12 +122,14 @@ export { formatAgentRuns } from "#metalbrain/runtimes/utils/formatAgentRuns";
 export { formatCount } from "#metalbrain/runtimes/utils/formatCount";
 export { formatMarkdownTable } from "#metalbrain/runtimes/utils/formatMarkdownTable";
 export { hasPreferredAgents } from "#metalbrain/runtimes/utils/hasPreferredAgents";
+export { matchesHookEntry } from "#metalbrain/runtimes/utils/matchesHookEntry";
 export { parseAgentRunFile } from "#metalbrain/runtimes/utils/parseAgentRunFile";
 export { priceAgentUsage } from "#metalbrain/runtimes/utils/priceAgentUsage";
 export { resolveAgentRunFile } from "#metalbrain/runtimes/utils/resolveAgentRunFile";
 export { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/utils/resolveClaudeAgentTranscript";
 export { resolveHookDirectory } from "#metalbrain/runtimes/utils/resolveHookDirectory";
 export { summarizeAgentCalls } from "#metalbrain/runtimes/utils/summarizeAgentCalls";
+export { summarizeAgentTask } from "#metalbrain/runtimes/utils/summarizeAgentTask";
 export { weighAgentUsage } from "#metalbrain/runtimes/utils/weighAgentUsage";
 // @end
 
@@ -128,6 +138,7 @@ export type * from "#metalbrain/runtimes/ports/AgentDispatcher";
 export type * from "#metalbrain/runtimes/ports/AgentRuntime";
 export type * from "#metalbrain/runtimes/ports/HostCheck";
 export type * from "#metalbrain/runtimes/ports/HostChecks";
+export type * from "#metalbrain/runtimes/ports/IssueFinder";
 // @end
 
 // @barrel config/schemas

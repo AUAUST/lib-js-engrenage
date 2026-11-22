@@ -19,6 +19,7 @@ import {
   getSkillTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
+import { hookRoots } from "#tools/metalbrain/constants";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
@@ -68,6 +69,7 @@ export function createBacklogStep(): Step {
           extensions,
           renderer,
           runtimes,
+          roots: hookRoots,
         }),
       ]);
 
@@ -118,7 +120,7 @@ export function createBacklogStep(): Step {
 
       await addAgentRules(context, ["backlog"]);
 
-      await addAgentSkills(context, skills);
+      await addAgentSkills(context, skills, hookRoots);
 
       await syncAgentFiles(context);
     },

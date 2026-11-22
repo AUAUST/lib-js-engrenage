@@ -3,12 +3,11 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import { isMissingError, resolveWithin } from "#foundation/filesystem/index";
-import {
-  readClaudeAgentMeta,
-  readRunningAgents,
-  resolveAgentRunFile,
-} from "#metalbrain/runtimes/index";
-import { recordClaudeRun } from "#tools/agents/claude/operations/recordClaudeRun";
+import { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
+import { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+import { recordClaudeRun } from "#metalbrain/runtimes/operations/recordClaudeRun";
+import { resolveAgentRunFile } from "#metalbrain/runtimes/utils/resolveAgentRunFile";
+import type { IssueFinder } from "#metalbrain/runtimes/ports/IssueFinder";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -54,6 +53,7 @@ async function findLegacyTranscript(
 export async function reconcileClaudeRuns(
   directory: Directory,
   sessions: readonly string[],
+  findIssue: IssueFinder,
 ): Promise<void> {
   for (const session of sessions) {
     const markers = await readRunningAgents(resolveWithin(directory, session));
@@ -81,6 +81,7 @@ export async function reconcileClaudeRuns(
         },
         transcript,
         {
+          findIssue,
           stopped: false,
         },
       );

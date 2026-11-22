@@ -10,7 +10,8 @@ import {
   listReferences,
   relocateInstructionReference,
 } from "#metalbrain/instructions/index";
-import { formerCodexFiles, skillFileName } from "#tools/agents/constants";
+import { formerCodexFiles } from "#metalbrain/runtimes/constants";
+import { skillFileName } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#metalbrain/runtimes/index";

@@ -1,8 +1,10 @@
 import {
   formatAgentCheck,
   type AgentCheckFinding,
+  type HookRoots,
 } from "#metalbrain/runtimes/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import type { InstructionFormatter } from "#metalbrain/instructions/index";
 import type { LoadedConfig } from "#project/config/index";
 
 const levels = {
@@ -13,8 +15,11 @@ const levels = {
   "runtime-unverified": "info",
 } as const satisfies Record<AgentCheckFinding["status"], "warn" | "info">;
 
-export async function reportAgentChecks(config: LoadedConfig) {
-  const findings = await checkAgents(config);
+export async function reportAgentChecks(
+  config: LoadedConfig,
+  { format, roots }: { format: InstructionFormatter; roots: HookRoots },
+) {
+  const findings = await checkAgents(config, { format, roots });
 
   const { reporter } = config.context;
 

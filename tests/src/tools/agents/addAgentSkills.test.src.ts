@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+import { hookRoots } from "#tools/metalbrain/constants";
 
 async function loadConsumer() {
   const project = createTemporaryProject({
@@ -17,7 +18,7 @@ describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["debugging"]);
+    await addAgentSkills(config, ["debugging"], hookRoots);
 
     expect(config.context.filesystem.changes()).toEqual(
       [
@@ -40,7 +41,7 @@ describe("addAgentSkills", () => {
   test("writes the agent model and effort to the Claude Code agent", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["implement"]);
+    await addAgentSkills(config, ["implement"], hookRoots);
 
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
@@ -52,7 +53,7 @@ describe("addAgentSkills", () => {
   test("lets the curation skill be invoked implicitly", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["curation"]);
+    await addAgentSkills(config, ["curation"], hookRoots);
 
     expect(
       await config.context.filesystem.read(".claude/skills/curation/SKILL.md"),
@@ -66,13 +67,17 @@ describe("addAgentSkills", () => {
   test("installs agents selectively, once", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["implement"]);
+    await addAgentSkills(config, ["implement"], hookRoots);
 
     expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
       [".claude/agents/worker.md"],
     );
 
-    await addAgentSkills(config, ["debugging", "planning", "curation"]);
+    await addAgentSkills(
+      config,
+      ["debugging", "planning", "curation"],
+      hookRoots,
+    );
 
     expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
       [
@@ -84,12 +89,11 @@ describe("addAgentSkills", () => {
 
     await config.context.filesystem.flush();
 
-    await addAgentSkills(config, [
-      "implement",
-      "debugging",
-      "planning",
-      "curation",
-    ]);
+    await addAgentSkills(
+      config,
+      ["implement", "debugging", "planning", "curation"],
+      hookRoots,
+    );
 
     expect(config.context.filesystem.changes()).toEqual([]);
   });
@@ -102,8 +106,8 @@ describe("addAgentSkills", () => {
 
     const config = await loadConfig(project.root);
 
-    await expect(addAgentSkills(config, ["planning"])).rejects.toThrow(
-      "agents.preferred",
-    );
+    await expect(
+      addAgentSkills(config, ["planning"], hookRoots),
+    ).rejects.toThrow("agents.preferred");
   });
 });

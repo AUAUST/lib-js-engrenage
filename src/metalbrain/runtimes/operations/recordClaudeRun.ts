@@ -4,16 +4,15 @@ import {
   resolveWithin,
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
-import {
-  parseThoroughnessState,
-  readClaudeTranscript,
-  summarizeAgentCalls,
-  thoroughnessExtension,
-  writeAgentRun,
-  type AgentRun,
-  type AgentRunThoroughness,
-} from "#metalbrain/runtimes/index";
-import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
+import { thoroughnessExtension } from "#metalbrain/runtimes/constants";
+import { parseThoroughnessState } from "#metalbrain/runtimes/hooks/index";
+import { readClaudeTranscript } from "#metalbrain/runtimes/operations/readClaudeTranscript";
+import { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
+import { summarizeAgentCalls } from "#metalbrain/runtimes/utils/summarizeAgentCalls";
+import { summarizeAgentTask } from "#metalbrain/runtimes/utils/summarizeAgentTask";
+import type { IssueFinder } from "#metalbrain/runtimes/ports/IssueFinder";
+import type { AgentRun } from "#metalbrain/runtimes/types/AgentRun";
+import type { AgentRunThoroughness } from "#metalbrain/runtimes/types/AgentRunThoroughness";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -53,7 +52,7 @@ export async function recordClaudeRun(
   directory: Directory,
   run: Pick<AgentRun, "runtime" | "session" | "agent" | "role">,
   transcript: File,
-  options?: { stopped?: boolean },
+  { findIssue, ...options }: { findIssue: IssueFinder; stopped?: boolean },
 ): Promise<AgentRun | undefined> {
   // @debt Claude Code fires SubagentStop for agents it never writes a transcript for, which agents is unknown, so a missing transcript is skipped instead of identified
   const read = await readClaudeTranscript(transcript).catch(
@@ -73,7 +72,7 @@ export async function recordClaudeRun(
         {
           ...run,
           ...summarizeAgentCalls(read),
-          ...summarizeAgentTask(run, read),
+          ...summarizeAgentTask(run, read, findIssue),
           ...(await readRunThoroughness(directory, run)),
         },
         options,

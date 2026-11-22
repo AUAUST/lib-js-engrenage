@@ -3,26 +3,30 @@ import {
   formatReferenceMarker,
   listStaleSkillFiles,
   syncFrontmatter,
+  type InstructionFormatter,
 } from "#metalbrain/instructions/index";
 import {
   claudeAgentsDir,
   claudeFile,
   claudeSkillsDir,
 } from "#metalbrain/runtimes/constants";
-import { loadFormatter } from "#project/format/index";
+import {
+  checkAgentHooks,
+  type Agent,
+  type AgentCheckFinding,
+  type HookRoots,
+} from "#metalbrain/runtimes/index";
 import { agentsFile } from "#tools/agents/constants";
-import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 
 // @debt matches each runtime's skills and agents directories by hand instead of reading them from its `agents.runtimes` contribution
 export async function checkAgents(
   config: LoadedConfig,
+  { format, roots }: { format: InstructionFormatter; roots: HookRoots },
 ): Promise<AgentCheckFinding[]> {
   const agents = await config.resolve("agents");
 
@@ -50,13 +54,12 @@ export async function checkAgents(
 
   const extensions = await listActiveExtensions(config);
 
-  const formatter = await loadFormatter(config);
-
   const templates = await getSkillTemplates({
     agents,
     extensions,
     renderer: await createFragmentRenderer(config),
     runtimes: await getAgentRuntimes(config),
+    roots,
   });
 
   for (const agent of preferred) {
@@ -120,11 +123,7 @@ export async function checkAgents(
       })) {
         const current = await filesystem.read(output.file);
 
-        const body = await formatSkillBody(output.body, {
-          path: output.file,
-          config,
-          formatter,
-        });
+        const body = await format(output.body, output.file);
 
         const valid = (
           current !== undefined &&
@@ -155,7 +154,7 @@ export async function checkAgents(
       }
     }
 
-    findings.push(...(await checkAgentHooks(filesystem, agent)));
+    findings.push(...(await checkAgentHooks(filesystem, agent, roots)));
 
     const version = await spawnProcess(agent, ["--version"], {
       cwd: root,

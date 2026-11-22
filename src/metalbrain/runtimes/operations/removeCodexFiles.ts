@@ -1,11 +1,12 @@
 import { isPlainObject, object } from "@auaust/toolkit";
 
 import { formatBlockMarker } from "#foundation/blocks/index";
-import { readJsonValue } from "#foundation/json/index";
+import { readJsonValue, type JsonIndentation } from "#foundation/json/index";
 import { markdownBlocks } from "#metalbrain/instructions/constants";
-import { formerCodexFiles } from "#tools/agents/constants";
-import { syncHooks } from "#tools/agents/operations/syncHooks";
+import { formerCodexFiles } from "#metalbrain/runtimes/constants";
+import { syncHooks } from "#metalbrain/runtimes/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
 
 /**
  * Removes the Codex instructions and hooks engrenage generated before Codex
@@ -16,8 +17,10 @@ import type { Filesystem } from "#foundation/filesystem/index";
 export async function removeCodexFiles(config: {
   filesystem: Filesystem;
   resolve(...paths: string[]): string;
+  roots: HookRoots;
+  indentation: JsonIndentation;
 }) {
-  const { filesystem } = config;
+  const { filesystem, roots, indentation } = config;
 
   const { instructions, hooks: file, hookMarkers } = formerCodexFiles;
 
@@ -35,6 +38,8 @@ export async function removeCodexFiles(config: {
     file,
     hooks: [],
     markers: hookMarkers,
+    roots,
+    indentation,
   });
 
   const remaining = readJsonValue(

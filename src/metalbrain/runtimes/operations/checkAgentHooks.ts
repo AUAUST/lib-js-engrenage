@@ -6,9 +6,11 @@ import {
   claudeHooks,
   claudeSettingsFile,
 } from "#metalbrain/runtimes/constants";
-import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
+import { matchesHookEntry } from "#metalbrain/runtimes/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";
+import type { Agent } from "#metalbrain/runtimes/types/Agent";
+import type { AgentCheckFinding } from "#metalbrain/runtimes/types/AgentCheckFinding";
+import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
 
 // @debt duplicates the hooks schema of syncHooks
 const hooksSchema = optional(
@@ -41,6 +43,7 @@ const claudeConfigSchema = looseObject({
 export async function checkAgentHooks(
   filesystem: Filesystem,
   agent: Agent,
+  roots: HookRoots,
 ): Promise<AgentCheckFinding[]> {
   const findings: AgentCheckFinding[] = [];
 
@@ -70,7 +73,7 @@ export async function checkAgentHooks(
         const found = present[hook.event]?.some((group) => {
           return (
             group.matcher === hook.matcher &&
-            group.hooks?.some((entry) => matchesHookEntry(entry, hook))
+            group.hooks?.some((entry) => matchesHookEntry(entry, hook, roots))
           );
         });
 

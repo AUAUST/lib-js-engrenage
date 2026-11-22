@@ -8,6 +8,8 @@ import { linkPrettier } from "#tests/utils/linkPrettier";
 import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 import { syncClaudeSettings } from "#tools/metalbrain/claude/index";
+import { hookRoots } from "#tools/metalbrain/constants";
+import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
   const {
@@ -34,7 +36,7 @@ async function fixture(skills: readonly string[] = ["implement"]) {
 
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(config, skills);
+  await addAgentSkills(config, skills, hookRoots);
 
   await syncClaudeSettings(config);
 
@@ -48,7 +50,10 @@ async function fixture(skills: readonly string[] = ["implement"]) {
 test("reports generated configuration without asserting runtime trust or changing files", async () => {
   const config = await fixture();
 
-  const findings = await checkAgents(config);
+  const findings = await checkAgents(config, {
+    format: await loadInstructionFormatter(config),
+    roots: hookRoots,
+  });
 
   expect(findings.some(({ status }) => status === "conflicting")).toBe(false);
 
@@ -79,7 +84,12 @@ test("distinguishes an unavailable client from another unverified version", asyn
     signal: null,
   });
 
-  expect(await checkAgents(config)).toEqual(
+  expect(
+    await checkAgents(config, {
+      format: await loadInstructionFormatter(config),
+      roots: hookRoots,
+    }),
+  ).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         status: "unsupported",
@@ -96,7 +106,12 @@ test("distinguishes an unavailable client from another unverified version", asyn
     signal: null,
   });
 
-  expect(await checkAgents(config)).toEqual(
+  expect(
+    await checkAgents(config, {
+      format: await loadInstructionFormatter(config),
+      roots: hookRoots,
+    }),
+  ).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         status: "runtime-unverified",
@@ -127,7 +142,10 @@ test("recognizes inspected Claude capabilities while leaving effective overrides
     signal: null,
   });
 
-  const findings = await checkAgents(config);
+  const findings = await checkAgents(config, {
+    format: await loadInstructionFormatter(config),
+    roots: hookRoots,
+  });
 
   expect(findings).toEqual(
     expect.arrayContaining([
@@ -152,7 +170,12 @@ test("reports a missing installed skill when its agent file remains", async () =
 
   await config.context.filesystem.remove(".claude/skills/implement/SKILL.md");
 
-  expect(await checkAgents(config)).toEqual(
+  expect(
+    await checkAgents(config, {
+      format: await loadInstructionFormatter(config),
+      roots: hookRoots,
+    }),
+  ).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         status: "conflicting",
@@ -165,7 +188,10 @@ test("reports a missing installed skill when its agent file remains", async () =
 test("accepts a skill whose rendered table sync formats", async () => {
   const config = await fixture(["walking"]);
 
-  const findings = await checkAgents(config);
+  const findings = await checkAgents(config, {
+    format: await loadInstructionFormatter(config),
+    roots: hookRoots,
+  });
 
   expect(findings).toContainEqual(
     expect.objectContaining({

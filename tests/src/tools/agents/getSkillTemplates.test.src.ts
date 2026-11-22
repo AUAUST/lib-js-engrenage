@@ -5,12 +5,13 @@ import {
   claudeThoroughnessHookArgs,
   metalbrainHook,
 } from "#metalbrain/runtimes/constants";
+import { createHookCommand } from "#metalbrain/runtimes/utils/createHookCommand";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { createHookCommand } from "#tools/agents/utils/createHookCommand";
+import { hookRoots } from "#tools/metalbrain/constants";
 
 const skill = vi.hoisted(() => {
   return {
@@ -50,6 +51,7 @@ const thoroughnessHook = [
         type: "command",
         command: createHookCommand(
           `${claudeThoroughnessHookArgs} standard`,
+          hookRoots,
           metalbrainHook,
         ),
       },
@@ -77,6 +79,7 @@ async function renderSkills() {
     extensions: [],
     renderer: await createFragmentRenderer(config),
     runtimes: await getAgentRuntimes(config),
+    roots: hookRoots,
   });
 }
 
@@ -143,6 +146,7 @@ describe("getSkillTemplates", () => {
                 type: "command",
                 command: createHookCommand(
                   claudeStopHook.args,
+                  hookRoots,
                   claudeStopHook.program,
                 ),
               },

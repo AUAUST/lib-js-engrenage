@@ -12,6 +12,7 @@ export { syncFrontmatter } from "#metalbrain/instructions/operations/syncFrontma
 
 // @barrel ports
 export type * from "#metalbrain/instructions/ports/GeneratedRule";
+export type * from "#metalbrain/instructions/ports/InstructionFormatter";
 // @end
 
 // @barrel types

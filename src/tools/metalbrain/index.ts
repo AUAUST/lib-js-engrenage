@@ -35,6 +35,7 @@ export { limitClaudeOutput } from "#tools/metalbrain/operations/limitClaudeOutpu
 export { lintClaudeEdit } from "#tools/metalbrain/operations/lintClaudeEdit";
 export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
 export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
+export { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 export { recordClaudeStop } from "#tools/metalbrain/operations/recordClaudeStop";
 export { reportMissingExtensionRules } from "#tools/metalbrain/operations/reportMissingExtensionRules";

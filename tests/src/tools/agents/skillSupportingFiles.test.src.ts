@@ -6,7 +6,9 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { hookRoots } from "#tools/metalbrain/constants";
 import { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
+import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
@@ -70,7 +72,7 @@ function createProject({
 async function install(project: ReturnType<typeof createProject>) {
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(config, ["guide"]);
+  await addAgentSkills(config, ["guide"], hookRoots);
 
   await config.context.filesystem.flush();
 
@@ -107,7 +109,10 @@ describe("skill supporting files", () => {
       );
     }
 
-    const findings = await checkAgents(config);
+    const findings = await checkAgents(config, {
+      format: await loadInstructionFormatter(config),
+      roots: hookRoots,
+    });
 
     expect(
       findings
@@ -152,7 +157,10 @@ describe("skill supporting files", () => {
       expect(project.read(file)).toContain("`.claude/skills/guide/mode.md`");
     }
 
-    const findings = await checkAgents(config);
+    const findings = await checkAgents(config, {
+      format: await loadInstructionFormatter(config),
+      roots: hookRoots,
+    });
 
     expect(
       findings
@@ -280,7 +288,7 @@ describe("shared skill files", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(config, ["guide", "other"]);
+    await addAgentSkills(config, ["guide", "other"], hookRoots);
 
     await config.context.filesystem.flush();
 
@@ -306,7 +314,7 @@ describe("shared skill files", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(config, ["guide", "other"]);
+    await addAgentSkills(config, ["guide", "other"], hookRoots);
 
     await config.context.filesystem.flush();
 

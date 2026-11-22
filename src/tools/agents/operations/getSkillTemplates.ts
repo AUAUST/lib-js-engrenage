@@ -9,14 +9,17 @@ import {
   metalbrainHook,
 } from "#metalbrain/runtimes/constants";
 import {
+  createHookCommand,
+  type HookRoots,
+  type ResolvedAgents,
+} from "#metalbrain/runtimes/index";
+import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,
   skillFileName,
   skillFrontmatterKeys,
 } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
-import { createHookCommand } from "#tools/agents/utils/createHookCommand";
-import type { ResolvedAgents } from "#metalbrain/runtimes/index";
 import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
 import type { Extension } from "#project/config/index";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
@@ -28,11 +31,13 @@ export async function getSkillTemplates({
   extensions,
   renderer,
   runtimes,
+  roots,
 }: {
   agents: ResolvedAgents;
   extensions: readonly Extension[];
   renderer: FragmentRenderer;
   runtimes: readonly AgentRuntime[];
+  roots: HookRoots;
 }) {
   const preferred = agents.preferred ?? [];
 
@@ -189,6 +194,7 @@ export async function getSkillTemplates({
                   type: "command",
                   command: createHookCommand(
                     `${claudeThoroughnessHookArgs} ${thoroughness}`,
+                    roots,
                     metalbrainHook,
                   ),
                 },
@@ -203,6 +209,7 @@ export async function getSkillTemplates({
                     type: "command",
                     command: createHookCommand(
                       claudeStopHook.args,
+                      roots,
                       claudeStopHook.program,
                     ),
                   },

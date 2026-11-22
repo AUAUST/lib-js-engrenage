@@ -44,24 +44,24 @@ entries:
     title: Hook routers duplicate payload handling and output writing
     sites:
       - bin/metalbrain/hook/claude/actions/thoroughness.ts:28
-      - src/tools/agents/operations/checkAgentHooks.ts:25
+      - src/metalbrain/runtimes/operations/checkAgentHooks.ts:15
     why: the thoroughness hook writes its own stdout JSON beside the host-check runner's verdict rendering; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
     want: one hook-output writer and shared hook schemas.
   - id: 261122-3c97
     title: The hook directory is resolved twice, in shell and in Node
     sites:
-      - src/tools/agents/utils/createHookCommand.ts:6
+      - src/metalbrain/runtimes/utils/createHookCommand.ts:5
       - src/metalbrain/runtimes/utils/resolveHookDirectory.ts:5
     why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
     want: the config lookup skipping dependencies, read by both.
   - id: 261122-fc25
     title: Runtime behaviour branches on runtime names
     sites:
-      - src/tools/agents/operations/checkAgents.ts:24
-      - src/tools/agents/operations/getSkillTemplates.ts:69
-      - src/tools/agents/operations/getSkillTemplates.ts:137
+      - src/tools/agents/operations/checkAgents.ts:26
+      - src/tools/agents/operations/getSkillTemplates.ts:77
+      - src/tools/agents/operations/getSkillTemplates.ts:144
       - src/tools/agents/operations/migrateSkillFiles.ts:225
-      - src/tools/agents/utils/createDispatchEnvironment.ts:7
+      - src/metalbrain/runtimes/utils/createDispatchEnvironment.ts:5
       - src/metalbrain/runtimes/config/schemas/skillSchema.ts:36
     why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude, so a contributed runtime gets a bare name-and-description shape and leaks variables.
     want: the `agents.runtimes` contribution declares each; per-runtime renderings in separate fields.
@@ -151,7 +151,7 @@ entries:
   - id: 261122-69f8
     title: Run records hold no review findings or rework
     sites:
-      - src/tools/agents/utils/summarizeAgentTask.ts:64
+      - src/metalbrain/runtimes/utils/summarizeAgentTask.ts:61
     why: "#809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured."
     want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.
   - id: 261122-db71
@@ -177,3 +177,10 @@ entries:
       - bin/metalbrain/executable.ts:29
     why: engrenage-hook appended 'regenerate the hooks with pnpm install, then pnpm engrenage sync' to usage errors; metalbrain hook opens with the bare Commander error, so a consumer whose settings name a removed event is not told to sync.
     want: metalbrain hook usage errors name the install-and-sync fix, as engrenage-hook's did.
+  - id: 261122-fd50
+    title: metalbrain agents actions compose host inputs by hand
+    sites:
+      - bin/metalbrain/agents/actions/check.ts:9
+    why: "#830: each bin action loads the config, the instruction formatter and hookRoots itself; jscpd flags check.ts against bin/metalbrain/github/labels/actions/prune.ts"
+    want: one tools/metalbrain operation supplies the host inputs these actions pass
+    done: no bin/metalbrain action repeats the host input composition

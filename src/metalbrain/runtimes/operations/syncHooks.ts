@@ -3,13 +3,17 @@ import { array, boolean, looseObject, optional, record, string } from "valibot";
 import { object } from "@auaust/toolkit";
 
 import { emptyObjectFile } from "#foundation/json/constants";
-import { readJsonValue, writeJsonValue } from "#foundation/json/index";
+import {
+  readJsonValue,
+  writeJsonValue,
+  type JsonIndentation,
+} from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { jsonIndentation } from "#project/format/constants";
-import { createHookCommand } from "#tools/agents/utils/createHookCommand";
-import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
+import { createHookCommand } from "#metalbrain/runtimes/utils/createHookCommand";
+import { matchesHookEntry } from "#metalbrain/runtimes/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { HookDefinition } from "#metalbrain/runtimes/index";
+import type { HookDefinition } from "#metalbrain/runtimes/types/HookDefinition";
+import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
 import type { File } from "#types/File";
 
 const hooksSchema = optional(
@@ -45,10 +49,14 @@ export async function syncHooks(
     file,
     hooks,
     markers,
+    roots,
+    indentation,
   }: {
     file: File;
     hooks: readonly HookDefinition[];
     markers: readonly string[];
+    roots: HookRoots;
+    indentation: JsonIndentation;
   },
 ) {
   const path = resolve(file);
@@ -66,13 +74,7 @@ export async function syncHooks(
   }
 
   function remove(location: (string | number)[]) {
-    content = writeJsonValue(
-      content,
-      path,
-      location,
-      undefined,
-      jsonIndentation,
-    );
+    content = writeJsonValue(content, path, location, undefined, indentation);
   }
 
   function isProduced(
@@ -84,7 +86,7 @@ export async function syncHooks(
       return (
         hook.event === event &&
         hook.matcher === matcher &&
-        matchesHookEntry(entry, hook)
+        matchesHookEntry(entry, hook, roots)
       );
     });
   }
@@ -137,7 +139,7 @@ export async function syncHooks(
     const found = present[event]?.some((group) => {
       return (
         group.matcher === matcher &&
-        group.hooks?.some((entry) => matchesHookEntry(entry, hook))
+        group.hooks?.some((entry) => matchesHookEntry(entry, hook, roots))
       );
     });
 
@@ -151,12 +153,12 @@ export async function syncHooks(
           hooks: [
             {
               type: "command",
-              command: createHookCommand(args, program),
+              command: createHookCommand(args, roots, program),
               ...(async === undefined ? {} : { async }),
             },
           ],
         },
-        jsonIndentation,
+        indentation,
         {
           isArrayInsertion: true,
         },

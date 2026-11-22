@@ -4,11 +4,13 @@ import { object, optional, string } from "valibot";
 
 import {
   mainAgent,
+  reconcileClaudeRuns,
+  recordClaudeRun,
   statsDirectory,
   validateHookPayload,
   type HookContext,
 } from "#metalbrain/runtimes/index";
-import { reconcileClaudeRuns, recordClaudeRun } from "#tools/agents/index";
+import { findBriefedIssue } from "#tools/github/index";
 
 const payloadSchema = object({
   session_id: string(),
@@ -45,9 +47,12 @@ export async function recordClaudeStop(
       role,
     },
     agentTranscript,
+    {
+      findIssue: findBriefedIssue,
+    },
   );
 
   if (agent === mainAgent) {
-    await reconcileClaudeRuns(directory, [session]);
+    await reconcileClaudeRuns(directory, [session], findBriefedIssue);
   }
 }

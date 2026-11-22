@@ -6,10 +6,11 @@ import {
   listAgentSessions,
   readAgentRuns,
   readModelFacts,
+  reconcileClaudeRuns,
   resolveMainWorktree,
   type AgentRun,
 } from "#metalbrain/runtimes/index";
-import { reconcileClaudeRuns } from "#tools/agents/claude/index";
+import { findBriefedIssue } from "#tools/github/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -70,7 +71,11 @@ export default async function (
 
   const directory = resources.path("agents.stats");
 
-  await reconcileClaudeRuns(directory, await listAgentSessions(directory));
+  await reconcileClaudeRuns(
+    directory,
+    await listAgentSessions(directory),
+    findBriefedIssue,
+  );
 
   const runs = await readAgentRuns(directory);
 

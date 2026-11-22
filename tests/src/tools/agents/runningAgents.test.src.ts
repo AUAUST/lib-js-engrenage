@@ -4,9 +4,10 @@ import { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/index";
 import { readAgentRun } from "#metalbrain/runtimes/operations/readAgentRun";
 import { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
 import { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+import { reconcileClaudeRuns } from "#metalbrain/runtimes/operations/reconcileClaudeRuns";
 import { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { reconcileClaudeRuns } from "#tools/agents/claude/index";
+import { findBriefedIssue } from "#tools/github/index";
 
 test("reads running agents from JSON and legacy plain-text markers", async () => {
   const project = createTemporaryProject({
@@ -82,7 +83,7 @@ test("records finished runs left without a stop event and keeps unfinished ones 
     });
   }
 
-  await reconcileClaudeRuns(directory, ["session"]);
+  await reconcileClaudeRuns(directory, ["session"], findBriefedIssue);
 
   const running = await readRunningAgents(project.resolve(".ai/stats/session"));
 

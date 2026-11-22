@@ -3,11 +3,12 @@ import { delimiter, join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
+import { createDispatchEnvironment } from "#metalbrain/runtimes/utils/createDispatchEnvironment";
 import { createProjectConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { dispatchClaudeAgent } from "#tools/agents/claude/adapters/dispatchClaudeAgent";
-import { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
 import { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
+import { removePnpmRunEnvironment } from "#tools/pnpm/index";
 
 function createClient(name: string, output: string) {
   const project = createTemporaryProject();
@@ -115,20 +116,23 @@ describe("createDispatchEnvironment", () => {
     const binaries = join("/caller", "node_modules", ".bin");
 
     expect(
-      createDispatchEnvironment({
-        PATH: [binaries, "/usr/bin"].join(delimiter),
-        HOME: "/home/user",
-        ANTHROPIC_BASE_URL: "https://example.test",
-        CLAUDECODE: "1",
-        CLAUDE_CODE_SESSION_ID: "caller",
-        CLAUDE_EFFORT: "medium",
-        CLAUDE_CONFIG_DIR: "/config",
-        INIT_CWD: "/caller",
-        PNPM_PACKAGE_NAME: "caller",
-        PNPM_HOME: "/pnpm",
-        npm_config_user_agent: "pnpm",
-        pnpm_config_verify_deps_before_run: "false",
-      }),
+      createDispatchEnvironment(
+        {
+          PATH: [binaries, "/usr/bin"].join(delimiter),
+          HOME: "/home/user",
+          ANTHROPIC_BASE_URL: "https://example.test",
+          CLAUDECODE: "1",
+          CLAUDE_CODE_SESSION_ID: "caller",
+          CLAUDE_EFFORT: "medium",
+          CLAUDE_CONFIG_DIR: "/config",
+          INIT_CWD: "/caller",
+          PNPM_PACKAGE_NAME: "caller",
+          PNPM_HOME: "/pnpm",
+          npm_config_user_agent: "pnpm",
+          pnpm_config_verify_deps_before_run: "false",
+        },
+        removePnpmRunEnvironment,
+      ),
     ).toEqual({
       PATH: "/usr/bin",
       HOME: "/home/user",

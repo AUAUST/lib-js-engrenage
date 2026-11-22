@@ -3,7 +3,16 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { pnpmWorkspaceFile } from "#constants";
+import { gitDirectory } from "#tools/git/constants";
+import type { HookRoots } from "#metalbrain/runtimes/index";
+
 export const agentsTarget = "agents";
+
+export const hookRoots: HookRoots = freeze({
+  repository: gitDirectory,
+  workspace: pnpmWorkspaceFile,
+});
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const agentRuntimeEntry: StandardSchemaV1 = looseObject({

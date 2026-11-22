@@ -5,6 +5,7 @@ import { expect, test } from "vitest";
 import { findModelFact, readModelFacts } from "#metalbrain/runtimes/index";
 import { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
 import { readClaudeTranscript } from "#metalbrain/runtimes/operations/readClaudeTranscript";
+import { recordClaudeRun } from "#metalbrain/runtimes/operations/recordClaudeRun";
 import { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 import { findCommandFamily } from "#metalbrain/runtimes/utils/findCommandFamily";
 import { formatAgentAggregate } from "#metalbrain/runtimes/utils/formatAgentAggregate";
@@ -12,9 +13,9 @@ import { formatAgentOutcomes } from "#metalbrain/runtimes/utils/formatAgentOutco
 import { formatAgentRuns } from "#metalbrain/runtimes/utils/formatAgentRuns";
 import { formatCount } from "#metalbrain/runtimes/utils/formatCount";
 import { summarizeAgentCalls } from "#metalbrain/runtimes/utils/summarizeAgentCalls";
+import { summarizeAgentTask } from "#metalbrain/runtimes/utils/summarizeAgentTask";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { recordClaudeRun } from "#tools/agents/claude/index";
-import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
+import { findBriefedIssue } from "#tools/github/index";
 
 const usage = {
   input_tokens: 2,
@@ -105,7 +106,9 @@ test("summarizes a transcript once per message, skipping synthetic ones and torn
 
   const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
 
-  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
+  expect(
+    summarizeAgentTask({ agent: "agent" }, read, findBriefedIssue),
+  ).toEqual({
     issue: "AUAUST/lib-js-toolkit#204",
     outcome: "completion",
   });
@@ -392,7 +395,7 @@ async function createRecordedProject() {
     run: {
       ...identity,
       ...summarizeAgentCalls(read),
-      ...summarizeAgentTask(identity, read),
+      ...summarizeAgentTask(identity, read, findBriefedIssue),
     },
   };
 }
@@ -458,7 +461,9 @@ test("records the thoroughness warnings a run received", async () => {
     }),
   );
 
-  await recordClaudeRun(directory, run, project.resolve("agent.jsonl"));
+  await recordClaudeRun(directory, run, project.resolve("agent.jsonl"), {
+    findIssue: findBriefedIssue,
+  });
 
   const runs = await readAgentRuns(directory);
 
@@ -598,7 +603,9 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
 
   const read = await readClaudeTranscript(project.resolve("agent.jsonl"));
 
-  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
+  expect(
+    summarizeAgentTask({ agent: "agent" }, read, findBriefedIssue),
+  ).toEqual({
     issue: "AUAUST/lib-js-engrenage#809",
     backlog: ["261122-3fa9", "261120-00be"],
     outcome: "thoroughness",
@@ -613,6 +620,7 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
         brief: "Draft: /x/.ai/issues/a.md\n\ninner parts",
         report: "Scope stop: two issues",
       },
+      findBriefedIssue,
     ),
   ).toEqual({ draft: "/x/.ai/issues/a.md", outcome: "scope" });
 
@@ -620,12 +628,17 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
     summarizeAgentTask(
       { agent: "agent" },
       { brief: "Thoroughness: scoped", report: "Blocked: which owner?" },
+      findBriefedIssue,
     ),
   ).toEqual({ outcome: "blocked" });
 
-  expect(summarizeAgentTask({ agent: "main" }, { report: "Done." })).toEqual(
-    {},
-  );
+  expect(
+    summarizeAgentTask(
+      { agent: "main" },
+      { report: "Done." },
+      findBriefedIssue,
+    ),
+  ).toEqual({});
 });
 
 test("records no report for a transcript ending on a tool call", async () => {
@@ -659,7 +672,9 @@ test("records no report for a transcript ending on a tool call", async () => {
 
   expect(read.report).toBeUndefined();
 
-  expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
+  expect(
+    summarizeAgentTask({ agent: "agent" }, read, findBriefedIssue),
+  ).toEqual({
     outcome: "unreported",
   });
 });

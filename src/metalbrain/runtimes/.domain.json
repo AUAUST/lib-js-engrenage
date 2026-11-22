@@ -1,4 +1,4 @@
 {
   "specifier": "future/metalbrain/runtimes",
-  "purpose": "Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook payload checks and the ports hosts fill, over the cheap hook core."
+  "purpose": "Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core."
 }

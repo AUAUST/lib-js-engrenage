@@ -10,6 +10,7 @@ import {
   getSkillTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
+import { hookRoots } from "#tools/metalbrain/constants";
 import { getRunContext } from "#workflows/cli/index";
 import {
   loadValidatedConfig,
@@ -30,6 +31,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
     extensions: await listActiveExtensions(config),
     renderer: await createFragmentRenderer(config),
     runtimes: await getAgentRuntimes(config),
+    roots: hookRoots,
   });
 
   const installed = await Promise.all(
@@ -91,7 +93,7 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentSkills(config, names);
+  await addAgentSkills(config, names, hookRoots);
 
   await settleChanges(config, {
     check: false,

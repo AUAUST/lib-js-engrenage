@@ -19,8 +19,10 @@ import {
 import { writeRecordIndex } from "#metalbrain/records/index";
 import {
   hasPreferredAgents,
+  removeCodexFiles,
   type ResolvedAgents,
 } from "#metalbrain/runtimes/index";
+import { jsonIndentation } from "#project/format/constants";
 import {
   attributionRules,
   mainSharedDirectory,
@@ -37,8 +39,8 @@ import {
   getSkillTemplates,
   listActiveExtensions,
   migrateSkillFiles,
-  removeCodexFiles,
 } from "#tools/agents/index";
+import { hookRoots } from "#tools/metalbrain/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -239,6 +241,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     extensions: await listActiveExtensions(loaded),
     renderer: await createFragmentRenderer(loaded),
     runtimes: await getAgentRuntimes(loaded),
+    roots: hookRoots,
+    indentation: jsonIndentation,
   };
 
   if (!hasPreferredAgents(config.agents)) {

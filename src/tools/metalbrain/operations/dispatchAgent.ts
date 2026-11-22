@@ -1,7 +1,11 @@
 import { loadLazy } from "#foundation/modules/index";
-import { createDispatchEnvironment } from "#tools/agents/index";
+import {
+  createDispatchEnvironment,
+  type AgentDispatch,
+  type AgentReport,
+} from "#metalbrain/runtimes/index";
 import { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
-import type { AgentDispatch, AgentReport } from "#metalbrain/runtimes/index";
+import { removePnpmRunEnvironment } from "#tools/pnpm/index";
 import type { LoadedConfig } from "#project/config/index";
 
 /**
@@ -53,6 +57,9 @@ export async function dispatchAgent(
 
   return run({
     ...dispatch,
-    environment: createDispatchEnvironment(process.env),
+    environment: createDispatchEnvironment(
+      process.env,
+      removePnpmRunEnvironment,
+    ),
   });
 }

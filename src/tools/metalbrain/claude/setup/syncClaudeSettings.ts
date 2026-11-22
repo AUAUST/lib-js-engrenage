@@ -14,10 +14,10 @@ import {
   claudePermissions,
   claudeSettingsFile,
 } from "#metalbrain/runtimes/constants";
+import { syncHooks, type SubagentCacheTtl } from "#metalbrain/runtimes/index";
 import { jsonIndentation } from "#project/format/constants";
-import { syncHooks } from "#tools/agents/index";
+import { hookRoots } from "#tools/metalbrain/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { SubagentCacheTtl } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 
 async function syncAttribution(
@@ -152,6 +152,8 @@ export async function syncClaudeSettings(
     file: claudeSettingsFile,
     hooks: claudeHooks,
     markers: claudeHookMarkers,
+    roots: hookRoots,
+    indentation: jsonIndentation,
   });
 
   await syncPermissions(config);

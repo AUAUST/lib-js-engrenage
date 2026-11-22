@@ -1,13 +1,10 @@
 import { isRecordId } from "#metalbrain/records/index";
-import {
-  mainAgent,
-  type AgentOutcome,
-  type AgentRun,
-  type AgentTask,
-  type AgentTranscript,
-} from "#metalbrain/runtimes/index";
-import { reportMarkers } from "#tools/agents/constants";
-import { findBriefedIssue } from "#tools/github/index";
+import { mainAgent, reportMarkers } from "#metalbrain/runtimes/constants";
+import type { IssueFinder } from "#metalbrain/runtimes/ports/IssueFinder";
+import type { AgentOutcome } from "#metalbrain/runtimes/types/AgentOutcome";
+import type { AgentRun } from "#metalbrain/runtimes/types/AgentRun";
+import type { AgentTask } from "#metalbrain/runtimes/types/AgentTask";
+import type { AgentTranscript } from "#metalbrain/runtimes/types/AgentTranscript";
 
 const headerPattern = /^[A-Z][\w-]*:/u;
 
@@ -42,10 +39,11 @@ function findOutcome(report: string | undefined): AgentOutcome {
 export function summarizeAgentTask(
   { agent }: Pick<AgentRun, "agent">,
   { brief, report }: Pick<AgentTranscript, "brief" | "report">,
+  findIssue: IssueFinder,
 ): AgentTask {
   const headers = brief === undefined ? [] : readHeaders(brief);
 
-  const issue = brief === undefined ? undefined : findBriefedIssue(brief);
+  const issue = brief === undefined ? undefined : findIssue(brief);
 
   const draft = headers
     .map((line) => {
