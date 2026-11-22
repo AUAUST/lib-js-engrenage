@@ -118,7 +118,7 @@ When no integration merger runs:
 
 `.claude/skills/walking/review.md`
 
-3. Add the `@debt` markers the diff calls for and the agent missed.
+3. Record each finding of the diff or the agent's report left unrecorded.
 4. Resume the agent with all leaf findings in one message; then check only its fixes. Handle plan findings as §Integration, step 3, states.
 
 ## Commit

@@ -139,7 +139,7 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 | `#{new-foo}`         | Local draft `new-foo`                                                                                  |
 | `#{toolkit.new-foo}` | Local draft created in `toolkit`                                                                       |
 
-- Use only the types, fields, options and labels the planning sheet lists, by their GitHub names; it loads with the first draft you read.
+- Use only the types, fields, options and labels `.claude/rules/planning-sheet.md` lists, by their GitHub names: Read it before your first draft unless reading a draft loaded it.
 - Start by reading `.ai/issues/`, where other sessions draft too: resume only the drafts of your task, those the user names or those of the issues you were given. Edit, check and publish only those you created, claimed or resumed.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
 - Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest and body skeleton and lists the draft in its parent's `subIssues`.

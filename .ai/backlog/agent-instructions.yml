@@ -27,10 +27,6 @@ entries:
     title: Always-loaded context carries rules only some edits need
     why: the TypeScript section and structure design rows (~110 words each) load for every agent; cold starts are a third of worker and planner cost (#654); a `paths` rule misses files written without a matching Read.
     want: accept that leak or move them to `code-style.md` and a project-map rule.
-  - id: 261122-3294
-    title: The planning sheet misses agents that write a draft before reading one
-    why: '`.claude/rules/issues.md` says it "loads with the first draft you read"; with `.ai/issues/` empty or listed through Bash, the first draft is a Write, which loads no `paths` rule.'
-    want: the issues rule has drafting agents Read `.claude/rules/planning-sheet.md` before their first draft unless a draft read loaded it.
   - id: 261122-efd5
     title: A restarted walk holds completed leaf work instead of integrating it
     why: walking › Stops and restarts holds every leaf branch it finds; a completed leaf waits on the user, its agent gone.
@@ -64,10 +60,6 @@ entries:
       - src/metalbrain/instructions/utils/filterConditionalBlocks.ts:8
     why: "`listReferences` counts markers inside code, unlike `listInstructionMarkers`, while `syncBlocks` fills both; the filter guesses blank lines around markers without parsing Markdown."
     want: one Markdown-aware marker reader.
-  - id: 261122-7608
-    title: Agents guess the repository from the package name
-    why: friction ×3 (`AUAUST/engrenage` instead of `AUAUST/lib-js-engrenage`), once after `.claude/rules/github.md` took `--repo` from the planning sheet; dispatch briefs and `gh api graphql` owner/name arguments are outside that rule's wording.
-    want: the rule covering every repository argument, or a hook naming the registered repository on a 404 for an unregistered one.
   - id: 261122-9857
     title: Scratch scripts cannot import the project's packages
     why: "friction ×3: ESM resolves bare specifiers from the script's directory, so `prettier` or `eslint` imported from a scratchpad `.mjs` fails; agents use absolute `node_modules` paths or `node --input-type=module -e` from the root."
@@ -86,13 +78,6 @@ entries:
       - data/metalbrain/shared/worktree-dispatch.md:39
     why: "reported by a writer: the reset discards the agent's files, markers included; only the friction and discarded logs carry over."
     want: their markers carried over as backlog entries, or a stated reason to drop them.
-  - id: 261122-2cb2
-    title: Out-of-reach copies of the record-before-telling rule lag behind it
-    sites:
-      - data/metalbrain/skills/walking.md:114
-      - data/metalbrain/rules/issues.md:30
-    why: the agent-records rule now covers findings told in chat and those an agent reports; walking §Review still names only missed debt, and issues › Recording restates the chat rule for analysis and planning.
-    want: both pointing at the agent-records rule.
   - id: 261122-bae5
     title: No hook reminds a main session of records due at turn end
     why: "proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only."
@@ -152,7 +137,7 @@ entries:
     title: Sync and the writer can raise word caps without a user decision
     sites:
       - data/metalbrain/skills/instruction-writing.md:62
-      - src/tools/metalbrain/claude/setup/checkWordBudgets.ts:141
+      - src/tools/metalbrain/claude/setup/checkWordCaps.ts:170
     want: Only a step the user takes raises a cap; sync only lowers caps
   - id: 261122-0407
     title: instruction-writing's Draft step does not count rewordings, so a rule reworded longer passes as unchanged
