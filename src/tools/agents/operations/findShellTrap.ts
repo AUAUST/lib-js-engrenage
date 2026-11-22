@@ -1,5 +1,6 @@
 import {
   parseShell,
+  ShellSyntaxError,
   type ShellCommand,
   type ShellWord,
 } from "#foundation/shell/index";
@@ -85,8 +86,7 @@ export function findShellTrap(command: string) {
   try {
     commands = parseShell(command);
   } catch (error) {
-    // @debt `parseShell` leaks sh-syntax's own `ShSyntaxError` for zsh-only syntax instead of a `ShellSyntaxError`, so only the shared `SyntaxError` base tells both apart from a crash
-    if (error instanceof SyntaxError) {
+    if (error instanceof ShellSyntaxError) {
       return;
     }
 

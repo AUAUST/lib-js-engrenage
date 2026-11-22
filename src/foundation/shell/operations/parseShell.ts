@@ -13,10 +13,12 @@ import type {
 import type {
   BinCmdOperator,
   createSourceIndex,
+  ErrorCode,
   LangVariant,
   parse,
   ParseError,
   RedirOperator,
+  ShSyntaxError,
 } from "sh-syntax/sync";
 
 import { isArray } from "@auaust/toolkit";
@@ -24,6 +26,8 @@ import { isArray } from "@auaust/toolkit";
 import { ShellSyntaxError } from "#foundation/shell/errors/ShellSyntaxError";
 import { isNode } from "#foundation/shell/utils/isNode";
 import { isRebound } from "#foundation/shell/utils/isRebound";
+import { readColumn } from "#foundation/shell/utils/readColumn";
+import { readDialectError } from "#foundation/shell/utils/readDialectError";
 import { readLiteral } from "#foundation/shell/utils/readLiteral";
 import { unescapeShell } from "#foundation/shell/utils/unescapeShell";
 import type { ShellAssignment } from "#foundation/shell/types/ShellAssignment";
@@ -34,6 +38,8 @@ import type { ShellWord } from "#foundation/shell/types/ShellWord";
 interface Parser {
   readonly parse: typeof parse;
   readonly ParseError: typeof ParseError;
+  readonly ShSyntaxError: typeof ShSyntaxError;
+  readonly ErrorCode: typeof ErrorCode;
   readonly LangVariant: typeof LangVariant;
   readonly BinCmdOperator: typeof BinCmdOperator;
   readonly RedirOperator: typeof RedirOperator;
@@ -402,26 +408,19 @@ function createReader(
   return { readStatements };
 }
 
-function readColumn(
-  source: string,
-  offset: number,
-  { createSourceIndex }: Parser,
-) {
-  const before = source.slice(0, createSourceIndex(source)(offset));
-
-  return before.length - before.lastIndexOf("\n");
-}
-
 /**
  * Lists every simple command the Bash `source` runs, in source order, each command
  * nested in a substitution following the command holding it. A `for` loop over
  * literal words lists its body once per word, the loop variable read as that word.
  * A command word holding an unquoted glob reads as a pattern; one starting with
  * an unquoted `=`, which zsh replaces with a command's path, as an expansion.
+ *
+ * @throws {ShellSyntaxError} `source` is no valid Bash, asking for POSIX sh when
+ * it uses another shell's feature.
  */
 export function parseShell(source: string): readonly ShellCommand[] {
   const loaded = loadParser();
-  const { parse, ParseError, LangVariant } = loaded;
+  const { parse, ParseError, ShSyntaxError, ErrorCode, LangVariant } = loaded;
 
   let file;
 
@@ -432,8 +431,17 @@ export function parseShell(source: string): readonly ShellCommand[] {
       throw new ShellSyntaxError(
         error.text,
         error.pos?.line ?? 0,
-        error.pos == null ? 0 : readColumn(source, error.pos.offset, loaded),
+        error.pos == null
+          ? 0
+          : readColumn(
+              source,
+              loaded.createSourceIndex(source)(error.pos.offset),
+            ),
       );
+    }
+
+    if (error instanceof ShSyntaxError && error.code === ErrorCode.Language) {
+      throw readDialectError(source, error.message);
     }
 
     throw error;

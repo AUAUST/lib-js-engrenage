@@ -22,6 +22,18 @@ test("denies a command that is not valid shell", async () => {
   );
 });
 
+test("denies zsh-only syntax, asking for POSIX sh", async () => {
+  await expect(
+    git({
+      tool_input: { command: "git add ${(f)files}" },
+    }),
+  ).resolves.toBe(true);
+
+  expect(process.stdout.write).toHaveBeenCalledWith(
+    expect.stringContaining("are a zsh feature: write POSIX sh"),
+  );
+});
+
 test("lets a valid command without a bypass through", async () => {
   await expect(
     git({

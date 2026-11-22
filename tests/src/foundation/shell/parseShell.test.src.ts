@@ -151,4 +151,14 @@ describe("parseShell", () => {
       }),
     );
   });
+
+  test("reports zsh-only syntax at its character column", () => {
+    expect(() => parseShell("true\necho é ${(f)x}")).toThrow(
+      expect.objectContaining({
+        name: "ShellSyntaxError",
+        line: 2,
+        column: 8,
+      }),
+    );
+  });
 });
