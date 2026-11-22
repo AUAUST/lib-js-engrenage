@@ -7,6 +7,6 @@ paths:
 
 # Backlog
 
-- Never write an entry's `id` or the index's category list by hand: `.ai/backlog/index.md` names the command adding an entry, and sync renders the list.
+- Never write an entry's `id` or `.ai/backlog/index.yml` by hand: every backlog write regenerates the index, through the commands `.ai/backlog/index.md` names.
 
 <!-- @end -->

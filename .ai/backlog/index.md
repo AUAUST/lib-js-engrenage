@@ -10,7 +10,7 @@ Deferred questions, bugs, tasks and improvements.
 - Upstream work belongs to its dependency's product family. Packages forming one tool share a category: `@changesets/cli` and `@changesets/core`. Separate products stay separate: Vite/Vitest and `@auaust/toolkit`. A shared vendor or integration does not define a family.
 - Local coding conventions and linting belong to `coding-style`. Other local work belongs to the project subsystem whose behavior or contract must change.
 - Reuse the category owning that dependency family or subsystem. If none exists, create it without asking, even for one entry, with `pnpm metalbrain backlog create <owner> "<purpose>"`, the purpose naming the product or behavior it owns. No categories are required in advance.
-- Read only the categories whose purpose matches.
+- Read only the categories whose purpose in `index.yml` matches.
 
 ## Entries
 

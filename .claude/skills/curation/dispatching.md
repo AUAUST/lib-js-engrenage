@@ -2,7 +2,7 @@
 
 # Dispatching
 
-Rules for each agent you dispatch: when it runs beside others, its brief lines, its budget stop and the findings its report names. Your skill refines them; Analysis › Budget levels defines the levels and each agent's default.
+Rules for each agent you dispatch: when it runs beside others, its brief lines, its checkout and commits, its budget stop and the findings its report names. Your skill refines them; Analysis › Budget levels defines the levels and each agent's default.
 
 ## Parallel agents
 
@@ -10,6 +10,10 @@ Your skill's K, when it sets one, caps the agents it counts in flight at once. W
 
 - Run agents side by side only when none needs another's findings or work; otherwise one after the other, never in parallel with a reconciliation after.
 - Keep it cheap: each parallel agent pays a whole run to save waiting. A few gatherers on unrelated questions fit side by side; a second agent costing an analyser's run or more, only when the user asks or the decision waiting on both needs both now.
+
+## Checkout and commits
+
+Leave out of a brief where the agent works and what it commits, unless the user decided otherwise: its harness sets its checkout, its skill which of its steps it commits, and you commit the rest.
 
 ## Budget levels
 
