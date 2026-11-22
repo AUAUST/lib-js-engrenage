@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 
 import { describe, expect, test } from "vitest";
+import { parse } from "yaml";
 
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -18,7 +19,7 @@ function createProject() {
     "engrenage.config.ts": 'export default { runtime: { node: 24 }, agents: { preferred: ["claude"] } };',
     "src/index.ts": "",
     "src/a.ts": "",
-    ".ai/backlog/index.md": "# Backlog\n\n## Open categories\n\n- [tools](tools.yml): Tools.\n",
+    ".ai/backlog/index.md": "# Backlog\n",
     ".ai/backlog/tools.yml": tools,
   });
 
@@ -28,7 +29,7 @@ function createProject() {
 }
 
 describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
-  test("create writes the category and lists it in the index, refusing it once it exists", async () => {
+  test("create writes the category and lists it in index.yml, refusing it once it exists", async () => {
     const project = createProject();
 
     await runCommand("backlog", backlog, "create", "cli", "Command handling.");
@@ -37,9 +38,10 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
       "purpose: Command handling.\nentries: []\n",
     );
 
-    expect(project.read(".ai/backlog/index.md")).toContain(
-      "- [cli](cli.yml): Command handling.\n- [tools](tools.yml): Tools.",
-    );
+    expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      cli: { purpose: "Command handling.", entries: [] },
+      tools: { purpose: "Tools.", entries: ["261122-3fa9"] },
+    });
 
     await expect(
       runCommand("backlog", backlog, "create", "cli", "Again."),
@@ -72,6 +74,10 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     expect(project.read(".ai/backlog/tools.yml")).toBe(
       `${tools}  - id: ${id}\n    title: Another claim\n    sites:\n      - src/a.ts:1\n      - src/index.ts:1\n    why: reason\n    want:\n      - first\n      - second\n`,
     );
+
+    expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      tools: { purpose: "Tools.", entries: ["261122-3fa9", id] },
+    });
   });
 
   test("add writes nothing when an option breaks the schema, naming the violation", async () => {

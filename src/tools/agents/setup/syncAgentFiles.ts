@@ -1,6 +1,9 @@
 import { posix } from "node:path";
 
 import { syncFiles } from "#foundation/blocks/index";
+import { backlog, backlogIndex } from "#metalbrain/backlog/constants";
+import { migrateBacklogCategories } from "#metalbrain/backlog/index";
+import { writeRecordIndex } from "#metalbrain/records/index";
 import {
   attributionRules,
   mainSharedDirectory,
@@ -17,12 +20,11 @@ import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
-import { migrateBacklogCategories } from "#tools/agents/operations/migrateBacklogCategories";
+import { migrateBacklogIndex } from "#tools/agents/operations/migrateBacklogIndex";
 import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
-import { renderBacklogIndex } from "#tools/agents/operations/renderBacklogIndex";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
@@ -253,7 +255,11 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     config.agents.instructionFiles,
   );
 
-  await renderBacklogIndex(config.filesystem);
+  await migrateBacklogIndex(config.filesystem);
+
+  if (await config.filesystem.exists(backlogIndex)) {
+    await writeRecordIndex(config.filesystem, backlog);
+  }
 
   await syncAttributionRules(config);
 

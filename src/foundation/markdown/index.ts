@@ -1,4 +1,5 @@
 // @barrel utils
+export { countWords } from "#foundation/markdown/utils/countWords";
 export { listCodeRanges } from "#foundation/markdown/utils/listCodeRanges";
 export { listTableCells } from "#foundation/markdown/utils/listTableCells";
 export { replaceOutsideCode } from "#foundation/markdown/utils/replaceOutsideCode";

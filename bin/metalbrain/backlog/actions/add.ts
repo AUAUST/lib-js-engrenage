@@ -1,5 +1,6 @@
+import { backlog } from "#metalbrain/backlog/constants";
+import { addRecord } from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
-import { addBacklogEntry } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -19,8 +20,9 @@ export default async function (
 
   const agents = await config.resolve("agents");
 
-  const id = await addBacklogEntry(
+  const id = await addRecord(
     config.context.filesystem,
+    backlog,
     category,
     {
       title,
@@ -28,7 +30,7 @@ export default async function (
     },
     {
       day: new Date(),
-      budget: agents.budgets.backlogEntry,
+      budget: agents.budgets[backlog.budget],
     },
   );
 

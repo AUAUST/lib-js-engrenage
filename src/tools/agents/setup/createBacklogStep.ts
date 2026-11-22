@@ -1,7 +1,7 @@
 import { engrenage } from "#constants";
+import { backlogIndex } from "#metalbrain/backlog/constants";
 import {
   agentsFile,
-  backlogIndex,
   endMarker,
   metalbrain,
   scratchpadFile,
@@ -90,10 +90,7 @@ export function createBacklogStep(): Step {
       const { filesystem } = context;
 
       if (!(await filesystem.exists(backlogIndex))) {
-        await filesystem.write(
-          backlogIndex,
-          formatBacklogIndex("# Backlog", ["", "No open categories yet.", ""]),
-        );
+        await filesystem.write(backlogIndex, formatBacklogIndex("# Backlog"));
       }
 
       const instructions = await filesystem.read(agentsFile);

@@ -6,15 +6,14 @@ import { isString } from "@auaust/toolkit";
 
 import { splitSections } from "#foundation/markdown/index";
 import {
-  backlogCategoryExtension,
-  backlogDetailKeys,
+  backlog,
   backlogDirectory,
   backlogIndex,
   backlogReferenceFiles,
   legacyBacklogExtension,
-} from "#tools/agents/constants";
-import { createBacklogId } from "#tools/agents/operations/createBacklogId";
-import { listBacklogIds } from "#tools/agents/operations/listBacklogIds";
+} from "#metalbrain/backlog/constants";
+import { recordFileExtension } from "#metalbrain/records/constants";
+import { createRecordId, listRecordIds } from "#metalbrain/records/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Globs } from "#types/Globs";
 
@@ -37,7 +36,7 @@ const indexLinkPattern = /^- \[[^\]]*\]\(([\w-]+)\.md\):[ \t]*(\S.*?)[ \t]*$/u;
 const bulletPattern = /^- ([\w-]+):[ \t]*(.*)$/u;
 const itemPattern = /^\s+(?:[-*]|\d+\.)\s+(.*)$/u;
 const sitesPattern = /^`[^`]+`(?:, `[^`]+`)*$/u;
-const keyOrder = ["sites", ...backlogDetailKeys];
+const keyOrder = Object.keys(backlog.fields).filter((key) => key !== "title");
 
 function toValue({ key, text, items }: LegacyField): LegacyValue {
   if (key === "sites" && items.length === 0 && sitesPattern.test(text)) {
@@ -194,7 +193,7 @@ async function rewriteReferences(
   const files = await filesystem.glob([
     ...backlogReferenceFiles,
     ...instructionFiles,
-    `${backlogDirectory}/*${backlogCategoryExtension}`,
+    `${backlogDirectory}/*${recordFileExtension}`,
   ]);
 
   for (const file of files) {
@@ -237,7 +236,7 @@ export async function migrateBacklogCategories(
     return;
   }
 
-  const taken = await listBacklogIds(filesystem);
+  const taken = await listRecordIds(filesystem, backlog);
 
   const indexPurposes = await readIndexPurposes(filesystem);
 
@@ -246,7 +245,7 @@ export async function migrateBacklogCategories(
   for (const file of files) {
     const name = posix.basename(file, legacyBacklogExtension);
 
-    const target = `${backlogDirectory}/${name}${backlogCategoryExtension}`;
+    const target = `${backlogDirectory}/${name}${recordFileExtension}`;
 
     if (await filesystem.exists(target)) {
       throw new Error(
@@ -263,7 +262,7 @@ export async function migrateBacklogCategories(
     const { purpose, entries } = parseLegacyCategory(content);
 
     const migrated = entries.map(({ number, title, fields }) => {
-      const id = createBacklogId(taken, day);
+      const id = createRecordId(taken, day);
 
       taken.add(id);
 

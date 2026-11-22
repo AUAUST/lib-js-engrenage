@@ -4,6 +4,7 @@
     "#bin/*",
     "#constants",
     "#foundation/*",
+    "#metalbrain/*",
     "#package.json",
     "#project/*",
     "#scripts/*",

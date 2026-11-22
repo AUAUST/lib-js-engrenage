@@ -1,6 +1,9 @@
-import { findBacklogViolations } from "#tools/agents/operations/findBacklogViolations";
+import { backlog } from "#metalbrain/backlog/constants";
+import {
+  findRecordViolations,
+  throwViolations,
+} from "#metalbrain/records/index";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
-import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkBacklog(config: LoadedConfig): Promise<void> {
@@ -12,9 +15,10 @@ export async function checkBacklog(config: LoadedConfig): Promise<void> {
 
   throwViolations(
     "Backlog categories depart from the backlog file schema:",
-    await findBacklogViolations(
+    await findRecordViolations(
       config.context.filesystem,
-      agents.budgets.backlogEntry,
+      backlog,
+      agents.budgets[backlog.budget],
     ),
   );
 }

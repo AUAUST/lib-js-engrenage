@@ -1,5 +1,5 @@
+import { formatBudgetFinding } from "#metalbrain/records/index";
 import { writeHookContext } from "#tools/agents/operations/writeHookContext";
-import { formatBudgetFinding } from "#tools/agents/utils/formatBudgetFinding";
 import type { BudgetFinding } from "#tools/agents/types/BudgetFinding";
 import type { BudgetMode } from "#tools/agents/types/BudgetMode";
 import type { HookEvent } from "#tools/agents/types/HookEvent";

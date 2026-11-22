@@ -1,5 +1,5 @@
+import { createBacklogCategory } from "#metalbrain/backlog/index";
 import { settleChanges } from "#project/sync/index";
-import { createBacklogCategory } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 

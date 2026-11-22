@@ -1,5 +1,5 @@
+import { countWords } from "#foundation/markdown/index";
 import { ShellSyntaxError } from "#foundation/shell/index";
-import { countWords } from "#tools/agents/utils/countWords";
 import {
   parseGithubCommand,
   parseIssueBody,

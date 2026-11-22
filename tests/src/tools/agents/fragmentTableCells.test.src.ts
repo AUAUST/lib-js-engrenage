@@ -3,9 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-import { listTableCells } from "#foundation/markdown/index";
+import { countWords, listTableCells } from "#foundation/markdown/index";
 import { tableCellWords } from "#tools/agents/constants";
-import { countWords } from "#tools/agents/utils/countWords";
 
 const shippedData = fileURLToPath(
   new URL("../../../../data/", import.meta.url),

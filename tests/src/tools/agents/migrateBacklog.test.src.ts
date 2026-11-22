@@ -5,12 +5,13 @@ import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
 
 import { resolveDataFile } from "#foundation/data/index";
+import { backlogIndex } from "#metalbrain/backlog/constants";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
-import { backlogIndex, backlogTemplate } from "#tools/agents/constants";
+import { backlogTemplate } from "#tools/agents/constants";
 
 function createProject(
   index: string,
@@ -38,7 +39,7 @@ async function sync(root: string) {
 }
 
 describe("backlog migration", () => {
-  test("replaces the inline instructions with the template block", async () => {
+  test("replaces the inline instructions with the template block, the category list with index.yml", async () => {
     const project = createProject(
       [
         "# Backlog",
@@ -68,9 +69,11 @@ describe("backlog migration", () => {
     expect(index).toContain(template.trim());
     expect(index).not.toContain("An outdated rule.");
 
-    expect(index).toContain(
-      "## Open categories\n\n- [toolkit](toolkit.yml): Upstream toolkit decisions.\n",
-    );
+    expect(index).not.toContain("## Open categories");
+
+    expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      toolkit: { purpose: "Upstream toolkit decisions.", entries: [] },
+    });
 
     const changes = await collectChanges(
       await loadConfig(project.root, { reporter: createTestReporter() }),
@@ -80,12 +83,6 @@ describe("backlog migration", () => {
     );
 
     expect(changes.filter(({ file }) => file === backlogIndex)).toEqual([]);
-  });
-
-  test("fails on an index without the categories heading", async () => {
-    const project = createProject("# Backlog\n\nDeferred work.\n");
-
-    await expect(sync(project.root)).rejects.toThrow('"## Open categories"');
   });
 
   test("converts a legacy category, rewriting its references, once", async () => {
@@ -157,9 +154,10 @@ describe("backlog migration", () => {
       `# Tools\n\nSee ${second.id}.\n`,
     );
 
-    expect(project.read(backlogIndex)).toContain(
-      "## Open categories\n\n- [misc](misc.yml): Miscellany.\n- [tools](tools.yml): Tool integrations.\n",
-    );
+    expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      misc: { purpose: "Miscellany.", entries: [expect.any(String)] },
+      tools: { purpose: "Tool integrations.", entries: [first.id, second.id] },
+    });
 
     const changes = await collectChanges(
       await loadConfig(project.root, { reporter: createTestReporter() }),

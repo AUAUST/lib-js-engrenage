@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < batiment < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
+src/  foundation < batiment < metalbrain < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
 ├─ batiment/  #batiment/…  report < roles < environments < scopes < structure  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
 │  ├─ environments  Declare environment kinds and the namespace and domain declarations structuring them.
 │  ├─ report  The structure report's diagnostics and their codes, shared by every batiment domain.
@@ -26,6 +26,9 @@ src/  foundation < batiment < project < tools < workflows  (global roles: types 
 │  ├─ processes  Run external processes.
 │  ├─ reports  Report typed messages to the handler the running context chooses.
 │  └─ shell  Parse shell commands into the simple commands they run.
+├─ metalbrain/  #metalbrain/…  records < *  The agent layer the `metalbrain` commands serve: agent records and their kinds.
+│  ├─ backlog  The backlog record kind: its declaration, its categories and the migration of legacy Markdown categories.
+│  └─ records  The record core: the kind contract, its YAML store, entry IDs, schema and word-budget checks, and the generated index.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.

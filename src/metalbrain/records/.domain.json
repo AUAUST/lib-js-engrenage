@@ -1,0 +1,3 @@
+{
+  "purpose": "The record core: the kind contract, its YAML store, entry IDs, schema and word-budget checks, and the generated index."
+}

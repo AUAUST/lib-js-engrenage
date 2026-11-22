@@ -1,5 +1,5 @@
+import { isRecordId } from "#metalbrain/records/index";
 import { mainAgent, reportMarkers } from "#tools/agents/constants";
-import { isBacklogId } from "#tools/agents/utils/isBacklogId";
 import { findBriefedIssue } from "#tools/github/index";
 import type { AgentOutcome } from "#tools/agents/types/AgentOutcome";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
@@ -55,7 +55,7 @@ export function summarizeAgentTask(
       return backlogPattern.exec(line)?.[1];
     })
     .filter((entry) => entry !== undefined)
-    .filter(isBacklogId);
+    .filter(isRecordId);
 
   return {
     ...(issue === undefined

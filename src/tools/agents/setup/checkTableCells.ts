@@ -1,8 +1,7 @@
-import { listTableCells } from "#foundation/markdown/index";
+import { countWords, listTableCells } from "#foundation/markdown/index";
+import { throwViolations } from "#metalbrain/records/index";
 import { tableCellWords } from "#tools/agents/constants";
-import { countWords } from "#tools/agents/utils/countWords";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
-import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkTableCells(config: LoadedConfig): Promise<void> {

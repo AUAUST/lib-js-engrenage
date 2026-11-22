@@ -4,6 +4,7 @@ import { integer, minValue, number, pipe, record, string } from "valibot";
 
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { throwViolations } from "#metalbrain/records/index";
 import {
   claudeAgentsDir,
   claudeFile,
@@ -14,7 +15,6 @@ import {
 } from "#tools/agents/claude/constants";
 import { agentsFile } from "#tools/agents/constants";
 import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 

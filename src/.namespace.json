@@ -1,3 +1,10 @@
 {
-  "layers": ["foundation", "batiment", "project", "tools", "workflows"]
+  "layers": [
+    "foundation",
+    "batiment",
+    "metalbrain",
+    "project",
+    "tools",
+    "workflows"
+  ]
 }

@@ -1,9 +1,9 @@
+import { throwViolations } from "#metalbrain/records/index";
 import { addRuleCommand } from "#tools/agents/constants";
 import { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { listMentionedFiles } from "#tools/agents/utils/listMentionedFiles";
 import { listReferenceBlocks } from "#tools/agents/utils/listReferenceBlocks";
-import { throwViolations } from "#tools/agents/utils/throwViolations";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 

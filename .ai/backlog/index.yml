@@ -1,0 +1,383 @@
+# Generated from the backlog files by every backlog write. Do not edit.
+agent-instructions:
+  purpose: Shared agent instructions, skills and the backlog conventions.
+  entries:
+    - 261122-378b
+    - 261122-c3cc
+    - 261122-1d61
+    - 261122-b57e
+    - 261122-041c
+    - 261122-889f
+    - 261122-3294
+    - 261122-efd5
+    - 261122-a02c
+    - 261122-c820
+    - 261122-a3cf
+    - 261122-8863
+    - 261122-477b
+    - 261122-7608
+    - 261122-9857
+    - 261122-79c0
+    - 261122-542b
+    - 261122-2cb2
+    - 261122-bae5
+    - 261122-0e2c
+    - 261122-8e75
+    - 261122-94ad
+    - 261122-7506
+    - 261122-5911
+    - 261122-8b3b
+agents:
+  purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
+  entries:
+    - 261122-c7fb
+    - 261122-a9f2
+    - 261122-cdec
+    - 261122-f689
+    - 261122-7dae
+    - 261122-b60f
+    - 261122-0326
+    - 261122-8564
+    - 261122-8233
+    - 261122-3c97
+    - 261122-fc25
+    - 261122-5d59
+    - 261122-0713
+    - 261122-f158
+    - 261122-5512
+    - 261122-bb26
+    - 261122-a80b
+    - 261122-9e37
+    - 261122-7e32
+    - 261122-2dff
+    - 261122-a4c5
+    - 261122-6802
+    - 261122-1570
+    - 261122-ccbe
+    - 261122-fc96
+    - 261122-52a0
+    - 261122-c95f
+    - 261122-69f8
+    - 261122-db71
+    - 261122-e4e9
+    - 261122-861f
+c12:
+  purpose: Upstream c12 configuration loader issues.
+  entries:
+    - 261122-8ebe
+    - 261122-8495
+changesets:
+  purpose: Changesets configuration and presets.
+  entries:
+    - 261122-d908
+claude-code:
+  purpose: Upstream Claude Code harness behavior.
+  entries:
+    - 261122-02cf
+    - 261122-6d86
+cli:
+  purpose: Command definitions, registration and program runs.
+  entries:
+    - 261122-8ede
+    - 261122-fb9f
+    - 261122-1bdf
+    - 261122-cfb9
+    - 261122-1e77
+coding-style:
+  purpose: Local coding conventions and linting.
+  entries:
+    - 261122-912f
+    - 261122-3447
+    - 261122-88f8
+    - 261122-2052
+    - 261122-c62e
+configuration:
+  purpose: "Project configuration contract: loading, environments, option shapes and list options."
+  entries:
+    - 261122-1044
+    - 261122-7820
+    - 261122-1de7
+    - 261122-f5c2
+    - 261122-9f2b
+    - 261122-9c5f
+    - 261122-21c3
+    - 261122-7288
+    - 261122-c1c7
+    - 261122-10c3
+    - 261122-bbb3
+    - 261122-1668
+    - 261122-315d
+    - 261122-b065
+    - 261122-e8ed
+    - 261122-a009
+    - 261122-9387
+    - 261122-ccf8
+docs:
+  purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
+  entries:
+    - 261122-c358
+    - 261122-7b83
+eslint-conventions:
+  purpose: ESLint rules and conventions engrenage ships.
+  entries:
+    - 261122-1b95
+    - 261122-0605
+    - 261122-8580
+    - 261122-d381
+    - 261122-aff5
+    - 261122-b35b
+    - 261122-08d4
+    - 261122-efcc
+    - 261122-9d32
+    - 261122-f52a
+    - 261122-732e
+eslint-import-context:
+  purpose: Upstream eslint-import-context dependency and type issues.
+  entries:
+    - 261122-4b5a
+eslint:
+  purpose: Upstream ESLint API limitations.
+  entries:
+    - 261122-e94b
+extensions:
+  purpose: The extension registry and extension declarations.
+  entries:
+    - 261122-52a1
+    - 261122-30f7
+    - 261122-8f7a
+    - 261122-35d0
+    - 261122-071c
+    - 261122-f10c
+file-editing:
+  purpose: In-memory editing of JSON and YAML files in the codegen tooling.
+  entries:
+    - 261122-3811
+filesystem:
+  purpose: The filesystem abstraction, globbing and glob anchoring.
+  entries:
+    - 261122-5799
+    - 261122-cdb5
+format:
+  purpose: The `format` section, formatter selection and formatting vocabulary.
+  entries:
+    - 261122-836f
+    - 261122-f0cf
+gate:
+  purpose: The commit gate and its process locks.
+  entries:
+    - 261122-b591
+    - 261122-cc0a
+    - 261122-c5fa
+    - 261122-69c1
+    - 261122-f860
+    - 261122-7188
+    - 261122-67f6
+    - 261122-c28e
+    - 261122-bfc2
+git:
+  purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
+  entries:
+    - 261122-4774
+    - 261122-a06c
+github:
+  purpose: Generated GitHub workflows and templates.
+  entries:
+    - 261122-a6ef
+init:
+  purpose: Init steps and their step context.
+  entries:
+    - 261122-d0ff
+    - 261122-f496
+issues:
+  purpose: GitHub issue drafts, checks and planning commands.
+  entries:
+    - 261122-7b20
+    - 261122-75fc
+    - 261122-866e
+    - 261122-26cb
+    - 261122-dc09
+    - 261122-b7a1
+    - 261122-46aa
+    - 261122-fb74
+    - 261122-6bef
+    - 261122-58b1
+    - 261122-966f
+    - 261122-9d66
+    - 261122-de36
+    - 261122-b2f4
+    - 261122-9d91
+    - 261122-d2aa
+    - 261122-4a72
+    - 261122-4a74
+    - 261122-2f4f
+    - 261122-16de
+    - 261122-2cb6
+lefthook:
+  purpose: Lefthook integration.
+  entries:
+    - 261122-f043
+    - 261122-9d4f
+package-json:
+  purpose: Published package contents and the `package.json` fields derived by the sync `package` target.
+  entries:
+    - 261122-5753
+    - 261122-8cc6
+pnpm:
+  purpose: pnpm integration and package-manager scripts.
+  entries:
+    - 261122-b86f
+    - 261122-21a0
+prettier:
+  purpose: "The Prettier tool domain: layout plugin, layout conventions and formatting runs."
+  entries:
+    - 261122-8a97
+    - 261122-5b36
+    - 261122-c1bc
+    - 261122-8d1e
+    - 261122-a1d6
+    - 261122-ad23
+    - 261122-e646
+    - 261122-70a9
+    - 261122-bc49
+processes:
+  purpose: Spawned processes, binary and module resolution.
+  entries:
+    - 261122-f6ad
+    - 261122-1e32
+readme:
+  purpose: Project README content, deferred until the API stops breaking at every release.
+  entries:
+    - 261122-9092
+    - 261122-e9a1
+    - 261122-ef61
+spec-migration:
+  purpose: "Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume."
+  entries:
+    - 261122-92d4
+    - 261122-b731
+    - 261122-a2b9
+    - 261122-d7a3
+    - 261122-ec75
+    - 261122-30a3
+    - 261122-e401
+    - 261122-737b
+structure:
+  purpose: Project structure description, its report and the tooling generated from it.
+  entries:
+    - 261122-7515
+    - 261122-b4c1
+    - 261122-c72a
+    - 261122-1c87
+    - 261122-c0e1
+    - 261122-e121
+    - 261122-7228
+    - 261122-e977
+    - 261122-c7e1
+    - 261122-cb64
+    - 261122-3ad2
+    - 261122-4d7b
+    - 261122-5213
+    - 261122-6d05
+    - 261122-c2a6
+    - 261122-3d2e
+    - 261122-b2eb
+    - 261122-d263
+    - 261122-ee03
+    - 261122-a24d
+    - 261122-bae0
+    - 261122-5857
+    - 261122-93f4
+    - 261122-cede
+    - 261122-5c00
+    - 261122-7335
+    - 261122-2172
+    - 261122-f83d
+    - 261122-9839
+    - 261122-a51c
+    - 261122-e535
+    - 261122-5bc7
+    - 261122-4551
+sync:
+  purpose: "`project/sync` target ordering and sync products."
+  entries:
+    - 261122-9d89
+    - 261122-6055
+    - 261122-c98e
+    - 261122-b8a0
+    - 261122-c525
+    - 261122-407c
+    - 261122-abb6
+tests:
+  purpose: Test infrastructure and coverage gaps.
+  entries:
+    - 261122-0cfa
+    - 261122-5f69
+    - 261122-70e9
+    - 261122-f3bc
+    - 261122-aab0
+    - 261122-9d5a
+    - 261122-4b22
+toolkit:
+  purpose: Upstream @auaust/toolkit decisions that may affect engrenage.
+  entries:
+    - 261122-cd9e
+    - 261122-5b51
+    - 261122-8161
+    - 261122-0c9e
+    - 261122-ed94
+    - 261122-e13f
+    - 261122-8a49
+    - 261122-996d
+    - 261122-0bc7
+    - 261122-4b40
+    - 261122-20f7
+    - 261122-09ed
+    - 261122-c8c0
+    - 261122-f129
+tsdown:
+  purpose: "Generated tsdown build configuration: entries, outputs and declaration files."
+  entries:
+    - 261122-5d86
+    - 261122-e326
+    - 261122-0c4b
+    - 261122-6807
+    - 261122-c92a
+    - 261122-1142
+    - 261122-9e89
+typescript:
+  purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
+  entries:
+    - 261122-6458
+    - 261122-8617
+    - 261122-b752
+    - 261122-93b7
+    - 261122-f493
+    - 261122-7e84
+    - 261122-65f5
+    - 261122-dfaf
+    - 261122-5075
+    - 261122-e63c
+    - 261122-1558
+    - 261122-c397
+    - 261122-d984
+    - 261122-8d38
+    - 261122-e356
+utils:
+  purpose: Shared helpers and their placement.
+  entries:
+    - 261122-6a3c
+    - 261122-c9ed
+    - 261122-1348
+    - 261122-0f29
+    - 261122-bc3e
+vitest:
+  purpose: Generated Vitest configuration.
+  entries:
+    - 261122-dfbe
+    - 261122-c555
+    - 261122-25c2
+    - 261122-96e9
+vscode:
+  purpose: Synced VS Code files.
+  entries:
+    - 261122-9f14

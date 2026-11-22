@@ -1,4 +1,4 @@
-import { backlogIndex } from "#tools/agents/constants";
+import { backlogIndex } from "#metalbrain/backlog/constants";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";

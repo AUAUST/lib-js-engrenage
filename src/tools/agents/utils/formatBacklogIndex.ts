@@ -1,25 +1,15 @@
-import {
-  backlogCategoriesHeading,
-  backlogTemplate,
-  endMarker,
-} from "#tools/agents/constants";
+import { backlogTemplate, endMarker } from "#tools/agents/constants";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 
 /**
- * The backlog index: `title`, the template block, then the categories heading
- * followed by `categories`, its lines.
+ * The backlog index page: `title`, then the template block.
  */
-export function formatBacklogIndex(
-  title: string,
-  categories: readonly string[],
-): string {
+export function formatBacklogIndex(title: string): string {
   return [
     title,
     "",
     formatReferenceMarker(backlogTemplate),
     endMarker,
     "",
-    backlogCategoriesHeading,
-    ...categories,
   ].join("\n");
 }

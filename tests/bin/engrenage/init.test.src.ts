@@ -845,9 +845,11 @@ test("sets up the backlog guidance without installing coding rules", async () =>
 
   expect(project.read("engrenage.config.ts")).toBe(input);
 
-  expect(project.read(".ai/backlog/index.md")).toContain(
-    "No open categories yet.",
+  expect(project.read(".ai/backlog/index.md")).not.toContain(
+    "## Open categories",
   );
+
+  expect(project.read(".ai/backlog/index.yml")).toContain("{}");
 
   expect(project.read(".ai/backlog/index.md")).toContain(
     "metalbrain/templates/backlog.md -->\n\nDeferred questions, bugs, tasks and improvements.\n",
@@ -949,7 +951,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
   );
 
   expect(project.read(".ai/backlog/index.md")).toMatch(
-    /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/metalbrain\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n\n## Open categories\n\nNo open categories yet\.\n$/,
+    /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/metalbrain\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n$/,
   );
 
   expect(project.read(".claude/skills/curation/SKILL.md")).toContain(

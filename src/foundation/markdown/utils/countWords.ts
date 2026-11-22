@@ -1,4 +1,4 @@
-import { stripCode } from "#foundation/markdown/index";
+import { stripCode } from "#foundation/markdown/utils/stripCode";
 
 const linkTargetPattern = /\]\([^)]*\)/g;
 

@@ -1,0 +1,4 @@
+{
+  "purpose": "The agent layer the `metalbrain` commands serve: agent records and their kinds.",
+  "layers": ["records", "*"]
+}
