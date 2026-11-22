@@ -123,6 +123,17 @@ entries:
       - "mutable-list aliases; allowed comment kinds: custom lint rules"
   - id: 261122-8926
     title: No agent record holds required work left outside a pass
-    why: friction and discarded logs record costs and rejected options, not follow-ups; e.g. a command changed while instructions still name its old shape, or instructions naming a state not yet built (#815). Such work is lost unless the agent opens a backlog entry by judgment.
-    want: 'a third record beside friction and discarded, a live "todo" ledger, `- <subject>: <what must be done> — <why it was left>`, written as found; entries leave once an issue, entry or change takes them up.'
-    done: the agent-records rule defines it and the record exists.
+    why: friction and discarded logs hold costs and rejected options, not follow-ups such as instructions naming a command's old shape (#815); such work is lost unless an agent opens a backlog entry.
+    want: 'a "todo" record (subject, what must be done, why it was left), written as found through a metalbrain command any agent may run, read-only ones included (user, 2026-11-22); entries leave once an issue, entry or change takes them up. Related: 261122-f4f4.'
+    done: the agent-records rule defines it and its command exists.
+  - id: 261122-5911
+    title: Instruction changes a plan needs are written one by one, or not at all
+    why: only a writer edits instructions (87328dd4); a walk whose leaves need instruction edits sets them aside or stalls on each, and separate writer passes over one subject drift
+    want: workers append each needed instruction change to the todo ledger (261122-8926); at a boundary (segment end, walk end) the orchestrator dispatches one writer over the lot
+    done: walking and shape define the flush boundary and the writer brief it sends
+  - id: 261122-f4f4
+    title: Agent records are hand-edited Markdown files
+    why: friction and discarded logs need the Write permission read-only agents lack, cost a file read before each append, and resist stats
+    want:
+      - every record (friction, discarded, todo, others) written and listed through a metalbrain command, stored as YAML like the backlog, so any agent records regardless of permission and stats group by keys
+      - the agent-records rule naming the commands instead of file forms
