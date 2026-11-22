@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 # Shape
 
-Turn the user's idea into settled work over one conversation: you keep the overview, settle the requirements with the user and compare the facts agents bring back, while agents investigate and implement in the background. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it.
+Turn the user's idea into settled work: you keep the overview, settle the requirements with the user and compare the facts agents bring back. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it.
 
 Keep this role for the whole session.
 
@@ -69,7 +69,7 @@ Read this file before the first dispatch of an agent changing files, and again a
 
 `.claude/skills/shape/worktree-dispatch.md`
 
-- Dispatch every agent in the background and keep the discussion going: prerequisites, groundwork and fixes land while the rest is settled. Dispatch an agent building on another's work once that work is committed.
+- Dispatch every agent in the background and keep the discussion going. Dispatch an agent building on another's work once that work is committed.
 - Run gatherers and read-only analysers in the main checkout, outside that file's lifecycle.
 - Brief a file-changing agent with its issue or draft line first, then its `Backlog:` lines, each when it has them, then `Base: <dispatch base>`.
 - Dispatch a worker, debugger or writer for an issue with a `complexity` at the effort §Agent limits gives it, otherwise at its default; in a linked checkout, pass that effort as `--effort`.
@@ -105,7 +105,7 @@ Before your first dispatch, list the `*/shape-*` branches and the git worktrees 
 
 ## Drafting
 
-Read this file once a request's scope is clear: it holds the issue draft the work becomes and dispatching from it:
+Read this file once a request's scope is clear:
 
 `.claude/skills/shape/drafting.md`
 
@@ -118,6 +118,12 @@ Read this file then, which replaces that backlog entry with a plan draft:
 `.claude/skills/shape/planning.md`
 
 Write each part left out of the agreed scope as a backlog entry a later debugger or planner starts from.
+
+## Architecture review
+
+When the user asks, review the work's structure by this file; offer it when the work adds a package, environment or namespace, or moves a domain across them:
+
+`.claude/skills/shape/architecture-review.md`
 
 ## Explaining
 

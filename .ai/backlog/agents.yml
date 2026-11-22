@@ -165,6 +165,7 @@ entries:
     title: No check keeps instruction edits to the writer
     why: "#815's worker edited `data/metalbrain/` citing its issue's Done when, through Instruction maintenance's no-writer row; that section now bars every dispatched agent but `writer`, in prose only."
     want: the stop gate failing a gated subagent other than `writer` whose diff from its `Base:` changes an instruction source (`data/metalbrain/`, project rule, skill or agent files outside `@reference` blocks), sync output exempt.
+    done: "user, 2026-11-22: not enforced while it stays the one case the fixed no-writer row caused; build the check if a non-writer edits instructions again, otherwise drop the entry."
   - id: 261122-861f
     title: No command guards instruction growth or updates word budgets
     why: "Every role sits exactly at its word budget; #815's worker and the budget-stop writer each cut words or raised budgets by hand to pass sync."

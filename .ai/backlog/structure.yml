@@ -213,3 +213,8 @@ entries:
     title: Workspace tests cannot reach root test helpers past sealed `tests`
     why: "#675 › Decisions lets nested tests import root `tests` helpers; #800 and #743 › Decisions seal `tests` inward."
     want: 'decide among an opt-in per workspace tests environment, `inward: "surface"` for `tests` (`tests/utils`, `tests/fixtures`, as #728 recommends), or a separate helpers kind.'
+  - id: 261122-4551
+    title: Packages, repositories and environments declare no scope an architecture review can judge against
+    why: only namespaces and domains carry a purpose; the architecture review (data/metalbrain/shared/architecture-review.md) must ask the user for any wider scope, every review
+    want: a declared scope for the project and each environment, rendered into the project maps beside namespace and domain purposes
+    done: the project maps state a scope for the root and each environment

@@ -36,9 +36,9 @@ hooks:
 
 # Consultant
 
-Keep a walked plan's issues right while the walker runs it: settle against the plan and its issues what the walker sends, reading the code and the plan on its behalf, edit the issues it changes, and return the answer. Never implement.
+Keep a walked plan's issues right while the walker runs it: settle what it sends against the plan and its issues, edit the issues that changes, and return the answer. Never implement.
 
-`§…` names this file's sections. Before writing any issue, read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md`; before deepening, splitting, reordering or closing one, read this file, which holds the issue types, splitting, ordering, deepening an item and readiness:
+`§…` names this file's sections. Before writing any issue, read `.claude/rules/issues.md` and `.claude/rules/issue-drafts.md`; before deepening, splitting, reordering or closing one, read this file:
 
 `.claude/skills/consultant/issue-tree.md`
 
@@ -71,7 +71,7 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 - Around each issue left set aside with issues waiting behind it, move each waiting issue that needs none of its work (a contract, file, behavior or decision it introduces) ahead of it through the parent's `subIssues`, keeping each dependency before its dependents, into an earlier segment only when it is independent of that segment's members: an organisational change (§Changes).
 - When the walker sends a blocked report while you handle them, handle it first, then return with its answer or question, listing the issues not yet handled as pending.
 - On a plan the walker's next commit closes, move its facts worth keeping under `issue-tree.md` › The tree, then return.
-- For any other call, return the answer and become idle; the walker resumes you for the next question.
+- For any other call, return the answer.
 - End each answer with a **Carry-over**: one line per decision, pending question and rejected deviation of the walk that the published issues do not record, replacing your previous one, so a new consultant starts from it without your history; the rest of the answer refers to its lines instead of restating them. In autonomous mode, list there each settlement under `Settled without the user` until the walk ends: the walker reports them.
 
 ### Changes
@@ -91,6 +91,12 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 - **Within your latitude.** Decide it, write it into the issue as decided and list it in your answer. In autonomous mode, record it where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode; a changed **Decision** names the one it replaces.
 - **Beyond it.** Return it to the walker for the user, with your findings, as the decision protocol words it, changing no issue it concerns meanwhile. In autonomous mode, leave it under the issue's **Questions** instead: the walker sets the issue aside.
 - **Answered.** Fold the answer into the issue as decided and remove the question.
+
+### Architecture review
+
+On the walker's request, review the plan's structure by this file; recommend one when a settled change adds a package, environment or namespace, or moves a domain across them:
+
+`.claude/skills/consultant/architecture-review.md`
 
 ## Steps sweep
 

@@ -4,7 +4,7 @@
   "agent:debugger": 5209,
   "agent:gatherer": 4532,
   "agent:merger": 5610,
-  "agent:planner": 5356,
+  "agent:planner": 5354,
   "agent:worker": 5260,
   "agent:writer": 6207,
   "main": 4430,
@@ -16,7 +16,7 @@
   "skill:implement": 5260,
   "skill:instruction-writing": 6207,
   "skill:merging": 5610,
-  "skill:planning": 5356,
-  "skill:shape": 5823,
+  "skill:planning": 5354,
+  "skill:shape": 5822,
   "skill:walking": 7492
 }

@@ -27,7 +27,7 @@ Turn a goal into a tree of GitHub issues specifying the end state: each issue st
 
 ## Role
 
-You build and maintain the issue tree and never implement it. Create and edit issue drafts as the conversation settles things, without asking first. Before writing or reviewing any issue, read `.claude/rules/issues.md`, `.claude/rules/issue-drafts.md` and this file, which holds the issue types, splitting, ordering, deepening an item and readiness:
+You build and maintain the issue tree. Create and edit issue drafts as the conversation settles things, without asking first. Before writing or reviewing any issue, read `.claude/rules/issues.md`, `.claude/rules/issue-drafts.md` and this file, which holds the issue types, splitting, ordering, deepening an item and readiness:
 
 <!-- @shared-file issue-tree.md -->
 <!-- @end -->
@@ -41,7 +41,7 @@ Edit nothing but issues, instruction or context files, the backlog and the agent
 | Main session | The user                            | The tree                            | `main-session.md` | The user                             | By the issue-drafts rule's default                                                                                    |
 | Inner        | A planning session, briefed `inner` | The briefed item and its sub-issues | §Inner pass       | The planning session, in your report | Each issue once ready or left with only **Questions**: a planner stopped midway loses none of the issues it published |
 
-Started by the user: read this file first, which holds request handling, the outer pass, the waves and the inner dispatch:
+Started by the user, read this file first:
 
 <!-- @skill-file main-session.md -->
 <!-- @end -->
@@ -94,9 +94,16 @@ As an inner planner:
 - Edit only the briefed item and its sub-issues. A finding against the plan, a sibling or a shared contract goes into your report with a recommendation: the planning session owns it.
 - Report the issues you published, each decision you settled, the batched questions and the plan findings.
 
+## Architecture review
+
+When the user or your brief asks, review the plan's structure by this file; offer it when the work adds a package, environment or namespace, or moves a domain across them:
+
+<!-- @shared-file architecture-review.md -->
+<!-- @end -->
+
 ## How workers read issues
 
-Workers implement one issue at a time under the implement skill, and the walker routes each issue by the walking skill's handling table. Read those skills only when an issue's wording depends on how it will be handled, never while drafting a plan whose design is still open.
+Read the implement and walking skills only when an issue's wording depends on how a worker or the walker handles it, never while a plan's design is open.
 
 ## Steps migration
 
