@@ -190,3 +190,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `src/tools/agents/utils/summarizeAgentTask.ts:64`
 - why: #809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured.
 - want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.
+
+## 35. The budget hook opens a window on every caller message
+
+- sites: `src/tools/agents/metalbrain/operations/checkBudget.ts:81`
+- why: #809 S.40: only a caller message holding a new `Budget:` line opens a window, at that level; the instructions state it, the hook still opens one per message.
+- want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
