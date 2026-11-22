@@ -169,3 +169,4 @@
 - engrenage-hook claude: config invalid while #814 removed Codex mid-change — every hook reported "did not run", checks off for the rest of #814
 - `pnpm engrenage planning issue publish`: published three leaves with **Provides** lines — refused as naming no Model section, `check` passing; published again with the plan draft in the set
 - word-budgets check: adding 5 words to the Environment section for #815 — every role sat at its exact budget, so sync failed for 20 roles; cut 5 words elsewhere in the section instead of asking for a raise
+- planning issue create: debugger write-up under a brief keeping `.ai/issues/` untouched — drafts live only there; left the issue to the caller

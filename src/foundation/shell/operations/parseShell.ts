@@ -23,12 +23,11 @@ import type {
 
 import { isArray } from "@auaust/toolkit";
 
-import { ShellSyntaxError } from "#foundation/shell/errors/ShellSyntaxError";
 import { isNode } from "#foundation/shell/utils/isNode";
 import { isRebound } from "#foundation/shell/utils/isRebound";
-import { readColumn } from "#foundation/shell/utils/readColumn";
 import { readDialectError } from "#foundation/shell/utils/readDialectError";
 import { readLiteral } from "#foundation/shell/utils/readLiteral";
+import { readParseError } from "#foundation/shell/utils/readParseError";
 import { unescapeShell } from "#foundation/shell/utils/unescapeShell";
 import type { ShellAssignment } from "#foundation/shell/types/ShellAssignment";
 import type { ShellCommand } from "#foundation/shell/types/ShellCommand";
@@ -428,16 +427,7 @@ export function parseShell(source: string): readonly ShellCommand[] {
     file = parse(source, { variant: LangVariant.LangBash });
   } catch (error) {
     if (error instanceof ParseError) {
-      throw new ShellSyntaxError(
-        error.text,
-        error.pos?.line ?? 0,
-        error.pos == null
-          ? 0
-          : readColumn(
-              source,
-              loaded.createSourceIndex(source)(error.pos.offset),
-            ),
-      );
+      throw readParseError(source, error, loaded.createSourceIndex);
     }
 
     if (error instanceof ShSyntaxError && error.code === ErrorCode.Language) {

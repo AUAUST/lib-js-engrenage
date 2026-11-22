@@ -8,7 +8,7 @@ entries:
       - src/tools/prettier/extension.ts:72
       - src/tools/eslint/conventions/stylistic/noComplexConciseArrows.ts:151
       - src/tools/jscpd/extension.ts:28
-    why: "staged mode reads the worktree, not the index; `eslint --fix` runs before `prettier --write`, so concise-arrow and line-budget checks miss Prettier's rewrites; jscpd only warns; a stamped tree hides budget and step warnings; ESLint lints only changed files, so dependents' type-aware rules wait for `gate --all`. Dependents' type-aware lint: #284."
+    why: "staged mode reads the worktree, not the index; `eslint --fix` runs before `prettier --write`, so concise-arrow and line-budget checks miss Prettier's rewrites (adaff366 broke CI: `max-lines` 352/350 after Prettier wrapped a line); jscpd only warns; a stamped tree hides budget and step warnings; ESLint lints only changed files, so dependents' type-aware rules wait for `gate --all`. Dependents' type-aware lint: #284."
     want: each gap checked by the gate, or recorded as an accepted limit (planning).
   - id: 261122-cc0a
     title: Process locks and gate state leave stale or double holders
