@@ -344,24 +344,30 @@ describe("runGate", { timeout: binaryTimeout }, () => {
   test("passes a changed backlog entry over budget with a budget warning", async () => {
     const { project } = await createGateRepository();
 
+    const config = await loadConfig(project.root);
+
+    const { budgets } = await config.resolve("agents");
+
     project.write(
       ".ai/backlog/tools.md",
-      `# Tools\n\n## 1. Long entry\n\n${Array.from({ length: 80 }, () => {
-        return "word";
-      }).join(" ")}\n`,
+      `# Tools\n\n## 1. Long entry\n\n${Array.from(
+        { length: budgets.backlogEntry + 20 },
+        () => {
+          return "word";
+        },
+      ).join(" ")}\n`,
     );
 
-    const {
-      failures,
-      warnings,
-    } = await runGate(await loadConfig(project.root), { mode: "worktree" });
+    const { failures, warnings } = await runGate(config, { mode: "worktree" });
 
     expect(failures).toEqual([]);
 
     expect(warnings).toEqual([
       {
         step: "budgets",
-        output: expect.stringContaining("over the backlogEntry budget of 60."),
+        output: expect.stringContaining(
+          `over the backlogEntry budget of ${budgets.backlogEntry}.`,
+        ),
       },
     ]);
   });
