@@ -174,3 +174,4 @@
 - auto mode classifier: `gh issue comment` posting scratchpad notes the user did not name — denied; relied on git history instead
 - shell trap hook, zsh `=word`: `echo ======` as a separator — hook refused it as a command-path expansion; quoted the separator
 - metalbrain backlog sites: moving a file a backlog site names — no record command follows the move and sync fails; rewrote the site paths in the YAML with sed
+- `pnpm engrenage typecheck` after renaming entries: ran it before `pnpm build` — tests project failed with 83 circular-type errors while `package.json` exports still named the old entries; `pnpm build` rewrote them and typecheck passed

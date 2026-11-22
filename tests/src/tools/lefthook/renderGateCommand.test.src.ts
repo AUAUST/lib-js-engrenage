@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { agentShellVariables } from "#tools/agents/constants";
+import { agentShellVariables } from "#metalbrain/runtimes/constants";
 import { gateHooks } from "#tools/lefthook/constants";
 import { listGateVariables } from "#tools/lefthook/utils/listGateVariables";
 import { renderGateCommand } from "#tools/lefthook/utils/renderGateCommand";

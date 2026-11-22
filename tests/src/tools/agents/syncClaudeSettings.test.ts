@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
 import { loadConfig } from "@auaust/engrenage/extensions";
+import { syncClaudeSettings } from "@auaust/engrenage/metalbrain/claude";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 

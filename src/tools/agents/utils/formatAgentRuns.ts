@@ -1,5 +1,6 @@
 import { round } from "@auaust/toolkit/math";
 
+import { mainAgent, tokenWeights } from "#metalbrain/runtimes/constants";
 import {
   formatAgentCost,
   priceAgentUsage,
@@ -10,7 +11,6 @@ import {
   type AgentTokens,
   type ModelFacts,
 } from "#metalbrain/runtimes/index";
-import { mainAgent, tokenWeights } from "#tools/agents/constants";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import { formatMarkdownTable } from "#tools/agents/utils/formatMarkdownTable";
 

@@ -1,13 +1,12 @@
 import { engrenage } from "#constants";
 import { backlogIndex } from "#metalbrain/backlog/constants";
+import { endMarker, metalbrain } from "#metalbrain/instructions/constants";
 import {
   formatBacklogIndex,
   formatReferenceMarker,
 } from "#metalbrain/instructions/index";
 import {
   agentsFile,
-  endMarker,
-  metalbrain,
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#tools/agents/constants";

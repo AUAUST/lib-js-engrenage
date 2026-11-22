@@ -1,8 +1,8 @@
 import { readTextFile } from "#foundation/filesystem/index";
 import { commitSubjectLimit, commitTypes } from "#tools/git/constants";
 import { readCommitMessage, type CommitMessage } from "#tools/git/index";
+import type { ResolvedAgents } from "#metalbrain/runtimes/index";
 import type { GateStepEntry } from "#project/gate/index";
-import type { ResolvedAgents } from "#tools/agents/index";
 import type { File } from "#types/File";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";

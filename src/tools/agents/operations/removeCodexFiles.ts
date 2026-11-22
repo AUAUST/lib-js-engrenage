@@ -2,7 +2,8 @@ import { isPlainObject, object } from "@auaust/toolkit";
 
 import { formatBlockMarker } from "#foundation/blocks/index";
 import { readJsonValue } from "#foundation/json/index";
-import { formerCodexFiles, markdownBlocks } from "#tools/agents/constants";
+import { markdownBlocks } from "#metalbrain/instructions/constants";
+import { formerCodexFiles } from "#tools/agents/constants";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
 

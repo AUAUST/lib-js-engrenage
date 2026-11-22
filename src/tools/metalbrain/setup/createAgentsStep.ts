@@ -1,8 +1,9 @@
 import { readFile } from "node:fs/promises";
 
 import { resolveDataFile } from "#foundation/data/index";
+import { endMarker } from "#metalbrain/instructions/constants";
 import { formatReferenceMarker } from "#metalbrain/instructions/index";
-import { agentsFile, agentsTemplate, endMarker } from "#tools/agents/constants";
+import { agentsFile, agentsTemplate } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/index";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";

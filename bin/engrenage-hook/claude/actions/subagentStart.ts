@@ -1,10 +1,7 @@
 import { object, optional, string } from "valibot";
 
-import {
-  readHookPayload,
-  resolveClaudeAgentTranscript,
-  startAgentRun,
-} from "#tools/agents/index";
+import { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/index";
+import { readHookPayload, startAgentRun } from "#tools/agents/index";
 import { resolveAgentStatsDirectory } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 

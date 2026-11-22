@@ -218,3 +218,9 @@ entries:
     why: only namespaces and domains carry a purpose; the architecture review (data/metalbrain/shared/architecture-review.md) must ask the user for any wider scope, every review
     want: a declared scope for the project and each environment, rendered into the project maps beside namespace and domain purposes
     done: the project maps state a scope for the root and each environment
+  - id: 261122-69ef
+    title: Extensions reach other domains' constants only through re-exports
+    sites:
+      - src/tools/eslint/rules/extensionImports.ts:1
+    why: roles/extension/extension-imports lets an extension.ts statically import only its own domain's constants, so tools/metalbrain, tools/typescript/tsc and tools/shopify/theme re-export foreign constants under @debt markers (#832 kept 4 in tools/metalbrain/constants.ts).
+    want: "a user decision: the rule allowing another domain's public constants role, which drops every such re-export, or the pattern kept."

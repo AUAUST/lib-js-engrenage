@@ -2,9 +2,9 @@ import { object, string } from "valibot";
 
 import {
   resolveHookDirectory,
-  validateHookPayload,
   writeHookContext,
-} from "#tools/agents/index";
+} from "#metalbrain/runtimes/index";
+import { validateHookPayload } from "#tools/agents/index";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import { formatInfoMessages, listInfoMessages } from "#tools/eslint/index";
 import { getRunContext } from "#workflows/cli/index";

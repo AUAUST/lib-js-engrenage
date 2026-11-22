@@ -3,9 +3,9 @@ import {
   agentLogFiles,
   agentRuntimeEntry,
   agentsTarget,
-  agentStatsDirectory,
   markdownBlocks,
   rulesDirectory,
+  statsDirectory,
 } from "#tools/metalbrain/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { File } from "#types/File";
@@ -45,7 +45,7 @@ export default {
         title: "Agent stats",
         committed: false,
         locate(): FileLocation {
-          return { directory: agentStatsDirectory };
+          return { directory: statsDirectory };
         },
       },
       "agents.instructions": {

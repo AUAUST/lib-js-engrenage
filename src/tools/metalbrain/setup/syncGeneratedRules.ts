@@ -2,13 +2,13 @@ import { stringify } from "yaml";
 
 import { formatBlockMarker } from "#foundation/blocks/index";
 import { loadLazy } from "#foundation/modules/index";
-import { hasPreferredAgents } from "#metalbrain/runtimes/index";
-import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import {
   endMarker,
   markdownBlocks,
   rulesDirectory,
-} from "#tools/agents/constants";
+} from "#metalbrain/instructions/constants";
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
+import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import { createFragmentRenderer } from "#tools/agents/index";
 import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { File } from "#types/File";

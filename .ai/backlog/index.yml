@@ -298,6 +298,7 @@ structure:
     - 261122-e535
     - 261122-5bc7
     - 261122-4551
+    - 261122-69ef
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:

@@ -12,8 +12,7 @@ import {
   string,
 } from "valibot";
 
-import { budgetLevels } from "#metalbrain/runtimes/constants";
-import { efforts } from "#tools/agents/constants";
+import { budgetLevels, efforts } from "#metalbrain/runtimes/constants";
 
 const effortSchema = picklist(efforts);
 

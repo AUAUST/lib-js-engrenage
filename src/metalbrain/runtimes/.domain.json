@@ -1,3 +1,4 @@
 {
+  "specifier": "future/metalbrain/runtimes",
   "purpose": "Agent runtimes' hooks and runs: log each tool call with its duration, output size and dollar cost, and type and price recorded agent runs, loading only Node builtins and the model facts so hooks fire cheaply."
 }

@@ -61,22 +61,6 @@
       "source": "./src/entry.ts",
       "default": "./dist/index.mjs"
     },
-    "./agents": {
-      "source": "./src/tools/metalbrain/entry.ts",
-      "default": "./dist/agents.mjs"
-    },
-    "./agents/claude": {
-      "source": "./src/tools/metalbrain/claude/entry.ts",
-      "default": "./dist/agents/claude.mjs"
-    },
-    "./agents/claude/constants": {
-      "source": "./src/tools/metalbrain/claude/constants.ts",
-      "default": "./dist/agents/claude/constants.mjs"
-    },
-    "./agents/constants": {
-      "source": "./src/tools/metalbrain/constants.ts",
-      "default": "./dist/agents/constants.mjs"
-    },
     "./baseline": {
       "source": "./src/project/baseline/entry.ts",
       "default": "./dist/baseline.mjs"
@@ -145,6 +129,38 @@
       "source": "./src/project/format/constants.ts",
       "default": "./dist/format/constants.mjs"
     },
+    "./future/metalbrain/backlog": {
+      "source": "./src/metalbrain/backlog/entry.ts",
+      "default": "./dist/future/metalbrain/backlog.mjs"
+    },
+    "./future/metalbrain/backlog/constants": {
+      "source": "./src/metalbrain/backlog/constants.ts",
+      "default": "./dist/future/metalbrain/backlog/constants.mjs"
+    },
+    "./future/metalbrain/instructions": {
+      "source": "./src/metalbrain/instructions/entry.ts",
+      "default": "./dist/future/metalbrain/instructions.mjs"
+    },
+    "./future/metalbrain/instructions/constants": {
+      "source": "./src/metalbrain/instructions/constants.ts",
+      "default": "./dist/future/metalbrain/instructions/constants.mjs"
+    },
+    "./future/metalbrain/records": {
+      "source": "./src/metalbrain/records/entry.ts",
+      "default": "./dist/future/metalbrain/records.mjs"
+    },
+    "./future/metalbrain/records/constants": {
+      "source": "./src/metalbrain/records/constants.ts",
+      "default": "./dist/future/metalbrain/records/constants.mjs"
+    },
+    "./future/metalbrain/runtimes": {
+      "source": "./src/metalbrain/runtimes/entry.ts",
+      "default": "./dist/future/metalbrain/runtimes.mjs"
+    },
+    "./future/metalbrain/runtimes/constants": {
+      "source": "./src/metalbrain/runtimes/constants.ts",
+      "default": "./dist/future/metalbrain/runtimes/constants.mjs"
+    },
     "./git": {
       "source": "./src/tools/git/entry.ts",
       "default": "./dist/git.mjs"
@@ -160,6 +176,22 @@
     "./github/constants": {
       "source": "./src/tools/github/constants.ts",
       "default": "./dist/github/constants.mjs"
+    },
+    "./metalbrain": {
+      "source": "./src/tools/metalbrain/entry.ts",
+      "default": "./dist/metalbrain.mjs"
+    },
+    "./metalbrain/claude": {
+      "source": "./src/tools/metalbrain/claude/entry.ts",
+      "default": "./dist/metalbrain/claude.mjs"
+    },
+    "./metalbrain/claude/constants": {
+      "source": "./src/tools/metalbrain/claude/constants.ts",
+      "default": "./dist/metalbrain/claude/constants.mjs"
+    },
+    "./metalbrain/constants": {
+      "source": "./src/tools/metalbrain/constants.ts",
+      "default": "./dist/metalbrain/constants.mjs"
     },
     "./options/internals": {
       "source": "./src/foundation/options/index.ts",
@@ -419,10 +451,6 @@
     "access": "restricted",
     "exports": {
       ".": "./dist/index.mjs",
-      "./agents": "./dist/agents.mjs",
-      "./agents/claude": "./dist/agents/claude.mjs",
-      "./agents/claude/constants": "./dist/agents/claude/constants.mjs",
-      "./agents/constants": "./dist/agents/constants.mjs",
       "./baseline": "./dist/baseline.mjs",
       "./baseline/constants": "./dist/baseline/constants.mjs",
       "./blocks/internals": "./dist/blocks/internals.mjs",
@@ -440,10 +468,22 @@
       "./filesystem/internals": "./dist/filesystem/internals.mjs",
       "./format": "./dist/format.mjs",
       "./format/constants": "./dist/format/constants.mjs",
+      "./future/metalbrain/backlog": "./dist/future/metalbrain/backlog.mjs",
+      "./future/metalbrain/backlog/constants": "./dist/future/metalbrain/backlog/constants.mjs",
+      "./future/metalbrain/instructions": "./dist/future/metalbrain/instructions.mjs",
+      "./future/metalbrain/instructions/constants": "./dist/future/metalbrain/instructions/constants.mjs",
+      "./future/metalbrain/records": "./dist/future/metalbrain/records.mjs",
+      "./future/metalbrain/records/constants": "./dist/future/metalbrain/records/constants.mjs",
+      "./future/metalbrain/runtimes": "./dist/future/metalbrain/runtimes.mjs",
+      "./future/metalbrain/runtimes/constants": "./dist/future/metalbrain/runtimes/constants.mjs",
       "./git": "./dist/git.mjs",
       "./git/constants": "./dist/git/constants.mjs",
       "./github": "./dist/github.mjs",
       "./github/constants": "./dist/github/constants.mjs",
+      "./metalbrain": "./dist/metalbrain.mjs",
+      "./metalbrain/claude": "./dist/metalbrain/claude.mjs",
+      "./metalbrain/claude/constants": "./dist/metalbrain/claude/constants.mjs",
+      "./metalbrain/constants": "./dist/metalbrain/constants.mjs",
       "./options/internals": "./dist/options/internals.mjs",
       "./package": "./dist/package.mjs",
       "./package/constants": "./dist/package/constants.mjs",

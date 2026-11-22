@@ -101,7 +101,7 @@ entries:
     title: The issue-drafts section budgets lag the configured defaults
     sites:
       - data/metalbrain/rules/issue-drafts.md:74
-    why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` in `src/tools/agents/constants.ts` became 150 each in 0fd960a2; a project's configured budgets can differ from both.
+    why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` (now `src/metalbrain/records/constants.ts`) became 150 each in 0fd960a2; a project's configured budgets can differ from both.
     want: the rule rendering the configured values through an `agents.fillers` filler, as `agent-limits` does, also for the budgets rule.
   - id: 261122-8e75
     title: Handoffs and carry-overs travel as text an orchestrator rereads and repeats

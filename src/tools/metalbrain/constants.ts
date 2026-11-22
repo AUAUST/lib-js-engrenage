@@ -28,52 +28,14 @@ export const removedRuntimes: Readonly<Record<string, string>> = freeze({
 
 export const addRuleCommand = "pnpm engrenage agents rules add";
 
-// @debt re-exports the constants of `tools/agents` so the `agents/constants` subpath keeps them; consumers should import them from their owning domain
+// @debt re-exported only so the extension may import it under roles/extension/extension-imports
 export {
-  agentLogFiles,
-  agentOutcomes,
-  agentRunExtensions,
-  agentsFile,
-  agentShellVariables,
-  agentStatsDirectory,
-  agentsTemplate,
-  attributionRules,
-  backlogCategoriesHeading,
-  backlogTemplate,
-  budgetKinds,
-  budgetModes,
-  builtInFillers,
-  claudeAgentFrontmatterKeys,
-  claudeSkillFrontmatterKeys,
-  defaultBudgetMode,
-  defaultBudgets,
-  defaultInstructionFiles,
-  defaultOutputLimit,
-  defaultSubagentCacheTtl,
-  efforts,
-  endMarker,
-  fastTier,
-  formerCodexFiles,
-  handoffsDirectory,
-  hookEvents,
-  mainAgent,
-  mainSharedDirectory,
-  mainSharedFiles,
   markdownBlocks,
-  metalbrain,
-  preserveDirective,
-  reportMarkers,
-  retiredRules,
-  ruleFrontmatterKeys,
   rulesDirectory,
-  scratchpadFile,
-  scratchpadPlaceholder,
-  sharedFilesKind,
-  skillFileName,
-  skillFrontmatterKeys,
-  standardTier,
-  subagentCacheTtls,
-  tableCellWords,
-  tokenWeights,
-  unknownModel,
-} from "#tools/agents/constants";
+} from "#metalbrain/instructions/constants";
+
+// @debt re-exported only so the extension may import it under roles/extension/extension-imports
+export { agentLogFiles } from "#metalbrain/records/constants";
+
+// @debt re-exported only so the extension may import it under roles/extension/extension-imports
+export { statsDirectory } from "#metalbrain/runtimes/constants";

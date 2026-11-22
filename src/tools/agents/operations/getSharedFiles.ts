@@ -4,7 +4,10 @@ import { basename } from "node:path";
 import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
-import { metalbrain, sharedFilesKind } from "#tools/agents/constants";
+import {
+  metalbrain,
+  sharedFilesKind,
+} from "#metalbrain/instructions/constants";
 import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 import type { Extension } from "#project/config/index";
 

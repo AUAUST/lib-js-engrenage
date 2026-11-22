@@ -1,11 +1,7 @@
 import { object, string } from "valibot";
 
-import { denyToolUse } from "#metalbrain/runtimes/index";
-import {
-  checkAgentResume,
-  resolveHookDirectory,
-  validateHookPayload,
-} from "#tools/agents/index";
+import { denyToolUse, resolveHookDirectory } from "#metalbrain/runtimes/index";
+import { checkAgentResume, validateHookPayload } from "#tools/agents/index";
 import { resolveMainWorktree } from "#tools/git/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";

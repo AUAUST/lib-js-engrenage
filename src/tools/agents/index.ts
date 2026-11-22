@@ -1,58 +1,9 @@
-// @debt re-exports names moved to `metalbrain` so the `agents` entry and its consumers keep them; consumers should import them from their `metalbrain` domain
-export {
-  getRuleReferences,
-  listReferenceFiles,
-  listStaleSkillFiles,
-  migrateBacklogIndex,
-  migrateInstructionLocations,
-  removeReferenceBlock,
-  resolveAgentReference,
-  syncFrontmatter,
-} from "#metalbrain/instructions/index";
-export {
-  formatAgentCheck,
-  hasPreferredAgents,
-  readModelFacts,
-  resolveHookDirectory,
-  writeHookContext,
-} from "#metalbrain/runtimes/index";
-export { claudeSessionVariable } from "#tools/agents/claude/constants";
-export {
-  reconcileClaudeRuns,
-  recordClaudeRun,
-  resolveClaudeAgentTranscript,
-} from "#tools/agents/claude/index";
-export { agentShellVariables, mainAgent } from "#tools/agents/constants";
 export { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
 export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 export { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
 export { formatAgentOutcomes } from "#tools/agents/utils/formatAgentOutcomes";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
 export { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
-export type { GeneratedFrontmatter } from "#metalbrain/instructions/index";
-export type {
-  BudgetFinding,
-  BudgetKind,
-  BudgetMode,
-  Budgets,
-} from "#metalbrain/records/index";
-export type {
-  AgentDispatch,
-  AgentGroupEntry,
-  AgentOutcome,
-  AgentRun,
-  AgentRunState,
-  AgentTask,
-  Effort,
-  Gate,
-  HookDefinition,
-  HookEvent,
-  ResolvedAgents,
-  SubagentCacheTtl,
-} from "#metalbrain/runtimes/index";
-export type { Agent } from "#metalbrain/runtimes/index";
-export type { AgentDispatcher } from "#metalbrain/runtimes/ports/AgentDispatcher";
-export type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
 
 // @barrel operations
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";

@@ -1,5 +1,6 @@
 import { isRecordId } from "#metalbrain/records/index";
-import { mainAgent, reportMarkers } from "#tools/agents/constants";
+import { mainAgent } from "#metalbrain/runtimes/constants";
+import { reportMarkers } from "#tools/agents/constants";
 import { findBriefedIssue } from "#tools/github/index";
 import type {
   AgentOutcome,

@@ -18,12 +18,9 @@ import {
 import { readTextFile } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { agentOutcomes } from "#metalbrain/runtimes/constants";
 import { budgetLevels, type AgentRun } from "#metalbrain/runtimes/index";
-import {
-  agentOutcomes,
-  standardTier,
-  unknownModel,
-} from "#tools/agents/constants";
+import { standardTier, unknownModel } from "#tools/agents/constants";
 import type { File } from "#types/File";
 
 const count = pipe(number(), integer(), minValue(0));

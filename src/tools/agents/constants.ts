@@ -2,7 +2,6 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage, hookProgram } from "#constants";
 import { metalbrain } from "#metalbrain/instructions/constants";
-import { statsDirectory } from "#metalbrain/runtimes/constants";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -75,8 +74,6 @@ export const defaultOutputLimit = 10_000;
 
 export const defaultSubagentCacheTtl = "5m" as const;
 
-export const agentStatsDirectory = statsDirectory satisfies Directory;
-
 export const unknownModel = "unknown";
 
 export const standardTier = "standard";
@@ -99,37 +96,6 @@ export const reportMarkers = freeze([
   { outcome: "linked", marker: "Linked defect:" },
   { outcome: "blocked", marker: "Blocked:" },
 ] as const);
-
-// @debt re-exports names moved to `metalbrain` so the `agents/constants` subpath keeps them; consumers should import them from their `metalbrain` domain
-export {
-  backlogCategoriesHeading,
-  backlogTemplate,
-  endMarker,
-  markdownBlocks,
-  metalbrain,
-  preserveDirective,
-  rulesDirectory,
-  sharedFilesKind,
-} from "#metalbrain/instructions/constants";
-
-export {
-  agentLogFiles,
-  budgetKinds,
-  budgetModes,
-  defaultBudgetMode,
-  defaultBudgets,
-} from "#metalbrain/records/constants";
-
-export {
-  agentOutcomes,
-  agentRunExtensions,
-  agentShellVariables,
-  efforts,
-  hookEvents,
-  mainAgent,
-  subagentCacheTtls,
-  tokenWeights,
-} from "#metalbrain/runtimes/constants";
 
 // @debt re-exports the constants of the `claude` sub-domain so `tools/metalbrain/claude` reaches them through this public role; they should move with the Claude runtime to `metalbrain/runtimes`
 export {

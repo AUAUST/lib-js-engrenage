@@ -13,6 +13,30 @@
       "@auaust/engrenage/options/internals": [
         "./src/foundation/options/index.ts"
       ],
+      "@auaust/engrenage/future/metalbrain/backlog": [
+        "./src/metalbrain/backlog/entry.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/backlog/constants": [
+        "./src/metalbrain/backlog/constants.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/instructions": [
+        "./src/metalbrain/instructions/entry.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/instructions/constants": [
+        "./src/metalbrain/instructions/constants.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/records": [
+        "./src/metalbrain/records/entry.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/records/constants": [
+        "./src/metalbrain/records/constants.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/runtimes": [
+        "./src/metalbrain/runtimes/entry.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/runtimes/constants": [
+        "./src/metalbrain/runtimes/constants.ts"
+      ],
       "@auaust/engrenage/baseline": ["./src/project/baseline/entry.ts"],
       "@auaust/engrenage/baseline/constants": [
         "./src/project/baseline/constants.ts"
@@ -40,14 +64,14 @@
       "@auaust/engrenage/git/constants": ["./src/tools/git/constants.ts"],
       "@auaust/engrenage/github": ["./src/tools/github/entry.ts"],
       "@auaust/engrenage/github/constants": ["./src/tools/github/constants.ts"],
-      "@auaust/engrenage/agents": ["./src/tools/metalbrain/entry.ts"],
-      "@auaust/engrenage/agents/constants": [
+      "@auaust/engrenage/metalbrain": ["./src/tools/metalbrain/entry.ts"],
+      "@auaust/engrenage/metalbrain/constants": [
         "./src/tools/metalbrain/constants.ts"
       ],
-      "@auaust/engrenage/agents/claude": [
+      "@auaust/engrenage/metalbrain/claude": [
         "./src/tools/metalbrain/claude/entry.ts"
       ],
-      "@auaust/engrenage/agents/claude/constants": [
+      "@auaust/engrenage/metalbrain/claude/constants": [
         "./src/tools/metalbrain/claude/constants.ts"
       ],
       "@auaust/engrenage/pnpm": ["./src/tools/pnpm/entry.ts"],

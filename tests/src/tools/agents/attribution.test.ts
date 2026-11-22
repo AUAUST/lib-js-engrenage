@@ -2,9 +2,9 @@ import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { syncAgentFiles } from "@auaust/engrenage/agents";
-import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
 import { loadConfig } from "@auaust/engrenage/extensions";
+import { syncAgentFiles } from "@auaust/engrenage/metalbrain";
+import { syncClaudeSettings } from "@auaust/engrenage/metalbrain/claude";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";

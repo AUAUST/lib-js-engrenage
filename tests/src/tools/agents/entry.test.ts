@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import * as agents from "@auaust/engrenage/agents";
+import * as agents from "@auaust/engrenage/metalbrain";
 
 describe("package entry", () => {
   test("exposes what entry.ts re-exports and not what only index.ts exports", () => {

@@ -1,8 +1,9 @@
+import { rulesDirectory } from "#metalbrain/instructions/constants";
 import {
   createInstructionFile,
   type FragmentRenderer,
 } from "#metalbrain/instructions/index";
-import { ruleFrontmatterKeys, rulesDirectory } from "#tools/agents/constants";
+import { ruleFrontmatterKeys } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import type { Extension } from "#project/config/index";
 

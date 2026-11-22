@@ -3,11 +3,9 @@ import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
-import {
-  resolveAgentReference,
-  syncAgentFiles,
-} from "@auaust/engrenage/agents";
 import { loadConfig } from "@auaust/engrenage/extensions";
+import { resolveAgentReference } from "@auaust/engrenage/future/metalbrain/instructions";
+import { syncAgentFiles } from "@auaust/engrenage/metalbrain";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";

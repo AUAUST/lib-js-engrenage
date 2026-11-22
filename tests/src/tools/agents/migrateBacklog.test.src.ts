@@ -6,12 +6,12 @@ import { parse } from "yaml";
 
 import { resolveDataFile } from "#foundation/data/index";
 import { backlogIndex } from "#metalbrain/backlog/constants";
+import { backlogTemplate } from "#metalbrain/instructions/constants";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
-import { backlogTemplate } from "#tools/agents/constants";
 
 function createProject(
   index: string,

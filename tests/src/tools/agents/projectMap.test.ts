@@ -2,8 +2,8 @@ import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 
-import { syncAgents } from "@auaust/engrenage/agents";
 import { loadConfig } from "@auaust/engrenage/extensions";
+import { syncAgents } from "@auaust/engrenage/metalbrain";
 import { createRolePreset, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

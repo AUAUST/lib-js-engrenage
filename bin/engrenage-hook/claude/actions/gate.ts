@@ -1,11 +1,11 @@
 import { object, optional, string } from "valibot";
 
+import { mainAgent } from "#metalbrain/runtimes/constants";
+import { resolveHookDirectory } from "#metalbrain/runtimes/index";
 import {
   getSkillDefinitions,
   listActiveExtensions,
-  mainAgent,
   readHookPayload,
-  resolveHookDirectory,
 } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";

@@ -1,5 +1,5 @@
 import { resolveWithin } from "#foundation/filesystem/index";
-import { agentRunExtensions } from "#tools/agents/constants";
+import { agentRunExtensions } from "#metalbrain/runtimes/constants";
 import type { AgentRunState } from "#metalbrain/runtimes/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

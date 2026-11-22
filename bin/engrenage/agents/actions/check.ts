@@ -1,4 +1,5 @@
-import { checkAgents, formatAgentCheck } from "#tools/agents/index";
+import { formatAgentCheck } from "#metalbrain/runtimes/index";
+import { checkAgents } from "#tools/agents/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 

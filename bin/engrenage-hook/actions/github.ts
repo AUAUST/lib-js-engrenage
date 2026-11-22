@@ -1,11 +1,7 @@
 import { object, string } from "valibot";
 
-import { denyToolUse } from "#metalbrain/runtimes/index";
-import {
-  reportBudgetFindings,
-  resolveHookDirectory,
-  validateHookPayload,
-} from "#tools/agents/index";
+import { denyToolUse, resolveHookDirectory } from "#metalbrain/runtimes/index";
+import { reportBudgetFindings, validateHookPayload } from "#tools/agents/index";
 import {
   checkGithubWrite,
   checkIssueViews,

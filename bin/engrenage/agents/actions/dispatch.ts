@@ -5,7 +5,7 @@ import { readTextFile } from "#foundation/filesystem/index";
 import { dispatchAgent } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
-import type { Effort } from "#tools/agents/index";
+import type { Effort } from "#metalbrain/runtimes/index";
 
 export default async function (
   target: string,

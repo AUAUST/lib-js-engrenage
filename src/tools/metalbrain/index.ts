@@ -1,22 +1,7 @@
-// @debt re-exports names other domains own so the `agents` entry keeps them; consumers should import them from their owning domain
-export { resolveAgentReference } from "#metalbrain/instructions/index";
 export {
   createClaudeSettingsStep,
   createClaudeStep,
 } from "#tools/metalbrain/claude/index";
-export type { GeneratedFrontmatter } from "#metalbrain/instructions/index";
-export type {
-  BudgetFinding,
-  BudgetKind,
-  BudgetMode,
-  Budgets,
-} from "#metalbrain/records/index";
-export type {
-  Agent,
-  HookDefinition,
-  HookEvent,
-  ResolvedAgents,
-} from "#metalbrain/runtimes/index";
 
 // @barrel setup
 export { checkBacklog } from "#tools/metalbrain/setup/checkBacklog";

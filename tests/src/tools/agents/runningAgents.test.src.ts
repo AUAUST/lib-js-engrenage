@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
 
+import { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
   readClaudeAgentMeta,
   reconcileClaudeRuns,
-  resolveClaudeAgentTranscript,
 } from "#tools/agents/claude/index";
 import { readAgentRun } from "#tools/agents/operations/readAgentRun";
 import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";

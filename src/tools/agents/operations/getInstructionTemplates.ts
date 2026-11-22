@@ -16,11 +16,11 @@ import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
+import { metalbrain } from "#metalbrain/instructions/constants";
 import {
   parseInstruction,
   type FragmentRenderer,
 } from "#metalbrain/instructions/index";
-import { metalbrain } from "#tools/agents/constants";
 import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 import type { Extension } from "#project/config/index";
 
