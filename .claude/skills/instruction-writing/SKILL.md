@@ -44,7 +44,7 @@ Rank sources, bound an audit and grade findings by this method:
 4. **Placement.** Apply §Placement to each rule you write and to each rule the sources you edit hold on the subject.
 5. **Enforcement.** Apply §Form to each rule a lint rule, type, hook or test could check.
 6. **Draft.** Delete before adding: remove or merge each inventoried rule on the subject that a check enforces, another rule states, or that prevents no failure you can name, observed or in §Model facts; then add only what the behavior still lacks, each rule against a named failure. Group the rules by shape, pick each group's form under §Form, write under §Wording, resolving each step-2 finding under §Conflicts, then diff against the previous version: account for each removed rule as merged, moved or dropped on purpose.
-7. **Word budget.** Run `pnpm engrenage sync`: its `word-budgets` check caps each role's words loaded at start (`AGENTS.md`, rules without `paths`, its agent file or skill) in `.engrenage/word-budgets.json`, fails past a cap and lowers each cap its role went under. End every role you touch under its cap as your change found it; raise a cap only on the user's decision, otherwise cut, or report the cuts you would need.
+7. **Word budget.** Run `pnpm engrenage sync`: its `word-budgets` check caps each role's words loaded at start (`AGENTS.md`, rules without `paths`, its agent file or skill) in `.engrenage/word-budgets.json`, fails past a cap and lowers each cap its role went under. For each role your change grows: move to a supporting file what only some modes or steps need (§Placement), cut what the request does not need, then raise its cap to the new count. Never make a rule vaguer or less complete to fit a cap.
 8. **Cold read.** For each target agent, read only what it has loaded when the rule should fire (`AGENTS.md`, its skill or agent file, the rules loaded by then, its brief) and list every catch of §Catches. Rewrite until a full cold read of the final text finds none.
 
 ## Catches
@@ -126,7 +126,7 @@ Checked 2026-11-18.
 
 ## Report
 
-- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split made or left; each rule added or changed with the failure it prevents; words removed and added per role; proposed checks, deliberate drops, backlog entries added and facts refreshed.
+- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split made or left; each rule added or changed with the failure it prevents; words removed and added per role, each cap raised with the additions it covers; proposed checks, deliberate drops, backlog entries added and facts refreshed.
 - **Audit.** Each catch and gap, grouped by subject and graded by the method's Findings, with whether its fix needs a behavior decision or only wording and placement; the backlog entries they would lead to, for your caller to record; proposed checks.
 
 <!-- @end -->

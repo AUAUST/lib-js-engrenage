@@ -4,7 +4,7 @@
 
 The lifecycle of each agent your skill dispatches under this file to change files: dispatch, resume, commit, hold and drop. Your skill sets K, the number of such agents in flight at once, what each brief holds, how the work is reviewed and what each commit holds; `§…` names this file's sections.
 
-The working branch: the main checkout's branch your skill commits the agents' work to. An agent's work: the commits it made since its dispatch base, a worker's checkpoints, and its uncommitted rest, reviewed as one diff from that base.
+The working branch: the main checkout's branch your skill commits the agents' work to. An agent's work: the commits it made since its dispatch base and its uncommitted rest, reviewed as one diff from that base.
 
 ## Dispatch
 
@@ -37,8 +37,7 @@ Takes an agent's work off the working branch, keeping the new lines in `.ai/fric
 
 1. Copy the lines those logs gained since the agent's dispatch base, whoever wrote them, from its hold branch when held, otherwise from its checkout.
 2. Return the main checkout to the working branch as it stood before the agent:
-   - **Agent in the main checkout, held.** Switch back to the working branch and run `git reset --keep <dispatch base>`, with uncommitted records stashed by path around it: the hold branch keeps every commit it drops.
-   - **Agent in the main checkout, not held.** Discard the uncommitted files the agent changed or added, then, when it made commits, `git revert --no-edit <dispatch base>..HEAD`; never reset past a commit no other branch holds, which auto mode denies as destructive.
+   - **Agent in the main checkout.** Held, switch back to the working branch; otherwise discard the uncommitted files the agent changed or added. Undo its commits, when any: held, `git reset --keep <dispatch base>`, uncommitted records stashed by path around it, the hold branch keeping them; otherwise `git revert --no-edit <dispatch base>..HEAD`, since auto mode denies a reset past commits no other branch holds.
    - **Agent in a worktree.** In the main checkout, discard the applied rest by path, then undo its cherry-picks, when any, with `git reset --keep` to the commit before them: its worktree keeps the originals. Then remove the agent's worktree with `--force`, since it may hold uncommitted work.
 3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit, and write the backlog entries the agent's report leaves you (`dispatching.md` › Backlog).
 

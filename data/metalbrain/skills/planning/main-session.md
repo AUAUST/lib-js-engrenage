@@ -39,7 +39,7 @@ Report each item as ready, with its inner planner, or left under **Planning** wi
 
 ## Inner dispatch
 
-Read this file before the first inner dispatch, for the brief lines, budget stops and the findings a report names:
+Read this file before the first inner dispatch, for parallel agents, the brief lines, budget stops and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->
@@ -51,6 +51,6 @@ Once the groundwork holds:
 - every fact more than one item would decide is in the plan;
 - every draft is published.
 
-1. Keep up to K inner planners in flight, K from `pool <K>` in the user's request, 2 when unset, dispatching the next item as each reports. Dispatch a new `planner` per item §Waves sends to one, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item; group no other items: every turn re-reads a planner's whole context, so its cost grows faster than its items.
-2. Batch the inner planners' questions to the user, apply their plan findings yourself, and resume every inner planner whose item an answer or a plan change affects, already deepened or not, each resume taking a slot of the K.
+1. Run inner planners side by side only as `dispatching.md` › Parallel agents allows for agents costing an analyser's run, at most K when the user's request sets `pool <K>`, dispatching the next item as each reports. Dispatch a new `planner` per item §Waves sends to one, in the background and in the main checkout, briefed `inner` with `Issue: <owner>/<repo>#<n>` as the first line and the plan number. A segment whose members share their design is one item; group no other items: every turn re-reads a planner's whole context, so its cost grows faster than its items.
+2. Batch the inner planners' questions to the user, apply their plan findings yourself, and resume every inner planner whose item an answer or a plan change affects, already deepened or not, each resume counting as a planner in flight.
 3. Once every inner planner has reported, review the items they deepened under `issue-tree.md` › Readiness.

@@ -99,7 +99,7 @@ A caller message with a `Budget:` line, your brief included, opens a window at t
 - **Every item inside your task, or a check failure your changes cause, with its change decided.** Finish that list only.
 - **Otherwise, or on an off-list item, a fix its check rejects twice, or a second budget warning.** Stop with your changes' checks passing; open your report with `Budget stop:`, then your progress in the stop-record shape (Writing › Stop records) without its steps.
 
-Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: brief lines, budget stops, report findings.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, budget stops, report findings.
 
 ### Dependencies
 

@@ -12,14 +12,11 @@ Turn the user's idea into settled work: you keep the overview, settle the requir
 
 Keep this role for the whole session.
 
-## Pools
+## Agents in flight
 
-| Pool         | Agents                                 | K, agents in flight at once |
-| ------------ | -------------------------------------- | --------------------------- |
-| Implementers | Workers, debuggers, analysers, writers | 2                           |
-| Gatherers    | Gatherers                              | 2                           |
+K = 1: one worker, debugger or writer in flight. Gatherers and read-only analysers run beside it by `dispatching.md` › Parallel agents.
 
-The user's words override K: `pool <K>` or `K = <K>` sets the implementers', `gatherers <K>` the gatherers', `sequential` or `no pool` both to 1.
+The user's words override: `pool <K>` or `K = <K>` sets K, `gatherers <K>` caps the gatherers in flight, `sequential` or `no pool` runs one agent at a time.
 
 ## Reading the user
 
@@ -58,7 +55,7 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 
 ## Briefing
 
-Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for analysers). Writing › Transfer texts owns the rest, and this file the brief lines, budget stops and the findings a report names:
+Brief each agent with only what it cannot work out: what we are working on, the facts wanted back, and what it may change (read-only for analysers). Writing › Transfer texts owns the rest, and this file the parallel agents, brief lines, budget stops and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->

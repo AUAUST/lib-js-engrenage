@@ -141,7 +141,7 @@ entries:
   - id: 261122-52a0
     title: Walk tuning awaits the first spec walks
     why: "#809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5)."
-    want: from the first walks' measurements, decide the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).
+    want: from the first walks' measurements, decide the leaf floor, worker continuity across leaves (H10), whether one central walker with sequential chains in one agent holds (G1, G2), and when parallel leaves (K > 1) earn their cost over the default of one writing agent, user, 2026-11-22.
     done: each decided, or dropped as unneeded by the walk data.
   - id: 261122-c95f
     title: The push deny misses `git -C <path> push`
@@ -167,8 +167,8 @@ entries:
     want: the stop gate failing a gated subagent other than `writer` whose diff from its `Base:` changes an instruction source (`data/metalbrain/`, project rule, skill or agent files outside `@reference` blocks), sync output exempt.
     done: "user, 2026-11-22: not enforced while it stays the one case the fixed no-writer row caused; build the check if a non-writer edits instructions again, otherwise drop the entry."
   - id: 261122-861f
-    title: No command guards instruction growth or updates word budgets
-    why: "Every role sits exactly at its word budget; #815's worker and the budget-stop writer each cut words or raised budgets by hand to pass sync."
-    want:
-      - "a command for writing instructions that, on growth, warns the writer: growing instructions: is a split worth it? is it expected by the request? fix or report"
-      - a command to update the word budgets, run on the user's decision
+    title: The word-budget check still treats caps as hard and raises none
+    sites:
+      - src/tools/agents/claude/setup/checkWordBudgets.ts:141
+    why: "user, 2026-11-22: growth a request needs is expected; instruction-writing step 7 now has the writer split into supporting files, cut what the request does not need, then raise the cap. The check's overrun message still says to raise a budget only on the user's decision, and raising means editing `.engrenage/word-budgets.json` by hand."
+    want: the overrun message asking for that weighing, and a command raising a role's cap to its measured count.

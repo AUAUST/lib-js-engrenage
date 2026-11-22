@@ -53,7 +53,7 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 
 ## Commits
 
-Commit under the git rules each coherent state with its checks passing; one the gate refuses for failures not yours waits for the next. As a subagent: on your starting branch, `Towards #<n>` for an issue, never `Closes` or `snap`, leaving the rest uncommitted for your caller.
+Commit a checkpoint under the git rules, checks passing, before your next steps spread a settled step's result across many files, so you can return to it if what follows fails: a programmer's call, never one per step nor required. One the gate refuses for failures not yours waits for the next. As a subagent: on your starting branch, `Towards #<n>` for an issue, never `Closes` or `snap`, leaving the rest uncommitted for your caller.
 
 ## Finishing
 

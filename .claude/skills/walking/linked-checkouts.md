@@ -28,7 +28,7 @@ Leave the checkout on that branch, never its default branch.
 
 ## Dispatch
 
-- **Pool.** At most one agent in flight per linked checkout, whatever its role: `agents dispatch` has no worktree isolation. Each counts towards its pool's K.
+- **Pool.** At most one agent in flight per linked checkout, whatever its role: `agents dispatch` has no worktree isolation. Each changing files counts towards your skill's K.
 - **Dispatch base.** The linked checkout's `HEAD` commit when you dispatch, recorded per agent and briefed on the `Base:` line.
 - **Start.** Write the brief your skill sets to a file outside both checkouts, then run in the background `pnpm engrenage agents dispatch <checkout> --client claude --agent <name> --brief <file>`, adding `--effort <level>` when your skill gives one. Its output holds a `Session:` line, a `Denied:` line when tools were denied, and the agent's final report.
 - **Resume.** Write the message to a file, then run `pnpm engrenage agents dispatch <checkout> --client claude --resume <session> --brief <file>`.
@@ -42,6 +42,6 @@ Leave the checkout on that branch, never its default branch.
 ## Holding and dropping
 
 - **Holding.** `worktree-dispatch.md` › Holding work, step 1 runs in the linked checkout.
-- **Dropping.** `worktree-dispatch.md` › Dropping work, with step 2's main-checkout cases run in the linked checkout, on the branch §Starting set. Step 3 appends to that checkout's logs, left uncommitted for its next commit.
+- **Dropping.** `worktree-dispatch.md` › Dropping work, with step 2's main-checkout case run in the linked checkout, on the branch §Starting set. Step 3 appends to that checkout's logs, left uncommitted for its next commit.
 
 <!-- @end -->
