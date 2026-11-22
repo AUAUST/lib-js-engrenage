@@ -21,14 +21,14 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 
 ## Walk
 
-- Stay in the walked checkout. Read a foreign issue's repository, another registered one, in the linked checkout whose path the walker sends with it, by that path; draft and claim that repository's issues as `<short name>.<n>`.
+- Stay in the walked checkout. For a foreign issue, one from another registered repository, read that repository in the linked checkout whose path the walker sends with the issue, by that path, and draft and claim its issues as `<short name>.<n>`.
 - Judge every worker stop and deviation against the plan and its issues, never against the code the worker wrote; use the code only to see what exists.
 - Handle each issue the walker sends by why it sends it:
   - **Open Planning.** Deepen it by `issue-tree.md` › Deepening an item.
-  - **Housekeeping the walker stopped on** (the step and its output). Correct a step only its wording or a name made fail; otherwise remove the **Housekeeping**, so a worker delivers the issue's **Done when**, adding to **Context** what the output shows, or file under it a `problem` for a defect the output shows.
+  - **Housekeeping the walker stopped on** (the step and its output). When only the step's wording or a name made it fail, correct the step. Otherwise remove the **Housekeeping**, so that a worker delivers the issue's **Done when**, and either add to **Context** what the output shows or, for a defect the output shows, file a `problem` under the issue.
   - **Scope stop** (its worker's report opens `Scope stop:`, the implement skill › Stops). Settle it under §Changes, then edit the issues it changes so a new worker delivers each.
-  - **Budget stop** (its worker's report opens `Budget stop:`): the item holds more than one agent's worth. From the reports' progress and leads, split what remains into sub-issues under `issue-tree.md` › Splitting a task, ordered under its Ordering, each with its `complexity`. The parent keeps its **Done when** for the whole and its `complexity` re-set to the work left on it.
-  - **Plan findings.** Settle each under §Changes, editing the issues it changes and adding one for work no open issue holds; return each change to the issue of a leaf in flight, for the walker to send to its agent, and, for findings on a leaf's snap commit, whether its work stays, for a new agent to build on, or is dropped, for the walker to revert.
+  - **Thoroughness stop** (its worker's report opens `Thoroughness stop:`): the item holds more than one agent's worth. From the reports' progress and leads, split what remains into sub-issues under `issue-tree.md` › Splitting a task, ordered under its Ordering, each with its `complexity`. The parent keeps its **Done when** for the whole and its `complexity` re-set to the work left on it.
+  - **Plan findings.** Settle each under §Changes: edit the issues it changes, and add an issue for work no open issue holds. Return each change you made to the issue of a leaf in flight, for the walker to send to that leaf's agent. For findings on a leaf's snap commit, also return whether its work stays, for a new agent to build on, or is dropped, for the walker to revert.
   - **Open Questions the user leaves unanswered, with issues waiting behind it.** Only reorder around it, as below.
   - **`blockers` `outdated`.** Refresh it against the plan and the code, then remove `outdated` from its `blockers`.
   - **Check findings for its structure.** Fix its structure until `pnpm engrenage planning issue check <n>` passes.
@@ -42,8 +42,9 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 | Only seems better than the plan                                                                                             | Ask                                                                                                                                                           | Reject it, and record it as an `idea` the plan relates to |
 | Shows the plan is wrong                                                                                                     | Ask                                                                                                                                                           | Handle it as a question under §Settling questions         |
 
-- Handle the set-aside issues the walker sends in tree order, per run at most as many as the free slots named in the walker's latest message sending or resuming them, each counting once ready or left set aside, a split issue once its first sub-issue is ready. Return once that many are handled, at your first ready issue when that message says `no leaf in flight`, or once none is left, listing the rest as pending; continue them when resumed.
-- Around each issue left set aside with issues waiting behind it, move each waiting issue that needs none of its work (a contract, file, behavior or decision it introduces) ahead of it through the parent's `subIssues`, keeping each dependency before its dependents, into an earlier segment only when it is independent of that segment's members: an organisational change (§Changes).
+- Handle the set-aside issues the walker sends in tree order, per run at most as many as the free slots named in the walker's latest message sending or resuming them. An issue counts as handled once it is ready or left set aside; a split issue, once its first sub-issue is ready.
+- Return as soon as one of these holds, listing the issues not yet handled as pending: you handled that many issues; that message says `no leaf in flight` and you made an issue ready; no issue is left. Continue the pending ones when resumed.
+- For each issue left set aside with issues waiting behind it, move ahead of it, through the parent's `subIssues`, each waiting issue that needs none of its work: no contract, file, behavior or decision it introduces. Keep each dependency before its dependents, and move an issue into an earlier segment only when it is independent of that segment's members. Such a move is an organisational change (§Changes).
 - When the walker sends a blocked report while you handle them, handle it first, then return with its answer or question, listing the issues not yet handled as pending.
 - On a plan the walker's next commit closes, move its facts worth keeping under `issue-tree.md` › The tree, then return.
 - For any other call, return the answer.
@@ -72,6 +73,12 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 On the walker's request, review the plan's structure by this file; recommend one when a settled change adds a package, environment or namespace, or moves a domain across them:
 
 `.claude/skills/consultant/architecture-review.md`
+
+It applies the analysis method of these files:
+
+`.claude/skills/consultant/analysis.md`
+
+`.claude/skills/consultant/request-analysis.md`
 
 ## Steps sweep
 

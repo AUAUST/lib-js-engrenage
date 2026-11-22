@@ -1,6 +1,6 @@
 # Architecture review
 
-Reviews the structure a work sets: scope, ownership, dependency direction, boundaries, roles, and the tooling keeping them; never implementation design inside a domain. Apply it as the question the analysis method (AGENTS.md › Analysis) asks of the material, never as a process of its own.
+Reviews the structure a work sets: scope, ownership, dependency direction, boundaries, roles, and the tooling keeping them; never implementation design inside a domain. Apply it as the question the analysis method in `analysis.md`, beside this file, asks of the material, never as a process of its own.
 
 ## Material
 

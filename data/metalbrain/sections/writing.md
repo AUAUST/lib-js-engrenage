@@ -11,7 +11,8 @@ order: 15
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
 - An issue or backlog entry asking for an agent instruction change states the concern, the behavior wanted and the cases to cover, never the rule, its wording or placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
-- State each idea exactly, with its reason in one clause, in the fewest words that keep it: fragments and keywords over sentences, no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
+- State each idea exactly, with its reason in one clause, in the fewest words that keep it: no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
+- Cut repetition, never the words a condition, exception, sequence or scope depends on: one read of each sentence yields one parse. Write fragments only where a table cell, a list item's lead or a heading already carries the structure; elsewhere, sentences.
 
 ### Structure
 
@@ -33,9 +34,9 @@ order: 15
 
 Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
-- Hold: what is wrong or wanted, the target state, facts costly to re-derive (constraints, decisions, paths, issues, branches, commits), open questions; references over excerpts, quoting only what nothing durable keeps, such as the user's chat words.
-- Never hold, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
-- A handoff is a chat reply, inside a Markdown code block so the user can copy it as is; a file only when the user asks, or as a stop record.
+- **Hold** what is wrong or wanted, the target state, the facts costly to re-derive (constraints, decisions, paths, issues, branches, commits) and the open questions. Reference a source rather than excerpting it; quote only text no durable source keeps, the user's chat words included.
+- **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, and how you found the facts, unless your skill asks for it.
+- A handoff is a chat reply, inside a Markdown code block so the user can copy it as is. Write it to a file only when the user asks, or as a stop record.
 
 ### Reports
 
@@ -57,7 +58,7 @@ A subagent's final report, per dispatch or resume:
 
 Shape: goal; last operation; what is ready, and where; what is half-done, where, and what it misses; next step.
 
-Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. Neither a main-session pause awaiting answers nor a budget stop (Analysis › Budget levels) is one of them.
+Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. Neither a main-session pause awaiting answers nor a thoroughness stop (Analysis › Thoroughness levels) is one of them.
 
 1. Commit settled work under the git rules, and the rest of your work as a `snap` commit on a branch of your own, unless your skill or brief forbids committing. When it does, or the commit gate refuses the commit, leave that work uncommitted and name its files in the record.
 2. Write the record into your final report as a subagent, otherwise into `.ai/handoffs/<topic>.md`, local-only, deleted by whoever resumes the work.

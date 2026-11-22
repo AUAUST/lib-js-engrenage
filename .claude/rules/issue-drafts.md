@@ -75,11 +75,11 @@ State each decision, constraint or no-go, in any section, with its reason in one
 | **Planning**      | plan, segment, item           | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                                   |
 | **Questions**     | plan, segment, item           | What investigation could not settle: the findings and the candidate answers                                                                               |
 
-| Section       | Budget in words |
-| ------------- | --------------- |
-| **Goal**      | ~60             |
-| **Context**   | ~80             |
-| **Done when** | ~60             |
+| Section       | Word cap |
+| ------------- | -------- |
+| **Goal**      | ~60      |
+| **Context**   | ~80      |
+| **Done when** | ~60      |
 
 - Other sections: as complete as the item's agent needs.
 - A segment's **Done when**: never the next item's or the parent's requirement, nor a restatement of its members' facts.
@@ -92,7 +92,7 @@ Name in an item's **Context** the domain and role owning each capability it adds
 
 ## Size
 
-An item is one agent's worth: as many whole outcomes as one worker run can deliver and verify within its budget level (Analysis › Budget levels), with no part left unused until another issue lands. An outcome: a change that, made alone, leaves the codebase coherent and delivers a behavior or contract change its **Done when** observes. Judge size by outcomes, never by counting files or words.
+An item is one agent's worth: as many whole outcomes as one worker run can deliver and verify within its thoroughness level (Analysis › Thoroughness levels), with no part left unused until another issue lands. An outcome: a change that, made alone, leaves the codebase coherent and delivers a behavior or contract change its **Done when** observes. Judge size by outcomes, never by counting files or words.
 
 - **More than one agent's worth.** Split it into the fewest items, each holding whole outcomes, ordered by dependency.
 - **One outcome.** Parts delivering it only together stay one item: never split by layer or activity.
@@ -101,7 +101,7 @@ An item is one agent's worth: as many whole outcomes as one worker run can deliv
 - **Parallel split**, into a new sibling. It takes its part from the original, none in both; a part both need is a dependency, ordered as such.
 - **Any split.** Each **Tests** case and decision of the original lands in exactly one item; never drop, shorten or defer a part to make an item fit: a part whose design is unsettled goes under **Planning**.
 - **Any split, merge or reorder.** The plan's **Goal**, **Decisions** and **Done when** stay: changing one is a plan decision of its own.
-- An item holding more than one agent's worth is never ready, dispatched or handed off as ready, whatever its `complexity` or budget level.
+- An item holding more than one agent's worth is never ready, dispatched or handed off as ready, whatever its `complexity` or thoroughness level.
 
 ## Drafts
 

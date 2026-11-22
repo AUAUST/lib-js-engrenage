@@ -124,7 +124,7 @@ A merger's improvement finding is accepted work. With a `Walk:` line in your bri
 
 ## Commits
 
-- **As a subagent.** Leave your work uncommitted: your caller commits it.
+- **As a subagent.** Commit nothing, a stop record's commits included (Writing › Stop records): your caller commits your work.
 - **In the main session.** Commit under the git rules.
 
 <!-- @end -->

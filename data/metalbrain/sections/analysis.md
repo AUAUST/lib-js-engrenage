@@ -1,6 +1,6 @@
 ---
 title: Analysis
-description: Budget levels, dependency choices and the main session's analysis method.
+description: Thoroughness levels, dependency choices and the main session's analysis method.
 category: workflow
 default: true
 order: 25
@@ -18,23 +18,24 @@ To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 <!-- @end -->
 
-### Budget levels
+### Thoroughness levels
 
-A dispatch brief's `Budget: <level>` line sets how far its receiver digs; a main session has no level.
+A dispatch brief's `Thoroughness: <level>` line sets how far its receiver digs; a main session has no level.
 
-| Level      | Expected depth                                                                                                      | Default for                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| `scoped`   | A precise question or a contained change: the material the brief names and only what answering or applying it needs | Gatherers, analysers, mergers in integration mode |
-| `standard` | A task whose sources lead further: also the sources sharing its subject, and the leads they open within it          | Every other dispatched agent                      |
+| Level      | Work it covers                                                                                                       | Default for                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `scoped`   | A precise question or a contained change: the material the brief names, and only what answering or applying it needs | Gatherers, analysers, mergers |
+| `standard` | A task whose sources lead further: also the sources sharing its subject, and the leads they open within it           | Every other dispatched agent  |
 
-A caller message with a `Budget:` line, your brief included, opens a window at that level; others continue it. Dispatched, take your window's level, or your default without one, as a ceiling on the work since it opened, never a target: stop once the work is done. It bounds every rule asking you to go further. Reaching it, list what remains:
-
-- **Every item inside your task, or a check failure your changes cause, with its change decided.** Finish that list only.
-- **Otherwise, or on an off-list item, a fix its check rejects twice, or a second budget warning.** Stop with your changes' checks passing; open your report with `Budget stop:`, then your progress in the stop-record shape (Writing › Stop records) without its steps.
+- **Window.** Each message from your caller that carries a `Thoroughness:` line, your brief included, opens a window at that level; a brief without one opens a window at your default level from the table, and a later message without one continues the current window.
+- **Ceiling.** As a dispatched agent, treat your window's level as a ceiling on the work done since the window opened, never as a target: stop as soon as the work is done. The ceiling bounds every other rule that asks you to go further.
+- **Reaching the ceiling**, or at a first thoroughness warning from your harness: list what remains, then handle it by the first matching case.
+  - When every item on the list lies inside your task, or is a check failure your changes caused, and each item's change is already decided: finish those items and nothing else.
+  - Otherwise, and also when you meet an item that is not on the list, when a check rejects the same fix twice, or at a second thoroughness warning: stop with your changes' checks passing. Open your report with `Thoroughness stop:`, followed by your progress in the stop-record shape (Writing › Stop records) without its numbered steps.
 
 <!-- @file .claude/skills/shape/dispatching.md -->
 
-Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, budget stops, report findings.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings.
 
 <!-- @end -->
 

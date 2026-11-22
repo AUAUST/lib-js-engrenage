@@ -37,7 +37,7 @@ walk check ──► route the ready set (§Handling table)
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
   │              ├─ blocked ──► consultant ──► resume the agent
   │              ├─ deviation or discovery ──► consultant ──► rejected: resume the agent · asked: wait for the answer · accepted: completion
-  │              ├─ budget stop ──► review, handover commit ──► consultant splits the rest ──► walk check
+  │              ├─ thoroughness stop ──► review, handover commit ──► consultant splits the rest ──► walk check
   │              ├─ scope stop ──► consultant settles it ──► drop the leaf's work ──► walk check
   │              └─ completion
   │                   ▼
@@ -52,9 +52,15 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order, each parent above its sub-issues, with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker` or `debugger`, or `orchestrator`, you, for one holding **Housekeeping**, and the next issue, or `Next: none, walk finished` once the walked issue is closed; it exits 1 only on a stuck walk, the walked issue open with an empty ready set.
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, and after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports:
 
-A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf, a leaf of another registered repository. On a foreign leaf or a worker report opening with `Linked defect:`, first read this file, which replaces each step of this skill it covers:
+- every issue of the tree in tree order, each parent above its sub-issues, with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits;
+- the ready set: every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker` or `debugger`, or with `orchestrator`, meaning you, when it holds **Housekeeping**;
+- the next issue, or `Next: none, walk finished` once the walked issue is closed.
+
+It exits 1 only on a stuck walk: the walked issue open with an empty ready set.
+
+A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf is a leaf of another registered repository. On a foreign leaf, or on a worker report opening with `Linked defect:`, first read this file; it replaces each step of this skill it covers:
 
 `.claude/skills/walking/cross-repository.md`
 
@@ -86,18 +92,18 @@ Before the first `walk check`, and again after each compaction, read this file: 
 
 `.claude/skills/walking/worktree-dispatch.md`
 
-Read this file with it, for parallel agents, the brief lines, budget stops and the findings a report names:
+Read this file with it, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
 
 `.claude/skills/walking/dispatching.md`
 
 - Keep up to K leaves of the ready set in flight.
 - Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
-- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then one `Concurrent: <owner>/<repo>#<n>` line per leaf in flight sharing a contract with it, then its `Budget:` line. Never paste issue or plan content: the agent reads it itself.
+- Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then one `Concurrent: <owner>/<repo>#<n>` line per leaf in flight sharing a contract with it, then its `Thoroughness:` line. Never paste issue or plan content: the agent reads it itself.
 - Two leaves share a contract when their `walk check` `Model:` lines name a common section.
 - Send a completion naming a deviation, or a discovery for sibling work or the plan, to the consultant before integrating or reviewing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the issues it edited to new agents.
-- A leaf's budget stop, in place of `dispatching.md` › Budget levels' successor: integrate or review its work as a completion's, without resuming the agent for its findings, commit it as a handover commit (§Commit), then send the consultant the report with that review's leaf findings, to split what remains into sub-issues, and run `walk check`, which routes them.
+- A leaf's thoroughness stop, in place of the successor `dispatching.md` › Thoroughness levels dispatches: integrate or review its work as a completion's, without resuming the agent for its findings, commit it as a handover commit (§Commit), then send the consultant the report with that review's leaf findings, to split what remains into sub-issues, and run `walk check`, which routes them.
 - Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
 
 ## Integration
@@ -128,7 +134,7 @@ When no integration merger runs:
 3. Once the closing commit exists, run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first, and what is ordered after it waits.
 4. Send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
 
-A handover commit, after a budget stop, or a snap commit, after plan findings: steps 2 to 4, with `Towards #<n>` for the issue instead of closing anything; a snap commit typed `snap`.
+A handover commit, after a thoroughness stop, or a snap commit, after plan findings: steps 2 to 4, with `Towards #<n>` for the issue instead of closing anything; a snap commit typed `snap`.
 
 ## Housekeeping
 
@@ -165,8 +171,18 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 ## Consultant
 
 - Start the `consultant` subagent on first need, briefed with the plan number; resume it under §Resumed agents.
-- Call it only for a blocked report the issue's text does not answer, a scope or budget stop, plan findings, **Housekeeping** you stopped on, a deviation or discovery a report names, a plan your next commit closes, an issue whose **Questions** the user leaves open while issues ordered after it wait, an issue its row sends to it or no row fits, or an architecture review the user asks for, sent as the user worded it. Resume a blocked agent with what it settles; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run. Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Call it only for:
+  - a blocked report the issue's text does not answer;
+  - a scope or thoroughness stop;
+  - plan findings;
+  - **Housekeeping** you stopped on;
+  - a deviation or discovery a report names;
+  - a plan your next commit closes;
+  - an issue whose **Questions** the user leaves open while issues ordered after it wait;
+  - an issue its row sends to it, or one no row fits;
+  - an architecture review the user asks for, sent as the user worded it.
+- Resume a blocked agent with what the consultant settles; answer nothing from code yourself.
+- Send it the issues the handling table routes to it, in tree order, with the linked checkout path of each foreign issue, which it reads by that path. In that message and in each resume for pending issues, name the pool's free slots, at least one, and add `no leaf in flight` when no leaf is in flight: both bound its run. When it returns, dispatch the issues it made ready that are not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 

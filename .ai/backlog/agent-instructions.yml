@@ -136,35 +136,9 @@ entries:
     why: Decided 2026-11-22 — commands over files once they cover every operation, since grep over YAML returns lines without their entry and category and dense command output costs fewer tokens
     want: Instructions name only the record commands, dropping the file paths, for each kind whose list, search, update, move and remove commands exist
     done: No instruction sends agents to a record file for an operation a command covers
-  - id: 261122-a884
-    title: request-analysis Outcome adopts the whole ideal while AGENTS.md Analysis takes the smallest step toward it
-    sites:
-      - data/metalbrain/shared/request-analysis.md:9
-      - data/metalbrain/sections/analysis.md:11
-    want: "Outcome adopts the smallest step meeting the need, with a decided destination for the in-reach remainder of the ideal: reported, issue or backlog entry, or debt"
-  - id: 261122-601b
-    title: "Integration merger default budget level is defined twice: scoped in the Budget levels table, standard in the merging skill frontmatter"
-    sites:
-      - data/metalbrain/sections/analysis.md:27
-      - data/metalbrain/skills/merging.md:13
-    want: One level, decided, briefed explicitly by walking or dropped from the table
-    done: A sync check fails when an agent's frontmatter budget disagrees with the Budget levels table
-  - id: 261122-7115
-    title: planning Role lets a dispatched planner edit instruction files, which Instruction maintenance bars for agents other than writer
-    sites:
-      - data/metalbrain/skills/planning.md:35
-    want: Role defers instruction edits to Instruction maintenance
-  - id: 261122-6ca4
-    title: "Writing's fragments-and-keywords rule is over-applied: compression drops subjects, connectives and relative pronouns that carry conditions and scope"
+  - id: 261122-ed27
+    title: No check warns on instruction sentences whose condition or scope hangs on a participle or absolute phrase
     sites:
       - data/metalbrain/sections/writing.md:14
-    why: Contradicts the Structure table's sentence row and issue-drafts' Goal in sentences; word caps lower on every cut, pushing further compression
-    want: Cut redundancy, never grammar carrying a condition, exception, sequence or scope; fragments only where the container gives structure; rewrite the over-compressed sites in Budget levels, dispatching Budget stop, instruction-maintenance, decision-protocol, agent-records, issues intro, implement, consultant Walk and walking Handling
-  - id: 261122-fd46
-    title: "Low-severity instruction wording gaps: implement's budget stop, curation's parallel analysers, debugger's leave-uncommitted, architecture-review's indirect pointer"
-    sites:
-      - data/metalbrain/skills/implement.md:77
-      - data/metalbrain/skills/curation.md:40
-      - data/metalbrain/skills/debugging.md:114
-      - data/metalbrain/shared/architecture-review.md:3
-    want: Implement handles rather than stops under Budget levels; curation states its parallel exception; debugging's uncommitted rule reads as forbidding commits; architecture-review names analysis.md
+    why: Over-compressed rules hide conditions and scope; a heuristic sync warning would catch them before review
+    want: Decide whether a warning-only sync check is worth its false positives

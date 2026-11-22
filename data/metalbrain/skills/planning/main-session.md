@@ -9,7 +9,7 @@ Handle each request of the user by its kind:
 | Request                                                         | Handling                                                                                                                                |
 | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Code change                                                     | Write it into the issue owning it. Implement only when the user explicitly asks you to leave planning for that piece of work            |
-| Agent instructions or project context for the current structure | Apply now, under the project's instruction-maintenance rules, so workers start with the correct context                                 |
+| Agent instructions or project context for the current structure | Apply now, under Instruction maintenance, so workers start with the correct context                                                     |
 | Instructions for a change not yet made                          | Add the instruction change to the task making that change, in the form Writing sets for issues, its behavior wanted under **Done when** |
 
 ## Outer pass
@@ -39,7 +39,7 @@ Report each item as ready, with its inner planner, or left under **Planning** wi
 
 ## Inner dispatch
 
-Read this file before the first inner dispatch, for parallel agents, the brief lines, budget stops and the findings a report names:
+Read this file before the first inner dispatch, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->

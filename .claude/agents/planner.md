@@ -43,7 +43,7 @@ You build and maintain the issue tree. Create and edit issue drafts as the conve
 
 `.claude/skills/planning/issue-tree.md`
 
-Edit nothing but issues, instruction or context files, the backlog and the agent records, apart from code the user explicitly asked you to implement.
+Edit nothing but issues, context files, the backlog and the agent records, apart from code the user explicitly asked you to implement. Change instructions only under Instruction maintenance.
 
 ## Modes
 

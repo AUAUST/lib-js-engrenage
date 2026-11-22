@@ -41,10 +41,12 @@ Read `.claude/rules/issues.md` before writing anything up. Your findings become 
 
 Dispatch each as an `analyser` briefed read-only, in the main checkout and in the background; dispatch no other agent. Without an `analyser` agent, run its part of the stages yourself. Beyond the stage-0 files, read only what a report points to, at the lines it names.
 
-Read this file before the first dispatch, for parallel agents, the brief lines, budget stops and the findings a report names:
+Read this file before the first dispatch, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->
+
+- Dispatch stage 0's analysers side by side, an exception to `dispatching.md` › Parallel agents' cost bar: none needs another's findings, and the stages after stage 0 need all their reports.
 
 | Analyser | Dispatched at | Skipped when             | Count         | Serves         |
 | -------- | ------------- | ------------------------ | ------------- | -------------- |
@@ -53,7 +55,7 @@ Read this file before the first dispatch, for parallel agents, the brief lines, 
 | Triage   | Stage 4       | The run touched no entry | One           | Stage 4        |
 
 - Debt batches: the markers grouped by directory, at most about 100 per batch, one batch when all fit; each clone joins its first file's batch.
-- Brief each with the paths of what it reads, never their content, its scope (those inputs and the code and history they cite), for the triage analyser a `Backlog:` line per entry the run touched and `Budget: standard`, and the facts wanted back:
+- Brief each with the paths of what it reads, never their content, its scope (those inputs and the code and history they cite), for the triage analyser a `Backlog:` line per entry the run touched and `Thoroughness: standard`, and the facts wanted back:
   - **Records.** Reads the scratchpad, `.ai/friction.md`, `.ai/discarded.md` and the backlog. Back: per note, the project context it touches, the entries covering or overlapping it, and any conflict with them or missing context, as a question; per friction subject, its variant names, the one name to merge them under, its line count and the entry tracking it; per discarded subject, its line count.
   - **Debt.** Reads the marker and clone files, its batch and the backlog. Back: its markers and clones grouped by matter, across wording and files, each group with its sites, the other sites the fix would benefit, the entry covering it, and a fix only when obvious; each marker or clone that is not debt, with why; each group whose matter reaches past the batch.
   - **Triage.** Reads the entries its `Backlog:` lines name, the request and the backlog, against the default branch. Back: per entry, the related entries and what they explain together, and what the request and the project's current state add to it, each with its site; per question, its answer with evidence, or the findings and candidate answers when the code, configuration, history, documentation and dependencies cannot settle it; the entries that are one matter, and each entry holding several.
