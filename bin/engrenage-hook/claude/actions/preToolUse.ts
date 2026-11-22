@@ -21,6 +21,16 @@ async function checkBash(payload: unknown, command: string): Promise<void> {
     }
   }
 
+  if (/[*?[]|(?:^|[\s;&|(])=|\bsed\b|\btimeout\b|eslint:fix/.test(command)) {
+    const {
+      default: shell,
+    } = await import("#bin/engrenage-hook/claude/actions/shell");
+
+    if (await shell(payload)) {
+      return;
+    }
+  }
+
   if (!/\bgh\b/.test(command) || !/\bissue\b/.test(command)) {
     return;
   }

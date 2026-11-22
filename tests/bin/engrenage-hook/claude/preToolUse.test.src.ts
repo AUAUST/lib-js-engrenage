@@ -64,6 +64,18 @@ test(
 );
 
 test(
+  "a Bash command falling into a shell trap gets its fix",
+  { timeout: binaryTimeout },
+  async () => {
+    const { status, stdout, stderr } = await runBash("sed -i 's/a/b/' x");
+
+    expect(status, stderr).toBe(0);
+    expect(stdout).toContain('"permissionDecision":"deny"');
+    expect(stdout).toContain("sed -i ''");
+  },
+);
+
+test(
   "a Bash command bypassing the gate gets one deny",
   { timeout: binaryTimeout },
   async () => {

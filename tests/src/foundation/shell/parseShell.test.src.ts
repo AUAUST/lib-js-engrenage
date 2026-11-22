@@ -82,6 +82,27 @@ describe("parseShell", () => {
     ]);
   });
 
+  test("reads unquoted globs as patterns and a leading `=` as an expansion", () => {
+    expect(parseShell(`ls *.ts "*" a\\? [ =ls =`)[0]?.words).toEqual([
+      { kind: "literal", text: "ls" },
+      { kind: "pattern", source: "*.ts" },
+      { kind: "literal", text: "*" },
+      { kind: "literal", text: "a?" },
+      { kind: "literal", text: "[" },
+      { kind: "expansion", source: "=ls" },
+      { kind: "literal", text: "=" },
+    ]);
+
+    expect(parseShell("for f in *.ts; do gh $f; done")).toContainEqual(
+      expect.objectContaining({
+        words: [
+          { kind: "literal", text: "gh" },
+          expect.objectContaining({ kind: "expansion" }),
+        ],
+      }),
+    );
+  });
+
   test("keeps a loop variable an expansion when the source may rebind it", () => {
     for (const source of [
       "for n in 1; do read n; gh $n; done",

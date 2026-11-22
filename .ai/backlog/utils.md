@@ -31,3 +31,9 @@ Shared helpers and their placement.
 - sites: `src/foundation/shell/operations/parseShell.ts:108`
 - why: `readLiteral` keeps an unquoted `{770,731}`, `{1..3}` or `~/x` as one literal, though Bash expands it, so `gh issue view {770,731}` or `for n in {770,731}` yields a wrong literal instead of its words or an expansion.
 - want: such words expanded to their words, or kept an expansion.
+
+## 6. The shell parser leaks sh-syntax's error for zsh-only syntax
+
+- sites: `src/foundation/shell/operations/parseShell.ts:430`, `src/tools/agents/operations/findShellTrap.ts:90`
+- why: zsh-only syntax (`${(f)x}`) throws sh-syntax's `ShSyntaxError` (code `SH_SYNTAX_LANGUAGE`, no position), not `ShellSyntaxError`, so the git hook check crashes and fails open on `git … ${(f)x}`.
+- want: a `ShellSyntaxError` for it, or a distinct error telling zsh-valid commands apart from invalid ones; consumers choose deny or pass.

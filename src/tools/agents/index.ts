@@ -56,6 +56,7 @@ export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
+export { findShellTrap } from "#tools/agents/operations/findShellTrap";
 export { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 export { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 export { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";

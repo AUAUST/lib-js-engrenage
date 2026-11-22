@@ -57,6 +57,33 @@ function isQuotedDelimiter(delimiter: Word | null) {
   );
 }
 
+function hasGlob(part: WordPart) {
+  return (
+    part.type === "ExtGlob" ||
+    (part.type === "Lit" && /[*?[]/.test(part.value.replaceAll(/\\./gs, "")))
+  );
+}
+
+function isPattern(parts: readonly WordPart[]) {
+  const [first, ...others] = parts;
+
+  if (first?.type === "Lit" && first.value === "[" && others.length === 0) {
+    return false;
+  }
+
+  return parts.some(hasGlob);
+}
+
+function isCommandPath(parts: readonly WordPart[]) {
+  const [first, ...others] = parts;
+
+  return (
+    first?.type === "Lit" &&
+    first.value.startsWith("=") &&
+    (first.value.length > 1 || others.length > 0)
+  );
+}
+
 function readHeredocBody(
   parts: readonly WordPart[],
   quoted: boolean,
@@ -176,6 +203,18 @@ function createReader(
     };
   }
 
+  function readArgument(word: Word, sink: ShellCommand[]): ShellWord {
+    if (isPattern(word.parts)) {
+      walk(word.parts, sink);
+
+      return { kind: "pattern", source: slice(word.start, word.end) };
+    }
+
+    return isCommandPath(word.parts)
+      ? readExpansion(word, sink)
+      : readWord(word, sink);
+  }
+
   function readHeredoc(
     { op, word: delimiter }: Redirect,
     body: Word,
@@ -256,7 +295,7 @@ function createReader(
     const assignments = readAssignments(command, nested);
 
     const words = command.type === "CallExpr"
-      ? command.args.map((word) => readWord(word, nested))
+      ? command.args.map((word) => readArgument(word, nested))
       : command.variant == null
         ? []
         : [{ kind: "literal", text: command.variant.value } as const];
@@ -290,7 +329,9 @@ function createReader(
     const values = [];
 
     for (const item of loop.items) {
-      const value = readLiteral(item.parts, false, bindings);
+      const value = isPattern(item.parts)
+        ? undefined
+        : readLiteral(item.parts, false, bindings);
 
       if (value === undefined) {
         return;
@@ -375,6 +416,8 @@ function readColumn(
  * Lists every simple command the Bash `source` runs, in source order, each command
  * nested in a substitution following the command holding it. A `for` loop over
  * literal words lists its body once per word, the loop variable read as that word.
+ * A command word holding an unquoted glob reads as a pattern; one starting with
+ * an unquoted `=`, which zsh replaces with a command's path, as an expansion.
  */
 export function parseShell(source: string): readonly ShellCommand[] {
   const loaded = loadParser();

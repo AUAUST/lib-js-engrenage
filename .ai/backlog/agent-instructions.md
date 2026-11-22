@@ -145,10 +145,9 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 27. Hard rules stay prose where a check could enforce them
 
-- why: #809 D.9 (delete before adding; hard rules into hooks). Built: message gate (type, body, attribution), `git push` deny, `eslint suppressions` gate step; staged `.ai/issues/`, `.ai/handoffs/` were already refused.
+- why: #809 D.9 (delete before adding; hard rules into hooks). Built: message gate (type, body, attribution), `git push` deny, suppressions gate step, Bash shell-trap deny.
 - want:
-  - the prose these checks enforce deleted: `data/metalbrain/rules/git.md:19-20`, the `<type>` clause of `:26`, `:29`; `data/metalbrain/rules/no-attribution.md:11` for commits; the suppressions sentence of `data/metalbrain/sections/typescript.md:13`
+  - the prose these checks enforce deleted: `data/metalbrain/rules/git.md:19-20`, the `<type>` clause of `:26`, `:29`; `data/metalbrain/rules/no-attribution.md:11` for commits; the suppressions sentence of `data/metalbrain/sections/typescript.md:13`; `data/metalbrain/sections/shell.md:13,15-17`; the `without files` clause of `verification.md:13`
   - major changesets (`data/metalbrain/rules/changesets.md:13`): a check once the user chooses how the gate tells their decision apart
   - `any`, `@ts-*`, `eslint-disable` without reason; interfaces for shapes: `no-explicit-any`, `ban-ts-comment`, eslint-comments description, `consistent-type-definitions` (off in `src/tools/eslint/constants.ts`)
   - mutable-list aliases; allowed comment kinds: custom lint rules
-  - Shell table traps; `eslint:fix` without files: Bash PreToolUse hook
