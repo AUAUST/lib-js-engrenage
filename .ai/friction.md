@@ -151,3 +151,5 @@
 - metalbrain budget hook: brief ended a prose line with `Budget: standard.` — the hook reads only a whole `Budget: <level>` line and silently fell back to scoped (80000), forcing a budget stop mid-triage; put the line alone, no period
 - engrenage sync, skill frontmatter: description with a colon — YAML parse failure; rephrased without colon
 - parseShell: caught `ShellSyntaxError` for zsh-only syntax — sh-syntax threw its own `ShSyntaxError` (code `SH_SYNTAX_LANGUAGE`); caught the `SyntaxError` base
+- Bash safety check: zsh `${(f)…}` loop with `cat` only, no removal — refused as unresolvable removal; reran as plain listing commands
+- shell-trap hook: unquoted `*` in `grep --include` and `ls` args — refused before running; quoted or dropped the glob

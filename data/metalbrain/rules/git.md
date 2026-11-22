@@ -10,23 +10,22 @@ order: 10
 
 ## Commits
 
-| When                                                                    | Do                                                                                                                       |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                                         |
-| Only records are uncommitted                                            | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff               |
-| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies            |
-| Your work covers several tasks                                          | One commit per task                                                                                                      |
-| Staging                                                                 | Only your changes and the records, whoever wrote them, by path, never `.ai/issues/` or `.ai/handoffs/`, which stay local |
-| Any commit                                                              | Never push                                                                                                               |
+| When                                                                    | Do                                                                                                            |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                              |
+| Only records are uncommitted                                            | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff    |
+| A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies |
+| Your work covers several tasks                                          | One commit per task                                                                                           |
+| Staging                                                                 | Only your changes and the records, whoever wrote them, by path                                                |
 
 - **Records.** Uncommitted changes to `.ai/friction.md` and `.ai/discarded.md`, and files whose only uncommitted changes are debt markers. Never name their staging in a commit message or report. A task whose work is the records themselves commits like any other.
 
 | Message part    | Form                                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Subject         | `<type>: <summary>`, `<type>` from the table below by the commit's main purpose                                                                   |
+| Subject         | `<type>: <summary>`                                                                                                                               |
 | Summary         | The label a reader would recall the main change by: lowercase start, no trailing period, no verb the type carries, no parts, reasons or mechanics |
 | Several changes | Name what they have in common, never a list joined by "and"                                                                                       |
-| Body            | Only consecutive lines: `Closes #<n>` per issue resolved, `Towards #<n>` per issue advanced                                                       |
+| Body            | `Closes #<n>` per issue resolved, `Towards #<n>` per issue advanced                                                                               |
 
 | Type      | Main purpose                                                 |
 | --------- | ------------------------------------------------------------ |

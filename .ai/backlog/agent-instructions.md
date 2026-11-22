@@ -145,8 +145,9 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 27. Hard rules stay prose where a check could enforce them
 
-- why: #809 D.9 (delete before adding; hard rules into hooks). Built: message gate (type, body, attribution), `git push` deny, suppressions gate step, Bash shell-trap deny.
+- sites: `data/metalbrain/sections/shell.md:13`, `data/metalbrain/sections/shell.md:15`, `data/metalbrain/sections/shell.md:16`, `data/metalbrain/sections/shell.md:17`, `data/metalbrain/sections/verification.md:13`
+- why: #809 D.9 (delete before adding; hard rules into hooks). The message gate, `git push` deny, local-files and suppressions steps took their prose; the shell-trap rows and the `eslint:fix` clause wait on the shell hook's place in the #809 plan.
 - want:
-  - the prose these checks enforce deleted: `data/metalbrain/rules/git.md:19-20`, the `<type>` clause of `:26`, `:29`; `data/metalbrain/rules/no-attribution.md:11` for commits; the suppressions sentence of `data/metalbrain/sections/typescript.md:13`; `data/metalbrain/sections/shell.md:13,15-17`; the `without files` clause of `verification.md:13`
+  - the shell rows and the `without files` clause deleted once the user places the hook
   - `no-explicit-any`, `ban-ts-comment` at `info` (#809 S.35; off in `src/tools/eslint/constants.ts`); eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules

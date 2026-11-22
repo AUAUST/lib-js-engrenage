@@ -71,7 +71,7 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 | `blockers` `drafting`, with no local draft                                               | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows |
 | `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                    | Set aside and report                                                                                                                        |
 | Check findings for **Steps** or `Checkpoint:` lines                                      | Set aside, never sent to the consultant; report it as a Steps-migration breakage, which the planning skill's Steps sweep converts           |
-| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant, open **Planning** once the first row skips every issue ordered before it                              |
+| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant, open **Planning** once `walk check` lists it under `Planning due:`                                    |
 | Open **Questions**                                                                       | Set aside; batch the questions to the user                                                                                                  |
 | Foreign `task` or `problem` whose repository `pnpm engrenage link` lists no checkout for | Set aside and report                                                                                                                        |
 | `walk check` names `orchestrator` beside it in the ready set                             | Apply its **Housekeeping** yourself (§Housekeeping)                                                                                         |
@@ -94,7 +94,7 @@ Read this file with it, for the brief lines, budget stops and the findings a rep
 - Keep up to K leaves of the ready set in flight.
 - Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then one `Concurrent: <owner>/<repo>#<n>` line per leaf in flight sharing a contract with it, then its `Budget:` line. Never paste issue or plan content: the agent reads it itself.
-- Two leaves share a contract when their header lines or **Provides** lines name a common Model section: a plan section other than **Goal**, **Done when** and **Decisions**. Read both parts of each leaf before dispatching it.
+- Two leaves share a contract when their `walk check` `Model:` lines name a common section.
 - Send a completion naming a deviation to the consultant before integrating or reviewing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the issues it edited to new agents.
@@ -196,7 +196,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 Every turn re-reads your whole context, and a long walk outgrows it.
 
-- Read only `walk check` output and agent reports, plus the header line and **Provides** of each leaf you dispatch, the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
+- Read only `walk check` output and agent reports, the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
 - Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's record stash, cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.

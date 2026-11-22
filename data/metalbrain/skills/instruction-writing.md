@@ -111,7 +111,7 @@ Refines the Writing section for instructions.
 
 - Write each rule as its trigger and the behavior it must produce; cut connectives and subjects the rule's heading, column or list already states.
 - Give a reason only when it changes how the rule is applied, in one clause.
-- Phrase a rule so that applying it precisely produces the right outcome, without examples: no list of cases or sample ranking that illustrates a rule instead of defining it, whether in parentheses, after `such as` or `e.g.`, or in a description. Add an example only when the rule cannot be stated without one.
+- Phrase a rule so that applying it precisely produces the right outcome, without examples or the failure it prevents: no list of cases or sample ranking that illustrates a rule instead of defining it, whether in parentheses, after `such as` or `e.g.`, or in a description.
 - Merge a rule into any rule sharing its trigger or its action instead of adding it alongside.
 - Name each concept by one term across every source.
 - Define a skill's role by what its agent does and the limits of its own scope, never by contrast with or exclusion of another role or skill. A description's trigger exclusions and naming an agent to dispatch, route or hand work to are no contrast.
@@ -131,7 +131,7 @@ Checked 2026-11-18.
 | Current Claude         | Follows instructions precisely: ask explicitly for any behavior beyond the literal task                                 | [Claude][claude] |
 | Current Claude         | Generalizes a rule from its stated reason to cases it does not name                                                     | [Claude][claude] |
 | Current Claude         | Overtriggers on emphasis and thoroughness prompts written for earlier models: state rules plainly, without intensifiers | [Claude][claude] |
-| Current Claude         | Copies examples' patterns: when one is unavoidable, give several varied ones, marked apart from the rules               | [Claude][claude] |
+| Current Claude         | Copies examples' patterns                                                                                               | [Claude][claude] |
 | Claude Opus 5, 5.5     | Delegates to subagents readily: state when delegation is and is not warranted                                           | [Claude][claude] |
 | Claude Opus 5.5        | Thinking depth follows the agent's effort setting more reliably than prompt instructions to think more or less          | [Opus 5.5][opus] |
 | Claude Opus 5.5        | Follows instructions that name the specific behaviors to avoid, and the stops wanted and unwanted, over general ones    | [Opus 5.5][opus] |
@@ -145,5 +145,5 @@ Checked 2026-11-18.
 
 ## Report
 
-- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split made or left; each rule added with the failure it prevents; words removed and added per role; proposed checks, deliberate drops, backlog entries added and facts refreshed.
+- **Write.** Each file changed and the behavior each target agent now gets from it; each catch and gap found and how you resolved it, any you could not with why; each split made or left; each rule added or changed with the failure it prevents; words removed and added per role; proposed checks, deliberate drops, backlog entries added and facts refreshed.
 - **Audit.** Each catch and gap, grouped by subject and graded by the method's Findings, with whether its fix needs a behavior decision or only wording and placement; the backlog entries they would lead to, for your caller to record; proposed checks.

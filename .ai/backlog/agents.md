@@ -201,3 +201,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: #809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5).
 - want: from the first walks' measurements, decide K = 3, the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).
 - done: each decided, or dropped as unneeded by the walk data.
+
+## 37. The push deny misses `git -C <path> push`
+
+- sites: `src/tools/agents/claude/constants.ts:107`
+- why: `Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose.
+- want: the PreToolUse git check refuses any parsed `git … push`.

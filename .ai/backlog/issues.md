@@ -116,15 +116,3 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form.
 - want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.
-
-## 21. The walker still reads each leaf's header and Provides
-
-- sites: `data/metalbrain/skills/walking.md:58`, `data/metalbrain/skills/walking.md:102`, `data/metalbrain/skills/walking.md:202`
-- why: `walk check` now prints a `Model:` line per open task or problem, from its header line and **Provides**; the skill still has the walker read both parts itself, an exception to relaying no issue content (C.1).
-- want: L102 judges a shared contract by common `Model:` lines and drops "Read both parts of each leaf before dispatching it."; L202 drops "plus the header line and **Provides** of each leaf you dispatch"; L58 names the `Model:` line.
-
-## 22. The walking row still derives when open Planning is due
-
-- sites: `data/metalbrain/skills/walking.md:58`, `data/metalbrain/skills/walking.md:77`
-- why: `walk check` now prints `Planning due: <issues>`, each open **Planning** in turn; the handling row still states that timing by hand.
-- want: L77 drops "open **Planning** once the first row skips every issue ordered before it" for the `Planning due:` line; L58 names that line.

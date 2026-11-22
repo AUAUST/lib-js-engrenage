@@ -232,7 +232,7 @@ A finding outside your task that no agent record holds, met while working: a lik
 
 - Infer types from schemas, factories and API definitions instead of duplicating them, except an interface in `apis/`: write it first and type its factory against it. Preserve strict compiler settings and real optional contracts.
 - Use interfaces for object shapes and type aliases for unions, functions and mapped types. Name types after the concept they carry. Never alias a mutable list (`Type[]`) under a new name; a read-only list (`readonly Type[]` or `ReadonlyArray<Type>`) may get one.
-- Do not add `any`, casts, assertions, `@ts-*` directives or `eslint-disable` comments without a supported invariant. Disabled lint rules are not permission. Never add entries to `eslint-suppressions.json` unless explicitly requested.
+- Do not add `any`, casts, assertions, `@ts-*` directives or `eslint-disable` comments without a supported invariant. Disabled lint rules are not permission.
 - Validate data at external boundaries.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/auaust-libraries.md -->
