@@ -87,18 +87,18 @@ describe("printerPlugin", () => {
     ],
     [
       "a logical branch missing its line in parentheses",
-      'function isSkill() {\n  return agent === "codex" ? entry.file.startsWith(`${codexSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n}\n',
-      'function isSkill() {\n  return agent === "codex"\n    ? entry.file.startsWith(`${codexSkillsDir}/`)\n    : (\n        entry.file.startsWith(`${claudeSkillsDir}/`) ||\n        entry.file.startsWith(`${claudeAgentsDir}/`)\n      );\n}\n',
+      'function isSkill() {\n  return agent === "other" ? entry.file.startsWith(`${otherSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n}\n',
+      'function isSkill() {\n  return agent === "other"\n    ? entry.file.startsWith(`${otherSkillsDir}/`)\n    : (\n        entry.file.startsWith(`${claudeSkillsDir}/`) ||\n        entry.file.startsWith(`${claudeAgentsDir}/`)\n      );\n}\n',
     ],
     [
       "a logical branch of a right side missing its line in parentheses",
-      'const isSkill = agent === "codex" ? entry.file.startsWith(`${codexSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n',
-      'const isSkill = agent === "codex"\n  ? entry.file.startsWith(`${codexSkillsDir}/`)\n  : (\n      entry.file.startsWith(`${claudeSkillsDir}/`) ||\n      entry.file.startsWith(`${claudeAgentsDir}/`)\n    );\n',
+      'const isSkill = agent === "other" ? entry.file.startsWith(`${otherSkillsDir}/`) : entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`);\n',
+      'const isSkill = agent === "other"\n  ? entry.file.startsWith(`${otherSkillsDir}/`)\n  : (\n      entry.file.startsWith(`${claudeSkillsDir}/`) ||\n      entry.file.startsWith(`${claudeAgentsDir}/`)\n    );\n',
     ],
     [
       "a negated branch Prettier parenthesizes with one pair",
-      'const isSkill = agent === "codex" ? !entry.file.startsWith(`${codexSkillsDir}/`) : !(entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`));\n',
-      'const isSkill = agent === "codex"\n  ? !entry.file.startsWith(`${codexSkillsDir}/`)\n  : !(\n      entry.file.startsWith(`${claudeSkillsDir}/`) ||\n      entry.file.startsWith(`${claudeAgentsDir}/`)\n    );\n',
+      'const isSkill = agent === "other" ? !entry.file.startsWith(`${otherSkillsDir}/`) : !(entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`));\n',
+      'const isSkill = agent === "other"\n  ? !entry.file.startsWith(`${otherSkillsDir}/`)\n  : !(\n      entry.file.startsWith(`${claudeSkillsDir}/`) ||\n      entry.file.startsWith(`${claudeAgentsDir}/`)\n    );\n',
     ],
     [
       "a negated right side Prettier parenthesizes with one pair",
@@ -107,8 +107,8 @@ describe("printerPlugin", () => {
     ],
     [
       "an awaited branch Prettier parenthesizes with one pair",
-      'async function isSkill() {\n  return agent === "codex" ? await loadSkill(codexSkillsDir) : await (entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`));\n}\n',
-      'async function isSkill() {\n  return agent === "codex"\n    ? await loadSkill(codexSkillsDir)\n    : await (entry.file.startsWith(`${claudeSkillsDir}/`) ||\n        entry.file.startsWith(`${claudeAgentsDir}/`));\n}\n',
+      'async function isSkill() {\n  return agent === "other" ? await loadSkill(otherSkillsDir) : await (entry.file.startsWith(`${claudeSkillsDir}/`) || entry.file.startsWith(`${claudeAgentsDir}/`));\n}\n',
+      'async function isSkill() {\n  return agent === "other"\n    ? await loadSkill(otherSkillsDir)\n    : await (entry.file.startsWith(`${claudeSkillsDir}/`) ||\n        entry.file.startsWith(`${claudeAgentsDir}/`));\n}\n',
     ],
     [
       "a logical branch fitting its line without parentheses",

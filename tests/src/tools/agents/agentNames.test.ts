@@ -33,10 +33,9 @@ describe("agent names", () => {
   test("every agent an instruction source names is defined by a skill", () => {
     const agents = listDefinedAgents();
 
-    const sources = globSync(
-      ["data/metalbrain/**/*.md", "AGENTS.md", "AGENTS.override.md"],
-      { cwd: root },
-    );
+    const sources = globSync(["data/metalbrain/**/*.md", "AGENTS.md"], {
+      cwd: root,
+    });
 
     const unknown = sources.flatMap((file) => {
       return read(file)

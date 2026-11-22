@@ -6,22 +6,15 @@ import { formatChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkPrettier } from "#tests/utils/linkPrettier";
 import { syncClaudeSettings } from "#tools/agents/claude/index";
-import { syncCodexFiles } from "#tools/agents/codex/index";
 import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
 
-vi.mock("#foundation/processes/operations/spawnProcess", () => {
-  return {
-    spawnProcess: vi.fn(() => {
-      return Promise.resolve({
-        status: 0,
-        stdout: "codex-cli 0.159.2\n",
-        stderr: "",
-        error: undefined,
-        signal: null,
-      });
-    }),
-  };
+vi.mock("#foundation/processes/operations/spawnProcess", async () => {
+  const {
+    resolveClaudeVersion,
+  } = await import("#tests/utils/resolveClaudeVersion");
+
+  return { spawnProcess: vi.fn(resolveClaudeVersion) };
 });
 
 afterEach(() => {
@@ -31,9 +24,10 @@ afterEach(() => {
 async function fixture(skills: readonly string[] = ["implement"]) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer","devDependencies":{"prettier":"*"}}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     "AGENTS.md": "Instructions\n",
-    "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
+    "CLAUDE.md": "@AGENTS.md\n",
+    ".claude/settings.json": "{}\n",
   });
 
   linkPrettier(project.resolve("node_modules/prettier"));
@@ -42,7 +36,7 @@ async function fixture(skills: readonly string[] = ["implement"]) {
 
   await addAgentSkills(config, skills);
 
-  await syncCodexFiles(config);
+  await syncClaudeSettings(config);
 
   await formatChanges(config);
 
@@ -62,48 +56,16 @@ test("reports generated configuration without asserting runtime trust or changin
     expect.arrayContaining([
       expect.objectContaining({
         status: "configured",
-        message: expect.stringContaining("0.159.2"),
+        message: expect.stringContaining("2.1.318"),
       }),
       expect.objectContaining({
         status: "runtime-unverified",
-        message: expect.stringContaining("/hooks"),
+        message: expect.stringContaining("user/system"),
       }),
     ]),
   );
 
   expect(config.context.filesystem.changes()).toEqual([]);
-});
-
-test("reports missing profiles, disabled hooks and duplicate hook representations", async () => {
-  const config = await fixture();
-
-  const filesystem = config.context.filesystem;
-
-  await filesystem.remove(".codex/agents/worker.toml");
-
-  await filesystem.write(
-    ".codex/config.toml",
-    "[features]\nhooks = false\n[hooks]\nPreToolUse = []\n",
-  );
-
-  const findings = await checkAgents(config);
-
-  expect(findings).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        status: "conflicting",
-        message: expect.stringContaining("worker.toml"),
-      }),
-      expect.objectContaining({
-        status: "disabled",
-        message: expect.stringContaining("features.hooks"),
-      }),
-      expect.objectContaining({
-        status: "conflicting",
-        message: expect.stringContaining("inline"),
-      }),
-    ]),
-  );
 });
 
 test("distinguishes an unavailable client from another unverified version", async () => {
@@ -128,7 +90,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
 
   vi.mocked(spawnProcess).mockResolvedValueOnce({
     status: 0,
-    stdout: "codex-cli 0.160.0",
+    stdout: "2.1.400 (Claude Code)",
     stderr: "",
     error: undefined,
     signal: null,
@@ -138,7 +100,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
     expect.arrayContaining([
       expect.objectContaining({
         status: "runtime-unverified",
-        message: expect.stringContaining("0.160.0"),
+        message: expect.stringContaining("2.1.400"),
       }),
     ]),
   );
@@ -185,16 +147,16 @@ test("recognizes inspected Claude capabilities while leaving effective overrides
   );
 });
 
-test("reports a missing installed skill when its owned profiles remain", async () => {
+test("reports a missing installed skill when its agent file remains", async () => {
   const config = await fixture();
 
-  await config.context.filesystem.remove(".agents/skills/implement/SKILL.md");
+  await config.context.filesystem.remove(".claude/skills/implement/SKILL.md");
 
   expect(await checkAgents(config)).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         status: "conflicting",
-        message: expect.stringContaining(".agents/skills/implement/SKILL.md"),
+        message: expect.stringContaining(".claude/skills/implement/SKILL.md"),
       }),
     ]),
   );
@@ -208,7 +170,7 @@ test("accepts a skill whose rendered table sync formats", async () => {
   expect(findings).toContainEqual(
     expect.objectContaining({
       status: "configured",
-      message: expect.stringContaining(".agents/skills/walking/SKILL.md"),
+      message: expect.stringContaining(".claude/skills/walking/SKILL.md"),
     }),
   );
 });

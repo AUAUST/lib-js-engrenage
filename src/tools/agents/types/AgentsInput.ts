@@ -5,14 +5,14 @@ import type { Globs } from "#types/Globs";
 
 export interface AgentsInput {
   /**
-   * Agents the project uses (`claude`, `codex`).
+   * Agents the project uses (`claude`).
    * `engrenage sync agents` runs only when at least one is listed, and writes their files.
    * @default none
    */
   preferred?: ((keyof Engrenage.AgentRuntimes)[] | undefined)
   /**
    * Globs of the agent instruction files whose `@reference` blocks sync fills.
-   * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /*.md`, `.claude/agents/*.md`, `.claude/shared/*.md`, `.agents/skills/* /*.md`
+   * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /*.md`, `.claude/agents/*.md`, `.claude/shared/*.md`
    */
   instructionFiles?: (Glob | Globs | undefined)
   /**
@@ -26,12 +26,6 @@ export interface AgentsInput {
    * @default created by init, then kept by sync
    */
   claudeSettings?: (boolean | undefined)
-  /**
-   * Whether sync keeps `.codex/hooks.json` for a project that prefers Codex.
-   * `true` creates it, `false` leaves it alone.
-   * @default kept when the file exists
-   */
-  codexHooks?: (boolean | undefined)
   /**
    * Whether agents credit themselves in commits and pull requests.
    * It selects the `attribution` or `no-attribution` rule file and the Claude `attribution` setting.

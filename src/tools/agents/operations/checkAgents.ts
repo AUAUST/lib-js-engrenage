@@ -5,8 +5,6 @@ import {
   claudeFile,
   claudeSkillsDir,
 } from "#tools/agents/claude/constants";
-import { codexFile, codexSkillsDir } from "#tools/agents/codex/constants";
-import { resolveCodexProfile } from "#tools/agents/codex/index";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
@@ -61,9 +59,7 @@ export async function checkAgents(
   });
 
   for (const agent of preferred) {
-    const instructions = agent === "codex" ? codexFile : claudeFile;
-
-    for (const required of [agentsFile, instructions]) {
+    for (const required of [agentsFile, claudeFile]) {
       add(
         agent,
         (await filesystem.exists(required)) ? "configured" : "conflicting",
@@ -71,9 +67,7 @@ export async function checkAgents(
       );
     }
 
-    if (
-      (agent === "codex" ? agents.codexHooks : agents.claudeSettings) === false
-    ) {
+    if (agents.claudeSettings === false) {
       add(
         agent,
         "disabled",
@@ -83,10 +77,7 @@ export async function checkAgents(
 
     for (const template of templates) {
       const skillFile = template.files.find((entry) => {
-        return (
-          entry.file ===
-          `${agent === "codex" ? codexSkillsDir : claudeSkillsDir}/${template.name}/SKILL.md`
-        );
+        return entry.file === `${claudeSkillsDir}/${template.name}/SKILL.md`;
       });
 
       if (skillFile === undefined) {
@@ -101,14 +92,10 @@ export async function checkAgents(
 
       if (!owned) {
         for (const output of template.files) {
-          if (
-            agent === "codex"
-              ? !output.file.startsWith(`${codexSkillsDir}/`)
-              : !(
-                  output.file.startsWith(`${claudeSkillsDir}/`) ||
-                  output.file.startsWith(`${claudeAgentsDir}/`)
-                )
-          ) {
+          if (!(
+            output.file.startsWith(`${claudeSkillsDir}/`) ||
+            output.file.startsWith(`${claudeAgentsDir}/`)
+          )) {
             continue;
           }
 
@@ -118,16 +105,6 @@ export async function checkAgents(
             owned = true;
           }
         }
-
-        if (agent === "codex") {
-          for (const profile of template.profiles) {
-            const current = await filesystem.read(profile.file);
-
-            if (current?.startsWith(profile.provenance)) {
-              owned = true;
-            }
-          }
-        }
       }
 
       if (!owned) {
@@ -135,12 +112,10 @@ export async function checkAgents(
       }
 
       for (const output of template.files.filter((entry) => {
-        return agent === "codex"
-          ? entry.file.startsWith(`${codexSkillsDir}/`)
-          : (
-              entry.file.startsWith(`${claudeSkillsDir}/`) ||
-              entry.file.startsWith(`${claudeAgentsDir}/`)
-            );
+        return (
+          entry.file.startsWith(`${claudeSkillsDir}/`) ||
+          entry.file.startsWith(`${claudeAgentsDir}/`)
+        );
       })) {
         const current = await filesystem.read(output.file);
 
@@ -177,26 +152,6 @@ export async function checkAgents(
           `${file}: stale supporting file of a shipped skill; sync agents`,
         );
       }
-
-      if (agent === "codex") {
-        for (const profile of template.profiles) {
-          try {
-            await resolveCodexProfile(config, profile.name);
-
-            add(
-              agent,
-              "configured",
-              `${profile.file}: generated profile current`,
-            );
-          } catch (error) {
-            add(
-              agent,
-              "conflicting",
-              error instanceof Error ? error.message : String(error),
-            );
-          }
-        }
-      }
     }
 
     findings.push(...(await checkAgentHooks(filesystem, agent)));
@@ -213,9 +168,7 @@ export async function checkAgents(
       );
     } else {
       // @debt hardcodes the inspected client versions, so every newer client reports runtime-unverified until someone edits them
-      const inspected = agent === "codex"
-        ? /\b0\.159\.2\b/.test(version.stdout)
-        : /\b2\.1\.318\b/.test(version.stdout);
+      const inspected = /\b2\.1\.318\b/.test(version.stdout);
 
       add(
         agent,
@@ -227,9 +180,7 @@ export async function checkAgents(
     add(
       agent,
       "runtime-unverified",
-      agent === "codex"
-        ? "Review changed project hook definitions with Codex /hooks in a trusted project. File presence cannot establish trust, effective user/system settings, or execution; disabled, skipped and timed-out hooks do not enforce checks."
-        : "Verify project hooks in the native client; file presence cannot establish effective user/system settings or execution.",
+      "Verify project hooks in the native client; file presence cannot establish effective user/system settings or execution.",
     );
   }
 

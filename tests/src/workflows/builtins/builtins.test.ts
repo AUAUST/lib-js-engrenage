@@ -49,7 +49,6 @@ describe("builtins", () => {
       expect.arrayContaining([
         "tools/agents",
         "tools/agents/claude",
-        "tools/agents/codex",
         "tools/shopify/theme",
       ]),
     );

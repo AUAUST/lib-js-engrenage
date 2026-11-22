@@ -5,14 +5,11 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
-import { resolveCodexProfile } from "#tools/agents/codex/index";
-import { addAgentSkills } from "#tools/agents/index";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { findBriefedIssue } from "#tools/github/issues/contract/utils/findBriefedIssue";
 import { runContext } from "#workflows/cli/operations/runContext";
 
 import dispatch from "#bin/engrenage-hook/claude/actions/dispatch";
-import codexDispatch from "#bin/engrenage-hook/codex/actions/dispatch";
 
 vi.mock("#tools/github/issues/contract/operations/checkIssue", () => {
   return {
@@ -172,47 +169,17 @@ async function installed(
 ) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-    "engrenage.config.ts": `export default { agents: { preferred: ["codex"] }, github: ${github} };`,
+    "engrenage.config.ts": `export default { agents: { preferred: ["claude"] }, github: ${github} };`,
     ...files,
   });
 
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(config, ["implement", "debugging"]);
-
   return {
     project,
-    config,
     filesystem: config.context.filesystem,
   };
 }
-
-test.each(["worker", "debugger", "debugger_low", "debugger_high"])(
-  "maps exact generated profile %s",
-  async (name) => {
-    const { project, filesystem } = await installed();
-
-    await filesystem.flush();
-
-    payload = {
-      cwd: project.root,
-      tool_name: "spawn_agent",
-      tool_input: {
-        agent_type: name,
-        message: "Issue: o/r#1\nContext",
-      },
-    };
-
-    await runCheck(codexDispatch);
-
-    expect(checkIssue).toHaveBeenCalledWith(
-      expect.anything(),
-      1,
-      name.startsWith("worker") ? "worker" : "debugger",
-      { dispatch: true, checkouts: [] },
-    );
-  },
-);
 
 test("passes the checkouts the project links with the local one", async () => {
   const checkout = createCheckout("acme/tool");
@@ -234,14 +201,13 @@ test("passes the checkouts the project links with the local one", async () => {
 
   payload = {
     cwd: project.root,
-    tool_name: "spawn_agent",
     tool_input: {
-      agent_type: "worker",
-      message: "Issue: o/r#1\nContext",
+      subagent_type: "worker",
+      prompt: "Issue: o/r#1\nContext",
     },
   };
 
-  await runCheck(codexDispatch);
+  await runCheck(dispatch);
 
   expect(checkIssue).toHaveBeenCalledWith(expect.anything(), 1, "worker", {
     dispatch: true,
@@ -266,14 +232,13 @@ test("checks a first-line draft of the checkout, denying its findings or another
   for (const path of [".ai/issues/new-x.draft.md", "new-x.draft.md"]) {
     payload = {
       cwd: project.root,
-      tool_name: "spawn_agent",
       tool_input: {
-        agent_type: "worker",
-        message: `Draft: ${project.resolve(path)}\nContext`,
+        subagent_type: "worker",
+        prompt: `Draft: ${project.resolve(path)}\nContext`,
       },
     };
 
-    await runCheck(codexDispatch);
+    await runCheck(dispatch);
   }
 
   expect(process.stdout.write).toHaveBeenNthCalledWith(
@@ -287,30 +252,4 @@ test("checks a first-line draft of the checkout, denying its findings or another
   );
 
   expect(checkIssue).not.toHaveBeenCalled();
-});
-
-test("rejects missing/conflicting generated output and ignores unowned custom names", async () => {
-  const { config, filesystem } = await installed();
-
-  await filesystem.remove(".codex/agents/debugger_low.toml");
-
-  await expect(resolveCodexProfile(config, "debugger_low")).rejects.toThrow(
-    ".codex/agents/debugger_low.toml",
-  );
-
-  await filesystem.write(".codex/agents/worker.toml", 'name = "mine"');
-
-  await expect(resolveCodexProfile(config, "worker")).rejects.toThrow(
-    ".codex/agents/worker.toml",
-  );
-
-  await filesystem.remove(".agents/skills/debugging/SKILL.md");
-
-  await expect(resolveCodexProfile(config, "debugger")).rejects.toThrow(
-    ".agents/skills/debugging/SKILL.md",
-  );
-
-  await expect(
-    resolveCodexProfile(config, "worker_custom"),
-  ).resolves.toBeUndefined();
 });

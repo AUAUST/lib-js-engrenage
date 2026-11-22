@@ -26,9 +26,8 @@ afterEach(() => {
 function createProject(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     "AGENTS.md": "# Project instructions\n",
-    "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
     ...files,
   });
 
@@ -38,7 +37,7 @@ function createProject(files: Record<string, string> = {}) {
 }
 
 describe("agents rules", () => {
-  test("installs by name, refreshes the Codex mapping and preserves existing files", async () => {
+  test("installs by name and preserves existing files", async () => {
     const project = createProject();
 
     await runDefinition(rules, "add", "code-style");
@@ -51,10 +50,6 @@ describe("agents rules", () => {
 
     expect(installed).toContain('"**/*.ts"');
     expect(installed).not.toContain("category:");
-
-    expect(project.read("AGENTS.override.md")).toContain(
-      ".claude/rules/code-style.md",
-    );
 
     expect(project.read("AGENTS.md")).toBe("# Project instructions\n");
 

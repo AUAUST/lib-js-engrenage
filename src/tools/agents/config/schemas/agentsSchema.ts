@@ -13,6 +13,7 @@ import { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
 import { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 import {
   budgetModes,
+  codexRemoval,
   defaultBudgetMode,
   defaultBudgets,
   defaultInstructionFiles,
@@ -25,7 +26,7 @@ export const agentsSchema = declareObject(
   {
     preferred: declare(preferredSchema, {
       description: [
-        "Agents the project uses (`claude`, `codex`).",
+        "Agents the project uses (`claude`).",
         "`engrenage sync agents` runs only when at least one is listed, and writes their files.",
       ],
       optional: { value: undefined },
@@ -47,13 +48,6 @@ export const agentsSchema = declareObject(
         "`false` leaves it alone.",
       ],
       optional: unset("created by init, then kept by sync"),
-    }),
-    codexHooks: declare(boolean(), {
-      description: [
-        "Whether sync keeps `.codex/hooks.json` for a project that prefers Codex.",
-        "`true` creates it, `false` leaves it alone.",
-      ],
-      optional: unset("kept when the file exists"),
     }),
     attribution: declare(boolean(), {
       description: [
@@ -133,5 +127,6 @@ export const agentsSchema = declareObject(
   },
   {
     optional: true,
+    removed: { codexHooks: codexRemoval },
   },
 );

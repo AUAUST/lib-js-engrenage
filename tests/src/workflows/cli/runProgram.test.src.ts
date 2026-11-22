@@ -22,6 +22,10 @@ vi.mock(
   async (importOriginal) => {
     const { spawnProcess } = await importOriginal();
 
+    const {
+      resolveClaudeVersion,
+    } = await import("#tests/utils/resolveClaudeVersion");
+
     return {
       spawnProcess: vi.fn(
         (
@@ -34,13 +38,7 @@ vi.mock(
             : never
         ) => {
           if (command === "claude") {
-            return Promise.resolve({
-              status: 0,
-              stdout: "2.1.318 (Claude Code)\n",
-              stderr: "",
-              error: undefined,
-              signal: null,
-            });
+            return resolveClaudeVersion();
           }
 
           return spawnProcess(command, ...rest);

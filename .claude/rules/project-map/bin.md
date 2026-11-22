@@ -7,10 +7,9 @@ paths:
 
 ```
 bin/  (global roles: executable.ts *.ts)
-├─ engrenage{agents{claude codex rules skills} batiment github{labels} planning{issue walk} pnpm}  Project tooling commands.
-│  ├─ agents{claude codex rules skills}  Agent lifecycle and instruction commands.
+├─ engrenage{agents{claude rules skills} batiment github{labels} planning{issue walk} pnpm}  Project tooling commands.
+│  ├─ agents{claude rules skills}  Agent lifecycle and instruction commands.
 │  │  ├─ claude  Claude lifecycle commands.
-│  │  ├─ codex  Codex lifecycle commands.
 │  │  ├─ rules  Install shared agent rules.
 │  │  └─ skills  Install shared agent skills.
 │  ├─ batiment  Walk the project structure and report how batiment classifies it.
@@ -20,9 +19,8 @@ bin/  (global roles: executable.ts *.ts)
 │  │  ├─ issue  Create, claim, check and publish issue drafts, and check published issues.
 │  │  └─ walk  Check a walked issue tree.
 │  └─ pnpm  Package manager maintenance commands.
-├─ engrenage-hook{claude codex}  Agent runtime hook commands, run directly by the runtimes' settings.
-│  ├─ claude  Claude hook events.
-│  └─ codex  Codex hook events.
+├─ engrenage-hook{claude}  Agent runtime hook commands, run directly by the runtimes' settings.
+│  └─ claude  Claude hook events.
 └─ metalbrain{hook{claude}}  Metalbrain commands, agent hooks first, run directly by the runtimes' settings.
    └─ hook{claude}  Agent runtime hook commands of metalbrain.
       └─ claude  Claude hook events of metalbrain.

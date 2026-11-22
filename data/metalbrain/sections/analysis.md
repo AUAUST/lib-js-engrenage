@@ -33,12 +33,6 @@ Under Claude Code, before your first dispatch of an agent, and again after each 
 
 <!-- @end -->
 
-<!-- @file .agents/skills/shape/dispatching.md -->
-
-Under Codex, before your first dispatch of an agent, and again after each compaction, read `.agents/skills/shape/dispatching.md`: its brief lines, its budget stop and the findings its report names.
-
-<!-- @end -->
-
 ### Dependencies
 
 - Before building a capability or choosing what provides it, check whether a current dependency or an established library provides it, weighing its size, the share you would use, its maintenance, adoption and maturity: an experimental, single-maintainer or pre-1.0 library costs more but is not ruled out.

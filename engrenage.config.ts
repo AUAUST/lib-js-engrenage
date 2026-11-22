@@ -126,7 +126,7 @@ export default defineConfig({
       interscript: "AUAUST/clients-intscr-shopify",
     },
     labels: {
-      Agents: "Agent runtimes: Claude and Codex settings, hooks, gates, dispatch, models, efforts.",
+      Agents: "Agent runtimes: Claude settings, hooks, gates, dispatch, models, efforts.",
       CLI: "Commands, actions and process handling.",
       Configuration: "Config loading, options, sections and definers.",
       Dependencies: "pnpm, dependency policies, peer and bundled dependencies.",
@@ -150,7 +150,7 @@ export default defineConfig({
     },
   },
   agents: {
-    preferred: ["claude", "codex"],
+    preferred: ["claude"],
     attribution: false,
     gate: {
       commands: [

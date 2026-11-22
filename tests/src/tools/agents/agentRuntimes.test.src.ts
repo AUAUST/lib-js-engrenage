@@ -14,7 +14,22 @@ describe("agents.preferred", () => {
     });
 
     await expect(config.resolve("agents")).rejects.toThrow(
-      "agents.preferred lists cursor, which no active agent runtime contributes; active runtimes: claude, codex",
+      "agents.preferred lists cursor, which no active agent runtime contributes; active runtimes: claude",
+    );
+  });
+
+  test.each([
+    { preferred: ["claude", "codex"] },
+    { preferred: ["claude"], codexHooks: true },
+  ])("fails on a Codex setting, naming its removal: %o", async (agents) => {
+    const config = createProjectConfig({
+      root: createTemporaryProject().root,
+      raw: { agents },
+      configFile: undefined,
+    });
+
+    await expect(config.resolve("agents")).rejects.toThrow(
+      "Codex support was removed",
     );
   });
 });

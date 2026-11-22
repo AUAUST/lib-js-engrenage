@@ -6,7 +6,6 @@ import { describe, expect, test } from "vitest";
 import { createProjectConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { dispatchClaudeAgent } from "#tools/agents/claude/adapters/dispatchClaudeAgent";
-import { dispatchCodexAgent } from "#tools/agents/codex/adapters/dispatchCodexAgent";
 import { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 import { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
 
@@ -111,81 +110,6 @@ describe("dispatchClaudeAgent", () => {
   });
 });
 
-describe("dispatchCodexAgent", () => {
-  test("starts the checkout's own Codex profile and reads the last agent message", async () => {
-    const checkout = createTemporaryProject({
-      ".codex/agents/worker.toml": 'name = "worker"\nmodel_reasoning_effort = "low"\ndeveloper_instructions = "Follow the worker skill."\n',
-    });
-
-    const client = createClient(
-      "codex",
-      [
-        {
-          type: "thread.started",
-          thread_id: "thread-1",
-        },
-        {
-          type: "item.completed",
-          item: { type: "agent_message", text: "First." },
-        },
-        {
-          type: "item.completed",
-          item: { type: "agent_message", text: "Final report." },
-        },
-        {
-          type: "turn.completed",
-          usage: {},
-        },
-      ]
-        .map((event) => JSON.stringify(event))
-        .join("\n"),
-    );
-
-    await expect(
-      dispatchCodexAgent({
-        directory: checkout.root,
-        run: { agent: "worker" },
-        brief: "Issue: AUAUST/repo#1",
-        effort: undefined,
-        environment: client.environment,
-      }),
-    ).resolves.toEqual({
-      session: "thread-1",
-      report: "Final report.",
-      succeeded: true,
-      denied: [],
-    });
-
-    expect(client.call()).toMatchObject({
-      args: [
-        "exec",
-        "--json",
-        "--config",
-        'developer_instructions="Follow the worker skill."',
-        "--config",
-        'model_reasoning_effort="low"',
-        "-",
-      ],
-      cwd: checkout.root,
-      input: "Issue: AUAUST/repo#1",
-    });
-  });
-
-  test("refuses an agent the checkout defines no Codex profile for", async () => {
-    const checkout = createTemporaryProject();
-
-    await expect(
-      dispatchCodexAgent({
-        directory: checkout.root,
-        run: { agent: "worker" },
-        brief: "Brief",
-        effort: undefined,
-        environment: {},
-      }),
-    ).rejects.toThrow(`defines no Codex agent worker`);
-  });
-});
-
 describe("createDispatchEnvironment", () => {
   test("drops what the caller's client and pnpm set, keeping the user's configuration", () => {
     const binaries = join("/caller", "node_modules", ".bin");
@@ -199,8 +123,6 @@ describe("createDispatchEnvironment", () => {
         CLAUDE_CODE_SESSION_ID: "caller",
         CLAUDE_EFFORT: "medium",
         CLAUDE_CONFIG_DIR: "/config",
-        CODEX_THREAD_ID: "caller",
-        CODEX_HOME: "/codex",
         INIT_CWD: "/caller",
         PNPM_PACKAGE_NAME: "caller",
         PNPM_HOME: "/pnpm",
@@ -212,7 +134,6 @@ describe("createDispatchEnvironment", () => {
       HOME: "/home/user",
       ANTHROPIC_BASE_URL: "https://example.test",
       CLAUDE_CONFIG_DIR: "/config",
-      CODEX_HOME: "/codex",
       PNPM_HOME: "/pnpm",
     });
   });
@@ -226,7 +147,7 @@ describe("dispatchAgent", () => {
     const config = createProjectConfig({
       root: caller.root,
       raw: {
-        agents: { preferred: ["codex"] },
+        agents: { preferred: [] },
       },
       configFile: undefined,
     });
@@ -259,7 +180,7 @@ describe("dispatchAgent", () => {
         effort: undefined,
       }),
     ).rejects.toThrow(
-      "No active extension contributes the gemini agent runtime; expected one of: claude, codex",
+      "No active extension contributes the gemini agent runtime; expected one of: claude",
     );
   });
 });

@@ -26,9 +26,6 @@ bun.lockb
 /.claude/rules/planning-sheet.md
 /.claude/rules/planning-sheet/**/*.md
 
-# Codex
-/AGENTS.override.md
-
 # Changelog
 /**/CHANGELOG.md
 

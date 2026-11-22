@@ -87,7 +87,7 @@ Put each rule with its owner, at the narrowest location every agent acting on it
 | One skill's agent, in some modes or steps only | A supporting file of the skill, reached from those steps |
 | The agents of several skills                   | A shared file, reached from each of those skills         |
 
-- Claude Code loads a `paths` rule only when its Read tool opens a matching file, never on a Bash read or write; Codex reads one only when it follows its override's mapping. A rule an agent needs before touching such a file belongs in `AGENTS.md` or the agent's skill.
+- Claude Code loads a `paths` rule only when its Read tool opens a matching file, never on a Bash read or write. A rule an agent needs before touching such a file belongs in `AGENTS.md` or the agent's skill.
 - A rule at a broader row than its acting agents' moves to their row, unless that location loads too late for one of them: weigh each such split for every rule you write or edit and the other rules of the sections you edit.
 - A narrower location refines a broader one: name the source it refines and state only what changes for its scope, never restating the broader rule or contradicting it silently.
 - Keep feature documentation, file inventories, API details and records of recent changes out of `AGENTS.md` and rule files.
@@ -126,22 +126,18 @@ Refines the Writing section for instructions.
 
 Checked 2026-11-18.
 
-| Models                 | Fact                                                                                                                    | Source           |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| Current Claude         | Follows instructions precisely: ask explicitly for any behavior beyond the literal task                                 | [Claude][claude] |
-| Current Claude         | Generalizes a rule from its stated reason to cases it does not name                                                     | [Claude][claude] |
-| Current Claude         | Overtriggers on emphasis and thoroughness prompts written for earlier models: state rules plainly, without intensifiers | [Claude][claude] |
-| Current Claude         | Copies examples' patterns                                                                                               | [Claude][claude] |
-| Claude Opus 5, 5.5     | Delegates to subagents readily: state when delegation is and is not warranted                                           | [Claude][claude] |
-| Claude Opus 5.5        | Thinking depth follows the agent's effort setting more reliably than prompt instructions to think more or less          | [Opus 5.5][opus] |
-| Claude Opus 5.5        | Follows instructions that name the specific behaviors to avoid, and the stops wanted and unwanted, over general ones    | [Opus 5.5][opus] |
-| GPT-5 and later, Codex | Struggles with vague or conflicting instructions in `AGENTS.md`                                                         | [GPT-5][gpt5]    |
-| Codex                  | A short, accurate `AGENTS.md` beats a long, vague one: task detail goes into referenced files; the closest file wins    | [Codex][codex]   |
+| Models             | Fact                                                                                                                    | Source           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| Current Claude     | Follows instructions precisely: ask explicitly for any behavior beyond the literal task                                 | [Claude][claude] |
+| Current Claude     | Generalizes a rule from its stated reason to cases it does not name                                                     | [Claude][claude] |
+| Current Claude     | Overtriggers on emphasis and thoroughness prompts written for earlier models: state rules plainly, without intensifiers | [Claude][claude] |
+| Current Claude     | Copies examples' patterns                                                                                               | [Claude][claude] |
+| Claude Opus 5, 5.5 | Delegates to subagents readily: state when delegation is and is not warranted                                           | [Claude][claude] |
+| Claude Opus 5.5    | Thinking depth follows the agent's effort setting more reliably than prompt instructions to think more or less          | [Opus 5.5][opus] |
+| Claude Opus 5.5    | Follows instructions that name the specific behaviors to avoid, and the stops wanted and unwanted, over general ones    | [Opus 5.5][opus] |
 
 [claude]: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
 [opus]: https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5
-[gpt5]: https://developers.openai.com/cookbook/examples/gpt-5/gpt-5_prompting_guide.md
-[codex]: https://learn.chatgpt.com/guides/best-practices.md
 
 ## Report
 

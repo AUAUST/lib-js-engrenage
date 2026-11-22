@@ -9,33 +9,24 @@ import { checkAgents } from "#tools/agents/operations/checkAgents";
 import { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
 
-vi.mock("#foundation/processes/operations/spawnProcess", () => {
-  return {
-    spawnProcess: vi.fn(() => {
-      return Promise.resolve({
-        status: 0,
-        stdout: "2.1.318 (Claude Code)\n",
-        stderr: "",
-        error: undefined,
-        signal: null,
-      });
-    }),
-  };
+vi.mock("#foundation/processes/operations/spawnProcess", async () => {
+  const {
+    resolveClaudeVersion,
+  } = await import("#tests/utils/resolveClaudeVersion");
+
+  return { spawnProcess: vi.fn(resolveClaudeVersion) };
 });
 
 const reference = "@fixtures/skills/metalbrain/skills/guide/notes.md";
 
-const synced = [
-  ".claude/skills/guide/notes.md",
-  ".agents/skills/guide/notes.md",
-];
+const synced = [".claude/skills/guide/notes.md"];
 
 function createProject({
   metadata = "",
   body = "Read `notes.md` beside this skill.",
   supporting = "notes.md",
   agents = "",
-  preferred = ["claude", "codex"],
+  preferred = ["claude"],
   contributes = "",
 }: {
   metadata?: string;
@@ -125,8 +116,6 @@ describe("skill supporting files", () => {
     ).toEqual([
       "configured .claude/skills/guide/SKILL.md",
       "configured .claude/skills/guide/notes.md",
-      "configured .agents/skills/guide/SKILL.md",
-      "configured .agents/skills/guide/notes.md",
     ]);
   });
 
@@ -141,24 +130,18 @@ describe("skill supporting files", () => {
 
     await sync(project);
 
-    expect(
-      await filesystem.glob([".claude/skills/**/*.*", ".agents/skills/**/*.*"]),
-    ).toEqual([
-      ".agents/skills/guide/SKILL.md",
-      ".agents/skills/guide/agents/openai.yaml",
+    expect(await filesystem.glob(".claude/skills/**/*.*")).toEqual([
       ".claude/skills/guide/SKILL.md",
       ".claude/skills/guide/other.md",
     ]);
   });
 
-  test("lets an agent skill reach its supporting file through a path rendered per runtime", async () => {
+  test("lets an agent skill reach its supporting file through its rendered path", async () => {
     const project = createAgentProject("mode.md");
 
     const filesystem = await install(project);
 
     expect(await filesystem.exists(".claude/skills/guide/mode.md")).toBe(true);
-
-    expect(await filesystem.exists(".agents/skills/guide/mode.md")).toBe(true);
 
     const config = await sync(project);
 
@@ -167,13 +150,6 @@ describe("skill supporting files", () => {
       ".claude/skills/guide/SKILL.md",
     ]) {
       expect(project.read(file)).toContain("`.claude/skills/guide/mode.md`");
-    }
-
-    for (const file of [
-      ".agents/skills/guide/SKILL.md",
-      ".codex/agents/guider.toml",
-    ]) {
-      expect(project.read(file)).toContain("`.agents/skills/guide/mode.md`");
     }
 
     const findings = await checkAgents(config);
@@ -186,9 +162,6 @@ describe("skill supporting files", () => {
       "configured .claude/skills/guide/SKILL.md",
       "configured .claude/skills/guide/mode.md",
       "configured .claude/agents/guider.md",
-      "configured .agents/skills/guide/SKILL.md",
-      "configured .agents/skills/guide/mode.md",
-      "configured .codex/agents/guider.toml",
     ]);
   });
 
@@ -277,7 +250,7 @@ function createSharedProject() {
     "package.json": '{"type":"module","repository":"github:acme/consumer"}',
     "engrenage.config.ts": [
       "export default {",
-      '  agents: { preferred: ["claude", "codex"] },',
+      '  agents: { preferred: ["claude"] },',
       '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
       "};",
     ].join("\n"),
@@ -311,7 +284,7 @@ describe("shared skill files", () => {
 
     await config.context.filesystem.flush();
 
-    for (const directory of [".claude/skills", ".agents/skills"]) {
+    for (const directory of [".claude/skills"]) {
       for (const name of ["guide", "other"]) {
         expect(project.read(`${directory}/${name}/steps.md`)).toBe(
           `<!-- @reference ${sharedReference} -->\n\n# Steps\n\nShared.\n\n<!-- @end -->\n`,
@@ -324,9 +297,7 @@ describe("shared skill files", () => {
     }
 
     expect(
-      await config.context.filesystem.glob(
-        "{.claude,.agents}/skills/*/unused.md",
-      ),
+      await config.context.filesystem.glob(".claude/skills/*/unused.md"),
     ).toEqual([]);
   });
 
@@ -360,10 +331,6 @@ describe("shared skill files", () => {
     await sync(project);
 
     expect(existsSync(project.resolve(".claude/skills/guide/steps.md"))).toBe(
-      false,
-    );
-
-    expect(existsSync(project.resolve(".agents/skills/guide/steps.md"))).toBe(
       false,
     );
 

@@ -1,7 +1,6 @@
 import { posix } from "node:path";
 
 import { syncFiles } from "#foundation/blocks/index";
-import { syncCodexInstructions } from "#tools/agents/codex/index";
 import {
   attributionRules,
   mainSharedDirectory,
@@ -21,6 +20,7 @@ import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFile
 import { migrateBacklogCategories } from "#tools/agents/operations/migrateBacklogCategories";
 import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
+import { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 import { renderBacklogIndex } from "#tools/agents/operations/renderBacklogIndex";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -215,10 +215,10 @@ async function installMainSharedFiles(config: {
 }
 
 /**
- * Syncs agent files when an agent is preferred: migrations, the backlog
- * index, attribution rules, the main session's shared files, generated skill
- * and rule files and Codex instructions. The `blocks` target fills their
- * `@reference` blocks.
+ * Syncs agent files when an agent is preferred: migrations, the backlog index,
+ * attribution rules, the main session's shared files, generated skill and rule
+ * files, removing the Codex files of former releases. The `blocks` target fills
+ * their `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { resolve, context } = loaded;
@@ -244,6 +244,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await migrateFormerRules(config);
 
   await removeRetiredRules(config.filesystem);
+
+  await removeCodexFiles(config);
 
   await migrateBacklogCategories(config.filesystem, new Date());
 
@@ -309,6 +311,4 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   }
 
   await syncFiles(config, generated);
-
-  await syncCodexInstructions({ ...config, config: loaded });
 }

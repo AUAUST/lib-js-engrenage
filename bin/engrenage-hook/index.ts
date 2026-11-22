@@ -1,7 +1,6 @@
 import { defineGroup } from "#workflows/cli/index";
 
 import claude from "#bin/engrenage-hook/claude/index";
-import codex from "#bin/engrenage-hook/codex/index";
 
 export default defineGroup({
   configure(command) {
@@ -11,6 +10,5 @@ export default defineGroup({
   },
   commands: {
     claude,
-    codex,
   },
 });

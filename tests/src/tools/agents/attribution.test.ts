@@ -24,9 +24,8 @@ function createProject(
   files: Record<string, string> = {},
 ) {
   const project = createTemporaryProject({
-    "engrenage.config.ts": `export default { agents: { preferred: ["claude", "codex"]${attribution} } };\n`,
+    "engrenage.config.ts": `export default { agents: { preferred: ["claude"]${attribution} } };\n`,
     "package.json": '{"type":"module"}',
-    "AGENTS.override.md": "<!-- @rules -->\n<!-- @end -->\n",
     ...files,
   });
 
@@ -65,8 +64,6 @@ describe("agents.attribution", () => {
     );
 
     expect(existsSync(project.resolve(attributionRule))).toBe(false);
-
-    expect(project.read("AGENTS.override.md")).toContain(noAttributionRule);
 
     expect((await sync(project.root)).discard()).toEqual([]);
 

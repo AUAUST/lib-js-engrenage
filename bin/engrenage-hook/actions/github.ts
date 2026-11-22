@@ -24,7 +24,7 @@ const payloadSchema = object({
 
 export default async function (
   payload: unknown,
-  runtime: "Claude Code" | "Codex",
+  runtime: string,
 ): Promise<boolean> {
   const {
     cwd,

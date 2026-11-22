@@ -79,24 +79,40 @@ describe("syncAgentFiles", () => {
     ).rejects.toThrow(`Cannot resolve reference "missing.md" in ${from}`);
   });
 
-  test("repairs stale planning policy and toggles the owned YAML key while preserving metadata and comments", async () => {
+  test("removes the Codex files engrenage generated, leaving the project's own", async () => {
     const planning = "@auaust/engrenage/metalbrain/skills/planning.md";
-    const debugging = "@auaust/engrenage/metalbrain/skills/debugging.md";
 
-    const metadata = "# Keep metadata\ninterface:\n  display_name: My skill\npolicy:\n  # Keep policy comment\n  allow_implicit_invocation: false # Keep inline comment\ndependencies:\n  tools: []\n";
+    const hook = (args: string) => {
+      return { type: "command", command: `node_modules/.bin/${args}` };
+    };
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+      "AGENTS.override.md": "# Codex\n\n<!-- @dispatch -->\n<!-- @end -->\n",
       ".agents/skills/planning/SKILL.md": `<!-- @reference ${planning} -->\n<!-- @end -->\n`,
-      ".agents/skills/planning/agents/openai.yaml": metadata,
-      ".agents/skills/debugging/SKILL.md": `<!-- @reference ${debugging} -->\n<!-- @end -->\n`,
-      ".agents/skills/debugging/agents/openai.yaml": metadata.replace(
-        "false",
-        "true",
-      ),
-      ".agents/skills/notes/SKILL.md": "User owned skill",
-      ".agents/skills/notes/agents/openai.yaml": "keep: untouched\n",
+      ".agents/skills/planning/agents/openai.yaml": "policy: {}\n",
+      ".agents/skills/notes/SKILL.md": "User owned skill\n",
+      ".codex/hooks.json": JSON.stringify({
+        hooks: {
+          PreToolUse: [
+            {
+              matcher: "^(spawn_agent|Agent|Bash)$",
+              hooks: [hook("engrenage-hook codex PreToolUse")],
+            },
+            {
+              matcher: "Bash",
+              hooks: [hook("mine")],
+            },
+          ],
+          SubagentStop: [
+            {
+              matcher: ".*",
+              hooks: [hook("engrenage-hook codex SubagentStop")],
+            },
+          ],
+        },
+      }),
     });
 
     const config = await loadConfig(project.root);
@@ -105,37 +121,34 @@ describe("syncAgentFiles", () => {
 
     await syncAgentFiles(config);
 
-    expect(
-      await filesystem.read(".agents/skills/planning/agents/openai.yaml"),
-    ).toBe(metadata.replace("false", "true"));
+    await filesystem.flush();
 
-    expect(
-      await filesystem.read(".agents/skills/debugging/agents/openai.yaml"),
-    ).toBe(metadata);
+    expect(existsSync(project.resolve("AGENTS.override.md"))).toBe(false);
 
-    expect(
-      await filesystem.read(".agents/skills/notes/agents/openai.yaml"),
-    ).toBe("keep: untouched\n");
+    expect(await filesystem.glob(".agents/**/*.*")).toEqual([
+      ".agents/skills/notes/SKILL.md",
+    ]);
 
-    await filesystem.write(
-      ".agents/skills/planning/agents/openai.yaml",
-      metadata,
-    );
+    expect(JSON.parse(project.read(".codex/hooks.json"))).toEqual({
+      hooks: { PreToolUse: [{ matcher: "Bash", hooks: [hook("mine")] }] },
+    });
 
     await filesystem.write(
-      ".agents/skills/debugging/agents/openai.yaml",
-      metadata.replace("false", "true"),
+      ".codex/hooks.json",
+      JSON.stringify({
+        hooks: { Stop: [{ hooks: [hook("engrenage-hook codex Stop")] }] },
+      }),
     );
+
+    await filesystem.write("AGENTS.override.md", "Project notes\n");
 
     await syncAgentFiles(config);
 
-    expect(
-      await filesystem.read(".agents/skills/planning/agents/openai.yaml"),
-    ).toBe(metadata.replace("false", "true"));
+    await filesystem.flush();
 
-    expect(
-      await filesystem.read(".agents/skills/debugging/agents/openai.yaml"),
-    ).toBe(metadata);
+    expect(existsSync(project.resolve(".codex"))).toBe(false);
+
+    expect(project.read("AGENTS.override.md")).toBe("Project notes\n");
   });
 
   describe("frontmatter", () => {
@@ -514,7 +527,7 @@ describe("fragment fillers", () => {
 
     const project = createTemporaryProject({
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
+      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       ".claude/skills/retired/SKILL.md": `<!-- @reference ${retired} -->\n<!-- @end -->\n`,
       ".agents/skills/retired/SKILL.md": `<!-- @reference ${retired} -->\n<!-- @end -->\n`,
       ".agents/skills/retired/agents/openai.yaml": "policy: {}\n",

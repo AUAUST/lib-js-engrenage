@@ -34,7 +34,7 @@ export const skillSchema = looseObject({
           complex: optional(effortSchema),
         }),
       ),
-      // @debt `tools` and `disallowedTools` name Claude Code tools, so the shared agent definition carries one runtime's vocabulary and Codex profiles drop the restriction.
+      // @debt `tools` and `disallowedTools` name Claude Code tools, so the shared agent definition carries one runtime's vocabulary.
       tools: optional(array(string())),
       disallowedTools: optional(array(string())),
       gate: optional(boolean()),

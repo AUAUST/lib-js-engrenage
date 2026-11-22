@@ -41,7 +41,7 @@ describe("defineConfig", () => {
   test("types names that sub-domain extensions contribute", () => {
     expectTypeOf(defineConfig).toBeCallableWith({
       preset: "shopify-theme",
-      agents: { preferred: ["claude", "codex"] },
+      agents: { preferred: ["claude"] },
     });
 
     defineConfig({

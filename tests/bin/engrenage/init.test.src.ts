@@ -820,9 +820,7 @@ test("does not generate agent setup without selected agents", async () => {
   for (const file of [
     "AGENTS.md",
     "CLAUDE.md",
-    "AGENTS.override.md",
     ".claude/settings.json",
-    ".codex/hooks.json",
     ".ai/backlog/index.md",
     ".ai/scratchpad.md",
     ".claude/rules/backlog.md",
@@ -835,8 +833,8 @@ test("does not generate agent setup without selected agents", async () => {
   );
 });
 
-test("sets up Codex with backlog guidance without installing coding rules", async () => {
-  const input = 'export default { agents: { preferred: ["codex"] } };\n';
+test("sets up the backlog guidance without installing coding rules", async () => {
+  const input = 'export default { agents: { preferred: ["claude"] } };\n';
 
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
@@ -847,14 +845,6 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
 
   expect(project.read("engrenage.config.ts")).toBe(input);
 
-  expect(project.read("AGENTS.override.md")).toContain(
-    "intended for OpenAI Codex",
-  );
-
-  expect(project.read("AGENTS.override.md")).toContain(
-    "<code>.ai/backlog/*.yml</code>",
-  );
-
   expect(project.read(".ai/backlog/index.md")).toContain(
     "No open categories yet.",
   );
@@ -863,21 +853,13 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
     "metalbrain/templates/backlog.md -->\n\nDeferred questions, bugs, tasks and improvements.\n",
   );
 
-  expect(project.read(".codex/hooks.json")).toContain(
-    "engrenage-hook codex PreToolUse",
-  );
-
-  expect(project.read(".agents/skills/curation/SKILL.md")).toContain(
+  expect(project.read(".claude/skills/curation/SKILL.md")).toContain(
     "# Curation",
   );
 
   expect(project.read(".ai/scratchpad.md")).toBe(
     `# Scratchpad\n\n<!-- scratchpad-placeholder -->\n\n${scratchpadPlaceholder}\n`,
   );
-
-  expect(existsSync(project.resolve("CLAUDE.md"))).toBe(false);
-
-  expect(existsSync(project.resolve(".claude/settings.json"))).toBe(false);
 
   expect(existsSync(project.resolve(".claude/rules/code-style.md"))).toBe(
     false,
@@ -907,27 +889,19 @@ test("uses an interactive selection for this init without rewriting an existing 
 
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
-  expect(project.read("AGENTS.override.md")).toContain(
-    "<code>.ai/backlog/*.yml</code>",
-  );
-
   expect(project.read(".claude/settings.json")).toContain(
     "engrenage-hook claude PreToolUse",
   );
 
-  expect(project.read(".codex/hooks.json")).toContain(
-    "engrenage-hook codex PreToolUse",
-  );
-
   expect(printed()).toContainEqual(
-    expect.stringContaining('Add agents.preferred: ["claude","codex"]'),
+    expect.stringContaining('Add agents.preferred: ["claude"]'),
   );
 });
 
 test("declining backlog setup leaves no backlog instructions or files", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
   });
 
   const confirm = vi.fn((message: string) => {
@@ -952,13 +926,9 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 
   expect(existsSync(project.resolve(".ai/scratchpad.md"))).toBe(false);
 
-  expect(existsSync(project.resolve(".agents/skills/curation"))).toBe(false);
+  expect(existsSync(project.resolve(".claude/skills/curation"))).toBe(false);
 
   expect(project.read("AGENTS.md")).not.toContain("## Backlog");
-
-  expect(project.read("AGENTS.override.md")).not.toContain(
-    ".claude/rules/backlog.md",
-  );
 
   expect(printed().join("\n")).not.toContain("Instruction fragments reference");
 });
@@ -966,7 +936,7 @@ test("declining backlog setup leaves no backlog instructions or files", async ()
 test("adds a scratchpad to an existing backlog setup", async () => {
   const project = createProject({
     "package.json": '{"name":"project","type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };\n',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
     "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/metalbrain/sections/backlog.md -->\n<!-- @end -->\n",
     ".ai/backlog/index.md": "# Backlog\n\nOutdated guidance.\n\n## Open categories\n\nNo open categories yet.\n",
     ".claude/rules/backlog.md": "<!-- @reference @auaust/engrenage/metalbrain/rules/backlog.md -->\n<!-- @end -->\n",
@@ -982,7 +952,7 @@ test("adds a scratchpad to an existing backlog setup", async () => {
     /^# Backlog\n\n<!-- @reference @auaust\/engrenage\/metalbrain\/templates\/backlog\.md -->\n[^]*<!-- @end -->\n\n## Open categories\n\nNo open categories yet\.\n$/,
   );
 
-  expect(project.read(".agents/skills/curation/SKILL.md")).toContain(
+  expect(project.read(".claude/skills/curation/SKILL.md")).toContain(
     "# Curation",
   );
 });

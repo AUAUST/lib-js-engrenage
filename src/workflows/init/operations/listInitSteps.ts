@@ -6,8 +6,6 @@ import {
   createBacklogStep,
   createClaudeSettingsStep,
   createClaudeStep,
-  createCodexHooksStep,
-  createCodexStep,
   createPreferredAgentsStep,
 } from "#tools/agents/index";
 import { createChangesetConfigStep } from "#tools/changesets/index";
@@ -68,8 +66,6 @@ export function listInitSteps(): Step[] {
     createAgentRulesStep(),
     createBacklogStep(),
     createClaudeStep(),
-    createCodexStep(),
-    createCodexHooksStep(),
     createClaudeSettingsStep(),
     createJscpdStep(),
     createLefthookStep(),

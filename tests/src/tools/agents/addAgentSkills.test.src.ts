@@ -4,14 +4,18 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 
-describe("addAgentSkills", () => {
-  test("installs an explicit skill and its agent for every preferred agent", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
-    });
+async function loadConsumer() {
+  const project = createTemporaryProject({
+    "package.json": '{"type":"module","repository":"github:acme/consumer"}',
+    "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
+  });
 
-    const config = await loadConfig(project.root);
+  return loadConfig(project.root);
+}
+
+describe("addAgentSkills", () => {
+  test("installs an explicit skill and its agent", async () => {
+    const config = await loadConsumer();
 
     await addAgentSkills(config, ["debugging"]);
 
@@ -21,13 +25,6 @@ describe("addAgentSkills", () => {
         ".claude/skills/debugging/analysis.md",
         ".claude/skills/debugging/request-analysis.md",
         ".claude/agents/debugger.md",
-        ".agents/skills/debugging/SKILL.md",
-        ".agents/skills/debugging/analysis.md",
-        ".agents/skills/debugging/request-analysis.md",
-        ".agents/skills/debugging/agents/openai.yaml",
-        ".codex/agents/debugger.toml",
-        ".codex/agents/debugger_low.toml",
-        ".codex/agents/debugger_high.toml",
       ].map((file) => expect.objectContaining({ file })),
     );
 
@@ -38,21 +35,10 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.read(".claude/agents/debugger.md"),
     ).toMatch(/name: debugger[\s\S]*# Debugging/);
-
-    expect(
-      await config.context.filesystem.read(
-        ".agents/skills/debugging/agents/openai.yaml",
-      ),
-    ).toContain("allow_implicit_invocation: false");
   });
 
   test("writes the agent model and effort to the Claude Code agent", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
-    });
-
-    const config = await loadConfig(project.root);
+    const config = await loadConsumer();
 
     await addAgentSkills(config, ["implement"]);
 
@@ -64,12 +50,7 @@ describe("addAgentSkills", () => {
   });
 
   test("lets the curation skill be invoked implicitly", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["claude", "codex"] } };',
-    });
-
-    const config = await loadConfig(project.root);
+    const config = await loadConsumer();
 
     await addAgentSkills(config, ["curation"]);
 
@@ -80,39 +61,26 @@ describe("addAgentSkills", () => {
     expect(
       await config.context.filesystem.exists(".claude/agents/curator.md"),
     ).toBe(false);
-
-    expect(
-      await config.context.filesystem.exists(
-        ".agents/skills/curation/agents/openai.yaml",
-      ),
-    ).toBe(true);
   });
 
-  test("installs canonical roles selectively with their complexity effort variants", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
-    });
-
-    const config = await loadConfig(project.root);
+  test("installs agents selectively, once", async () => {
+    const config = await loadConsumer();
 
     await addAgentSkills(config, ["implement"]);
 
-    expect(
-      await config.context.filesystem.glob(".codex/agents/*.toml"),
-    ).toEqual([".codex/agents/worker.toml"]);
+    expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
+      [".claude/agents/worker.md"],
+    );
 
     await addAgentSkills(config, ["debugging", "planning", "curation"]);
 
-    expect(
-      await config.context.filesystem.glob(".codex/agents/*.toml"),
-    ).toEqual([
-      ".codex/agents/debugger.toml",
-      ".codex/agents/debugger_high.toml",
-      ".codex/agents/debugger_low.toml",
-      ".codex/agents/planner.toml",
-      ".codex/agents/worker.toml",
-    ]);
+    expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
+      [
+        ".claude/agents/debugger.md",
+        ".claude/agents/planner.md",
+        ".claude/agents/worker.md",
+      ],
+    );
 
     await config.context.filesystem.flush();
 
@@ -124,24 +92,6 @@ describe("addAgentSkills", () => {
     ]);
 
     expect(config.context.filesystem.changes()).toEqual([]);
-  });
-
-  test("preserves and reports an unowned profile collision", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module","repository":"github:acme/consumer"}',
-      "engrenage.config.ts": 'export default { agents: { preferred: ["codex"] } };',
-      ".codex/agents/worker.toml": 'name = "custom"\n',
-    });
-
-    const config = await loadConfig(project.root);
-
-    await expect(addAgentSkills(config, ["implement"])).rejects.toThrow(
-      "Unowned Codex agent profile .codex/agents/worker.toml",
-    );
-
-    expect(
-      await config.context.filesystem.read(".codex/agents/worker.toml"),
-    ).toBe('name = "custom"\n');
   });
 
   test("requires preferred agents", async () => {

@@ -32,7 +32,6 @@
 /.claude/rules/project-map/**/*.md linguist-generated
 /.claude/rules/planning-sheet.md linguist-generated
 /.claude/rules/planning-sheet/**/*.md linguist-generated
-/AGENTS.override.md linguist-generated
 /**/CHANGELOG.md linguist-generated
 /.engrenage/github.json linguist-generated
 /pnpm-lock.yaml linguist-generated -diff

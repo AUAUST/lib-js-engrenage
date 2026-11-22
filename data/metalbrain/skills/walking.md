@@ -181,7 +181,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 ## Resumed agents
 
 - Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
-- Start a new consultant or integration merger instead when a segment closes, or once its context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs. Under Codex, compare its reported context yourself; under Claude Code, a hook refuses such a resume: on a refusal, start a new one as below, never retrying the resume.
+- Start a new consultant or integration merger instead when a segment closes, or once its context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs. A hook refuses such a resume: on a refusal, start a new one as below, never retrying the resume.
 - Brief a new consultant as the first one was briefed, adding the previous one's last carry-over; a new integration merger as merging §Brief states.
 
 ## Agent limits

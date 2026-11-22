@@ -45,9 +45,8 @@ src/  foundation < batiment < project < tools < workflows  (global roles: types 
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
-│  ├─ agents*{claude* codex* metalbrain}  Generate shared agent instructions, skills and contributed rule files.
+│  ├─ agents*{claude* metalbrain}  Generate shared agent instructions, skills and contributed rule files.
 │  │  ├─ claude*  Configure Claude instructions, settings and hooks.
-│  │  ├─ codex*  Configure Codex instructions, profiles, skills and hooks.
 │  │  └─ metalbrain  Log each agent tool call with its duration, output size and dollar cost, loading only Node builtins and the model facts so hooks fire cheaply.
 │  ├─ changesets*  Configure release versioning and changelogs.
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.

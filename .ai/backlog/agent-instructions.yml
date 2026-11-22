@@ -35,10 +35,6 @@ entries:
     title: The planning sheet misses agents that write a draft before reading one
     why: '`.claude/rules/issues.md` says it "loads with the first draft you read"; with `.ai/issues/` empty or listed through Bash, the first draft is a Write, which loads no `paths` rule.'
     want: the issues rule has drafting agents Read `.claude/rules/planning-sheet.md` before their first draft unless a draft read loaded it.
-  - id: 261122-9c03
-    title: Codex has no low-effort merger for integration
-    why: "`walking.md` dispatches the integration merger with `effort: low`; `merging.md` declares no `efforts`, and a Codex profile's effort overrides the spawn's."
-    want: "`efforts: { integration: low }` in the merging frontmatter, generating `merger_low`, routed by mode; merger effort stated once, today `medium` in the frontmatter against `low` in walking › Integration."
   - id: 261122-efd5
     title: A restarted walk holds completed leaf work instead of integrating it
     why: walking › Stops and restarts holds every leaf branch it finds; a completed leaf waits on the user, its agent gone.

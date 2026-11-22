@@ -18,7 +18,7 @@ function createProject(
 
 describe("syncLefthookConfig", () => {
   test.each([
-    'export default { agents: { preferred: ["codex"] } };\n',
+    "export default {};\n",
     'export default { agents: { preferred: ["claude"], gate: { hook: false } } };\n',
   ])(
     "keeps only the unconditional everyone command without agent variables: %s",
@@ -253,7 +253,7 @@ describe("syncLefthookConfig", () => {
         "      run: *gate",
         "",
       ].join("\n"),
-      'export default { agents: { preferred: ["codex"] } };\n',
+      "export default {};\n",
     );
 
     const config = await loadConfig(project.root);

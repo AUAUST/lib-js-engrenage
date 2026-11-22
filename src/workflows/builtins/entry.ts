@@ -14,7 +14,6 @@ export { default as projectSync } from "#project/sync/extension";
 export { default as projectTsconfig } from "#project/tsconfig/extension";
 export { default as projectWorkspaces } from "#project/workspaces/extension";
 export { default as toolsAgentsClaude } from "#tools/agents/claude/extension";
-export { default as toolsAgentsCodex } from "#tools/agents/codex/extension";
 export { default as toolsAgents } from "#tools/agents/extension";
 export { default as toolsChangesets } from "#tools/changesets/extension";
 export { default as toolsEslint } from "#tools/eslint/extension";

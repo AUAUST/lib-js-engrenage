@@ -81,10 +81,10 @@ async function runDispatch(): Promise<unknown> {
   return failure;
 }
 
-test.each(["claude", "codex"])(
-  "%s PreToolUse with an invalid payload opens with a message",
+test(
+  "claude PreToolUse with an invalid payload opens with a message",
   { timeout: binaryTimeout },
-  (runtime) => {
+  () => {
     for (const input of [
       "{",
       "{}",
@@ -92,7 +92,7 @@ test.each(["claude", "codex"])(
     ]) {
       const result = spawnSync(
         process.execPath,
-        [getExecutable("engrenage-hook"), runtime, "PreToolUse"],
+        [getExecutable("engrenage-hook"), "claude", "PreToolUse"],
         { input, encoding: "utf-8" },
       );
 
@@ -149,12 +149,12 @@ test(
 
     const result = spawnSync(
       process.execPath,
-      [getExecutable("engrenage-hook"), "codex", "PreToolUse"],
+      [getExecutable("engrenage-hook"), "claude", "PreToolUse"],
       {
         input: JSON.stringify({
           cwd: project.root,
-          tool_name: "spawn_agent",
-          tool_input: { agent_type: "worker", message: "Issue: o/r#1" },
+          tool_name: "Agent",
+          tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
         }),
         encoding: "utf-8",
       },

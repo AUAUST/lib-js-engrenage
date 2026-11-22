@@ -72,14 +72,6 @@
       "source": "./src/tools/agents/claude/constants.ts",
       "default": "./dist/agents/claude/constants.mjs"
     },
-    "./agents/codex": {
-      "source": "./src/tools/agents/codex/entry.ts",
-      "default": "./dist/agents/codex.mjs"
-    },
-    "./agents/codex/constants": {
-      "source": "./src/tools/agents/codex/constants.ts",
-      "default": "./dist/agents/codex/constants.mjs"
-    },
     "./agents/constants": {
       "source": "./src/tools/agents/constants.ts",
       "default": "./dist/agents/constants.mjs"
@@ -273,7 +265,6 @@
     "@typescript-eslint/types": "^8.72.0",
     "c12": "4.0.0-rc.3",
     "comment-parser": "1.4.9",
-    "confbox": "0.3.1",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import-x": "^4.17.1",
     "eslint-plugin-package-json": "^1.11.0",
@@ -430,8 +421,6 @@
       "./agents": "./dist/agents.mjs",
       "./agents/claude": "./dist/agents/claude.mjs",
       "./agents/claude/constants": "./dist/agents/claude/constants.mjs",
-      "./agents/codex": "./dist/agents/codex.mjs",
-      "./agents/codex/constants": "./dist/agents/codex/constants.mjs",
       "./agents/constants": "./dist/agents/constants.mjs",
       "./baseline": "./dist/baseline.mjs",
       "./baseline/constants": "./dist/baseline/constants.mjs",

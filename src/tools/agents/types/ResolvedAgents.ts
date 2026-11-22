@@ -11,7 +11,6 @@ import type { Globs } from "#types/Globs";
  */
 export interface ResolvedAgents {
   readonly preferred: readonly Agent[] | undefined;
-  readonly codexHooks: boolean | undefined;
   readonly instructionFiles: Globs;
   readonly snippetsDir: Directory | undefined;
   readonly claudeSettings: boolean | undefined;

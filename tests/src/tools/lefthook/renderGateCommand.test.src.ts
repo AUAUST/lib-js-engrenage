@@ -27,9 +27,9 @@ describe("renderGateCommand", () => {
   });
 
   test("joins preferred agent variables in both conditions", () => {
-    expect(listGateVariables({ preferred: ["claude", "codex"], gate })).toEqual(
-      [agentShellVariables.claude],
-    );
+    expect(listGateVariables({ preferred: ["claude"], gate })).toEqual([
+      agentShellVariables.claude,
+    ]);
 
     const commands = renderGateCommand(["A", "B"], gateHooks["pre-commit"]);
     const condition = [{ run: 'test -n "$A" || test -n "$B"' }];

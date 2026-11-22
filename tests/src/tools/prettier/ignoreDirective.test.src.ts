@@ -24,9 +24,9 @@ async function syncProjectGroup(engrenageConfig: string): Promise<string> {
 }
 
 describe("ignore directive", () => {
-  test("writes the default and project groups, with the changelog of changesets projects and the Codex instructions", async () => {
+  test("writes the default and project groups, with the changelog of changesets projects", async () => {
     const project = createTemporaryProject({
-      "engrenage.config.ts": 'export default { src: { generated: "generated/**" }, agents: { preferred: ["codex"] } };\n',
+      "engrenage.config.ts": 'export default { src: { generated: "generated/**" }, agents: { preferred: ["claude"] } };\n',
       "package.json": JSON.stringify({
         type: "module",
         devDependencies: {
@@ -77,9 +77,6 @@ describe("ignore directive", () => {
         "/.claude/rules/project-map.md",
         "/.claude/rules/project-map/**/*.md",
         "",
-        "# Codex",
-        "/AGENTS.override.md",
-        "",
         "# Changelog",
         "/**/CHANGELOG.md",
         "",
@@ -101,11 +98,10 @@ describe("ignore directive", () => {
     );
   });
 
-  test("leaves out the changelog without changesets and the Codex instructions when Codex is not preferred", async () => {
+  test("leaves out the changelog without changesets", async () => {
     const content = await syncProjectGroup("export default {};\n");
 
     expect(content).not.toContain("# Changelog");
-    expect(content).not.toContain("/AGENTS.override.md");
     expect(content).toContain("# pnpm\n/pnpm-lock.yaml");
   });
 

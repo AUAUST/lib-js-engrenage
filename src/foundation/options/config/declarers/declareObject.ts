@@ -18,9 +18,9 @@ import type { ObjectResolution } from "#foundation/options/types/ObjectResolutio
  * rejecting unknown keys. A missing input resolves, with `optional` `true`,
  * the entries from an empty object, and with a default, from its value. With
  * `disable`, a `false` input resolves to `disable.value` with `enabled: false`,
- * and any other input adds `enabled: true`. `assert` checks the input before
- * its entries resolve; the unknown-key error of a former key in `renamed` names
- * the key replacing it.
+ * and any other input adds `enabled: true`. `assert` checks the input before its
+ * entries resolve; the unknown-key error of a former key in `renamed` names the
+ * key replacing it, and of one in `removed`, the reason it was removed.
  *
  * @throws {Error} At resolve, when the input is missing and `optional` unset.
  * @throws {TypeError} At resolve, when the input is no plain object.
@@ -47,6 +47,7 @@ export function declareObject<
     disable?: { readonly value: Disabled };
     assert?(input: ObjectInput<Entries>, path: string): void;
     renamed?: Readonly<Record<string, keyof Entries & string>>;
+    removed?: Readonly<Record<string, string>>;
   },
 ): ObjectDeclaration<
   Entries,
@@ -64,6 +65,7 @@ export function declareObject(
     disable?: { readonly value: object };
     assert?(input: Record<string, unknown>, path: string): void;
     renamed?: Readonly<Record<string, string>>;
+    removed?: Readonly<Record<string, string>>;
   } = {},
 ): ObjectDeclaration<
   Readonly<Record<string, Declaration<unknown, unknown, unknown>>>,
@@ -71,20 +73,22 @@ export function declareObject(
   unknown,
   unknown
 > {
-  const { optional, disable, assert, renamed = {} } = options;
+  const { optional, disable, assert, renamed = {}, removed = {} } = options;
 
   function describe(issue: StrictObjectIssue): string {
-    const replacement = (
-      issue.expected === "never" &&
-      isString(issue.input) &&
-      object.hasOwn(renamed, issue.input)
-    )
-      ? renamed[issue.input]
+    const key = issue.expected === "never" && isString(issue.input)
+      ? issue.input
       : undefined;
 
-    return replacement === undefined
-      ? issue.message
-      : `Unknown key ${issue.received}, renamed "${replacement}"`;
+    if (key !== undefined && object.hasOwn(renamed, key)) {
+      return `Unknown key ${issue.received}, renamed "${renamed[key]}"`;
+    }
+
+    if (key !== undefined && object.hasOwn(removed, key)) {
+      return `Unknown key ${issue.received}, removed: ${removed[key]}`;
+    }
+
+    return issue.message;
   }
 
   const schema = createOptionSchema(

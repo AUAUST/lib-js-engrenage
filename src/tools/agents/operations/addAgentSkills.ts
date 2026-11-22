@@ -1,5 +1,3 @@
-import { loadFormatter } from "#project/format/index";
-import { syncCodexSkill } from "#tools/agents/codex/index";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
@@ -33,8 +31,6 @@ export async function addAgentSkills(
     }
   }
 
-  const formatter = await loadFormatter(config);
-
   for (const template of templates) {
     if (!names.includes(template.name)) {
       continue;
@@ -44,10 +40,6 @@ export async function addAgentSkills(
       if (!(await filesystem.exists(file))) {
         await filesystem.write(file, content);
       }
-    }
-
-    if (agents.preferred?.includes("codex") === true) {
-      await syncCodexSkill(filesystem, template, { config, formatter });
     }
   }
 }

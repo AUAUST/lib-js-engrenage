@@ -6,10 +6,7 @@ import { expect, test } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getExecutable } from "#tests/utils/getExecutable";
 
-test.each([
-  { runtime: "claude", check: "git" },
-  { runtime: "codex", check: "stop" },
-])(
+test.each([{ runtime: "claude", check: "git" }])(
   "engrenage agents $runtime hook $check runs no check and asks to sync",
   { timeout: binaryTimeout },
   ({ runtime, check }) => {

@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 export const gateIdentity = freeze({
-  runtime: "codex",
+  runtime: "claude",
   session: "session",
   agent: "agent",
 });

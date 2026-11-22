@@ -22,7 +22,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(
       await checkAgentStop(config, {
         ...gateIdentity,
-        runtime: "claude",
+        runtime: "another",
       }),
     ).toContain("typecheck");
 

@@ -6,7 +6,6 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 
 ## Dispatch
 
-- Under Codex, K = 1, whatever your skill sets.
 - Dispatch every agent from the working branch's `HEAD` commit, its dispatch base, briefed on a `Base: <dispatch base>` line: at K = 1 in the main checkout; past it, each in the background with `isolation: "worktree"`.
 - Resume the same agent to answer its question, return the gaps and findings of its review, or return the failing commands and output from its stop or commit gate.
 - Resume an agent at most twice for one cause: a gate failure, a gap or finding, a blocked report on the same question, or a conflict reported as needing design. Instead of a third resume, hold its work under §Holding work.

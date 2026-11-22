@@ -3,12 +3,11 @@ import {
   claudeStopHook,
   metalbrainHook,
 } from "#tools/agents/claude/constants";
-import { createCodexAgentProfiles } from "#tools/agents/codex/index";
 import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,
-  codexSkillFrontmatterKeys,
   skillFileName,
+  skillFrontmatterKeys,
 } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
@@ -68,12 +67,9 @@ export async function getSkillTemplates({
     });
   }
 
-  const codex = renderings.find(({ runtime }) => runtime.name === "codex");
-
-  // @debt the entry's top-level `body` belongs to one runtime, Codex's when preferred since `addAgentSkills` hands the entry to `syncCodexSkill`; per-runtime renderings would belong in separate fields
+  // @debt the entry's top-level `body` belongs to the first preferred runtime; per-runtime renderings would belong in separate fields
   const primary = (
-    (codex ?? renderings[0])?.definitions ??
-    (await getSkillDefinitions({ extensions }))
+    renderings[0]?.definitions ?? (await getSkillDefinitions({ extensions }))
   );
 
   return primary.map((template) => {
@@ -138,12 +134,12 @@ export async function getSkillTemplates({
     for (const { runtime, skills: directory, byName } of renderings) {
       const rendering = findRendering(byName);
 
-      // @debt branches on the runtime's name for its skill frontmatter keys and agent file format, so any contributed runtime gets Codex's frontmatter and no agent files; the `agents.runtimes` contribution could declare both
+      // @debt branches on the runtime's name for its skill frontmatter keys and agent file format, so any contributed runtime gets only a name and description frontmatter and no agent files; the `agents.runtimes` contribution could declare both
       if (runtime.name !== "claude") {
         addSkill(
           directory,
           {
-            keys: codexSkillFrontmatterKeys,
+            keys: skillFrontmatterKeys,
             values: { name, description },
           },
           rendering,
@@ -232,13 +228,6 @@ export async function getSkillTemplates({
       ...template,
       invocation,
       agent,
-      profiles: codex !== undefined && agent !== undefined
-        ? createCodexAgentProfiles({
-            agent,
-            reference: template.reference,
-            body: findRendering(codex.byName).body,
-          })
-        : [],
       files,
     };
   });

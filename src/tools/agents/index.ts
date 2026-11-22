@@ -9,12 +9,6 @@ export {
   recordClaudeRun,
   resolveClaudeAgentTranscript,
 } from "#tools/agents/claude/index";
-export { codexFile } from "#tools/agents/codex/constants";
-export {
-  createCodexHooksStep,
-  createCodexStep,
-  syncCodexFiles,
-} from "#tools/agents/codex/index";
 export { agentShellVariables, mainAgent } from "#tools/agents/constants";
 export { readModelFacts } from "#tools/agents/metalbrain/index";
 export { filterAgents } from "#tools/agents/utils/filterAgents";
@@ -85,6 +79,7 @@ export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 export { readBacklogCategories } from "#tools/agents/operations/readBacklogCategories";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
+export { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 export { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 export { renderBacklogIndex } from "#tools/agents/operations/renderBacklogIndex";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";

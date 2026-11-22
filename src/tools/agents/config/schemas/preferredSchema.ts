@@ -1,3 +1,15 @@
-import { array, string } from "valibot";
+import { array, check, pipe, string } from "valibot";
 
-export const preferredSchema = array(string());
+import { object } from "@auaust/toolkit";
+
+import { removedRuntimes } from "#tools/agents/constants";
+
+export const preferredSchema = array(
+  pipe(
+    string(),
+    check(
+      (name) => !object.hasOwn(removedRuntimes, name),
+      (issue) => `${issue.input}: ${removedRuntimes[issue.input] ?? ""}`,
+    ),
+  ),
+);

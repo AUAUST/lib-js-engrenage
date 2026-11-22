@@ -1,11 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { chmodSync, realpathSync } from "node:fs";
 
-import { parse as parseJsonc } from "jsonc-parser";
 import { expect, test } from "vitest";
 
 import { syncClaudeSettings } from "@auaust/engrenage/agents/claude";
-import { syncCodexFiles } from "@auaust/engrenage/agents/codex";
 import { loadConfig } from "@auaust/engrenage/extensions";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -86,7 +84,7 @@ test("the generated command runs the root's program from a workspace", async () 
 test("the generated command stops at a nested worktree before its install", async () => {
   const command = await createCommand();
 
-  const worktree = ".codex/worktrees/fresh";
+  const worktree = ".claude/worktrees/fresh";
 
   const { project } = createConsumer({
     ".git/HEAD": "ref: refs/heads/main\n",
@@ -253,67 +251,4 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
   await syncClaudeSettings(config);
 
   expect(config.context.filesystem.discard()).toEqual([]);
-});
-
-test("syncs Codex hooks and preserves unrelated custom hooks", async () => {
-  const project = createTemporaryProject({
-    "package.json": '{"type":"module"}',
-    "engrenage.config.ts": 'export default { agents: { preferred: ["codex"], codexHooks: true } };',
-    ".codex/hooks.json": JSON.stringify({
-      hooks: {
-        PreToolUse: [
-          {
-            matcher: "Bash",
-            hooks: [
-              {
-                type: "command",
-                command: "echo mine",
-                custom: { keep: true },
-              },
-              {
-                type: "command",
-                command: "pnpm --silent engrenage agents codex hook old",
-              },
-            ],
-          },
-        ],
-      },
-    }).replace(
-      '"command":"echo mine"',
-      '"command":"echo mine"/* retained custom comment */',
-    ),
-  });
-
-  const config = await loadConfig(project.root);
-
-  await syncCodexFiles(config);
-
-  await config.context.filesystem.flush();
-
-  const content = project.read(".codex/hooks.json");
-
-  expect(content).toContain("/* retained custom comment */");
-
-  const { hooks } = parseJsonc(content);
-
-  expect(hooks.PreToolUse[0]).toEqual({
-    matcher: "Bash",
-    hooks: [
-      {
-        type: "command",
-        command: "echo mine",
-        custom: { keep: true },
-      },
-    ],
-  });
-
-  expect(hooks.SubagentStop[0].hooks[0].command).toContain(
-    "engrenage-hook codex SubagentStop",
-  );
-
-  expect(hooks.PreToolUse[1].matcher).toBe("^(spawn_agent|Agent|Bash)$");
-
-  await syncCodexFiles(config);
-
-  expect(config.context.filesystem.changes()).toEqual([]);
 });

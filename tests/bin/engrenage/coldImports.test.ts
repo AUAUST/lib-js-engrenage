@@ -97,9 +97,7 @@ test(
 
     expect(stdout).toContain("Usage: engrenage-hook");
 
-    for (const name of ["claude", "codex"]) {
-      expect(stdout).toContain(`  ${name} `);
-    }
+    expect(stdout).toContain("  claude ");
 
     expect(
       stderr.split("\n").filter((url) => {
