@@ -3,6 +3,11 @@ import { posix } from "node:path";
 import { syncFiles } from "#foundation/blocks/index";
 import { backlog, backlogIndex } from "#metalbrain/backlog/constants";
 import { migrateBacklogCategories } from "#metalbrain/backlog/index";
+import {
+  listFormerReferences,
+  type FragmentRenderer,
+  type GeneratedFrontmatter,
+} from "#metalbrain/instructions/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
 import {
   attributionRules,
@@ -29,11 +34,8 @@ import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
-import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
-import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";

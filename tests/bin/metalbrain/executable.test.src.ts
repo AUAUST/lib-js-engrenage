@@ -9,12 +9,12 @@ import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 
-const followedAliases = ["#bin/metalbrain/", "#tools/agents/metalbrain/"];
+const followedAliases = ["#bin/metalbrain/", "#metalbrain/runtimes/"];
 
 const followedLoads = [
   "#bin/metalbrain/index",
   "#bin/metalbrain/hook/",
-  "#tools/agents/metalbrain/",
+  "#metalbrain/runtimes/",
 ];
 
 const allowedPrefixes = ["node:", "#workflows/cli/"];

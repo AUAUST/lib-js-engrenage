@@ -173,3 +173,4 @@
 - PreToolUse shell-trap hook: `echo ======` as a separator — refused as `=` expansion; quoted it
 - auto mode classifier: `gh issue comment` posting scratchpad notes the user did not name — denied; relied on git history instead
 - shell trap hook, zsh `=word`: `echo ======` as a separator — hook refused it as a command-path expansion; quoted the separator
+- metalbrain backlog sites: moving a file a backlog site names — no record command follows the move and sync fails; rewrote the site paths in the YAML with sed

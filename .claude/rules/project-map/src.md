@@ -26,9 +26,11 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ processes  Run external processes.
 │  ├─ reports  Report typed messages to the handler the running context chooses.
 │  └─ shell  Parse shell commands into the simple commands they run.
-├─ metalbrain/  #metalbrain/…  records < *  The agent layer the `metalbrain` commands serve: agent records and their kinds.
+├─ metalbrain/  #metalbrain/…  records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: agent records and their kinds, instruction files and runtime hooks.
 │  ├─ backlog  The backlog record kind: its declaration, its categories and the migration of legacy Markdown categories.
-│  └─ records  The record core: the kind contract, its YAML store, entry IDs, schema and word-budget checks, and the generated index.
+│  ├─ instructions  Parse agent instruction files, resolve their references and render their fragments and generated frontmatter.
+│  ├─ records  The record core: the kind contract, its YAML store, entry IDs, schema and word-budget checks, and the generated index.
+│  └─ runtimes  Agent runtimes' hooks and runs: log each tool call with its duration, output size and dollar cost, and type and price recorded agent runs, loading only Node builtins and the model facts so hooks fire cheaply.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
@@ -48,9 +50,8 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
-│  ├─ agents*{claude* metalbrain}  Generate shared agent instructions, skills and contributed rule files.
-│  │  ├─ claude*  Configure Claude instructions, settings and hooks.
-│  │  └─ metalbrain  Log each agent tool call with its duration, output size and dollar cost, loading only Node builtins and the model facts so hooks fire cheaply.
+│  ├─ agents*{claude*}  Generate shared agent instructions, skills and contributed rule files.
+│  │  └─ claude*  Configure Claude instructions, settings and hooks.
 │  ├─ changesets*  Configure release versioning and changelogs.
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
 │  │  └─ roles*  Role presets carrying ESLint rules, loadable without ESLint.

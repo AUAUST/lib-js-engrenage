@@ -1,4 +1,4 @@
-import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
+import type { AgentModelUsage } from "#metalbrain/runtimes/index";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 
 /**

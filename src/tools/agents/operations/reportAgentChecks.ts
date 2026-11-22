@@ -1,7 +1,9 @@
+import {
+  formatAgentCheck,
+  type AgentCheckFinding,
+} from "#metalbrain/runtimes/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
-import { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 import type { LoadedConfig } from "#project/config/index";
-import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 
 const levels = {
   "conflicting": "warn",

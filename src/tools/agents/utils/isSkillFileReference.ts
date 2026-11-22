@@ -1,7 +1,7 @@
 import { posix } from "node:path";
 
+import { isSupportingReference } from "#metalbrain/instructions/index";
 import { metalbrain, sharedFilesKind } from "#tools/agents/constants";
-import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
 
 /**
  * Whether `reference` names a file sync installs beside the skill of

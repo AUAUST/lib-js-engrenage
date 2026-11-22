@@ -1,6 +1,6 @@
 import { hookProgram, hookProgramSource, pnpmWorkspaceFile } from "#constants";
 import { gitDirectory } from "#tools/git/constants";
-import type { HookProgram } from "#tools/agents/types/HookProgram";
+import type { HookProgram } from "#metalbrain/runtimes/index";
 
 const defaultProgram = {
   name: hookProgram,

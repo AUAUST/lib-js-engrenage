@@ -14,18 +14,18 @@ import {
 
 import { isArray, isString } from "@auaust/toolkit";
 
-import { fastTier, standardTier, unknownModel } from "#tools/agents/constants";
 import {
+  findCommandFamily,
   findModelFact,
   findPriceTier,
   readModelFacts,
+  type AgentCall,
+  type AgentCompaction,
+  type AgentToolResult,
+  type AgentTranscript,
   type ModelFacts,
-} from "#tools/agents/metalbrain/index";
-import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
-import type { AgentCall } from "#tools/agents/types/AgentCall";
-import type { AgentCompaction } from "#tools/agents/types/AgentCompaction";
-import type { AgentToolResult } from "#tools/agents/types/AgentToolResult";
-import type { AgentTranscript } from "#tools/agents/types/AgentTranscript";
+} from "#metalbrain/runtimes/index";
+import { fastTier, standardTier, unknownModel } from "#tools/agents/constants";
 import type { File } from "#types/File";
 
 const textBlockSchema = looseObject({

@@ -16,11 +16,13 @@ import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
+import {
+  parseInstruction,
+  type FragmentRenderer,
+} from "#metalbrain/instructions/index";
 import { metalbrain } from "#tools/agents/constants";
 import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
-import { parseInstruction } from "#tools/agents/operations/parseInstruction";
 import type { Extension } from "#project/config/index";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 type InstructionKind = "rules" | "sections" | "skills";
 

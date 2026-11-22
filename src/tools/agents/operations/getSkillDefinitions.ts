@@ -3,8 +3,8 @@ import { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 import { skillFileName } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
+import type { FragmentRenderer } from "#metalbrain/instructions/index";
 import type { Extension } from "#project/config/index";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 import type { Directory } from "#types/Directory";
 
 export async function getSkillDefinitions(config: {

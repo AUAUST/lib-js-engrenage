@@ -1,7 +1,7 @@
 import { object, string } from "valibot";
 
+import { denyToolUse } from "#metalbrain/runtimes/index";
 import {
-  denyToolUse,
   measureGithubCommand,
   reportBudgetFindings,
   resolveHookDirectory,

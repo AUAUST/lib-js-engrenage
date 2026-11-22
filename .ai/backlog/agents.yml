@@ -15,7 +15,7 @@ entries:
   - id: 261122-cdec
     title: Sync accepts a skill naming its supporting file by bare name
     sites:
-      - src/tools/agents/utils/createSkillFileFiller.ts:5
+      - src/metalbrain/instructions/utils/createSkillFileFiller.ts:5
     why: a bare `consultant.md` outside a `<!-- @skill-file -->` block escapes the path sync renders and validates; `data/metalbrain/skills/planning.md` Modes table still does.
     want: sync fails on a supporting file's name outside a `@skill-file` block of its skill.
   - id: 261122-f689
@@ -52,7 +52,7 @@ entries:
     title: The hook directory is resolved twice, in shell and in Node
     sites:
       - src/tools/agents/utils/createHookCommand.ts:4
-      - src/tools/agents/utils/resolveHookDirectory.ts:5
+      - src/metalbrain/runtimes/utils/resolveHookDirectory.ts:5
     why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
     want: the config lookup skipping dependencies, read by both.
   - id: 261122-fc25
@@ -158,7 +158,7 @@ entries:
   - id: 261122-db71
     title: The budget hook opens a window on every caller message
     sites:
-      - src/tools/agents/metalbrain/operations/checkBudget.ts:81
+      - src/metalbrain/runtimes/operations/checkBudget.ts:81
     why: "#809 S.40: only a caller message holding a new `Budget:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
     want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
   - id: 261122-e4e9

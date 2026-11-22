@@ -4,7 +4,7 @@ import {
   checkBudget,
   isBudgetLevel,
   parseToolPayload,
-} from "#tools/agents/metalbrain/index";
+} from "#metalbrain/runtimes/index";
 
 export default async function ({ level }: { level: string }): Promise<void> {
   if (!isBudgetLevel(level)) {

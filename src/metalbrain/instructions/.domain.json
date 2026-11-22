@@ -1,0 +1,3 @@
+{
+  "purpose": "Parse agent instruction files, resolve their references and render their fragments and generated frontmatter."
+}

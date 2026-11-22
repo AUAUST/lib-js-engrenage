@@ -4,10 +4,9 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage, hookProgram } from "#constants";
+import { statsDirectory } from "#metalbrain/runtimes/constants";
 import { claudeShellVariable } from "#tools/agents/claude/constants";
-import { statsDirectory } from "#tools/agents/metalbrain/constants";
-import type { Agent } from "#tools/agents/types/Agent";
-import type { AgentTokens } from "#tools/agents/types/AgentTokens";
+import type { Agent, AgentTokens } from "#metalbrain/runtimes/index";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -200,7 +199,7 @@ export const defaultInstructionFiles = freeze([
 
 export const tableCellWords = 25;
 
-export { mainAgent } from "#tools/agents/metalbrain/constants";
+export { mainAgent } from "#metalbrain/runtimes/constants";
 
 export const agentRunExtensions = freeze({
   recorded: ".json",

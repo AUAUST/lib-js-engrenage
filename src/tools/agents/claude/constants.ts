@@ -1,11 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { hookProgram } from "#constants";
-import { stateDirectory } from "#project/config/constants";
 import {
   metalbrainProgram,
   metalbrainProgramSource,
-} from "#tools/agents/metalbrain/constants";
+} from "#metalbrain/runtimes/constants";
+import { stateDirectory } from "#project/config/constants";
 import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

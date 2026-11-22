@@ -4,16 +4,16 @@ import {
   resolveWithin,
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
-import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
 import {
   budgetExtension,
   parseBudgetState,
-} from "#tools/agents/metalbrain/index";
+  type AgentRunBudget,
+} from "#metalbrain/runtimes/index";
+import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
 import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
-import type { AgentRunBudget } from "#tools/agents/types/AgentRunBudget";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

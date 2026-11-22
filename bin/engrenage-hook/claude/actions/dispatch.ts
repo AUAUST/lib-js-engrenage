@@ -1,8 +1,8 @@
 import { object, optional, string } from "valibot";
 
+import { denyToolUse } from "#metalbrain/runtimes/index";
 import {
   checkAgentDispatch,
-  denyToolUse,
   resolveHookDirectory,
   validateHookPayload,
 } from "#tools/agents/index";

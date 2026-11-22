@@ -18,12 +18,12 @@ import {
 import { readTextFile } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { budgetLevels } from "#metalbrain/runtimes/index";
 import {
   agentOutcomes,
   standardTier,
   unknownModel,
 } from "#tools/agents/constants";
-import { budgetLevels } from "#tools/agents/metalbrain/index";
 import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { File } from "#types/File";
 

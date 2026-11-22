@@ -1,7 +1,7 @@
 import { syncBlocks } from "#foundation/blocks/index";
 import { markdownBlocks } from "#tools/agents/constants";
 import { filterConditionalBlocks } from "#tools/agents/utils/filterConditionalBlocks";
-import type { FragmentConditions } from "#tools/agents/types/FragmentConditions";
+import type { FragmentConditions } from "#metalbrain/instructions/index";
 import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 

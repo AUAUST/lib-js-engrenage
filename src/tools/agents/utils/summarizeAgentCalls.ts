@@ -1,14 +1,16 @@
 import { max } from "@auaust/toolkit/math";
 
-import type { AgentCacheLoss } from "#tools/agents/types/AgentCacheLoss";
-import type { AgentCall } from "#tools/agents/types/AgentCall";
-import type { AgentCallGaps } from "#tools/agents/types/AgentCallGaps";
-import type { AgentLargestResult } from "#tools/agents/types/AgentLargestResult";
-import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
-import type { AgentResultTotals } from "#tools/agents/types/AgentResultTotals";
-import type { AgentTokens } from "#tools/agents/types/AgentTokens";
-import type { AgentTranscript } from "#tools/agents/types/AgentTranscript";
-import type { AgentUsage } from "#tools/agents/types/AgentUsage";
+import type {
+  AgentCacheLoss,
+  AgentCall,
+  AgentCallGaps,
+  AgentLargestResult,
+  AgentModelUsage,
+  AgentResultTotals,
+  AgentTokens,
+  AgentTranscript,
+  AgentUsage,
+} from "#metalbrain/runtimes/index";
 
 const largestCount = 5;
 

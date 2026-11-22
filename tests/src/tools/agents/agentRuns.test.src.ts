@@ -2,15 +2,15 @@ import { mkdir, writeFile } from "node:fs/promises";
 
 import { expect, test } from "vitest";
 
+import { findModelFact, readModelFacts } from "#metalbrain/runtimes/index";
+import { findCommandFamily } from "#metalbrain/runtimes/utils/findCommandFamily";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
   readClaudeTranscript,
   recordClaudeRun,
 } from "#tools/agents/claude/index";
-import { findModelFact, readModelFacts } from "#tools/agents/metalbrain/index";
 import { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
-import { findCommandFamily } from "#tools/agents/utils/findCommandFamily";
 import { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
 import { formatAgentOutcomes } from "#tools/agents/utils/formatAgentOutcomes";
 import { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";

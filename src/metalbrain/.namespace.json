@@ -1,4 +1,4 @@
 {
-  "purpose": "The agent layer the `metalbrain` commands serve: agent records and their kinds.",
-  "layers": ["records", "*"]
+  "purpose": "The agent layer the `metalbrain` commands serve: agent records and their kinds, instruction files and runtime hooks.",
+  "layers": ["records", "*", "instructions", "runtimes"]
 }

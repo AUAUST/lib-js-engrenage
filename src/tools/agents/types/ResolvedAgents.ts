@@ -1,4 +1,4 @@
-import type { Agent } from "#tools/agents/types/Agent";
+import type { Agent } from "#metalbrain/runtimes/index";
 import type { Budgets } from "#tools/agents/types/Budgets";
 import type { Gate } from "#tools/agents/types/Gate";
 import type { SubagentCacheTtl } from "#tools/agents/types/SubagentCacheTtl";

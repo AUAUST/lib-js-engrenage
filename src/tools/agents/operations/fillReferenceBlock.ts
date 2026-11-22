@@ -1,12 +1,14 @@
 import { readFile } from "node:fs/promises";
 
+import {
+  parseInstruction,
+  resolveAgentReference,
+} from "#metalbrain/instructions/index";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

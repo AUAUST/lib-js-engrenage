@@ -10,7 +10,7 @@ import {
 } from "#tools/agents/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
-import type { GeneratedRule } from "#tools/agents/ports/GeneratedRule";
+import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { File } from "#types/File";
 
 function createFragment({ directives }: GeneratedRule): string {

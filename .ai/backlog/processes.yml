@@ -5,7 +5,7 @@ entries:
     sites:
       - src/foundation/processes/operations/resolveBinary.ts:23
       - src/tools/changesets/setup/syncChangesetConfig.ts:16
-      - src/tools/agents/operations/resolveAgentReference.ts:25
+      - src/metalbrain/instructions/operations/resolveAgentReference.ts:25
       - src/tools/prettier/operations/loadPrettier.ts:17
       - src/project/tsconfig/operations/createTsconfig.ts:75
     why: Node has no promise-based module resolution; Prettier loads through `require`; the TypeScript config parser probes each `extends` level before the real parse.

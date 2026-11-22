@@ -1,9 +1,11 @@
-import { formatAgentCost } from "#tools/agents/utils/formatAgentCost";
+import {
+  formatAgentCost,
+  priceAgentUsage,
+  type ModelFacts,
+} from "#metalbrain/runtimes/index";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import { formatMarkdownTable } from "#tools/agents/utils/formatMarkdownTable";
-import { priceAgentUsage } from "#tools/agents/utils/priceAgentUsage";
 import { weighAgentUsage } from "#tools/agents/utils/weighAgentUsage";
-import type { ModelFacts } from "#tools/agents/metalbrain/index";
 import type { AgentGroupEntry } from "#tools/agents/types/AgentGroupEntry";
 
 export function formatAgentGroups(

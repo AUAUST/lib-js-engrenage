@@ -1,5 +1,5 @@
 import { listInstructionMarkers } from "#tools/agents/utils/listInstructionMarkers";
-import type { FragmentConditions } from "#tools/agents/types/FragmentConditions";
+import type { FragmentConditions } from "#metalbrain/instructions/index";
 
 type Marker = ReturnType<typeof listInstructionMarkers>[number];
 

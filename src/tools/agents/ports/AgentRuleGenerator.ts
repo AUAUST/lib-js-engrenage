@@ -1,7 +1,7 @@
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Lazy } from "#foundation/modules/index";
+import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { LoadedConfig } from "#project/config/index";
-import type { GeneratedRule } from "#tools/agents/ports/GeneratedRule";
 import type { Directory } from "#types/Directory";
 
 /**

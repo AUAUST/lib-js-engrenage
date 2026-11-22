@@ -1,6 +1,6 @@
 import { text } from "node:stream/consumers";
 
-import { logToolCall, parseToolPayload } from "#tools/agents/metalbrain/index";
+import { logToolCall, parseToolPayload } from "#metalbrain/runtimes/index";
 
 export default async function (): Promise<void> {
   const time = Date.now();

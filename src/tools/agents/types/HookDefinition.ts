@@ -1,5 +1,5 @@
+import type { HookProgram } from "#metalbrain/runtimes/index";
 import type { HookEvent } from "#tools/agents/types/HookEvent";
-import type { HookProgram } from "#tools/agents/types/HookProgram";
 
 /**
  * A command hook sync writes into an agent runtime's hook settings, running the

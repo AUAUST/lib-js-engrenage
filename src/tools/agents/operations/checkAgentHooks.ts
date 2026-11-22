@@ -8,8 +8,7 @@ import {
 } from "#tools/agents/claude/constants";
 import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Agent } from "#tools/agents/types/Agent";
-import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
+import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";
 
 // @debt duplicates the hooks schema of syncHooks
 const hooksSchema = optional(

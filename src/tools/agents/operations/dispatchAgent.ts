@@ -1,9 +1,9 @@
 import { loadLazy } from "#foundation/modules/index";
 import { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
 import { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
+import type { AgentReport } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { AgentDispatch } from "#tools/agents/types/AgentDispatch";
-import type { AgentReport } from "#tools/agents/types/AgentReport";
 
 /**
  * Runs an agent headless in another checkout through the client of the runtime

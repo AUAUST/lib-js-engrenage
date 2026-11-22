@@ -2,6 +2,10 @@ import { posix } from "node:path";
 
 import { engrenage } from "#constants";
 import {
+  isSupportingReference,
+  listFormerReferences,
+} from "#metalbrain/instructions/index";
+import {
   formerCodexFiles,
   metalbrain,
   skillFileName,
@@ -9,8 +13,6 @@ import {
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { isSkillFileReference } from "#tools/agents/utils/isSkillFileReference";
-import { isSupportingReference } from "#tools/agents/utils/isSupportingReference";
-import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
 import { listReferences } from "#tools/agents/utils/listReferences";
 import { relocateInstructionReference } from "#tools/agents/utils/relocateInstructionReference";
 import type { Filesystem } from "#foundation/filesystem/index";

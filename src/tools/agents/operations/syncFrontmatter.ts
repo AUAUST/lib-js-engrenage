@@ -5,9 +5,11 @@ import { isMap, isScalar, parseDocument, stringify, visit } from "yaml";
 import { isPlainObject } from "@auaust/toolkit";
 import { keys } from "@auaust/toolkit/object";
 
+import {
+  parseInstruction,
+  type GeneratedFrontmatter,
+} from "#metalbrain/instructions/index";
 import { preserveDirective } from "#tools/agents/constants";
-import { parseInstruction } from "#tools/agents/operations/parseInstruction";
-import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { File } from "#types/File";
 
 function readPreserved(comments: readonly string[]): Set<string> {

@@ -4,8 +4,8 @@ import { attributionRules } from "#tools/agents/constants";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { FragmentRenderer } from "#metalbrain/instructions/index";
 import type { Extension } from "#project/config/index";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 export async function getMissingRuleTemplates({
   filesystem,

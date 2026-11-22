@@ -1,4 +1,5 @@
-export { resolveClaudeAgentTranscript } from "#tools/agents/claude/utils/resolveClaudeAgentTranscript";
+// @debt re-exports a name moved to `metalbrain/runtimes` so `tools/agents` keeps it; its consumers should import it from there
+export { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/index";
 
 // @barrel setup
 export { checkWordBudgets } from "#tools/agents/claude/setup/checkWordBudgets";

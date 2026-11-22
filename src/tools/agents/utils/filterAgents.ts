@@ -1,6 +1,6 @@
 import { includes } from "@auaust/toolkit/array";
 
-import type { Agent } from "#tools/agents/types/Agent";
+import type { Agent } from "#metalbrain/runtimes/index";
 
 // @debt narrowing a contributed name to `Agent` holds only while every contribution to `agents.runtimes` augments `Engrenage.AgentRuntimes`
 export function filterAgents(

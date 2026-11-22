@@ -1,7 +1,8 @@
 import { object, string } from "valibot";
 
 import { ShellSyntaxError } from "#foundation/shell/index";
-import { denyToolUse, validateHookPayload } from "#tools/agents/index";
+import { denyToolUse } from "#metalbrain/runtimes/index";
+import { validateHookPayload } from "#tools/agents/index";
 import { findHookBypass } from "#tools/git/index";
 
 const payloadSchema = object({

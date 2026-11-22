@@ -1,5 +1,5 @@
+import { resolveHookDirectory } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { resolveHookDirectory } from "#tools/agents/utils/resolveHookDirectory";
 import { resolveMainWorktree } from "#tools/git/index";
 import type { Reporter } from "#foundation/reports/index";
 import type { Directory } from "#types/Directory";

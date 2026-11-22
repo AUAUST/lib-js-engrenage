@@ -1,4 +1,4 @@
-import { parseInstruction } from "#tools/agents/operations/parseInstruction";
+import { parseInstruction } from "#metalbrain/instructions/index";
 import { listInstructionMarkers } from "#tools/agents/utils/listInstructionMarkers";
 
 export function removeReferenceBlock(

@@ -1,3 +1,10 @@
+// @debt re-exports names moved to `metalbrain` so the `agents` entry and its consumers keep them; consumers should import them from their `metalbrain` domain
+export { resolveAgentReference } from "#metalbrain/instructions/index";
+export {
+  formatAgentCheck,
+  readModelFacts,
+  resolveHookDirectory,
+} from "#metalbrain/runtimes/index";
 export { claudeSessionVariable } from "#tools/agents/claude/constants";
 export {
   createClaudeSettingsStep,
@@ -10,14 +17,13 @@ export {
   resolveClaudeAgentTranscript,
 } from "#tools/agents/claude/index";
 export { agentShellVariables, mainAgent } from "#tools/agents/constants";
-export { readModelFacts } from "#tools/agents/metalbrain/index";
 export { filterAgents } from "#tools/agents/utils/filterAgents";
 export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 export { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
-export { formatAgentCheck } from "#tools/agents/utils/formatAgentCheck";
 export { formatAgentOutcomes } from "#tools/agents/utils/formatAgentOutcomes";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
-export { resolveHookDirectory } from "#tools/agents/utils/resolveHookDirectory";
+export type { GeneratedFrontmatter } from "#metalbrain/instructions/index";
+export type { Agent } from "#metalbrain/runtimes/index";
 
 // @barrel setup
 export { checkBacklog } from "#tools/agents/setup/checkBacklog";
@@ -45,7 +51,6 @@ export { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 export { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
@@ -70,7 +75,6 @@ export { measureGithubCommand } from "#tools/agents/operations/measureGithubComm
 export { migrateBacklogIndex } from "#tools/agents/operations/migrateBacklogIndex";
 export { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
-export { parseInstruction } from "#tools/agents/operations/parseInstruction";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
 export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
 export { readHookPayload } from "#tools/agents/operations/readHookPayload";
@@ -81,7 +85,6 @@ export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
 export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 export { reportMissingExtensionRules } from "#tools/agents/operations/reportMissingExtensionRules";
 export { reportSyncedAgentChecks } from "#tools/agents/operations/reportSyncedAgentChecks";
-export { resolveAgentReference } from "#tools/agents/operations/resolveAgentReference";
 export { resolveAgentStatsDirectory } from "#tools/agents/operations/resolveAgentStatsDirectory";
 export { startAgentRun } from "#tools/agents/operations/startAgentRun";
 export { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
@@ -96,7 +99,6 @@ export type * from "#tools/agents/ports/AgentDispatcher";
 export type * from "#tools/agents/ports/AgentFiller";
 export type * from "#tools/agents/ports/AgentRuleGenerator";
 export type * from "#tools/agents/ports/AgentRuntime";
-export type * from "#tools/agents/ports/GeneratedRule";
 // @end
 
 // @barrel config/schemas
@@ -107,44 +109,23 @@ export { skillSchema } from "#tools/agents/config/schemas/skillSchema";
 // @end
 
 // @barrel types
-export type * from "#tools/agents/types/Agent";
-export type * from "#tools/agents/types/AgentCacheLoss";
-export type * from "#tools/agents/types/AgentCall";
-export type * from "#tools/agents/types/AgentCallGaps";
-export type * from "#tools/agents/types/AgentCheckFinding";
-export type * from "#tools/agents/types/AgentCompaction";
 export type * from "#tools/agents/types/AgentDispatch";
 export type * from "#tools/agents/types/AgentGroupEntry";
-export type * from "#tools/agents/types/AgentLargestResult";
-export type * from "#tools/agents/types/AgentModelUsage";
 export type * from "#tools/agents/types/AgentOutcome";
-export type * from "#tools/agents/types/AgentPrice";
-export type * from "#tools/agents/types/AgentReport";
-export type * from "#tools/agents/types/AgentResultTotals";
 export type * from "#tools/agents/types/AgentRun";
-export type * from "#tools/agents/types/AgentRunBudget";
 export type * from "#tools/agents/types/AgentRunState";
 export type * from "#tools/agents/types/AgentSections";
 export type * from "#tools/agents/types/AgentsInput";
 export type * from "#tools/agents/types/AgentTask";
-export type * from "#tools/agents/types/AgentTokens";
-export type * from "#tools/agents/types/AgentToolResult";
-export type * from "#tools/agents/types/AgentTranscript";
-export type * from "#tools/agents/types/AgentUsage";
 export type * from "#tools/agents/types/BudgetFinding";
 export type * from "#tools/agents/types/BudgetKind";
 export type * from "#tools/agents/types/BudgetMode";
 export type * from "#tools/agents/types/Budgets";
 export type * from "#tools/agents/types/Effort";
-export type * from "#tools/agents/types/FragmentConditions";
-export type * from "#tools/agents/types/FragmentRenderer";
 export type * from "#tools/agents/types/Gate";
-export type * from "#tools/agents/types/GeneratedFrontmatter";
 export type * from "#tools/agents/types/HookDefinition";
 export type * from "#tools/agents/types/HookEvent";
-export type * from "#tools/agents/types/HookProgram";
 export type * from "#tools/agents/types/ResolvedAgents";
 export type * from "#tools/agents/types/SkillDefinition";
-export type * from "#tools/agents/types/SkillRendering";
 export type * from "#tools/agents/types/SubagentCacheTtl";
 // @end

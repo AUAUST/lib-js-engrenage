@@ -1,10 +1,12 @@
+import {
+  createSkillFileFiller,
+  type FragmentConditions,
+  type FragmentRenderer,
+} from "#metalbrain/instructions/index";
 import { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { createSkillFileFiller } from "#tools/agents/utils/createSkillFileFiller";
 import { renderFragment } from "#tools/agents/utils/renderFragment";
 import type { LoadedConfig } from "#project/config/index";
-import type { FragmentConditions } from "#tools/agents/types/FragmentConditions";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
 
 const renderers = new WeakMap<LoadedConfig, Promise<FragmentRenderer>>();
 

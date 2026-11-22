@@ -1,5 +1,5 @@
 import { tokenWeights } from "#tools/agents/constants";
-import type { AgentModelUsage } from "#tools/agents/types/AgentModelUsage";
+import type { AgentModelUsage } from "#metalbrain/runtimes/index";
 
 export function weighAgentUsage(entries: readonly AgentModelUsage[]): number {
   return entries.reduce((sum, { tokens }) => {

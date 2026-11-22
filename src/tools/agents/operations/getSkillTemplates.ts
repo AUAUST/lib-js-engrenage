@@ -12,10 +12,12 @@ import {
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
+import type {
+  FragmentRenderer,
+  GeneratedFrontmatter,
+} from "#metalbrain/instructions/index";
 import type { Extension } from "#project/config/index";
 import type { AgentRuntime } from "#tools/agents/ports/AgentRuntime";
-import type { FragmentRenderer } from "#tools/agents/types/FragmentRenderer";
-import type { GeneratedFrontmatter } from "#tools/agents/types/GeneratedFrontmatter";
 import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { Directory } from "#types/Directory";

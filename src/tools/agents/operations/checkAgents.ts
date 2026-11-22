@@ -15,9 +15,8 @@ import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensi
 import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
+import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { Agent } from "#tools/agents/types/Agent";
-import type { AgentCheckFinding } from "#tools/agents/types/AgentCheckFinding";
 
 // @debt matches each runtime's skills and agents directories by hand instead of reading them from its `agents.runtimes` contribution
 export async function checkAgents(
