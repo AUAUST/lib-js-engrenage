@@ -7,7 +7,6 @@ paths:
 
 # Backlog
 
-- Open only categories whose indexed scope owns the work.
-- Keep index links, entry numbering and entry references as `.ai/backlog/index.md` sets them.
+- Never write an entry heading or a category's index link by hand: `.ai/backlog/index.md` names the commands adding them.
 
 <!-- @end -->

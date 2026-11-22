@@ -150,7 +150,7 @@ Shared agent instructions, skills and the backlog conventions.
   - eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules
 
-## 29. Backlog renumbering breaks IDs cited outside the backlog
+## 29. The backlog instructions name commands that do not exist yet
 
-- why: #809 cites entries by ID in its decisions and briefs; three removals this session moved the Codex entry from agents.34 to agents.31, leaving S.25 and live briefs pointing at other entries.
-- want: stable backlog IDs (no renumbering, gaps allowed), or briefs and issues citing entries by title.
+- why: stable IDs decided: the instructions now create categories with `pnpm metalbrain backlog create <category> "<purpose>"` (indexing its purpose) and entries with `pnpm metalbrain backlog add <category> "<title>"`; IDs are a day plus a hash, never renumbered.
+- want: both commands; `summarizeAgentTask.ts` `backlogPattern` and the `backlog-sites` check accepting the new IDs; existing entries migrated.

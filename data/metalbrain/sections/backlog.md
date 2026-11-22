@@ -8,7 +8,7 @@ order: 45
 
 ## Backlog
 
-Record out-of-scope findings and user-deferred work in the shared backlog: questions, bugs, tasks and improvements. Start with `.ai/backlog/index.md` and follow its category, entry and numbering instructions.
+Record out-of-scope findings and user-deferred work in the shared backlog: questions, bugs, tasks and improvements. Start with `.ai/backlog/index.md` and follow its category and entry instructions.
 
 A finding outside your task that no agent record holds, met while working: a likely or proven bug, as the agent-records rule tells it from debt, or a gap, task or question:
 

@@ -12,7 +12,7 @@ Rules for each agent you dispatch: its brief lines, its budget stop and the find
 
 ## Backlog
 
-- Brief an agent dispatched to work on backlog entries with one `Backlog: <category>.<n>` line per entry, right after its `Issue:` or `Draft:` line when it has one, otherwise first: run records attribute the run to each entry from these lines.
+- Brief an agent dispatched to work on backlog entries with one `Backlog: <entry ID>` line per entry, right after its `Issue:` or `Draft:` line when it has one, otherwise first: run records attribute the run to each entry from these lines.
 - A finding an agent you dispatched names in its report, as the Backlog section defines one: a backlog entry unless the backlog holds it, once that agent's work is committed or dropped, or at once when it changed no file.
 
 <!-- @end -->
