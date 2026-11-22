@@ -121,29 +121,13 @@ entries:
     want:
       - eslint-comments description, `consistent-type-definitions` undecided
       - "mutable-list aliases; allowed comment kinds: custom lint rules"
-  - id: 261122-8926
-    title: No agent record holds required work left outside a pass
-    why: friction and discarded logs hold costs and rejected options, not follow-ups such as instructions naming a command's old shape (#815); such work is lost unless an agent opens a backlog entry.
-    want: 'a "todo" record (subject, what must be done, why it was left), written as found through a metalbrain command any agent may run, read-only ones included (user, 2026-11-22); entries leave once an issue, entry or change takes them up. Related: 261122-f4f4.'
-    done: the agent-records rule defines it and its command exists.
   - id: 261122-5911
     title: Instruction changes a plan needs are written one by one, or not at all
     why: only a writer edits instructions (87328dd4); a walk whose leaves need instruction edits sets them aside or stalls on each, and separate writer passes over one subject drift
-    want: workers append each needed instruction change to the todo ledger (261122-8926); at a boundary (segment end, walk end) the orchestrator dispatches one writer over the lot
+    want: workers append each needed instruction change as a pending record (#825); at a boundary (segment end, walk end) the orchestrator dispatches one writer over the lot
     done: walking and shape define the flush boundary and the writer brief it sends
-  - id: 261122-f4f4
-    title: Agent records are hand-edited Markdown files
-    why: friction and discarded logs need the Write permission read-only agents lack, cost a file read before each append, and resist stats
-    want:
-      - every record (friction, discarded, todo, others) written and listed through a metalbrain command, stored as YAML like the backlog, so any agent records regardless of permission and stats group by keys
-      - the agent-records rule naming the commands instead of file forms
-  - id: 261122-c050
-    title: Agents edit backlog files by hand for every operation but create and add
-    why: "closing, moving, updating, searching and listing mean reading and editing the YAML files and Markdown index: read-only agents cannot, others pay a file read each time"
-    want: "metalbrain backlog subcommands for each operation the conventions name: list categories, search by keyword, show, update, move, close; closing a category's last entry deletes its file and index line, the category list moving from index.md to YAML the command owns"
-    done: "no agent instruction asks to read or edit .ai/backlog files. Related: 261122-f4f4."
   - id: 261122-8b3b
     title: Instruction composition lives in Markdown markers and fillers reading the whole config
     why: about 110 markers (@shared, @file, @extension, @skill-file, @agent-limits) compose 33k words; agents and skills share one source; fillers take LoadedConfig instead of facts; command usage in prose drifts from registration
-    want: "staged per the 2026-11-22 atomic-design review: record core, brief command over source adapters, commands owning their usage fragment, a facts manifest replacing LoadedConfig, then typed agent definitions over Markdown skill bodies; no own Document AST, no class inheritance of content"
-    done: a planner settles the stages after the record core lands, or the user drops the idea
+    want: "the 2026-11-22 atomic-design review's stages #811 leaves out: a brief command over source adapters, commands owning their usage fragment; no own Document AST, no class inheritance of content. Record core, facts and the instruction registry: #823, #826, #827."
+    done: a planner settles these stages once #823 lands, or the user drops them
