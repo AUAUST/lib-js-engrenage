@@ -1,14 +1,22 @@
 export {
   addRecord,
+  closeRecord,
   createRecordGroup,
+  findRecord,
   findRecordViolations,
   formatWordCapFinding,
   isRecordId,
+  listRecords,
+  moveRecord,
   readRecordGroups,
+  readRecordIndex,
+  searchRecords,
   throwViolations,
+  updateRecord,
   writeRecordIndex,
 } from "#metalbrain/records/index";
 export type {
+  FoundRecord,
   RecordKind,
   WordCapFinding,
   WordCapKind,

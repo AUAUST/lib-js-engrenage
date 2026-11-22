@@ -27,7 +27,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ reports  Report typed messages to the handler the running context chooses.
 │  └─ shell  Parse shell commands into the simple commands they run.
 ├─ metalbrain/  #metalbrain/…  records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: agent records and their kinds, instruction files and runtime hooks.
-│  ├─ backlog*  The backlog record kind: its declaration, its categories and the migration of legacy Markdown categories.
+│  ├─ backlog*  The backlog record kind: its declaration, its categories, how its entries list, and the migration of legacy Markdown categories.
 │  ├─ instructions*  Parse agent instruction files, resolve their references and render their fragments and generated frontmatter.
 │  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.

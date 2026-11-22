@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
@@ -13,6 +14,8 @@ import backlog from "#bin/metalbrain/backlog/index";
 
 const tools = "purpose: Tools.\nentries:\n  - id: 261122-3fa9\n    title: A claim\n    sites: [src/a.ts:3]\n    want: [one, two]\n";
 
+const docs = "purpose: Docs.\nentries:\n  - id: 261122-0b1c\n    title: Document the gate\n    why: [first, second]\n";
+
 function createProject() {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ type: "module", name: "project" }),
@@ -21,6 +24,8 @@ function createProject() {
     "src/a.ts": "",
     ".ai/backlog/index.md": "# Backlog\n",
     ".ai/backlog/tools.yml": tools,
+    ".ai/backlog/docs.yml": docs,
+    ".ai/backlog/index.yml": "tools:\n  purpose: Tools.\n  entries: [261122-3fa9]\ndocs:\n  purpose: Docs.\n  entries: [261122-0b1c]\n",
   });
 
   mockCwd(project.root);
@@ -40,6 +45,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
       cli: { purpose: "Command handling.", entries: [] },
+      docs: { purpose: "Docs.", entries: ["261122-0b1c"] },
       tools: { purpose: "Tools.", entries: ["261122-3fa9"] },
     });
 
@@ -76,6 +82,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     );
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      docs: { purpose: "Docs.", entries: ["261122-0b1c"] },
       tools: { purpose: "Tools.", entries: ["261122-3fa9", id] },
     });
   });
@@ -98,12 +105,87 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     expect(project.read(".ai/backlog/tools.yml")).toBe(tools);
   });
 
+  test("move keeps the ID in the new category and drops it from the old one", async () => {
+    const project = createProject();
+
+    await runCommand("backlog", backlog, "move", "261122-3fa9", "docs");
+
+    expect(parse(project.read(".ai/backlog/docs.yml"))).toEqual({
+      purpose: "Docs.",
+      entries: [
+        {
+          id: "261122-0b1c",
+          title: "Document the gate",
+          why: ["first", "second"],
+        },
+        {
+          id: "261122-3fa9",
+          title: "A claim",
+          sites: ["src/a.ts:3"],
+          want: ["one", "two"],
+        },
+      ],
+    });
+
+    expect(existsSync(project.resolve(".ai/backlog/tools.yml"))).toBe(false);
+
+    const { messages } = await runCommand("backlog", backlog, "list", "docs");
+
+    expect(messages.map(({ text }) => text)).toEqual([
+      "261122-0b1c docs: Document the gate",
+      "261122-3fa9 docs: A claim",
+    ]);
+  });
+
+  test("close of a category's last entry deletes the category and its index entry", async () => {
+    const project = createProject();
+
+    await runCommand("backlog", backlog, "close", "261122-0b1c");
+
+    expect(existsSync(project.resolve(".ai/backlog/docs.yml"))).toBe(false);
+
+    expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
+      tools: { purpose: "Tools.", entries: ["261122-3fa9"] },
+    });
+
+    const { messages } = await runCommand("backlog", backlog, "categories");
+
+    expect(messages.map(({ text }) => text)).toEqual(["tools (1): Tools."]);
+  });
+
+  test("update replaces and unsets fields, and search finds the entry by any field", async () => {
+    const project = createProject();
+
+    await runCommand(
+      "backlog",
+      backlog,
+      "update",
+      "261122-3fa9",
+      "--why",
+      "a reason",
+      "--unset",
+      "sites",
+    );
+
+    expect(project.read(".ai/backlog/tools.yml")).toBe(
+      "purpose: Tools.\nentries:\n  - id: 261122-3fa9\n    title: A claim\n    why: a reason\n    want: [one, two]\n",
+    );
+
+    const {
+      messages,
+    } = await runCommand("backlog", backlog, "search", "REASON");
+
+    expect(messages.map(({ text }) => text)).toEqual([
+      "261122-3fa9 tools: A claim",
+    ]);
+  });
+
   test("add into a missing category fails loudly, naming backlog create", () => {
     const project = createProject();
 
     const result = spawnSync(
       process.execPath,
-      [getExecutable("metalbrain"), "backlog", "add", "docs", "A claim"],
+      [getExecutable("metalbrain"), "backlog", "add", "cli", "A claim"],
       {
         cwd: project.root,
         encoding: "utf-8",
@@ -111,6 +193,6 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     );
 
     expect(result.status).toBe(1);
-    expect(result.stderr).toContain("pnpm metalbrain backlog create docs");
+    expect(result.stderr).toContain("pnpm metalbrain backlog create cli");
   });
 });

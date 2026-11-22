@@ -1,4 +1,4 @@
 {
   "specifier": "future/metalbrain/backlog",
-  "purpose": "The backlog record kind: its declaration, its categories and the migration of legacy Markdown categories."
+  "purpose": "The backlog record kind: its declaration, its categories, how its entries list, and the migration of legacy Markdown categories."
 }

@@ -14,7 +14,7 @@ bin/  (global roles: executable.ts *.ts)
    ├─ agents{rules skills}  Agent lifecycle and instruction commands.
    │  ├─ rules  Install shared agent rules.
    │  └─ skills  Install shared agent skills.
-   ├─ backlog  Create backlog categories and entries through the backlog file schema.
+   ├─ backlog  Create, find, update, move and close backlog categories and entries through the backlog file schema.
    ├─ github{labels}  Snapshot GitHub metadata and sync the current repository's labels.
    │  └─ labels  Sync the current repository's labels with the config.
    ├─ hook{claude}  Agent runtime hook commands of metalbrain.
