@@ -153,3 +153,7 @@
 - parseShell: caught `ShellSyntaxError` for zsh-only syntax — sh-syntax threw its own `ShSyntaxError` (code `SH_SYNTAX_LANGUAGE`); caught the `SyntaxError` base
 - Bash safety check: zsh `${(f)…}` loop with `cat` only, no removal — refused as unresolvable removal; reran as plain listing commands
 - shell-trap hook: unquoted `*` in `grep --include` and `ls` args — refused before running; quoted or dropped the glob
+- shell-trap hook: `echo ======` separator — refused as `=` command-path expansion; quoted it
+- shell-trap hook: unquoted `src/tools/eslint/*.ts` that matches files — refused as a no-match abort; passed the directory instead
+- commit gate verification: commit while another session edited `.ai/scratchpad.md` — gate refused "files changed while the gate verified them"; retried
+- shell-trap glob hook: `wc -w data/metalbrain/skills/*.md` and `grep … dir/*.md` with matching globs — refused as unquoted globs matching nothing; used `find -exec` and directory args

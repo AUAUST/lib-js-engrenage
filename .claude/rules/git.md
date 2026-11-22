@@ -44,7 +44,7 @@
 
 - Write to GitHub only in repositories owned by the AUAUST organization.
 - Pass `--repo <owner>/<repo>` to a `gh` command only when it targets another repository than the current one.
-- Read an issue with `gh issue view <n> --json title,body,state,labels,comments`; plain `--comments` fails on some repositories.
+- Read an issue with `gh issue view <n> --json title,body,state,labels,comments`, never plain `--comments`.
 - List an issue's sub-issues in order with `gh api repos/{owner}/{repo}/issues/<n>/sub_issues --jq '.[] | "\(.number) \(.state) \(.title)"'`.
 
 <!-- @end -->

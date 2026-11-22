@@ -76,7 +76,7 @@ A merger's improvement finding is accepted work. With a `Walk:` line in your bri
   | ---------- | ------------------------------------------------------------------------------------------ |
   | Fixed      | The cause, the sites the fix covers, the invariant now enforced, and the debt markers left |
   | Written up | The issue URL or backlog entry ID, ready to implement or needing planning                  |
-  | Blocked    | A stop record (Writing › Stop records) and the batched questions                           |
+  | Blocked    | `Blocked:`, then a stop record (Writing › Stop records) and the batched questions          |
 
 ## Commits
 

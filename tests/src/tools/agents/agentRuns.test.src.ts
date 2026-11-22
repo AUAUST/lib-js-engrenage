@@ -585,6 +585,13 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
     ),
   ).toEqual({ draft: "/x/.ai/issues/a.md", outcome: "scope" });
 
+  expect(
+    summarizeAgentTask(
+      { agent: "agent" },
+      { brief: "Budget: scoped", report: "Blocked: which owner?" },
+    ),
+  ).toEqual({ outcome: "blocked" });
+
   expect(summarizeAgentTask({ agent: "main" }, { report: "Done." })).toEqual(
     {},
   );

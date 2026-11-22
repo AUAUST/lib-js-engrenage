@@ -21,7 +21,6 @@ function readHeaders(brief: string): readonly string[] {
   return end === -1 ? lines : lines.slice(0, end);
 }
 
-// @debt blocked reports carry no opening marker, so they count as completions; a `Blocked:` opening would tell them apart
 function findOutcome(report: string | undefined): AgentOutcome {
   if (report === undefined) {
     return "unreported";

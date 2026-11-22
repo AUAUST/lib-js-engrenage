@@ -37,7 +37,7 @@ walk check ──► route the ready set (§Handling table)
   │
   ├─ leaf ──► dispatch (§Dispatching) ──► agent report
   │              ├─ blocked ──► consultant ──► resume the agent
-  │              ├─ deviation ──► consultant ──► rejected: resume the agent · asked: wait for the answer · accepted: completion
+  │              ├─ deviation or discovery ──► consultant ──► rejected: resume the agent · asked: wait for the answer · accepted: completion
   │              ├─ budget stop ──► review, handover commit ──► consultant splits the rest ──► walk check
   │              ├─ scope stop ──► consultant settles it ──► drop the leaf's work ──► walk check
   │              └─ completion
@@ -95,7 +95,7 @@ Read this file with it, for the brief lines, budget stops and the findings a rep
 - Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then one `Concurrent: <owner>/<repo>#<n>` line per leaf in flight sharing a contract with it, then its `Budget:` line. Never paste issue or plan content: the agent reads it itself.
 - Two leaves share a contract when their `walk check` `Model:` lines name a common section.
-- Send a completion naming a deviation to the consultant before integrating or reviewing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
+- Send a completion naming a deviation, or a discovery for sibling work or the plan, to the consultant before integrating or reviewing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
 - Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the issues it edited to new agents.
 - A leaf's budget stop, in place of `dispatching.md` › Budget levels' successor: integrate or review its work as a completion's, without resuming the agent for its findings, commit it as a handover commit (§Commit), then send the consultant the report with that review's leaf findings, to split what remains into sub-issues, and run `walk check`, which routes them.
@@ -166,7 +166,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 ## Consultant
 
 - Start the `consultant` subagent on first need, briefed with the plan number; resume it under §Resumed agents.
-- Call it only for a blocked report the issue's text does not answer, a scope or budget stop, plan findings, **Housekeeping** you stopped on, a deviation a report names, a plan your next commit closes, an issue whose **Questions** the user leaves open while issues ordered after it wait, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
+- Call it only for a blocked report the issue's text does not answer, a scope or budget stop, plan findings, **Housekeeping** you stopped on, a deviation or discovery a report names, a plan your next commit closes, an issue whose **Questions** the user leaves open while issues ordered after it wait, or an issue its row sends to it or no row fits. Resume a blocked agent with what it settles; answer nothing from code yourself.
 - Send it the issues the handling table routes to it, in tree order, adding a foreign issue's linked checkout path, which it reads by path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is, which bound its run. Dispatch the ready ones not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.

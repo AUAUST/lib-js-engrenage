@@ -201,6 +201,7 @@ export const reportMarkers = freeze([
   { outcome: "budget", marker: "Budget stop:" },
   { outcome: "scope", marker: "Scope stop:" },
   { outcome: "linked", marker: "Linked defect:" },
+  { outcome: "blocked", marker: "Blocked:" },
 ] as const);
 
 export const agentOutcomes = freeze([
@@ -208,5 +209,6 @@ export const agentOutcomes = freeze([
   "budget",
   "scope",
   "linked",
+  "blocked",
   "unreported",
 ] as const);

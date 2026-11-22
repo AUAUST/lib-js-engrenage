@@ -52,7 +52,7 @@ Read this file before your first review, in either mode: integration mode review
 
 ## Brief
 
-- **Integration**: the plan and segment; the leaf's issue; its checkout (its worktree, or the main checkout); its dispatch base, on a `Base: <sha>` line; the walked branch's `HEAD` commit; the commit range other leaves landed since the dispatch base (empty at K = 1 and when no other leaf landed); the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over.
+- **Integration**: the plan and segment; the leaf's issue; its checkout (its worktree, or the main checkout); its dispatch base, on a `Base: <sha>` line; the walked branch's `HEAD` commit; the leaf's `Concurrent:` lines; the commit range other leaves landed since the dispatch base (empty at K = 1 and when no other leaf landed); the actions the leaf's report leaves undone; for a new merger mid-segment, the previous one's carry-over.
 - **Review**: the plan and segment, or the plan whose close runs the review; the commit range landed since the previous review run, the carry-over of that run and of the integration runs since.
 
 - Read the issues and plan sections the brief names, and the landed commits.
@@ -73,6 +73,7 @@ In integration mode only, and only when the briefed landed range is not empty. W
 
 - Read the leaf's diff against its dispatch base, or the briefed `HEAD` commit after a rebase, and the code around each hunk; leave twin searches, jscpd and whole-file reads to the review run.
 - Review it by `review.md`, its siblings being the landed range and the leaves you integrated earlier in this run, and against release or project requirements a sibling meets.
+- Compare how the leaf and each landed `Concurrent:` leaf build the Model section they share: a divergence is a Siblings finding.
 - Close each light gap yourself as a mechanical fix, never a leaf finding: a missing changeset, with the bump and summary the changesets rule sets; a missing `@debt` marker or JSDoc the lint asks for; an action the instructions already decide that the leaf's report leaves undone, once you confirm its trigger holds. Report a light gap a permission refuses you as undone, never as a question.
 
 ## Review
