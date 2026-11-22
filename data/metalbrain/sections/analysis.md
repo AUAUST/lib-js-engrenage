@@ -18,18 +18,21 @@ To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 ### Budget levels
 
-A dispatch brief's `Budget: <level>` line sets how far its receiver digs; a main session has no level. No level licenses sprawling.
+A dispatch brief's `Budget: <level>` line sets how far its receiver digs; a main session has no level.
 
 | Level      | Expected depth                                                                                                      | Default for                                       |
 | ---------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
 | `scoped`   | A precise question or a contained change: the material the brief names and only what answering or applying it needs | Gatherers, analysers, mergers in integration mode |
 | `standard` | A task whose sources lead further: also the sources sharing its subject, and the leads they open within it          | Every other dispatched agent                      |
 
-A caller message holding a `Budget:` line, your brief included, opens a window at that level; any other message continues the current window. Dispatched, take your window's level, or your default without one, as a ceiling on the work since it opened, never a target: stop once the work is done, however little of the level it used. It bounds every rule asking you to go further. When the next step would read or change past it, stop, leaving the files you changed in a state whose checks pass, and open your report with `Budget stop:`, then report your progress in the stop-record shape (Writing › Stop records), without the record's steps.
+A caller message with a `Budget:` line, your brief included, opens a window at that level; others continue it. Dispatched, take your window's level, or your default without one, as a ceiling on the work since it opened, never a target: stop once the work is done. It bounds every rule asking you to go further. Reaching it, list what remains:
+
+- **Every item inside your task, or a check failure your changes cause, with its change decided.** Finish that list only.
+- **Otherwise, or on an off-list item, a fix its check rejects twice, or a second budget warning.** Stop with your changes' checks passing; open your report with `Budget stop:`, then your progress in the stop-record shape (Writing › Stop records) without its steps.
 
 <!-- @file .claude/skills/shape/dispatching.md -->
 
-Under Claude Code, before your first dispatch of an agent, and again after each compaction, read `.claude/skills/shape/dispatching.md`: its brief lines, its budget stop and the findings its report names.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: brief lines, budget stops, report findings.
 
 <!-- @end -->
 

@@ -129,8 +129,8 @@ entries:
     why: "`freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809)."
     want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
   - id: 261122-ccbe
-    title: The budget hook's stop path has never fired on a worker
-    why: landed 2026-11-20 (`6331641f3`); none of the 44 workers since crossed 120k (max 117.7k), while 11 of 99 before it did unstopped.
+    title: The budget hook's stop path is unproven on a worker
+    why: "landed 2026-11-20 (`6331641f3`); its one firing, the #813 worker, stopped near done with a tree the commit gate refused; the finish-or-stop rule now replaces that stop, untested live."
     want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.
   - id: 261122-fc96
     title: Self-hosted hooks go off while an agent refactors the checkout

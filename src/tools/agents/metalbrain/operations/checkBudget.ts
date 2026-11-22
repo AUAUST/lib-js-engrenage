@@ -109,8 +109,9 @@ async function writeState(file: File, state: BudgetState): Promise<void> {
  * measured call of its current contact, opened by its brief or its caller's
  * latest message, from the latest assistant message its transcript holds, against
  * the budget of its brief's `Budget:` level, or of `fallback`, and returns a
- * warning, logged in its budget state, each time the gain crosses the budget or
- * a further half of it within the contact.
+ * warning, logged in its budget state, each time the gain crosses the budget or a
+ * further half of it within the contact: the first letting it finish a remainder
+ * the budget-level rules allow, each later one telling it to stop.
  */
 // @debt runs synchronously on every subagent tool call, and a metalbrain hook takes ~167 ms per call; its share of agent wall time is unmeasured
 export function checkBudget(fallback: BudgetLevel): HookAction {
@@ -193,6 +194,10 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
       scanned: appended.end,
     });
 
-    return `Budget: ${gain} tokens gained past the ${level} budget of ${budget}. Finish the step under way, then stop and report as a budget stop.`;
+    const past = `Budget: ${gain} tokens gained past the ${level} budget of ${budget}.`;
+
+    return last === undefined
+      ? `${past} Finish the step under way, then list what remains: finish it only as Analysis › Budget levels allows, otherwise stop and report as a budget stop.`
+      : `${past} Warned again: finish the step under way, then stop and report as a budget stop.`;
   };
 }

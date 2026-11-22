@@ -128,6 +128,7 @@ test("a gain reaching the budget, then each further half of it, warns once and l
   const warning = await runCheck(project);
 
   expect(warning).toContain(`${budget} tokens gained past the standard budget`);
+  expect(warning).toContain("list what remains");
   expect(await runCheck(project)).toBeUndefined();
 
   project.write(
@@ -135,7 +136,10 @@ test("a gain reaching the budget, then each further half of it, warns once and l
     transcript + createLines(createMessage(2, 20_000 + 1.5 * budget)),
   );
 
-  expect(await runCheck(project)).toContain(`${1.5 * budget} tokens gained`);
+  const repeated = await runCheck(project);
+
+  expect(repeated).toContain(`${1.5 * budget} tokens gained`);
+  expect(repeated).toContain("Warned again");
 
   expect(JSON.parse(project.read(stateFile))).toMatchObject({
     warnings: [
