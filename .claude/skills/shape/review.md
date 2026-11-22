@@ -2,7 +2,7 @@
 
 # Review
 
-Reviewing a diff an agent returns against its specification: its issue or draft, otherwise its brief. Your skill sets what you read and where each finding goes.
+Reviewing a diff an agent returns, from its dispatch base to its current tree, its commits included, against its specification: its issue or draft, otherwise its brief. Your skill sets what you read and where each finding goes.
 
 | Criterion   | A finding when                                                                                                         |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------- |

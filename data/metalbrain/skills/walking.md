@@ -19,8 +19,7 @@ The walk request sets them:
 
 | Request words                                                 | Effect                                                            |
 | ------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `pool <K>` or `K = <K>`                                       | K leaves in flight; 2 when unset                                  |
-| `sequential` or `no pool`                                     | K = 1                                                             |
+| `pool <K>` or `K = <K>`                                       | K leaves in flight; 1 when unset                                  |
 | No depth, `depth 0` or `depth 1`                              | Plan depth 1: nested plans are set aside                          |
 | `depth <n>`; `and direct children` or `and child plans` for 2 | Plan depth n: the walked plan and the plans n − 1 levels below it |
 | `deep`, `deeply` or `traverse`                                | Plan depth `all`: every plan below the walked one                 |
@@ -112,7 +111,7 @@ Runs for each completed leaf at K > 1; otherwise §Review applies.
 
 1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger under §Resumed agents.
 2. When the merger reports leaf findings, resume the leaf's agent with all of them in one message, so its stop gate checks the tree the merger left; then check only that each finding is fixed or declined with a reason.
-3. When it reports plan findings, commit the leaf's work as a snap commit (§Commit) instead of the closing commit, then send the findings to the consultant, the leaf's issue set aside until it returns. Once it returns, resume each agent in flight with the changes it made to that agent's issue; when it drops the leaf's work, revert the snap commit with `git revert`, in the checkout holding it, as its own commit; then run `walk check`, which routes the leaf's issue, as the consultant left it, to a new agent.
+3. When it reports plan findings, commit the leaf's work as a snap commit (§Commit) instead of the closing commit, then send the findings to the consultant, the leaf's issue set aside until it returns. Once it returns, resume each agent in flight with the changes it made to that agent's issue; when it drops the leaf's work, revert the leaf's commits, snap commit included, with `git revert`, in the checkout holding them; then run `walk check`, which routes the leaf's issue, as the consultant left it, to a new agent.
 4. Leave conflicts to the merger's rebase; when it reports one needing design, resume the leaf's agent to rebase its worktree onto the walked branch, then resume the merger.
 
 ## Review
@@ -192,7 +191,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 ## Stops and restarts
 
 - Stopping with leaves not committed: have a merger in flight abort its rebase, then stop by `worktree-dispatch.md` › Stopping, on the hold branches §Holding a leaf names.
-- Starting a walk, before the first dispatch: list the `worker/issue-*`, `debugger/issue-*` and `debugger/review-*` branches, the git worktrees other than the main checkout, and a leaf's work in the main checkout: uncommitted changes a stop record ties to a leaf. Hold such main-checkout work by `worktree-dispatch.md` › Holding work, steps 1–2, on the hold branches §Holding a leaf names. Handle a branch for an issue `walk check` reports ready, a review branch, and the work just held as held leaves: report each by `worktree-dispatch.md` › Holding work, step 3, and wait as §Holding a leaf states. Report each worktree holding commits or changes beyond the walked branch with its path, as held work, and leave it in place.
+- Starting a walk, before the first dispatch: list the `worker/issue-*`, `debugger/issue-*` and `debugger/review-*` branches, the git worktrees other than the main checkout, and a leaf's work in the main checkout: commits and uncommitted changes a stop record ties to a leaf. Hold such main-checkout work by `worktree-dispatch.md` › Holding work, steps 1–2, on the hold branches §Holding a leaf names. Handle a branch for an issue `walk check` reports ready, a review branch, and the work just held as held leaves: report each by `worktree-dispatch.md` › Holding work, step 3, and wait as §Holding a leaf states. Report each worktree holding commits or changes beyond the walked branch with its path, as held work, and leave it in place.
 - Linked checkouts: `cross-repository.md` › Walk start extends the walk-start step, and › Holding and dropping covers holding a foreign leaf.
 
 ## Context

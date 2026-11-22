@@ -15,7 +15,7 @@ order: 10
 | A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                              |
 | Only records are uncommitted                                            | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff    |
 | A question on the work is pending                                       | Leave it uncommitted, with the suggested commit message in your report, unless Writing › Stop records applies |
-| Your work covers several tasks                                          | One commit per task                                                                                           |
+| Your work covers several tasks                                          | Keep tasks in separate commits                                                                                |
 | Staging                                                                 | Only your changes and the records, whoever wrote them, by path                                                |
 
 - **Records.** Uncommitted changes to `.ai/friction.md` and `.ai/discarded.md`, and files whose only uncommitted changes are debt markers. Never name their staging in a commit message or report. A task whose work is the records themselves commits like any other.
@@ -41,7 +41,7 @@ order: 10
 | `content` | Content a CMS stores in git                                  |
 | `assets`  | Images and other files the code uses, other than content     |
 | `files`   | Adding, renaming or moving files and directories             |
-| `snap`    | Checkpoint of unfinished work                                |
+| `snap`    | Unfinished work set aside                                    |
 | `config`  | Configuration and environment files, other than agents'      |
 | `debug`   | Temporary experiment, to be reverted                         |
 | `meta`    | Repository matters other than code: license, CI              |

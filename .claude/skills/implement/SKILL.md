@@ -53,8 +53,7 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 
 ## Commits
 
-- **As a subagent.** Leave your work uncommitted: your caller commits it.
-- **Invoked by the user in the main session.** Commit under the git rules each coherent state the work reaches with its checks passing, not only the finished work.
+Commit under the git rules each coherent state with its checks passing; one the gate refuses for failures not yours waits for the next. As a subagent: on your starting branch, `Towards #<n>` for an issue, never `Closes` or `snap`, leaving the rest uncommitted for your caller.
 
 ## Finishing
 

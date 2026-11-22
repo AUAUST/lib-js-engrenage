@@ -2,7 +2,7 @@
 
 The lifecycle of each agent your skill dispatches under this file to change files: dispatch, resume, commit, hold and drop. Your skill sets K, the number of such agents in flight at once, what each brief holds, how the work is reviewed and what each commit holds; `§…` names this file's sections.
 
-The working branch: the main checkout's branch your skill commits the agents' work to.
+The working branch: the main checkout's branch your skill commits the agents' work to. An agent's work: the commits it made since its dispatch base, a worker's checkpoints, and its uncommitted rest, reviewed as one diff from that base.
 
 ## Dispatch
 
@@ -17,7 +17,7 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 Each commit of an agent's work, made in the main checkout:
 
 1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3. When the main checkout holds uncommitted records (git rules › Commits), stash them by path before the cherry-picks and pop the stash after the apply: a cherry-pick refuses a dirty file it touches.
-2. Make the commit your skill sets.
+2. Make the commit your skill sets on the uncommitted rest, empty when none is left; the agent's own commits stay as they are.
 3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
 4. Once the commit exists, remove the agent's worktree, when it has one, and write the backlog entries its report leaves you (`dispatching.md` › Backlog).
 
@@ -35,10 +35,11 @@ Takes an agent's work off the working branch, keeping the new lines in `.ai/fric
 
 1. Copy the lines those logs gained since the agent's dispatch base, whoever wrote them, from its hold branch when held, otherwise from its checkout.
 2. Return the main checkout to the working branch as it stood before the agent:
-   - **Agent in the main checkout.** Switch back to the working branch when on another one, reset it to the agent's dispatch base, dropping the agent's commits, and discard the files the agent changed or added.
-   - **Agent in a worktree.** Undo the agent's cherry-picks and apply in the main checkout, when any, discarding only the files they changed; then remove the agent's worktree with `--force`, since it may hold uncommitted work.
+   - **Agent in the main checkout, held.** Switch back to the working branch and run `git reset --keep <dispatch base>`, with uncommitted records stashed by path around it: the hold branch keeps every commit it drops.
+   - **Agent in the main checkout, not held.** Discard the uncommitted files the agent changed or added, then, when it made commits, `git revert --no-edit <dispatch base>..HEAD`; never reset past a commit no other branch holds, which auto mode denies as destructive.
+   - **Agent in a worktree.** In the main checkout, discard the applied rest by path, then undo its cherry-picks, when any, with `git reset --keep` to the commit before them: its worktree keeps the originals. Then remove the agent's worktree with `--force`, since it may hold uncommitted work.
 3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit, and write the backlog entries the agent's report leaves you (`dispatching.md` › Backlog).
 
 ## Stopping
 
-Stopping with agents' work not committed (Writing › Stop records): stop each agent in flight, then hold each one's work under §Holding work, steps 1–2, instead of a `snap` commit on the working branch, which agents' work reaches only through §Committing work. The stop record names each hold branch and whether its agent had completed.
+Stopping with agents' work not committed (Writing › Stop records): stop each agent in flight, then hold each one's work under §Holding work, steps 1–2, instead of a `snap` commit on the working branch. The stop record names each hold branch and whether its agent had completed.

@@ -40,4 +40,4 @@ Leave the checkout on that branch, never its default branch.
 ## Holding and dropping
 
 - **Holding.** `worktree-dispatch.md` › Holding work, step 1 runs in the linked checkout.
-- **Dropping.** `worktree-dispatch.md` › Dropping work, with step 2 run in the linked checkout instead of the main checkout: switch back to the branch §Starting set when on another one, reset it to the agent's dispatch base and discard the files the agent changed or added. Step 3 appends to that checkout's logs, left uncommitted for its next commit.
+- **Dropping.** `worktree-dispatch.md` › Dropping work, with step 2's main-checkout cases run in the linked checkout, on the branch §Starting set. Step 3 appends to that checkout's logs, left uncommitted for its next commit.

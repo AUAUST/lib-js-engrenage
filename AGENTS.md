@@ -6,19 +6,17 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, including deleting prose a new check enforces, only with explicit user consent to that change, then write it:
+Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, deleting prose a new check enforces included, only with explicit user consent to that change; `pnpm engrenage sync` output aside:
 
-| Context                            | Write the change                                                                                            |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `writer` agent you can dispatch    | Dispatch it with the request as it came and the reach the consent covers; review its diff before committing |
-| No `writer` agent you can dispatch | Load the instruction-writing skill and follow it yourself                                                   |
+- **Main session.** Dispatch a `writer` agent with the request as it came and the reach the consent covers, and review its diff before committing; without one, load the instruction-writing skill and follow it yourself.
+- **Dispatched, not as `writer`.** Never, whatever your issue or brief states: report the change needed.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/writing.md -->
 
 ## Writing
 
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
-- In an issue or backlog entry asking for an agent instruction change: the concern, the behavior wanted and the cases it must cover; the instruction-writing skill settles the rule, its wording and placement.
+- An issue or backlog entry asking for an agent instruction change states the concern, the behavior wanted and the cases to cover, never the rule, its wording or placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State each idea exactly, with its reason in one clause, in the fewest words that keep it: fragments and keywords over sentences, no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
 

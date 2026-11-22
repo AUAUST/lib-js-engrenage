@@ -19,10 +19,6 @@ entries:
     why: it checks section presence and order only.
     want: a finding per **Steps** item naming no path or identifier in code spans, and per **Tests** case without an expected outcome.
     done: "obsolete once #809's spec leaves land; then a finding per leaf without **Done when** or a contract line per dependent."
-  - id: 261122-f2d2
-    title: Whether an issue's text counts as consent to change instructions is undecided
-    why: maintenance requires user consent, precedence lets issues carry maintainers' decisions; walked workers get issues editing `data/metalbrain/`, and the writer skill's "Commit nothing" clashes with their checkpoints.
-    want: "user decision; proposed: session or maintainer-issue consent; the fallback keeps the role's commit rules."
   - id: 261122-041c
     title: Skills have no rank against the project's own rules
     why: "`precedence.md` says a skill refines these instructions, but skills are shared text (rank 3) acting on project rules (rank 2)."
@@ -107,13 +103,6 @@ entries:
       - data/metalbrain/rules/issue-drafts.md:74
     why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` in `src/tools/agents/constants.ts` became 150 each in 0fd960a2; a project's configured budgets can differ from both.
     want: the rule rendering the configured values through an `agents.fillers` filler, as `agent-limits` does, also for the budgets rule.
-  - id: 261122-8336
-    title: Shape's per-pool K leaves a writer's checkout unsettled
-    sites:
-      - data/metalbrain/skills/shape.md:17
-      - data/metalbrain/shared/worktree-dispatch.md:10
-    why: worktree dispatch puts agents in the main checkout at K = 1; shape's writers pool has K = 1 beside implementers at 2, so a writer may edit the main checkout while worktree work is cherry-picked or reviewed gaps are closed there.
-    want: shape stating which checkout each pool's agents use.
   - id: 261122-8e75
     title: Handoffs and carry-overs travel as text an orchestrator rereads and repeats
     why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
