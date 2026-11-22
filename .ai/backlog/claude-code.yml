@@ -6,5 +6,5 @@ entries:
     want: refusals limited to git invocations; meanwhile a hook or the worktree instructions naming the accepted form first (writer deferred by the user, 2026-11-20).
   - id: 261122-6d86
     title: A message reaching a stopped subagent resumes it
-    why: "a SendMessage queued while a subagent ran, delivered after its last step, resumed it automatically; after a `Budget stop:` this breaks the dispatching rule never to resume a stopped agent (seen with the #809 step-3 writer, stopped by hand with TaskStop)."
-    want: the dispatcher never messages a running agent whose stop it must honour, or the hook refuses a resume after a budget stop.
+    why: "a SendMessage queued while a subagent ran, delivered after its last step, resumed it automatically; after a `Thoroughness stop:` this breaks the dispatching rule never to resume a stopped agent (seen with the #809 step-3 writer, stopped by hand with TaskStop)."
+    want: the dispatcher never messages a running agent whose stop it must honour, or the hook refuses a resume after a thoroughness stop.

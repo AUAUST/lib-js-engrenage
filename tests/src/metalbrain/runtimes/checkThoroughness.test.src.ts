@@ -3,9 +3,9 @@ import { existsSync } from "node:fs";
 import { expect, test } from "vitest";
 
 import {
-  checkBudget,
+  checkThoroughness,
   parseToolPayload,
-  readBudgets,
+  readThoroughnessLimits,
 } from "#metalbrain/runtimes/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -13,7 +13,7 @@ const session = "session-1";
 
 const agent = "a1";
 
-const stateFile = `.ai/stats/${session}/${agent}.budget.json`;
+const stateFile = `.ai/stats/${session}/${agent}.thoroughness.json`;
 
 const transcriptFile = `transcripts/${session}/subagents/agent-${agent}.jsonl`;
 
@@ -92,7 +92,7 @@ function createMetaPrompt(content: string, origin?: string): object {
 }
 
 function runCheck(project: ReturnType<typeof createTemporaryProject>) {
-  return checkBudget("standard")(
+  return checkThoroughness("standard")(
     parseToolPayload({
       session_id: session,
       transcript_path: project.resolve(`transcripts/${session}.jsonl`),
@@ -106,18 +106,18 @@ function runCheck(project: ReturnType<typeof createTemporaryProject>) {
   );
 }
 
-test("a gain reaching the budget, then each further half of it, warns once and logs it", async () => {
-  const { levels } = await readBudgets();
+test("a gain reaching the token limit, then each further half of it, warns once and logs it", async () => {
+  const { levels } = await readThoroughnessLimits();
 
-  const budget = levels.standard;
+  const limit = levels.standard;
 
-  const transcript = createTranscript("Do it.", 20_000 + budget);
+  const transcript = createTranscript("Do it.", 20_000 + limit);
 
   const project = createTemporaryProject({
     [transcriptFile]: transcript,
     [stateFile]: JSON.stringify({
       level: "standard",
-      budget,
+      limit,
       warnings: [],
       start: 20_000,
       opened: 0,
@@ -127,32 +127,35 @@ test("a gain reaching the budget, then each further half of it, warns once and l
 
   const warning = await runCheck(project);
 
-  expect(warning).toContain(`${budget} tokens gained past the standard budget`);
+  expect(warning).toContain(
+    `${limit} tokens gained past the standard token limit`,
+  );
+
   expect(warning).toContain("list what remains");
   expect(await runCheck(project)).toBeUndefined();
 
   project.write(
     transcriptFile,
-    transcript + createLines(createMessage(2, 20_000 + 1.5 * budget)),
+    transcript + createLines(createMessage(2, 20_000 + 1.5 * limit)),
   );
 
   const repeated = await runCheck(project);
 
-  expect(repeated).toContain(`${1.5 * budget} tokens gained`);
+  expect(repeated).toContain(`${1.5 * limit} tokens gained`);
   expect(repeated).toContain("Warned again");
 
   expect(JSON.parse(project.read(stateFile))).toMatchObject({
     warnings: [
-      { time: new Date(1000).toISOString(), gain: budget },
-      { time: new Date(1000).toISOString(), gain: 1.5 * budget },
+      { time: new Date(1000).toISOString(), gain: limit },
+      { time: new Date(1000).toISOString(), gain: 1.5 * limit },
     ],
   });
 });
 
 test("a caller's message opens a new contact, measured from its first call", async () => {
-  const { levels } = await readBudgets();
+  const { levels } = await readThoroughnessLimits();
 
-  const budget = levels.standard;
+  const limit = levels.standard;
 
   let transcript = createTranscript("Do it.", 5000);
 
@@ -160,15 +163,15 @@ test("a caller's message opens a new contact, measured from its first call", asy
 
   await runCheck(project);
 
-  transcript += createLines(createMessage(2, 5000 + budget));
+  transcript += createLines(createMessage(2, 5000 + limit));
 
   project.write(transcriptFile, transcript);
 
-  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
+  expect(await runCheck(project)).toContain(`${limit} tokens gained`);
 
   transcript += createLines([
     createMetaPrompt("The coordinator sent a message: go on.", "coordinator"),
-    ...createMessage(3, 6000 + budget),
+    ...createMessage(3, 6000 + limit),
   ]);
 
   project.write(transcriptFile, transcript);
@@ -177,22 +180,22 @@ test("a caller's message opens a new contact, measured from its first call", asy
 
   project.write(
     transcriptFile,
-    transcript + createLines(createMessage(4, 6000 + 2 * budget)),
+    transcript + createLines(createMessage(4, 6000 + 2 * limit)),
   );
 
-  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
+  expect(await runCheck(project)).toContain(`${limit} tokens gained`);
 
   expect(JSON.parse(project.read(stateFile))).toMatchObject({
-    warnings: [{ gain: budget }, { gain: budget }],
-    start: 6000 + budget,
+    warnings: [{ gain: limit }, { gain: limit }],
+    start: 6000 + limit,
     opened: 1,
   });
 });
 
 test("a harness reminder keeps the contact open", async () => {
-  const { levels } = await readBudgets();
+  const { levels } = await readThoroughnessLimits();
 
-  const budget = levels.standard;
+  const limit = levels.standard;
 
   const transcript = createTranscript("Do it.", 5000);
 
@@ -205,19 +208,19 @@ test("a harness reminder keeps the contact open", async () => {
     transcript +
       createLines([
         createMetaPrompt("<system-reminder>Hand back.</system-reminder>"),
-        ...createMessage(2, 5000 + budget),
+        ...createMessage(2, 5000 + limit),
       ]),
   );
 
-  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
+  expect(await runCheck(project)).toContain(`${limit} tokens gained`);
 });
 
-test("a first prompt's Budget: line sets the level over the default", async () => {
-  const { levels } = await readBudgets();
+test("a first prompt's Thoroughness: line sets the level over the default", async () => {
+  const { levels } = await readThoroughnessLimits();
 
   const project = createTemporaryProject({
     [transcriptFile]: createTranscript(
-      "Issue: x#1\nBudget: scoped\n\nGo.",
+      "Issue: x#1\nThoroughness: scoped\n\nGo.",
       5000,
     ),
   });
@@ -226,20 +229,20 @@ test("a first prompt's Budget: line sets the level over the default", async () =
 
   expect(JSON.parse(project.read(stateFile))).toEqual({
     level: "scoped",
-    budget: levels.scoped,
+    limit: levels.scoped,
     warnings: [],
     start: 5000,
     opened: 0,
     scanned: Buffer.byteLength(
-      createTranscript("Issue: x#1\nBudget: scoped\n\nGo.", 5000),
+      createTranscript("Issue: x#1\nThoroughness: scoped\n\nGo.", 5000),
     ),
   });
 });
 
-test("a Budget: level ending a prose line sets the level", async () => {
+test("a Thoroughness: level ending a prose line sets the level", async () => {
   const project = createTemporaryProject({
     [transcriptFile]: createTranscript(
-      "Fix it. Report the paths. Budget: scoped.",
+      "Fix it. Report the paths. Thoroughness: scoped.",
       5000,
     ),
   });
@@ -251,10 +254,10 @@ test("a Budget: level ending a prose line sets the level", async () => {
   });
 });
 
-test("quoted placeholders, Budget stop: and quoted levels yield to the brief's own line", async () => {
+test("quoted placeholders, Thoroughness stop: and quoted levels yield to the brief's own line", async () => {
   const project = createTemporaryProject({
     [transcriptFile]: createTranscript(
-      "Budget: scoped\n\nQuote `Budget: <level>` and `Budget stop:`; brief it `Budget: standard` later.",
+      "Thoroughness: scoped\n\nQuote `Thoroughness: <level>` and `Thoroughness stop:`; brief it `Thoroughness: standard` later.",
       5000,
     ),
   });
@@ -268,7 +271,7 @@ test("quoted placeholders, Budget stop: and quoted levels yield to the brief's o
 
 test("a transcript without an assistant message yet waits for one", async () => {
   const project = createTemporaryProject({
-    [transcriptFile]: createTranscript("Budget: scoped\n\nGo."),
+    [transcriptFile]: createTranscript("Thoroughness: scoped\n\nGo."),
   });
 
   expect(await runCheck(project)).toBeUndefined();

@@ -11,7 +11,7 @@ agent:
   description: Planner subagent, never for direct requests. A planning session starts one to deepen an item over one agent's worth or tied to a Model-section contract.
   model: opus
   effort: medium
-  budget: standard
+  thoroughness: standard
   tools:
     - Bash
     - Read

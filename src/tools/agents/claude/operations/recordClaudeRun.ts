@@ -5,10 +5,10 @@ import {
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import {
-  budgetExtension,
-  parseBudgetState,
+  parseThoroughnessState,
+  thoroughnessExtension,
   type AgentRun,
-  type AgentRunBudget,
+  type AgentRunThoroughness,
 } from "#metalbrain/runtimes/index";
 import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
@@ -17,11 +17,15 @@ import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-async function readRunBudget(
+async function readRunThoroughness(
   directory: Directory,
   { session, agent }: Pick<AgentRun, "session" | "agent">,
-): Promise<{ budget?: AgentRunBudget }> {
-  const path = resolveWithin(directory, session, `${agent}${budgetExtension}`);
+): Promise<{ thoroughness?: AgentRunThoroughness }> {
+  const path = resolveWithin(
+    directory,
+    session,
+    `${agent}${thoroughnessExtension}`,
+  );
 
   const content = await readTextFile(path);
 
@@ -29,17 +33,17 @@ async function readRunBudget(
     return {};
   }
 
-  // @debt a malformed budget file throws here and drops the whole run record; reporting it and recording the run without `budget` would lose only the budget columns
+  // @debt a malformed thoroughness state file throws here and drops the whole run record; reporting it and recording the run without `thoroughness` would lose only the thoroughness columns
   const {
     level,
-    budget,
+    limit,
     warnings,
-  } = parseBudgetState(parseJson(content, path));
+  } = parseThoroughnessState(parseJson(content, path));
 
   return {
-    budget: {
+    thoroughness: {
       level,
-      budget,
+      limit,
       warnings,
     },
   };
@@ -70,7 +74,7 @@ export async function recordClaudeRun(
           ...run,
           ...summarizeAgentCalls(read),
           ...summarizeAgentTask(run, read),
-          ...(await readRunBudget(directory, run)),
+          ...(await readRunThoroughness(directory, run)),
         },
         options,
       );

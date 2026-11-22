@@ -129,9 +129,9 @@ entries:
     why: "`freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809)."
     want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
   - id: 261122-ccbe
-    title: The budget hook's stop path is unproven on a worker
+    title: The thoroughness hook's stop path is unproven on a worker
     why: "landed 2026-11-20 (`6331641f3`); its one firing, the #813 worker, stopped near done with a tree the commit gate refused; the finish-or-stop rule now replaces that stop, untested live."
-    want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.
+    want: a fixture or replay run proving a worker past the threshold thoroughness-stops with a passing tree.
   - id: 261122-fc96
     title: Self-hosted hooks go off while an agent refactors the checkout
     sites:
@@ -156,10 +156,10 @@ entries:
     why: "#809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured."
     want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.
   - id: 261122-db71
-    title: The budget hook opens a window on every caller message
+    title: The thoroughness hook opens a window on every caller message
     sites:
-      - src/metalbrain/runtimes/operations/checkBudget.ts:81
-    why: "#809 S.40: only a caller message holding a new `Budget:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
+      - src/metalbrain/runtimes/operations/checkThoroughness.ts:81
+    why: "#809 S.40: only a caller message holding a new `Thoroughness:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
     want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
   - id: 261122-e4e9
     title: No check keeps instruction edits to the writer

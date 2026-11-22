@@ -2,32 +2,32 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 import {
-  budgetExtension,
   statsDirectory,
+  thoroughnessExtension,
 } from "#metalbrain/runtimes/constants";
 import { readAppendedLines } from "#metalbrain/runtimes/operations/readAppendedLines";
-import { readBudgets } from "#metalbrain/runtimes/operations/readBudgets";
 import { readFirstPrompt } from "#metalbrain/runtimes/operations/readFirstPrompt";
 import { readLatestContext } from "#metalbrain/runtimes/operations/readLatestContext";
-import { isBudgetLevel } from "#metalbrain/runtimes/utils/isBudgetLevel";
+import { readThoroughnessLimits } from "#metalbrain/runtimes/operations/readThoroughnessLimits";
 import { isMissingFile } from "#metalbrain/runtimes/utils/isMissingFile";
 import { isRecord } from "#metalbrain/runtimes/utils/isRecord";
-import { parseBudgetState } from "#metalbrain/runtimes/utils/parseBudgetState";
+import { isThoroughnessLevel } from "#metalbrain/runtimes/utils/isThoroughnessLevel";
+import { parseThoroughnessState } from "#metalbrain/runtimes/utils/parseThoroughnessState";
 import { parseTranscriptLine } from "#metalbrain/runtimes/utils/parseTranscriptLine";
 import { readPromptText } from "#metalbrain/runtimes/utils/readPromptText";
 import { resolveTranscript } from "#metalbrain/runtimes/utils/resolveTranscript";
-import type { BudgetLevel } from "#metalbrain/runtimes/types/BudgetLevel";
-import type { BudgetState } from "#metalbrain/runtimes/types/BudgetState";
 import type { HookAction } from "#metalbrain/runtimes/types/HookAction";
+import type { ThoroughnessLevel } from "#metalbrain/runtimes/types/ThoroughnessLevel";
+import type { ThoroughnessState } from "#metalbrain/runtimes/types/ThoroughnessState";
 import type { File } from "#types/File";
 
-const budgetLine = /^Budget:\s*(?<level>\w+)\s*$/gmv;
+const thoroughnessLine = /^Thoroughness:\s*(?<level>\w+)\s*$/gmv;
 
-const budgetMention = /\bBudget:\s*(?<level>\w+)\b/gv;
+const thoroughnessMention = /\bThoroughness:\s*(?<level>\w+)\b/gv;
 
-async function readState(file: File): Promise<BudgetState | undefined> {
+async function readState(file: File): Promise<ThoroughnessState | undefined> {
   try {
-    return parseBudgetState(JSON.parse(await readFile(file, "utf-8")));
+    return parseThoroughnessState(JSON.parse(await readFile(file, "utf-8")));
   } catch (error) {
     if (isMissingFile(error)) {
       return;
@@ -52,30 +52,30 @@ function findLastLevel(
 }
 
 /**
- * The level a brief names: the last known level on a `Budget:` line of its own,
- * otherwise the last one named anywhere, otherwise `fallback`.
+ * The level a brief names: the last known level on a `Thoroughness:` line of its
+ * own, otherwise the last one named anywhere, otherwise `fallback`.
  */
 async function readLevel(
   transcript: File,
   known: readonly string[],
-  fallback: BudgetLevel,
-): Promise<BudgetLevel> {
+  fallback: ThoroughnessLevel,
+): Promise<ThoroughnessLevel> {
   const prompt = (await readFirstPrompt(transcript)) ?? "";
 
   const level = (
-    findLastLevel(prompt, budgetLine, known) ??
-    findLastLevel(prompt, budgetMention, known)
+    findLastLevel(prompt, thoroughnessLine, known) ??
+    findLastLevel(prompt, thoroughnessMention, known)
   );
 
-  return isBudgetLevel(level) ? level : fallback;
+  return isThoroughnessLevel(level) ? level : fallback;
 }
 
 /**
- * The warnings a gain calls for: one on reaching the budget, then one at each
- * further half of it.
+ * The warnings a gain calls for: one on reaching the token limit, then one at
+ * each further half of it.
  */
-function countThresholds(gain: number, budget: number): number {
-  return gain < budget ? 0 : Math.floor((gain - budget) / (budget / 2)) + 1;
+function countThresholds(gain: number, limit: number): number {
+  return gain < limit ? 0 : Math.floor((gain - limit) / (limit / 2)) + 1;
 }
 
 // @debt reads Claude's transcript entries, whose format Claude does not document as a contract: a caller's message is a prompt not marked meta, or one marked meta with a `coordinator` origin
@@ -100,21 +100,21 @@ function hasCallerMessage(text: string): boolean {
   });
 }
 
-async function writeState(file: File, state: BudgetState): Promise<void> {
+async function writeState(file: File, state: ThoroughnessState): Promise<void> {
   await writeFile(file, `${JSON.stringify(state)}\n`);
 }
 
 /**
  * PreToolUse, for a subagent: measures the context it gained since the first
- * measured call of its current contact, opened by its brief or its caller's
- * latest message, from the latest assistant message its transcript holds, against
- * the budget of its brief's `Budget:` level, or of `fallback`, and returns a
- * warning, logged in its budget state, each time the gain crosses the budget or a
- * further half of it within the contact: the first letting it finish a remainder
- * the budget-level rules allow, each later one telling it to stop.
+ * measured call of its current contact, opened by its brief or its caller's latest
+ * message, from the latest assistant message its transcript holds, against the
+ * token limit of its brief's `Thoroughness:` level, or of `fallback`, and returns
+ * a thoroughness warning, logged in its state, each time the gain crosses the
+ * limit or a further half of it within the contact: the first letting it finish a
+ * remainder the thoroughness-level rules allow, each later one telling it to stop.
  */
 // @debt runs synchronously on every subagent tool call, and a metalbrain hook takes ~167 ms per call; its share of agent wall time is unmeasured
-export function checkBudget(fallback: BudgetLevel): HookAction {
+export function checkThoroughness(fallback: ThoroughnessLevel): HookAction {
   return async (payload, { root, time }) => {
     const { session, agent } = payload;
 
@@ -133,7 +133,7 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
 
     const directory = join(root, statsDirectory, session);
 
-    const file = join(directory, `${agent}${budgetExtension}`);
+    const file = join(directory, `${agent}${thoroughnessExtension}`);
 
     const stored = await readState(file);
 
@@ -144,7 +144,7 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
     }
 
     if (stored === undefined) {
-      const { levels } = await readBudgets();
+      const { levels } = await readThoroughnessLimits();
 
       const level = await readLevel(transcript, Object.keys(levels), fallback);
 
@@ -152,7 +152,7 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
 
       await writeState(file, {
         level,
-        budget: levels[level],
+        limit: levels[level],
         warnings: [],
         start: context,
         opened: 0,
@@ -162,7 +162,7 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
       return;
     }
 
-    const { level, budget, warnings, start, opened, scanned } = stored;
+    const { level, limit, warnings, start, opened, scanned } = stored;
 
     if (hasCallerMessage(appended.text)) {
       return void (await writeState(file, {
@@ -178,8 +178,8 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
     const last = warnings.slice(opened).at(-1);
 
     if (
-      countThresholds(gain, budget) <=
-      (last === undefined ? 0 : countThresholds(last.gain, budget))
+      countThresholds(gain, limit) <=
+      (last === undefined ? 0 : countThresholds(last.gain, limit))
     ) {
       if (appended.end !== scanned) {
         await writeState(file, { ...stored, scanned: appended.end });
@@ -194,10 +194,10 @@ export function checkBudget(fallback: BudgetLevel): HookAction {
       scanned: appended.end,
     });
 
-    const past = `Budget: ${gain} tokens gained past the ${level} budget of ${budget}.`;
+    const past = `Thoroughness warning: ${gain} tokens gained past the ${level} token limit of ${limit}.`;
 
     return last === undefined
-      ? `${past} Finish the step under way, then list what remains: finish it only as Analysis › Budget levels allows, otherwise stop and report as a budget stop.`
-      : `${past} Warned again: finish the step under way, then stop and report as a budget stop.`;
+      ? `${past} Finish the step under way, then list what remains: finish it only as Analysis › Thoroughness levels allows, otherwise stop and report as a thoroughness stop.`
+      : `${past} Warned again: finish the step under way, then stop and report as a thoroughness stop.`;
   };
 }

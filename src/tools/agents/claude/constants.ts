@@ -91,7 +91,7 @@ export const claudeStopHook = freeze({
   args: "claude Stop skill",
 } as const);
 
-export const claudeBudgetHookArgs = "hook claude budget --level";
+export const claudeThoroughnessHookArgs = "hook claude thoroughness --level";
 
 // @debt permission entries are add-only: one engrenage stops producing stays in consumers' settings until sync records what it wrote (#229, #105)
 export const claudePermissions = freeze({

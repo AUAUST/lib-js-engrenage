@@ -10,7 +10,7 @@ agent:
   description: Consultant subagent, never for direct requests. The walker starts it on first need and resumes it to settle what the walk raises against the plan and edit the issues it changes; a planning session starts one per Steps sweep.
   model: opus
   effort: medium
-  budget: standard
+  thoroughness: standard
   ceiling: 100000
   tools:
     - Bash

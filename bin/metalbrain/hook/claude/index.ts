@@ -1,8 +1,8 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import budget from "#bin/metalbrain/hook/claude/budget";
 import PostToolUse from "#bin/metalbrain/hook/claude/postToolUse";
 import PreToolUse from "#bin/metalbrain/hook/claude/preToolUse";
+import thoroughness from "#bin/metalbrain/hook/claude/thoroughness";
 
 export default defineGroup({
   configure(command) {
@@ -11,6 +11,6 @@ export default defineGroup({
   commands: {
     PreToolUse,
     PostToolUse,
-    budget,
+    thoroughness,
   },
 });

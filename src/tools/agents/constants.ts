@@ -91,7 +91,7 @@ export const defaultInstructionFiles = freeze([
 export const tableCellWords = 25;
 
 export const reportMarkers = freeze([
-  { outcome: "budget", marker: "Budget stop:" },
+  { outcome: "thoroughness", marker: "Thoroughness stop:" },
   { outcome: "scope", marker: "Scope stop:" },
   { outcome: "linked", marker: "Linked defect:" },
   { outcome: "blocked", marker: "Blocked:" },
@@ -101,7 +101,6 @@ export const reportMarkers = freeze([
 export {
   claudeAgentsDir,
   claudeBinary,
-  claudeBudgetHookArgs,
   claudeFile,
   claudeHiddenAttribution,
   claudeHookMarkers,
@@ -112,6 +111,7 @@ export {
   claudeSettingsFile,
   claudeSkillsDir,
   claudeStopHook,
+  claudeThoroughnessHookArgs,
   claudeVariables,
   mainRole,
   metalbrainHook,

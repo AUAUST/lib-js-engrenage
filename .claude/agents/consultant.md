@@ -25,11 +25,12 @@ hooks:
             -f \"$r/pnpm-workspace.yaml\" ] && [ \"$r\" != / ]; do r=\"$(dirname
             -- \"$r\")\"; done; fi; cd -- \"$r\" || exit 0; if [ -x
             node_modules/.bin/metalbrain ]; then exec
-            node_modules/.bin/metalbrain hook claude budget --level standard;
-            fi; if [ -f bin/metalbrain/executable.ts ]; then exec node
-            bin/metalbrain/executable.ts hook claude budget --level standard;
-            fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks are off:
-            metalbrain is not installed in this project; run pnpm install\"}'"
+            node_modules/.bin/metalbrain hook claude thoroughness --level
+            standard; fi; if [ -f bin/metalbrain/executable.ts ]; then exec node
+            bin/metalbrain/executable.ts hook claude thoroughness --level
+            standard; fi; printf '%s\\n' '{\"systemMessage\":\"engrenage hooks
+            are off: metalbrain is not installed in this project; run pnpm
+            install\"}'"
 ---
 
 <!-- @reference @auaust/engrenage/metalbrain/skills/consultant.md -->

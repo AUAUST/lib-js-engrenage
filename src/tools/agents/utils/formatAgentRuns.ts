@@ -144,9 +144,11 @@ export function formatAgentRuns(
         `${run.ttl5m?.count ?? 0} (${formatCount(run.ttl5m?.tokens ?? 0)})`,
         formatCount(weighAgentUsage(run.models)),
         formatAgentCost(priceAgentUsage(facts, run.models)),
-        run.budget?.level ?? "",
-        run.budget === undefined ? "" : formatCount(run.budget.budget),
-        String(run.budget?.warnings.length ?? 0),
+        run.thoroughness?.level ?? "",
+        run.thoroughness === undefined
+          ? ""
+          : formatCount(run.thoroughness.limit),
+        String(run.thoroughness?.warnings.length ?? 0),
         formatMinutes(run),
       ];
     });
@@ -207,8 +209,8 @@ export function formatAgentRuns(
         "5m misses",
         "Units",
         "Cost",
-        "Level",
-        "Budget",
+        "Thoroughness",
+        "Token limit",
         "Warnings",
         "Minutes",
       ],

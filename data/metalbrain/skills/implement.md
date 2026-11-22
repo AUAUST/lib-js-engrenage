@@ -11,7 +11,7 @@ agent:
   description: Worker that implements one specified change (an issue, a draft, a brief or a request), designing the code that delivers its end state, and stops to report when that end state or a contract it does not own must change. Dispatch it only when a skill you follow or the user asks for a worker; otherwise do the work yourself.
   model: opus
   effort: medium
-  budget: standard
+  thoroughness: standard
   gate: true
   tools:
     - Bash

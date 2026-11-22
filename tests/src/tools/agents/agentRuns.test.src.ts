@@ -419,7 +419,7 @@ test("reads only run records, never an agent's other stats files", async () => {
   await writeAgentRun(directory, run);
 
   await writeFile(
-    project.resolve(".ai/stats/session/agent.budget.json"),
+    project.resolve(".ai/stats/session/agent.thoroughness.json"),
     JSON.stringify({ level: "scoped", warned: [] }),
   );
 
@@ -432,16 +432,16 @@ test("reads only run records, never an agent's other stats files", async () => {
   ).resolves.toEqual(expected);
 
   await expect(
-    writeAgentRun(directory, { ...run, agent: "agent.budget" }),
-  ).rejects.toThrow('Invalid agent id "agent.budget"');
+    writeAgentRun(directory, { ...run, agent: "agent.thoroughness" }),
+  ).rejects.toThrow('Invalid agent id "agent.thoroughness"');
 });
 
-test("records the budget warnings a run received", async () => {
+test("records the thoroughness warnings a run received", async () => {
   const { project, directory, run } = await createRecordedProject();
 
-  const budget = {
+  const thoroughness = {
     level: "standard",
-    budget: 1000,
+    limit: 1000,
     warnings: [
       { time: "2026-11-12T22:05:00.000Z", gain: 1200 },
       { time: "2026-11-12T22:08:00.000Z", gain: 1600 },
@@ -451,9 +451,9 @@ test("records the budget warnings a run received", async () => {
   await mkdir(project.resolve(".ai/stats/session"), { recursive: true });
 
   await writeFile(
-    project.resolve(".ai/stats/session/agent.budget.json"),
+    project.resolve(".ai/stats/session/agent.thoroughness.json"),
     JSON.stringify({
-      ...budget,
+      ...thoroughness,
       start: 500,
       opened: 0,
       scanned: 0,
@@ -468,13 +468,46 @@ test("records the budget warnings a run received", async () => {
     {
       ...run,
       stops: 1,
-      budget,
+      thoroughness,
     },
   ]);
 
   expect(formatAgentRuns(runs, await readModelFacts())).toMatch(
     /\| agent \|.*\| standard \| 1k \| 2 \| [\d.?]+ \|/u,
   );
+});
+
+test("reads a run recorded before the thoroughness rename as thoroughness", async () => {
+  const { project, directory, run } = await createRecordedProject();
+
+  const recorded = await writeAgentRun(directory, run);
+
+  const warnings = [{ time: "2026-11-12T22:05:00.000Z", gain: 1200 }];
+
+  await writeFile(
+    project.resolve(".ai/stats/session/agent.json"),
+    JSON.stringify({
+      ...recorded,
+      outcome: "budget",
+      budget: {
+        level: "scoped",
+        budget: 1000,
+        warnings,
+      },
+    }),
+  );
+
+  await expect(readAgentRuns(directory)).resolves.toEqual([
+    {
+      ...recorded,
+      outcome: "thoroughness",
+      thoroughness: {
+        level: "scoped",
+        limit: 1000,
+        warnings,
+      },
+    },
+  ]);
 });
 
 test("aggregates runs of several sessions by role, model and day", async () => {
@@ -532,7 +565,7 @@ test("aggregates runs of several sessions by role, model and day", async () => {
 });
 
 test("attributes a run to its brief lines and hand-back outcome", async () => {
-  const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: 261122-3fa9\nBacklog: agents.24\nBacklog: 20261122-3fa9\nBacklog: 261120-00be\nBudget: standard\n\nconsultant for plan #800; Backlog: 261101-aaaa is quoted.";
+  const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: 261122-3fa9\nBacklog: agents.24\nBacklog: 20261122-3fa9\nBacklog: 261120-00be\nThoroughness: standard\n\nconsultant for plan #800; Backlog: 261101-aaaa is quoted.";
 
   const handback = [
     {
@@ -553,7 +586,7 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
             type: "tool_use",
             id: "handback",
             name: "SubagentHandback",
-            input: { message: "**Budget stop:** half the sites moved." },
+            input: { message: "**Thoroughness stop:** half the sites moved." },
           },
         ],
         usage,
@@ -570,7 +603,7 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
   expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
     issue: "AUAUST/lib-js-engrenage#809",
     backlog: ["261122-3fa9", "261120-00be"],
-    outcome: "budget",
+    outcome: "thoroughness",
   });
 
   expect(
@@ -588,7 +621,7 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
   expect(
     summarizeAgentTask(
       { agent: "agent" },
-      { brief: "Budget: scoped", report: "Blocked: which owner?" },
+      { brief: "Thoroughness: scoped", report: "Blocked: which owner?" },
     ),
   ).toEqual({ outcome: "blocked" });
 
@@ -653,7 +686,7 @@ test("aggregates runs by outcome and by role", async () => {
   const output = formatAgentOutcomes(
     [
       run("a", "worker", { outcome: "completion" }),
-      run("b", "worker", { outcome: "budget" }),
+      run("b", "worker", { outcome: "thoroughness" }),
       run("c", "consultant", { outcome: "completion" }),
       run("main", "main", {}),
     ],
@@ -666,5 +699,5 @@ test("aggregates runs by outcome and by role", async () => {
 
   expect(output).toMatch(/\| consultant: completion \| 1 \|/u);
 
-  expect(output).toMatch(/\| worker: budget \| 1 \|/u);
+  expect(output).toMatch(/\| worker: thoroughness \| 1 \|/u);
 });

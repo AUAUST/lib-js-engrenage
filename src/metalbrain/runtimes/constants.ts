@@ -19,12 +19,12 @@ export const callsExtension = ".calls.jsonl";
 export const startsDirectory = "starts";
 
 // @debt restates the package name `#constants` owns, as importing it would load `@auaust/toolkit` into the hook
-export const budgetsSpecifier = "@auaust/engrenage/metalbrain/budgets.json";
+export const thoroughnessLimitsSpecifier = "@auaust/engrenage/metalbrain/thoroughness.json";
 
-// @debt restates the level names `data/metalbrain/budgets.json` › `levels` owns, so a level added there alone is dropped by `parseBudgets`
-export const budgetLevels = ["scoped", "standard"] as const;
+// @debt restates the level names `data/metalbrain/thoroughness.json` › `levels` owns, so a level added there alone is dropped by `parseThoroughnessLimits`
+export const thoroughnessLevels = ["scoped", "standard"] as const;
 
-export const budgetExtension = ".budget.json";
+export const thoroughnessExtension = ".thoroughness.json";
 
 export const claudeShellVariable = "CLAUDECODE";
 
@@ -59,7 +59,7 @@ export const agentRunExtensions = {
 
 export const agentOutcomes = [
   "completion",
-  "budget",
+  "thoroughness",
   "scope",
   "linked",
   "blocked",

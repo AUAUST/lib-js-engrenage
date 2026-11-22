@@ -9,7 +9,7 @@ agent:
   description: Analyser that examines any material for contradictions, gaps, costs and dependencies, works out the ideal solution and reach when the subject is a change, applies that change when it stays within the request, and otherwise records its findings as issues or backlog entries, or only reports them under a read-only brief. Dispatch it only when a skill you follow or the user asks for an analyser, at high effort only when the user asks for it; otherwise do the work yourself.
   model: opus
   effort: medium
-  budget: scoped
+  thoroughness: scoped
   tools:
     - Bash
     - Read

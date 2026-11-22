@@ -2,6 +2,7 @@ import {
   array,
   exactOptional,
   integer,
+  literal,
   minValue,
   number,
   object,
@@ -19,9 +20,12 @@ import { readTextFile } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import { agentOutcomes } from "#metalbrain/runtimes/constants";
-import { budgetLevels, type AgentRun } from "#metalbrain/runtimes/index";
+import { thoroughnessLevels, type AgentRun } from "#metalbrain/runtimes/index";
 import { standardTier, unknownModel } from "#tools/agents/constants";
 import type { File } from "#types/File";
+
+// @debt reads run records written before the budget-to-thoroughness rename; drop once no stats directory keeps one
+const legacyThoroughness = "budget";
 
 const count = pipe(number(), integer(), minValue(0));
 
@@ -38,6 +42,13 @@ const cacheLossSchema = object({
   tokens: count,
 });
 
+const warningsSchema = array(
+  object({
+    time: string(),
+    gain: number(),
+  }),
+);
+
 const runEntries = {
   runtime: string(),
   session: string(),
@@ -47,7 +58,15 @@ const runEntries = {
   issue: exactOptional(string()),
   draft: exactOptional(string()),
   backlog: exactOptional(array(string())),
-  outcome: exactOptional(picklist(agentOutcomes)),
+  outcome: exactOptional(
+    union([
+      picklist(agentOutcomes),
+      pipe(
+        literal(legacyThoroughness),
+        transform(() => "thoroughness" as const),
+      ),
+    ]),
+  ),
   started: exactOptional(string()),
   ended: exactOptional(string()),
   turns: count,
@@ -84,17 +103,24 @@ const runEntries = {
   ),
   ttl5m: exactOptional(cacheLossSchema),
   misses: exactOptional(cacheLossSchema),
-  budget: exactOptional(
+  thoroughness: exactOptional(
     object({
-      level: picklist(budgetLevels),
-      budget: number(),
-      warnings: array(
-        object({
-          time: string(),
-          gain: number(),
-        }),
-      ),
+      level: picklist(thoroughnessLevels),
+      limit: number(),
+      warnings: warningsSchema,
     }),
+  ),
+  [legacyThoroughness]: exactOptional(
+    pipe(
+      object({
+        level: picklist(thoroughnessLevels),
+        budget: number(),
+        warnings: warningsSchema,
+      }),
+      transform(({ budget, ...thoroughness }) => {
+        return { ...thoroughness, limit: budget };
+      }),
+    ),
   ),
   compactions: exactOptional(
     array(
@@ -114,7 +140,7 @@ const legacyRunSchema = pipe(
     model: exactOptional(string()),
     tokens: tokensSchema,
   }),
-  transform(({ model = unknownModel, tokens, ...run }): AgentRun => {
+  transform(({ model = unknownModel, tokens, ...run }) => {
     return {
       ...run,
       models: [
@@ -129,20 +155,25 @@ const legacyRunSchema = pipe(
   }),
 );
 
-const runSchema: GenericSchema<unknown, AgentRun> = union([
-  object({
-    ...runEntries,
-    models: array(
-      object({
-        model: string(),
-        tier: string(),
-        calls: optional(count, 0),
-        tokens: tokensSchema,
-      }),
-    ),
+const runSchema: GenericSchema<unknown, AgentRun> = pipe(
+  union([
+    object({
+      ...runEntries,
+      models: array(
+        object({
+          model: string(),
+          tier: string(),
+          calls: optional(count, 0),
+          tokens: tokensSchema,
+        }),
+      ),
+    }),
+    legacyRunSchema,
+  ]),
+  transform(({ [legacyThoroughness]: legacy, ...run }): AgentRun => {
+    return legacy === undefined ? run : { ...run, thoroughness: legacy };
   }),
-  legacyRunSchema,
-]);
+);
 
 export async function readAgentRun(path: File): Promise<AgentRun | undefined> {
   const content = await readTextFile(path);

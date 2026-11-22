@@ -9,7 +9,7 @@ agent:
   description: Gatherer that locates strings and files and runs searches scoped to some domains or files, read-only, reporting the facts found. Dispatch it only when a skill you follow or the user asks for a gatherer; otherwise do the work yourself.
   model: sonnet
   effort: low
-  budget: scoped
+  thoroughness: scoped
   tools:
     - Read
     - Bash

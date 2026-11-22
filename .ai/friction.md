@@ -173,3 +173,4 @@
 - Write tool on instruction sources: rewriting `sections/analysis.md` as a subagent — harness refused .md writes as report files; used Edit and scripted replacements
 - fragment-files check: named a renamed state file not yet existing in an instruction — sync failed; kept the current path
 - word-caps check: raising caps per instruction-writing step 7 — auto mode denied editing `.engrenage/word-caps.json`; dropped the growth instead
+- commit gate backlog sync: splitting one backlog file across two commits — gate checks staged backlog sites against the working tree; moved one site line to the other commit

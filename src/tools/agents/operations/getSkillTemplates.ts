@@ -4,8 +4,8 @@ import {
   type GeneratedFrontmatter,
 } from "#metalbrain/instructions/index";
 import {
-  claudeBudgetHookArgs,
   claudeStopHook,
+  claudeThoroughnessHookArgs,
   metalbrainHook,
 } from "#tools/agents/claude/constants";
 import {
@@ -174,7 +174,7 @@ export async function getSkillTemplates({
         gate,
         efforts: _efforts,
         ceiling: _ceiling,
-        budget = "standard",
+        thoroughness = "standard",
         ...definition
       } = agent;
 
@@ -188,7 +188,7 @@ export async function getSkillTemplates({
                 {
                   type: "command",
                   command: createHookCommand(
-                    `${claudeBudgetHookArgs} ${budget}`,
+                    `${claudeThoroughnessHookArgs} ${thoroughness}`,
                     metalbrainHook,
                   ),
                 },

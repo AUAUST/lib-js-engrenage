@@ -1,4 +1,4 @@
-import type { AgentRunBudget } from "#metalbrain/runtimes/types/AgentRunBudget";
+import type { AgentRunThoroughness } from "#metalbrain/runtimes/types/AgentRunThoroughness";
 import type { AgentTask } from "#metalbrain/runtimes/types/AgentTask";
 import type { AgentUsage } from "#metalbrain/runtimes/types/AgentUsage";
 
@@ -8,5 +8,5 @@ export interface AgentRun extends AgentUsage, AgentTask {
   readonly agent: string;
   readonly role: string;
   readonly stops: number;
-  readonly budget?: AgentRunBudget;
+  readonly thoroughness?: AgentRunThoroughness;
 }

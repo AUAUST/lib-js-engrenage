@@ -3,8 +3,8 @@ import { describe, expect, test, vi } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
-  claudeBudgetHookArgs,
   claudeStopHook,
+  claudeThoroughnessHookArgs,
   metalbrainHook,
 } from "#tools/agents/claude/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
@@ -42,14 +42,14 @@ vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
   };
 });
 
-const budgetHook = [
+const thoroughnessHook = [
   {
     matcher: "*",
     hooks: [
       {
         type: "command",
         command: createHookCommand(
-          `${claudeBudgetHookArgs} standard`,
+          `${claudeThoroughnessHookArgs} standard`,
           metalbrainHook,
         ),
       },
@@ -135,7 +135,7 @@ describe("getSkillTemplates", () => {
       name: "worker",
       description: "Worker",
       hooks: {
-        PreToolUse: budgetHook,
+        PreToolUse: thoroughnessHook,
         Stop: [
           {
             hooks: [
@@ -150,13 +150,13 @@ describe("getSkillTemplates", () => {
     });
   });
 
-  test("renders only the budget hook for an ungated agent", async () => {
+  test("renders only the thoroughness hook for an ungated agent", async () => {
     mockSkill("ungated", { name: "helper", description: "Helper" });
 
     expect(await renderAgentFrontmatter()).toEqual({
       name: "helper",
       description: "Helper",
-      hooks: { PreToolUse: budgetHook },
+      hooks: { PreToolUse: thoroughnessHook },
     });
   });
 
@@ -171,7 +171,7 @@ describe("getSkillTemplates", () => {
       name: "helper",
       description: "Helper",
       tools: ["Bash", "Read"],
-      hooks: { PreToolUse: budgetHook },
+      hooks: { PreToolUse: thoroughnessHook },
     });
   });
 
