@@ -116,3 +116,9 @@ GitHub issue drafts, checks and planning commands.
 
 - why: the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form.
 - want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.
+
+## 21. Plans cannot schedule the analysis of an idea
+
+- sites: `.claude/skills/planning/issue-tree.md:18`, `.claude/skills/walking/SKILL.md:80`
+- why: an idea worth weighing once code it depends on lands has no place in a plan: `idea` issues are related, never sub-issues, and the walker never dispatches them.
+- want: an `idea` sub-issue ordered in a plan; the walker dispatches it to an `analyser` once its prerequisites land, to report what is at play; planning tooling (`walk check`, readiness, dispatch hook) accepts it.
