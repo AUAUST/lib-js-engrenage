@@ -161,3 +161,15 @@ entries:
       - src/tools/agents/metalbrain/operations/checkBudget.ts:81
     why: "#809 S.40: only a caller message holding a new `Budget:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
     want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
+  - id: 261122-e4e9
+    title: A worker wrote agent instructions without the user's consent
+    why:
+      - "#815's worker edited `data/metalbrain/templates/backlog.md` and `sections/environment.md` itself, citing the issue's Done when and #811's rename decision; workers never did before, instruction writing being scoped to the `writer`."
+      - "Unknown which change loosened it; suspects: Instruction maintenance's no-writer row (a worker cannot dispatch, so it loads the skill), or a plan's Done when read as consent."
+    want: find the change that let it, and a rule or check keeping instruction edits to the writer, or to consent the user gave
+  - id: 261122-861f
+    title: No command guards instruction growth or updates word budgets
+    why: "Every role sits exactly at its word budget; #815's worker and the budget-stop writer each cut words or raised budgets by hand to pass sync."
+    want:
+      - "a command for writing instructions that, on growth, warns the writer: growing instructions: is a split worth it? is it expected by the request? fix or report"
+      - a command to update the word budgets, run on the user's decision
