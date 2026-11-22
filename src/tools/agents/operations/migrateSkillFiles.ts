@@ -2,8 +2,12 @@ import { posix } from "node:path";
 
 import { engrenage } from "#constants";
 import {
+  formatReferenceMarker,
+  isSkillFileReference,
   isSupportingReference,
   listFormerReferences,
+  listReferences,
+  relocateInstructionReference,
 } from "#metalbrain/instructions/index";
 import {
   formerCodexFiles,
@@ -11,14 +15,10 @@ import {
   skillFileName,
 } from "#tools/agents/constants";
 import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
-import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
-import { isSkillFileReference } from "#tools/agents/utils/isSkillFileReference";
-import { listReferences } from "#tools/agents/utils/listReferences";
-import { relocateInstructionReference } from "#tools/agents/utils/relocateInstructionReference";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { ResolvedAgents } from "#metalbrain/runtimes/index";
+import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
 import type { Extension } from "#project/config/index";
-import type { AgentRuntime } from "#tools/agents/ports/AgentRuntime";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 import type { Directory } from "#types/Directory";
 

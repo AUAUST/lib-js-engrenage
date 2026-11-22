@@ -1,5 +1,5 @@
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
-import type { HookDefinition } from "#tools/agents/types/HookDefinition";
+import type { HookDefinition } from "#metalbrain/runtimes/index";
 
 export function matchesHookEntry(
   entry: {

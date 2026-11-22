@@ -24,7 +24,7 @@ entries:
     done: every injected interface is a port or has a stated reason not to be.
   - id: 261122-c0e1
     title: Hook vocabulary and GitHub command logic have no home (#172)
-    why: "`HookEvent`, `HookDefinition` and `BudgetMode` sit in `tools/agents/types/` though hook-sync vocabulary belongs with each runtime's sub-domain and the map has no home for code shared by agent sub-domains; `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`."
+    why: "`HookEvent`, `HookDefinition` and `BudgetMode` sit in `metalbrain/runtimes/types/` and `metalbrain/records/types/` though hook-sync vocabulary belongs with each runtime's sub-domain and the map has no home for code shared by agent sub-domains; `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`."
     want: "a home for code shared by the agent sub-domains, one owner of the backlog layout. #256 moves the GitHub-command parsing to `tools/github/utils`."
     done: each piece has one owner.
   - id: 261122-e121

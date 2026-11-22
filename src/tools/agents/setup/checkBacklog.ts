@@ -3,7 +3,7 @@ import {
   findRecordViolations,
   throwViolations,
 } from "#metalbrain/records/index";
-import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkBacklog(config: LoadedConfig): Promise<void> {

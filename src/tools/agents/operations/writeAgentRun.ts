@@ -3,7 +3,7 @@ import { dirname } from "node:path";
 
 import { readAgentRun } from "#tools/agents/operations/readAgentRun";
 import { resolveAgentRunFile } from "#tools/agents/utils/resolveAgentRunFile";
-import type { AgentRun } from "#tools/agents/types/AgentRun";
+import type { AgentRun } from "#metalbrain/runtimes/index";
 import type { Directory } from "#types/Directory";
 
 export async function writeAgentRun(

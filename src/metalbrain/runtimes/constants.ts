@@ -1,3 +1,5 @@
+import type { Agent } from "#metalbrain/runtimes/types/Agent";
+import type { AgentTokens } from "#metalbrain/runtimes/types/AgentTokens";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -23,3 +25,43 @@ export const budgetsSpecifier = "@auaust/engrenage/metalbrain/budgets.json";
 export const budgetLevels = ["scoped", "standard"] as const;
 
 export const budgetExtension = ".budget.json";
+
+export const claudeShellVariable = "CLAUDECODE";
+
+export const agentShellVariables = {
+  claude: claudeShellVariable,
+} as const satisfies Partial<Record<Agent, string>>;
+
+export const efforts = ["low", "medium", "high", "xhigh", "max"] as const;
+
+export const subagentCacheTtls = ["5m", "1h"] as const;
+
+export const hookEvents = [
+  "PreToolUse",
+  "PostToolUse",
+  "Stop",
+  "SubagentStart",
+  "SubagentStop",
+] as const;
+
+export const tokenWeights = {
+  input: 1,
+  cacheRead: 0.1,
+  cacheWrite5m: 1.25,
+  cacheWrite1h: 2,
+  output: 5,
+} as const satisfies Record<keyof AgentTokens, number>;
+
+export const agentRunExtensions = {
+  recorded: ".json",
+  running: ".running",
+} as const;
+
+export const agentOutcomes = [
+  "completion",
+  "budget",
+  "scope",
+  "linked",
+  "blocked",
+  "unreported",
+] as const;

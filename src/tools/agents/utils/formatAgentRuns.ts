@@ -3,16 +3,16 @@ import { round } from "@auaust/toolkit/math";
 import {
   formatAgentCost,
   priceAgentUsage,
+  weighAgentUsage,
   type AgentModelUsage,
   type AgentResultTotals,
+  type AgentRun,
   type AgentTokens,
   type ModelFacts,
 } from "#metalbrain/runtimes/index";
 import { mainAgent, tokenWeights } from "#tools/agents/constants";
 import { formatCount } from "#tools/agents/utils/formatCount";
 import { formatMarkdownTable } from "#tools/agents/utils/formatMarkdownTable";
-import { weighAgentUsage } from "#tools/agents/utils/weighAgentUsage";
-import type { AgentRun } from "#tools/agents/types/AgentRun";
 
 const largestResultCount = 10;
 

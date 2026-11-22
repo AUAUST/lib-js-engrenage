@@ -99,20 +99,11 @@ export default {
     directives: {
       reference: {
         async files(config): Promise<readonly File[]> {
-          const agents = await config.resolve("agents");
-
-          if ((agents.preferred?.length ?? 0) === 0) {
-            return [];
-          }
-
           const {
-            listReferenceFiles,
-          } = await import("#tools/agents/operations/listReferenceFiles");
+            listAgentReferenceFiles,
+          } = await import("#tools/agents/operations/listAgentReferenceFiles");
 
-          return listReferenceFiles({
-            filesystem: config.context.filesystem,
-            agents,
-          });
+          return listAgentReferenceFiles(config);
         },
         async load() {
           const {

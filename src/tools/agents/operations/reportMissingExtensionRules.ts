@@ -1,8 +1,8 @@
 import { includes } from "@auaust/toolkit/array";
 
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import { addRuleCommand, agentsTarget } from "#tools/agents/constants";
 import { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";
-import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { SyncDone } from "#project/sync/index";
 
 export async function reportMissingExtensionRules({

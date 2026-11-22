@@ -9,7 +9,7 @@ import { jsonIndentation } from "#project/format/constants";
 import { createHookCommand } from "#tools/agents/utils/createHookCommand";
 import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { HookDefinition } from "#tools/agents/types/HookDefinition";
+import type { HookDefinition } from "#metalbrain/runtimes/index";
 import type { File } from "#types/File";
 
 const hooksSchema = optional(

@@ -2,6 +2,7 @@ import { stringify } from "yaml";
 
 import { formatBlockMarker } from "#foundation/blocks/index";
 import { loadLazy } from "#foundation/modules/index";
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
 import {
   endMarker,
@@ -9,7 +10,6 @@ import {
   rulesDirectory,
 } from "#tools/agents/constants";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { File } from "#types/File";
 

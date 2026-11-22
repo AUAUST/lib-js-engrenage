@@ -1,10 +1,10 @@
 import { readFile } from "node:fs/promises";
 
 import { resolveDataFile } from "#foundation/data/index";
+import { formatReferenceMarker } from "#metalbrain/instructions/index";
 import { agentsFile, agentsTemplate, endMarker } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Step } from "#project/steps/index";
 
 export function createAgentsStep(): Step {

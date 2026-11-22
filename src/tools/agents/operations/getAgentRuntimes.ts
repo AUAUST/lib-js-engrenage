@@ -1,5 +1,5 @@
+import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
 import type { LoadedConfig } from "#project/config/index";
-import type { AgentRuntime } from "#tools/agents/ports/AgentRuntime";
 
 /**
  * Lists the agent runtimes the active extensions contribute.

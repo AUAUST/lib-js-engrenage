@@ -1,4 +1,9 @@
 import { spawnProcess } from "#foundation/processes/index";
+import {
+  formatReferenceMarker,
+  listStaleSkillFiles,
+  syncFrontmatter,
+} from "#metalbrain/instructions/index";
 import { loadFormatter } from "#project/format/index";
 import {
   claudeAgentsDir,
@@ -12,9 +17,6 @@ import { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
-import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
-import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 

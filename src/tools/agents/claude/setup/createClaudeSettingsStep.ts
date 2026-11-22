@@ -4,8 +4,8 @@ import {
   claudeSettingsFile,
 } from "#tools/agents/claude/constants";
 import { syncClaudeSettings } from "#tools/agents/claude/setup/syncClaudeSettings";
+import type { HookDefinition } from "#metalbrain/runtimes/index";
 import type { Step } from "#project/steps/index";
-import type { HookDefinition } from "#tools/agents/types/HookDefinition";
 
 /**
  * Init step creating `.claude/settings.json` with engrenage's hooks, offered

@@ -54,14 +54,14 @@ entries:
       - src/tools/agents/setup/syncAgentFiles.ts:148
       - src/tools/agents/setup/syncAgentFiles.ts:241
       - src/tools/agents/operations/getInstructionTemplates.ts:91
-      - src/tools/agents/operations/migrateInstructionLocations.ts:34
+      - src/metalbrain/instructions/operations/migrateInstructionLocations.ts:35
     why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; unknown `extension` hides fragments; external former markers stay unresolved.
     want: "sync reports or fails each. Related: #699."
   - id: 261122-477b
     title: Instruction markers have no single definition
     sites:
-      - src/tools/agents/utils/listReferences.ts:4
-      - src/tools/agents/utils/filterConditionalBlocks.ts:8
+      - src/metalbrain/instructions/utils/listReferences.ts:4
+      - src/metalbrain/instructions/utils/filterConditionalBlocks.ts:8
     why: "`listReferences` counts markers inside code, unlike `listInstructionMarkers`, while `syncBlocks` fills both; the filter guesses blank lines around markers without parsing Markdown."
     want: one Markdown-aware marker reader.
   - id: 261122-7608

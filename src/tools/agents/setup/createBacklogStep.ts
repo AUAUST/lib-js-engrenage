@@ -1,6 +1,10 @@
 import { engrenage } from "#constants";
 import { backlogIndex } from "#metalbrain/backlog/constants";
 import {
+  formatBacklogIndex,
+  formatReferenceMarker,
+} from "#metalbrain/instructions/index";
+import {
   agentsFile,
   endMarker,
   metalbrain,
@@ -15,8 +19,6 @@ import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRule
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
-import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import type { Step } from "#project/steps/index";
 
 const sectionReference = `${engrenage}/${metalbrain}/sections/backlog.md`;

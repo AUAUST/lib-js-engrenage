@@ -4,8 +4,8 @@ import { freeze } from "@auaust/toolkit/object";
 import { declareSection } from "#foundation/options/index";
 import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
 import { filterAgents } from "#tools/agents/utils/filterAgents";
+import type { ResolvedAgents } from "#metalbrain/runtimes/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 
 export const agentsSection = declareSection({
   declaration: agentsSchema,

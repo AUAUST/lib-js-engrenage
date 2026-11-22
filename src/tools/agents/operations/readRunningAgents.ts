@@ -9,7 +9,7 @@ import {
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { parseAgentRunFile } from "#tools/agents/utils/parseAgentRunFile";
+import { parseAgentRunFile } from "#metalbrain/runtimes/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

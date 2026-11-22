@@ -7,13 +7,13 @@ import { parseJson } from "#foundation/json/index";
 import {
   budgetExtension,
   parseBudgetState,
+  type AgentRun,
   type AgentRunBudget,
 } from "#metalbrain/runtimes/index";
 import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
 import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
 import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
-import type { AgentRun } from "#tools/agents/types/AgentRun";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

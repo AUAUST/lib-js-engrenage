@@ -4,11 +4,23 @@ import { syncFiles } from "#foundation/blocks/index";
 import { backlog, backlogIndex } from "#metalbrain/backlog/constants";
 import { migrateBacklogCategories } from "#metalbrain/backlog/index";
 import {
+  createInstructionFile,
+  formatReferenceMarker,
+  getRuleReferences,
   listFormerReferences,
+  listStaleSkillFiles,
+  migrateBacklogIndex,
+  migrateInstructionLocations,
+  removeReferenceBlock,
+  syncFrontmatter,
   type FragmentRenderer,
   type GeneratedFrontmatter,
 } from "#metalbrain/instructions/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
+import {
+  hasPreferredAgents,
+  type ResolvedAgents,
+} from "#metalbrain/runtimes/index";
 import {
   attributionRules,
   mainSharedDirectory,
@@ -19,24 +31,14 @@ import {
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
-import { migrateBacklogIndex } from "#tools/agents/operations/migrateBacklogIndex";
-import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
-import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
-import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
-import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
-import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
-import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
-import type { ResolvedAgents } from "#tools/agents/types/ResolvedAgents";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
@@ -241,7 +243,12 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     return;
   }
 
-  await migrateInstructionLocations(config);
+  await migrateInstructionLocations({
+    filesystem: config.filesystem,
+    reporter: config.reporter,
+    instructionFiles: config.agents.instructionFiles,
+    snippetsDir: config.agents.snippetsDir,
+  });
 
   await migrateSkillFiles(config);
 

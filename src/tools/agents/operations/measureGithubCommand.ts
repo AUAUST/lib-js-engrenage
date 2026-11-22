@@ -5,9 +5,11 @@ import {
   parseIssueBody,
   type GithubWrite,
 } from "#tools/github/index";
-import type { BudgetFinding } from "#tools/agents/types/BudgetFinding";
-import type { BudgetKind } from "#tools/agents/types/BudgetKind";
-import type { Budgets } from "#tools/agents/types/Budgets";
+import type {
+  BudgetFinding,
+  BudgetKind,
+  Budgets,
+} from "#metalbrain/records/index";
 
 const sectionKinds: Readonly<Partial<Record<string, BudgetKind>>> = {
   "Goal": "goal",

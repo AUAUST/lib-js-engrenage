@@ -1,10 +1,10 @@
 import { filterMap, pluck } from "@auaust/toolkit/array";
 
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import { addAgentRules } from "#tools/agents/operations/addAgentRules";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import type { Step } from "#project/steps/index";
 
 export function createAgentRulesStep(): Step {

@@ -1,6 +1,5 @@
 import { formatAgentGroups } from "#tools/agents/utils/formatAgentGroups";
-import type { ModelFacts } from "#metalbrain/runtimes/index";
-import type { AgentRun } from "#tools/agents/types/AgentRun";
+import type { AgentRun, ModelFacts } from "#metalbrain/runtimes/index";
 
 const unrecorded = "-";
 

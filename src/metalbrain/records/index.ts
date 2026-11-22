@@ -10,6 +10,10 @@ export { writeRecordIndex } from "#metalbrain/records/operations/writeRecordInde
 // @end
 
 // @barrel types
+export type * from "#metalbrain/records/types/BudgetFinding";
+export type * from "#metalbrain/records/types/BudgetKind";
+export type * from "#metalbrain/records/types/BudgetMode";
+export type * from "#metalbrain/records/types/Budgets";
 export type * from "#metalbrain/records/types/RecordFields";
 export type * from "#metalbrain/records/types/RecordFieldType";
 export type * from "#metalbrain/records/types/RecordGroup";

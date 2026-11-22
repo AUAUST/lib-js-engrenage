@@ -1,7 +1,9 @@
+import {
+  createInstructionFile,
+  type FragmentRenderer,
+} from "#metalbrain/instructions/index";
 import { ruleFrontmatterKeys, rulesDirectory } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
-import type { FragmentRenderer } from "#metalbrain/instructions/index";
 import type { Extension } from "#project/config/index";
 
 export async function getRuleTemplates(config: {

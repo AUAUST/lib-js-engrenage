@@ -17,8 +17,8 @@ import {
 } from "#tools/agents/claude/constants";
 import { syncHooks } from "#tools/agents/operations/syncHooks";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { SubagentCacheTtl } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { SubagentCacheTtl } from "#tools/agents/types/SubagentCacheTtl";
 
 async function syncAttribution(
   config: {
