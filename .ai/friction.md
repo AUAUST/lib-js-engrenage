@@ -160,3 +160,10 @@
 - walking budget stop: handover commit of a leaf whose remaining work is what the gate checks (#813 backlog data, lint) — commit gate refuses it; skill forbids resuming the stopped agent, asked the user
 - shell-trap hook: `echo ====` separator — refused as `=` command-path expansion; reworded it
 - commit gate in a shared checkout: committed the #813 ID change while a #814 worker removed Codex — config load failed (`agents.preferred lists codex`), tests too; verified in a temporary worktree, left the commit undone
+- walking budget stop: #814 worker also stopped at the standard ceiling with only checks, changeset and a dependency removal left — user had the walker finish it; second near-done stop in one walk
+- walking parallel dispatch: ran a writer and a second worker beside the #814 worker at K=1 — shared checkout broke config load and hooks for all, all three hit the rate limit together; user restored K=1
+- shell-trap hook: `echo ====` separator in a walker command — refused as `=` command-path expansion; reworded it
+- commit gate sync --check: splitting the #813 ID change from #814 edits in the same backlog files — gate reads staged data but on-disk code, so either order failed; stashed #814 and staged ID-only file versions
+- pnpm remove confbox: removed it from node_modules too — stashed HEAD code then failed to import it at the gate; reinstalled offline from the lockfile before and after the stash
+- commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache right after `pnpm install --offline`, twice — retrying the commit passed
+- engrenage-hook claude: config invalid while #814 removed Codex mid-change — every hook reported "did not run", checks off for the rest of #814
