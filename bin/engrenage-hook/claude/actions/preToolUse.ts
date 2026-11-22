@@ -21,7 +21,7 @@ async function checkBash(payload: unknown, command: string): Promise<void> {
     }
   }
 
-  if (/[*?[]|(?:^|[\s;&|(])=|\bsed\b|\btimeout\b|eslint:fix/.test(command)) {
+  if (/(?:^|[\s;&|(])=|\bsed\b|\btimeout\b|eslint:fix/.test(command)) {
     const {
       default: shell,
     } = await import("#bin/engrenage-hook/claude/actions/shell");

@@ -4,8 +4,6 @@ import { findShellTrap } from "#tools/agents/operations/findShellTrap";
 
 describe("findShellTrap", () => {
   test.each([
-    ["an unquoted glob", "ls src/*.ts", "glob"],
-    ["a glob beside an expansion", 'eslint "$dir"/a?.ts', "glob"],
     ["sed -i with a script after it", "sed -i 's/a/b/' x.md", "suffix"],
     ["sed -i with quotes glued to it", "sed -Ei'' 's/a/b/' x.md", "suffix"],
     ["timeout", "timeout 5 pnpm test", "timeout"],
@@ -21,9 +19,9 @@ describe("findShellTrap", () => {
   });
 
   test.each([
-    ["a quoted glob", "pnpm exec eslint 'src/**/*.ts' \"a?\" a\\*b"],
+    ["an unquoted glob", "ls src/*.ts"],
     ["the test command", "[ -f x ] && echo ok"],
-    ["a glob inside a heredoc", "cat <<'EOF'\n*.ts\nEOF"],
+    ["a glob beside an expansion", 'eslint "$dir"/a?.ts'],
     ["sed -i with the empty suffix", "sed -i '' 's/a/b/' x.md"],
     ["timeout as an argument", "pnpm vitest --timeout 5"],
     ["a lone =", "[ a = b ]"],

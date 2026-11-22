@@ -11,10 +11,6 @@ function readText(word: ShellWord | undefined) {
 }
 
 function findWordTrap(word: ShellWord) {
-  if (word.kind === "pattern") {
-    return `zsh aborts when the unquoted glob \`${word.source}\` matches nothing: quote it for the tool to expand, or list the paths instead`;
-  }
-
   if (word.kind === "expansion" && word.source.startsWith("=")) {
     return `zsh expands the word \`${word.source}\`, starting with \`=\`, as a command path: quote it or reword it`;
   }

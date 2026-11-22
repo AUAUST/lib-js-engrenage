@@ -157,47 +157,41 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: 6 session pairs in `.ai/stats/` share their opening transcript; about $21.6, 2% of main cost, counted twice by `agents stats`.
 - want: a forked session's record counting only what follows the fork.
 
-## 29. The shell-trap hook still refuses unquoted globs
-
-- sites: `src/tools/agents/operations/findShellTrap.ts:14`
-- why: #809 S.44 drops the glob check, which also refused globs matching files (friction ×4); the Shell rule's glob row stays, unchecked (S.38).
-- want: the glob check and its tests removed from the shell-trap hook.
-
-## 30. Consultant freshness forces fresh consultants mid-walk
+## 29. Consultant freshness forces fresh consultants mid-walk
 
 - sites: `data/metalbrain/skills/planning.md:15`, `src/tools/agents/operations/checkAgentResume.ts:61`
 - why: `freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809).
 - want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
 
-## 31. The budget hook's stop path has never fired on a worker
+## 30. The budget hook's stop path has never fired on a worker
 
 - why: landed 2026-11-20 (`6331641f3`); none of the 44 workers since crossed 120k (max 117.7k), while 11 of 99 before it did unstopped.
 - want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.
 
-## 32. Self-hosted hooks go off while an agent refactors the checkout
+## 31. Self-hosted hooks go off while an agent refactors the checkout
 
 - sites: `.claude/settings.json:33`
 - why: the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.
 - want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
 
-## 33. The Codex setup is unused and half done
+## 32. The Codex setup is unused and half done
 
 - why: created early, no longer used; it silently misbehaves (e.g. Codex never loads the issue-drafts rule its consultant points to). S.25 defers its removal until #809's spec lands.
 - want: remove the Codex agents, skills, sync targets and the instructions naming Codex, with the backlog entries only Codex needs.
 
-## 34. Walk tuning awaits the first spec walks
+## 33. Walk tuning awaits the first spec walks
 
 - why: #809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5).
 - want: from the first walks' measurements, decide K = 3, the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).
 - done: each decided, or dropped as unneeded by the walk data.
 
-## 35. The push deny misses `git -C <path> push`
+## 34. The push deny misses `git -C <path> push`
 
 - sites: `src/tools/agents/claude/constants.ts:107`
 - why: `Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose.
 - want: the PreToolUse git check refuses any parsed `git … push`.
 
-## 36. Run records hold no review findings or rework
+## 35. Run records hold no review findings or rework
 
 - sites: `src/tools/agents/utils/summarizeAgentTask.ts:64`
 - why: #809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured.
