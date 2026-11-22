@@ -153,5 +153,5 @@
 - Bash safety check: zsh `${(f)…}` loop with `cat` only, no removal — refused as unresolvable removal; reran as plain listing commands
 - shell-trap hook: `echo ======` separator — refused as `=` command-path expansion; quoted it
 - commit gate verification: commit while another session edited `.ai/scratchpad.md` — gate refused "files changed while the gate verified them"; retried
-- `pnpm engrenage sync` backlog-sites: another session's uncommitted `agents.35` sites bullet lacked a line number — sync and gate failed; added `:64`
+- `pnpm engrenage sync` backlog-sites: another session's uncommitted `agents.34` sites bullet lacked a line number — sync and gate failed; added `:64`
 - `pnpm engrenage gate --worktree` verification: another session edited `.ai/backlog/agents.md` mid-run — refused "files changed while the gate verified them"; reran
