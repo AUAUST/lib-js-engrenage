@@ -128,9 +128,3 @@ GitHub issue drafts, checks and planning commands.
 - sites: `data/metalbrain/skills/walking.md:58`, `data/metalbrain/skills/walking.md:77`
 - why: `walk check` now prints `Planning due: <issues>`, each open **Planning** in turn; the handling row still states that timing by hand.
 - want: L77 drops "open **Planning** once the first row skips every issue ordered before it" for the `Planning due:` line; L58 names that line.
-
-## 23. `planning issue check` never checks named owners
-
-- why: items name owning domains and roles in **Context** (issue-drafts › Owners); nothing verifies they exist in the project maps.
-- want: `planning issue check` reports each named domain or role the project maps lack.
-- done: blocked on an owner syntax (Owners rule sets none, so a missing owner reads like any backticked token); recommended an `Owners:` list opening **Context**, `<environment>:<namespace>/<domain> › <role>` per capability, checked against the resolved structure, plus a writer pass on `issue-drafts.md:96`.
