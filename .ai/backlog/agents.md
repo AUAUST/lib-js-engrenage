@@ -74,12 +74,6 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
 - want: the config lookup skipping dependencies, read by both.
 
-## 14. Legacy hook shims wait for consumers to sync
-
-- sites: `bin/engrenage/agents/claude/hook.ts:5`, `bin/engrenage/agents/codex/hook.ts:5`, `src/tools/agents/codex/constants.ts:23`
-- why: they keep settings synced before `engrenage-hook` working; the two shims clone each other (jscpd).
-- done: consumers have synced past the release introducing `engrenage-hook`; then delete them.
-
 ## 15. Runtime behaviour branches on runtime names
 
 - sites: `src/tools/agents/operations/checkAgents.ts:24`, `src/tools/agents/operations/getSkillTemplates.ts:69`, `src/tools/agents/operations/getSkillTemplates.ts:137`, `src/tools/agents/operations/migrateSkillFiles.ts:225`, `src/tools/agents/utils/createDispatchEnvironment.ts:7`, `src/tools/agents/config/schemas/skillSchema.ts:35`
@@ -167,11 +161,6 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `.claude/settings.json:33`
 - why: the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.
 - want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
-
-## 31. The Codex setup is unused and half done
-
-- why: created early, no longer used; it silently misbehaves (e.g. Codex never loads the issue-drafts rule its consultant points to). S.25 defers its removal until #809's spec lands.
-- want: remove the Codex agents, skills, sync targets and the instructions naming Codex, with the backlog entries only Codex needs.
 
 ## 32. Walk tuning awaits the first spec walks
 

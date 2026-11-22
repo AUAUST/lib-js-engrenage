@@ -150,7 +150,8 @@ Shared agent instructions, skills and the backlog conventions.
   - eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules
 
-## 29. The backlog instructions name commands that do not exist yet
+## 30. No agent record holds required work left outside a pass
 
-- why: stable IDs decided: the instructions now create categories with `pnpm metalbrain backlog create <category> "<purpose>"` (indexing its purpose) and entries with `pnpm metalbrain backlog add <category> "<title>"`; IDs are a day plus a hash, never renumbered.
-- want: both commands; `summarizeAgentTask.ts` `backlogPattern` and the `backlog-sites` check accepting the new IDs; existing entries migrated.
+- why: friction and discarded logs record costs and rejected options, not follow-ups; e.g. a command changed while instructions still name its old shape, or instructions naming a state not yet built (#815). Such work is lost unless the agent opens a backlog entry by judgment.
+- want: a third record beside friction and discarded, a live "todo" ledger, `- <subject>: <what must be done> — <why it was left>`, written as found; entries leave once an issue, entry or change takes them up.
+- done: the agent-records rule defines it and the record exists.
