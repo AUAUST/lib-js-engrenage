@@ -34,16 +34,18 @@ export function parseBudgetState(value: unknown): BudgetState {
     fail("the file", "an object");
   }
 
-  const { start, level, budget, warnings } = value;
+  const { level, budget, warnings, start, opened, scanned } = value;
 
   if (!Array.isArray(warnings)) {
     fail("warnings", "an array");
   }
 
   return {
-    start: readNumber(start, "start"),
     level: isBudgetLevel(level) ? level : fail("level", "a budget level"),
     budget: readNumber(budget, "budget"),
     warnings: warnings.map(readWarning),
+    start: readNumber(start, "start"),
+    opened: readNumber(opened, "opened"),
+    scanned: readNumber(scanned, "scanned"),
   };
 }

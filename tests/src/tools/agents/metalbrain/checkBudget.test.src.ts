@@ -18,60 +18,77 @@ const stateFile = `.ai/stats/${session}/${agent}.budget.json`;
 const transcriptFile = `transcripts/${session}/subagents/agent-${agent}.jsonl`;
 
 /**
- * A subagent transcript as Claude Code holds it at a PreToolUse: the brief, then
- * a message spanning a thinking and a tool use entry, then its tool result,
- * without the message issuing the tool use under way.
+ * An assistant message as Claude Code holds it at a PreToolUse, spanning a
+ * thinking and a tool use entry, then its tool result.
  */
-function createTranscript(prompt: string, context?: number): string {
+function createMessage(id: number, context: number): object[] {
   const message = {
-    id: "msg_1",
+    id: `msg_${id}`,
     model: "claude-opus-5-5",
     usage: {
       input_tokens: 2,
-      cache_read_input_tokens: context === undefined ? 0 : context - 2,
+      cache_read_input_tokens: context - 2,
       output_tokens: 1,
     },
   };
 
   return [
     {
+      type: "assistant",
+      message: { ...message, content: [{ type: "thinking", thinking: "" }] },
+    },
+    {
+      type: "assistant",
+      message: {
+        ...message,
+        content: [
+          {
+            type: "tool_use",
+            id: `toolu_${id}`,
+            name: "Read",
+          },
+        ],
+      },
+    },
+    {
+      type: "user",
+      message: {
+        role: "user",
+        content: [{ type: "tool_result", tool_use_id: `toolu_${id}` }],
+      },
+    },
+  ];
+}
+
+function createLines(entries: readonly object[]): string {
+  return entries.map((entry) => `${JSON.stringify(entry)}\n`).join("");
+}
+
+/**
+ * A subagent transcript as Claude Code holds it at a PreToolUse: the brief, then a
+ * message and its tool result, without the message issuing the tool use under way.
+ */
+function createTranscript(prompt: string, context?: number): string {
+  return createLines([
+    {
       type: "user",
       message: { role: "user", content: prompt },
     },
-    ...(context === undefined
-      ? []
-      : [
-          {
-            type: "assistant",
-            message: {
-              ...message,
-              content: [{ type: "thinking", thinking: "" }],
-            },
-          },
-          {
-            type: "assistant",
-            message: {
-              ...message,
-              content: [
-                {
-                  type: "tool_use",
-                  id: "toolu_1",
-                  name: "Read",
-                },
-              ],
-            },
-          },
-          {
-            type: "user",
-            message: {
-              role: "user",
-              content: [{ type: "tool_result", tool_use_id: "toolu_1" }],
-            },
-          },
-        ]),
-  ]
-    .map((entry) => JSON.stringify(entry))
-    .join("\n");
+    ...(context === undefined ? [] : createMessage(1, context)),
+  ]);
+}
+
+function createMetaPrompt(content: string, origin?: string): object {
+  return {
+    type: "user",
+    isMeta: true,
+    ...(origin === undefined
+      ? {}
+      : {
+          origin: { kind: origin },
+        }),
+    message: { role: "user", content },
+  };
 }
 
 function runCheck(project: ReturnType<typeof createTemporaryProject>) {
@@ -94,13 +111,17 @@ test("a gain reaching the budget, then each further half of it, warns once and l
 
   const budget = levels.standard;
 
+  const transcript = createTranscript("Do it.", 20_000 + budget);
+
   const project = createTemporaryProject({
-    [transcriptFile]: createTranscript("Do it.", 20_000 + budget),
+    [transcriptFile]: transcript,
     [stateFile]: JSON.stringify({
-      start: 20_000,
       level: "standard",
       budget,
       warnings: [],
+      start: 20_000,
+      opened: 0,
+      scanned: Buffer.byteLength(transcript),
     }),
   });
 
@@ -111,7 +132,7 @@ test("a gain reaching the budget, then each further half of it, warns once and l
 
   project.write(
     transcriptFile,
-    createTranscript("Do it.", 20_000 + 1.5 * budget),
+    transcript + createLines(createMessage(2, 20_000 + 1.5 * budget)),
   );
 
   expect(await runCheck(project)).toContain(`${1.5 * budget} tokens gained`);
@@ -122,6 +143,69 @@ test("a gain reaching the budget, then each further half of it, warns once and l
       { time: new Date(1000).toISOString(), gain: 1.5 * budget },
     ],
   });
+});
+
+test("a caller's message opens a new contact, measured from its first call", async () => {
+  const { levels } = await readBudgets();
+
+  const budget = levels.standard;
+
+  let transcript = createTranscript("Do it.", 5000);
+
+  const project = createTemporaryProject({ [transcriptFile]: transcript });
+
+  await runCheck(project);
+
+  transcript += createLines(createMessage(2, 5000 + budget));
+
+  project.write(transcriptFile, transcript);
+
+  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
+
+  transcript += createLines([
+    createMetaPrompt("The coordinator sent a message: go on.", "coordinator"),
+    ...createMessage(3, 6000 + budget),
+  ]);
+
+  project.write(transcriptFile, transcript);
+
+  expect(await runCheck(project)).toBeUndefined();
+
+  project.write(
+    transcriptFile,
+    transcript + createLines(createMessage(4, 6000 + 2 * budget)),
+  );
+
+  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
+
+  expect(JSON.parse(project.read(stateFile))).toMatchObject({
+    warnings: [{ gain: budget }, { gain: budget }],
+    start: 6000 + budget,
+    opened: 1,
+  });
+});
+
+test("a harness reminder keeps the contact open", async () => {
+  const { levels } = await readBudgets();
+
+  const budget = levels.standard;
+
+  const transcript = createTranscript("Do it.", 5000);
+
+  const project = createTemporaryProject({ [transcriptFile]: transcript });
+
+  await runCheck(project);
+
+  project.write(
+    transcriptFile,
+    transcript +
+      createLines([
+        createMetaPrompt("<system-reminder>Hand back.</system-reminder>"),
+        ...createMessage(2, 5000 + budget),
+      ]),
+  );
+
+  expect(await runCheck(project)).toContain(`${budget} tokens gained`);
 });
 
 test("a first prompt's Budget: line sets the level over the default", async () => {
@@ -137,10 +221,14 @@ test("a first prompt's Budget: line sets the level over the default", async () =
   expect(await runCheck(project)).toBeUndefined();
 
   expect(JSON.parse(project.read(stateFile))).toEqual({
-    start: 5000,
     level: "scoped",
     budget: levels.scoped,
     warnings: [],
+    start: 5000,
+    opened: 0,
+    scanned: Buffer.byteLength(
+      createTranscript("Issue: x#1\nBudget: scoped\n\nGo.", 5000),
+    ),
   });
 });
 

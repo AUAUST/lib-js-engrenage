@@ -186,22 +186,17 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.
 - want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
 
-## 34. The budget counts context gained across resumes
-
-- why: the budget hook measures context gained since an agent's first call, across every resume, so a resumed consultant or merger nears budget warnings through accumulated contacts alone; a level means per-dispatch depth, which a resume never resets.
-- want (user decided 2026-11-21): the budget hook measures depth per contact, each resume opening a new window, plus a cumulative context cap (Agent limits › Fresh up to) that retires the agent to a fresh one with a handoff, so resumes stay cheaper than a fresh agent.
-
-## 35. The Codex setup is unused and half done
+## 34. The Codex setup is unused and half done
 
 - why: created early, no longer used; it silently misbehaves (e.g. Codex never loads the issue-drafts rule its consultant points to). S.25 defers its removal until #809's spec lands.
 - want: remove the Codex agents, skills, sync targets and the instructions naming Codex, with the backlog entries only Codex needs.
 
-## 36. The integration merger never checks that concurrent leaves agree
+## 35. The integration merger never checks that concurrent leaves agree
 
 - why: workers now name `Concurrent:` leaves sharing a Model section, but the merger is not told which landed leaves shared one, so diverging shapes pass (H6, N.3.6).
 - want: decide whether the merger checks the shared section against each `Concurrent:` sibling at integration.
 
-## 37. Walk tuning awaits the first spec walks
+## 36. Walk tuning awaits the first spec walks
 
 - why: #809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5).
 - want: from the first walks' measurements, decide K = 3, the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).

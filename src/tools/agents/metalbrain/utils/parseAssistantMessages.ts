@@ -2,22 +2,11 @@ import { isFiniteNumber } from "#tools/agents/metalbrain/utils/isFiniteNumber";
 import { isRecord } from "#tools/agents/metalbrain/utils/isRecord";
 import { isText } from "#tools/agents/metalbrain/utils/isText";
 import { measureContext } from "#tools/agents/metalbrain/utils/measureContext";
+import { parseTranscriptLine } from "#tools/agents/metalbrain/utils/parseTranscriptLine";
 import type { AssistantMessage } from "#tools/agents/metalbrain/types/AssistantMessage";
 import type { MessageTokens } from "#tools/agents/metalbrain/types/MessageTokens";
 
 const syntheticModel = "<synthetic>";
-
-function parseLine(line: string): unknown {
-  try {
-    return JSON.parse(line);
-  } catch (error) {
-    if (error instanceof SyntaxError) {
-      return null;
-    }
-
-    throw error;
-  }
-}
 
 function count(value: unknown): number {
   return isFiniteNumber(value) ? value : 0;
@@ -74,7 +63,7 @@ export function parseAssistantMessages(
   >();
 
   for (const line of text.split("\n")) {
-    const entry = parseLine(line);
+    const entry = parseTranscriptLine(line);
 
     if (!isRecord(entry) || entry.type !== "assistant") {
       continue;

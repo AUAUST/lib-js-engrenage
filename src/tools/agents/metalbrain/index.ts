@@ -16,6 +16,7 @@ export type { ModelFacts } from "#tools/agents/metalbrain/types/ModelFacts";
 // @barrel operations
 export { checkBudget } from "#tools/agents/metalbrain/operations/checkBudget";
 export { logToolCall } from "#tools/agents/metalbrain/operations/logToolCall";
+export { readAppendedLines } from "#tools/agents/metalbrain/operations/readAppendedLines";
 export { readBudgets } from "#tools/agents/metalbrain/operations/readBudgets";
 export { readFirstPrompt } from "#tools/agents/metalbrain/operations/readFirstPrompt";
 export { readIssuingMessage } from "#tools/agents/metalbrain/operations/readIssuingMessage";

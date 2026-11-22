@@ -37,3 +37,8 @@ Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected 
 
 - why: readiness now requires each item's **Context** to name the owning domain and role (issue-drafts › Owners, S.29), so reviews move published items under **Planning**; a worker given a capability without owner stops with `Scope stop:` (S.30).
 - want: the P.3.2 sweep names owners in each kept item's **Context**.
+
+## 8. Budget state written before per-contact windows fails the hook
+
+- why: `parseBudgetState` now requires `opened` and `scanned`; a subagent running across the update gets a hook error per tool call and loses its run record (seen at the agents.34 worker's own SubagentStop).
+- want: no subagent in flight when the change lands in a consumer; otherwise delete its `.ai/stats/<session>/*.budget.json`.

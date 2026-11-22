@@ -452,7 +452,12 @@ test("records the budget warnings a run received", async () => {
 
   await writeFile(
     project.resolve(".ai/stats/session/agent.budget.json"),
-    JSON.stringify({ start: 500, ...budget }),
+    JSON.stringify({
+      ...budget,
+      start: 500,
+      opened: 0,
+      scanned: 0,
+    }),
   );
 
   await recordClaudeRun(directory, run, project.resolve("agent.jsonl"));

@@ -169,3 +169,4 @@
 - word budget baseline from git HEAD: cap each role at its committed words — needs git inside sync; a ratchet file lowered by sync keeps it reproducible
 - word budget for a new role, auto-recorded: seed its cap on first measure — makes new roles free; a new role is a user decision, so the check fails until recorded
 - failure clause in every rule's text (#809 L.12): name the prevented failure inline — adds words to every role against S.24; the writer names it in its report instead
+- budget hook contact detection: find the latest caller message by tail scan — re-reads up to 4 MB per call once a contact outgrows the 64 KB tail; an incremental byte offset in the budget state reads only appended lines
