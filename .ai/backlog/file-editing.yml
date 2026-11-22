@@ -1,6 +1,6 @@
 purpose: In-memory editing of JSON and YAML files in the codegen tooling.
 entries:
-  - id: 20261122-3811
+  - id: 261122-3811
     title: No virtualized files for JSON and YAML.
     why: "tooling steps re-read and rewrite `package.json`, tsconfigs and the like to change a small part each time. Related: #153 (init builds its answers on a declarative config state)."
     want: "a codegen filesystem abstraction opening a file as a virtual file, edited in memory through path-based accessors and written back only when changed; it keeps files consistent and preserves formatting, so steps compose over one open file with fewer reads and writes."

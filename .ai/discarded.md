@@ -155,13 +155,13 @@
 - per-scope alias tables in batiment: #741 alias ownership — `#…` aliases are language-bound and stay in `project/structure` until the language port (#732 › Batiment)
 - package-name edges in the cycle check: cross-workspace file cycles (#744) — needs a package `exports` resolver over the filesystem port; #743's `scope-cycle` and direction rule already fail on every such cycle
 - per-scope cycle graphs: cycles inside and across scopes (#744) — one graph resolving each importer from its scope finds both in one pass
-- tighter Steps readiness checks: catch underspecified items (`20261122-b57e`) — Steps fix procedure; spec leaves with required Done when replace them
+- tighter Steps readiness checks: catch underspecified items (`261122-b57e`) — Steps fix procedure; spec leaves with required Done when replace them
 - flat ExecPlan per goal: executor-written living plan — no validated compass before the walk; poor fit with the issue tree and worker pool
 - pure decompose-on-failure without upfront plan: lowest planning cost — leaves no plan to validate first; kept only as split-on-stop
 - raising consultant `freshness`: keep one consultant per walk — each resume re-writes the whole context on the 5-minute cache; absolute ceiling and small agent file instead
 - convert-on-touch migration of Steps issues: spread conversion cost — dual-format checks, routing and worker rules for 57 issues cost more than one triaged sweep
 - section pointer to a shared file: a dedicated dispatching skill as install host — adding a skill needs user approval; shape's copy hosts it
-- tighter Steps checks (20261122-b57e): keep Steps-era issues — checks on procedure leave the leaf outcome "Steps done"; required Done when instead (#809)
+- tighter Steps checks (261122-b57e): keep Steps-era issues — checks on procedure leave the leaf outcome "Steps done"; required Done when instead (#809)
 - pure ADaPT, no upfront planning: split only on failure — no validated compass before the walk; outer planning plus split on a stop instead (#809)
 - planner provider check (#809 S.29): existing helper or provider per capability at planning — needs code reading the worker repeats (G.5); owners stop at domain and role
 - analysis steps in method file: steps merged into `shared/analysis.md` — main session would read ~540 words per request instead of ~150

@@ -51,7 +51,7 @@ const entrySchema = strictObject(
   {
     id: pipe(
       string(),
-      check(isBacklogId, "expected an ID as YYYYMMDD-xxxx, 4 hex characters"),
+      check(isBacklogId, "expected an ID as YYMMDD-xxxx, 4 hex characters"),
     ),
     title: textSchema,
     sites: exactOptional(

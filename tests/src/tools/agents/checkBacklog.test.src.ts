@@ -31,18 +31,18 @@ describe("checkBacklog", () => {
   test("passes an entry matching the backlog file schema", async () => {
     await expect(
       check(
-        "  - id: 20261122-3fa9\n    title: A claim\n    sites: [src/a.ts:3]\n    why: reason\n    want: [one, two]\n",
+        "  - id: 261122-3fa9\n    title: A claim\n    sites: [src/a.ts:3]\n    why: reason\n    want: [one, two]\n",
       ),
     ).resolves.toBeUndefined();
   });
 
   test("names both the excess details and the unknown key", async () => {
     const failure = check(
-      "  - id: 20261122-3fa9\n    title: A claim\n    why: reason\n    want: [one, two]\n    done: end\n    note: extra\n",
+      "  - id: 261122-3fa9\n    title: A claim\n    why: reason\n    want: [one, two]\n    done: end\n    note: extra\n",
     );
 
     await expect(failure).rejects.toThrow(
-      ".ai/backlog/tools.yml: entry 20261122-3fa9: 4 why, want and done items, over 3",
+      ".ai/backlog/tools.yml: entry 261122-3fa9: 4 why, want and done items, over 3",
     );
 
     await expect(failure).rejects.toThrow('unknown key "note"');
@@ -51,7 +51,7 @@ describe("checkBacklog", () => {
   test("fails on a site naming no file", async () => {
     await expect(
       check(
-        "  - id: 20261122-3fa9\n    title: A claim\n    sites: [src/b.ts:3]\n",
+        "  - id: 261122-3fa9\n    title: A claim\n    sites: [src/b.ts:3]\n",
       ),
     ).rejects.toThrow("site `src/b.ts` names no file");
   });
@@ -60,7 +60,7 @@ describe("checkBacklog", () => {
     const words = Array.from({ length: 120 }, () => "word").join(" ");
 
     await expect(
-      check(`  - id: 20261122-3fa9\n    title: A claim\n    why: ${words}\n`),
+      check(`  - id: 261122-3fa9\n    title: A claim\n    why: ${words}\n`),
     ).rejects.toThrow("words, over the backlogEntry budget of 100");
   });
 });

@@ -126,14 +126,14 @@ describe("backlog migration", () => {
       purpose: "Tool integrations.",
       entries: [
         {
-          id: expect.stringMatching(/^\d{8}-[\da-f]{4}$/u),
+          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
           title: "A claim",
           sites: ["src/a.ts:3"],
           why: expect.any(String),
           want: ["one", "two", "three"],
         },
         {
-          id: expect.stringMatching(/^\d{8}-[\da-f]{4}$/u),
+          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
           title: "Another claim",
           done: "never",
         },

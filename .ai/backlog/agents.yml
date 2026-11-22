@@ -1,61 +1,61 @@
 purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
 entries:
-  - id: 20261122-c7fb
+  - id: 261122-c7fb
     title: Agent runtime names are checked only by type narrowing
     sites:
       - src/tools/agents/utils/filterAgents.ts:5
     why: "narrowing a contributed name to `Agent` holds only while every `agents.runtimes` contribution augments `Engrenage.AgentRuntimes`. Hook matching and the duplicated github action: #598."
     want: runtime names checked against the augmentation at load.
-  - id: 20261122-8304
+  - id: 261122-8304
     title: Info lint messages for Codex edits
     sites:
       - src/tools/agents/claude/constants.ts:49
       - src/tools/agents/codex/constants.ts:16
     why: Claude gets `info` lint messages after each edit (#526); Codex declares no `PostToolUse` hook.
     want: check whether Codex hooks fire after file edits with an equivalent of `additionalContext`; if so, add the same lint hook for Codex.
-  - id: 20261122-116d
+  - id: 261122-116d
     title: "`sync --check` fails on a stale `AGENTS.override.md` after a rebase"
     why: Codex-generated override file goes stale when a rebase brings new instructions; out of the cleanup pass with Codex work (#613 › Decisions). Seen in AUAUST/lib-js-toolkit#325 › Gate.
     want: sync regenerates it, or `--check` names the command that does.
-  - id: 20261122-a9f2
+  - id: 261122-a9f2
     title: Nothing bounds a main session's context in a long run
     why: "#654: walker context 65k→214k, ~75% of cost re-reading; main sessions are 43% of cost, starting at 65k, mostly harness (#809)."
     want:
       - "walks: `autoCompactWindow` (≥100k), PreCompact stdout keeping segment gists and pending handoffs."
       - "interactive (#809 Q.9): one short `/compact` offer per threshold crossing; a smaller harness start per project (plugins, MCP servers); a fresh session per task; the 1-hour cache only where gaps need it."
-  - id: 20261122-cdec
+  - id: 261122-cdec
     title: Sync accepts a skill naming its supporting file by bare name
     sites:
       - src/tools/agents/utils/createSkillFileFiller.ts:5
     why: a bare `consultant.md` outside a `<!-- @skill-file -->` block escapes the path sync renders and validates; `data/metalbrain/skills/planning.md` Modes table still does.
     want: sync fails on a supporting file's name outside a `@skill-file` block of its skill.
-  - id: 20261122-f689
+  - id: 261122-f689
     title: Nothing flags a bare `§Name` in a supporting file pointing to its main skill
     why: supporting files name the main skill's sections as `<skill> §Name`; a bare one reads as a missing section of the file.
     want: a check flags a bare `§Name` in a supporting file that names no section of that file.
-  - id: 20261122-c0c0
+  - id: 261122-c0c0
     title: Codex cannot dispatch the analyser at a requested effort
     why: Codex picks effort through profiles generated from `efforts:`, keyed by issue `complexity`; the analyser has only its `medium` default, so a user-requested high dispatch has no profile. Claude Code and `agents dispatch --effort` work.
     want: an effort override on Codex dispatch, or profiles for requested efforts.
-  - id: 20261122-7dae
+  - id: 261122-7dae
     title: Nothing checks that fragments name existing skills
     why: renaming `issue-implementation` to `implement` left references in `walking.md` and `planning.md` that only a grep caught.
     want: sync fails on a fragment naming a skill that does not exist or appears only in a `formerly` list.
-  - id: 20261122-b60f
+  - id: 261122-b60f
     title: Nothing checks references between shared skill files
     why: "`linked-checkouts.md` relies on `worktree-dispatch.md`, and `.claude/rules/agent-fragments.md` asks every skill referencing the first to reference the second; `<file>.md › <Section>` references are unchecked too."
     want: sync fails on a shared file naming one its referencing skill lacks, and on a section reference to a missing section.
-  - id: 20261122-0326
+  - id: 261122-0326
     title: The resume hook names the walking skill
     sites:
       - src/tools/agents/operations/checkAgentResume.ts:107
     why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
     want: a message naming the dispatching skill generically once another skill resumes such agents.
-  - id: 20261122-8564
+  - id: 261122-8564
     title: Nothing catches a subagent stopping with unlogged friction
     why: of 8 subagents meeting refusals and retries in one session, one logged friction.
     want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.
-  - id: 20261122-8233
+  - id: 261122-8233
     title: Hook routers duplicate payload handling and swallow failures
     sites:
       - bin/engrenage-hook/claude/actions/preToolUse.ts:5
@@ -65,14 +65,14 @@ entries:
       - src/tools/agents/operations/checkAgentHooks.ts:25
     why: both routers repeat the payload schema and stdin read; post-edit failures (broken config, ESLint crash) vanish; every hook writes its own stdout JSON; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
     want: one hook-output writer and shared hook schemas; failures reported without disturbing the session.
-  - id: 20261122-3c97
+  - id: 261122-3c97
     title: The hook directory is resolved twice, in shell and in Node
     sites:
       - src/tools/agents/utils/createHookCommand.ts:4
       - src/tools/agents/utils/resolveHookDirectory.ts:5
     why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
     want: the config lookup skipping dependencies, read by both.
-  - id: 20261122-fc25
+  - id: 261122-fc25
     title: Runtime behaviour branches on runtime names
     sites:
       - src/tools/agents/operations/checkAgents.ts:24
@@ -83,103 +83,103 @@ entries:
       - src/tools/agents/config/schemas/skillSchema.ts:35
     why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude and Codex, so a contributed runtime gets Codex's shape and leaks variables.
     want: the `agents.runtimes` contribution declares each; per-runtime renderings in separate fields.
-  - id: 20261122-f172
+  - id: 261122-f172
     title: The Codex provenance line has two owners
     sites:
       - src/tools/agents/codex/operations/syncCodexSkill.ts:60
       - src/tools/agents/operations/migrateSkillFiles.ts:25
     why: built in `syncCodexSkill` and `createCodexAgentProfiles`, parsed in `migrateSkillFiles`, ownership judged again in `checkAgents`, which ignores former provenances.
     want: one owner of the format and the ownership test.
-  - id: 20261122-5d59
+  - id: 261122-5d59
     title: Agent usage records rest on undocumented Claude transcripts
     sites:
       - src/tools/agents/claude/operations/readClaudeTranscript.ts:68
       - bin/engrenage-hook/claude/actions/record.ts:34
     why: a format change silently zeroes the counters; `SubagentStop` fires for agents without a transcript, so a missing one is skipped unidentified.
     want: "format drift detected and reported. Related: #319."
-  - id: 20261122-0713
+  - id: 261122-0713
     title: Dispatch and resume checks read the wrong names
     sites:
       - src/tools/agents/operations/dispatchAgent.ts:40
       - src/tools/agents/operations/checkAgentResume.ts:74
     why: briefs are checked against the caller's contract names, not the target checkout's; a recipient that is no agent id resolves by role name, so other names escape the resume limit.
     want: the target's contract names; recipients resolved to agent ids.
-  - id: 20261122-f158
+  - id: 261122-f158
     title: The Claude settings prompt lists raw hook matchers
     sites:
       - src/tools/agents/claude/setup/createClaudeSettingsStep.ts:15
     want: the prompt names what each hook checks.
-  - id: 20261122-5512
+  - id: 261122-5512
     title: The worker dispatch hook misreads cross-repository ancestors and stale fields
     why: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after `gh issue edit` removed **Planning**, until claim and publish.
     want: ancestors resolved against the issue's own repository; the Blockers check reading the body too.
-  - id: 20261122-bb26
+  - id: 261122-bb26
     title: One init or sync run rebuilds the same agent templates and skill definitions many times
     sites:
       - src/tools/agents/operations/fillAgentLimits.ts:6
     why: a Codex init calls `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
     want: computed once per run and shared; a run lifecycle contract to decide first.
-  - id: 20261122-a80b
+  - id: 261122-a80b
     title: An indented `@shared-file` marker is silently left unrendered
     why: block markers match at column 0 only, so an indented one in an agent fragment renders nothing and sync passes.
     want: sync rejecting marker-like indented lines in agent fragments.
-  - id: 20261122-9e37
+  - id: 261122-9e37
     title: The dispatch hook may let a `Draft:` brief holding **Housekeeping** through
     why: the hook denies Housekeeping issues read from `Issue:` lines; a shape dispatch from a draft may rely only on the worker-side stop in the implement skill.
     want: the hook reading `Draft:` paths too, or a test showing it does.
-  - id: 20261122-7e32
+  - id: 261122-7e32
     title: The tool call log misses failed calls and some start times
     sites:
       - bin/metalbrain/hook/claude/index.ts:11
     why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
     want: failures logged; start times never lost or left behind.
-  - id: 20261122-2dff
+  - id: 261122-2dff
     title: "Open questions on token spend from #771"
     why: "#771 closed with these open; desktop base context is ~43k tokens against the CLI's 22k (#791)."
     want: 'a decision on each: a hook flagging `gh issue view` on drafted issues and long outputs, or wording; a "batch independent calls" rule for every agent; which base-context parts to disable; mergers on Sonnet (#809 H9).'
-  - id: 20261122-a4c5
+  - id: 261122-a4c5
     title: "`agents stats --all` costs disagree between role and model views"
     why: "at the #785 review, gatherers showed $0.48 but Haiku $0.18 over the same 10 runs; cause unchecked: per-model pricing, runs without a model, or a role/model join."
     want: both views summing to the same cost for the same runs, or the difference named in the output.
-  - id: 20261122-6802
+  - id: 261122-6802
     title: Forked sessions count their shared opening twice in run records
     why: 6 session pairs in `.ai/stats/` share their opening transcript; about $21.6, 2% of main cost, counted twice by `agents stats`.
     want: a forked session's record counting only what follows the fork.
-  - id: 20261122-1570
+  - id: 261122-1570
     title: Consultant freshness forces fresh consultants mid-walk
     sites:
       - data/metalbrain/skills/planning.md:15
       - src/tools/agents/operations/checkAgentResume.ts:61
     why: "`freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809)."
     want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
-  - id: 20261122-ccbe
+  - id: 261122-ccbe
     title: The budget hook's stop path has never fired on a worker
     why: landed 2026-11-20 (`6331641f3`); none of the 44 workers since crossed 120k (max 117.7k), while 11 of 99 before it did unstopped.
     want: a fixture or replay run proving a worker past the threshold budget-stops with a passing tree.
-  - id: 20261122-fc96
+  - id: 261122-fc96
     title: Self-hosted hooks go off while an agent refactors the checkout
     sites:
       - .claude/settings.json:33
     why: 'the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.'
     want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
-  - id: 20261122-52a0
+  - id: 261122-52a0
     title: Walk tuning awaits the first spec walks
     why: "#809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5)."
     want: from the first walks' measurements, decide K = 3, the leaf floor, worker continuity across leaves (H10), and whether one central walker with sequential chains in one agent and few parallel writers holds (G1, G2).
     done: each decided, or dropped as unneeded by the walk data.
-  - id: 20261122-c95f
+  - id: 261122-c95f
     title: The push deny misses `git -C <path> push`
     sites:
       - src/tools/agents/claude/constants.ts:107
     why: "`Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose."
     want: the PreToolUse git check refuses any parsed `git … push`.
-  - id: 20261122-69f8
+  - id: 261122-69f8
     title: Run records hold no review findings or rework
     sites:
       - src/tools/agents/utils/summarizeAgentTask.ts:64
     why: "#809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured."
     want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.
-  - id: 20261122-db71
+  - id: 261122-db71
     title: The budget hook opens a window on every caller message
     sites:
       - src/tools/agents/metalbrain/operations/checkBudget.ts:81

@@ -3,13 +3,13 @@ import { randomInt } from "node:crypto";
 const suffixes = 0x1_00_00;
 
 /**
- * A new backlog entry ID for `day`, missing from `taken`: the day as `YYYYMMDD`,
+ * A new backlog entry ID for `day`, missing from `taken`: the day as `YYMMDD`,
  * then 4 hex characters starting from a random value.
  *
  * @throws {Error} When `taken` holds every ID of `day`.
  */
 export function createBacklogId(taken: ReadonlySet<string>, day: Date): string {
-  const prefix = day.toISOString().slice(0, 10).replaceAll("-", "");
+  const prefix = day.toISOString().slice(2, 10).replaceAll("-", "");
 
   const start = randomInt(suffixes);
 

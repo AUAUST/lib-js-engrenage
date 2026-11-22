@@ -1,19 +1,19 @@
 purpose: Generated Vitest configuration.
 entries:
-  - id: 20261122-dfbe
+  - id: 261122-dfbe
     title: Type-only tests have no variant of their own.
     why: tests that only type-check (assertions on inferred types, run no code) are named `*.types.ts` in an app, while Vitest's typecheck mode collects `*.test-d.ts` by default and another name needs a custom `typecheck.include`. Test files are matched from location, suffix and extension parts (#155).
     want: a type-only test variant built from the same parts, run by Vitest's typecheck mode.
     done: a project can write type-only tests without configuring Vitest by hand.
-  - id: 20261122-c555
+  - id: 261122-c555
     title: Tests cannot be colocated with their sources.
     why: tests live under one tests root only; some projects keep tests beside their sources. The tests environment, its roles and the test variants (#155) assume one root; colocated tests would put test files inside `src` environments, where roles and boundaries (#150) apply.
     done: colocated tests are supported, or explicitly rejected with a reason.
-  - id: 20261122-25c2
+  - id: 261122-25c2
     title: "`engrenage vitest` hides test console output"
     why: "friction ×3: exploration `console.log` in a scratch test prints nothing under the default reporter; agents write to files or rerun with `--silent=false --reporter=verbose`."
     want: a flag of `engrenage vitest` showing console output, or that invocation named in the Environment table.
-  - id: 20261122-96e9
+  - id: 261122-96e9
     title: '`vitest --typecheck` summary prints "Type Errors no errors" beside unhandled TypeCheckErrors'
     why: friction ×1, maybe ×3 with the "type check of tests" lines; the run fails while the summary says it passed.
     want: the summary counting errors in source files; investigate the engrenage Vitest config or reporter.

@@ -1,16 +1,16 @@
 purpose: Project README content, deferred until the API stops breaking at every release.
 entries:
-  - id: 20261122-9092
+  - id: 261122-9092
     title: The README lacks the table of environments.
     why: "the table defined in plan #37 will belong in it."
     want: the table, generated from the environment definitions rather than copied by hand.
     done: the API is declared stable and the table is in the README.
-  - id: 20261122-e9a1
+  - id: 261122-e9a1
     title: The README lacks the list of supported tools.
     why: Vite, Vitest, tsdown, ESLint and Prettier.
     want: the list, kept in line with the entries engrenage actually provides.
     done: the API is declared stable and the list is in the README.
-  - id: 20261122-ef61
+  - id: 261122-ef61
     title: The README lacks the CLI reference.
     want: the reference, generated from the CLI command definitions rather than copied by hand.
     done: the API is declared stable and the reference is in the README.

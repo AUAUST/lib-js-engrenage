@@ -1,6 +1,6 @@
 purpose: The `format` section, formatter selection and formatting vocabulary.
 entries:
-  - id: 20261122-836f
+  - id: 261122-836f
     title: Format section scope and reach
     sites:
       - src/project/format/constants.ts:24
@@ -10,7 +10,7 @@ entries:
       - src/project/format/config/schemas/formatSchema.ts:47
     why: JSON has no tool domain at the conventions boundary, so it ignores `format`; callers pass the formatter though `format.formatter` selects one; synced files use the project's formatter even when the git filesystem sits above the root; `insertSpaces`/`tabSize` duplicate `indent`; complexity limits sit in the formatting section.
     want: formatter selected from config; `format` applied to JSON; one vocabulary; complexity limits in a section on how code is written (planning).
-  - id: 20261122-f0cf
+  - id: 261122-f0cf
     title: Formatter entries validate a `package` no consumer reads
     sites:
       - src/project/format/ports/FormatterEntry.ts:14

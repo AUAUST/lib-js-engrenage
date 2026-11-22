@@ -1,6 +1,6 @@
 purpose: The extension registry and extension declarations.
 entries:
-  - id: 20261122-52a1
+  - id: 261122-52a1
     title: Extension registry erases declaration types
     sites:
       - src/foundation/extensions/utils/collectExtensions.ts:74
@@ -8,31 +8,31 @@ entries:
       - src/foundation/extensions/utils/createRegistry.ts:153
     why: "`ExtensionShape` types `owns` and `contributes` as `object`, so reads cast them; the slot policy union is restated twice; per-kind and per-slot maps erase declaration and entry types. Related: #331."
     want: typed declarations and entries through the registry; one slot policy union.
-  - id: 20261122-30f7
+  - id: 261122-30f7
     title: The tsc constant is re-exported only for its extension
     sites:
       - src/tools/typescript/tsc/constants.ts:1
     why: "`roles/extension/extension-imports` keeps the extension from importing `typescript` from `#constants`, so the domain re-exports it."
     want: the extension imports the constant from its owner.
-  - id: 20261122-8f7a
+  - id: 261122-8f7a
     title: Doc tag values cannot reference globals checked against the baseline
     why: "toolkit's `@native Array.prototype.map` targets must exist in the configured baseline's lib declarations (AUAUST/lib-js-toolkit#183, #221); tag value schemas (#439) are static and see no config."
     want: a way for a tag's validation to resolve a global path against the baseline libs `createLibraryCompiler` loads.
     done: toolkit's `@native` vocabulary is settled and a reference check is designed or rejected.
-  - id: 20261122-35d0
+  - id: 261122-35d0
     title: Directive fills cache their per-run state in module-level maps
     sites:
       - src/tools/git/operations/fillIgnoreBlock.ts:60
       - src/tools/agents/operations/fillReferenceBlock.ts:57
     why: "`DirectiveFill` runs once per marker with no per-run setup, so each fill memoizes its presets or fillers in a `WeakMap` keyed by `LoadedConfig`, a lifetime `syncDirectiveBlocks` does not own; `memoizeByContext` keys by `ConfigContext` and fits neither."
     want: "`DirectiveDeclaration` loads a per-run fill factory (`(config) => fill`) that `syncDirectiveBlocks` calls once per run."
-  - id: 20261122-071c
+  - id: 261122-071c
     title: Lazy loaders may still resolve a module by its export count
     sites:
       - src/foundation/modules/utils/loadLazy.ts:30
     why: bundling adds exports to lazily loaded chunks (0.16.0 shipped `syncPackageJson, t`); built-in loaders select theirs by name, third-party ones may not.
     want: in a minor release, `loadLazy` rejects namespaces without `default`.
-  - id: 20261122-f10c
+  - id: 261122-f10c
     title: The lint rule loader in `engrenage.config.ts` is lazy only to skip ESLint tools
     sites:
       - engrenage.config.ts:36

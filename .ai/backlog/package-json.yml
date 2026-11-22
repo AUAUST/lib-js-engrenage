@@ -1,11 +1,11 @@
 purpose: Published package contents and the `package.json` fields derived by the sync `package` target.
 entries:
-  - id: 20261122-5753
+  - id: 261122-5753
     title: A stray file in `data` would ship in the published package.
     why: "the `files` field, derived by the sync `package` target, publishes the whole of `dist`, `data` and `src`; `.gitignore` already keeps such files (`.DS_Store`) out of the repository, so the risk is nearly nil: a low-priority improvement, not a bug."
     want: a decision on adding an `.npmignore` (or an equivalent mechanism) excluding stray files, and if so who owns it (engrenage's own repository only, or generated for consumers by the sync target).
     done: the safeguard is added or the decision not to is recorded; obsolete if the published `files` stop covering directories that can hold stray files.
-  - id: 20261122-8cc6
+  - id: 261122-8cc6
     title: The "No package.json found" guard repeats in five places
     sites:
       - bin/engrenage/pnpm/actions/upgrade.ts:41

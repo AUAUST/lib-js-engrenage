@@ -1,6 +1,6 @@
 purpose: Test infrastructure and coverage gaps.
 entries:
-  - id: 20261122-0cfa
+  - id: 261122-0cfa
     title: Test infrastructure gaps
     sites:
       - src/project/build/operations/createEmittedManifest.ts:25
@@ -11,7 +11,7 @@ entries:
       - tests/utils/binaryTimeout.ts:1
     why: 'tsdown and Vite hooks untested, no real build with `clean: "emitted"`; a bare timeout beside `binaryTimeout`; every warning silenced; structure output untested; `foundation/options` tested from `project/config`''s mirror; a comment below `binaryTimeout` explains instead of naming.'
     want: a build-level test; one named timeout scale; an owned logger so tests silence only expected warnings; structure test on its report; options test in its mirror; a name carrying the explanation.
-  - id: 20261122-5f69
+  - id: 261122-5f69
     title: Test setup reaches the package through workarounds
     sites:
       - tests/src/tools/eslint/roleRules.test.ts:42
@@ -22,11 +22,11 @@ entries:
       - tests/src/foundation/blocks/syncBlocks.test.src.ts:5
     why: temporary configs cannot import `@auaust/engrenage` or the tooling, so rules cross through `globalThis`; every root entry is linked; a source-only test exists because generated paths resolve `agents/constants` to the index.
     want: test configs resolve package and tooling; the link limited to published and source-mode entries; the block test through the public entry.
-  - id: 20261122-70e9
+  - id: 261122-70e9
     title: Process-spawning tests time out under concurrent agents' load
     why: "under load, spawn-based tests fail while passing alone: `runGateLocks`, `hookFailures`, `syncVscodeFiles`, `init`, `checkAgents`, `barrelDirective`, `syncDirectiveBlocks`, `codegen/config` and others hit 5000 ms in both gates and `pnpm build`, up to 4 commit attempts beside parallel sessions (friction ×11)."
     want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
-  - id: 20261122-f3bc
+  - id: 261122-f3bc
     title: Tests initialize Git repositories by hand
     sites:
       - tests/src/project/environments/environments.test.ts:179
@@ -44,7 +44,7 @@ entries:
       - tests/src/tools/eslint/createEslintConfig.test.src.ts:1595
     why: nine tests repeat the same `git init` beside `createTemporaryProject`, while `createGitRepository` covers only linked-module repositories.
     want: one test utility, or a `createTemporaryProject` option, creating the repository.
-  - id: 20261122-aab0
+  - id: 261122-aab0
     title: Test setups clone each other
     sites:
       - tests/src/tools/eslint/boundaries.test.ts:141
@@ -52,11 +52,11 @@ entries:
       - tests/src/tools/typescript/produceTsconfigInclude.test.src.ts:12
     why: temporary projects, ESLint instances and `syncProject` helpers are repeated; jscpd finds 18 test clones, also in `createEslintConfig`, `syncLefthookConfig`, `issueContract`, `issueTree`, `runGateLocalFiles`, `produceTsconfigRuntime` and `enableLinkedSource`/`findSourceExecutable`.
     want: shared builders in `tests/utils`, starting with the marked sites.
-  - id: 20261122-9d5a
+  - id: 261122-9d5a
     title: Tests reloading a project's config get cached state
-    why: "friction ×3: between two loads of one root, a rewritten `engrenage.config.ts` stays cached by Node, a deleted file stays in the cached filesystem, aliases stay memoized; agents call `loadConfig.refresh` or edit through `config.context.filesystem`. Related: `20261122-9c5f`, #57."
+    why: "friction ×3: between two loads of one root, a rewritten `engrenage.config.ts` stays cached by Node, a deleted file stays in the cached filesystem, aliases stay memoized; agents call `loadConfig.refresh` or edit through `config.context.filesystem`. Related: `261122-9c5f`, #57."
     want: a test utility that changes a temporary project and returns a freshly loaded config.
-  - id: 20261122-4b22
+  - id: 261122-4b22
     title: No test covers a resumed re-split logging once
     sites:
       - tests/src/tools/github/issues/drafts/publish.test.src.ts:809

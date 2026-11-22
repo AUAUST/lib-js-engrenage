@@ -1,6 +1,6 @@
 purpose: Generated GitHub workflows and templates.
 entries:
-  - id: 20261122-a6ef
+  - id: 261122-a6ef
     title: Nested workflows are relocated by string substitution
     sites:
       - src/tools/github/operations/renderWorkflow.ts:9
