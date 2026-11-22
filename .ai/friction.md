@@ -155,3 +155,4 @@
 - commit gate verification: commit while another session edited `.ai/scratchpad.md` — gate refused "files changed while the gate verified them"; retried
 - `pnpm engrenage sync` backlog-sites: another session's uncommitted `agents.34` sites bullet lacked a line number — sync and gate failed; added `:64`
 - `pnpm engrenage gate --worktree` verification: another session edited `.ai/backlog/agents.md` mid-run — refused "files changed while the gate verified them"; reran
+- writer dispatch: one `standard` brief bundling about 14 #809 items — budget stop at 121k; committed its work and dispatched a second writer for the rest
