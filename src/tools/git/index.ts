@@ -30,7 +30,6 @@ export { readCommit } from "#tools/git/operations/readCommit";
 export { readCommittedFile } from "#tools/git/operations/readCommittedFile";
 export { readHead } from "#tools/git/operations/readHead";
 export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
-export { resolveMainWorktree } from "#tools/git/operations/resolveMainWorktree";
 export { runGit } from "#tools/git/operations/runGit";
 // @end
 

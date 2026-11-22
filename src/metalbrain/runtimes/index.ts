@@ -14,6 +14,7 @@ export { readLatestContext } from "#metalbrain/runtimes/operations/readLatestCon
 export { readModelFacts } from "#metalbrain/runtimes/operations/readModelFacts";
 export { readThoroughnessLimits } from "#metalbrain/runtimes/operations/readThoroughnessLimits";
 export { recordCallStart } from "#metalbrain/runtimes/operations/recordCallStart";
+export { resolveMainWorktree } from "#metalbrain/runtimes/operations/resolveMainWorktree";
 export { scanTranscriptTail } from "#metalbrain/runtimes/operations/scanTranscriptTail";
 export { writeHookContext } from "#metalbrain/runtimes/operations/writeHookContext";
 // @end
@@ -101,4 +102,6 @@ export { weighAgentUsage } from "#metalbrain/runtimes/utils/weighAgentUsage";
 // @barrel ports
 export type * from "#metalbrain/runtimes/ports/AgentDispatcher";
 export type * from "#metalbrain/runtimes/ports/AgentRuntime";
+export type * from "#metalbrain/runtimes/ports/HostCheck";
+export type * from "#metalbrain/runtimes/ports/HostChecks";
 // @end

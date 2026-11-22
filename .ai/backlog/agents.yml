@@ -70,7 +70,7 @@ entries:
     title: Agent usage records rest on undocumented Claude transcripts
     sites:
       - src/tools/agents/claude/operations/readClaudeTranscript.ts:68
-      - bin/engrenage-hook/claude/actions/record.ts:34
+      - src/tools/metalbrain/operations/recordClaudeStop.ts:34
     why: a format change silently zeroes the counters; `SubagentStop` fires for agents without a transcript, so a missing one is skipped unidentified.
     want: "format drift detected and reported. Related: #319."
   - id: 261122-0713

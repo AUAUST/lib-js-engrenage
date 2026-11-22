@@ -1,3 +1,8 @@
+export {
+  reconcileClaudeRuns,
+  recordClaudeRun,
+} from "#tools/agents/claude/index";
+
 export { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
 export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 export { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";

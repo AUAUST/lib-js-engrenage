@@ -175,3 +175,4 @@
 - word-caps check: raising caps per instruction-writing step 7 — auto mode denied editing `.engrenage/word-caps.json`; dropped the growth instead
 - commit gate backlog sync: splitting one backlog file across two commits — gate checks staged backlog sites against the working tree; moved one site line to the other commit
 - `agents stats` stale thoroughness state: smoke-testing `metalbrain agents stats` — a pre-`opened`/`scanned` `.thoroughness.json` in `.ai/stats` fails the whole report; left it, covered by backlog 261122-737b
+- defineLazyCommand parse literals: returned `["name"]` for a literal-typed action parameter — widened to string[], no overload matched; annotated parse's return type

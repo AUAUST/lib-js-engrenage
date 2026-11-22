@@ -56,20 +56,23 @@ export const claudeHooks = freeze([
   {
     event: "SubagentStart",
     matcher: "*",
-    args: "claude SubagentStart",
+    args: "hook claude SubagentStart",
     async: true,
+    program: metalbrainHook,
   },
   {
     event: "Stop",
     matcher: "*",
-    args: "claude Stop",
+    args: "hook claude Stop",
     async: true,
+    program: metalbrainHook,
   },
   {
     event: "SubagentStop",
     matcher: "*",
-    args: "claude SubagentStop",
+    args: "hook claude SubagentStop",
     async: true,
+    program: metalbrainHook,
   },
   {
     event: "PreToolUse",

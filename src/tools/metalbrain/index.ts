@@ -28,9 +28,10 @@ export { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBl
 export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
 export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
+export { recordClaudeStop } from "#tools/metalbrain/operations/recordClaudeStop";
 export { reportMissingExtensionRules } from "#tools/metalbrain/operations/reportMissingExtensionRules";
 export { reportSyncedAgentChecks } from "#tools/metalbrain/operations/reportSyncedAgentChecks";
-export { resolveAgentStatsDirectory } from "#tools/metalbrain/operations/resolveAgentStatsDirectory";
+export { startClaudeRun } from "#tools/metalbrain/operations/startClaudeRun";
 // @end
 
 // @barrel config/schemas

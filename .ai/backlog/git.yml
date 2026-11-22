@@ -3,7 +3,7 @@ entries:
   - id: 261122-4774
     title: Git reads assume a default repository layout
     sites:
-      - src/tools/git/operations/resolveMainWorktree.ts:6
+      - src/metalbrain/runtimes/operations/resolveMainWorktree.ts:43
       - src/tools/git/utils/readCommitMessage.ts:5
     why: the common directory is assumed to sit in the main worktree, false for submodules and separate git directories; comment lines are recognised by `#` though `core.commentChar` picks another.
     want: the main worktree from `git worktree list`; the comment character read from config.

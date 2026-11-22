@@ -1,16 +1,16 @@
+import { join } from "node:path";
+
 import { object, optional, string } from "valibot";
 
-import { mainAgent } from "#metalbrain/runtimes/constants";
+import { mainAgent, statsDirectory } from "#metalbrain/runtimes/constants";
 import {
   reconcileClaudeRuns,
   recordClaudeRun,
-} from "#tools/agents/claude/index";
-import { readHookPayload } from "#tools/agents/index";
-import { resolveAgentStatsDirectory } from "#tools/metalbrain/index";
-import { getRunContext } from "#workflows/cli/index";
+  validateHookPayload,
+} from "#tools/agents/index";
+import type { HookContext } from "#metalbrain/runtimes/index";
 
 const payloadSchema = object({
-  cwd: string(),
   session_id: string(),
   transcript_path: string(),
   agent_id: optional(string()),
@@ -18,20 +18,23 @@ const payloadSchema = object({
   agent_transcript_path: optional(string()),
 });
 
-export default async function (): Promise<void> {
+/**
+ * Stop and SubagentStop: records the stopped agent's run under the agent stats,
+ * and on the main agent's stop, the session's runs that ended without a stop.
+ */
+export async function recordClaudeStop(
+  payload: unknown,
+  { root }: HookContext,
+): Promise<void> {
   const {
-    cwd,
     session_id: session,
     transcript_path: transcript,
     agent_id: agent = mainAgent,
     agent_type: role = mainAgent,
     agent_transcript_path: agentTranscript = transcript,
-  } = await readHookPayload(payloadSchema, "Claude Code");
+  } = validateHookPayload(payloadSchema, payload, "Claude Code");
 
-  const directory = await resolveAgentStatsDirectory(
-    cwd,
-    getRunContext().reporter,
-  );
+  const directory = join(root, statsDirectory);
 
   await recordClaudeRun(
     directory,

@@ -1,4 +1,5 @@
 import { defineLazyCommand } from "#workflows/cli/index";
+import type { HostChecks } from "#metalbrain/runtimes/index";
 
 export default defineLazyCommand({
   configure(command) {
@@ -7,6 +8,9 @@ export default defineLazyCommand({
     );
   },
   action() {
-    return import("#bin/engrenage-hook/claude/actions/subagentStart");
+    return import("#bin/metalbrain/hook/claude/actions/hostCheck");
+  },
+  parse(): [keyof HostChecks] {
+    return ["startRun"];
   },
 });

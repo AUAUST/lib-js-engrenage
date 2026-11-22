@@ -196,6 +196,7 @@ github:
   entries:
     - 261122-a6ef
     - 261122-af90
+    - 261122-d761
 init:
   purpose: Init steps and their step context.
   entries:

@@ -234,18 +234,23 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
 
   expect(JSON.stringify(hooks)).not.toContain("engrenage agents claude hook");
 
-  for (const event of [
-    "PreToolUse",
-    "PostToolUse",
-    "SubagentStart",
-    "Stop",
-    "SubagentStop",
-  ]) {
+  for (const [event, count] of [
+    ["PreToolUse", 2],
+    ["PostToolUse", 2],
+    ["SubagentStart", 1],
+    ["Stop", 1],
+    ["SubagentStop", 1],
+  ] as const) {
     const owned = (hooks[event] as { hooks: { command: string }[] }[])
       .flatMap((group) => group.hooks)
-      .filter(({ command }) => command.includes("engrenage-hook claude "));
+      .filter(({ command }) => {
+        return (
+          command.includes("engrenage-hook claude ") ||
+          command.includes("metalbrain hook claude ")
+        );
+      });
 
-    expect(owned, event).toHaveLength(1);
+    expect(owned, event).toHaveLength(count);
   }
 
   await syncClaudeSettings(config);

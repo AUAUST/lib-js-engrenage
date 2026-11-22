@@ -4,6 +4,7 @@ import {
   checkThoroughness,
   isThoroughnessLevel,
   parseToolPayload,
+  resolveMainWorktree,
 } from "#metalbrain/runtimes/index";
 
 export default async function ({ level }: { level: string }): Promise<void> {
@@ -16,7 +17,7 @@ export default async function ({ level }: { level: string }): Promise<void> {
   const payload = parseToolPayload(JSON.parse(await text(process.stdin)));
 
   const context = await checkThoroughness(level)(payload, {
-    root: process.cwd(),
+    root: await resolveMainWorktree(process.cwd()),
     time,
   });
 
