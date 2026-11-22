@@ -852,7 +852,7 @@ test("sets up Codex with backlog guidance without installing coding rules", asyn
   );
 
   expect(project.read("AGENTS.override.md")).toContain(
-    "<code>.ai/backlog/*.md</code>",
+    "<code>.ai/backlog/*.yml</code>",
   );
 
   expect(project.read(".ai/backlog/index.md")).toContain(
@@ -908,7 +908,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
   expect(project.read("AGENTS.override.md")).toContain(
-    "<code>.ai/backlog/*.md</code>",
+    "<code>.ai/backlog/*.yml</code>",
   );
 
   expect(project.read(".claude/settings.json")).toContain(

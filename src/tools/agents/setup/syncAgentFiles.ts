@@ -4,9 +4,6 @@ import { syncFiles } from "#foundation/blocks/index";
 import { syncCodexInstructions } from "#tools/agents/codex/index";
 import {
   attributionRules,
-  backlogCategoriesHeading,
-  backlogIndex,
-  backlogTemplate,
   mainSharedDirectory,
   mainSharedFiles,
   retiredRules,
@@ -21,12 +18,13 @@ import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
+import { migrateBacklogCategories } from "#tools/agents/operations/migrateBacklogCategories";
 import { migrateInstructionLocations } from "#tools/agents/operations/migrateInstructionLocations";
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
+import { renderBacklogIndex } from "#tools/agents/operations/renderBacklogIndex";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
 import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
-import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
 import { listFormerReferences } from "#tools/agents/utils/listFormerReferences";
@@ -216,35 +214,11 @@ async function installMainSharedFiles(config: {
   }
 }
 
-async function migrateBacklogIndex(filesystem: Filesystem) {
-  const content = await filesystem.read(backlogIndex);
-
-  if (
-    content === undefined ||
-    content.includes(formatReferenceMarker(backlogTemplate))
-  ) {
-    return;
-  }
-
-  const lines = content.split("\n");
-  const heading = lines.indexOf(backlogCategoriesHeading);
-
-  if (heading === -1) {
-    throw new Error(
-      `${backlogIndex} has no "${backlogCategoriesHeading}" heading: add it below the instructions so sync can own them`,
-    );
-  }
-
-  await filesystem.write(
-    backlogIndex,
-    formatBacklogIndex(lines[0] ?? "", lines.slice(heading + 1)),
-  );
-}
-
 /**
- * Syncs agent files when an agent is preferred: migrations, attribution rules,
- * the main session's shared files, generated skill and rule files and Codex
- * instructions. The `blocks` target fills their `@reference` blocks.
+ * Syncs agent files when an agent is preferred: migrations, the backlog
+ * index, attribution rules, the main session's shared files, generated skill
+ * and rule files and Codex instructions. The `blocks` target fills their
+ * `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { resolve, context } = loaded;
@@ -271,7 +245,9 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await removeRetiredRules(config.filesystem);
 
-  await migrateBacklogIndex(config.filesystem);
+  await migrateBacklogCategories(config.filesystem, new Date());
+
+  await renderBacklogIndex(config.filesystem);
 
   await syncAttributionRules(config);
 

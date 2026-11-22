@@ -157,14 +157,14 @@ export default {
         },
       },
       {
-        name: "backlog-sites",
+        name: "backlog",
         stage: "check",
         async load() {
           const {
-            checkBacklogSites,
-          } = await import("#tools/agents/setup/checkBacklogSites");
+            checkBacklog,
+          } = await import("#tools/agents/setup/checkBacklog");
 
-          return checkBacklogSites;
+          return checkBacklog;
         },
       },
       {

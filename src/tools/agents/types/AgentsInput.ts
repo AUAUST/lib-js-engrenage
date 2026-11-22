@@ -67,7 +67,7 @@ export interface AgentsInput {
     hook?: (boolean | undefined)
   } | undefined)
   /**
-   * Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by `engrenage gate` for backlog entries.
+   * Length budgets in words of prose only, checked by the agent hooks (`engrenage agents <agent> hook`) for issues and comments, and by the `backlog` sync check for backlog entries.
    * Sections such as **Prerequisites** and **Tests** have no budget.
    */
   budgets?: ({
@@ -97,7 +97,7 @@ export interface AgentsInput {
      */
     comment?: (number | undefined)
     /**
-     * Words of one entry of `.ai/backlog/*.md`.
+     * Words of the prose of one entry of `.ai/backlog/*.yml`.
      * @default 100
      */
     backlogEntry?: (number | undefined)

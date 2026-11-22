@@ -1,0 +1,68 @@
+purpose: Upstream @auaust/toolkit decisions that may affect engrenage.
+entries:
+  - id: 20261122-cd9e
+    title: Pending toolkit decisions may need engrenage support.
+    why: none is a requirement yet; each is settled in its toolkit issue first.
+    want: "engrenage's script setup and generated workflows include the barrel check if it joins the shared CI sequence (AUAUST/lib-js-toolkit#110 question 6); build-time stripping of helper metadata and identity looseners (#116 question 1 option A, #149 question 5) and translation injection without bundling (#119 question 3), possibly as tsdown plugins; empty module entries no longer emitting `.d.mts` files that fail `typecheck:dist` (toolkit backlog `merge.18`)."
+    done: each decision states whether engrenage must change, and the resulting requirements are separate entries.
+  - id: 20261122-5b51
+    title: "`empty` does not exclude `undefined` in its negative guard."
+    why: with `const value = [] as string[] | undefined`, `if (!empty(value))` narrows to `(string[] & []) | undefined`, so `undefined` is not excluded. Bug report for `@auaust/toolkit` `empty`, to be reported upstream.
+    want: "`string[]` (ideally `[string, ...string[]]`)."
+    done: the guard narrows as expected in a released toolkit version.
+  - id: 20261122-8161
+    title: "Toolkit has no `RegExp.escape` substitute, and engrenage pins `node: 24` meanwhile."
+    why: "`@auaust/toolkit` has no regex domain exposing `RegExp.escape`, which is not widely available until `ES2025` is standard."
+    want: "a toolkit regex domain with an `escape` method; engrenage then drops the `node: 24` option in `engrenage.config.ts` and relies on its own default again."
+    done: the toolkit exposes `escape` and `engrenage.config.ts` no longer sets `node`.
+  - id: 20261122-0c9e
+    title: Toolkit's `ProtocolRegistry` needs globals the baseline does not declare.
+    why: "`ProtocolRegistry` (`src/modules/protocol/types/ProtocolRegistry.ts`) uses `Symbol.dispose`, `Symbol.asyncDispose`, `Disposable` and `AsyncDisposable`, and `src/modules/math/utils/f16round.ts` `Math.f16round`, none declared by a `2026-10` baseline's libs. Decided, options weighed in #128: engrenage ships `disposable` and `float16` `src.apis` groups that never leak into a library's published declarations (#128, plan #119, verified by #127)."
+    want: toolkit adds `disposable` and `float16` to its `src.apis` in its own migration, once the release is out.
+    done: toolkit's `engrenage.config.ts` enables both groups.
+  - id: 20261122-ed94
+    title: Toolkit has no `error` domain for handling thrown values.
+    why: the `errors` module exports only `PipelineError`, `ReadonlyError` and `StateError`. Engrenage code that handles `unknown` thrown values works around the gap with `instanceof Error`, hand-rolled `String(value)` descriptions and try/catch blocks (`src/workflows/cli/operations/formatCommandError.ts`, `src/workflows/cli/operations/runProgram.ts`).
+    want: "an `error` domain hosting error-handling helpers; it would be the home of `20261122-e13f` and `20261122-8a49` and could absorb the existing error classes. Open: whether it replaces or sits beside `errors`."
+    done: toolkit decides whether the domain exists, and engrenage's workarounds move to what it exports or are kept with a stated reason.
+  - id: 20261122-e13f
+    title: Toolkit has no `isError` instance check.
+    why: engrenage uses `instanceof Error` on `unknown` caught values (`src/workflows/cli/operations/formatCommandError.ts`, `src/workflows/cli/operations/runProgram.ts`).
+    want: "an `isError` guard (`value is Error`), probably in the `error` domain of `20261122-ed94`. Open: whether it only checks `instanceof Error` or also covers cross-realm errors and error-like objects."
+    done: toolkit exports it and engrenage's `instanceof Error` checks use it.
+  - id: 20261122-8a49
+    title: Toolkit could offer `successful()` to run a callback and wrap the thrown value.
+    why: catching in JavaScript is awkward because the caught value is `unknown`.
+    want: "`successful(callback, onError?)`: the callback's value, or else the second argument, called with the error when a function. Options for that error: (A) the thrown value when an `Error`, else a wrapper holding it as source; (B) always the wrapper, telling whether it was an `Error`. Open: the wrapper's name and shape; whether it belongs to the `error` domain of `20261122-ed94`."
+    done: toolkit decides between the options and exports the helper, and engrenage's try/catch blocks around `unknown` errors use it.
+  - id: 20261122-996d
+    title: Toolkit could offer `describe()` and a debug-representation protocol.
+    why: engrenage hand-rolls `String(value)` descriptions of thrown values (`src/workflows/cli/operations/formatCommandError.ts`); the existing hooks (`toJSON`, `valueOf`, `toString`, Node's custom symbols) may fall short, and toolkit's `protocol` module (`ProtocolRegistry`) is a possible home.
+    want: "(1) `describe()`, turning any value into a useful debug-log representation; (2) a debug-representation protocol, alongside those hooks, letting any value customize how it represents itself, which `describe()` consumes. Open: whether the protocol builds on the existing hooks, a toolkit symbol, or both; whether `describe()` lives in the `error` domain of `20261122-ed94` or a general one."
+    done: toolkit decides on both requests and engrenage's hand-rolled descriptions use `describe()`.
+  - id: 20261122-0bc7
+    title: Toolkit could offer a `semver` domain.
+    why: toolkit provides utilities, not frameworks, so a consistent set of semver tools, not a semver class.
+    want: a `semver` domain parsing, comparing and manipulating semantic versions, ideally wrapping or re-exporting a well-known semver library under toolkit's conventions. Parsing returns major, minor, patch and optional variants (alpha, beta, rc) as structured objects or tuples, which the other helpers take instead of raw strings; no class with a method per operation.
+  - id: 20261122-4b40
+    title: Toolkit could offer a `hasValue` helper.
+    why: in JavaScript it is hard and inconvenient to distinguish a missing key from one explicitly set to `undefined` without verbose checks.
+    want: a helper in the object domain checking whether an object has a specific value set for a given key. It returns `false` if the compared value is undefined but the key is missing. For any value other than undefined it equals `object?.[key] === value`; it should most likely rely on `SameValueZero` equality semantics, which treat `NaN` as equal to itself without distinguishing `-0` and `+0`. Name not settled.
+  - id: 20261122-20f7
+    title: Toolkit could offer a `constant()` deep-freeze helper.
+    want: "a `constant()` helper that deep-freezes an object so it is immutable at every level, and fails on values that cannot be frozen (`Map`, `Set`, `WeakMap`, `WeakSet` and the like) instead of silently leaving them mutable. Open: the name, the error thrown for unfreezable values, handling of cycles, and the typing (deeply `readonly`)."
+    done: toolkit decides and exports it.
+  - id: 20261122-09ed
+    title: No natural string comparator exists upstream.
+    why: 'engrenage keeps its own `compareNaturally` in `src/tools/typescript/utils/compareNaturally.ts`, an `Intl.Collator` comparator (`numeric: true`, `sensitivity: "base"`) so generated re-exports follow perfectionist''s natural order.'
+    want: a natural string comparator in toolkit; sort with it and delete the private `compareNaturally`.
+  - id: 20261122-c8c0
+    title: No "exactly one element" helper exists.
+    why: "`src/tools/typescript/utils/resolveImportSpecifier.ts` collects candidates, destructures `[first, ...others]` and throws on none or several, a pattern that recurs wherever exactly one match is expected."
+    want: a toolkit helper returning the only element and failing with a described error on several (optionally on none); use it here.
+  - id: 20261122-f129
+    title: "`isArray` does not narrow readonly lists"
+    sites:
+      - src/project/config/operations/createProjectConfig.ts:50
+    why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to, so engrenage keeps a local guard.
+    want: "`isArray` narrowing readonly lists upstream; then the local guard deleted."

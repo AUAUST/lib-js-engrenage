@@ -17,7 +17,6 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
-import { measureEntries } from "#workflows/gate/operations/measureEntries";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import { runSteps } from "#workflows/gate/operations/runSteps";
 import type { LoadedConfig } from "#project/config/index";
@@ -360,11 +359,7 @@ async function verify(
     failures.push(changed);
   }
 
-  if (!agents) {
-    return { failures, warnings: [...duplicates, ...stepWarnings] };
-  }
-
-  if (failures.length === 0) {
+  if (agents && failures.length === 0) {
     await mkdir(dirname(stamp), { recursive: true });
 
     await writeFile(
@@ -373,14 +368,7 @@ async function verify(
     );
   }
 
-  return {
-    failures,
-    warnings: [
-      ...(await measureEntries(config, files)),
-      ...duplicates,
-      ...stepWarnings,
-    ],
-  };
+  return { failures, warnings: [...duplicates, ...stepWarnings] };
 }
 
 export async function runGate(

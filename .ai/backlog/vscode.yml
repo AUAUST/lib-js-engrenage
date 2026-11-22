@@ -1,0 +1,7 @@
+purpose: Synced VS Code files.
+entries:
+  - id: 20261122-9f14
+    title: "`addRecommendations` repeats `mergeSetting`'s array insertion"
+    sites:
+      - src/tools/vscode/setup/syncVscodeFiles.ts:41
+    want: one array merge serving both files.

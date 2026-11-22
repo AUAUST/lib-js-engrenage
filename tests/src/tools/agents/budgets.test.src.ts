@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { measureEditedFile } from "#tools/agents/operations/measureEditedFile";
 import { measureGithubCommand } from "#tools/agents/operations/measureGithubCommand";
 import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
 import { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
@@ -43,60 +42,6 @@ describe("budgets", () => {
     });
 
     await expect(loadBudgets(project.root)).rejects.toThrow("debtEntry");
-  });
-
-  test("warns on a backlog entry over budget and not on one within", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default {};\n",
-      ".ai/backlog/tools.md": `# tools\n\n## 1. Short\n\n- why: ${words(5)}\n\n## 2. Long\n\n- why: ${words(120)}\n`,
-    });
-
-    const findings = await measureEditedFile(
-      project.root,
-      project.resolve(".ai/backlog/tools.md"),
-      await loadBudgets(project.root),
-    );
-
-    expect(findings).toMatchObject([
-      {
-        subject: "2. Long",
-        kind: "backlogEntry",
-        budget: 100,
-      },
-    ]);
-  });
-
-  test("keeps a fenced heading line inside its entry", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default {};\n",
-      ".ai/backlog/tools.md": `# tools\n\n## 1. Fenced\n\n- why: ${words(110)}\n\n\`\`\`md\n## Not an entry\n${words(110)}\n\`\`\`\n`,
-    });
-
-    const findings = await measureEditedFile(
-      project.root,
-      project.resolve(".ai/backlog/tools.md"),
-      await loadBudgets(project.root),
-    );
-
-    expect(findings).toMatchObject([{ subject: "1. Fenced" }]);
-  });
-
-  test("ignores files that hold no budgeted entries", async () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default {};\n",
-      ".ai/backlog/index.md": `## Categories\n\n${words(200)}\n`,
-    });
-
-    expect(
-      await measureEditedFile(
-        project.root,
-        project.resolve(".ai/backlog/index.md"),
-        await loadBudgets(project.root),
-      ),
-    ).toEqual([]);
   });
 
   test("measures the prose sections of a gh issue body", async () => {
@@ -164,7 +109,12 @@ describe("budgets", () => {
     reportBudgetFindings([], { mode: "deny", event: "PreToolUse" });
 
     const [warn, deny] = write.mock.calls.map(([chunk]) => {
-      return JSON.parse(String(chunk)) as Record<string, any>;
+      return JSON.parse(String(chunk)) as {
+        hookSpecificOutput: {
+          additionalContext?: string;
+          permissionDecision?: string;
+        };
+      };
     });
 
     expect(write.mock.calls).toHaveLength(2);

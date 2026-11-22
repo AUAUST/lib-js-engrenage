@@ -1,0 +1,14 @@
+purpose: Lefthook integration.
+entries:
+  - id: 20261122-f043
+    title: "`lefthook.yml` is read and written at the project root"
+    sites:
+      - src/tools/lefthook/constants.ts:5
+    why: in a monorepo sub-package it belongs at the git root.
+    want: the git root, or a documented limit (planning).
+  - id: 20261122-9d4f
+    title: The Lefthook key is still named `local`
+    sites:
+      - src/tools/lefthook/constants.ts:10
+    why: the command runs every `everyone` gate step.
+    done: "needs planning: renaming makes sync remove the old key from existing `lefthook.yml` files."

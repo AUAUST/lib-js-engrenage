@@ -14,7 +14,7 @@ Paths below are relative to the project root. Before editing a file, read and fo
 | --- | --- |
 | <code>.*.ts</code> | <code>.claude/rules/project-map.md</code> |
 | <code>.*.ts</code> | <code>.claude/rules/project-map/tooling.md</code> |
-| <code>.ai/backlog/*.md</code> | <code>.claude/rules/backlog.md</code> |
+| <code>.ai/backlog/*.yml</code> | <code>.claude/rules/backlog.md</code> |
 | <code>.ai/backlog/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/budgets.md</code> |
 | <code>.ai/issues/**</code> | <code>.claude/rules/issue-drafts.md</code> |

@@ -1,0 +1,11 @@
+purpose: Upstream c12 configuration loader issues.
+entries:
+  - id: 20261122-8ebe
+    title: c12 type-imports its optional peer giget.
+    why: "`c12/dist/index.d.mts` imports `DownloadTemplateOptions` from `giget`, an optional peer engrenage does not install, so `skipLibCheck: false` fails with TS2307: in engrenage's dist check an ambient module in `global.d.ts` stands in; consumers have none (#340)."
+    want: c12 stops type-importing giget from its public types (or engrenage moves from `c12@4.0.0-rc.3` to the stable `c12@4`, if fixed there).
+    done: the `giget` module is deleted from `global.d.ts`, and a consumer without `skipLibCheck` type-checks.
+  - id: 20261122-8495
+    title: A config importing a stale project barrel fails without the hand fix
+    why: c12's jiti loads a missing barrel export as `undefined` and drops a missing module's importer, so `explainStaleBarrel` (#595) cannot explain a consumer config importing its own barrels, such as toolkit's `#tooling/barrels/index`.
+    want: config loading reports these as Node does, or names the stale barrel.

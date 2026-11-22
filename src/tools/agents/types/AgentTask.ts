@@ -14,7 +14,7 @@ export interface AgentTask {
    */
   readonly draft?: string;
   /**
-   * The `<category>.<n>` of each of the brief's `Backlog:` lines.
+   * The entry ID of each of the brief's `Backlog:` lines.
    */
   readonly backlog?: readonly string[];
   readonly outcome?: AgentOutcome;

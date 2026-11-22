@@ -139,7 +139,7 @@
 - Bash cat on long scratchpad reports: read a 45 kB synthesis with cat — output spilled to a file twice; re-read it with Read
 - Run records for budget-hook coverage: needed when `checkBudget` started to judge "0 budget stops" — no record or doc dates the hook; took it from `git log` on `checkBudget.ts` (6331641f3, 2026-11-20 23:01)
 - engrenage gate backlog-sites: a `file:36-46` line range in a sites bullet — refused, only `file:line` spans; listed each line
-- engrenage gate --worktree in the main checkout: gated agents.26 work — failed on another session's uncommitted budget defaults (`budgets.test.src.ts`) and on a test failing at HEAD; checked each failure against my diff
+- engrenage gate --worktree in the main checkout: gated 20261122-a4c5 work — failed on another session's uncommitted budget defaults (`budgets.test.src.ts`) and on a test failing at HEAD; checked each failure against my diff
 - `pnpm engrenage sync` after deleting a module a barrel lists: sync and codegen both failed loading the stale barrel — removed its export line by hand, then ran sync and codegen
 - Agent `isolation: "worktree"`: dispatched a writer and a worker expecting a worktree at `HEAD` — branch started at `6ab2fc08`, an older commit; agents checked out the briefed `Base:` detached
 - Agent dispatch hook: `Issue: #809` brief line — refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line
@@ -153,8 +153,10 @@
 - Bash safety check: zsh `${(f)…}` loop with `cat` only, no removal — refused as unresolvable removal; reran as plain listing commands
 - shell-trap hook: `echo ======` separator — refused as `=` command-path expansion; quoted it
 - commit gate verification: commit while another session edited `.ai/scratchpad.md` — gate refused "files changed while the gate verified them"; retried
-- `pnpm engrenage sync` backlog-sites: another session's uncommitted `agents.34` sites bullet lacked a line number — sync and gate failed; added `:64`
+- `pnpm engrenage sync` backlog-sites: another session's uncommitted `20261122-69f8` sites bullet lacked a line number — sync and gate failed; added `:64`
 - `pnpm engrenage gate --worktree` verification: another session edited `.ai/backlog/agents.md` mid-run — refused "files changed while the gate verified them"; reran
 - writer dispatch: one `standard` brief bundling about 14 #809 items — budget stop at 121k; committed its work and dispatched a second writer for the rest
 - zsh `=word` expansion: echoed `======` as a separator — shell hook refused it; quoted the separator
 - BSD sed `0,/re/` range: used the GNU-only first-match address — no-op on macOS; replaced with a plain substitution
+- walking budget stop: handover commit of a leaf whose remaining work is what the gate checks (#813 backlog data, lint) — commit gate refuses it; skill forbids resuming the stopped agent, asked the user
+- shell-trap hook: `echo ====` separator — refused as `=` command-path expansion; reworded it

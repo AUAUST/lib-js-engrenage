@@ -10,9 +10,9 @@ Deferred questions, bugs, tasks and improvements.
 
 ## Entries
 
-- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, then write its bullets under the heading it adds; move one by adding it to its new category, removing the old one and updating references to it.
-- Cite an entry by the ID its heading holds, only within this repository.
+- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, then fill in the entry it adds; move one by adding it to its new category, removing the old one and updating references to it.
+- Cite an entry by its `id`, only within this repository.
 - Write the title as the claim: the problem or need, stated exactly.
-- Follow it with keyword bullets: `sites` (each code site as `file:line`, when the work has any), then at most three of `why` (context), `want` (expected outcome), `done` (completion or obsolescence condition). Drop a bullet the title already states.
-- Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories and their index links.
+- Follow it with `sites` (each code site as `<path>:<line>`, when the work has any), then at most three items across `why` (context), `want` (expected outcome) and `done` (completion or obsolescence condition), each a text or a list. Drop a key the title already states.
+- Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories.
 - Once a GitHub issue tracks an entry's work, remove the entry, or reduce it to the work the issue leaves here and link the issue.

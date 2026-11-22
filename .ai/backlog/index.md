@@ -14,51 +14,51 @@ Deferred questions, bugs, tasks and improvements.
 
 ## Entries
 
-- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, then write its bullets under the heading it adds; move one by adding it to its new category, removing the old one and updating references to it.
-- Cite an entry by the ID its heading holds, only within this repository.
+- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, then fill in the entry it adds; move one by adding it to its new category, removing the old one and updating references to it.
+- Cite an entry by its `id`, only within this repository.
 - Write the title as the claim: the problem or need, stated exactly.
-- Follow it with keyword bullets: `sites` (each code site as `file:line`, when the work has any), then at most three of `why` (context), `want` (expected outcome), `done` (completion or obsolescence condition). Drop a bullet the title already states.
-- Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories and their index links.
+- Follow it with `sites` (each code site as `<path>:<line>`, when the work has any), then at most three items across `why` (context), `want` (expected outcome) and `done` (completion or obsolescence condition), each a text or a list. Drop a key the title already states.
+- Update existing entries instead of duplicating them. Remove resolved or obsolete entries; delete empty categories.
 - Once a GitHub issue tracks an entry's work, remove the entry, or reduce it to the work the issue leaves here and link the issue.
 
 <!-- @end -->
 
 ## Open categories
 
-- [c12](c12.md): Upstream c12 configuration loader issues.
-- [claude-code](claude-code.md): Upstream Claude Code harness behavior.
-- [eslint-import-context](eslint-import-context.md): Upstream eslint-import-context dependency and type issues.
-- [eslint](eslint.md): Upstream ESLint API limitations.
-- [toolkit](toolkit.md): Upstream @auaust/toolkit decisions that may affect engrenage.
-- [configuration](configuration.md): Project configuration contract: loading, environments, option shapes and list options.
-- [typescript](typescript.md): Generated tsconfigs: checks, variant resolution and shipped type declarations.
-- [tsdown](tsdown.md): Generated tsdown build configuration: entries, outputs and declaration files.
-- [package-json](package-json.md): Published package contents and fields derived by the sync `package` target.
-- [file-editing](file-editing.md): In-memory editing of JSON and YAML files in the codegen tooling.
-- [readme](readme.md): Project README content, deferred until the API stops breaking at every release.
-- [coding-style](coding-style.md): Local coding conventions and linting.
-- [utils](utils.md): Shared helpers and their placement.
-- [vitest](vitest.md): Generated Vitest configuration.
-- [structure](structure.md): Project structure description, its report and the tooling generated from it.
-- [changesets](changesets.md): Changesets configuration and presets.
-- [github](github.md): Generated GitHub workflows and templates.
-- [agent-instructions](agent-instructions.md): Shared agent instructions, skills and backlog conventions.
-- [gate](gate.md): The commit gate and its process locks.
-- [processes](processes.md): Spawned processes, binary and module resolution.
-- [extensions](extensions.md): The extension registry and extension declarations.
-- [cli](cli.md): Command definitions, registration and program runs.
-- [tests](tests.md): Test infrastructure and coverage gaps.
-- [format](format.md): The `format` section, formatter selection and formatting vocabulary.
-- [prettier](prettier.md): The Prettier tool domain: layout plugin, layout conventions and formatting runs.
-- [filesystem](filesystem.md): The filesystem abstraction, globbing and glob anchoring.
-- [git](git.md): The Git tool domain: repository layout, commit reading and Git-owned ignore globs.
-- [agents](agents.md): Agent runtime integrations: hooks, runtime names and skill rendering.
-- [vscode](vscode.md): Synced VS Code files.
-- [lefthook](lefthook.md): Lefthook integration.
-- [pnpm](pnpm.md): pnpm integration and package-manager scripts.
-- [init](init.md): Init steps and their step context.
-- [sync](sync.md): `project/sync` target ordering and sync products.
-- [eslint-conventions](eslint-conventions.md): ESLint rules and conventions engrenage ships.
-- [docs](docs.md): Doc tag declarations and the readers of tagged source.
-- [issues](issues.md): GitHub issue drafts, checks and planning commands.
-- [spec-migration](spec-migration.md): Breakage the #809 spec-leaf migration knowingly causes, until handled.
+- [agent-instructions](agent-instructions.yml): Shared agent instructions, skills and the backlog conventions.
+- [agents](agents.yml): Agent runtime integrations: hooks, runtime names and skill rendering.
+- [c12](c12.yml): Upstream c12 configuration loader issues.
+- [changesets](changesets.yml): Changesets configuration and presets.
+- [claude-code](claude-code.yml): Upstream Claude Code harness behavior.
+- [cli](cli.yml): Command definitions, registration and program runs.
+- [coding-style](coding-style.yml): Local coding conventions and linting.
+- [configuration](configuration.yml): Project configuration contract: loading, environments, option shapes and list options.
+- [docs](docs.yml): `project/docs`: doc tag declarations and the readers of tagged source.
+- [eslint-conventions](eslint-conventions.yml): ESLint rules and conventions engrenage ships.
+- [eslint-import-context](eslint-import-context.yml): Upstream eslint-import-context dependency and type issues.
+- [eslint](eslint.yml): Upstream ESLint API limitations.
+- [extensions](extensions.yml): The extension registry and extension declarations.
+- [file-editing](file-editing.yml): In-memory editing of JSON and YAML files in the codegen tooling.
+- [filesystem](filesystem.yml): The filesystem abstraction, globbing and glob anchoring.
+- [format](format.yml): The `format` section, formatter selection and formatting vocabulary.
+- [gate](gate.yml): The commit gate and its process locks.
+- [git](git.yml): The Git tool domain: repository layout, commit reading and Git-owned ignore globs.
+- [github](github.yml): Generated GitHub workflows and templates.
+- [init](init.yml): Init steps and their step context.
+- [issues](issues.yml): GitHub issue drafts, checks and planning commands.
+- [lefthook](lefthook.yml): Lefthook integration.
+- [package-json](package-json.yml): Published package contents and the `package.json` fields derived by the sync `package` target.
+- [pnpm](pnpm.yml): pnpm integration and package-manager scripts.
+- [prettier](prettier.yml): The Prettier tool domain: layout plugin, layout conventions and formatting runs.
+- [processes](processes.yml): Spawned processes, binary and module resolution.
+- [readme](readme.yml): Project README content, deferred until the API stops breaking at every release.
+- [spec-migration](spec-migration.yml): Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume.
+- [structure](structure.yml): Project structure description, its report and the tooling generated from it.
+- [sync](sync.yml): `project/sync` target ordering and sync products.
+- [tests](tests.yml): Test infrastructure and coverage gaps.
+- [toolkit](toolkit.yml): Upstream @auaust/toolkit decisions that may affect engrenage.
+- [tsdown](tsdown.yml): Generated tsdown build configuration: entries, outputs and declaration files.
+- [typescript](typescript.yml): Generated tsconfigs: checks, variant resolution and shipped type declarations.
+- [utils](utils.yml): Shared helpers and their placement.
+- [vitest](vitest.yml): Generated Vitest configuration.
+- [vscode](vscode.yml): Synced VS Code files.

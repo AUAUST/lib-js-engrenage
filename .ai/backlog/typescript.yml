@@ -1,0 +1,101 @@
+purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
+entries:
+  - id: 20261122-6458
+    title: Generate the `src.apis` declarations at build time instead of committing them.
+    why: "`pnpm support codegen apis` commits generated copies of TypeScript's `lib.dom.d.ts` subsets in `data/apis/`. Generating them into `dist` during the build, from entrypoints referencing TypeScript's lib, would commit no generated file and follow the installed TypeScript on each release. Only a quick look was taken during #101: it needs a build hook that reads `typescript` (a devDependency, not a runtime one) and an export mapping for `dist`, and was not clearly simple."
+    done: the idea is adopted (and `--check` plus the `data/apis/` generated files are removed) or rejected with a reason.
+  - id: 20261122-8617
+    title: Several `src.apis` groups are not generated yet.
+    why: "#101 leaves out `structuredClone`, `fetch`, `WebAssembly` (a `declare namespace` the generator does not index) and messaging, their `lib.dom.d.ts` closure being the whole DOM (~37,800 lines via `Transferable` and `HTMLFormElement`); `URLPattern`, `navigator`, `WebSocket` and `BroadcastChannel` are undecided (#101 questions). `url` pulls in browser-only `URL.createObjectURL`; `crypto` (~560 lines) and `performance` (~490) exceed common use."
+    want: "read `lib.webworker.d.ts` instead (`fetch` ~1,500 lines, `WebAssembly` ~1,650, `Transferable` ~7,500), add a stop list with narrowed replacements, or leave them out. Recommended in #101: `lib.webworker.d.ts`, the stop list decided separately."
+    done: each of these APIs is generated, or ruled out.
+  - id: 20261122-b752
+    title: Enabling one `src.apis` group declares the globals of the groups it shares types with.
+    why: declarations used by several groups live in `data/apis/shared/common.d.ts`, so enabling `url` also declares `ReadableStream` and the other shared roots even when `streams` is not enabled. Types are harmless but the global surface is wider than the selected groups.
+    done: shared roots are split so a group declares only its own roots and their closure, or the wider surface is accepted.
+  - id: 20261122-93b7
+    title: "`generateEditions` and `generateApiDeclarations` are monolithic modules."
+    sites:
+      - scripts/codegen/operations/generateEditions.ts:134
+      - scripts/codegen/operations/generateApiDeclarations.ts:38
+    why: "`generateEditions` still matches, resolves and formats in one function with nested callbacks and its own schema; `generateApiDeclarations` mixes reading, resolving and writing, reading the lib directory `parseEditionLibrary` also reads through a private `readLibraryText`: what #141 targets."
+    want: a structure separating reading libraries, compat data, candidate-key resolution and writing, with schemas, types and constants in their own modules and the shared reading in one place.
+    done: neither module mixes these concerns and no nesting beyond one callback level remains.
+  - id: 20261122-f493
+    title: "`esMemberCompatKeys` is a hand-maintained table of about 60 near-duplicate entries."
+    sites:
+      - scripts/codegen/constants.ts:19
+    why: '`generateEditions` fails with "add it to `esMemberCompatKeys` or `esInterfaceAliases`" on each new lib declaration lacking a web-features key, so the table is hand-edited after each failure; entries repeat a key per interface (twenty `X.@@toStringTag`, `Intl.NumberFormatPartTypeRegistry.*`) and compat paths verbatim: generated data in disguise'
+    want: "group entries by pattern or interface; move the table beside the generated `src/project/baseline/editions/constants.ts` data; or derive more keys from web-features. Open: whether it can be generated at all, depending on how web-features names these members."
+    done: each key appears once and maintaining the table needs no per-interface duplication.
+  - id: 20261122-7e84
+    title: ES library selection and baseline month logic rest on assumptions
+    sites:
+      - src/tools/typescript/operations/produceTsconfigTypes.ts:47
+      - src/tools/typescript/operations/produceTsconfigTypes.ts:87
+      - src/project/baseline/utils/includesEsLibrary.ts:5
+      - src/project/baseline/utils/listEsSelections.ts:13
+      - src/project/baseline/utils/addMonths.ts:5
+      - src/project/baseline/entry.ts:1
+      - scripts/codegen/operations/generateApiDeclarations.ts:231
+    why: "`esnext.*`, `ESNext`, `DOM` never count as a group; candidate months follow the selection rule, not the selection; lib name from the `lib.<name>.d.ts` convention; `addMonths` can return 2026-02-31; the removed prefix is stated apart from `listDefaultTypes`; `./baseline` exposes `addMonths`, `findCurrentMonth`, `listEsSelections`, which no consumer imports; the `editions` type repeats in three modules."
+    want: lib name declared beside its group; one source for type prefixes; valid dates; candidates from the selection; the entry trimmed to consumed helpers.
+  - id: 20261122-65f5
+    title: Baseline and edition generation depend on upstream conventions
+    sites:
+      - src/project/baseline/utils/resolveBaselineMinimums.ts:8
+      - src/project/baseline/utils/resolveBaselineMinimums.ts:25
+      - scripts/codegen/operations/generateEditions.ts:317
+    why: V8 versions are assumed to follow Chromium majors; the first match relies on `node-releases` ascending order; the base edition is trusted as TypeScript ships it.
+    want: mapping read from a source stating it; first match chosen by version; decide on the base-edition trust (planning).
+  - id: 20261122-dfaf
+    title: Timer handle types are not isomorphic
+    sites:
+      - src/project/baseline/constants.ts:3
+    why: "handles typed `number` (DOM) while Node returns an object. Related: `20261122-8617`, `20261122-b752`."
+    want: a type holding under both signatures.
+  - id: 20261122-5075
+    title: Module-level compiler and tsconfig state keeps past results
+    sites:
+      - src/tools/typescript/operations/createLibraryCompiler.ts:41
+      - src/project/tsconfig/config/sections/tsconfigSection.ts:11
+    why: the shared compiler host is a mutable binding valid only while compilations stay synchronous; the tsconfig memo key holds only the base tsconfig content, so staged changes to an extended local tsconfig go unseen within a pass.
+    want: per-compilation host state; memo keys covering every extended file.
+  - id: 20261122-e63c
+    title: Library names use lowercase, not TypeScript's Pascal casing
+    why: libs are written `es2023.array` where TypeScript's own naming is `ES2023.Array`.
+    want: a decision on `ES2023.Array` as the canonical form in options and generated data, with case-insensitive reading if kept compatible.
+  - id: 20261122-1558
+    title: TypeScript producers special-case targets
+    sites:
+      - src/tools/typescript/operations/tsconfigProducers.ts:15
+      - src/tools/typescript/setup/syncTsconfigFiles.ts:48
+      - src/tools/typescript/operations/resolveTsconfigEnvironments.ts:13
+      - src/tools/typescript/operations/listTsconfigTargets.ts:38
+    why: most producers open with `key === "base"`; `tests.dist` does not fit the config shape, so it is special-cased in producers and `createResolvedConfig`; producers compute inherited `tests.dist` fields that sync then drops.
+    want: base and environment producers split, or declared targets; one tsconfig-key-to-config-path lookup; inherited fields skipped.
+  - id: 20261122-c397
+    title: Removed compiler options stay in the generated tsconfig files
+    sites:
+      - src/tools/typescript/setup/syncTsconfigFiles.ts:106
+    why: "configured `compilerOptions` are only ever set; one removed from the config stays and `sync --check` passes. #701 takes up the `paths` half."
+    want: the generated options recorded in `.engrenage/sync.json` (#701), so removals are deleted and checked.
+  - id: 20261122-d984
+    title: The root `global.d.ts` every generated tsconfig includes is neither linted nor formatted
+    sites:
+      - src/project/tsconfig/constants.ts:10
+      - src/tools/prettier/operations/resolvePrettierAllArguments.ts:13
+    why: 'no environment glob or engrenage resource covers it since #702 replaced the root `env.d.ts` resource; `eslint global.d.ts` reports "File ignored", `prettier:all` skips it.'
+    want: the file in the lint and format coverage while it exists.
+  - id: 20261122-8d38
+    title: Default-exported expressions are declared as `const`
+    sites:
+      - src/tools/typescript/config/sections/declarationsSection.ts:248
+    why: "`SourceDeclaration.kind` has no member for them."
+    want: a kind for default-exported expressions.
+  - id: 20261122-e356
+    title: "`typecheck` misses declaration-emit errors that only `build` reports"
+    sites:
+      - data/tsconfig/base.json:4
+    why: "generated tsconfigs set `declaration: false`, so a published signature naming an unexported type (TS4023, TS4082) passes `typecheck` and the gate, failing only `pnpm build`, as `LayoutContext` did; `tsc --noEmit --declaration` reports them."
+    want: "`declaration: true` in the generated tsconfig of each environment whose code ships declarations, or `isolatedDeclarations` where its explicit-type cost is accepted."

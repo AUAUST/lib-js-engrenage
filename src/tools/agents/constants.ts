@@ -64,7 +64,21 @@ export const builtInFillers = freeze([
   "file",
 ] as const);
 
-export const backlogIndex = ".ai/backlog/index.md" satisfies File;
+export const backlogDirectory = ".ai/backlog" satisfies Directory;
+
+export const backlogIndex = `${backlogDirectory}/index.md` satisfies File;
+
+export const backlogCategoryExtension = ".yml";
+
+export const legacyBacklogExtension = ".md";
+
+export const backlogDetailKeys = freeze(["why", "want", "done"] as const);
+
+export const backlogDetailLimit = 3;
+
+export const backlogReferenceFiles = freeze([
+  ".ai/**/*.md",
+] as const) satisfies Globs;
 
 export const backlogCategoriesHeading = "## Open categories";
 

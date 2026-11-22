@@ -532,7 +532,7 @@ test("aggregates runs of several sessions by role, model and day", async () => {
 });
 
 test("attributes a run to its brief lines and hand-back outcome", async () => {
-  const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: agents.26\nBacklog: agents.24\nBudget: standard\n\nconsultant for plan #800; Backlog: agents.1 is quoted.";
+  const brief = "Issue: AUAUST/lib-js-engrenage#809\nBacklog: 20261122-3fa9\nBacklog: agents.24\nBacklog: 20261120-00be\nBudget: standard\n\nconsultant for plan #800; Backlog: 20261101-aaaa is quoted.";
 
   const handback = [
     {
@@ -569,7 +569,7 @@ test("attributes a run to its brief lines and hand-back outcome", async () => {
 
   expect(summarizeAgentTask({ agent: "agent" }, read)).toEqual({
     issue: "AUAUST/lib-js-engrenage#809",
-    backlog: ["agents.26", "agents.24"],
+    backlog: ["20261122-3fa9", "20261120-00be"],
     outcome: "budget",
   });
 
