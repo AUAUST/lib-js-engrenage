@@ -25,6 +25,13 @@ export { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispa
 export { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/metalbrain/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
+export { guardClaudeDispatch } from "#tools/metalbrain/operations/guardClaudeDispatch";
+export { guardClaudeGit } from "#tools/metalbrain/operations/guardClaudeGit";
+export { guardClaudeGithub } from "#tools/metalbrain/operations/guardClaudeGithub";
+export { guardClaudeResume } from "#tools/metalbrain/operations/guardClaudeResume";
+export { guardClaudeShell } from "#tools/metalbrain/operations/guardClaudeShell";
+export { guardClaudeToolUse } from "#tools/metalbrain/operations/guardClaudeToolUse";
+export { limitClaudeOutput } from "#tools/metalbrain/operations/limitClaudeOutput";
 export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
 export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";

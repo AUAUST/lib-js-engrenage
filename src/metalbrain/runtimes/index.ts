@@ -50,6 +50,7 @@ export type * from "#metalbrain/runtimes/types/HookContext";
 export type * from "#metalbrain/runtimes/types/HookDefinition";
 export type * from "#metalbrain/runtimes/types/HookEvent";
 export type * from "#metalbrain/runtimes/types/HookProgram";
+export type * from "#metalbrain/runtimes/types/HookVerdict";
 export type * from "#metalbrain/runtimes/types/MessagePrice";
 export type * from "#metalbrain/runtimes/types/MessageTokens";
 export type * from "#metalbrain/runtimes/types/ModelFact";

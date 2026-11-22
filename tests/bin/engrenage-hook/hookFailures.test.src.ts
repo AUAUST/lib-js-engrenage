@@ -2,111 +2,19 @@ import { spawnSync } from "node:child_process";
 import { cpSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { object, optional, parse, string } from "valibot";
-import { afterEach, expect, test, vi } from "vitest";
+import { expect, test } from "vitest";
 
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { createProgram, runProgram } from "#workflows/cli/index";
-
-import hook from "#bin/engrenage-hook/index";
-
-vi.mock("#tools/github/issues/contract/operations/checkIssue", () => {
-  return {
-    checkIssue: vi.fn(() => {
-      return Promise.reject(new Error("GitHub request failed with 503"));
-    }),
-  };
-});
-
-vi.mock("node:stream/consumers", () => {
-  return {
-    text: vi.fn(() => {
-      return Promise.resolve(
-        JSON.stringify({
-          cwd: process.cwd(),
-          tool_name: "Agent",
-          tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
-        }),
-      );
-    }),
-  };
-});
-
-vi.mock("#tools/github/issues/api/operations/resolveGithubToken", () => {
-  return {
-    resolveGithubToken: vi.fn(() => Promise.resolve("token")),
-  };
-});
+import { readHookOutput } from "#tests/utils/readHookOutput";
 
 const openHookSource = fileURLToPath(
   import.meta.resolve("#workflows/cli/operations/openHook"),
 );
 
-const outputSchema = object({
-  systemMessage: string(),
-  hookSpecificOutput: optional(
-    object({ hookEventName: string(), additionalContext: string() }),
-  ),
-});
-
-afterEach(() => {
-  process.exitCode = undefined;
-  vi.restoreAllMocks();
-  vi.doUnmock("#bin/engrenage-hook/claude/actions/dispatch");
-});
-
-function readOutput(stdout: string) {
-  const lines = stdout.trim().split("\n");
-
-  expect(lines).toHaveLength(1);
-
-  return parse(outputSchema, JSON.parse(lines[0] ?? ""));
-}
-
-async function runDispatch(): Promise<unknown> {
-  let failure: unknown;
-
-  await runProgram(
-    createProgram("engrenage-hook", hook),
-    ["node", "engrenage-hook", "claude", "PreToolUse"],
-    {
-      onError(error) {
-        failure = error;
-      },
-    },
-  );
-
-  return failure;
-}
-
-test(
-  "claude PreToolUse with an invalid payload opens with a message",
-  { timeout: binaryTimeout },
-  () => {
-    for (const input of [
-      "{",
-      "{}",
-      '{"tool_name":"Bash","tool_input":{"command":1}}',
-    ]) {
-      const result = spawnSync(
-        process.execPath,
-        [getExecutable("engrenage-hook"), "claude", "PreToolUse"],
-        { input, encoding: "utf-8" },
-      );
-
-      expect(result.status, result.stderr).toBe(0);
-
-      expect(readOutput(result.stdout).systemMessage).toMatch(
-        /^engrenage-hook /,
-      );
-    }
-  },
-);
-
 test.each([
-  [["bogus", "PreToolUse"], "unknown command 'bogus'"],
+  [["bogus", "PostToolUse"], "unknown command 'bogus'"],
   [["claude", "Bogus"], "unknown command 'Bogus'"],
   [["claude"], "no command given"],
 ])(
@@ -121,7 +29,7 @@ test.each([
 
     expect(result.status, result.stderr).toBe(0);
 
-    expect(readOutput(result.stdout).systemMessage).toBe(
+    expect(readHookOutput(result.stdout).systemMessage).toBe(
       `engrenage-hook ${args.join(" ")} did not run, so its checks are off: ${reason}; regenerate the hooks with pnpm install, then pnpm engrenage sync`,
     );
   },
@@ -137,63 +45,6 @@ test("help stays a successful run", { timeout: binaryTimeout }, () => {
   expect(result.status, result.stderr).toBe(0);
   expect(result.stdout).toMatch(/^Usage: engrenage-hook/);
 });
-
-test(
-  "an invalid consumer config opens with a message",
-  { timeout: binaryTimeout },
-  () => {
-    const project = createTemporaryProject({
-      "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default { unknown: true };",
-    });
-
-    const result = spawnSync(
-      process.execPath,
-      [getExecutable("engrenage-hook"), "claude", "PreToolUse"],
-      {
-        input: JSON.stringify({
-          cwd: project.root,
-          tool_name: "Agent",
-          tool_input: { subagent_type: "worker", prompt: "Issue: o/r#1" },
-        }),
-        encoding: "utf-8",
-      },
-    );
-
-    expect(result.status, result.stderr).toBe(0);
-    expect(readOutput(result.stdout).systemMessage).toContain("Invalid");
-  },
-);
-
-test("a dispatch check failing to load reaches the fail-open handler", async () => {
-  vi.doMock("#bin/engrenage-hook/claude/actions/dispatch", () => {
-    throw new Error("action failed to load");
-  });
-
-  const failure = await runDispatch();
-
-  expect(process.exitCode).toBeUndefined();
-  expect(failure).toHaveProperty(["cause", "message"], "action failed to load");
-});
-
-test(
-  "PreToolUse output carries the failure as context too",
-  { timeout: binaryTimeout },
-  () => {
-    const result = spawnSync(
-      process.execPath,
-      [getExecutable("engrenage-hook"), "claude", "PreToolUse"],
-      { input: "{", encoding: "utf-8" },
-    );
-
-    const output = readOutput(result.stdout);
-
-    expect(output.hookSpecificOutput).toEqual({
-      hookEventName: "PreToolUse",
-      additionalContext: output.systemMessage,
-    });
-  },
-);
 
 test(
   "an executable whose program fails to load opens with a message",
@@ -218,18 +69,14 @@ test(
 
     const result = spawnSync(
       process.execPath,
-      [
-        project.resolve("bin/engrenage-hook/executable.ts"),
-        "claude",
-        "PreToolUse",
-      ],
+      [project.resolve("bin/engrenage-hook/executable.ts"), "claude", "Stop"],
       { input: "{}", encoding: "utf-8" },
     );
 
     expect(result.status, result.stderr).toBe(0);
 
-    expect(readOutput(result.stdout).systemMessage).toBe(
-      "engrenage-hook claude PreToolUse did not run, so its checks are off: program is broken",
+    expect(readHookOutput(result.stdout).systemMessage).toBe(
+      "engrenage-hook claude Stop did not run, so its checks are off: program is broken",
     );
   },
 );

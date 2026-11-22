@@ -43,8 +43,8 @@ entries:
   - id: 261122-8233
     title: Hook routers duplicate payload handling and swallow failures
     sites:
-      - bin/engrenage-hook/claude/actions/postToolUse.ts:52
-      - src/tools/agents/operations/reportWordCapFindings.ts:25
+      - bin/engrenage-hook/claude/actions/lint.ts:56
+      - bin/metalbrain/hook/claude/actions/thoroughness.ts:28
       - src/tools/agents/operations/checkAgentHooks.ts:25
     why: post-edit failures (broken config, ESLint crash) vanish; every hook writes its own stdout JSON; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
     want: one hook-output writer and shared hook schemas; failures reported without disturbing the session.

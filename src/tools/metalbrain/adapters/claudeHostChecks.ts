@@ -19,4 +19,18 @@ export const claudeHostChecks: HostChecks = {
 
     await recordClaudeStop(payload, context);
   },
+  async guardToolUse(payload) {
+    const {
+      guardClaudeToolUse,
+    } = await import("#tools/metalbrain/operations/guardClaudeToolUse");
+
+    return guardClaudeToolUse(payload);
+  },
+  async limitOutput(payload) {
+    const {
+      limitClaudeOutput,
+    } = await import("#tools/metalbrain/operations/limitClaudeOutput");
+
+    return limitClaudeOutput(payload);
+  },
 };

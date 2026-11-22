@@ -1,9 +1,9 @@
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { reportWordCapFindings } from "#tools/agents/operations/reportWordCapFindings";
 import { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
+import { findWordCapVerdict } from "#tools/agents/utils/findWordCapVerdict";
 import { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 
 const words = (count: number) => {
@@ -95,9 +95,7 @@ describe("word caps", () => {
     expect(measureGithubCommand("git status", wordCaps)).toEqual([]);
   });
 
-  test("warns in warn mode and denies in deny mode", () => {
-    const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
-
+  test("notices in warn mode and denies in deny mode", () => {
     const findings = [
       {
         subject: "gh issue create, Context",
@@ -107,36 +105,17 @@ describe("word caps", () => {
       },
     ] as const;
 
-    reportWordCapFindings(findings, {
-      mode: "warn",
-      event: "PreToolUse",
+    expect(findWordCapVerdict(findings, "warn")).toEqual({
+      decision: "context",
+      context: expect.stringContaining("300 words"),
+      notify: true,
     });
 
-    reportWordCapFindings(findings, {
-      mode: "deny",
-      event: "PreToolUse",
+    expect(findWordCapVerdict(findings, "deny")).toMatchObject({
+      decision: "deny",
     });
 
-    reportWordCapFindings([], { mode: "deny", event: "PreToolUse" });
-
-    const [warn, deny] = write.mock.calls.map(([chunk]) => {
-      return JSON.parse(String(chunk)) as {
-        hookSpecificOutput: {
-          additionalContext?: string;
-          permissionDecision?: string;
-        };
-      };
-    });
-
-    expect(write.mock.calls).toHaveLength(2);
-
-    write.mockRestore();
-
-    expect(warn?.hookSpecificOutput.additionalContext).toContain("300 words");
-
-    expect(warn?.hookSpecificOutput.permissionDecision).toBeUndefined();
-
-    expect(deny?.hookSpecificOutput.permissionDecision).toBe("deny");
+    expect(findWordCapVerdict([], "deny")).toBeUndefined();
   });
 });
 

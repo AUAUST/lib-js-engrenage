@@ -27,7 +27,11 @@ async function createCommand(): Promise<string> {
 
   const { hooks } = JSON.parse(project.read(".claude/settings.json"));
 
-  return hooks.PreToolUse[0].hooks[0].command;
+  const lint = (
+    hooks.PostToolUse as { matcher: string; hooks: { command: string }[] }[]
+  ).find(({ matcher }) => matcher === "Edit|MultiEdit|Write");
+
+  return lint?.hooks[0]?.command ?? "";
 }
 
 function run(
@@ -64,7 +68,7 @@ test("the generated command finds the root from a nested directory", async () =>
   const result = run(command, project.resolve("nested/deeper"));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
 });
 
 test("the generated command runs the root's program from a workspace", async () => {
@@ -78,7 +82,7 @@ test("the generated command runs the root's program from a workspace", async () 
   const result = run(command, project.resolve("theme"));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
 });
 
 test("the generated command stops at a nested worktree before its install", async () => {
@@ -131,7 +135,7 @@ test("the generated command skips a package inside node_modules", async () => {
   const result = run(command, project.resolve(inner));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
 });
 
 test("the generated command runs in CLAUDE_PROJECT_DIR", async () => {
@@ -144,7 +148,7 @@ test("the generated command runs in CLAUDE_PROJECT_DIR", async () => {
   const result = run(command, other.root, { CLAUDE_PROJECT_DIR: root });
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPreToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
 });
 
 test("the generated command runs the source program without the bin", async () => {
@@ -158,7 +162,7 @@ test("the generated command runs the source program without the bin", async () =
   const result = run(command, project.root);
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe("claude PreToolUse\n");
+  expect(result.stdout).toBe("claude PostToolUse\n");
 });
 
 test("the generated command asks for an install without bin or source", async () => {
@@ -236,7 +240,7 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
 
   for (const [event, count] of [
     ["PreToolUse", 2],
-    ["PostToolUse", 2],
+    ["PostToolUse", 3],
     ["SubagentStart", 1],
     ["Stop", 1],
     ["SubagentStop", 1],

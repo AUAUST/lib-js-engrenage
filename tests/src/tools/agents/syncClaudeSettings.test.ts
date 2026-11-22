@@ -63,7 +63,7 @@ describe("syncClaudeSettings", () => {
           {
             type: "command",
             command: expect.stringContaining(
-              "exec node_modules/.bin/engrenage-hook claude PreToolUse;",
+              "exec node_modules/.bin/metalbrain hook claude PreToolUse guardToolUse;",
             ),
           },
         ],

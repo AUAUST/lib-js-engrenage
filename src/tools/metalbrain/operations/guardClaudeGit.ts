@@ -1,9 +1,9 @@
 import { object, string } from "valibot";
 
 import { ShellSyntaxError } from "#foundation/shell/index";
-import { denyToolUse } from "#metalbrain/runtimes/index";
 import { validateHookPayload } from "#tools/agents/index";
 import { findHookBypass } from "#tools/git/index";
+import type { HookVerdict } from "#metalbrain/runtimes/index";
 
 const payloadSchema = object({
   tool_input: object({
@@ -11,15 +11,11 @@ const payloadSchema = object({
   }),
 });
 
-function findDenial(payload: unknown): string | undefined {
-  const {
-    tool_input: { command: shellCommand },
-  } = validateHookPayload(payloadSchema, payload, "Claude Code");
-
+function findDenial(command: string): string | undefined {
   let bypass;
 
   try {
-    bypass = findHookBypass(shellCommand);
+    bypass = findHookBypass(command);
   } catch (error) {
     if (!(error instanceof ShellSyntaxError)) {
       throw error;
@@ -33,12 +29,16 @@ function findDenial(payload: unknown): string | undefined {
   }
 }
 
-export default function (payload: unknown): Promise<boolean> {
-  const reason = findDenial(payload);
+/**
+ * PreToolUse on Bash: denies a command that is not valid shell or bypasses
+ * the commit gate.
+ */
+export function guardClaudeGit(payload: unknown): HookVerdict | undefined {
+  const {
+    tool_input: { command },
+  } = validateHookPayload(payloadSchema, payload, "Claude Code");
 
-  if (reason !== undefined) {
-    denyToolUse(reason);
-  }
+  const reason = findDenial(command);
 
-  return Promise.resolve(reason !== undefined);
+  return reason === undefined ? undefined : { decision: "deny", reason };
 }

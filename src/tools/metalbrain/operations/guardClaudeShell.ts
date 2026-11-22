@@ -1,7 +1,7 @@
 import { object, string } from "valibot";
 
-import { denyToolUse } from "#metalbrain/runtimes/index";
 import { findShellTrap, validateHookPayload } from "#tools/agents/index";
+import type { HookVerdict } from "#metalbrain/runtimes/index";
 
 const payloadSchema = object({
   tool_input: object({
@@ -9,16 +9,16 @@ const payloadSchema = object({
   }),
 });
 
-export default function (payload: unknown): Promise<boolean> {
+/**
+ * PreToolUse on Bash: denies a command falling into a zsh or macOS shell
+ * trap, giving its fix.
+ */
+export function guardClaudeShell(payload: unknown): HookVerdict | undefined {
   const {
     tool_input: { command },
   } = validateHookPayload(payloadSchema, payload, "Claude Code");
 
   const trap = findShellTrap(command);
 
-  if (trap !== undefined) {
-    denyToolUse(trap);
-  }
-
-  return Promise.resolve(trap !== undefined);
+  return trap === undefined ? undefined : { decision: "deny", reason: trap };
 }

@@ -1,3 +1,5 @@
+import { text } from "node:stream/consumers";
+
 import { object, string } from "valibot";
 
 import {
@@ -41,7 +43,9 @@ async function reportInfoMessages(payload: unknown) {
   }
 }
 
-export default async function (payload: unknown): Promise<void> {
+export default async function (): Promise<void> {
+  const payload: unknown = JSON.parse(await text(process.stdin));
+
   try {
     await reportInfoMessages(payload);
   } catch (error) {

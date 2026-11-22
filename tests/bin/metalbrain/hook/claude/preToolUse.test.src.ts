@@ -27,9 +27,11 @@ function runBash(command: string) {
         [
           "--import",
           `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
-          getExecutable("engrenage-hook"),
+          getExecutable("metalbrain"),
+          "hook",
           "claude",
           "PreToolUse",
+          "guardToolUse",
         ],
         (_error, stdout, stderr) => {
           resolve({

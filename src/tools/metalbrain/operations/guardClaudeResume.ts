@@ -1,13 +1,12 @@
 import { object, string } from "valibot";
 
 import {
-  denyToolUse,
   resolveHookDirectory,
   resolveMainWorktree,
+  type HookVerdict,
 } from "#metalbrain/runtimes/index";
+import { loadValidatedConfig } from "#project/config/index";
 import { checkAgentResume, validateHookPayload } from "#tools/agents/index";
-import { getRunContext } from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
 
 const payloadSchema = object({
   cwd: string(),
@@ -17,7 +16,13 @@ const payloadSchema = object({
   }),
 });
 
-export default async function (payload: unknown): Promise<boolean> {
+/**
+ * PreToolUse on SendMessage: denies resuming a subagent past its
+ * thoroughness ceiling.
+ */
+export async function guardClaudeResume(
+  payload: unknown,
+): Promise<HookVerdict | undefined> {
   const {
     cwd,
     session_id: session,
@@ -26,16 +31,9 @@ export default async function (payload: unknown): Promise<boolean> {
 
   const config = await loadValidatedConfig(
     await resolveMainWorktree(resolveHookDirectory(cwd)),
-    { reporter: getRunContext().reporter },
   );
 
   const reason = await checkAgentResume(config, { session, recipient });
 
-  if (reason === undefined) {
-    return false;
-  }
-
-  denyToolUse(reason);
-
-  return true;
+  return reason === undefined ? undefined : { decision: "deny", reason };
 }

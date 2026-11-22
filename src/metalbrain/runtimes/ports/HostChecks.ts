@@ -14,4 +14,12 @@ export interface HostChecks {
    * Stop and SubagentStop: records the stopped agent's run.
    */
   readonly recordRun: HostCheck;
+  /**
+   * PreToolUse, blocking: denies a tool call the host's guards refuse.
+   */
+  readonly guardToolUse: HostCheck;
+  /**
+   * PostToolUse: notices a shell output past the host's output limit.
+   */
+  readonly limitOutput: HostCheck;
 }

@@ -45,11 +45,19 @@ export const claudeHooks = freeze([
   {
     event: "PreToolUse",
     matcher: "Bash|Agent|Task|SendMessage",
-    args: "claude PreToolUse",
+    args: "hook claude PreToolUse guardToolUse",
+    program: metalbrainHook,
   },
   {
     event: "PostToolUse",
-    matcher: "Bash|Edit|MultiEdit|Write",
+    matcher: "Bash",
+    args: "hook claude PostToolUse limitOutput",
+    async: true,
+    program: metalbrainHook,
+  },
+  {
+    event: "PostToolUse",
+    matcher: "Edit|MultiEdit|Write",
     args: "claude PostToolUse",
     async: true,
   },

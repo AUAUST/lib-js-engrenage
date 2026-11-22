@@ -892,7 +892,7 @@ test("uses an interactive selection for this init without rewriting an existing 
   expect(project.read("CLAUDE.md")).toBe("@AGENTS.md\n");
 
   expect(project.read(".claude/settings.json")).toContain(
-    "engrenage-hook claude PreToolUse",
+    "metalbrain hook claude PreToolUse guardToolUse",
   );
 
   expect(printed()).toContainEqual(

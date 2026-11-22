@@ -5,6 +5,7 @@ export {
 
 export { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
 export { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
+export { findWordCapVerdict } from "#tools/agents/utils/findWordCapVerdict";
 export { formatAgentAggregate } from "#tools/agents/utils/formatAgentAggregate";
 export { formatAgentOutcomes } from "#tools/agents/utils/formatAgentOutcomes";
 export { formatAgentRuns } from "#tools/agents/utils/formatAgentRuns";
@@ -38,7 +39,6 @@ export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 export { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
-export { reportWordCapFindings } from "#tools/agents/operations/reportWordCapFindings";
 export { startAgentRun } from "#tools/agents/operations/startAgentRun";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
 export { validateHookPayload } from "#tools/agents/operations/validateHookPayload";
