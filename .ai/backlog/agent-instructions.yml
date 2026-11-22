@@ -132,7 +132,7 @@ entries:
     want: "the 2026-11-22 atomic-design review's stages #811 leaves out: a brief command over source adapters, commands owning their usage fragment; no own Document AST, no class inheritance of content. Record core, facts and the instruction registry: #823, #826, #827."
     done: a planner settles these stages once #823 lands, or the user drops them
   - id: 261122-24d8
-    title: Undecided whether agents find records through file paths or only through metalbrain list and search commands
-    why: Instructions name record files for grep; planned list and search commands could return dense matches by category or mention instead
-    want: Decide per record kind whether instructions name its files, its commands, or both, and rewrite the pointers once the commands exist
-    done: Each record kind's instructions name only the access the decision keeps
+    title: Record instructions name file paths while metalbrain commands cannot yet read or edit every record
+    why: Decided 2026-11-22 — commands over files once they cover every operation, since grep over YAML returns lines without their entry and category and dense command output costs fewer tokens
+    want: Instructions name only the record commands, dropping the file paths, for each kind whose list, search, update, move and remove commands exist
+    done: No instruction sends agents to a record file for an operation a command covers

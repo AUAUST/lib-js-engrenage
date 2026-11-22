@@ -8,6 +8,8 @@ order: 25
 
 ## Analysis
 
+Keep the ideal as the direction, and take the smallest step that meets the current need while keeping every later step toward the ideal open. Build ahead of the need only what this step would otherwise have to undo.
+
 In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
 
 <!-- @file .claude/skills/analysis/analysis.md -->
