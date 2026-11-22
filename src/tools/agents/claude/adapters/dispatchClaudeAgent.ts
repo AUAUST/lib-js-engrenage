@@ -8,7 +8,7 @@ import {
 } from "valibot";
 
 import { spawnProcess } from "#foundation/processes/index";
-import { claudeBinary } from "#tools/agents/claude/constants";
+import { claudeBinary } from "#metalbrain/runtimes/constants";
 import type { AgentDispatch, AgentReport } from "#metalbrain/runtimes/index";
 
 const resultSchema = looseObject({

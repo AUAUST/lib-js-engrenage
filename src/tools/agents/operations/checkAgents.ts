@@ -4,12 +4,12 @@ import {
   listStaleSkillFiles,
   syncFrontmatter,
 } from "#metalbrain/instructions/index";
-import { loadFormatter } from "#project/format/index";
 import {
   claudeAgentsDir,
   claudeFile,
   claudeSkillsDir,
-} from "#tools/agents/claude/constants";
+} from "#metalbrain/runtimes/constants";
+import { loadFormatter } from "#project/format/index";
 import { agentsFile } from "#tools/agents/constants";
 import { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";

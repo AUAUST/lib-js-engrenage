@@ -2,13 +2,13 @@ import { join } from "node:path";
 
 import { object, optional, string } from "valibot";
 
-import { mainAgent, statsDirectory } from "#metalbrain/runtimes/constants";
 import {
-  reconcileClaudeRuns,
-  recordClaudeRun,
+  mainAgent,
+  statsDirectory,
   validateHookPayload,
-} from "#tools/agents/index";
-import type { HookContext } from "#metalbrain/runtimes/index";
+  type HookContext,
+} from "#metalbrain/runtimes/index";
+import { reconcileClaudeRuns, recordClaudeRun } from "#tools/agents/index";
 
 const payloadSchema = object({
   session_id: string(),

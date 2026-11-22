@@ -5,7 +5,7 @@ import { validate } from "#foundation/options/index";
 import {
   claudeHooks,
   claudeSettingsFile,
-} from "#tools/agents/claude/constants";
+} from "#metalbrain/runtimes/constants";
 import { matchesHookEntry } from "#tools/agents/utils/matchesHookEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Agent, AgentCheckFinding } from "#metalbrain/runtimes/index";

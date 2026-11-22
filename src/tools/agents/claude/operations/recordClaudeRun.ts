@@ -6,13 +6,13 @@ import {
 import { parseJson } from "#foundation/json/index";
 import {
   parseThoroughnessState,
+  readClaudeTranscript,
+  summarizeAgentCalls,
   thoroughnessExtension,
+  writeAgentRun,
   type AgentRun,
   type AgentRunThoroughness,
 } from "#metalbrain/runtimes/index";
-import { readClaudeTranscript } from "#tools/agents/claude/operations/readClaudeTranscript";
-import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
-import { summarizeAgentCalls } from "#tools/agents/utils/summarizeAgentCalls";
 import { summarizeAgentTask } from "#tools/agents/utils/summarizeAgentTask";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

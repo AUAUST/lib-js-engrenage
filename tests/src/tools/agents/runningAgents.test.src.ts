@@ -1,14 +1,12 @@
 import { expect, test } from "vitest";
 
 import { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/index";
+import { readAgentRun } from "#metalbrain/runtimes/operations/readAgentRun";
+import { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
+import { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+import { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import {
-  readClaudeAgentMeta,
-  reconcileClaudeRuns,
-} from "#tools/agents/claude/index";
-import { readAgentRun } from "#tools/agents/operations/readAgentRun";
-import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
-import { startAgentRun } from "#tools/agents/operations/startAgentRun";
+import { reconcileClaudeRuns } from "#tools/agents/claude/index";
 
 test("reads running agents from JSON and legacy plain-text markers", async () => {
   const project = createTemporaryProject({

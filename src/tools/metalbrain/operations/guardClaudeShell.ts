@@ -1,7 +1,10 @@
 import { object, string } from "valibot";
 
-import { findShellTrap, validateHookPayload } from "#tools/agents/index";
-import type { HookVerdict } from "#metalbrain/runtimes/index";
+import {
+  findShellTrap,
+  validateHookPayload,
+  type HookVerdict,
+} from "#metalbrain/runtimes/index";
 
 const payloadSchema = object({
   tool_input: object({

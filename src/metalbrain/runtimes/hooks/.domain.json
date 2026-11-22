@@ -1,0 +1,3 @@
+{
+  "purpose": "The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply."
+}

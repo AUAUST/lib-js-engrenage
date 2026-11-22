@@ -2,10 +2,10 @@ import { object, optional, string } from "valibot";
 
 import {
   resolveHookDirectory,
+  validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { validateHookPayload } from "#tools/agents/index";
 import { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
 
 const payloadSchema = object({

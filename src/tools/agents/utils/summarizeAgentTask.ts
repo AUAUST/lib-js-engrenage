@@ -1,13 +1,13 @@
 import { isRecordId } from "#metalbrain/records/index";
-import { mainAgent } from "#metalbrain/runtimes/constants";
+import {
+  mainAgent,
+  type AgentOutcome,
+  type AgentRun,
+  type AgentTask,
+  type AgentTranscript,
+} from "#metalbrain/runtimes/index";
 import { reportMarkers } from "#tools/agents/constants";
 import { findBriefedIssue } from "#tools/github/index";
-import type {
-  AgentOutcome,
-  AgentRun,
-  AgentTask,
-  AgentTranscript,
-} from "#metalbrain/runtimes/index";
 
 const headerPattern = /^[A-Z][\w-]*:/u;
 

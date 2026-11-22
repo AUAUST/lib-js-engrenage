@@ -7,13 +7,13 @@ import { validate } from "#foundation/options/index";
 import { parseInstruction } from "#metalbrain/instructions/index";
 import { throwViolations } from "#metalbrain/records/index";
 import {
-  agentsFile,
   claudeAgentsDir,
   claudeFile,
   claudeRulesGlob,
   claudeSkillsDir,
   mainRole,
-} from "#tools/agents/constants";
+} from "#metalbrain/runtimes/constants";
+import { agentsFile } from "#tools/agents/constants";
 import {
   formerWordCapsFile,
   wordCapsFile,

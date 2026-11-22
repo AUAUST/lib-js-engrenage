@@ -2,7 +2,7 @@ import {
   claudeFile,
   claudeHooks,
   claudeSettingsFile,
-} from "#tools/agents/constants";
+} from "#metalbrain/runtimes/constants";
 import { syncClaudeSettings } from "#tools/metalbrain/claude/setup/syncClaudeSettings";
 import type { HookDefinition } from "#metalbrain/runtimes/index";
 import type { Step } from "#project/steps/index";

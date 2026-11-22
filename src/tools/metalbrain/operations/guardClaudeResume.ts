@@ -3,10 +3,11 @@ import { object, string } from "valibot";
 import {
   resolveHookDirectory,
   resolveMainWorktree,
+  validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { checkAgentResume, validateHookPayload } from "#tools/agents/index";
+import { checkAgentResume } from "#tools/agents/index";
 
 const payloadSchema = object({
   cwd: string(),

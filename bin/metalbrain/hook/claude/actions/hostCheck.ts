@@ -5,10 +5,12 @@ import {
   denyToolUse,
   resolveMainWorktree,
   writeHookContext,
-  type HookEvent,
-  type HookVerdict,
-  type HostCheck,
-  type HostChecks,
+} from "#metalbrain/runtimes/hooks/index";
+import type {
+  HookEvent,
+  HookVerdict,
+  HostCheck,
+  HostChecks,
 } from "#metalbrain/runtimes/index";
 
 function writeVerdict(verdict: HookVerdict, event: HookEvent) {

@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
+import { findOutputOverrun } from "#metalbrain/runtimes/utils/findOutputOverrun";
+import { findWordCapVerdict } from "#metalbrain/runtimes/utils/findWordCapVerdict";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
-import { findWordCapVerdict } from "#tools/agents/utils/findWordCapVerdict";
 import { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 
 const words = (count: number) => {

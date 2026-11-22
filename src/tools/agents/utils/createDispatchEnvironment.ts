@@ -1,6 +1,6 @@
 import { entries, record } from "@auaust/toolkit/object";
 
-import { claudeVariables } from "#tools/agents/claude/constants";
+import { claudeVariables } from "#metalbrain/runtimes/constants";
 import { removePnpmRunEnvironment } from "#tools/pnpm/index";
 
 // @debt lists the Claude variables by hand instead of reading each from its `agents.runtimes` contribution, so a contributed runtime's session variables leak into the run

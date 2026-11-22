@@ -3,10 +3,12 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import { isMissingError, resolveWithin } from "#foundation/filesystem/index";
-import { readClaudeAgentMeta } from "#tools/agents/claude/operations/readClaudeAgentMeta";
+import {
+  readClaudeAgentMeta,
+  readRunningAgents,
+  resolveAgentRunFile,
+} from "#metalbrain/runtimes/index";
 import { recordClaudeRun } from "#tools/agents/claude/operations/recordClaudeRun";
-import { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
-import { resolveAgentRunFile } from "#tools/agents/utils/resolveAgentRunFile";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

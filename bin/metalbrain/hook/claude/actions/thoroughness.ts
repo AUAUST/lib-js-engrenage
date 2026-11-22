@@ -5,7 +5,7 @@ import {
   isThoroughnessLevel,
   parseToolPayload,
   resolveMainWorktree,
-} from "#metalbrain/runtimes/index";
+} from "#metalbrain/runtimes/hooks/index";
 
 export default async function ({ level }: { level: string }): Promise<void> {
   if (!isThoroughnessLevel(level)) {

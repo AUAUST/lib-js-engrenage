@@ -8,4 +8,4 @@ export const formerWordCapsFile = `${stateDirectory}/word-budgets.json` satisfie
 export const claudeTarget = "claude";
 
 // @debt re-exported only so the extension may import it under roles/extension/extension-imports
-export { claudeFile, claudeSettingsFile } from "#tools/agents/constants";
+export { claudeFile, claudeSettingsFile } from "#metalbrain/runtimes/constants";

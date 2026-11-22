@@ -1,16 +1,13 @@
 import { looseObject, optional, string } from "valibot";
 
-import { mainAgent } from "#metalbrain/runtimes/constants";
 import {
+  mainAgent,
   resolveHookDirectory,
+  validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
-import {
-  getSkillDefinitions,
-  listActiveExtensions,
-  validateHookPayload,
-} from "#tools/agents/index";
+import { getSkillDefinitions, listActiveExtensions } from "#tools/agents/index";
 import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 
 const payloadSchema = looseObject({

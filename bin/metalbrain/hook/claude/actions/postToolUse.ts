@@ -4,7 +4,7 @@ import {
   logToolCall,
   parseToolPayload,
   resolveMainWorktree,
-} from "#metalbrain/runtimes/index";
+} from "#metalbrain/runtimes/hooks/index";
 
 export default async function (
   check?: "limitOutput" | "lintEdit",

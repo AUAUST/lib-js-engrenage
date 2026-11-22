@@ -1,5 +1,5 @@
 import { pnpmWorkspaceFile } from "#constants";
-import { metalbrainHook } from "#tools/agents/constants";
+import { metalbrainHook } from "#metalbrain/runtimes/constants";
 import { gitDirectory } from "#tools/git/constants";
 import type { HookProgram } from "#metalbrain/runtimes/index";
 

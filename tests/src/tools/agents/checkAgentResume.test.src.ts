@@ -1,10 +1,10 @@
 import { expect, test } from "vitest";
 
+import { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
+import { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
-import { startAgentRun } from "#tools/agents/operations/startAgentRun";
-import { writeAgentRun } from "#tools/agents/operations/writeAgentRun";
 
 function usage(startContext: number, peakContext: number) {
   return {

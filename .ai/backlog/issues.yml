@@ -39,7 +39,7 @@ entries:
   - id: 261122-b7a1
     title: Planning vocabulary is restated by hand in schemas
     sites:
-      - src/tools/agents/config/schemas/skillSchema.ts:27
+      - src/metalbrain/runtimes/config/schemas/skillSchema.ts:28
       - src/tools/github/config/schemas/contractNamesSchema.ts:33
     why: complexity keys and each group's meaning keys repeat the GitHub contract's meanings.
     want: entries derived from the meaning constants.

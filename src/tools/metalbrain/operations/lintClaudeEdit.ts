@@ -2,10 +2,10 @@ import { looseObject, string } from "valibot";
 
 import {
   resolveHookDirectory,
+  validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
-import { validateHookPayload } from "#tools/agents/index";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
 import {
   formatInfoMessages,

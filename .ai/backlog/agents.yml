@@ -62,13 +62,13 @@ entries:
       - src/tools/agents/operations/getSkillTemplates.ts:137
       - src/tools/agents/operations/migrateSkillFiles.ts:225
       - src/tools/agents/utils/createDispatchEnvironment.ts:7
-      - src/tools/agents/config/schemas/skillSchema.ts:35
+      - src/metalbrain/runtimes/config/schemas/skillSchema.ts:36
     why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude, so a contributed runtime gets a bare name-and-description shape and leaks variables.
     want: the `agents.runtimes` contribution declares each; per-runtime renderings in separate fields.
   - id: 261122-5d59
     title: Agent usage records rest on undocumented Claude transcripts
     sites:
-      - src/tools/agents/claude/operations/readClaudeTranscript.ts:68
+      - src/metalbrain/runtimes/operations/readClaudeTranscript.ts:64
       - src/tools/metalbrain/operations/recordClaudeStop.ts:34
     why: a format change silently zeroes the counters; `SubagentStop` fires for agents without a transcript, so a missing one is skipped unidentified.
     want: "format drift detected and reported. Related: #319."
@@ -145,7 +145,7 @@ entries:
   - id: 261122-c95f
     title: The push deny misses `git -C <path> push`
     sites:
-      - src/tools/agents/claude/constants.ts:107
+      - src/metalbrain/runtimes/constants.ts:161
     why: "`Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose."
     want: the PreToolUse git check refuses any parsed `git … push`.
   - id: 261122-69f8
@@ -157,7 +157,7 @@ entries:
   - id: 261122-db71
     title: The thoroughness hook opens a window on every caller message
     sites:
-      - src/metalbrain/runtimes/operations/checkThoroughness.ts:81
+      - src/metalbrain/runtimes/hooks/operations/checkThoroughness.ts:81
     why: "#809 S.40: only a caller message holding a new `Thoroughness:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
     want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
   - id: 261122-e4e9

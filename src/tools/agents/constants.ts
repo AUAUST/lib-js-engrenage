@@ -74,12 +74,6 @@ export const defaultOutputLimit = 10_000;
 
 export const defaultSubagentCacheTtl = "5m" as const;
 
-export const unknownModel = "unknown";
-
-export const standardTier = "standard";
-
-export const fastTier = "fast";
-
 export const defaultInstructionFiles = freeze([
   "AGENTS.md",
   ".claude/rules/**/*.md",
@@ -96,23 +90,3 @@ export const reportMarkers = freeze([
   { outcome: "linked", marker: "Linked defect:" },
   { outcome: "blocked", marker: "Blocked:" },
 ] as const);
-
-// @debt re-exports the constants of the `claude` sub-domain so `tools/metalbrain/claude` reaches them through this public role; they should move with the Claude runtime to `metalbrain/runtimes`
-export {
-  claudeAgentsDir,
-  claudeBinary,
-  claudeFile,
-  claudeHiddenAttribution,
-  claudeHookMarkers,
-  claudeHooks,
-  claudePermissions,
-  claudeRulesGlob,
-  claudeSessionVariable,
-  claudeSettingsFile,
-  claudeSkillsDir,
-  claudeStopHook,
-  claudeThoroughnessHookArgs,
-  claudeVariables,
-  mainRole,
-  metalbrainHook,
-} from "#tools/agents/claude/constants";

@@ -1,12 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { loadConfig } from "#project/config/operations/loadConfig";
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
   claudeStopHook,
   claudeThoroughnessHookArgs,
   metalbrainHook,
-} from "#tools/agents/claude/constants";
+} from "#metalbrain/runtimes/constants";
+import { loadConfig } from "#project/config/operations/loadConfig";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";

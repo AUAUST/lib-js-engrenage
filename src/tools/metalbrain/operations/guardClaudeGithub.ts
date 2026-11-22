@@ -1,11 +1,12 @@
 import { object, string } from "valibot";
 
 import {
+  findWordCapVerdict,
   resolveHookDirectory,
+  validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { findWordCapVerdict, validateHookPayload } from "#tools/agents/index";
 import {
   checkGithubWrite,
   checkIssueViews,

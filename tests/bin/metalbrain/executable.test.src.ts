@@ -10,13 +10,15 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { readHookOutput } from "#tests/utils/readHookOutput";
 
-const followedAliases = ["#bin/metalbrain/", "#metalbrain/runtimes/"];
+const hookCore = "#metalbrain/runtimes/hooks/";
 
-const followedLoads = [
-  "#bin/metalbrain/index",
-  "#bin/metalbrain/hook/",
-  "#metalbrain/runtimes/",
+const followedAliases = [
+  "#bin/metalbrain/",
+  hookCore,
+  "#metalbrain/runtimes/constants",
 ];
+
+const followedLoads = ["#bin/metalbrain/index", "#bin/metalbrain/hook/"];
 
 const allowedPrefixes = [
   "node:",
@@ -66,16 +68,16 @@ function runHook(cwd: string, event: string, input: string) {
   );
 }
 
-test("the hook's module graph loads only its domain, the cli workflow, Commander and Node builtins", () => {
+function listOutsideImports(
+  entries: readonly string[],
+  followed: readonly string[],
+  allowed: readonly string[],
+) {
   const visited = new Set<string>();
 
   const outside = new Set<string>();
 
-  const pending = [
-    fileURLToPath(
-      new URL("../../../bin/metalbrain/executable.ts", import.meta.url),
-    ),
-  ];
+  const pending = [...entries];
 
   for (let file = pending.pop(); file !== undefined; file = pending.pop()) {
     if (visited.has(file)) {
@@ -85,10 +87,10 @@ test("the hook's module graph loads only its domain, the cli workflow, Commander
     visited.add(file);
 
     for (const specifier of listRuntimeImports(file)) {
-      if (followedAliases.some((alias) => specifier.startsWith(alias))) {
+      if (followed.some((alias) => specifier.startsWith(alias))) {
         pending.push(resolveSource(specifier));
       } else if (
-        !allowedPrefixes.some((prefix) => {
+        !allowed.some((prefix) => {
           return specifier.startsWith(prefix);
         })
       ) {
@@ -97,8 +99,34 @@ test("the hook's module graph loads only its domain, the cli workflow, Commander
     }
   }
 
-  expect([...outside]).toEqual([]);
+  return { visited, outside: [...outside] };
+}
+
+test("the hook's module graph loads only its domain, the cli workflow, Commander and Node builtins", () => {
+  const { visited, outside } = listOutsideImports(
+    [
+      fileURLToPath(
+        new URL("../../../bin/metalbrain/executable.ts", import.meta.url),
+      ),
+    ],
+    followedAliases,
+    allowedPrefixes,
+  );
+
+  expect(outside).toEqual([]);
   expect(visited.size).toBeGreaterThan(5);
+});
+
+test("the call-log and budget actions load only the hook core and Node builtins", () => {
+  const { outside } = listOutsideImports(
+    ["postToolUse", "preToolUse", "thoroughness"].map((action) => {
+      return resolveSource(`#bin/metalbrain/hook/claude/actions/${action}`);
+    }),
+    ["#bin/metalbrain/hook/", hookCore],
+    ["node:"],
+  );
+
+  expect(outside).toEqual([]);
 });
 
 test(

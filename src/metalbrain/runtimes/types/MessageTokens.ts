@@ -1,4 +1,4 @@
-// @debt restates `AgentTokens` of `tools/agents`, which importing would take the hook out of its domain; one of them should derive from the other
+// @debt restates `AgentTokens` with the same keys; one of them should derive from the other
 export interface MessageTokens {
   readonly input: number;
   readonly cacheWrite5m: number;

@@ -1,9 +1,11 @@
 import { object, string } from "valibot";
 
 import { ShellSyntaxError } from "#foundation/shell/index";
-import { validateHookPayload } from "#tools/agents/index";
+import {
+  validateHookPayload,
+  type HookVerdict,
+} from "#metalbrain/runtimes/index";
 import { findHookBypass } from "#tools/git/index";
-import type { HookVerdict } from "#metalbrain/runtimes/index";
 
 const payloadSchema = object({
   tool_input: object({

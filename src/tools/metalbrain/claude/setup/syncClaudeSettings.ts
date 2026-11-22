@@ -7,14 +7,14 @@ import { entries } from "@auaust/toolkit/object";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { readJsonValue, writeJsonValue } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { jsonIndentation } from "#project/format/constants";
 import {
   claudeHiddenAttribution,
   claudeHookMarkers,
   claudeHooks,
   claudePermissions,
   claudeSettingsFile,
-} from "#tools/agents/constants";
+} from "#metalbrain/runtimes/constants";
+import { jsonIndentation } from "#project/format/constants";
 import { syncHooks } from "#tools/agents/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { SubagentCacheTtl } from "#metalbrain/runtimes/index";

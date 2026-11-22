@@ -1,23 +1,55 @@
 export {
+  blockStop,
+  checkThoroughness,
+  denyToolUse,
+  findIssuingMessage,
+  findModelFact,
+  findPriceTier,
+  isFiniteNumber,
+  isMissingFile,
+  isRecord,
+  isText,
+  isThoroughnessLevel,
+  logToolCall,
+  mainAgent,
+  measureContext,
+  parseAssistantMessages,
+  parseModelFacts,
+  parseThoroughnessLimits,
+  parseThoroughnessState,
+  parseToolPayload,
+  parseTranscriptLine,
+  priceMessage,
+  priceTokens,
+  readAppendedLines,
+  readFirstPrompt,
+  readIssuingMessage,
+  readLatestContext,
+  readModelFacts,
+  readPromptText,
+  readThoroughnessLimits,
+  recordCallStart,
+  resolveMainWorktree,
+  resolveStartFile,
+  resolveTranscript,
+  scanTranscriptTail,
+  statsDirectory,
   thoroughnessExtension,
   thoroughnessLevels,
-} from "#metalbrain/runtimes/constants";
+  writeHookContext,
+} from "#metalbrain/runtimes/hooks/index";
 
 // @barrel operations
-export { blockStop } from "#metalbrain/runtimes/operations/blockStop";
-export { checkThoroughness } from "#metalbrain/runtimes/operations/checkThoroughness";
-export { denyToolUse } from "#metalbrain/runtimes/operations/denyToolUse";
-export { logToolCall } from "#metalbrain/runtimes/operations/logToolCall";
-export { readAppendedLines } from "#metalbrain/runtimes/operations/readAppendedLines";
-export { readFirstPrompt } from "#metalbrain/runtimes/operations/readFirstPrompt";
-export { readIssuingMessage } from "#metalbrain/runtimes/operations/readIssuingMessage";
-export { readLatestContext } from "#metalbrain/runtimes/operations/readLatestContext";
-export { readModelFacts } from "#metalbrain/runtimes/operations/readModelFacts";
-export { readThoroughnessLimits } from "#metalbrain/runtimes/operations/readThoroughnessLimits";
-export { recordCallStart } from "#metalbrain/runtimes/operations/recordCallStart";
-export { resolveMainWorktree } from "#metalbrain/runtimes/operations/resolveMainWorktree";
-export { scanTranscriptTail } from "#metalbrain/runtimes/operations/scanTranscriptTail";
-export { writeHookContext } from "#metalbrain/runtimes/operations/writeHookContext";
+export { findShellTrap } from "#metalbrain/runtimes/operations/findShellTrap";
+export { listAgentSessions } from "#metalbrain/runtimes/operations/listAgentSessions";
+export { readAgentRun } from "#metalbrain/runtimes/operations/readAgentRun";
+export { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
+export { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
+export { readClaudeTranscript } from "#metalbrain/runtimes/operations/readClaudeTranscript";
+export { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+export { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
+export { validateHookPayload } from "#metalbrain/runtimes/operations/validateHookPayload";
+export { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 // @end
 
 // @barrel types
@@ -71,33 +103,23 @@ export type * from "#metalbrain/runtimes/types/ToolPayload";
 
 // @barrel utils
 export { findCommandFamily } from "#metalbrain/runtimes/utils/findCommandFamily";
-export { findIssuingMessage } from "#metalbrain/runtimes/utils/findIssuingMessage";
-export { findModelFact } from "#metalbrain/runtimes/utils/findModelFact";
-export { findPriceTier } from "#metalbrain/runtimes/utils/findPriceTier";
+export { findOutputOverrun } from "#metalbrain/runtimes/utils/findOutputOverrun";
+export { findWordCapVerdict } from "#metalbrain/runtimes/utils/findWordCapVerdict";
+export { formatAgentAggregate } from "#metalbrain/runtimes/utils/formatAgentAggregate";
 export { formatAgentCheck } from "#metalbrain/runtimes/utils/formatAgentCheck";
 export { formatAgentCost } from "#metalbrain/runtimes/utils/formatAgentCost";
+export { formatAgentGroups } from "#metalbrain/runtimes/utils/formatAgentGroups";
+export { formatAgentOutcomes } from "#metalbrain/runtimes/utils/formatAgentOutcomes";
+export { formatAgentRuns } from "#metalbrain/runtimes/utils/formatAgentRuns";
+export { formatCount } from "#metalbrain/runtimes/utils/formatCount";
+export { formatMarkdownTable } from "#metalbrain/runtimes/utils/formatMarkdownTable";
 export { hasPreferredAgents } from "#metalbrain/runtimes/utils/hasPreferredAgents";
-export { isFiniteNumber } from "#metalbrain/runtimes/utils/isFiniteNumber";
-export { isMissingFile } from "#metalbrain/runtimes/utils/isMissingFile";
-export { isRecord } from "#metalbrain/runtimes/utils/isRecord";
-export { isText } from "#metalbrain/runtimes/utils/isText";
-export { isThoroughnessLevel } from "#metalbrain/runtimes/utils/isThoroughnessLevel";
-export { measureContext } from "#metalbrain/runtimes/utils/measureContext";
 export { parseAgentRunFile } from "#metalbrain/runtimes/utils/parseAgentRunFile";
-export { parseAssistantMessages } from "#metalbrain/runtimes/utils/parseAssistantMessages";
-export { parseModelFacts } from "#metalbrain/runtimes/utils/parseModelFacts";
-export { parseThoroughnessLimits } from "#metalbrain/runtimes/utils/parseThoroughnessLimits";
-export { parseThoroughnessState } from "#metalbrain/runtimes/utils/parseThoroughnessState";
-export { parseToolPayload } from "#metalbrain/runtimes/utils/parseToolPayload";
-export { parseTranscriptLine } from "#metalbrain/runtimes/utils/parseTranscriptLine";
 export { priceAgentUsage } from "#metalbrain/runtimes/utils/priceAgentUsage";
-export { priceMessage } from "#metalbrain/runtimes/utils/priceMessage";
-export { priceTokens } from "#metalbrain/runtimes/utils/priceTokens";
-export { readPromptText } from "#metalbrain/runtimes/utils/readPromptText";
+export { resolveAgentRunFile } from "#metalbrain/runtimes/utils/resolveAgentRunFile";
 export { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/utils/resolveClaudeAgentTranscript";
 export { resolveHookDirectory } from "#metalbrain/runtimes/utils/resolveHookDirectory";
-export { resolveStartFile } from "#metalbrain/runtimes/utils/resolveStartFile";
-export { resolveTranscript } from "#metalbrain/runtimes/utils/resolveTranscript";
+export { summarizeAgentCalls } from "#metalbrain/runtimes/utils/summarizeAgentCalls";
 export { weighAgentUsage } from "#metalbrain/runtimes/utils/weighAgentUsage";
 // @end
 
@@ -106,4 +128,8 @@ export type * from "#metalbrain/runtimes/ports/AgentDispatcher";
 export type * from "#metalbrain/runtimes/ports/AgentRuntime";
 export type * from "#metalbrain/runtimes/ports/HostCheck";
 export type * from "#metalbrain/runtimes/ports/HostChecks";
+// @end
+
+// @barrel config/schemas
+export { skillSchema } from "#metalbrain/runtimes/config/schemas/skillSchema";
 // @end

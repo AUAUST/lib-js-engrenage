@@ -7,7 +7,7 @@ import {
   claudeStopHook,
   claudeThoroughnessHookArgs,
   metalbrainHook,
-} from "#tools/agents/claude/constants";
+} from "#metalbrain/runtimes/constants";
 import {
   claudeAgentFrontmatterKeys,
   claudeSkillFrontmatterKeys,

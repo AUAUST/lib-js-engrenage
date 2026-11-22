@@ -1,17 +1,15 @@
-import {
-  readModelFacts,
-  resolveMainWorktree,
-  type AgentRun,
-} from "#metalbrain/runtimes/index";
-import { claudeSessionVariable } from "#tools/agents/claude/constants";
-import { reconcileClaudeRuns } from "#tools/agents/claude/index";
+import { claudeSessionVariable } from "#metalbrain/runtimes/constants";
 import {
   formatAgentAggregate,
   formatAgentOutcomes,
   formatAgentRuns,
   listAgentSessions,
   readAgentRuns,
-} from "#tools/agents/index";
+  readModelFacts,
+  resolveMainWorktree,
+  type AgentRun,
+} from "#metalbrain/runtimes/index";
+import { reconcileClaudeRuns } from "#tools/agents/claude/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 

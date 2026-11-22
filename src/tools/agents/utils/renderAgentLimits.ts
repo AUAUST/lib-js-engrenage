@@ -1,4 +1,4 @@
-import { formatCount } from "#tools/agents/utils/formatCount";
+import { formatCount } from "#metalbrain/runtimes/index";
 import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
 
 export function renderAgentLimits(

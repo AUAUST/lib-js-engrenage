@@ -1,5 +1,5 @@
 import { validate } from "#foundation/options/index";
-import { skillSchema } from "#tools/agents/config/schemas/skillSchema";
+import { skillSchema } from "#metalbrain/runtimes/index";
 import { skillFileName } from "#tools/agents/constants";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";

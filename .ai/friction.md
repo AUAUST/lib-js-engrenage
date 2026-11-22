@@ -176,3 +176,4 @@
 - commit gate backlog sync: splitting one backlog file across two commits — gate checks staged backlog sites against the working tree; moved one site line to the other commit
 - `agents stats` stale thoroughness state: smoke-testing `metalbrain agents stats` — a pre-`opened`/`scanned` `.thoroughness.json` in `.ai/stats` fails the whole report; left it, covered by backlog 261122-737b
 - defineLazyCommand parse literals: returned `["name"]` for a literal-typed action parameter — widened to string[], no overload matched; annotated parse's return type
+- metalbrain hooks run from source: moving `metalbrain/runtimes` modules mid-task — every PreToolUse guard reported itself off until the imports settled; finished the move, no workaround

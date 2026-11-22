@@ -4,7 +4,7 @@ import {
 } from "#tools/agents/claude/constants";
 import type { Extension } from "#project/config/index";
 
-// @debt registers the Claude runtime apart from the rest of the Claude glue in `tools/metalbrain/claude`, since an extension loads only its own domain's modules and `dispatchClaudeAgent` stays here until the hook core split (#831)
+// @debt registers the Claude runtime apart from the rest of the Claude glue in `tools/metalbrain/claude`, since an extension loads only its own domain's modules: joining them drops the `toolsAgentsClaude` built-in
 /**
  * Registers the `claude` agent runtime with its headless dispatcher.
  */
