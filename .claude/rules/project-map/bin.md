@@ -12,7 +12,7 @@ bin/  (global roles: executable.ts *.ts)
 │  └─ pnpm  Package manager maintenance commands.
 ├─ engrenage-hook{claude}  Agent runtime hook commands, run directly by the runtimes' settings.
 │  └─ claude  Claude hook events.
-└─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, and the hooks the runtimes run directly from their settings.
+└─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, debt markers, and the hooks the runtimes run directly from their settings.
    ├─ agents{rules skills}  Agent lifecycle and instruction commands.
    │  ├─ rules  Install shared agent rules.
    │  └─ skills  Install shared agent skills.

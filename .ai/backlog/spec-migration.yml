@@ -49,6 +49,8 @@ entries:
       - data/metalbrain/skills/implement.md:45
       - data/metalbrain/skills/walking.md:57
       - data/metalbrain/skills/walking.md:73
-    why: "the user defers every instruction change #811's moves imply to one consolidated switch at the end; each item appends its mentions to these sites instead of dispatching a writer. #817: `engrenage agents` → `metalbrain agents`. #818: `engrenage planning` → `metalbrain planning`, `engrenage github` → `metalbrain github`."
+      - data/metalbrain/sections/environment.md:20
+      - data/metalbrain/skills/curation.md:71
+    why: "the user defers every instruction change #811's moves imply to one consolidated switch at the end; each item appends its mentions to these sites instead of dispatching a writer. #817: `engrenage agents` → `metalbrain agents`. #818: `engrenage planning` → `metalbrain planning`, `engrenage github` → `metalbrain github`. #819: `engrenage debt` → `metalbrain debt`."
     want: one writer dispatch renames every mention at these sites, then `pnpm engrenage sync` regenerates the copies.
     done: "no instruction source names a command #811 renamed."

@@ -5,7 +5,6 @@ import { expect, test } from "vitest";
 
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { getFixture } from "#tests/utils/getFixture";
 
 import manifest from "#package.json" with { type: "json" };
 
@@ -20,16 +19,14 @@ test("the executable prints its version", async () => {
 });
 
 test(
-  "the executable lists the markers of the working directory",
+  "the executable rejects `debt`, moved to `metalbrain debt`",
   { timeout: binaryTimeout },
   async () => {
-    const { stdout } = await run(process.execPath, [getExecutable(), "debt"], {
-      cwd: getFixture("debt"),
-    });
+    const failure = run(process.execPath, [getExecutable(), "debt"]);
 
-    expect(stdout.trim()).toBe(
-      "src/marked.ts:1  first marker in a source file",
-    );
+    await expect(failure).rejects.toMatchObject({
+      stderr: expect.stringContaining("unknown command 'debt'"),
+    });
   },
 );
 

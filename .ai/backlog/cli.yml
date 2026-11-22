@@ -44,3 +44,9 @@ entries:
       - src/workflows/cli/operations/explainStaleBarrel.ts:47
     why: After moving src/tools/agents/claude/extension.ts, the message for src/workflows/builtins/entry.ts said to delete the projectBuild line
     want: The message quotes the line whose specifier resolves to the missing module
+  - id: 261122-b9b9
+    title: CLI output to a closed pipe crashes with an unhandled EPIPE
+    sites:
+      - src/foundation/reports/operations/createConsoleReporter.ts:25
+    why: "piping `metalbrain debt` into `head` prints an `Unhandled 'error' event` stack and exits 1; seen during #819."
+    want: a closed stdout ends the run quietly.

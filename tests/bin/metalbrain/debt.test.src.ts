@@ -5,7 +5,7 @@ import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import debt from "#bin/engrenage/debt";
+import debt from "#bin/metalbrain/debt";
 
 beforeEach(() => {
   mockCwd(getFixture("debt"));
@@ -15,7 +15,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("engrenage debt", { timeout: binaryTimeout }, () => {
+describe("metalbrain debt", { timeout: binaryTimeout }, () => {
   test("prints one line per marker, ignoring malformed markers", async () => {
     const { messages } = await runDefinition(debt);
 

@@ -94,6 +94,7 @@ cli:
     - 261122-cfb9
     - 261122-1e77
     - 261122-9c8d
+    - 261122-b9b9
 coding-style:
   purpose: Local coding conventions and linting.
   entries:

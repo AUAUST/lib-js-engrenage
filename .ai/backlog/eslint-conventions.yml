@@ -92,7 +92,7 @@ entries:
     why: "a long-lived ESLint, such as an editor server, keeps an entry's first reading after the config changes. Related: #57."
     want: memoized per lint run.
   - id: 261122-732e
-    title: "`engrenage debt` loads every ESLint plugin to run one rule"
+    title: "`metalbrain debt` loads every ESLint plugin to run one rule"
     sites:
       - src/tools/eslint/operations/listDebtMarkers.ts:24
     why: "a cold run takes seconds. Related: #554."

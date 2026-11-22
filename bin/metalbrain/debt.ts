@@ -7,6 +7,6 @@ export default defineLazyCommand({
       .option("--json", "print the markers as JSON", false);
   },
   action() {
-    return import("#bin/engrenage/actions/debt");
+    return import("#bin/metalbrain/actions/debt");
   },
 });
