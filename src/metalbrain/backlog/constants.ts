@@ -18,7 +18,7 @@ export const backlog = freeze({
     done: "detail",
   }),
   detailLimit: 3,
-  budget: "backlogEntry",
+  wordCap: "backlogEntry",
 } as const) satisfies RecordKind;
 
 export const backlogIndex = `${backlogDirectory}/index.md` satisfies File;

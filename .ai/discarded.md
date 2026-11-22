@@ -166,7 +166,7 @@
 - planner provider check (#809 S.29): existing helper or provider per capability at planning — needs code reading the worker repeats (G.5); owners stop at domain and role
 - analysis steps in method file: steps merged into `shared/analysis.md` — main session would read ~540 words per request instead of ~150
 - main-session-only context hook: SessionStart hook injecting main-session rules — new hook mechanism, past #809 M.12.1 reach
-- word budget baseline from git HEAD: cap each role at its committed words — needs git inside sync; a ratchet file lowered by sync keeps it reproducible
-- word budget for a new role, auto-recorded: seed its cap on first measure — makes new roles free; a new role is a user decision, so the check fails until recorded
+- word cap baseline from git HEAD: cap each role at its committed words — needs git inside sync; a ratchet file lowered by sync keeps it reproducible
+- word cap for a new role, auto-recorded: seed its cap on first measure — makes new roles free; a new role is a user decision, so the check fails until recorded
 - failure clause in every rule's text (#809 L.12): name the prevented failure inline — adds words to every role against S.24; the writer names it in its report instead
 - budget hook contact detection: find the latest caller message by tail scan — re-reads up to 4 MB per call once a contact outgrows the 64 KB tail; an incremental byte offset in the budget state reads only appended lines

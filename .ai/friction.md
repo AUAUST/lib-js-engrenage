@@ -164,7 +164,7 @@
 - commit gate vitest: ENOTEMPTY rmdir node_modules/.vitest-cache right after `pnpm install --offline`, twice — retrying the commit passed
 - engrenage-hook claude: config invalid while #814 removed Codex mid-change — every hook reported "did not run", checks off for the rest of #814
 - `pnpm engrenage planning issue publish`: published three leaves with **Provides** lines — refused as naming no Model section, `check` passing; published again with the plan draft in the set
-- word-budgets check: adding 5 words to the Environment section for #815 — every role sat at its exact budget, so sync failed for 20 roles; cut 5 words elsewhere in the section instead of asking for a raise
+- word-caps check: adding 5 words to the Environment section for #815 — every role sat at its exact cap, so sync failed for 20 roles; cut 5 words elsewhere in the section instead of asking for a raise
 - planning issue create: debugger write-up under a brief keeping `.ai/issues/` untouched — drafts live only there; left the issue to the caller
 - auto mode classifier: `gh issue comment` posting scratchpad notes the user did not name — denied; relied on git history instead
 - metalbrain backlog sites: moving a file a backlog site names — no record command follows the move and sync fails; rewrote the site paths in the YAML with sed
@@ -172,3 +172,4 @@
 - writer subagent loaded AGENTS.md: auditing data/metalbrain against it — the context copy predated 4e29dca7 (no smallest-step line, old Precedence); grepped the file on disk
 - Write tool on instruction sources: rewriting `sections/analysis.md` as a subagent — harness refused .md writes as report files; used Edit and scripted replacements
 - fragment-files check: named a renamed state file not yet existing in an instruction — sync failed; kept the current path
+- word-caps check: raising caps per instruction-writing step 7 — auto mode denied editing `.engrenage/word-caps.json`; dropped the growth instead

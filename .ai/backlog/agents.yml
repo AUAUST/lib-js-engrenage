@@ -44,7 +44,7 @@ entries:
     title: Hook routers duplicate payload handling and swallow failures
     sites:
       - bin/engrenage-hook/claude/actions/postToolUse.ts:52
-      - src/tools/agents/operations/reportBudgetFindings.ts:25
+      - src/tools/agents/operations/reportWordCapFindings.ts:25
       - src/tools/agents/operations/checkAgentHooks.ts:25
     why: post-edit failures (broken config, ESLint crash) vanish; every hook writes its own stdout JSON; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
     want: one hook-output writer and shared hook schemas; failures reported without disturbing the session.
@@ -167,8 +167,8 @@ entries:
     want: the stop gate failing a gated subagent other than `writer` whose diff from its `Base:` changes an instruction source (`data/metalbrain/`, project rule, skill or agent files outside `@reference` blocks), sync output exempt.
     done: "user, 2026-11-22: not enforced while it stays the one case the fixed no-writer row caused; build the check if a non-writer edits instructions again, otherwise drop the entry."
   - id: 261122-861f
-    title: The word-budget check still treats caps as hard and raises none
+    title: The word-cap check still treats caps as hard and raises none
     sites:
-      - src/tools/metalbrain/claude/setup/checkWordBudgets.ts:135
-    why: "user, 2026-11-22: growth a request needs is expected; instruction-writing step 7 now has the writer split into supporting files, cut what the request does not need, then raise the cap. The check's overrun message still says to raise a budget only on the user's decision, and raising means editing `.engrenage/word-budgets.json` by hand."
+      - src/tools/metalbrain/claude/setup/checkWordCaps.ts:164
+    why: "user, 2026-11-22: growth a request needs is expected; instruction-writing step 7 now has the writer split into supporting files, cut what the request does not need, then raise the cap. The check's overrun message still says to raise a cap only on the user's decision, and raising means editing `.engrenage/word-caps.json` by hand."
     want: the overrun message asking for that weighing, and a command raising a role's cap to its measured count.

@@ -478,7 +478,7 @@ describe("fragment fillers", () => {
       "package.json": '{"type":"module","repository":"github:acme/consumer"}',
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"], snippetsDir: "snippets" } };',
       "snippets/@auaust/engrenage/agents/rules/git.md": "Former\n",
-      "snippets/@auaust/engrenage/metalbrain/rules/budgets.md": "Current\n",
+      "snippets/@auaust/engrenage/metalbrain/rules/word-caps.md": "Current\n",
     });
 
     const reporter = createTestReporter();

@@ -1,8 +1,8 @@
 import { isArray, isString } from "@auaust/toolkit";
 
 import { countWords } from "#foundation/markdown/index";
-import { formatBudgetFinding } from "#metalbrain/records/utils/formatBudgetFinding";
 import { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues";
+import { formatWordCapFinding } from "#metalbrain/records/utils/formatWordCapFinding";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 import type { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
@@ -44,14 +44,14 @@ function countDetails(kind: RecordKind, { loose }: RecordEntry): number {
  * Each departure of one `kind` entry, named `subject`, from the kind's schema,
  * apart from an ID another entry holds: more detail items than the kind's limit,
  * a key the schema lacks, a value of the wrong form, a site naming no file or
- * more than `budget` words.
+ * more than `wordCap` words.
  */
 export async function findRecordEntryViolations(
   filesystem: Filesystem,
   kind: RecordKind,
   subject: string,
   entry: RecordEntry,
-  budget: number,
+  wordCap: number,
 ): Promise<string[]> {
   const violations: string[] = [];
 
@@ -93,13 +93,13 @@ export async function findRecordEntryViolations(
 
   const words = countWords(prose.join("\n"));
 
-  if (words > budget) {
+  if (words > wordCap) {
     violations.push(
-      formatBudgetFinding({
+      formatWordCapFinding({
         subject,
-        kind: kind.budget,
+        kind: kind.wordCap,
         words,
-        budget,
+        cap: wordCap,
       }),
     );
   }

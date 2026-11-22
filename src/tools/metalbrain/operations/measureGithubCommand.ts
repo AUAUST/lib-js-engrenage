@@ -6,12 +6,12 @@ import {
   type GithubWrite,
 } from "#tools/github/index";
 import type {
-  BudgetFinding,
-  BudgetKind,
-  Budgets,
+  WordCapFinding,
+  WordCapKind,
+  WordCaps,
 } from "#metalbrain/records/index";
 
-const sectionKinds: Readonly<Partial<Record<string, BudgetKind>>> = {
+const sectionKinds: Readonly<Partial<Record<string, WordCapKind>>> = {
   "Goal": "goal",
   "Context": "context",
   "Done when": "doneWhen",
@@ -20,8 +20,8 @@ const sectionKinds: Readonly<Partial<Record<string, BudgetKind>>> = {
 function measureWrite(
   write: GithubWrite,
   command: string,
-  budgets: Budgets,
-): BudgetFinding[] {
+  wordCaps: WordCaps,
+): WordCapFinding[] {
   // @debt a body passed with `--body-file <path>`, piped from a draft or unreadable is not read here, so the whole command's text stands in for it.
   const body = write.body?.kind === "text" ? write.body.text : command;
 
@@ -30,30 +30,30 @@ function measureWrite(
   if (write.action === "comment") {
     const words = countWords(body);
 
-    return words > budgets.comment
+    return words > wordCaps.comment
       ? [
           {
             subject,
             kind: "comment",
             words,
-            budget: budgets.comment,
+            cap: wordCaps.comment,
           },
         ]
       : [];
   }
 
-  const findings: BudgetFinding[] = [];
+  const findings: WordCapFinding[] = [];
 
   for (const { name, content } of parseIssueBody(body).sections) {
     const kind = sectionKinds[name];
     const words = countWords(content);
 
-    if (kind !== undefined && words > budgets[kind]) {
+    if (kind !== undefined && words > wordCaps[kind]) {
       findings.push({
         subject: `${subject}, ${name}`,
         kind,
         words,
-        budget: budgets[kind],
+        cap: wordCaps[kind],
       });
     }
   }
@@ -63,8 +63,8 @@ function measureWrite(
 
 export function measureGithubCommand(
   command: string,
-  budgets: Budgets,
-): BudgetFinding[] {
+  wordCaps: WordCaps,
+): WordCapFinding[] {
   let writes;
 
   try {
@@ -78,6 +78,6 @@ export function measureGithubCommand(
   }
 
   return writes.flatMap((write) => {
-    return measureWrite(write, command, budgets);
+    return measureWrite(write, command, wordCaps);
   });
 }

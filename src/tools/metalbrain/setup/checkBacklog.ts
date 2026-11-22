@@ -18,7 +18,7 @@ export async function checkBacklog(config: LoadedConfig): Promise<void> {
     await findRecordViolations(
       config.context.filesystem,
       backlog,
-      agents.budgets[backlog.budget],
+      agents.wordCaps[backlog.wordCap],
     ),
   );
 }

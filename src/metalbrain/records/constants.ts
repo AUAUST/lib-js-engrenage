@@ -6,7 +6,7 @@ export const recordFileExtension = ".yml";
 
 export const recordIndexName = "index";
 
-export const budgetKinds = freeze([
+export const wordCapKinds = freeze([
   "goal",
   "context",
   "doneWhen",
@@ -14,11 +14,11 @@ export const budgetKinds = freeze([
   "backlogEntry",
 ] as const);
 
-export const budgetModes = freeze(["warn", "deny"] as const);
+export const wordCapModes = freeze(["warn", "deny"] as const);
 
-export const defaultBudgetMode = "warn" as const;
+export const defaultWordCapMode = "warn" as const;
 
-export const defaultBudgets = freeze({
+export const defaultWordCaps = freeze({
   goal: 150,
   context: 150,
   doneWhen: 150,

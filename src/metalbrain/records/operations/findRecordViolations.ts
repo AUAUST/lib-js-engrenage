@@ -12,7 +12,7 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 export async function findRecordViolations(
   filesystem: Filesystem,
   kind: RecordKind,
-  budget: number,
+  wordCap: number,
 ): Promise<string[]> {
   const violations: string[] = [];
 
@@ -54,7 +54,7 @@ export async function findRecordViolations(
           kind,
           subject,
           entry,
-          budget,
+          wordCap,
         )),
       );
     }

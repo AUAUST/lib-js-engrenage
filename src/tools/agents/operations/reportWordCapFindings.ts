@@ -1,19 +1,19 @@
 import {
-  formatBudgetFinding,
-  type BudgetFinding,
-  type BudgetMode,
+  formatWordCapFinding,
+  type WordCapFinding,
+  type WordCapMode,
 } from "#metalbrain/records/index";
 import { writeHookContext, type HookEvent } from "#metalbrain/runtimes/index";
 
-export function reportBudgetFindings(
-  findings: readonly BudgetFinding[],
-  { mode, event }: { mode: BudgetMode; event: HookEvent },
+export function reportWordCapFindings(
+  findings: readonly WordCapFinding[],
+  { mode, event }: { mode: WordCapMode; event: HookEvent },
 ) {
   if (findings.length === 0) {
     return;
   }
 
-  const message = findings.map(formatBudgetFinding).join("\n");
+  const message = findings.map(formatWordCapFinding).join("\n");
 
   if (mode === "warn") {
     return void writeHookContext({

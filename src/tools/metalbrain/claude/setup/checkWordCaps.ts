@@ -14,13 +14,16 @@ import {
   claudeSkillsDir,
   mainRole,
 } from "#tools/agents/constants";
-import { wordBudgetsFile } from "#tools/metalbrain/claude/constants";
+import {
+  formerWordCapsFile,
+  wordCapsFile,
+} from "#tools/metalbrain/claude/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
-const budgetsSchema = record(string(), pipe(number(), integer(), minValue(0)));
+const wordCapsSchema = record(string(), pipe(number(), integer(), minValue(0)));
 
-type WordBudgets = Record<string, number>;
+type WordCaps = Record<string, number>;
 
 function countLoadedWords(text: string): number {
   const trimmed = text.trim();
@@ -46,7 +49,7 @@ async function readStartWords(
 // @debt the main session also loads every skill and agent description through its listings, which no role counts
 async function measureRoles(
   context: LoadedConfig["context"],
-): Promise<WordBudgets> {
+): Promise<WordCaps> {
   const { filesystem } = context;
 
   let base = 0;
@@ -61,7 +64,7 @@ async function measureRoles(
     base += await readStartWords(context, file);
   }
 
-  const roles: WordBudgets = { [mainRole]: base };
+  const roles: WordCaps = { [mainRole]: base };
 
   for (const file of await filesystem.glob(`${claudeAgentsDir}/*.md`)) {
     const words = await readStartWords(context, file);
@@ -78,7 +81,7 @@ async function measureRoles(
   return roles;
 }
 
-function sortRoles(roles: WordBudgets): WordBudgets {
+function sortRoles(roles: WordCaps): WordCaps {
   return Object.fromEntries(
     Object.entries(roles).toSorted(([a], [b]) => {
       return a.localeCompare(b);
@@ -86,16 +89,42 @@ function sortRoles(roles: WordBudgets): WordBudgets {
   );
 }
 
+async function readWordCaps({
+  filesystem,
+}: LoadedConfig["context"]): Promise<string | undefined> {
+  const content = await filesystem.read(wordCapsFile);
+
+  const former = await filesystem.read(formerWordCapsFile);
+
+  if (former == null) {
+    return content;
+  }
+
+  if (content != null) {
+    throw new Error(
+      `${formerWordCapsFile} and ${wordCapsFile} both exist: keep the caps in ${wordCapsFile}, then delete ${formerWordCapsFile}`,
+    );
+  }
+
+  await filesystem.write(wordCapsFile, former);
+
+  await filesystem.remove(formerWordCapsFile);
+
+  return former;
+}
+
 /**
  * Measures each Claude role's words loaded at start, `CLAUDE.md`, `AGENTS.md`
- * and the rules without `paths`, plus its agent file or skill, against its
- * budget in `.engrenage/word-budgets.json`: seeds the file when absent, lowers
- * each budget its role went under and drops the roles gone. Does nothing unless
- * `claude` is a preferred agent.
+ * and the rules without `paths`, plus its agent file or skill, against
+ * its word cap in `.engrenage/word-caps.json`: moves the caps there from
+ * `.engrenage/word-budgets.json`, seeds the file when absent, lowers each cap
+ * its role went under and drops the roles gone. Does nothing unless `claude`
+ * is a preferred agent.
  *
- * @throws {Error} When a role exceeds its budget or has none.
+ * @throws {Error} When a role exceeds its word cap or has none, or both
+ * cap files exist.
  */
-export async function checkWordBudgets(config: LoadedConfig): Promise<void> {
+export async function checkWordCaps(config: LoadedConfig): Promise<void> {
   const { context } = config;
 
   const agents = await config.resolve("agents");
@@ -106,53 +135,50 @@ export async function checkWordBudgets(config: LoadedConfig): Promise<void> {
 
   const measured = await measureRoles(context);
 
-  const content = await context.filesystem.read(wordBudgetsFile);
+  const content = await readWordCaps(context);
 
   if (content == null) {
     return void (await context.filesystem.write(
-      wordBudgetsFile,
+      wordCapsFile,
       `${JSON.stringify(sortRoles(measured), null, 2)}\n`,
     ));
   }
 
-  const budgets: WordBudgets = validate(
-    budgetsSchema,
-    parseJson(content, wordBudgetsFile),
-    wordBudgetsFile,
+  const caps: WordCaps = validate(
+    wordCapsSchema,
+    parseJson(content, wordCapsFile),
+    wordCapsFile,
   );
 
-  const settled: WordBudgets = {};
+  const settled: WordCaps = {};
 
   const violations: string[] = [];
 
   for (const [role, words] of Object.entries(measured)) {
-    const budget = budgets[role];
+    const cap = caps[role];
 
-    if (budget === undefined) {
+    if (cap === undefined) {
       violations.push(
-        `${role}: ${words} words, no budget; once the user approved the role, record it as "${role}": ${words}`,
+        `${role}: ${words} words, no word cap; once the user approved the role, record it as "${role}": ${words}`,
       );
 
       continue;
     }
 
-    if (words > budget) {
+    if (words > cap) {
       violations.push(
-        `${role}: ${words} words, ${words - budget} over its budget of ${budget}; cut as many, or raise the budget only on the user's decision`,
+        `${role}: ${words} words, ${words - cap} over its word cap of ${cap}; cut as many, or raise the cap only on the user's decision`,
       );
     }
 
-    settled[role] = Math.min(words, budget);
+    settled[role] = Math.min(words, cap);
   }
 
   const next = `${JSON.stringify(sortRoles(settled), null, 2)}\n`;
 
   if (violations.length === 0 && next !== content) {
-    await context.filesystem.write(wordBudgetsFile, next);
+    await context.filesystem.write(wordCapsFile, next);
   }
 
-  throwViolations(
-    `Roles over their word budgets in ${wordBudgetsFile}:`,
-    violations,
-  );
+  throwViolations(`Roles over their word caps in ${wordCapsFile}:`, violations);
 }

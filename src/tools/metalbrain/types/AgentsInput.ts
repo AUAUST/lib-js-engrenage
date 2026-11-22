@@ -61,12 +61,12 @@ export interface AgentsInput {
     hook?: (boolean | undefined)
   } | undefined)
   /**
-   * Length budgets in words of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.
-   * Sections such as **Prerequisites** and **Tests** have no budget.
+   * Word caps of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.
+   * Sections such as **Prerequisites** and **Tests** have no word cap.
    */
-  budgets?: ({
+  wordCaps?: ({
     /**
-     * `warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.
+     * `warn` reports a text over its word cap to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.
      * @default `warn`
      */
     mode?: (("warn" | "deny") | undefined)

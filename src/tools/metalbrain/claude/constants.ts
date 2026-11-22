@@ -1,7 +1,9 @@
 import { stateDirectory } from "#project/config/constants";
 import type { File } from "#types/File";
 
-export const wordBudgetsFile = `${stateDirectory}/word-budgets.json` satisfies File;
+export const wordCapsFile = `${stateDirectory}/word-caps.json` satisfies File;
+
+export const formerWordCapsFile = `${stateDirectory}/word-budgets.json` satisfies File;
 
 export const claudeTarget = "claude";
 

@@ -10,21 +10,21 @@ export { writeRecordIndex } from "#metalbrain/records/operations/writeRecordInde
 // @end
 
 // @barrel types
-export type * from "#metalbrain/records/types/BudgetFinding";
-export type * from "#metalbrain/records/types/BudgetKind";
-export type * from "#metalbrain/records/types/BudgetMode";
-export type * from "#metalbrain/records/types/Budgets";
 export type * from "#metalbrain/records/types/RecordFields";
 export type * from "#metalbrain/records/types/RecordFieldType";
 export type * from "#metalbrain/records/types/RecordGroup";
 export type * from "#metalbrain/records/types/RecordKind";
 export type * from "#metalbrain/records/types/RecordLocation";
 export type * from "#metalbrain/records/types/RecordValues";
+export type * from "#metalbrain/records/types/WordCapFinding";
+export type * from "#metalbrain/records/types/WordCapKind";
+export type * from "#metalbrain/records/types/WordCapMode";
+export type * from "#metalbrain/records/types/WordCaps";
 // @end
 
 // @barrel utils
-export { formatBudgetFinding } from "#metalbrain/records/utils/formatBudgetFinding";
 export { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues";
+export { formatWordCapFinding } from "#metalbrain/records/utils/formatWordCapFinding";
 export { isRecordId } from "#metalbrain/records/utils/isRecordId";
 export { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
 export { throwViolations } from "#metalbrain/records/utils/throwViolations";

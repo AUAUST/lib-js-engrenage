@@ -30,7 +30,7 @@ export default async function (
     },
     {
       day: new Date(),
-      budget: agents.budgets[backlog.budget],
+      wordCap: agents.wordCaps[backlog.wordCap],
     },
   );
 

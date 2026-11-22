@@ -2,16 +2,16 @@ export {
   addRecord,
   createRecordGroup,
   findRecordViolations,
-  formatBudgetFinding,
+  formatWordCapFinding,
   isRecordId,
   readRecordGroups,
   throwViolations,
   writeRecordIndex,
 } from "#metalbrain/records/index";
 export type {
-  BudgetFinding,
-  BudgetKind,
-  BudgetMode,
-  Budgets,
   RecordKind,
+  WordCapFinding,
+  WordCapKind,
+  WordCapMode,
+  WordCaps,
 } from "#metalbrain/records/index";

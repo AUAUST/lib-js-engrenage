@@ -2,13 +2,13 @@ import {
   claudeFile,
   claudeSettingsFile,
   claudeTarget,
-  wordBudgetsFile,
+  wordCapsFile,
 } from "#tools/metalbrain/claude/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns `CLAUDE.md`, `.claude/settings.json` and `.engrenage/word-budgets.json`,
- * syncs Claude's settings and checks each role's word budget.
+ * Owns `CLAUDE.md`, `.claude/settings.json` and `.engrenage/word-caps.json`,
+ * syncs Claude's settings and checks each role's word cap.
  */
 export default {
   name: "tools/metalbrain/claude",
@@ -26,10 +26,10 @@ export default {
           return { file: claudeSettingsFile };
         },
       },
-      "state.wordBudgets": {
-        title: "Word budgets",
+      "state.wordCaps": {
+        title: "Word caps",
         locate(): FileLocation {
-          return { file: wordBudgetsFile };
+          return { file: wordCapsFile };
         },
       },
     },
@@ -51,15 +51,15 @@ export default {
         },
       },
       {
-        name: "word-budgets",
+        name: "word-caps",
         stage: "check",
         reads: ["agents.instructions"],
         async load() {
           const {
-            checkWordBudgets,
-          } = await import("#tools/metalbrain/claude/setup/checkWordBudgets");
+            checkWordCaps,
+          } = await import("#tools/metalbrain/claude/setup/checkWordCaps");
 
-          return checkWordBudgets;
+          return checkWordCaps;
         },
       },
     ],

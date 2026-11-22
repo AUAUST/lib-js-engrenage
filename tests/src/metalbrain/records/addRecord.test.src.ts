@@ -14,7 +14,7 @@ const notes = {
   location: { directory: ".ai/notes" },
   fields: { subject: "text", tried: "detail" },
   detailLimit: 1,
-  budget: "note",
+  wordCap: "note",
 } as const satisfies RecordKind;
 
 describe("record core", () => {
@@ -30,7 +30,7 @@ describe("record core", () => {
       notes,
       "tools",
       { subject: "A note", tried: ["one"] },
-      { day: new Date("2026-11-22"), budget: 50 },
+      { day: new Date("2026-11-22"), wordCap: 50 },
     );
 
     const [group] = await readRecordGroups(filesystem, notes);

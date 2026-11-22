@@ -10,9 +10,9 @@ import {
   unset,
 } from "#foundation/options/index";
 import {
-  budgetModes,
-  defaultBudgetMode,
-  defaultBudgets,
+  defaultWordCapMode,
+  defaultWordCaps,
+  wordCapModes,
 } from "#metalbrain/records/constants";
 import { subagentCacheTtls } from "#metalbrain/runtimes/constants";
 import {
@@ -20,7 +20,7 @@ import {
   defaultOutputLimit,
   defaultSubagentCacheTtl,
 } from "#tools/agents/constants";
-import { budgetSchema } from "#tools/metalbrain/config/schemas/budgetSchema";
+import { limitSchema } from "#tools/metalbrain/config/schemas/limitSchema";
 import { preferredSchema } from "#tools/metalbrain/config/schemas/preferredSchema";
 import { codexRemoval } from "#tools/metalbrain/constants";
 
@@ -65,7 +65,7 @@ export const agentsSchema = declareObject(
       ],
       optional: { value: defaultSubagentCacheTtl },
     }),
-    outputLimit: declare(budgetSchema, {
+    outputLimit: declare(limitSchema, {
       description: [
         "Characters of a shell command's output past which the Claude PostToolUse hook asks the agent to bound its output.",
         "An output stays in context and is read again by every later call of the session.",
@@ -91,37 +91,37 @@ export const agentsSchema = declareObject(
         optional: true,
       },
     ),
-    budgets: declareObject(
+    wordCaps: declareObject(
       {
-        mode: declare(picklist(budgetModes), {
-          description: "`warn` reports a text over budget to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
-          optional: { value: defaultBudgetMode },
+        mode: declare(picklist(wordCapModes), {
+          description: "`warn` reports a text over its word cap to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
+          optional: { value: defaultWordCapMode },
         }),
-        goal: declare(budgetSchema, {
+        goal: declare(limitSchema, {
           description: "Words of the **Goal** section of an issue.",
-          optional: { value: defaultBudgets.goal },
+          optional: { value: defaultWordCaps.goal },
         }),
-        context: declare(budgetSchema, {
+        context: declare(limitSchema, {
           description: "Words of the **Context** section of an issue.",
-          optional: { value: defaultBudgets.context },
+          optional: { value: defaultWordCaps.context },
         }),
-        doneWhen: declare(budgetSchema, {
+        doneWhen: declare(limitSchema, {
           description: "Words of the **Done when** section of an issue.",
-          optional: { value: defaultBudgets.doneWhen },
+          optional: { value: defaultWordCaps.doneWhen },
         }),
-        comment: declare(budgetSchema, {
+        comment: declare(limitSchema, {
           description: "Words of a whole issue comment.",
-          optional: { value: defaultBudgets.comment },
+          optional: { value: defaultWordCaps.comment },
         }),
-        backlogEntry: declare(budgetSchema, {
+        backlogEntry: declare(limitSchema, {
           description: "Words of the prose of one entry of `.ai/backlog/*.yml`.",
-          optional: { value: defaultBudgets.backlogEntry },
+          optional: { value: defaultWordCaps.backlogEntry },
         }),
       },
       {
         description: [
-          "Length budgets in words of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.",
-          "Sections such as **Prerequisites** and **Tests** have no budget.",
+          "Word caps of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.",
+          "Sections such as **Prerequisites** and **Tests** have no word cap.",
         ],
         optional: true,
       },
@@ -129,6 +129,7 @@ export const agentsSchema = declareObject(
   },
   {
     optional: true,
+    renamed: { budgets: "wordCaps" },
     removed: { codexHooks: codexRemoval },
   },
 );

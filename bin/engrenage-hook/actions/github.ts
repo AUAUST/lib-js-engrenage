@@ -1,7 +1,10 @@
 import { object, string } from "valibot";
 
 import { denyToolUse, resolveHookDirectory } from "#metalbrain/runtimes/index";
-import { reportBudgetFindings, validateHookPayload } from "#tools/agents/index";
+import {
+  reportWordCapFindings,
+  validateHookPayload,
+} from "#tools/agents/index";
 import {
   checkGithubWrite,
   checkIssueViews,
@@ -57,12 +60,12 @@ export default async function (
     return true;
   }
 
-  const { budgets } = await config.resolve("agents");
+  const { wordCaps } = await config.resolve("agents");
 
-  const findings = measureGithubCommand(shellCommand, budgets);
+  const findings = measureGithubCommand(shellCommand, wordCaps);
 
-  reportBudgetFindings(findings, {
-    mode: budgets.mode,
+  reportWordCapFindings(findings, {
+    mode: wordCaps.mode,
     event: "PreToolUse",
   });
 

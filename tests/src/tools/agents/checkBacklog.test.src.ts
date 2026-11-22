@@ -56,11 +56,11 @@ describe("checkBacklog", () => {
     ).rejects.toThrow("site `src/b.ts` names no file");
   });
 
-  test("fails on an entry over its word budget", async () => {
+  test("fails on an entry over its word cap", async () => {
     const words = Array.from({ length: 120 }, () => "word").join(" ");
 
     await expect(
       check(`  - id: 261122-3fa9\n    title: A claim\n    why: ${words}\n`),
-    ).rejects.toThrow("words, over the backlogEntry budget of 100");
+    ).rejects.toThrow("words, over the backlogEntry word cap of 100");
   });
 });

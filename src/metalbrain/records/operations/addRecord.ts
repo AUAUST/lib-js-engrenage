@@ -46,7 +46,7 @@ export async function addRecord<Kind extends RecordKind>(
   kind: Kind,
   group: string,
   values: RecordValues<Kind["fields"]>,
-  { day, budget }: { day: Date; budget: number },
+  { day, wordCap }: { day: Date; wordCap: number },
 ): Promise<string> {
   const file = `${kind.location.directory}/${group}${recordFileExtension}` satisfies File;
 
@@ -121,7 +121,7 @@ export async function addRecord<Kind extends RecordKind>(
         kind,
         `${file}: entry ${id}`,
         added,
-        budget,
+        wordCap,
       )),
     ],
   );

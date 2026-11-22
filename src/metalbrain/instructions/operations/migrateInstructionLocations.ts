@@ -7,6 +7,7 @@ import type { Reporter } from "#foundation/reports/index";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
+// @debt a snippet named after a fragment's `formerly` name, a renamed rule or skill, stays silent although no marker names it anymore
 async function warnFormerSnippets(config: {
   filesystem: Filesystem;
   snippetsDir: Directory | undefined;

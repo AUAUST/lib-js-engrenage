@@ -33,7 +33,7 @@ export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 export { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
-export { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+export { reportWordCapFindings } from "#tools/agents/operations/reportWordCapFindings";
 export { startAgentRun } from "#tools/agents/operations/startAgentRun";
 export { syncHooks } from "#tools/agents/operations/syncHooks";
 export { validateHookPayload } from "#tools/agents/operations/validateHookPayload";

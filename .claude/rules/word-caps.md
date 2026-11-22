@@ -4,7 +4,7 @@ paths:
   - .ai/backlog/**
 ---
 
-<!-- @reference @auaust/engrenage/metalbrain/rules/budgets.md -->
+<!-- @reference @auaust/engrenage/metalbrain/rules/word-caps.md -->
 
 # Word caps
 

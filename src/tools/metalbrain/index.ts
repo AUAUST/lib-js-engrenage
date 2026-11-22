@@ -35,7 +35,7 @@ export { resolveAgentStatsDirectory } from "#tools/metalbrain/operations/resolve
 
 // @barrel config/schemas
 export { agentsSchema } from "#tools/metalbrain/config/schemas/agentsSchema";
-export { budgetSchema } from "#tools/metalbrain/config/schemas/budgetSchema";
+export { limitSchema } from "#tools/metalbrain/config/schemas/limitSchema";
 export { preferredSchema } from "#tools/metalbrain/config/schemas/preferredSchema";
 // @end
 

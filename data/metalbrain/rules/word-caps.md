@@ -4,6 +4,8 @@ description: Keep backlog entries and capped issue sections within their word ca
 category: workflow
 default: true
 order: 16
+formerly:
+  - budgets
 paths:
   - ".ai/issues/**"
   - ".ai/backlog/**"

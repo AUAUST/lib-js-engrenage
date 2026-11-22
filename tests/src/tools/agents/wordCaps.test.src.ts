@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { reportBudgetFindings } from "#tools/agents/operations/reportBudgetFindings";
+import { reportWordCapFindings } from "#tools/agents/operations/reportWordCapFindings";
 import { findOutputOverrun } from "#tools/agents/utils/findOutputOverrun";
 import { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 
@@ -10,22 +10,22 @@ const words = (count: number) => {
   return Array.from({ length: count }, () => "word").join(" ");
 };
 
-async function loadBudgets(root: string) {
+async function loadWordCaps(root: string) {
   const config = await loadConfig(root);
 
-  const { budgets } = await config.resolve("agents");
+  const { wordCaps } = await config.resolve("agents");
 
-  return budgets;
+  return wordCaps;
 }
 
-describe("budgets", () => {
+describe("word caps", () => {
   test("defaults follow the writing rules", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
       "engrenage.config.ts": "export default {};\n",
     });
 
-    expect(await loadBudgets(project.root)).toEqual({
+    expect(await loadWordCaps(project.root)).toEqual({
       mode: "warn",
       goal: 150,
       context: 150,
@@ -35,13 +35,24 @@ describe("budgets", () => {
     });
   });
 
-  test("rejects the removed debtEntry budget, naming the key", async () => {
+  test("rejects the removed debtEntry word cap, naming the key", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default { agents: { budgets: { debtEntry: 60 } } };\n",
+      "engrenage.config.ts": "export default { agents: { wordCaps: { debtEntry: 60 } } };\n",
     });
 
-    await expect(loadBudgets(project.root)).rejects.toThrow("debtEntry");
+    await expect(loadWordCaps(project.root)).rejects.toThrow("debtEntry");
+  });
+
+  test("names wordCaps for the former budgets key", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{"type":"module"}',
+      "engrenage.config.ts": "export default { agents: { budgets: { goal: 60 } } };\n",
+    });
+
+    await expect(loadWordCaps(project.root)).rejects.toThrow(
+      'renamed "wordCaps"',
+    );
   });
 
   test("measures the prose sections of a gh issue body", async () => {
@@ -50,38 +61,38 @@ describe("budgets", () => {
       "engrenage.config.ts": "export default {};\n",
     });
 
-    const budgets = await loadBudgets(project.root);
+    const wordCaps = await loadWordCaps(project.root);
 
     const task = (context: string) => {
       return `gh issue create --title "tools: x" --body-file - <<'EOF'\n#1 · [Gates](#gates): x\n\n## Context\n\n${context}\n\n## Prerequisites\n\n- ${words(300)}\n\n## Tests\n\n- x\nEOF`;
     };
 
-    expect(measureGithubCommand(task(words(40)), budgets)).toEqual([]);
+    expect(measureGithubCommand(task(words(40)), wordCaps)).toEqual([]);
 
-    expect(measureGithubCommand(task(words(200)), budgets)).toEqual([
+    expect(measureGithubCommand(task(words(200)), wordCaps)).toEqual([
       {
         subject: "gh issue create, Context",
         kind: "context",
         words: 200,
-        budget: 150,
+        cap: 150,
       },
     ]);
 
     expect(
       measureGithubCommand(
         task(`${words(140)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
-        budgets,
+        wordCaps,
       ),
     ).toEqual([]);
 
     expect(
       measureGithubCommand(
         `gh issue comment 3 --body "${words(200)}"`,
-        budgets,
+        wordCaps,
       ),
     ).toMatchObject([{ kind: "comment", words: 200 }]);
 
-    expect(measureGithubCommand("git status", budgets)).toEqual([]);
+    expect(measureGithubCommand("git status", wordCaps)).toEqual([]);
   });
 
   test("warns in warn mode and denies in deny mode", () => {
@@ -92,21 +103,21 @@ describe("budgets", () => {
         subject: "gh issue create, Context",
         kind: "context",
         words: 300,
-        budget: 80,
+        cap: 80,
       },
     ] as const;
 
-    reportBudgetFindings(findings, {
+    reportWordCapFindings(findings, {
       mode: "warn",
       event: "PreToolUse",
     });
 
-    reportBudgetFindings(findings, {
+    reportWordCapFindings(findings, {
       mode: "deny",
       event: "PreToolUse",
     });
 
-    reportBudgetFindings([], { mode: "deny", event: "PreToolUse" });
+    reportWordCapFindings([], { mode: "deny", event: "PreToolUse" });
 
     const [warn, deny] = write.mock.calls.map(([chunk]) => {
       return JSON.parse(String(chunk)) as {
