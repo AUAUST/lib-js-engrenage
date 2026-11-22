@@ -1,14 +1,16 @@
 import { defineGroup } from "#workflows/cli/index";
 
+import backlog from "#bin/metalbrain/backlog/index";
 import hook from "#bin/metalbrain/hook/index";
 
 export default defineGroup({
   configure(command) {
     return command.description(
-      "Record what agents do, starting with their tool calls, under the project's stats.",
+      "Run the agent commands: the shared backlog, and the hooks recording what agents do.",
     );
   },
   commands: {
+    backlog,
     hook,
   },
 });

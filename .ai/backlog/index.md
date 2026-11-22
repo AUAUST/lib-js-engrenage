@@ -14,7 +14,7 @@ Deferred questions, bugs, tasks and improvements.
 
 ## Entries
 
-- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, then fill in the entry it adds; move one by adding it to its new category, removing the old one and updating references to it.
+- Add an entry with `pnpm metalbrain backlog add <category> "<title>"`, filling the keys below with `--sites`, `--why`, `--want` and `--done`, each repeated for a list: it prints the new ID and writes nothing when the entry breaks the schema. Move one by adding it to its new category, removing the old one and updating references to it.
 - Cite an entry by its `id`, only within this repository.
 - Write the title as the claim: the problem or need, stated exactly.
 - Follow it with `sites` (each code site as `<path>:<line>`, when the work has any), then at most three items across `why` (context), `want` (expected outcome) and `done` (completion or obsolescence condition), each a text or a list. Drop a key the title already states.

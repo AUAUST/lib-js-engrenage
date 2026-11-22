@@ -11,6 +11,12 @@ import { getExecutable } from "#tests/utils/getExecutable";
 
 const followedAliases = ["#bin/metalbrain/", "#tools/agents/metalbrain/"];
 
+const followedLoads = [
+  "#bin/metalbrain/index",
+  "#bin/metalbrain/hook/",
+  "#tools/agents/metalbrain/",
+];
+
 const allowedPrefixes = ["node:", "#workflows/cli/"];
 
 const runtimeImport = /^(?:import|export)\s+(?!type\b)[^;]*?\bfrom\s+"(?<specifier>[^"]+)"|\bimport\("(?<loaded>[^"]+)"\)/gmv;
@@ -23,12 +29,20 @@ function resolveSource(specifier: string): string {
   return fileURLToPath(import.meta.resolve(specifier));
 }
 
-function listRuntimeImports(file: string): string[] {
-  return [...readFileSync(file, "utf-8").matchAll(runtimeImport)].map(
-    (match) => {
-      return match.groups?.specifier ?? match.groups?.loaded ?? "";
-    },
+function isFollowed({ specifier, loaded }: Record<string, string | undefined>) {
+  return (
+    specifier !== undefined ||
+    followedLoads.some((prefix) => loaded?.startsWith(prefix) === true)
   );
+}
+
+function listRuntimeImports(file: string): string[] {
+  return [...readFileSync(file, "utf-8").matchAll(runtimeImport)]
+    .map(({ groups = {} }) => groups)
+    .filter(isFollowed)
+    .map(({ specifier, loaded }) => {
+      return specifier ?? loaded ?? "";
+    });
 }
 
 function runHook(cwd: string, event: string, input: string) {

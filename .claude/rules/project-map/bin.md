@@ -21,7 +21,8 @@ bin/  (global roles: executable.ts *.ts)
 │  └─ pnpm  Package manager maintenance commands.
 ├─ engrenage-hook{claude}  Agent runtime hook commands, run directly by the runtimes' settings.
 │  └─ claude  Claude hook events.
-└─ metalbrain{hook{claude}}  Metalbrain commands, agent hooks first, run directly by the runtimes' settings.
+└─ metalbrain{backlog hook{claude}}  Metalbrain agent commands: the shared backlog, and the hooks the runtimes run directly from their settings.
+   ├─ backlog  Create backlog categories and entries through the backlog file schema.
    └─ hook{claude}  Agent runtime hook commands of metalbrain.
       └─ claude  Claude hook events of metalbrain.
 ```

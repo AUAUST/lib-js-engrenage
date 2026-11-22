@@ -1,3 +1,3 @@
 {
-  "purpose": "Metalbrain commands, agent hooks first, run directly by the runtimes' settings."
+  "purpose": "Metalbrain agent commands: the shared backlog, and the hooks the runtimes run directly from their settings."
 }

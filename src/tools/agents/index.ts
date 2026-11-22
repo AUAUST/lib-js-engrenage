@@ -40,17 +40,20 @@ export { agentsSection } from "#tools/agents/config/sections/agentsSection";
 // @barrel operations
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
+export { addBacklogEntry } from "#tools/agents/operations/addBacklogEntry";
 export { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
 export { checkAgentHooks } from "#tools/agents/operations/checkAgentHooks";
 export { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
 export { checkAgents } from "#tools/agents/operations/checkAgents";
 export { createAgentFillers } from "#tools/agents/operations/createAgentFillers";
+export { createBacklogCategory } from "#tools/agents/operations/createBacklogCategory";
 export { createBacklogId } from "#tools/agents/operations/createBacklogId";
 export { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
 export { denyToolUse } from "#tools/agents/operations/denyToolUse";
 export { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 export { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
+export { findBacklogEntryViolations } from "#tools/agents/operations/findBacklogEntryViolations";
 export { findBacklogViolations } from "#tools/agents/operations/findBacklogViolations";
 export { findShellTrap } from "#tools/agents/operations/findShellTrap";
 export { formatSkillBody } from "#tools/agents/operations/formatSkillBody";
@@ -64,6 +67,7 @@ export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinition
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 export { listAgentSessions } from "#tools/agents/operations/listAgentSessions";
+export { listBacklogIds } from "#tools/agents/operations/listBacklogIds";
 export { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 export { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
 export { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";

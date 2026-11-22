@@ -14,7 +14,7 @@ import {
   legacyBacklogExtension,
 } from "#tools/agents/constants";
 import { createBacklogId } from "#tools/agents/operations/createBacklogId";
-import { readBacklogCategories } from "#tools/agents/operations/readBacklogCategories";
+import { listBacklogIds } from "#tools/agents/operations/listBacklogIds";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Globs } from "#types/Globs";
 
@@ -182,24 +182,6 @@ function orderFields(fields: ReadonlyMap<string, LegacyValue>) {
   });
 }
 
-async function listTakenIds(filesystem: Filesystem): Promise<Set<string>> {
-  const taken = new Set<string>();
-
-  for (const category of await readBacklogCategories(filesystem)) {
-    if (category.kind === "invalid") {
-      continue;
-    }
-
-    for (const { loose } of category.entries) {
-      if (loose.id !== undefined) {
-        taken.add(loose.id);
-      }
-    }
-  }
-
-  return taken;
-}
-
 // @debt a `<category>.<n>` reference to an entry renumbered or removed before the migration is rewritten to the entry holding that number today.
 // @debt references outside the agent records and instruction files, such as code comments, stay stale
 async function rewriteReferences(
@@ -255,7 +237,7 @@ export async function migrateBacklogCategories(
     return;
   }
 
-  const taken = await listTakenIds(filesystem);
+  const taken = await listBacklogIds(filesystem);
 
   const indexPurposes = await readIndexPurposes(filesystem);
 
