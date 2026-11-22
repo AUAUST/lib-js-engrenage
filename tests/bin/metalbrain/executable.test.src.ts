@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { cpSync, existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { object, parse, string } from "valibot";
@@ -8,6 +8,7 @@ import { expect, test } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
+import { readHookOutput } from "#tests/utils/readHookOutput";
 
 const followedAliases = ["#bin/metalbrain/", "#metalbrain/runtimes/"];
 
@@ -24,6 +25,10 @@ const allowedPrefixes = [
 ];
 
 const runtimeImport = /^(?:import|export)\s+(?!type\b)[^;]*?\bfrom\s+"(?<specifier>[^"]+)"|\bimport\("(?<loaded>[^"]+)"\)/gmv;
+
+const openHookSource = fileURLToPath(
+  import.meta.resolve("#workflows/cli/operations/openHook"),
+);
 
 const outputSchema = object({
   systemMessage: string(),
@@ -158,6 +163,46 @@ test(
 
     expect(parse(outputSchema, JSON.parse(result.stdout)).systemMessage).toBe(
       "metalbrain hook claude Nope did not run, so its checks are off: unknown command 'Nope'",
+    );
+  },
+  binaryTimeout,
+);
+
+test(
+  "a hook whose program fails to load opens with a message",
+  () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        type: "module",
+        imports: {
+          "#bin/*": "./bin/*.ts",
+          "#workflows/*": "./workflows/*.ts",
+        },
+      }),
+      "bin/metalbrain/index.ts": 'throw new Error("program is broken");\n',
+      "workflows/cli/index.ts": `export function createProgram() {}\nexport function launch() {}\nexport function runProgram() {}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
+    });
+
+    cpSync(
+      getExecutable("metalbrain"),
+      project.resolve("bin/metalbrain/executable.ts"),
+    );
+
+    const result = spawnSync(
+      process.execPath,
+      [
+        project.resolve("bin/metalbrain/executable.ts"),
+        "hook",
+        "claude",
+        "Stop",
+      ],
+      { input: "{}", encoding: "utf-8" },
+    );
+
+    expect(result.status, result.stderr).toBe(0);
+
+    expect(readHookOutput(result.stdout).systemMessage).toBe(
+      "metalbrain hook claude Stop did not run, so its checks are off: program is broken",
     );
   },
   binaryTimeout,

@@ -10,8 +10,6 @@ bin/  (global roles: executable.ts *.ts)
 ├─ engrenage{batiment pnpm}  Project tooling commands.
 │  ├─ batiment  Walk the project structure and report how batiment classifies it.
 │  └─ pnpm  Package manager maintenance commands.
-├─ engrenage-hook{claude}  Agent runtime hook commands, run directly by the runtimes' settings.
-│  └─ claude  Claude hook events.
 └─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, debt markers, and the hooks the runtimes run directly from their settings.
    ├─ agents{rules skills}  Agent lifecycle and instruction commands.
    │  ├─ rules  Install shared agent rules.

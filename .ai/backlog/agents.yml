@@ -50,7 +50,7 @@ entries:
   - id: 261122-3c97
     title: The hook directory is resolved twice, in shell and in Node
     sites:
-      - src/tools/agents/utils/createHookCommand.ts:4
+      - src/tools/agents/utils/createHookCommand.ts:6
       - src/metalbrain/runtimes/utils/resolveHookDirectory.ts:5
     why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
     want: the config lookup skipping dependencies, read by both.
@@ -135,7 +135,7 @@ entries:
     title: Self-hosted hooks go off while an agent refactors the checkout
     sites:
       - .claude/settings.json:33
-    why: 'the hook command falls back to `bin/engrenage-hook/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.'
+    why: 'the hook command falls back to `bin/metalbrain/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.'
     want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
   - id: 261122-52a0
     title: Walk tuning awaits the first spec walks
@@ -171,3 +171,9 @@ entries:
       - src/tools/metalbrain/claude/setup/checkWordCaps.ts:164
     why: "user, 2026-11-22: growth a request needs is expected; instruction-writing step 7 now has the writer split into supporting files, cut what the request does not need, then raise the cap. The check's overrun message still says to raise a cap only on the user's decision, and raising means editing `.engrenage/word-caps.json` by hand."
     want: the overrun message asking for that weighing, and a command raising a role's cap to its measured count.
+  - id: 261122-49d9
+    title: A stale hook entry fails open without naming the fix
+    sites:
+      - bin/metalbrain/executable.ts:29
+    why: engrenage-hook appended 'regenerate the hooks with pnpm install, then pnpm engrenage sync' to usage errors; metalbrain hook opens with the bare Commander error, so a consumer whose settings name a removed event is not told to sync.
+    want: metalbrain hook usage errors name the install-and-sync fix, as engrenage-hook's did.

@@ -83,28 +83,3 @@ test(
     ).toEqual([]);
   },
 );
-
-test(
-  "the hook program's help lists its runtimes without loading any action",
-  { timeout: binaryTimeout },
-  async () => {
-    const { stdout, stderr } = await run(process.execPath, [
-      "--import",
-      `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
-      getExecutable("engrenage-hook"),
-      "--help",
-    ]);
-
-    expect(stdout).toContain("Usage: engrenage-hook");
-
-    expect(stdout).toContain("  claude ");
-
-    expect(
-      stderr.split("\n").filter((url) => {
-        return (
-          url.includes("/actions/") || /\/bin\/engrenage(?:\/|\.mjs)/.test(url)
-        );
-      }),
-    ).toEqual([]);
-  },
-);

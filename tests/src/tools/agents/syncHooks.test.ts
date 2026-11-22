@@ -12,6 +12,8 @@ const fakeProgram = "#!/bin/sh\npwd\nprintf '%s\\n' \"$@\"\n";
 
 const legacy = `engrenage_hook_root="$(node -e 'process.stdout.write(process.cwd())')" && cd -- "$engrenage_hook_root" && pnpm --silent engrenage agents claude hook`;
 
+const engrenageHook = 'cd -- "$r" || exit 0; if [ -x node_modules/.bin/engrenage-hook ]; then exec node_modules/.bin/engrenage-hook';
+
 async function createCommand(): Promise<string> {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
@@ -217,6 +219,28 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
           {
             matcher: "*",
             hooks: [{ type: "command", command: `${legacy} stop || exit 2` }],
+          },
+          {
+            matcher: "*",
+            hooks: [
+              {
+                type: "command",
+                command: `${engrenageHook} claude Stop`,
+                async: true,
+              },
+            ],
+          },
+        ],
+        PostToolUse: [
+          {
+            matcher: "Edit|MultiEdit|Write",
+            hooks: [
+              {
+                type: "command",
+                command: `${engrenageHook} claude PostToolUse`,
+                async: true,
+              },
+            ],
           },
         ],
       },

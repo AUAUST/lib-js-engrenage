@@ -15,7 +15,6 @@
   "type": "module",
   "bin": {
     "engrenage": "./dist/bin/engrenage.mjs",
-    "engrenage-hook": "./dist/bin/engrenage-hook.mjs",
     "metalbrain": "./dist/bin/metalbrain.mjs"
   },
   "scripts": {

@@ -14,3 +14,9 @@ entries:
       - src/tools/tsdown/operations/createTsdownConfig.ts:115
       - src/workflows/init/operations/createStepContext.ts:66
     want: the resolved config exposes a required package.json path.
+  - id: 261122-1e2a
+    title: Sync keeps bin entries of deleted commands
+    sites:
+      - src/workflows/sync/setup/syncPackageJson.ts:86
+    why: "sync writes a `bin` field per command directory but never removes one whose directory is gone; #820 deleting `bin/engrenage-hook` left its entry pointing at a file the build no longer emits."
+    want: sync removing `bin` entries no command directory produces.

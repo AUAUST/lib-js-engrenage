@@ -1,6 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { hookProgram } from "#constants";
 import {
   metalbrainProgram,
   metalbrainProgramSource,
@@ -29,9 +28,9 @@ export const claudeVariables = freeze({
   ],
 } as const);
 
-// @debt the legacy marker only cleans settings synced before engrenage-hook
+// @debt the `engrenage-hook` and `engrenage agents` markers only clean settings synced before `metalbrain hook`; drop once consumers have synced past them
 export const claudeHookMarkers = freeze([
-  `${hookProgram} claude `,
+  "engrenage-hook claude ",
   `${metalbrainProgram} hook claude `,
   "engrenage agents claude hook ",
 ] as const);

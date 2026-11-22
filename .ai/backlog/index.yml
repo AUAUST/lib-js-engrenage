@@ -71,6 +71,7 @@ agents:
     - 261122-db71
     - 261122-e4e9
     - 261122-861f
+    - 261122-49d9
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:
@@ -236,6 +237,7 @@ package-json:
   entries:
     - 261122-5753
     - 261122-8cc6
+    - 261122-1e2a
 pnpm:
   purpose: pnpm integration and package-manager scripts.
   entries:

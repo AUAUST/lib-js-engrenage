@@ -81,11 +81,6 @@ export const packages = freeze({
   zod,
 });
 
-// @debt the hook program belongs to the agents domain, kept global as the root `constants` subpath exports it
-export const hookProgram = `${project}-hook` as const;
-
-export const hookProgramSource = `bin/${hookProgram}/executable.ts` satisfies File;
-
 export const engrenageConfigFile = `${project}.config` satisfies File;
 
 export const gitignoreFile = ".gitignore" satisfies File;
