@@ -153,9 +153,3 @@ Shared agent instructions, skills and the backlog conventions.
   - `any`, `@ts-*`, `eslint-disable` without reason; interfaces for shapes: `no-explicit-any`, `ban-ts-comment`, eslint-comments description, `consistent-type-definitions` (off in `src/tools/eslint/constants.ts`)
   - mutable-list aliases; allowed comment kinds: custom lint rules
   - Shell table traps; `eslint:fix` without files: Bash PreToolUse hook
-
-## 28. The main session's request analysis depends on the analysis skill being installed
-
-- sites: `data/metalbrain/sections/analysis.md:13`
-- why: the trigger names `.claude/skills/analysis/request-analysis.md`; a consumer without the analysis skill gets no request analysis (the old options line had the same gap).
-- want: decided (#809 S.31): sync installs `request-analysis.md` for the main session whatever skills are installed; the trigger names that one path.

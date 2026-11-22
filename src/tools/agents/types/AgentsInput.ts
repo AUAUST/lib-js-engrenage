@@ -12,7 +12,7 @@ export interface AgentsInput {
   preferred?: ((keyof Engrenage.AgentRuntimes)[] | undefined)
   /**
    * Globs of the agent instruction files whose `@reference` blocks sync fills.
-   * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /*.md`, `.claude/agents/*.md`, `.agents/skills/* /*.md`
+   * @default `AGENTS.md`, `.claude/rules/** /*.md`, `.claude/skills/* /*.md`, `.claude/agents/*.md`, `.claude/shared/*.md`, `.agents/skills/* /*.md`
    */
   instructionFiles?: (Glob | Globs | undefined)
   /**

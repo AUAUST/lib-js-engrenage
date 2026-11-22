@@ -7,6 +7,8 @@ import {
   backlogCategoriesHeading,
   backlogIndex,
   backlogTemplate,
+  mainSharedDirectory,
+  mainSharedFiles,
   retiredRules,
   skillFileName,
 } from "#tools/agents/constants";
@@ -15,6 +17,7 @@ import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
 import { getRuleReferences } from "#tools/agents/operations/getRuleReferences";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { listStaleSkillFiles } from "#tools/agents/operations/listStaleSkillFiles";
@@ -22,6 +25,7 @@ import { migrateInstructionLocations } from "#tools/agents/operations/migrateIns
 import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 import { removeReferenceBlock } from "#tools/agents/operations/removeReferenceBlock";
 import { syncFrontmatter } from "#tools/agents/operations/syncFrontmatter";
+import { createInstructionFile } from "#tools/agents/utils/createInstructionFile";
 import { formatBacklogIndex } from "#tools/agents/utils/formatBacklogIndex";
 import { formatReferenceMarker } from "#tools/agents/utils/formatReferenceMarker";
 import { hasPreferredAgents } from "#tools/agents/utils/hasPreferredAgents";
@@ -177,6 +181,41 @@ async function removeStaleSkillFiles(
   }
 }
 
+async function installMainSharedFiles(config: {
+  filesystem: Filesystem;
+  extensions: readonly Extension[];
+  renderer: FragmentRenderer;
+}) {
+  const shared = await getSharedFiles(config.extensions);
+
+  for (const name of mainSharedFiles) {
+    const found = shared.find((file) => file.name === name);
+
+    if (found === undefined) {
+      throw new Error(`No origin ships the main session's shared file ${name}`);
+    }
+
+    const file = `${mainSharedDirectory}/${name}`;
+
+    const installed = await config.filesystem.read(file);
+
+    if (
+      installed !== undefined &&
+      !installed.includes(formatReferenceMarker(found.reference))
+    ) {
+      continue;
+    }
+
+    await config.filesystem.write(
+      file,
+      createInstructionFile({
+        reference: found.reference,
+        body: await config.renderer.render(found.body, found.source),
+      }),
+    );
+  }
+}
+
 async function migrateBacklogIndex(filesystem: Filesystem) {
   const content = await filesystem.read(backlogIndex);
 
@@ -204,8 +243,8 @@ async function migrateBacklogIndex(filesystem: Filesystem) {
 
 /**
  * Syncs agent files when an agent is preferred: migrations, attribution rules,
- * generated skill and rule files and Codex instructions. The `blocks` target
- * fills their `@reference` blocks.
+ * the main session's shared files, generated skill and rule files and Codex
+ * instructions. The `blocks` target fills their `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { resolve, context } = loaded;
@@ -237,6 +276,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await syncAttributionRules(config);
 
   await removeInactiveExtensionRules(config);
+
+  await installMainSharedFiles(config);
 
   // @debt sync cannot tell a deleted extension default rule from one shipped after the project's init, so an upgrading project gets only a hint and installs the new rule by hand
   const generated: FileSync[] = [];

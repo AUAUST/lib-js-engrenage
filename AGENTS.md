@@ -83,7 +83,9 @@ Write one when you stop with unfinished work no commit or issue holds, in these 
 
 ## Analysis
 
-In the main session, before acting on a request, suggestion or described fix, follow `.claude/skills/analysis/request-analysis.md`; to weigh options or examine material, `.claude/skills/analysis/analysis.md`.
+In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
+
+To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 ### Budget levels
 

@@ -28,6 +28,11 @@ export const metalbrain = "metalbrain";
 
 export const sharedFilesKind = "shared";
 
+// @debt the main session's shared files sit under `.claude` though `AGENTS.md` names them to every runtime
+export const mainSharedDirectory = ".claude/shared" satisfies Directory;
+
+export const mainSharedFiles = freeze(["request-analysis.md"] as const);
+
 export const agentsTemplate = `${engrenage}/${metalbrain}/templates/${agentsFile}`;
 
 export const agentsTarget = "agents";
@@ -179,6 +184,7 @@ export const defaultInstructionFiles = freeze([
   ".claude/rules/**/*.md",
   ".claude/skills/*/*.md",
   ".claude/agents/*.md",
+  `${mainSharedDirectory}/*.md`,
   ".agents/skills/*/*.md",
 ] as const) satisfies Globs;
 

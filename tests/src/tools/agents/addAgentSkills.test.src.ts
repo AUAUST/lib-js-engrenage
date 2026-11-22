@@ -19,9 +19,11 @@ describe("addAgentSkills", () => {
       [
         ".claude/skills/debugging/SKILL.md",
         ".claude/skills/debugging/analysis.md",
+        ".claude/skills/debugging/request-analysis.md",
         ".claude/agents/debugger.md",
         ".agents/skills/debugging/SKILL.md",
         ".agents/skills/debugging/analysis.md",
+        ".agents/skills/debugging/request-analysis.md",
         ".agents/skills/debugging/agents/openai.yaml",
         ".codex/agents/debugger.toml",
         ".codex/agents/debugger_low.toml",

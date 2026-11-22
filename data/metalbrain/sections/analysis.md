@@ -8,9 +8,11 @@ order: 25
 
 ## Analysis
 
+In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
+
 <!-- @file .claude/skills/analysis/analysis.md -->
 
-In the main session, before acting on a request, suggestion or described fix, follow `.claude/skills/analysis/request-analysis.md`; to weigh options or examine material, `.claude/skills/analysis/analysis.md`.
+To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 <!-- @end -->
 
