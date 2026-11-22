@@ -142,3 +142,8 @@ entries:
     why: "closing, moving, updating, searching and listing mean reading and editing the YAML files and Markdown index: read-only agents cannot, others pay a file read each time"
     want: "metalbrain backlog subcommands for each operation the conventions name: list categories, search by keyword, show, update, move, close; closing a category's last entry deletes its file and index line, the category list moving from index.md to YAML the command owns"
     done: "no agent instruction asks to read or edit .ai/backlog files. Related: 261122-f4f4."
+  - id: 261122-8b3b
+    title: Instruction composition lives in Markdown markers and fillers reading the whole config
+    why: about 110 markers (@shared, @file, @extension, @skill-file, @agent-limits) compose 33k words; agents and skills share one source; fillers take LoadedConfig instead of facts; command usage in prose drifts from registration
+    want: "staged per the 2026-11-22 atomic-design review: record core, brief command over source adapters, commands owning their usage fragment, a facts manifest replacing LoadedConfig, then typed agent definitions over Markdown skill bodies; no own Document AST, no class inheritance of content"
+    done: a planner settles the stages after the record core lands, or the user drops the idea
