@@ -7,6 +7,6 @@ export default defineLazyCommand({
       .argument("<name>", "rule name, for example code-style");
   },
   action() {
-    return import("#bin/engrenage/agents/rules/actions/add");
+    return import("#bin/metalbrain/agents/rules/actions/add");
   },
 });

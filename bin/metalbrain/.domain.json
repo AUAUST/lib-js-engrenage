@@ -1,3 +1,3 @@
 {
-  "purpose": "Metalbrain agent commands: the shared backlog, and the hooks the runtimes run directly from their settings."
+  "purpose": "Metalbrain agent commands: agent integration, dispatch and runs, the shared backlog, and the hooks the runtimes run directly from their settings."
 }

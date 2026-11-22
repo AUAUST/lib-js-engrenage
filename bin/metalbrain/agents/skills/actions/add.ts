@@ -52,7 +52,7 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
 
   if (!process.stdin.isTTY) {
     throw new Error(
-      "Skill selection needs an interactive terminal; use agents skills add <name> instead.",
+      "Skill selection needs an interactive terminal; use metalbrain agents skills add <name> instead.",
     );
   }
 

@@ -34,7 +34,7 @@ export default async function (name?: string): Promise<void> {
 
     if (!process.stdin.isTTY) {
       throw new Error(
-        "Rule selection needs an interactive terminal; use agents rules add <name> instead.",
+        "Rule selection needs an interactive terminal; use metalbrain agents rules add <name> instead.",
       );
     }
 

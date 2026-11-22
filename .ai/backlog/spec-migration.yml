@@ -16,7 +16,7 @@ entries:
   - id: 261122-d7a3
     title: Consumers lack the consultant agent and reject `freshness`
     why: sync installs no new skill, so a consumer's walker and Steps sweep brief a `consultant` that does not exist; agent blocks still setting `freshness` fail schema validation.
-    want: toolkit and interscript run `pnpm engrenage agents skills add consultant` and drop `freshness` when the user migrates them (S.23).
+    want: toolkit and interscript run `pnpm metalbrain agents skills add consultant` and drop `freshness` when the user migrates them (S.23).
   - id: 261122-ec75
     title: "Sweeping #338 and #308 before #778 and #684 rewrites them twice"
     why: "#778 and #684 set who owns most of their remains (agent commands, init's agent steps, the issue-write hook); #382 and #765 also overlap on workspace entries in `createTsdownConfig`."
@@ -33,3 +33,12 @@ entries:
     title: Thoroughness state written before per-contact windows fails the hook
     why: "`parseThoroughnessState` now requires `opened` and `scanned`; a subagent running across the update gets a hook error per tool call and loses its run record (seen at the 261122-c95f worker's own SubagentStop)."
     want: no subagent in flight when the change lands in a consumer; otherwise delete its `.ai/stats/<session>/*.thoroughness.json`.
+  - id: 261122-f251
+    title: "Instructions still name commands #811 renamed"
+    sites:
+      - data/metalbrain/shared/linked-checkouts.md:31
+      - data/metalbrain/skills/walking.md:213
+      - .claude/rules/agent-fragments.md:14
+    why: "the user defers every instruction change #811's moves imply to one consolidated switch at the end; each item appends its mentions to these sites instead of dispatching a writer. #817: `engrenage agents` → `metalbrain agents`."
+    want: one writer dispatch renames every mention at these sites, then `pnpm engrenage sync` regenerates the copies.
+    done: "no instruction source names a command #811 renamed."

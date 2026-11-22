@@ -80,7 +80,7 @@ describe("checkFragmentFiles", () => {
         `{ agents: { preferred: ["claude"] }, github: { planning: true } }`,
       ),
     ).rejects.toThrow(
-      ".claude/rules/issue-drafts.md, the default rule pnpm engrenage agents rules add issue-drafts installs",
+      ".claude/rules/issue-drafts.md, the default rule pnpm metalbrain agents rules add issue-drafts installs",
     );
   });
 });

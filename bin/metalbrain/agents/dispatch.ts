@@ -38,6 +38,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/agents/actions/dispatch");
+    return import("#bin/metalbrain/agents/actions/dispatch");
   },
 });

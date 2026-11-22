@@ -26,7 +26,7 @@ export const removedRuntimes: Readonly<Record<string, string>> = freeze({
   codex: codexRemoval,
 });
 
-export const addRuleCommand = "pnpm engrenage agents rules add";
+export const addRuleCommand = "pnpm metalbrain agents rules add";
 
 // @debt re-exported only so the extension may import it under roles/extension/extension-imports
 export {

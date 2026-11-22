@@ -35,7 +35,7 @@ test("hints at the missing default rules of active extensions after sync, naming
 
   expect(hint?.text).toContain("github, issue-drafts");
 
-  expect(hint?.text).toContain("pnpm engrenage agents rules add <name>");
+  expect(hint?.text).toContain("pnpm metalbrain agents rules add <name>");
 });
 
 test("stays silent once the project holds every default rule of its active extensions", async () => {

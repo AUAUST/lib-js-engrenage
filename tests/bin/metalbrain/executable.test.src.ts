@@ -17,7 +17,11 @@ const followedLoads = [
   "#metalbrain/runtimes/",
 ];
 
-const allowedPrefixes = ["node:", "#workflows/cli/"];
+const allowedPrefixes = [
+  "node:",
+  "#workflows/cli/",
+  "@commander-js/extra-typings",
+];
 
 const runtimeImport = /^(?:import|export)\s+(?!type\b)[^;]*?\bfrom\s+"(?<specifier>[^"]+)"|\bimport\("(?<loaded>[^"]+)"\)/gmv;
 
@@ -57,7 +61,7 @@ function runHook(cwd: string, event: string, input: string) {
   );
 }
 
-test("the hook's module graph loads only its domain, the cli workflow and Node builtins", () => {
+test("the hook's module graph loads only its domain, the cli workflow, Commander and Node builtins", () => {
   const visited = new Set<string>();
 
   const outside = new Set<string>();

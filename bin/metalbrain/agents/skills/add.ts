@@ -7,6 +7,6 @@ export default defineLazyCommand({
       .argument("<name>", "skill name, for example planning");
   },
   action() {
-    return import("#bin/engrenage/agents/skills/actions/add");
+    return import("#bin/metalbrain/agents/skills/actions/add");
   },
 });

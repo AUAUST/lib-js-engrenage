@@ -1,6 +1,5 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import agents from "#bin/engrenage/agents/index";
 import batiment from "#bin/engrenage/batiment/index";
 import debt from "#bin/engrenage/debt";
 import eslint from "#bin/engrenage/eslint";
@@ -42,7 +41,6 @@ export default defineGroup({
     "gate": gate,
     "planning": planning,
     "debt": debt,
-    "agents": agents,
     "github": github,
     "pnpm": pnpm,
     "link": link,

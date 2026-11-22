@@ -9,7 +9,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import rules from "#bin/engrenage/agents/rules/index";
+import rules from "#bin/metalbrain/agents/rules/index";
 
 vi.mock(import("@clack/prompts"), async (original) => {
   return {

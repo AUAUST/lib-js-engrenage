@@ -1,6 +1,6 @@
 import { defineGroup, defineLazyCommand } from "#workflows/cli/index";
 
-import add from "#bin/engrenage/agents/rules/add";
+import add from "#bin/metalbrain/agents/rules/add";
 
 export default defineGroup({
   configure(command) {
@@ -11,7 +11,7 @@ export default defineGroup({
   },
   command: defineLazyCommand({
     action() {
-      return import("#bin/engrenage/agents/rules/actions/add");
+      return import("#bin/metalbrain/agents/rules/actions/add");
     },
   }),
 });

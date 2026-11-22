@@ -174,3 +174,4 @@
 - fragment-files check: named a renamed state file not yet existing in an instruction — sync failed; kept the current path
 - word-caps check: raising caps per instruction-writing step 7 — auto mode denied editing `.engrenage/word-caps.json`; dropped the growth instead
 - commit gate backlog sync: splitting one backlog file across two commits — gate checks staged backlog sites against the working tree; moved one site line to the other commit
+- `agents stats` stale thoroughness state: smoke-testing `metalbrain agents stats` — a pre-`opened`/`scanned` `.thoroughness.json` in `.ai/stats` fails the whole report; left it, covered by backlog 261122-737b

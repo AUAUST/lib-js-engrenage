@@ -4,7 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import check from "#bin/engrenage/agents/check";
+import check from "#bin/metalbrain/agents/check";
 
 afterEach(() => {
   vi.restoreAllMocks();

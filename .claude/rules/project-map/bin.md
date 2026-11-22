@@ -7,11 +7,7 @@ paths:
 
 ```
 bin/  (global roles: executable.ts *.ts)
-├─ engrenage{agents{claude rules skills} batiment github{labels} planning{issue walk} pnpm}  Project tooling commands.
-│  ├─ agents{claude rules skills}  Agent lifecycle and instruction commands.
-│  │  ├─ claude  Claude lifecycle commands.
-│  │  ├─ rules  Install shared agent rules.
-│  │  └─ skills  Install shared agent skills.
+├─ engrenage{batiment github{labels} planning{issue walk} pnpm}  Project tooling commands.
 │  ├─ batiment  Walk the project structure and report how batiment classifies it.
 │  ├─ github{labels}  Snapshot GitHub metadata and sync the current repository's labels.
 │  │  └─ labels  Sync the current repository's labels with the config.
@@ -21,7 +17,10 @@ bin/  (global roles: executable.ts *.ts)
 │  └─ pnpm  Package manager maintenance commands.
 ├─ engrenage-hook{claude}  Agent runtime hook commands, run directly by the runtimes' settings.
 │  └─ claude  Claude hook events.
-└─ metalbrain{backlog hook{claude}}  Metalbrain agent commands: the shared backlog, and the hooks the runtimes run directly from their settings.
+└─ metalbrain{agents{rules skills} backlog hook{claude}}  Metalbrain agent commands: agent integration, dispatch and runs, the shared backlog, and the hooks the runtimes run directly from their settings.
+   ├─ agents{rules skills}  Agent lifecycle and instruction commands.
+   │  ├─ rules  Install shared agent rules.
+   │  └─ skills  Install shared agent skills.
    ├─ backlog  Create backlog categories and entries through the backlog file schema.
    └─ hook{claude}  Agent runtime hook commands of metalbrain.
       └─ claude  Claude hook events of metalbrain.

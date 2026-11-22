@@ -272,6 +272,7 @@ spec-migration:
     - 261122-30a3
     - 261122-e401
     - 261122-737b
+    - 261122-f251
 structure:
   purpose: Project structure description, its report and the tooling generated from it.
   entries:

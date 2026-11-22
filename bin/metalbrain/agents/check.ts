@@ -7,6 +7,6 @@ export default defineLazyCommand({
     );
   },
   action() {
-    return import("#bin/engrenage/agents/actions/check");
+    return import("#bin/metalbrain/agents/actions/check");
   },
 });
