@@ -149,5 +149,5 @@ Shared agent instructions, skills and the backlog conventions.
 - why: #809 D.9 (delete before adding; hard rules into hooks). The message gate, `git push` deny, local-files and suppressions steps took their prose; the shell-trap rows and the `eslint:fix` clause wait on the shell hook's place in the #809 plan.
 - want:
   - the shell rows and the `without files` clause deleted once the user places the hook
-  - `no-explicit-any`, `ban-ts-comment` at `info` (#809 S.35; off in `src/tools/eslint/constants.ts`); eslint-comments description, `consistent-type-definitions` undecided
+  - eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules

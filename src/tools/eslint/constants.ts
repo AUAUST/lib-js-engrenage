@@ -68,10 +68,10 @@ export const testRules = freeze({
 } as const satisfies CoreRules);
 
 export const typescriptRules = freeze({
-  "@typescript-eslint/ban-ts-comment": "off",
+  "@typescript-eslint/ban-ts-comment": "info",
   "@typescript-eslint/no-empty-function": "off",
   "@typescript-eslint/no-empty-object-type": "off",
-  "@typescript-eslint/no-explicit-any": "off",
+  "@typescript-eslint/no-explicit-any": "info",
   "@typescript-eslint/no-unsafe-function-type": "off",
   "@typescript-eslint/no-unused-vars": "off",
   "@typescript-eslint/consistent-indexed-object-style": "off",

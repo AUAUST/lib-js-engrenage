@@ -114,6 +114,14 @@
     {
       "rule": "auaust/documented",
       "severity": "info"
+    },
+    {
+      "rule": "@typescript-eslint/ban-ts-comment",
+      "severity": "info"
+    },
+    {
+      "rule": "@typescript-eslint/no-explicit-any",
+      "severity": "info"
     }
   ],
   "js/ts.tsdk.path": "node_modules/typescript/lib",
