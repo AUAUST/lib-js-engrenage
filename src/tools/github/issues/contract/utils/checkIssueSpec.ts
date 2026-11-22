@@ -1,5 +1,6 @@
-import { issueContracts } from "#tools/github/issues/contract/constants";
+import { isModelSection } from "#tools/github/issues/contract/utils/isModelSection";
 import { parseIssueList } from "#tools/github/issues/contract/utils/parseIssueList";
+import { parseProvides } from "#tools/github/issues/contract/utils/parseProvides";
 import type { IssueFinding } from "#tools/github/issues/contract/types/IssueFinding";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
@@ -9,7 +10,6 @@ interface SpecContext {
   readonly subIssues: number;
 }
 
-const providesPattern = /^([^:\n]+?):\s*\S/;
 const testCasePattern = /^\S.*?\s→\s+\S/;
 
 function listItems(parsed: ParsedIssueBody, name: string) {
@@ -19,11 +19,7 @@ function listItems(parsed: ParsedIssueBody, name: string) {
 }
 
 function listModelHeadings(plan: ParsedIssueBody | undefined) {
-  const own = new Set<string>(issueContracts.plan.sections);
-
-  return (plan?.sections ?? [])
-    .map(({ name }) => name)
-    .filter((name) => !own.has(name));
+  return (plan?.sections ?? []).map(({ name }) => name).filter(isModelSection);
 }
 
 function firstLine(item: string) {
@@ -42,10 +38,7 @@ function checkProvides(
     ? "none"
     : headings.map((heading) => `\`${heading}\``).join(", ");
 
-  return listItems(parsed, "Provides").flatMap((item) => {
-    const line = firstLine(item);
-    const heading = providesPattern.exec(line)?.[1]?.trim();
-
+  return parseProvides(parsed).flatMap(({ line, heading }) => {
     if (heading === undefined) {
       return {
         rule: "provides",

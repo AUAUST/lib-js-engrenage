@@ -68,6 +68,9 @@ function formatIssue(
     ...(issue.openSections.length > 0
       ? [`Open: ${issue.openSections.map((name) => `**${name}**`).join(", ")}`]
       : []),
+    ...(issue.modelSections.length > 0
+      ? [`Model: ${issue.modelSections.join(", ")}`]
+      : []),
     ...issue.towards.map(({ hash, subject }) => `Towards: ${hash} ${subject}`),
     ...issue.closes.map(({ hash, subject }) => `Closes: ${hash} ${subject}`),
     ...(open.length > 0
@@ -119,6 +122,7 @@ export function formatIssueTreeCheck({
   checkouts,
   issues,
   ready,
+  planningDue,
   finished,
 }: IssueTreeCheck): readonly string[] {
   const [next] = ready;
@@ -130,6 +134,13 @@ export function formatIssueTreeCheck({
           return `Checkout: ${checkout} at ${ref}`;
         })),
     ...toTree(issues).flatMap((node) => formatIssue(node, repository, ready)),
+    ...(planningDue.length > 0
+      ? [
+          `Planning due: ${planningDue
+            .map((issue) => renderReference(issue, repository))
+            .join(", ")}`,
+        ]
+      : []),
     ...(next === undefined
       ? [
           finished

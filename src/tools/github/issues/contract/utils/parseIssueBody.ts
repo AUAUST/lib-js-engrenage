@@ -31,12 +31,27 @@ function toLocation([, repository, number]: RegExpMatchArray) {
   return { repository, number: Number(number) };
 }
 
+function parseSectionNames(text: string) {
+  return text
+    .split(",")
+    .map((section) => {
+      const name = section.trim();
+
+      return sectionLinkPattern.exec(name)?.[1] ?? name;
+    })
+    .filter((name) => name !== "");
+}
+
 function parseHeader(line: string): ParsedIssueBody["header"] {
-  const [ancestors = "", ...sections] = line.split(partSeparator);
+  const [ancestors = "", ...rest] = line.split(partSeparator);
+
+  const text = rest.join(partSeparator);
+
+  const colon = text.indexOf(":");
 
   return {
     ancestors: [...ancestors.matchAll(chainPattern)].map(toLocation),
-    sections,
+    sections: colon === -1 ? [] : parseSectionNames(text.slice(0, colon)),
   };
 }
 
@@ -75,15 +90,7 @@ function parseRoadmapLine(text: string) {
 
   return {
     gist: rest.slice(0, separator).trim(),
-    sections: rest
-      .slice(separator + partSeparator.length)
-      .split(",")
-      .map((section) => {
-        const name = section.trim();
-
-        return sectionLinkPattern.exec(name)?.[1] ?? name;
-      })
-      .filter((name) => name !== ""),
+    sections: parseSectionNames(rest.slice(separator + partSeparator.length)),
   };
 }
 

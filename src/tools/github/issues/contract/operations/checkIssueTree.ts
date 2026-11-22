@@ -1,3 +1,4 @@
+import { planningSection } from "#tools/github/issues/contract/constants";
 import { fetchIssueTree } from "#tools/github/issues/contract/operations/fetchIssueTree";
 import { findMissingReferences } from "#tools/github/issues/contract/operations/findMissingReferences";
 import { listLocalCommits } from "#tools/github/issues/contract/operations/listLocalCommits";
@@ -6,8 +7,12 @@ import { checkIssueReadiness } from "#tools/github/issues/contract/utils/checkIs
 import { checkNesting } from "#tools/github/issues/contract/utils/checkNesting";
 import { findContractMeaning } from "#tools/github/issues/contract/utils/findContractMeaning";
 import { findIssueShape } from "#tools/github/issues/contract/utils/findIssueShape";
+import { hasSection } from "#tools/github/issues/contract/utils/hasSection";
+import { isModelSection } from "#tools/github/issues/contract/utils/isModelSection";
 import { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import { parseProvides } from "#tools/github/issues/contract/utils/parseProvides";
+import type { ContractMeaning } from "#tools/github/issues/contract/types/ContractMeaning";
 import type { ContractNames } from "#tools/github/issues/contract/types/ContractNames";
 import type { IssueAccess } from "#tools/github/issues/contract/types/IssueAccess";
 import type { IssueCheckout } from "#tools/github/issues/contract/types/IssueCheckout";
@@ -26,6 +31,24 @@ interface PlacedIssue {
   readonly depth: number;
   readonly inTurn: boolean;
   readonly parentType?: string | undefined;
+}
+
+function listModelSections(
+  parsed: ParsedIssueBody,
+  meaning: ContractMeaning | undefined,
+) {
+  if (meaning !== "task" && meaning !== "problem") {
+    return [];
+  }
+
+  const named = [
+    ...(parsed.header?.sections ?? []),
+    ...parseProvides(parsed).flatMap(({ heading }) => {
+      return heading ?? [];
+    }),
+  ];
+
+  return [...new Set(named.filter(isModelSection))];
 }
 
 function toKey({ repository, number }: IssueLocation) {
@@ -241,6 +264,7 @@ export async function checkIssueTree(
               ),
             ],
         openSections: listOpenSections(parsed),
+        modelSections: closed ? [] : listModelSections(parsed, meaning),
         towards: commits.towards(location),
         closes: commits.closes(location),
       };
@@ -255,7 +279,17 @@ export async function checkIssueTree(
         ? { ...location, audience: shapeAudience }
         : undefined;
 
-      return { report, ready };
+      const planningDue = (
+        inTurn && !closed && hasSection(parsed, planningSection)
+      )
+        ? location
+        : undefined;
+
+      return {
+        report,
+        ready,
+        planningDue,
+      };
     },
   );
 
@@ -266,6 +300,9 @@ export async function checkIssueTree(
     ready: walked
       .map(({ ready }) => ready)
       .filter((issue): issue is ReadyIssue => issue !== undefined),
+    planningDue: walked
+      .map(({ planningDue }) => planningDue)
+      .filter((issue): issue is IssueLocation => issue !== undefined),
     finished: isClosed({
       repository: tree.repository,
       number: tree.issue.number,

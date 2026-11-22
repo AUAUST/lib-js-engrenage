@@ -20,7 +20,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Report every issue of the tree from an issue down, each parent above its sub-issues, after one line per checkout read, with its state counting the unpushed `Closes` commits of its repository's checkout, Blockers, findings, open **Planning** and **Questions** and local commits, then the ready set, every issue actionable in turn, and the next one, or that the walk finished, the named issue closed; exit 1 when the walk is stuck, the ready set empty with the named issue open.",
+        "Report every issue of the tree from an issue down, each parent above its sub-issues, after one line per checkout read, with its state counting the unpushed `Closes` commits of its repository's checkout, Blockers, findings, open **Planning** and **Questions**, local commits and, for each open task or problem, the Model sections its header line and **Provides** name, then each open **Planning** due, every issue ordered before it closed, then the ready set, every issue actionable in turn, and the next one, or that the walk finished, the named issue closed; exit 1 when the walk is stuck, the ready set empty with the named issue open.",
       )
       .argument("<number>", "issue number", Number)
       .option(

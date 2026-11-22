@@ -126,6 +126,40 @@ const tree: Record<number, MockIssue> = {
     ...task(62, "#60 › #61 · Roadmap"),
     state: "CLOSED",
   },
+  70: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Scope tree\n\nx\n\n## Report\n\nx\n\n## Roadmap\n\n1. #71\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    subIssues: [71],
+  },
+  71: {
+    type: "Segment",
+    body: "#70 · Scope tree: s\n\n## Context\n\nx\n\n## Done when\n\n- d\n",
+    subIssues: [72, 73],
+  },
+  72: {
+    type: "Task",
+    body: task(72, "#70 › #71 · Goal, Scope tree: g").body.replace(
+      "## Tests",
+      "## Provides\n\n- Report: the stray list.\n- Scope tree: each scope.\n\n## Tests",
+    ),
+  },
+  73: {
+    ...task(73, "#70 › #71 · Report: g"),
+    state: "CLOSED",
+  },
+  80: {
+    type: "Plan",
+    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #81\n2. #82\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    subIssues: [81, 82],
+  },
+  81: task(81, "#80 · Roadmap"),
+  82: {
+    type: "Task",
+    body: task(82, "#80 · Roadmap").body.replace(
+      "## Tests",
+      "## Planning\n\n- Split it.\n\n## Tests",
+    ),
+  },
 };
 
 function connection(nodes: readonly unknown[]) {
@@ -416,6 +450,48 @@ describe("checkIssueTree", () => {
     ]);
   });
 
+  test("prints each open leaf's Model sections from its header line and Provides", async () => {
+    mockGraphql();
+
+    const check = await checkIssueTree(access, 70, {
+      checkouts: checkoutAt(createWorkingCopy()),
+    });
+
+    expect(
+      check.issues.map(({ number, modelSections }) => [number, modelSections]),
+    ).toEqual([
+      [72, ["Scope tree", "Report"]],
+      [73, []],
+      [71, []],
+      [70, []],
+    ]);
+
+    expect(formatIssueTreeCheck(check)).toContain(
+      "      Model: Scope tree, Report",
+    );
+  });
+
+  test("flags open Planning as due only once every issue ordered before it closes", async () => {
+    mockGraphql();
+
+    const [waiting, due] = await Promise.all([
+      checkIssueTree(access, 80, {
+        checkouts: checkoutAt(createWorkingCopy()),
+      }),
+      checkIssueTree(access, 80, {
+        checkouts: checkoutAt(
+          createWorkingCopy("feat: eighty-one\n\nCloses #81"),
+        ),
+      }),
+    ]);
+
+    expect(waiting.planningDue).toEqual([]);
+
+    expect(due.planningDue).toEqual([{ repository: "o/r", number: 82 }]);
+
+    expect(formatIssueTreeCheck(due)).toContain("Planning due: #82");
+  });
+
   test("reports a task closed by a local commit and leaves it out of the ready set", async () => {
     mockGraphql();
 
@@ -491,6 +567,7 @@ describe("formatIssueTreeCheck", () => {
       blockers: [],
       findings: [],
       openSections: [],
+      modelSections: [],
       towards: [],
       closes: [],
     };
@@ -515,6 +592,7 @@ describe("formatIssueTreeCheck", () => {
             audience: "worker",
           },
         ],
+        planningDue: [],
         finished: false,
       }),
     ).toEqual([
@@ -547,6 +625,7 @@ describe("formatIssueTreeCheck", () => {
             audience: "worker",
           },
         ],
+        planningDue: [],
         finished: false,
       }),
     ).toEqual([

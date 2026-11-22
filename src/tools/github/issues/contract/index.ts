@@ -37,10 +37,12 @@ export { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssu
 export { formatIssueTreeCheck } from "#tools/github/issues/contract/utils/formatIssueTreeCheck";
 export { hasSection } from "#tools/github/issues/contract/utils/hasSection";
 export { isBlockingFinding } from "#tools/github/issues/contract/utils/isBlockingFinding";
+export { isModelSection } from "#tools/github/issues/contract/utils/isModelSection";
 export { isSameIssue } from "#tools/github/issues/contract/utils/isSameIssue";
 export { listOpenSections } from "#tools/github/issues/contract/utils/listOpenSections";
 export { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
 export { parseIssueList } from "#tools/github/issues/contract/utils/parseIssueList";
+export { parseProvides } from "#tools/github/issues/contract/utils/parseProvides";
 export { readIssueNumber } from "#tools/github/issues/contract/utils/readIssueNumber";
 export { readRepositoryFlag } from "#tools/github/issues/contract/utils/readRepositoryFlag";
 export { readShellFlag } from "#tools/github/issues/contract/utils/readShellFlag";

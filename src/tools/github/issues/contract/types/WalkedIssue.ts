@@ -10,6 +10,7 @@ export interface WalkedIssue extends IssueLocation {
   readonly blockers: readonly string[];
   readonly findings: readonly IssueFinding[];
   readonly openSections: readonly string[];
+  readonly modelSections: readonly string[];
   readonly towards: readonly IssueCommit[];
   readonly closes: readonly IssueCommit[];
 }

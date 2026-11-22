@@ -90,7 +90,7 @@ describe("parseIssueBody", () => {
         { repository: undefined, number: 1 },
         { repository: "AUAUST/lib-js-toolkit", number: 2 },
       ],
-      sections: ["Goal: gist"],
+      sections: ["Goal"],
     });
 
     expect(stripHeaderChain(`${header}\n\n## Context`)).toBe(
