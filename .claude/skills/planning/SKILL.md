@@ -51,15 +51,15 @@ Investigate every question in the code, configuration, history, documentation, d
 
 ### Latitude
 
-| Mode         | Settle yourself                                                  | Never settle                                                                                               |
-| ------------ | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| Main session | What investigation settles, or makes obvious or reasonably clear | Changes to the plan's **Goal**, **Done when**, Model sections or **Decisions**; genuinely balanced options |
-| Inner        | The same, within your scope                                      | Also what the plan, a sibling or a shared contract owns                                                    |
+| Mode         | Settle yourself                                                                 | Never settle                                                                   |
+| ------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Main session | What investigation settles or makes reasonably clear, balanced options included | Changes to the plan's **Goal**, **Done when**, Model sections or **Decisions** |
+| Inner        | The same, within your scope                                                     | Also what the plan, a sibling or a shared contract owns                        |
 
 Handle each question, after investigation:
 
 - **Within your latitude**: decide it, write it into the issue as decided, and list it in your reply so the user can correct it.
-- **Beyond it**: ask through your mode's channel, batched with your findings, options, trade-offs and a recommendation, and change neither the plan nor the code meanwhile.
+- **Beyond it**: ask through your mode's channel, batched with your findings, as the decision protocol words questions, and change neither the plan nor the code meanwhile.
 - **Still open once the item's need is settled**: create the issue with what is known, the rest under **Questions** with your findings and candidate answers.
 - **Answered**: fold the answer into the body as decided and remove the question.
 

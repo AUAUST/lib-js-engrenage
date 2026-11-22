@@ -34,14 +34,14 @@ Each `Concurrent: <owner>/<repo>#<n>` line in your brief names a leaf another wo
 
 ## Design
 
-Everything the specification states binds you: deliver its outcome and write each test case it lists. Design the rest within the owners the specification names and Project structure: placement, helpers, reuse, internal names and shapes, changing only what the outcome needs. Where a code fact the specification states no longer holds, design from the code and report the difference.
+Everything the specification states binds you: deliver its outcome and write each test case it lists. Place and reuse code where the specification or Project structure assigns its owner; design the rest, changing only what the outcome needs. Where a code fact the specification states no longer holds, design from the code and report the difference.
 
 ## Stops
 
 Stop as soon as you find one of these, before applying any change it concerns, and report it:
 
 - part of the outcome, a stated structure included, or a contract the specification fixes, cannot hold as written;
-- no domain's purpose covers a capability the outcome needs, or it needs a new layer, namespace, role or public domain the specification does not state;
+- the outcome needs code no domain's purpose covers or no placement holds without architectural debt, or a new layer, namespace, role or public domain the specification does not state;
 - the outcome needs a user-facing change, as the Environment table defines it, that the specification does not state;
 - the outcome needs a change to a contract a Model section of a plan above the issue states, that the issue does not state;
 - a defect in the code of another repository, one `pnpm engrenage link` lists, blocks the change: never work around it.

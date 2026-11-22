@@ -75,7 +75,7 @@ A brief listing the facts wanted back sets your report's parts. Otherwise report
 | Reach          | For a change, what the ideal alters against what the request names; otherwise what the findings affect |
 | Recommendation | What to adopt now, with the alternatives discarded and why                                             |
 | Findings       | The findings of the method's passes                                                                    |
-| Questions      | The batched questions                                                                                  |
+| Questions      | Worded by the decision protocol                                                                        |
 
 Name each issue and backlog entry you created or edited with what it now records, or with its diff where the issue-drafts rule has you report one.
 

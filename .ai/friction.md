@@ -171,3 +171,4 @@
 - word-budgets check: adding 5 words to the Environment section for #815 — every role sat at its exact budget, so sync failed for 20 roles; cut 5 words elsewhere in the section instead of asking for a raise
 - planning issue create: debugger write-up under a brief keeping `.ai/issues/` untouched — drafts live only there; left the issue to the caller
 - PreToolUse shell-trap hook: `echo ======` as a separator — refused as `=` expansion; quoted it
+- auto mode classifier: `gh issue comment` posting scratchpad notes the user did not name — denied; relied on git history instead

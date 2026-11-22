@@ -64,7 +64,7 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 | Autonomous consultant | Any question with a sensible default, balanced options included: one serving the plan's goal, decisions and project patterns, keeping every relied-on contract, cheapest to reverse | Changes to the plan's goal, an owner or structure it lacks, facts only the user holds, irreversible or out-of-repository actions, no sensible default |
 
 - **Within your latitude.** Decide it, write it into the issue as decided and list it in your answer. In autonomous mode, record it where the settled fact belongs, the plan's **Decisions** or the issue, with the alternative it overrode; a changed **Decision** names the one it replaces.
-- **Beyond it.** Return it to the walker for the user, with your findings, options, trade-offs and a recommendation, changing no issue it concerns meanwhile. In autonomous mode, leave it under the issue's **Questions** instead: the walker sets the issue aside.
+- **Beyond it.** Return it to the walker for the user, with your findings, as the decision protocol words it, changing no issue it concerns meanwhile. In autonomous mode, leave it under the issue's **Questions** instead: the walker sets the issue aside.
 - **Answered.** Fold the answer into the issue as decided and remove the question.
 
 ## Steps sweep
