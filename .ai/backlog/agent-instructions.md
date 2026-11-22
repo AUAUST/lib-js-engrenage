@@ -150,12 +150,6 @@ Shared agent instructions, skills and the backlog conventions.
   - eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules
 
-## 28. Agent records says both to remove and to keep friction lines a backlog entry tracks
-
-- sites: `data/metalbrain/rules/agent-records.md:24`, `data/metalbrain/rules/agent-records.md:25`
-- why: L24 removes a subject's lines once an entry takes it up; L25 gives friction a tracked defect costs its line, even once an entry tracks it. A line met after the entry exists fits both.
-- want: one rule for friction on a tracked subject.
-
 ## 29. Backlog renumbering breaks IDs cited outside the backlog
 
 - why: #809 cites entries by ID in its decisions and briefs; three removals this session moved the Codex entry from agents.34 to agents.31, leaving S.25 and live briefs pointing at other entries.

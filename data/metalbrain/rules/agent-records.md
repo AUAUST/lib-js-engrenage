@@ -22,7 +22,6 @@ formerly:
 - Create a log when absent, under its heading. Write each line a few words per part, so repeated mentions of a subject match.
 - Before weighing a solution or writing a friction line, search its log for the subject. A subject with three or more lines is recurring: report it as a candidate with its line count and the needs it records.
 - Remove a subject's lines once a backlog entry, an issue or a change takes it up, and a debt marker only when your change resolves it.
-- Keep project defects and work someone should do out of the logs: they go to the backlog, and the friction they cost you still gets its line, even once an entry or issue tracks them.
 
 ## Debt
 
