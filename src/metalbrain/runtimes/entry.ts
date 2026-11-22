@@ -1,4 +1,5 @@
 export {
+  blockStop,
   checkThoroughness,
   denyToolUse,
   findCommandFamily,

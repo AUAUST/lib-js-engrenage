@@ -1,11 +1,13 @@
 import { text } from "node:stream/consumers";
 
 import {
+  blockStop,
   denyToolUse,
   resolveMainWorktree,
   writeHookContext,
   type HookEvent,
   type HookVerdict,
+  type HostCheck,
   type HostChecks,
 } from "#metalbrain/runtimes/index";
 
@@ -18,13 +20,32 @@ function writeVerdict(verdict: HookVerdict, event: HookEvent) {
     });
   }
 
-  if (event !== "PreToolUse") {
-    throw new Error(
-      `metalbrain renders no Claude Code ${event} denial: ${verdict.reason}`,
-    );
+  if (event === "PreToolUse") {
+    return void denyToolUse(verdict.reason);
   }
 
-  denyToolUse(verdict.reason);
+  if (event === "Stop" || event === "SubagentStop") {
+    return void blockStop(verdict.reason);
+  }
+
+  throw new Error(
+    `metalbrain renders no Claude Code ${event} denial: ${verdict.reason}`,
+  );
+}
+
+// @debt engrenage's host checks are composed in metalbrain's hook runner, because the gate runs in workflows/gate above tools/metalbrain's adapter; a host-provided check registry would keep the runner host-agnostic
+async function loadHostCheck(check: keyof HostChecks): Promise<HostCheck> {
+  if (check === "gateStop") {
+    const { gateClaudeStop } = await import("#workflows/gate/index");
+
+    return gateClaudeStop;
+  }
+
+  const {
+    claudeHostChecks,
+  } = await import("#tools/metalbrain/adapters/claudeHostChecks");
+
+  return claudeHostChecks[check];
 }
 
 export default async function (
@@ -35,11 +56,9 @@ export default async function (
 
   const payload: unknown = JSON.parse(await text(process.stdin));
 
-  const {
-    claudeHostChecks,
-  } = await import("#tools/metalbrain/adapters/claudeHostChecks");
+  const hostCheck = await loadHostCheck(check);
 
-  const verdict = await claudeHostChecks[check](payload, {
+  const verdict = await hostCheck(payload, {
     root: await resolveMainWorktree(process.cwd()),
     time,
   });

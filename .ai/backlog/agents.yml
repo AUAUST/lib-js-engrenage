@@ -41,13 +41,12 @@ entries:
     why: of 8 subagents meeting refusals and retries in one session, one logged friction.
     want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.
   - id: 261122-8233
-    title: Hook routers duplicate payload handling and swallow failures
+    title: Hook routers duplicate payload handling and output writing
     sites:
-      - bin/engrenage-hook/claude/actions/lint.ts:56
       - bin/metalbrain/hook/claude/actions/thoroughness.ts:28
       - src/tools/agents/operations/checkAgentHooks.ts:25
-    why: post-edit failures (broken config, ESLint crash) vanish; every hook writes its own stdout JSON; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
-    want: one hook-output writer and shared hook schemas; failures reported without disturbing the session.
+    why: the thoroughness hook writes its own stdout JSON beside the host-check runner's verdict rendering; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
+    want: one hook-output writer and shared hook schemas.
   - id: 261122-3c97
     title: The hook directory is resolved twice, in shell and in Node
     sites:

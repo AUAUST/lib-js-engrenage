@@ -22,4 +22,13 @@ export interface HostChecks {
    * PostToolUse: notices a shell output past the host's output limit.
    */
   readonly limitOutput: HostCheck;
+  /**
+   * PostToolUse on file edits: suggests the host's lint fixes for the edited file.
+   */
+  readonly lintEdit: HostCheck;
+  /**
+   * Stop, blocking: refuses a gated agent's first stop on a tree failing
+   * the host's gate.
+   */
+  readonly gateStop: HostCheck;
 }

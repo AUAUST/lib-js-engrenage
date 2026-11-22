@@ -201,7 +201,10 @@ export async function getSkillTemplates({
                 hooks: [
                   {
                     type: "command",
-                    command: createHookCommand(claudeStopHook.args),
+                    command: createHookCommand(
+                      claudeStopHook.args,
+                      claudeStopHook.program,
+                    ),
                   },
                 ],
               },

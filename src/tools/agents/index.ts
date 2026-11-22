@@ -35,7 +35,6 @@ export { listMissingExtensionRules } from "#tools/agents/operations/listMissingE
 export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 export { readAgentRun } from "#tools/agents/operations/readAgentRun";
 export { readAgentRuns } from "#tools/agents/operations/readAgentRuns";
-export { readHookPayload } from "#tools/agents/operations/readHookPayload";
 export { readRunningAgents } from "#tools/agents/operations/readRunningAgents";
 export { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";

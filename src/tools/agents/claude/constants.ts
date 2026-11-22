@@ -58,8 +58,9 @@ export const claudeHooks = freeze([
   {
     event: "PostToolUse",
     matcher: "Edit|MultiEdit|Write",
-    args: "claude PostToolUse",
+    args: "hook claude PostToolUse lintEdit",
     async: true,
+    program: metalbrainHook,
   },
   {
     event: "SubagentStart",
@@ -99,7 +100,8 @@ export const claudeHooks = freeze([
 ] as const) satisfies readonly HookDefinition[];
 
 export const claudeStopHook = freeze({
-  args: "claude Stop skill",
+  args: "hook claude Stop gateStop",
+  program: metalbrainHook,
 } as const);
 
 export const claudeThoroughnessHookArgs = "hook claude thoroughness --level";

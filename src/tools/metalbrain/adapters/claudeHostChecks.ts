@@ -1,10 +1,10 @@
 import type { HostChecks } from "#metalbrain/runtimes/index";
 
 /**
- * Engrenage's host checks for metalbrain's Claude hook events, each loading
- * its code when called.
+ * Engrenage's host checks for metalbrain's Claude hook events, each loading its
+ * code when called, but the stop gate, which runs the gate above this layer.
  */
-export const claudeHostChecks: HostChecks = {
+export const claudeHostChecks: Omit<HostChecks, "gateStop"> = {
   async startRun(payload, context) {
     const {
       startClaudeRun,
@@ -32,5 +32,12 @@ export const claudeHostChecks: HostChecks = {
     } = await import("#tools/metalbrain/operations/limitClaudeOutput");
 
     return limitClaudeOutput(payload);
+  },
+  async lintEdit(payload) {
+    const {
+      lintClaudeEdit,
+    } = await import("#tools/metalbrain/operations/lintClaudeEdit");
+
+    return lintClaudeEdit(payload);
   },
 };

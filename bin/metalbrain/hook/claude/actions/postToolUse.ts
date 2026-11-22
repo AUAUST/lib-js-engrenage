@@ -6,7 +6,9 @@ import {
   resolveMainWorktree,
 } from "#metalbrain/runtimes/index";
 
-export default async function (check?: "limitOutput"): Promise<void> {
+export default async function (
+  check?: "limitOutput" | "lintEdit",
+): Promise<void> {
   if (check !== undefined) {
     const {
       default: hostCheck,

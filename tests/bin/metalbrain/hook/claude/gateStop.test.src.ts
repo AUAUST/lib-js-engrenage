@@ -1,23 +1,30 @@
 import { existsSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { text } from "node:stream/consumers";
 
+import { literal, object, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { runDefinition } from "#tests/utils/runDefinition";
-import { readHookPayload } from "#tools/agents/operations/readHookPayload";
+import { createProgram, runProgram } from "#workflows/cli/index";
 
-import stop from "#bin/engrenage-hook/claude/stop";
+import metalbrain from "#bin/metalbrain/index";
 
-vi.mock("#tools/agents/operations/readHookPayload", () => {
-  return { readHookPayload: vi.fn() };
+const blockSchema = object({ decision: literal("block"), reason: string() });
+
+vi.mock("node:stream/consumers", () => {
+  return { text: vi.fn() };
 });
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
+
+function setPayload(payload: object) {
+  vi.mocked(text).mockResolvedValue(JSON.stringify(payload));
+}
 
 async function createRepository() {
   const repository = await createGitRepository(
@@ -33,7 +40,7 @@ async function createRepository() {
     ["prettier"],
   );
 
-  vi.mocked(readHookPayload).mockResolvedValue({
+  setPayload({
     session_id: "session",
     agent_id: "agent",
     cwd: repository.project.root,
@@ -42,23 +49,34 @@ async function createRepository() {
   return repository;
 }
 
-async function runStop() {
-  process.exitCode = undefined;
-
-  const write = vi.spyOn(process.stderr, "write").mockReturnValue(true);
+async function runStop(): Promise<{ block?: string; output: string }> {
+  const write = vi.spyOn(process.stdout, "write").mockReturnValue(true);
 
   write.mockClear();
 
-  await runDefinition(stop, "skill");
+  let failure: unknown;
 
-  const exitCode = process.exitCode ?? 0;
+  await runProgram(
+    createProgram("metalbrain", metalbrain),
+    ["node", "metalbrain", "hook", "claude", "Stop", "gateStop"],
+    {
+      onError(error) {
+        failure = error;
+      },
+    },
+  );
 
-  process.exitCode = undefined;
+  expect(failure).toBeUndefined();
 
-  return {
-    exitCode,
-    stderr: write.mock.calls.map(([chunk]) => String(chunk)).join(""),
-  };
+  const output = write.mock.calls.map(([chunk]) => String(chunk)).join("");
+
+  write.mockRestore();
+
+  if (output === "") {
+    return { output };
+  }
+
+  return { block: parse(blockSchema, JSON.parse(output)).reason, output };
 }
 
 async function hasMarker(root: string): Promise<boolean> {
@@ -69,32 +87,31 @@ async function hasMarker(root: string): Promise<boolean> {
   return existsSync(directory) && readdirSync(directory).length > 0;
 }
 
-describe("stop hook", { timeout: binaryTimeout }, () => {
+describe("stop gate", { timeout: binaryTimeout }, () => {
   test("blocks the first stop on a failing tree, lets the second through and blocks again after a change", async () => {
     const { project } = await createRepository();
 
     project.write("fail", "first\n");
 
-    const first = await runStop();
+    const { block } = await runStop();
 
-    expect(first.exitCode).toBe(2);
-    expect(first.stderr).toContain("test ! -f fail");
+    expect(block).toContain("test ! -f fail");
 
-    expect(first.stderr).toContain(
+    expect(block).toContain(
       "If you must stop now, list these failures in your report and stop again without changing any file:",
     );
 
     expect(await hasMarker(project.root)).toBe(true);
 
-    expect((await runStop()).exitCode).toBe(0);
+    expect((await runStop()).block).toBeUndefined();
 
     project.write("fail", "second\n");
 
-    expect((await runStop()).exitCode).toBe(2);
+    expect((await runStop()).block).toBeDefined();
 
     rmSync(project.resolve("fail"));
 
-    expect((await runStop()).exitCode).toBe(0);
+    expect((await runStop()).block).toBeUndefined();
     expect(await hasMarker(project.root)).toBe(false);
   });
 
@@ -105,23 +122,17 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
 
     const session = { session_id: "session", cwd: project.root };
 
-    vi.mocked(readHookPayload).mockResolvedValue(session);
+    setPayload(session);
 
-    expect((await runStop()).exitCode).toBe(0);
+    expect((await runStop()).block).toBeUndefined();
 
-    vi.mocked(readHookPayload).mockResolvedValue({
-      ...session,
-      agent_type: "Explore",
-    });
+    setPayload({ ...session, agent_type: "Explore" });
 
-    expect((await runStop()).exitCode).toBe(0);
+    expect((await runStop()).block).toBeUndefined();
 
-    vi.mocked(readHookPayload).mockResolvedValue({
-      ...session,
-      agent_type: "debugger",
-    });
+    setPayload({ ...session, agent_type: "debugger" });
 
-    expect((await runStop()).exitCode).toBe(2);
+    expect((await runStop()).block).toBeDefined();
   });
 
   test("lets a passing tree stop at once", async () => {
@@ -129,7 +140,7 @@ describe("stop hook", { timeout: binaryTimeout }, () => {
 
     project.write("passing", "content\n");
 
-    expect(await runStop()).toEqual({ exitCode: 0, stderr: "" });
+    expect(await runStop()).toEqual({ output: "" });
     expect(await hasMarker(project.root)).toBe(false);
   });
 });

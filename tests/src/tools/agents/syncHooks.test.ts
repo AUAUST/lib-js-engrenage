@@ -51,11 +51,11 @@ function run(
 function createConsumer(files: Record<string, string> = {}) {
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "node_modules/.bin/engrenage-hook": fakeProgram,
+    "node_modules/.bin/metalbrain": fakeProgram,
     ...files,
   });
 
-  chmodSync(project.resolve("node_modules/.bin/engrenage-hook"), 0o755);
+  chmodSync(project.resolve("node_modules/.bin/metalbrain"), 0o755);
 
   return { project, root: realpathSync(project.root) };
 }
@@ -68,7 +68,7 @@ test("the generated command finds the root from a nested directory", async () =>
   const result = run(command, project.resolve("nested/deeper"));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nhook\nclaude\nPostToolUse\nlintEdit\n`);
 });
 
 test("the generated command runs the root's program from a workspace", async () => {
@@ -82,7 +82,7 @@ test("the generated command runs the root's program from a workspace", async () 
   const result = run(command, project.resolve("theme"));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nhook\nclaude\nPostToolUse\nlintEdit\n`);
 });
 
 test("the generated command stops at a nested worktree before its install", async () => {
@@ -102,7 +102,7 @@ test("the generated command stops at a nested worktree before its install", asyn
   expect(result.status, result.stderr).toBe(0);
 
   expect(result.stdout).toBe(
-    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
+    '{"systemMessage":"engrenage hooks are off: metalbrain is not installed in this project; run pnpm install"}\n',
   );
 });
 
@@ -119,7 +119,7 @@ test("the generated command stops at the workspace root before its install", asy
   expect(result.status, result.stderr).toBe(0);
 
   expect(result.stdout).toBe(
-    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
+    '{"systemMessage":"engrenage hooks are off: metalbrain is not installed in this project; run pnpm install"}\n',
   );
 });
 
@@ -135,7 +135,7 @@ test("the generated command skips a package inside node_modules", async () => {
   const result = run(command, project.resolve(inner));
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nhook\nclaude\nPostToolUse\nlintEdit\n`);
 });
 
 test("the generated command runs in CLAUDE_PROJECT_DIR", async () => {
@@ -148,7 +148,7 @@ test("the generated command runs in CLAUDE_PROJECT_DIR", async () => {
   const result = run(command, other.root, { CLAUDE_PROJECT_DIR: root });
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe(`${root}\nclaude\nPostToolUse\n`);
+  expect(result.stdout).toBe(`${root}\nhook\nclaude\nPostToolUse\nlintEdit\n`);
 });
 
 test("the generated command runs the source program without the bin", async () => {
@@ -156,13 +156,13 @@ test("the generated command runs the source program without the bin", async () =
 
   const project = createTemporaryProject({
     "package.json": '{"type":"module"}',
-    "bin/engrenage-hook/executable.ts": "console.log(process.argv.slice(2).join(' '));\n",
+    "bin/metalbrain/executable.ts": "console.log(process.argv.slice(2).join(' '));\n",
   });
 
   const result = run(command, project.root);
 
   expect(result.status, result.stderr).toBe(0);
-  expect(result.stdout).toBe("claude PostToolUse\n");
+  expect(result.stdout).toBe("hook claude PostToolUse lintEdit\n");
 });
 
 test("the generated command asks for an install without bin or source", async () => {
@@ -175,7 +175,7 @@ test("the generated command asks for an install without bin or source", async ()
   expect(result.status, result.stderr).toBe(0);
 
   expect(result.stdout).toBe(
-    '{"systemMessage":"engrenage hooks are off: engrenage-hook is not installed in this project; run pnpm install"}\n',
+    '{"systemMessage":"engrenage hooks are off: metalbrain is not installed in this project; run pnpm install"}\n',
   );
 });
 
@@ -237,6 +237,7 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
   });
 
   expect(JSON.stringify(hooks)).not.toContain("engrenage agents claude hook");
+  expect(JSON.stringify(hooks)).not.toContain("engrenage-hook");
 
   for (const [event, count] of [
     ["PreToolUse", 2],
@@ -248,10 +249,7 @@ test("sync replaces the old entries with one per event, keeping the user's, idem
     const owned = (hooks[event] as { hooks: { command: string }[] }[])
       .flatMap((group) => group.hooks)
       .filter(({ command }) => {
-        return (
-          command.includes("engrenage-hook claude ") ||
-          command.includes("metalbrain hook claude ")
-        );
+        return command.includes("metalbrain hook claude ");
       });
 
     expect(owned, event).toHaveLength(count);

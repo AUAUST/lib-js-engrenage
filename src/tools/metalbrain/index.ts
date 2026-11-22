@@ -32,6 +32,7 @@ export { guardClaudeResume } from "#tools/metalbrain/operations/guardClaudeResum
 export { guardClaudeShell } from "#tools/metalbrain/operations/guardClaudeShell";
 export { guardClaudeToolUse } from "#tools/metalbrain/operations/guardClaudeToolUse";
 export { limitClaudeOutput } from "#tools/metalbrain/operations/limitClaudeOutput";
+export { lintClaudeEdit } from "#tools/metalbrain/operations/lintClaudeEdit";
 export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
 export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";

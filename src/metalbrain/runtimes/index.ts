@@ -4,6 +4,7 @@ export {
 } from "#metalbrain/runtimes/constants";
 
 // @barrel operations
+export { blockStop } from "#metalbrain/runtimes/operations/blockStop";
 export { checkThoroughness } from "#metalbrain/runtimes/operations/checkThoroughness";
 export { denyToolUse } from "#metalbrain/runtimes/operations/denyToolUse";
 export { logToolCall } from "#metalbrain/runtimes/operations/logToolCall";

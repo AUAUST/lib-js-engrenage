@@ -1,18 +1,19 @@
-import { object, optional, string } from "valibot";
+import { looseObject, optional, string } from "valibot";
 
 import { mainAgent } from "#metalbrain/runtimes/constants";
-import { resolveHookDirectory } from "#metalbrain/runtimes/index";
+import {
+  resolveHookDirectory,
+  type HookVerdict,
+} from "#metalbrain/runtimes/index";
+import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
 import {
   getSkillDefinitions,
   listActiveExtensions,
-  readHookPayload,
+  validateHookPayload,
 } from "#tools/agents/index";
-import { getRunContext } from "#workflows/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
-import { checkAgentStop } from "#workflows/gate/index";
-import type { LoadedConfig } from "#project/config/index";
+import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 
-const payloadSchema = object({
+const payloadSchema = looseObject({
   session_id: string(),
   agent_id: optional(string()),
   agent_type: optional(string()),
@@ -32,21 +33,26 @@ async function isGatedAgent(
   });
 }
 
-export default async function (): Promise<void> {
+/**
+ * Stop and SubagentStop from a gated agent's frontmatter: refuses the agent's
+ * first stop on a tree failing the worktree gate. A main session stops freely
+ * unless it runs a gated agent.
+ */
+export async function gateClaudeStop(
+  payload: unknown,
+): Promise<HookVerdict | undefined> {
   const {
     session_id: session,
     agent_id: agent,
     agent_type: role,
     cwd,
-  } = await readHookPayload(payloadSchema, "Claude Code");
+  } = validateHookPayload(payloadSchema, payload, "Claude Code");
 
   if (agent === undefined && role === undefined) {
     return;
   }
 
-  const config = await loadValidatedConfig(resolveHookDirectory(cwd), {
-    reporter: getRunContext().reporter,
-  });
+  const config = await loadValidatedConfig(resolveHookDirectory(cwd));
 
   if (
     agent === undefined &&
@@ -62,11 +68,5 @@ export default async function (): Promise<void> {
     agent: agent ?? mainAgent,
   });
 
-  if (reason === undefined) {
-    return;
-  }
-
-  process.stderr.write(reason);
-
-  process.exitCode = 2;
+  return reason === undefined ? undefined : { decision: "deny", reason };
 }
