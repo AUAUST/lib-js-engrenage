@@ -175,3 +175,4 @@
 - shell trap hook, zsh `=word`: `echo ======` as a separator — hook refused it as a command-path expansion; quoted the separator
 - metalbrain backlog sites: moving a file a backlog site names — no record command follows the move and sync fails; rewrote the site paths in the YAML with sed
 - `pnpm engrenage typecheck` after renaming entries: ran it before `pnpm build` — tests project failed with 83 circular-type errors while `package.json` exports still named the old entries; `pnpm build` rewrote them and typecheck passed
+- writer subagent loaded AGENTS.md: auditing data/metalbrain against it — the context copy predated 4e29dca7 (no smallest-step line, old Precedence); grepped the file on disk
