@@ -145,9 +145,13 @@ Shared agent instructions, skills and the backlog conventions.
 
 ## 27. Hard rules stay prose where a check could enforce them
 
-- sites: `data/metalbrain/sections/shell.md:13`, `data/metalbrain/sections/shell.md:15`, `data/metalbrain/sections/shell.md:16`, `data/metalbrain/sections/shell.md:17`, `data/metalbrain/sections/verification.md:13`
-- why: #809 D.9 (delete before adding; hard rules into hooks). The message gate, `git push` deny, local-files and suppressions steps took their prose; the shell-trap rows and the `eslint:fix` clause wait on the shell hook's place in the #809 plan.
+- why: #809 D.9; S.38 keeps prose beside a check only for rules agents' default behaviour often breaks. The message gate, `git push` deny, local-files, suppressions and shell-trap checks took the rest of their prose (S.39).
 - want:
-  - the shell rows and the `without files` clause deleted once the user places the hook
   - eslint-comments description, `consistent-type-definitions` undecided
   - mutable-list aliases; allowed comment kinds: custom lint rules
+
+## 28. Agent records says both to remove and to keep friction lines a backlog entry tracks
+
+- sites: `data/metalbrain/rules/agent-records.md:24`, `data/metalbrain/rules/agent-records.md:25`
+- why: L24 removes a subject's lines once an entry takes it up; L25 gives friction a tracked defect costs its line, even once an entry tracks it. A line met after the entry exists fits both.
+- want: one rule for friction on a tracked subject.

@@ -23,7 +23,7 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 
 - why: #654: walker context 65k→214k, ~75% of cost re-reading; main sessions are 43% of cost, starting at 65k, mostly harness (#809).
 - want: walks: `autoCompactWindow` (≥100k), PreCompact stdout keeping segment gists and pending handoffs.
-- want: interactive: one short `/compact` offer per threshold crossing; a smaller harness start (plugins, MCP servers).
+- want: interactive (#809 Q.9): one short `/compact` offer per threshold crossing; a smaller harness start per project (plugins, MCP servers); a fresh session per task; the 1-hour cache only where gaps need it.
 
 ## 5. Sync accepts a skill naming its supporting file by bare name
 
@@ -157,11 +157,11 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - why: 6 session pairs in `.ai/stats/` share their opening transcript; about $21.6, 2% of main cost, counted twice by `agents stats`.
 - want: a forked session's record counting only what follows the fork.
 
-## 29. No hook catches unquoted globs in Bash calls
+## 29. The shell-trap hook still refuses unquoted globs
 
-- sites: `data/metalbrain/sections/shell.md:13`
-- why: 12 friction lines on unquoted `grep --include=*.ts` despite the Shell rule; wording does not fix it.
-- want: a PreToolUse Bash check warning on an unquoted glob argument.
+- sites: `src/tools/agents/operations/findShellTrap.ts:14`
+- why: #809 S.44 drops the glob check, which also refused globs matching files (friction ×4); the Shell rule's glob row stays, unchecked (S.38).
+- want: the glob check and its tests removed from the shell-trap hook.
 
 ## 30. Consultant freshness forces fresh consultants mid-walk
 
@@ -196,3 +196,9 @@ Agent runtime integrations: hooks, runtime names and skill rendering.
 - sites: `src/tools/agents/claude/constants.ts:107`
 - why: `Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose.
 - want: the PreToolUse git check refuses any parsed `git … push`.
+
+## 36. Run records hold no review findings or rework
+
+- sites: `src/tools/agents/utils/summarizeAgentTask.ts:64`
+- why: #809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured.
+- want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.

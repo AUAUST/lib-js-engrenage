@@ -150,12 +150,12 @@ Under Codex, before your first dispatch of an agent, and again after each compac
 
 ## Shell
 
+Write commands in POSIX sh, which zsh runs with these traps:
+
 | Trap                                                                                                              | Write                                                |
 | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| The shell expands an unquoted glob, and zsh can abort when it matches nothing                                     | Quote every glob passed as an argument               |
+| zsh aborts on an unquoted glob matching nothing                                                                   | Quote every glob passed as an argument               |
 | zsh never splits an unquoted variable                                                                             | Lists as arrays or through `xargs`                   |
-| zsh expands a word starting with `=` as a command path                                                            | No word starting with `=`                            |
-| macOS has no `timeout`                                                                                            | Each tool's own timeout                              |
 | BSD `sed` requires the in-place suffix                                                                            | `sed -i ''`                                          |
 | In a session started with worktree isolation, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |
 
@@ -247,7 +247,7 @@ A finding outside your task that no agent record holds, met while working: a lik
 
 | When                                    | Check                                                                                                                                                                                                   |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| During implementation                   | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`: without files it lints the whole project                                                               |
+| During implementation                   | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`                                                                                                         |
 | Before delivery, when you changed files | Review against architectural boundaries and quality requirements, not only behavior; run the worktree gate, `pnpm engrenage gate --worktree`, once on the uncommitted work, adding only checks it lacks |
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 
