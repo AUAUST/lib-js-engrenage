@@ -142,3 +142,62 @@ entries:
       - data/metalbrain/sections/writing.md:14
     why: Over-compressed rules hide conditions and scope; a heuristic sync warning would catch them before review
     want: Decide whether a warning-only sync check is worth its false positives
+  - id: 261122-67be
+    title: instruction-writing lets a change end with more start-loaded words than it began with
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:62
+    why: Step 7 ends by raising caps; three commits grew every role by up to 355 words
+    want: Finishing requires each role's start-loaded words at or below their count before the change, unless the user decided the growth
+  - id: 261122-c156
+    title: Sync and the writer can raise word caps without a user decision
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:62
+      - src/tools/metalbrain/claude/setup/checkWordBudgets.ts:141
+    want: Only a step the user takes raises a cap; sync only lowers caps
+  - id: 261122-0407
+    title: instruction-writing's Draft step does not count rewordings, so a rule reworded longer passes as unchanged
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:61
+    want: Each changed passage counted before and after, any growth naming the failure it prevents
+  - id: 261122-52fa
+    title: instruction-writing's catches miss enumerations standing in for a rule, implied reasons, restatements of loaded rules and rules split into case lists
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:65
+    want: The cold read must clear those four catches, restatements searched beyond the subject inventory
+  - id: 261122-d604
+    title: No warning flags illustrative markers in changed instruction lines
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:63
+    want: A mechanical warning on changed instruction lines holding parenthesized lists or illustrative markers, catching what the cold read misses
+  - id: 261122-4aa1
+    title: AGENTS.md Writing asks a reason for each idea while instruction-writing asks one only when it changes how the rule applies
+    sites:
+      - data/metalbrain/sections/writing.md:14
+      - data/metalbrain/skills/instruction-writing.md:113
+    want: One source decides whether an instruction rule carries its reason
+  - id: 261122-1290
+    title: instruction-writing's request step can be read as writing the cases a request names into the rule
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:43
+    want: Named cases, site lists included, are tests the general rule must pass without naming them
+  - id: 261122-84c3
+    title: A style rule that rewrites existing text toward longer forms can be adopted without a user decision
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:61
+    want: Such a rule needs the user's decision first, with its estimated word effect
+  - id: 261122-0a07
+    title: The model fact to name specific behaviors justifies lists of cases
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:137
+    want: Model facts define when naming a behavior is the rule itself and when it only illustrates one
+  - id: 261122-6536
+    title: instruction-writing's Write report treats raised caps as a normal result
+    sites:
+      - data/metalbrain/skills/instruction-writing.md:144
+    want: The report gives net words per role and the reason for any growth
+  - id: 261122-8421
+    title: Agents keep echoing = runs as separators, which the shell-trap hook refuses as zsh =word expansion
+    sites:
+      - data/metalbrain/sections/shell.md:1
+    why: Seven friction lines across walkers, writers and workers
+    want: Agents stop writing separators the hook refuses, through the Shell traps table or a hook message naming the alternative

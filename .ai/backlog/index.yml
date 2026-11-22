@@ -29,6 +29,17 @@ agent-instructions:
     - 261122-8b3b
     - 261122-24d8
     - 261122-ed27
+    - 261122-67be
+    - 261122-c156
+    - 261122-0407
+    - 261122-52fa
+    - 261122-d604
+    - 261122-4aa1
+    - 261122-1290
+    - 261122-84c3
+    - 261122-0a07
+    - 261122-6536
+    - 261122-8421
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:
