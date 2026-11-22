@@ -13,6 +13,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/planning/issue/actions/release");
+    return import("#bin/metalbrain/planning/issue/actions/release");
   },
 });

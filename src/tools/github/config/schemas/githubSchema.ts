@@ -93,7 +93,7 @@ export const githubSchema = declareObject(
         }, "Label names must differ beyond case, which GitHub ignores"),
       ),
       {
-        description: "Labels of the current repository, by name: a description, or `{ description, color }`. `engrenage github labels sync` applies them.",
+        description: "Labels of the current repository, by name: a description, or `{ description, color }`. `metalbrain github labels sync` applies them.",
         optional: {
           value: noLabels,
         },

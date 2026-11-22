@@ -131,7 +131,7 @@ async function checkPlanParent(
     drafts.some((candidate) => candidate.stem === stem)
     ? []
     : [
-        `${draft.stem}: moves ${reference} out of the Plan ${renderReference(parent, draft.access.repository)}, outside the set, whose Roadmap would go stale: claim it with \`engrenage planning issue claim ${stem}\` and publish them together`,
+        `${draft.stem}: moves ${reference} out of the Plan ${renderReference(parent, draft.access.repository)}, outside the set, whose Roadmap would go stale: claim it with \`metalbrain planning issue claim ${stem}\` and publish them together`,
       ];
 }
 
@@ -292,7 +292,7 @@ export async function resolvePublishedAncestors(
         })
         .join(
           ", ",
-        )} outside the set: claim them with \`engrenage planning issue claim ${outside.join(",")}\` and publish them together`,
+        )} outside the set: claim them with \`metalbrain planning issue claim ${outside.join(",")}\` and publish them together`,
     );
   }
 

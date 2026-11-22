@@ -213,7 +213,7 @@ describe("planning sheet", () => {
     expect(reporter.messages).toContainEqual({
       level: "warn",
       text: expect.stringContaining("No GitHub snapshot"),
-      data: { fix: "run `engrenage github fetch`" },
+      data: { fix: "run `metalbrain github fetch`" },
     });
 
     expect(content).toContain(

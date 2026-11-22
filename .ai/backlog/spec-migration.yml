@@ -39,6 +39,16 @@ entries:
       - data/metalbrain/shared/linked-checkouts.md:31
       - data/metalbrain/skills/walking.md:213
       - .claude/rules/agent-fragments.md:14
-    why: "the user defers every instruction change #811's moves imply to one consolidated switch at the end; each item appends its mentions to these sites instead of dispatching a writer. #817: `engrenage agents` → `metalbrain agents`."
+      - data/metalbrain/rules/issue-drafts.md:145
+      - data/metalbrain/rules/issue-drafts.md:146
+      - data/metalbrain/rules/issue-drafts.md:150
+      - data/metalbrain/rules/issue-drafts.md:151
+      - data/metalbrain/shared/issue-tree.md:61
+      - data/metalbrain/shared/steps-migration.md:12
+      - data/metalbrain/skills/consultant.md:47
+      - data/metalbrain/skills/implement.md:45
+      - data/metalbrain/skills/walking.md:57
+      - data/metalbrain/skills/walking.md:73
+    why: "the user defers every instruction change #811's moves imply to one consolidated switch at the end; each item appends its mentions to these sites instead of dispatching a writer. #817: `engrenage agents` → `metalbrain agents`. #818: `engrenage planning` → `metalbrain planning`, `engrenage github` → `metalbrain github`."
     want: one writer dispatch renames every mention at these sites, then `pnpm engrenage sync` regenerates the copies.
     done: "no instruction source names a command #811 renamed."

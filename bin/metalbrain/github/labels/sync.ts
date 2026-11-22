@@ -13,6 +13,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/github/labels/actions/sync");
+    return import("#bin/metalbrain/github/labels/actions/sync");
   },
 });

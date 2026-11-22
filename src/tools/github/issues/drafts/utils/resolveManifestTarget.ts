@@ -21,7 +21,7 @@ export function resolveManifestTarget(
 
   if (fetched === undefined) {
     throw new Error(
-      `${repository} is not in the GitHub snapshot: register it, then run \`engrenage github fetch\``,
+      `${repository} is not in the GitHub snapshot: register it, then run \`metalbrain github fetch\``,
     );
   }
 
@@ -51,7 +51,7 @@ export function resolveManifestTarget(
 
             if (field === undefined) {
               throw new Error(
-                `Type ${name} pins ${pinned}, which the GitHub snapshot lacks: run \`engrenage github fetch\``,
+                `Type ${name} pins ${pinned}, which the GitHub snapshot lacks: run \`metalbrain github fetch\``,
               );
             }
 

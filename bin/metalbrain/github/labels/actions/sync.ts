@@ -43,7 +43,7 @@ export default async function ({ check }: { check: boolean }): Promise<void> {
 
   for (const name of extra) {
     reporter.log(
-      `extra ${name}: delete it with \`engrenage github labels prune\``,
+      `extra ${name}: delete it with \`metalbrain github labels prune\``,
     );
   }
 

@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from "commander";
+import { InvalidArgumentError } from "@commander-js/extra-typings";
 
 import { collectArgument, defineLazyCommand } from "#workflows/cli/index";
 
@@ -41,6 +41,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/planning/walk/actions/check");
+    return import("#bin/metalbrain/planning/walk/actions/check");
   },
 });

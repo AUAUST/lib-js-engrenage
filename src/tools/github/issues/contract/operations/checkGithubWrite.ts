@@ -19,7 +19,7 @@ async function checkWrite(
   contractNames: ContractNames,
 ): Promise<string | undefined> {
   if (write.action === "create") {
-    return "create issues as drafts with `pnpm engrenage planning issue create <type>` and publish them with `pnpm engrenage planning issue publish <refs>`, which set the type and fields";
+    return "create issues as drafts with `pnpm metalbrain planning issue create <type>` and publish them with `pnpm metalbrain planning issue publish <refs>`, which set the type and fields";
   }
 
   if (write.action === "comment" || write.body === undefined) {

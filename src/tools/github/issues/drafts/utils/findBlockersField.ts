@@ -11,7 +11,7 @@ export function findBlockersField(
 
   if (field === undefined) {
     throw new Error(
-      `No issue type of ${target.repository} pins the field ${contractNames.fields.blockers}: map \`github.contract.fields.blockers\` or run \`engrenage github fetch\``,
+      `No issue type of ${target.repository} pins the field ${contractNames.fields.blockers}: map \`github.contract.fields.blockers\` or run \`metalbrain github fetch\``,
     );
   }
 

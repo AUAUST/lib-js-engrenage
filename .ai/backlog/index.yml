@@ -194,6 +194,7 @@ github:
   purpose: Generated GitHub workflows and templates.
   entries:
     - 261122-a6ef
+    - 261122-af90
 init:
   purpose: Init steps and their step context.
   entries:

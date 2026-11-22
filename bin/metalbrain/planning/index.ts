@@ -1,7 +1,7 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import issue from "#bin/engrenage/planning/issue/index";
-import walk from "#bin/engrenage/planning/walk/index";
+import issue from "#bin/metalbrain/planning/issue/index";
+import walk from "#bin/metalbrain/planning/walk/index";
 
 export default defineGroup({
   configure(command) {

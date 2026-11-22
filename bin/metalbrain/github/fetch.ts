@@ -7,6 +7,6 @@ export default defineLazyCommand({
     );
   },
   action() {
-    return import("#bin/engrenage/github/actions/fetch");
+    return import("#bin/metalbrain/github/actions/fetch");
   },
 });

@@ -1235,7 +1235,7 @@ ${segmentDoneWhen}
 
     expect(lines).toEqual([
       expect.stringMatching(
-        /^10: moves #20 out of the Plan #30, .*`engrenage planning issue claim 30`/,
+        /^10: moves #20 out of the Plan #30, .*`metalbrain planning issue claim 30`/,
       ),
     ]);
 
@@ -1478,7 +1478,7 @@ See #{unknown.1}.
 
     expect(lines).toEqual([
       expect.stringContaining(
-        "11: changes the ancestors of toolkit.45 outside the set: claim them with `engrenage planning issue claim toolkit.45`",
+        "11: changes the ancestors of toolkit.45 outside the set: claim them with `metalbrain planning issue claim toolkit.45`",
       ),
     ]);
 

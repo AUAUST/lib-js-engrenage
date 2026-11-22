@@ -30,6 +30,6 @@ export default defineLazyCommand({
       );
   },
   action() {
-    return import("#bin/engrenage/planning/issue/actions/check");
+    return import("#bin/metalbrain/planning/issue/actions/check");
   },
 });

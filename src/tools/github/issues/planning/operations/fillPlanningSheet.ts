@@ -17,14 +17,14 @@ export async function fillPlanningSheet(config: LoadedConfig): Promise<string> {
   if (snapshot === undefined) {
     config.context.reporter.warn(
       `No GitHub snapshot at ${file}: the planning sheet describes meanings without their GitHub names`,
-      { fix: "run `engrenage github fetch`" },
+      { fix: "run `metalbrain github fetch`" },
     );
   } else {
     const problems = checkContractNames(contractNames, snapshot);
 
     if (problems.length > 0) {
       throw new Error(
-        `The issue contract maps names missing from ${file} (fix \`github.contract\` or run \`engrenage github fetch\`):\n${problems
+        `The issue contract maps names missing from ${file} (fix \`github.contract\` or run \`metalbrain github fetch\`):\n${problems
           .map((problem) => `- ${problem}`)
           .join("\n")}`,
       );

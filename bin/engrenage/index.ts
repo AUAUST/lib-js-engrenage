@@ -6,12 +6,10 @@ import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";
 import eslintSuppress from "#bin/engrenage/eslintSuppress";
 import gate from "#bin/engrenage/gate";
-import github from "#bin/engrenage/github/index";
 import init from "#bin/engrenage/init";
 import jscpd from "#bin/engrenage/jscpd";
 import jscpdNew from "#bin/engrenage/jscpdNew";
 import link from "#bin/engrenage/link";
-import planning from "#bin/engrenage/planning/index";
 import pnpm from "#bin/engrenage/pnpm/index";
 import prettier from "#bin/engrenage/prettier";
 import prettierAll from "#bin/engrenage/prettierAll";
@@ -39,9 +37,7 @@ export default defineGroup({
     "sync": sync,
     "batiment": batiment,
     "gate": gate,
-    "planning": planning,
     "debt": debt,
-    "github": github,
     "pnpm": pnpm,
     "link": link,
     "tsc": {

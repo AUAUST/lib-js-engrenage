@@ -61,7 +61,7 @@ entries:
       - src/tools/github/issues/drafts/operations/releaseIssues.ts:20
       - src/tools/github/issues/drafts/operations/resolvePublishedAncestors.ts:23
       - src/tools/github/issues/contract/utils/formatIssueTreeCheck.ts:100
-      - bin/engrenage/planning/issue/actions/claim.ts:1
+      - bin/metalbrain/planning/issue/actions/claim.ts:1
     why: "`releaseIssues` repeats `claimIssues`' stem resolution, itself unlike `toClaimedIssue`'s; sub-issue paging repeats thrice; the tree check rebuilds a tree it flattened; claim, publish and release clone each other."
     want: one stem resolver; one sub-issue location fetch; the check returning its tree.
   - id: 261122-58b1

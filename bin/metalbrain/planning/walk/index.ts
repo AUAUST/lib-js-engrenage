@@ -1,6 +1,6 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import check from "#bin/engrenage/planning/walk/check";
+import check from "#bin/metalbrain/planning/walk/check";
 
 export default defineGroup({
   configure(command) {

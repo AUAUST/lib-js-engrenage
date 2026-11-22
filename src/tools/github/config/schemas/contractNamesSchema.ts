@@ -105,7 +105,7 @@ export const contractNamesSchema = declareObject(
   {
     description: [
       "GitHub names of the issue contract's meanings, which skills and checks name instead.",
-      "`engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.",
+      "`engrenage sync agents` fails when the snapshot of `metalbrain github fetch` lacks a mapped type, field or option.",
     ],
     optional: true,
   },

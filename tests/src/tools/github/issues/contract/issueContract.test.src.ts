@@ -1436,7 +1436,7 @@ describe("checkGithubWrite", () => {
 
     expect(reason).toContain("gh issue create:");
 
-    expect(reason).toContain("pnpm engrenage planning issue create");
+    expect(reason).toContain("pnpm metalbrain planning issue create");
 
     mockProblem();
 

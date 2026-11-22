@@ -1,10 +1,10 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import check from "#bin/engrenage/planning/issue/check";
-import claim from "#bin/engrenage/planning/issue/claim";
-import create from "#bin/engrenage/planning/issue/create";
-import publish from "#bin/engrenage/planning/issue/publish";
-import release from "#bin/engrenage/planning/issue/release";
+import check from "#bin/metalbrain/planning/issue/check";
+import claim from "#bin/metalbrain/planning/issue/claim";
+import create from "#bin/metalbrain/planning/issue/create";
+import publish from "#bin/metalbrain/planning/issue/publish";
+import release from "#bin/metalbrain/planning/issue/release";
 
 export default defineGroup({
   configure(command) {

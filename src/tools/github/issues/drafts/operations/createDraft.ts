@@ -148,7 +148,7 @@ async function listInParent(
 
   if (draft === undefined) {
     throw new Error(
-      `${parent} has no local draft at ${file}: claim it first with \`engrenage planning issue claim ${parent}\``,
+      `${parent} has no local draft at ${file}: claim it first with \`metalbrain planning issue claim ${parent}\``,
     );
   }
 
@@ -230,7 +230,7 @@ export async function createDraft(
 
   if (fields === undefined) {
     throw new Error(
-      `The GitHub snapshot has no enabled type ${typeName}: map \`github.contract.types.${meaning}\` or run \`engrenage github fetch\``,
+      `The GitHub snapshot has no enabled type ${typeName}: map \`github.contract.types.${meaning}\` or run \`metalbrain github fetch\``,
     );
   }
 

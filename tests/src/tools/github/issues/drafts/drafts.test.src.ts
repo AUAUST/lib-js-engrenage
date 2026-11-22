@@ -358,7 +358,7 @@ blockedBy: []
     const config = await createProject({});
 
     await expect(createDraft(config, "task", { parent: "12" })).rejects.toThrow(
-      "engrenage planning issue claim 12",
+      "metalbrain planning issue claim 12",
     );
   });
 });

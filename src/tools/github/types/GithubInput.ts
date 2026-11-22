@@ -24,7 +24,7 @@ export interface GithubInput {
     [k: string]: (string | false)
   } | undefined)
   /**
-   * Labels of the current repository, by name: a description, or `{ description, color }`. `engrenage github labels sync` applies them.
+   * Labels of the current repository, by name: a description, or `{ description, color }`. `metalbrain github labels sync` applies them.
    * @default none
    */
   labels?: ({
@@ -40,7 +40,7 @@ export interface GithubInput {
   planning?: (boolean | undefined)
   /**
    * GitHub names of the issue contract's meanings, which skills and checks name instead.
-   * `engrenage sync agents` fails when the snapshot of `engrenage github fetch` lacks a mapped type, field or option.
+   * `engrenage sync agents` fails when the snapshot of `metalbrain github fetch` lacks a mapped type, field or option.
    */
   contract?: ({
     /**

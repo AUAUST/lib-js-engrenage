@@ -1,7 +1,7 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import prune from "#bin/engrenage/github/labels/prune";
-import sync from "#bin/engrenage/github/labels/sync";
+import prune from "#bin/metalbrain/github/labels/prune";
+import sync from "#bin/metalbrain/github/labels/sync";
 
 export default defineGroup({
   configure(command) {
