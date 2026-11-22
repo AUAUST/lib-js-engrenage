@@ -1,0 +1,4 @@
+{
+  "specifier": "agents",
+  "purpose": "Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call."
+}

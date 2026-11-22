@@ -38,3 +38,9 @@ entries:
       - src/workflows/cli/operations/enableLinkedSource.ts:30
     why: a glob given from a subdirectory still matches from the root; reading the link record through the pnpm surface loads built pnpm, GitHub and Git modules before the run defers to the sources.
     want: globs resolved from the cwd; the record read without loading built modules.
+  - id: 261122-9c8d
+    title: The stale-barrel error names the barrel's first line instead of the line listing the missing module
+    sites:
+      - src/workflows/cli/operations/explainStaleBarrel.ts:47
+    why: After moving src/tools/agents/claude/extension.ts, the message for src/workflows/builtins/entry.ts said to delete the projectBuild line
+    want: The message quotes the line whose specifier resolves to the missing module

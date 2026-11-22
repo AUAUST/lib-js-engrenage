@@ -11,14 +11,16 @@ import {
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#tools/agents/constants";
-import { addAgentRules } from "#tools/agents/operations/addAgentRules";
-import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
-import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
-import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import {
+  addAgentRules,
+  addAgentSkills,
+  createFragmentRenderer,
+  getAgentRuntimes,
+  getMissingRuleTemplates,
+  getSkillTemplates,
+  listActiveExtensions,
+} from "#tools/agents/index";
+import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
 const sectionReference = `${engrenage}/${metalbrain}/sections/backlog.md`;

@@ -6,7 +6,7 @@ import {
   agentStatsDirectory,
   markdownBlocks,
   rulesDirectory,
-} from "#tools/agents/constants";
+} from "#tools/metalbrain/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 import type { File } from "#types/File";
 
@@ -18,7 +18,7 @@ import type { File } from "#types/File";
  * instruction files, and syncs agent files. Contributes the agent limits filler.
  */
 export default {
-  name: "tools/agents",
+  name: "tools/metalbrain",
   owns: {
     slots: {
       "agents.runtimes": { entry: agentRuntimeEntry },
@@ -31,7 +31,7 @@ export default {
         async load() {
           const {
             agentsSection,
-          } = await import("#tools/agents/config/sections/agentsSection");
+          } = await import("#tools/metalbrain/config/sections/agentsSection");
 
           return agentsSection;
         },
@@ -101,14 +101,14 @@ export default {
         async files(config): Promise<readonly File[]> {
           const {
             listAgentReferenceFiles,
-          } = await import("#tools/agents/operations/listAgentReferenceFiles");
+          } = await import("#tools/metalbrain/operations/listAgentReferenceFiles");
 
           return listAgentReferenceFiles(config);
         },
         async load() {
           const {
             fillReferenceBlock,
-          } = await import("#tools/agents/operations/fillReferenceBlock");
+          } = await import("#tools/metalbrain/operations/fillReferenceBlock");
 
           return fillReferenceBlock;
         },
@@ -122,7 +122,7 @@ export default {
         async load() {
           const {
             fillAgentLimits,
-          } = await import("#tools/agents/operations/fillAgentLimits");
+          } = await import("#tools/metalbrain/operations/fillAgentLimits");
 
           return fillAgentLimits;
         },
@@ -142,7 +142,9 @@ export default {
         reads: ["tsconfig"],
         produces: ["agents.instructions"],
         async load() {
-          const { syncAgents } = await import("#tools/agents/setup/syncAgents");
+          const {
+            syncAgents,
+          } = await import("#tools/metalbrain/setup/syncAgents");
 
           return syncAgents;
         },
@@ -153,7 +155,7 @@ export default {
         async load() {
           const {
             checkBacklog,
-          } = await import("#tools/agents/setup/checkBacklog");
+          } = await import("#tools/metalbrain/setup/checkBacklog");
 
           return checkBacklog;
         },
@@ -165,7 +167,7 @@ export default {
         async load() {
           const {
             checkTableCells,
-          } = await import("#tools/agents/setup/checkTableCells");
+          } = await import("#tools/metalbrain/setup/checkTableCells");
 
           return checkTableCells;
         },
@@ -177,7 +179,7 @@ export default {
         async load() {
           const {
             checkFragmentFiles,
-          } = await import("#tools/agents/setup/checkFragmentFiles");
+          } = await import("#tools/metalbrain/setup/checkFragmentFiles");
 
           return checkFragmentFiles;
         },
@@ -188,7 +190,7 @@ export default {
         async load() {
           const {
             reportSyncedAgentChecks,
-          } = await import("#tools/agents/operations/reportSyncedAgentChecks");
+          } = await import("#tools/metalbrain/operations/reportSyncedAgentChecks");
 
           return reportSyncedAgentChecks;
         },
@@ -197,7 +199,7 @@ export default {
         async load() {
           const {
             reportMissingExtensionRules,
-          } = await import("#tools/agents/operations/reportMissingExtensionRules");
+          } = await import("#tools/metalbrain/operations/reportMissingExtensionRules");
 
           return reportMissingExtensionRules;
         },

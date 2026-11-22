@@ -1,0 +1,63 @@
+// @debt re-exports names other domains own so the `agents` entry keeps them; consumers should import them from their owning domain
+export { resolveAgentReference } from "#metalbrain/instructions/index";
+export {
+  createClaudeSettingsStep,
+  createClaudeStep,
+} from "#tools/metalbrain/claude/index";
+export type { GeneratedFrontmatter } from "#metalbrain/instructions/index";
+export type {
+  BudgetFinding,
+  BudgetKind,
+  BudgetMode,
+  Budgets,
+} from "#metalbrain/records/index";
+export type {
+  Agent,
+  HookDefinition,
+  HookEvent,
+  ResolvedAgents,
+} from "#metalbrain/runtimes/index";
+
+// @barrel setup
+export { checkBacklog } from "#tools/metalbrain/setup/checkBacklog";
+export { checkFragmentFiles } from "#tools/metalbrain/setup/checkFragmentFiles";
+export { checkTableCells } from "#tools/metalbrain/setup/checkTableCells";
+export { createAgentRulesStep } from "#tools/metalbrain/setup/createAgentRulesStep";
+export { createAgentsStep } from "#tools/metalbrain/setup/createAgentsStep";
+export { createBacklogStep } from "#tools/metalbrain/setup/createBacklogStep";
+export { createPreferredAgentsStep } from "#tools/metalbrain/setup/createPreferredAgentsStep";
+export { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
+export { syncAgents } from "#tools/metalbrain/setup/syncAgents";
+export { syncGeneratedRules } from "#tools/metalbrain/setup/syncGeneratedRules";
+// @end
+
+// @barrel config/sections
+export { agentsSection } from "#tools/metalbrain/config/sections/agentsSection";
+// @end
+
+// @barrel operations
+export { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
+export { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
+export { fillAgentLimits } from "#tools/metalbrain/operations/fillAgentLimits";
+export { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
+export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
+export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
+export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
+export { reportMissingExtensionRules } from "#tools/metalbrain/operations/reportMissingExtensionRules";
+export { reportSyncedAgentChecks } from "#tools/metalbrain/operations/reportSyncedAgentChecks";
+export { resolveAgentStatsDirectory } from "#tools/metalbrain/operations/resolveAgentStatsDirectory";
+// @end
+
+// @barrel config/schemas
+export { agentsSchema } from "#tools/metalbrain/config/schemas/agentsSchema";
+export { budgetSchema } from "#tools/metalbrain/config/schemas/budgetSchema";
+export { preferredSchema } from "#tools/metalbrain/config/schemas/preferredSchema";
+// @end
+
+// @barrel types
+export type * from "#tools/metalbrain/types/AgentsInput";
+// @end
+
+// @barrel utils
+export { filterAgents } from "#tools/metalbrain/utils/filterAgents";
+// @end

@@ -62,19 +62,19 @@
       "default": "./dist/index.mjs"
     },
     "./agents": {
-      "source": "./src/tools/agents/entry.ts",
+      "source": "./src/tools/metalbrain/entry.ts",
       "default": "./dist/agents.mjs"
     },
     "./agents/claude": {
-      "source": "./src/tools/agents/claude/entry.ts",
+      "source": "./src/tools/metalbrain/claude/entry.ts",
       "default": "./dist/agents/claude.mjs"
     },
     "./agents/claude/constants": {
-      "source": "./src/tools/agents/claude/constants.ts",
+      "source": "./src/tools/metalbrain/claude/constants.ts",
       "default": "./dist/agents/claude/constants.mjs"
     },
     "./agents/constants": {
-      "source": "./src/tools/agents/constants.ts",
+      "source": "./src/tools/metalbrain/constants.ts",
       "default": "./dist/agents/constants.mjs"
     },
     "./baseline": {

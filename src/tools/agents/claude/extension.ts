@@ -1,42 +1,15 @@
 import {
   claudeAgentsDir,
-  claudeFile,
-  claudeSettingsFile,
   claudeSkillsDir,
-  claudeTarget,
-  wordBudgetsFile,
 } from "#tools/agents/claude/constants";
-import type { Extension, FileLocation } from "#project/config/index";
+import type { Extension } from "#project/config/index";
 
+// @debt registers the Claude runtime apart from the rest of the Claude glue in `tools/metalbrain/claude`, since an extension loads only its own domain's modules and `dispatchClaudeAgent` stays here until the hook core split (#831)
 /**
- * Owns `CLAUDE.md`, `.claude/settings.json` and `.engrenage/word-budgets.json`,
- * registers the `claude` agent runtime, syncs Claude's settings and checks
- * each role's word budget.
+ * Registers the `claude` agent runtime with its headless dispatcher.
  */
 export default {
   name: "tools/agents/claude",
-  owns: {
-    files: {
-      "CLAUDE.md": {
-        title: "Claude",
-        locate(): FileLocation {
-          return { file: claudeFile };
-        },
-      },
-      "claude.settings": {
-        title: "Claude",
-        locate(): FileLocation {
-          return { file: claudeSettingsFile };
-        },
-      },
-      "state.wordBudgets": {
-        title: "Word budgets",
-        locate(): FileLocation {
-          return { file: wordBudgetsFile };
-        },
-      },
-    },
-  },
   contributes: {
     "agents.runtimes": [
       {
@@ -52,34 +25,6 @@ export default {
 
             return dispatchClaudeAgent;
           },
-        },
-      },
-    ],
-    "sync.targets": [
-      {
-        name: claudeTarget,
-        stage: "write",
-        flags: {
-          settings: "create .claude/settings.json when it is missing",
-        },
-        async load() {
-          const {
-            syncClaudeSettings,
-          } = await import("#tools/agents/claude/setup/syncClaudeSettings");
-
-          return syncClaudeSettings;
-        },
-      },
-      {
-        name: "word-budgets",
-        stage: "check",
-        reads: ["agents.instructions"],
-        async load() {
-          const {
-            checkWordBudgets,
-          } = await import("#tools/agents/claude/setup/checkWordBudgets");
-
-          return checkWordBudgets;
         },
       },
     ],

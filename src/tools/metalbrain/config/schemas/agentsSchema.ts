@@ -9,11 +9,8 @@ import {
   globsSchema,
   unset,
 } from "#foundation/options/index";
-import { budgetSchema } from "#tools/agents/config/schemas/budgetSchema";
-import { preferredSchema } from "#tools/agents/config/schemas/preferredSchema";
 import {
   budgetModes,
-  codexRemoval,
   defaultBudgetMode,
   defaultBudgets,
   defaultInstructionFiles,
@@ -21,6 +18,9 @@ import {
   defaultSubagentCacheTtl,
   subagentCacheTtls,
 } from "#tools/agents/constants";
+import { budgetSchema } from "#tools/metalbrain/config/schemas/budgetSchema";
+import { preferredSchema } from "#tools/metalbrain/config/schemas/preferredSchema";
+import { codexRemoval } from "#tools/metalbrain/constants";
 
 export const agentsSchema = declareObject(
   {

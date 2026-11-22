@@ -8,7 +8,7 @@ import { readJsonValue, type JsonValue } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
 import { resolveTraits, type ResolvedTraits } from "#project/presets/index";
-import { filterAgents } from "#tools/agents/index";
+import { filterAgents } from "#tools/metalbrain/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
 import type { Agent } from "#metalbrain/runtimes/index";
 import type {

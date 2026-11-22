@@ -5,9 +5,9 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { formatChanges } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkPrettier } from "#tests/utils/linkPrettier";
-import { syncClaudeSettings } from "#tools/agents/claude/index";
 import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import { syncClaudeSettings } from "#tools/metalbrain/claude/index";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
   const {

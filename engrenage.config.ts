@@ -206,7 +206,7 @@ export default defineConfig({
       "batiment/roles/types/RoleInput.ts",
       "project/structure/types/StructureInput.ts",
       "project/tsconfig/types/TypescriptInput.ts",
-      "tools/agents/types/AgentsInput.ts",
+      "tools/metalbrain/types/AgentsInput.ts",
       "tools/git/types/GitInput.ts",
       "tools/github/types/GithubInput.ts",
       "tools/prettier/types/PrettierInput.ts",

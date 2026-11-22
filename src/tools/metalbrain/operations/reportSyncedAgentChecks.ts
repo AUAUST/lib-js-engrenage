@@ -1,8 +1,8 @@
 import { includes } from "@auaust/toolkit/array";
 
-import { claudeTarget } from "#tools/agents/claude/constants";
-import { agentsTarget } from "#tools/agents/constants";
-import { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";
+import { reportAgentChecks } from "#tools/agents/index";
+import { claudeTarget } from "#tools/metalbrain/claude/constants";
+import { agentsTarget } from "#tools/metalbrain/constants";
 import type { SyncDone } from "#project/sync/index";
 
 export async function reportSyncedAgentChecks({

@@ -10,9 +10,9 @@ import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
 import type { StructureInput } from "#project/structure/index";
 import type { TypescriptInput } from "#project/tsconfig/index";
-import type { AgentsInput } from "#tools/agents/index";
 import type { GitInput } from "#tools/git/index";
 import type { GithubInput } from "#tools/github/index";
+import type { AgentsInput } from "#tools/metalbrain/index";
 import type { PrettierInput } from "#tools/prettier/index";
 import type { VscodeInput } from "#tools/vscode/index";
 
@@ -179,9 +179,9 @@ export interface BuiltinConfigInput {
       } | undefined)
     }
   } | undefined)
-  agents?: (AgentsInput | undefined)
   git?: (GitInput | undefined)
   github?: (GithubInput | undefined)
+  agents?: (AgentsInput | undefined)
   prettier?: (PrettierInput | undefined)
   vscode?: (VscodeInput | undefined)
   /**

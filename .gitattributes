@@ -21,19 +21,19 @@
 /src/batiment/roles/types/RoleInput.ts linguist-generated
 /src/project/structure/types/StructureInput.ts linguist-generated
 /src/project/tsconfig/types/TypescriptInput.ts linguist-generated
-/src/tools/agents/types/AgentsInput.ts linguist-generated
+/src/tools/metalbrain/types/AgentsInput.ts linguist-generated
 /src/tools/git/types/GitInput.ts linguist-generated
 /src/tools/github/types/GithubInput.ts linguist-generated
 /src/tools/prettier/types/PrettierInput.ts linguist-generated
 /src/tools/vscode/types/VscodeInput.ts linguist-generated
 /src/workflows/config/types/ConfigInput.ts linguist-generated
 /.engrenage/sync.json linguist-generated
+/**/CHANGELOG.md linguist-generated
+/.engrenage/github.json linguist-generated
 /.claude/rules/project-map.md linguist-generated
 /.claude/rules/project-map/**/*.md linguist-generated
 /.claude/rules/planning-sheet.md linguist-generated
 /.claude/rules/planning-sheet/**/*.md linguist-generated
-/**/CHANGELOG.md linguist-generated
-/.engrenage/github.json linguist-generated
 /pnpm-lock.yaml linguist-generated -diff
 /.ai/friction.md merge=union
 /.ai/discarded.md merge=union

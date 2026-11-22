@@ -3,7 +3,7 @@ entries:
   - id: 261122-378b
     title: Attribution rule conflicts go unreported
     sites:
-      - src/tools/agents/setup/syncAgentFiles.ts:56
+      - src/tools/metalbrain/setup/syncAgentFiles.ts:42
     why: a rule file at the wanted path without its reference silently drops the rule.
     want: sync reports the conflict.
   - id: 261122-c3cc
@@ -50,9 +50,9 @@ entries:
   - id: 261122-8863
     title: Instruction sync keeps or drops rules silently
     sites:
-      - src/tools/agents/setup/syncAgentFiles.ts:95
-      - src/tools/agents/setup/syncAgentFiles.ts:148
-      - src/tools/agents/setup/syncAgentFiles.ts:241
+      - src/tools/metalbrain/setup/syncAgentFiles.ts:81
+      - src/tools/metalbrain/setup/syncAgentFiles.ts:134
+      - src/tools/metalbrain/setup/syncAgentFiles.ts:227
       - src/tools/agents/operations/getInstructionTemplates.ts:91
       - src/metalbrain/instructions/operations/migrateInstructionLocations.ts:35
     why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; unknown `extension` hides fragments; external former markers stay unresolved.

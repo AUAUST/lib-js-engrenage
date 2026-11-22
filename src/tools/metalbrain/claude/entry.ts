@@ -1,4 +1,4 @@
 export {
   createClaudeSettingsStep,
   syncClaudeSettings,
-} from "#tools/agents/claude/index";
+} from "#tools/metalbrain/claude/index";

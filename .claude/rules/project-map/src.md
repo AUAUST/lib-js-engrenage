@@ -50,8 +50,8 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
-│  ├─ agents*{claude*}  Generate shared agent instructions, skills and contributed rule files.
-│  │  └─ claude*  Configure Claude instructions, settings and hooks.
+│  ├─ agents{claude}  Generate shared agent instructions, skills and contributed rule files.
+│  │  └─ claude  The Claude runtime: its constants, headless dispatch and run records.
 │  ├─ changesets*  Configure release versioning and changelogs.
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
 │  │  └─ roles*  Role presets carrying ESLint rules, loadable without ESLint.
@@ -64,6 +64,8 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  │     └─ planning  Activate GitHub planning: the snapshot, the planning sheet and the skills gated on it.
 │  ├─ jscpd  Detect duplicate code.
 │  ├─ lefthook  Configure local Git hooks.
+│  ├─ metalbrain*{claude*}  Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call.
+│  │  └─ claude*  Engrenage's Claude glue: Claude's init steps, settings sync and word-budget check.
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*{preset*}  Configure code formatting.
 │  │  └─ preset*  The ready-made Prettier config, for Prettier to load from `package.json`.

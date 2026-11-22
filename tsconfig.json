@@ -29,12 +29,6 @@
       ],
       "@auaust/engrenage/roles": ["./src/project/roles/entry.ts"],
       "@auaust/engrenage/roles/constants": ["./src/project/roles/constants.ts"],
-      "@auaust/engrenage/agents": ["./src/tools/agents/entry.ts"],
-      "@auaust/engrenage/agents/constants": ["./src/tools/agents/constants.ts"],
-      "@auaust/engrenage/agents/claude": ["./src/tools/agents/claude/entry.ts"],
-      "@auaust/engrenage/agents/claude/constants": [
-        "./src/tools/agents/claude/constants.ts"
-      ],
       "@auaust/engrenage/changesets": ["./src/tools/changesets/entry.ts"],
       "@auaust/engrenage/changesets/constants": [
         "./src/tools/changesets/constants.ts"
@@ -46,6 +40,16 @@
       "@auaust/engrenage/git/constants": ["./src/tools/git/constants.ts"],
       "@auaust/engrenage/github": ["./src/tools/github/entry.ts"],
       "@auaust/engrenage/github/constants": ["./src/tools/github/constants.ts"],
+      "@auaust/engrenage/agents": ["./src/tools/metalbrain/entry.ts"],
+      "@auaust/engrenage/agents/constants": [
+        "./src/tools/metalbrain/constants.ts"
+      ],
+      "@auaust/engrenage/agents/claude": [
+        "./src/tools/metalbrain/claude/entry.ts"
+      ],
+      "@auaust/engrenage/agents/claude/constants": [
+        "./src/tools/metalbrain/claude/constants.ts"
+      ],
       "@auaust/engrenage/pnpm": ["./src/tools/pnpm/entry.ts"],
       "@auaust/engrenage/pnpm/constants": ["./src/tools/pnpm/constants.ts"],
       "@auaust/engrenage/prettier": ["./src/tools/prettier/entry.ts"],

@@ -9,7 +9,7 @@ import {
   markdownBlocks,
   rulesDirectory,
 } from "#tools/agents/constants";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
+import { createFragmentRenderer } from "#tools/agents/index";
 import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { File } from "#types/File";
 

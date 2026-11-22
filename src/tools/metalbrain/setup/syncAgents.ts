@@ -1,5 +1,5 @@
-import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
-import { syncGeneratedRules } from "#tools/agents/setup/syncGeneratedRules";
+import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
+import { syncGeneratedRules } from "#tools/metalbrain/setup/syncGeneratedRules";
 import type { LoadedConfig } from "#project/config/index";
 
 /**

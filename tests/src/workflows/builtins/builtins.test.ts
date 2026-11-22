@@ -47,8 +47,9 @@ describe("builtins", () => {
 
     expect(names).toEqual(
       expect.arrayContaining([
-        "tools/agents",
         "tools/agents/claude",
+        "tools/metalbrain",
+        "tools/metalbrain/claude",
         "tools/shopify/theme",
       ]),
     );

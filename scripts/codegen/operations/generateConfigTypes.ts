@@ -40,7 +40,7 @@ import { getLazyConfigSchema } from "#scripts/codegen/utils/getLazyConfigSchema"
 import { isConfigSchema } from "#scripts/codegen/utils/isConfigSchema";
 import { isListAdjustmentSchema } from "#scripts/codegen/utils/isListAdjustmentSchema";
 import { isUnionConfigSchema } from "#scripts/codegen/utils/isUnionConfigSchema";
-import { preferredSchema } from "#tools/agents/index";
+import { preferredSchema } from "#tools/metalbrain/index";
 import type { ConfigSchema } from "#scripts/codegen/types/ConfigSchema";
 import type { ObjectConfigSchema } from "#scripts/codegen/types/ObjectConfigSchema";
 import type { TypeSource } from "#scripts/codegen/types/TypeSource";

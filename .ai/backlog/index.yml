@@ -83,6 +83,7 @@ cli:
     - 261122-1bdf
     - 261122-cfb9
     - 261122-1e77
+    - 261122-9c8d
 coding-style:
   purpose: Local coding conventions and linting.
   entries:

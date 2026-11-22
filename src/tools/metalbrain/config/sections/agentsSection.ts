@@ -2,8 +2,8 @@ import { difference, isNonEmptyArray, map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
-import { agentsSchema } from "#tools/agents/config/schemas/agentsSchema";
-import { filterAgents } from "#tools/agents/utils/filterAgents";
+import { agentsSchema } from "#tools/metalbrain/config/schemas/agentsSchema";
+import { filterAgents } from "#tools/metalbrain/utils/filterAgents";
 import type { ResolvedAgents } from "#metalbrain/runtimes/index";
 import type { ConfigResolver } from "#project/config/index";
 

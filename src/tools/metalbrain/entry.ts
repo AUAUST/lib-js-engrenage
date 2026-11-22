@@ -2,7 +2,7 @@ export {
   resolveAgentReference,
   syncAgentFiles,
   syncAgents,
-} from "#tools/agents/index";
+} from "#tools/metalbrain/index";
 export type {
   Agent,
   AgentsInput,
@@ -14,4 +14,4 @@ export type {
   HookDefinition,
   HookEvent,
   ResolvedAgents,
-} from "#tools/agents/index";
+} from "#tools/metalbrain/index";

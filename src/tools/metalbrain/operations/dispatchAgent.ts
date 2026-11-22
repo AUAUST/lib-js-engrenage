@@ -1,6 +1,6 @@
 import { loadLazy } from "#foundation/modules/index";
-import { checkAgentDispatch } from "#tools/agents/operations/checkAgentDispatch";
-import { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
+import { createDispatchEnvironment } from "#tools/agents/index";
+import { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
 import type { AgentDispatch, AgentReport } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 

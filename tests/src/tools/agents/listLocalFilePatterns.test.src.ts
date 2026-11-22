@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { listLocalFilePatterns } from "#tools/agents/operations/listLocalFilePatterns";
+import { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
 
 describe("listLocalFilePatterns", () => {
   test("appends the drafts and handoffs directories to the .gitignore patterns", async () => {

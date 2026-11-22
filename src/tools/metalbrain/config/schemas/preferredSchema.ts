@@ -2,7 +2,7 @@ import { array, check, pipe, string } from "valibot";
 
 import { object } from "@auaust/toolkit";
 
-import { removedRuntimes } from "#tools/agents/constants";
+import { removedRuntimes } from "#tools/metalbrain/constants";
 
 export const preferredSchema = array(
   pipe(

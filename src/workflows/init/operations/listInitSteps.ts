@@ -1,5 +1,11 @@
 import { createBuildToolStep } from "#project/build/index";
 import { createPackageStep } from "#project/package/index";
+import { createChangesetConfigStep } from "#tools/changesets/index";
+import { createEslintConfigStep } from "#tools/eslint/index";
+import { createGitattributesStep, createGitignoreStep } from "#tools/git/index";
+import { createWorkflowsStep } from "#tools/github/index";
+import { createJscpdStep } from "#tools/jscpd/index";
+import { createLefthookStep } from "#tools/lefthook/index";
 import {
   createAgentRulesStep,
   createAgentsStep,
@@ -7,13 +13,7 @@ import {
   createClaudeSettingsStep,
   createClaudeStep,
   createPreferredAgentsStep,
-} from "#tools/agents/index";
-import { createChangesetConfigStep } from "#tools/changesets/index";
-import { createEslintConfigStep } from "#tools/eslint/index";
-import { createGitattributesStep, createGitignoreStep } from "#tools/git/index";
-import { createWorkflowsStep } from "#tools/github/index";
-import { createJscpdStep } from "#tools/jscpd/index";
-import { createLefthookStep } from "#tools/lefthook/index";
+} from "#tools/metalbrain/index";
 import { createPnpmStep, createWorkspaceStep } from "#tools/pnpm/index";
 import {
   createPrettierignoreStep,

@@ -23,9 +23,9 @@ import {
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
-import { syncAgents } from "#tools/agents/index";
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
+import { syncAgents } from "#tools/metalbrain/index";
 
 const liquidSchema = declareObject(
   {

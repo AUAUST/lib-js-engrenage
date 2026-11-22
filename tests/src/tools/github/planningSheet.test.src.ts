@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
-import { syncGeneratedRules } from "#tools/agents/index";
+import { syncGeneratedRules } from "#tools/metalbrain/index";
 
 const sheet = ".claude/rules/planning-sheet.md";
 

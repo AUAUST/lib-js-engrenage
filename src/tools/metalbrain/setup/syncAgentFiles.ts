@@ -28,15 +28,17 @@ import {
   retiredRules,
   skillFileName,
 } from "#tools/agents/constants";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
-import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
-import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
-import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
-import { removeCodexFiles } from "#tools/agents/operations/removeCodexFiles";
+import {
+  createFragmentRenderer,
+  getAgentRuntimes,
+  getInstructionTemplates,
+  getRuleTemplates,
+  getSharedFiles,
+  getSkillTemplates,
+  listActiveExtensions,
+  migrateSkillFiles,
+  removeCodexFiles,
+} from "#tools/agents/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";

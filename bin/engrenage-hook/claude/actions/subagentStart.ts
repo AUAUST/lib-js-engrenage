@@ -2,10 +2,10 @@ import { object, optional, string } from "valibot";
 
 import {
   readHookPayload,
-  resolveAgentStatsDirectory,
   resolveClaudeAgentTranscript,
   startAgentRun,
 } from "#tools/agents/index";
+import { resolveAgentStatsDirectory } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 
 const payloadSchema = object({

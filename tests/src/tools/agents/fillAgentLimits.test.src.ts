@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { fillAgentLimits } from "#tools/agents/operations/fillAgentLimits";
+import { fillAgentLimits } from "#tools/metalbrain/operations/fillAgentLimits";
 
 test("renders the limits of shipped agents although a skill holds its own marker", async () => {
   const project = createTemporaryProject({

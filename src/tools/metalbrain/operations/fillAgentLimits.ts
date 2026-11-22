@@ -1,6 +1,8 @@
-import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
+import {
+  getSkillDefinitions,
+  listActiveExtensions,
+  renderAgentLimits,
+} from "#tools/agents/index";
 import type { LoadedConfig } from "#project/config/index";
 
 // @debt each block filled rereads and revalidates every shipped skill, and sync steps rebuild and rerender the same skill definitions again: one run computes them many times

@@ -14,8 +14,8 @@ import {
   claudeHooks,
   claudePermissions,
   claudeSettingsFile,
-} from "#tools/agents/claude/constants";
-import { syncHooks } from "#tools/agents/operations/syncHooks";
+} from "#tools/agents/constants";
+import { syncHooks } from "#tools/agents/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { SubagentCacheTtl } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";

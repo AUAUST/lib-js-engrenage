@@ -6,8 +6,8 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
-import { fillReferenceBlock } from "#tools/agents/operations/fillReferenceBlock";
-import { syncAgentFiles } from "#tools/agents/setup/syncAgentFiles";
+import { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
+import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
   const {

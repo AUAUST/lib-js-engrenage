@@ -9,7 +9,6 @@ import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
 import { runGateProcess, type GateStage } from "#project/gate/index";
-import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   listChangedFiles,
   listLocalFiles,
@@ -17,6 +16,7 @@ import {
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
+import { listLocalFilePatterns } from "#tools/metalbrain/index";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import { runSteps } from "#workflows/gate/operations/runSteps";
 import type { LoadedConfig } from "#project/config/index";

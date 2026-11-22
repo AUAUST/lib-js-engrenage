@@ -17,15 +17,6 @@ bun.lockb
 # Sync record
 /.engrenage/sync.json
 
-# Agent stats
-/.ai/stats
-
-# Agent rules
-/.claude/rules/project-map.md
-/.claude/rules/project-map/**/*.md
-/.claude/rules/planning-sheet.md
-/.claude/rules/planning-sheet/**/*.md
-
 # Changelog
 /**/CHANGELOG.md
 
@@ -34,6 +25,15 @@ bun.lockb
 
 # GitHub snapshot
 /.engrenage/github.json
+
+# Agent stats
+/.ai/stats
+
+# Agent rules
+/.claude/rules/project-map.md
+/.claude/rules/project-map/**/*.md
+/.claude/rules/planning-sheet.md
+/.claude/rules/planning-sheet/**/*.md
 
 # pnpm
 /pnpm-lock.yaml
@@ -63,7 +63,7 @@ bun.lockb
 /src/batiment/roles/types/RoleInput.ts
 /src/project/structure/types/StructureInput.ts
 /src/project/tsconfig/types/TypescriptInput.ts
-/src/tools/agents/types/AgentsInput.ts
+/src/tools/metalbrain/types/AgentsInput.ts
 /src/tools/git/types/GitInput.ts
 /src/tools/github/types/GithubInput.ts
 /src/tools/prettier/types/PrettierInput.ts

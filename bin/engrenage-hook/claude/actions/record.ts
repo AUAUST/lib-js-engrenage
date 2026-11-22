@@ -5,8 +5,8 @@ import {
   readHookPayload,
   reconcileClaudeRuns,
   recordClaudeRun,
-  resolveAgentStatsDirectory,
 } from "#tools/agents/index";
+import { resolveAgentStatsDirectory } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 
 const payloadSchema = object({

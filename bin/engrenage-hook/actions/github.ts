@@ -2,7 +2,6 @@ import { object, string } from "valibot";
 
 import { denyToolUse } from "#metalbrain/runtimes/index";
 import {
-  measureGithubCommand,
   reportBudgetFindings,
   resolveHookDirectory,
   validateHookPayload,
@@ -12,6 +11,7 @@ import {
   checkIssueViews,
   resolveCurrentRepository,
 } from "#tools/github/index";
+import { measureGithubCommand } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 

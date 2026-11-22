@@ -1,0 +1,4 @@
+{
+  "specifier": "agents/claude",
+  "purpose": "Engrenage's Claude glue: Claude's init steps, settings sync and word-budget check."
+}

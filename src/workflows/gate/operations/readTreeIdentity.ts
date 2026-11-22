@@ -1,4 +1,3 @@
-import { listLocalFilePatterns } from "#tools/agents/index";
 import {
   hashTree,
   listChangedFiles,
@@ -6,6 +5,7 @@ import {
   readHead,
   type ChangeMode,
 } from "#tools/git/index";
+import { listLocalFilePatterns } from "#tools/metalbrain/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 

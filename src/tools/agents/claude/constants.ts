@@ -117,12 +117,4 @@ export const claudeSkillsDir = ".claude/skills" satisfies Directory;
 
 export const claudeAgentsDir = ".claude/agents" satisfies Directory;
 
-// @debt restates `stateDirectory`, which `#project/config` owns, so these constants import nothing from `project`; the word budgets should locate their file through the config once the glue moves to `tools/metalbrain` (#829)
-export const wordBudgetsFile = ".engrenage/word-budgets.json" satisfies File;
-
 export const mainRole = "main";
-
-export const claudeTarget = "claude";
-
-// @debt re-exports a name moved to `metalbrain/runtimes` so the `agents/claude/constants` subpath keeps it; consumers should import it from there
-export { claudeShellVariable } from "#metalbrain/runtimes/constants";

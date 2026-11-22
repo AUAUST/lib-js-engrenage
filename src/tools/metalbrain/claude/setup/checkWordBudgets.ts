@@ -7,14 +7,14 @@ import { validate } from "#foundation/options/index";
 import { parseInstruction } from "#metalbrain/instructions/index";
 import { throwViolations } from "#metalbrain/records/index";
 import {
+  agentsFile,
   claudeAgentsDir,
   claudeFile,
   claudeRulesGlob,
   claudeSkillsDir,
   mainRole,
-  wordBudgetsFile,
-} from "#tools/agents/claude/constants";
-import { agentsFile } from "#tools/agents/constants";
+} from "#tools/agents/constants";
+import { wordBudgetsFile } from "#tools/metalbrain/claude/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 

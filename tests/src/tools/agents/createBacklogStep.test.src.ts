@@ -2,7 +2,7 @@ import { expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createBacklogStep } from "#tools/agents/setup/createBacklogStep";
+import { createBacklogStep } from "#tools/metalbrain/setup/createBacklogStep";
 import { createPrompter } from "#workflows/init/operations/createPrompter";
 import { createStepContext } from "#workflows/init/operations/createStepContext";
 

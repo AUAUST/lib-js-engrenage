@@ -6,8 +6,8 @@ import { describe, expect, test } from "vitest";
 import { createProjectConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { dispatchClaudeAgent } from "#tools/agents/claude/adapters/dispatchClaudeAgent";
-import { dispatchAgent } from "#tools/agents/operations/dispatchAgent";
 import { createDispatchEnvironment } from "#tools/agents/utils/createDispatchEnvironment";
+import { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
 
 function createClient(name: string, output: string) {
   const project = createTemporaryProject();

@@ -450,7 +450,7 @@ export type * from "#modules/guard/utils/isNull";
 
     const { lines } = await render(plan, new Map());
 
-    expect(lines).toHaveLength(35);
+    expect(lines).toHaveLength(36);
 
     expect(lines).toContain(
       'export { default as projectBuild } from "#project/build/extension";',

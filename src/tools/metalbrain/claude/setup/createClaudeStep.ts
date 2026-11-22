@@ -1,5 +1,4 @@
-import { claudeFile } from "#tools/agents/claude/constants";
-import { agentsFile } from "#tools/agents/constants";
+import { agentsFile, claudeFile } from "#tools/agents/constants";
 import type { Step } from "#project/steps/index";
 
 export function createClaudeStep(): Step {
