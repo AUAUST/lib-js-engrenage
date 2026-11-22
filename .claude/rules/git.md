@@ -6,15 +6,15 @@
 
 Records here are uncommitted changes to `.ai/friction.md` and `.ai/discarded.md`, and files whose only uncommitted changes are debt markers.
 
-| When                                                                       | Do                                                                                                                     |
-| -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| A task's work is settled: no question on it is pending and its checks pass | Commit it before ending the turn, without asking                                                                       |
-| Only records are uncommitted                                               | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff             |
-| A question on the work is pending                                          | Leave the work uncommitted and give the suggested commit message in your report, unless Writing › Stop records applies |
-| Your work covers several tasks                                             | Commit each task separately                                                                                            |
+| When                                                                    | Do                                                                                                         |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| A task's work is settled: no question on it pending, its checks passing | Commit it before ending the turn, without asking                                                           |
+| Only records are uncommitted                                            | Leave them uncommitted, across turns, for your next commit; commit them alone only when you send a handoff |
+| A question on the work is pending                                       | Leave it uncommitted, its suggested commit message in your report, unless Writing › Stop records applies   |
+| Your work covers several tasks                                          | Commit each task separately                                                                                |
 
-- **Staging.** Stage by path only your changes and the records, whoever wrote the records.
-- Never name the records' staging in a commit message or report. A task whose work is the records themselves commits like any other.
+- Stage by path only your changes and the records, whoever wrote them, never naming the records' staging in a commit message or report.
+- A task whose work is the records themselves commits like any other.
 
 | Message part    | Form                                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

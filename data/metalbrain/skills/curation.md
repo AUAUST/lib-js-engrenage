@@ -46,7 +46,7 @@ Read this file before the first dispatch, for parallel agents, the brief lines, 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->
 
-- Dispatch stage 0's analysers side by side, an exception to `dispatching.md` › Parallel agents' cost bar: none needs another's findings, and the stages after stage 0 need all their reports.
+- Dispatch stage 0's analysers side by side.
 
 | Analyser | Dispatched at | Skipped when             | Count         | Serves         |
 | -------- | ------------- | ------------------------ | ------------- | -------------- |

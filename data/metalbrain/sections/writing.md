@@ -11,8 +11,7 @@ order: 15
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
 - An issue or backlog entry asking for an agent instruction change states the concern, the behavior wanted and the cases to cover, never the rule, its wording or placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
-- State each idea exactly, with its reason in one clause, in the fewest words that keep it: no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
-- Cut repetition, never the words a condition, exception, sequence or scope depends on: one read of each sentence yields one parse. Write fragments only where a table cell, a list item's lead or a heading already carries the structure; elsewhere, sentences.
+- State each idea exactly, with its reason in one clause, in the fewest words that keep a single reading: no hedging, vague wording, repetition or sentence the reader would not miss, never cutting a word a condition, exception, sequence or scope rests on. Rephrase text you edit that falls short of these rules.
 
 ### Structure
 
@@ -34,9 +33,9 @@ order: 15
 
 Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
-- **Hold** what is wrong or wanted, the target state, the facts costly to re-derive (constraints, decisions, paths, issues, branches, commits) and the open questions. Reference a source rather than excerpting it; quote only text no durable source keeps, the user's chat words included.
-- **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, and how you found the facts, unless your skill asks for it.
-- A handoff is a chat reply, inside a Markdown code block so the user can copy it as is. Write it to a file only when the user asks, or as a stop record.
+- **Hold** what is wrong or wanted, the target state, facts costly to re-derive and open questions; references over excerpts, quoting only what no durable source keeps.
+- **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
+- A handoff is a chat reply in a Markdown code block; a file only when the user asks, or as a stop record.
 
 ### Reports
 

@@ -4,7 +4,7 @@ Examines any material for contradictions, gaps, costs and dependencies; `§…` 
 
 ## Scope
 
-- The scope your request or brief names sets what you read: the material it names and, unless your thoroughness level is `scoped` (Analysis › Thoroughness levels), each source sharing its subject within that scope. Past that scope, read only a source a finding's basis needs.
+- Read the material your request or brief names and, unless your thoroughness level is `scoped`, each source sharing its subject within that scope; past it, only a source a finding's basis needs.
 - Stop once each fact your brief wants back is settled or, without such a list, once every pass of §Passes has covered the scope. Report what you left unread that could change a finding.
 
 ## Material

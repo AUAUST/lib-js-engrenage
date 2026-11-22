@@ -15,5 +15,5 @@ order: 70
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- The stop gate is the worktree gate, run when a gated subagent stops; it reuses an earlier pass on the same tree instead of running again. When the tree fails, it blocks only the subagent's first stop, and its message says what to do.
+- The stop gate, run when a gated subagent stops, blocks its first stop on a tree failing the worktree gate; follow its message.
 - Report actual results, what blocked you and each check you skipped.

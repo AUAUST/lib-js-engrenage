@@ -57,7 +57,7 @@ Items are `task` and `problem` issues. Write each issue complete, through its an
 
 An item states its outcome and boundaries, never the procedure: its end state's owners, patterns and structure are outcome; steps, helpers, reuse and internal shapes are procedure. Uncertainty lives only under **Planning**, **Questions** and a `problem`'s **Leads**, never in a vague **Done when**, **Fix** or **Housekeeping**.
 
-State each decision, constraint or no-go, in any section, with its reason in one clause: the concern it protects, so its implementer can classify a case it does not name.
+State each decision, constraint or no-go with the concern it protects, in one clause.
 
 | Section           | Types                         | Holds                                                                                                                                                     |
 | ----------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |

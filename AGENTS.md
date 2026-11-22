@@ -6,11 +6,10 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Instruction maintenance
 
-Agent instructions are `AGENTS.md` sections, rule files, skills, agent files and the sources they are synced from. Only a `writer` agent, or a main session following the instruction-writing skill, changes them, deleting prose a new check enforces included, and only with the user's explicit consent to that change.
+Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, deleting prose a new check enforces included, only with explicit user consent to that change, as follows. A configuration or code change altering what `pnpm engrenage sync` generates is no such change: run the sync after it.
 
-- **In the main session.** Dispatch a `writer` agent with the request as it came and the reach the consent covers, then review its diff before committing. When no `writer` agent exists, load the instruction-writing skill and follow it yourself.
-- **As a dispatched agent other than `writer`.** Never change instructions, whatever your issue, brief or skill states: report the change needed.
-- **Exception.** A configuration or code change that makes `pnpm engrenage sync` generate different instructions is no instruction change: make it under your task's rules, then regenerate the synced files with `pnpm engrenage sync`.
+- **Main session.** Dispatch a `writer` agent with the request as it came and the reach the consent covers, and review its diff before committing; without one, follow the instruction-writing skill yourself.
+- **Dispatched, not as `writer`.** Never, whatever your issue, brief or skill states: report the change needed.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/writing.md -->
 
@@ -19,8 +18,7 @@ Agent instructions are `AGENTS.md` sections, rule files, skills, agent files and
 - Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
 - An issue or backlog entry asking for an agent instruction change states the concern, the behavior wanted and the cases to cover, never the rule, its wording or placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
-- State each idea exactly, with its reason in one clause, in the fewest words that keep it: no hedging or vague wording, no sentence the reader would not miss. Rephrase text you edit that falls short of these rules.
-- Cut repetition, never the words a condition, exception, sequence or scope depends on: one read of each sentence yields one parse. Write fragments only where a table cell, a list item's lead or a heading already carries the structure; elsewhere, sentences.
+- State each idea exactly, with its reason in one clause, in the fewest words that keep a single reading: no hedging, vague wording, repetition or sentence the reader would not miss, never cutting a word a condition, exception, sequence or scope rests on. Rephrase text you edit that falls short of these rules.
 
 ### Structure
 
@@ -42,9 +40,9 @@ Agent instructions are `AGENTS.md` sections, rule files, skills, agent files and
 
 Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
 
-- **Hold** what is wrong or wanted, the target state, the facts costly to re-derive (constraints, decisions, paths, issues, branches, commits) and the open questions. Reference a source rather than excerpting it; quote only text no durable source keeps, the user's chat words included.
-- **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, and how you found the facts, unless your skill asks for it.
-- A handoff is a chat reply, inside a Markdown code block so the user can copy it as is. Write it to a file only when the user asks, or as a stop record.
+- **Hold** what is wrong or wanted, the target state, facts costly to re-derive and open questions; references over excerpts, quoting only what no durable source keeps.
+- **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
+- A handoff is a chat reply in a Markdown code block; a file only when the user asks, or as a stop record.
 
 ### Reports
 
@@ -83,7 +81,7 @@ Write one when you stop with unfinished work no commit or issue holds, in these 
 
 ## Analysis
 
-Keep the ideal as the direction, and take the smallest step that meets the current need while keeping every later step toward the ideal open. Build ahead of the need only what this step would otherwise have to undo.
+Take the smallest step toward the ideal that meets the current need and that no later step toward it must undo.
 
 In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
 
@@ -93,16 +91,15 @@ To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 A dispatch brief's `Thoroughness: <level>` line sets how far its receiver digs; a main session has no level.
 
-| Level      | Work it covers                                                                                                       | Default for                   |
-| ---------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `scoped`   | A precise question or a contained change: the material the brief names, and only what answering or applying it needs | Gatherers, analysers, mergers |
-| `standard` | A task whose sources lead further: also the sources sharing its subject, and the leads they open within it           | Every other dispatched agent  |
+| Level      | Work it covers                                                                 | Default for                   |
+| ---------- | ------------------------------------------------------------------------------ | ----------------------------- |
+| `scoped`   | The material the brief names, and only what answering or applying it needs     | Gatherers, analysers, mergers |
+| `standard` | Also the sources sharing the task's subject, and the leads they open within it | Every other dispatched agent  |
 
-- **Window.** Each message from your caller that carries a `Thoroughness:` line, your brief included, opens a window at that level; a brief without one opens a window at your default level from the table, and a later message without one continues the current window.
-- **Ceiling.** As a dispatched agent, treat your window's level as a ceiling on the work done since the window opened, never as a target: stop as soon as the work is done. The ceiling bounds every other rule that asks you to go further.
-- **Reaching the ceiling**, or at a first thoroughness warning from your harness: list what remains, then handle it by the first matching case.
-  - When every item on the list lies inside your task, or is a check failure your changes caused, and each item's change is already decided: finish those items and nothing else.
-  - Otherwise, and also when you meet an item that is not on the list, when a check rejects the same fix twice, or at a second thoroughness warning: stop with your changes' checks passing. Open your report with `Thoroughness stop:`, followed by your progress in the stop-record shape (Writing › Stop records) without its numbered steps.
+A caller message with a `Thoroughness:` line, your brief included, opens a window at that level; a brief without one, at your default; other messages continue the window. As a dispatched agent, take your window's level as a ceiling on the work since it opened, never a target; it bounds every rule asking you to go further. When you reach it or get a first thoroughness warning, list what remains:
+
+- **Each item is inside your task or a check failure your changes caused, with its change decided.** Finish that list only.
+- **Otherwise, or on an item off the list, a fix its check rejects twice or a second warning.** Stop with your changes' checks passing; open your report with `Thoroughness stop:`, then your progress in the stop-record shape (Writing › Stop records) without its steps.
 
 Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings.
 
@@ -116,10 +113,10 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 ## Decision protocol
 
 - **The user asks a question.** Answer it as a question, never as an implied instruction: explain the current choice and compare any alternative it raises by pros, cons and implications. Keep your judgment and leave settled decisions closed, then continue your task.
-- **The user explicitly asks for or decides on a change.** Analyse it first. Pause before acting on it when your analysis contradicts it, when it breaks these instructions or adds architectural debt, or when it would reverse a decision, change a shared contract or need rework beyond what it names: state the conflict or the reach, what the change discards, and the alternative your role allows. Otherwise change direction as asked.
-- **Choice you settle**, when one option is clearly better and fits the architecture, or when every option keeps behavior, contracts and architecture as the task sets them, adds no architectural debt and is cheap to reverse. Take the clearly better option; when none is, take the one that follows project patterns and is cheapest to reverse. Report your choice with the alternative.
-- **Choice for the user**: any other choice, and any conflict between sources with no clear resolution. Finish only the work no open question affects, then pause with your progress in the stop-record shape (Writing › Stop records), without its numbered steps, and your questions. Each question states what raised it, what each option changes and costs, and your recommendation with its basis: soundness, or only cost, reversibility or precedent.
-- **Answers arrive.** Weigh each answer as a new request, except an answer confirming a reach you stated. Then resume the same task; when the answers change earlier assumptions, pause again with a new batch of questions.
+- **The user explicitly asks for or decides on a change.** Analyse it. Pause before acting when the analysis contradicts it, it breaks these instructions or adds architectural debt, or it would reverse a decision, change a shared contract or need rework beyond what it names: state the conflict or reach, what it discards and the alternative your role allows. Otherwise change direction.
+- **Choice you settle**: one option clearly better and fitting the architecture, or every option keeping behavior, contracts and architecture as the task sets them, adding no architectural debt and cheap to reverse. Take the better option, else the one following project patterns and cheapest to reverse; report it with the alternative.
+- **Choice for the user**: any other, or sources conflicting with no clear resolution. Finish only the work no open question affects, then pause with your progress in the stop-record shape (Writing › Stop records) without its steps, and your questions, each with what raised it, what each option changes and costs, and your recommendation with its basis: soundness, or only cost, reversibility or precedent.
+- **Answers arrive.** Weigh each as a request, except one confirming a reach you stated, and resume the same task; pause with a new batch when they change earlier assumptions.
 - Follow implications as far as you can before pausing, so every question arrives in one batch.
 - Wait for the answers, never taking silence or a guess for one: when you cannot wait, end the turn with the questions.
 - Implement a confirmed request that breaks these instructions as a one-time exception, never a precedent, keeping every other rule.
@@ -222,9 +219,9 @@ Place:
 
 ## Backlog
 
-Record out-of-scope findings and user-deferred work in the shared backlog: questions, bugs, tasks and improvements. Follow `.ai/backlog/index.md`; `index.yml` beside it lists each category's purpose and entries.
+Record out-of-scope findings and user-deferred work in the shared backlog by `.ai/backlog/index.md`; `index.yml` beside it lists the categories' purposes and entries.
 
-Record each finding you meet while working that lies outside your task and that no agent record holds: a likely or proven bug, which the agent-records rule tells apart from debt, a gap, a task or a question. Where it goes depends on your role:
+A finding outside your task that no agent record holds:
 
 - **You may edit files.** A backlog entry at once, named in your report.
 - **Your brief or skill makes you read-only.** Name it in your report, for your caller to record.
@@ -255,7 +252,7 @@ Record each finding you meet while working that lies outside your task and that 
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- The stop gate is the worktree gate, run when a gated subagent stops; it reuses an earlier pass on the same tree instead of running again. When the tree fails, it blocks only the subagent's first stop, and its message says what to do.
+- The stop gate, run when a gated subagent stops, blocks its first stop on a tree failing the worktree gate; follow its message.
 - Report actual results, what blocked you and each check you skipped.
 
 <!-- @end -->

@@ -178,3 +178,4 @@
 - writer subagent loaded AGENTS.md: auditing data/metalbrain against it — the context copy predated 4e29dca7 (no smallest-step line, old Precedence); grepped the file on disk
 - Write tool on instruction sources: rewriting `sections/analysis.md` as a subagent — harness refused .md writes as report files; used Edit and scripted replacements
 - fragment-files check: named a renamed state file not yet existing in an instruction — sync failed; kept the current path
+- shell-trap hook: `echo ======` separator — refused as `=` command-path expansion; quoted it

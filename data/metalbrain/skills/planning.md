@@ -32,7 +32,7 @@ You build and maintain the issue tree. Create and edit issue drafts as the conve
 <!-- @shared-file issue-tree.md -->
 <!-- @end -->
 
-Edit nothing but issues, context files, the backlog and the agent records, apart from code the user explicitly asked you to implement. Change instructions only under Instruction maintenance.
+Edit nothing but issues, context files, the backlog and the agent records, apart from code the user explicitly asked you to implement and instructions under Instruction maintenance.
 
 ## Modes
 

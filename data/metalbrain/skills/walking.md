@@ -54,15 +54,9 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, and after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports:
+Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, and after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits; the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker`, `debugger`, or `orchestrator` (you) when it holds **Housekeeping**; and the next issue, or `Next: none, walk finished` once the walked issue is closed. It exits 1 only on a stuck walk: the walked issue open with an empty ready set.
 
-- every issue of the tree in tree order, each parent above its sub-issues, with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits;
-- the ready set: every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker` or `debugger`, or with `orchestrator`, meaning you, when it holds **Housekeeping**;
-- the next issue, or `Next: none, walk finished` once the walked issue is closed.
-
-It exits 1 only on a stuck walk: the walked issue open with an empty ready set.
-
-A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf is a leaf of another registered repository. On a foreign leaf, or on a worker report opening with `Linked defect:`, first read this file; it replaces each step of this skill it covers:
+A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf, one of another registered repository. On a foreign leaf or a worker report opening with `Linked defect:`, first read this file, which replaces each step of this skill it covers:
 
 <!-- @skill-file cross-repository.md -->
 <!-- @end -->
@@ -178,18 +172,8 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 ## Consultant
 
 - Start the `consultant` subagent on first need, briefed with the plan number; resume it under §Resumed agents.
-- Call it only for:
-  - a blocked report the issue's text does not answer;
-  - a scope or thoroughness stop;
-  - plan findings;
-  - **Housekeeping** you stopped on;
-  - a deviation or discovery a report names;
-  - a plan your next commit closes;
-  - an issue whose **Questions** the user leaves open while issues ordered after it wait;
-  - an issue its row sends to it, or one no row fits;
-  - an architecture review the user asks for, sent as the user worded it.
-- Resume a blocked agent with what the consultant settles; answer nothing from code yourself.
-- Send it the issues the handling table routes to it, in tree order, with the linked checkout path of each foreign issue, which it reads by that path. In that message and in each resume for pending issues, name the pool's free slots, at least one, and add `no leaf in flight` when no leaf is in flight: both bound its run. When it returns, dispatch the issues it made ready that are not already in flight, then resume it for the pending ones, adding those routed to it since.
+- Call it only where this skill sends it work, for a blocked report the issue's text does not answer, an issue no row fits or whose **Questions** the user leaves open while issues ordered after it wait, or an architecture review the user asks for, sent as the user worded it. Resume a blocked agent with what it settles; answer nothing from code yourself.
+- Send it the issues the handling table routes to it, in tree order, with each foreign issue's linked checkout path. In that message and each resume for pending ones, name the pool's free slots, at least one, and `no leaf in flight` when none is: both bound its run. When it returns, dispatch the issues it made ready not already in flight, then resume it for the pending ones, adding those routed to it since.
 - Send a blocked report arriving while the consultant runs to it at once where the client delivers messages to a running agent, otherwise once the consultant returns.
 - Batch what it sends back to the user with its findings and recommendations.
 

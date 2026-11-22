@@ -10,10 +10,7 @@ paths:
 
 # Issues
 
-This rule applies to every finding you record while following a skill that sends you here, and to every issue draft in `.ai/issues/`.
-
-- The Outcome section binds only while you follow a skill that names it, and the Recording section only while you follow a skill that sends you here. Such a skill refines this rule for its role.
-- For those roles, this rule refines the decision protocol: answering a question still leaves its findings to record.
+This rule applies to every finding you record under a skill sending you here, and to every issue draft in `.ai/issues/`. Outcome binds only under a skill naming it, Recording only under a skill sending you here; that skill refines this rule for its role, and this rule refines the decision protocol for that role: answering a question still leaves its findings to record.
 
 <!-- @file .claude/rules/issue-drafts.md -->
 
