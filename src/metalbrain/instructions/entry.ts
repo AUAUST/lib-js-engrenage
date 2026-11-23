@@ -1,6 +1,7 @@
 export {
   createInstructionFile,
   createSkillFileFiller,
+  createWordCapsFiller,
   formatBacklogIndex,
   formatReferenceMarker,
   getRuleReferences,

@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { engrenage } from "#constants";
+import type { WordCapKind } from "#metalbrain/facts/index";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Directory } from "#types/Directory";
 
@@ -24,3 +25,12 @@ export const backlogCategoriesHeading = "## Open categories";
 export const backlogTemplate = `${engrenage}/${metalbrain}/templates/backlog.md`;
 
 export const rulesDirectory = ".claude/rules" satisfies Directory;
+
+export const wordCapLabels = freeze({
+  goal: "Issue **Goal**",
+  context: "Issue **Context**",
+  doneWhen: "Issue **Done when**",
+  comment: "Issue comment",
+  backlogEntry: "Backlog entry",
+  logEntry: "Agent log entry",
+} as const satisfies Record<WordCapKind, string>);

@@ -22,7 +22,4 @@ export type {
   RecordField,
   RecordKind,
   WordCapFinding,
-  WordCapKind,
-  WordCapMode,
-  WordCaps,
 } from "#metalbrain/records/index";

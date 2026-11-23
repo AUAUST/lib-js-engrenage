@@ -21,12 +21,17 @@ import { createFragmentRenderer } from "#tools/agents/operations/createFragmentR
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import type { MetalbrainFacts } from "#metalbrain/facts/index";
 import type { LoadedConfig } from "#project/config/index";
 
 // @debt matches each runtime's skills and agents directories by hand instead of reading them from its `agents.runtimes` contribution
 export async function checkAgents(
   config: LoadedConfig,
-  { format, roots }: { format: InstructionFormatter; roots: HookRoots },
+  {
+    format,
+    roots,
+    facts,
+  }: { format: InstructionFormatter; roots: HookRoots; facts: MetalbrainFacts },
 ): Promise<AgentCheckFinding[]> {
   const agents = await config.resolve("agents");
 
@@ -57,7 +62,7 @@ export async function checkAgents(
   const templates = await getSkillTemplates({
     agents,
     extensions,
-    renderer: await createFragmentRenderer(config),
+    renderer: await createFragmentRenderer(config, facts),
     runtimes: await getAgentRuntimes(config),
     roots,
   });

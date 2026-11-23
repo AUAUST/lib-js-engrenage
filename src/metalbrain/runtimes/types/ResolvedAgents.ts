@@ -1,4 +1,4 @@
-import type { WordCaps } from "#metalbrain/records/index";
+import type { WordCaps } from "#metalbrain/facts/index";
 import type { Agent } from "#metalbrain/runtimes/types/Agent";
 import type { Gate } from "#metalbrain/runtimes/types/Gate";
 import type { SubagentCacheTtl } from "#metalbrain/runtimes/types/SubagentCacheTtl";

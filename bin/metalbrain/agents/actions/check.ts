@@ -1,7 +1,10 @@
 import { formatAgentCheck } from "#metalbrain/runtimes/index";
 import { checkAgents } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
-import { loadInstructionFormatter } from "#tools/metalbrain/index";
+import {
+  loadInstructionFormatter,
+  loadMetalbrainFacts,
+} from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -13,6 +16,7 @@ export default async function (): Promise<void> {
   const findings = await checkAgents(config, {
     format: await loadInstructionFormatter(config),
     roots: hookRoots,
+    facts: await loadMetalbrainFacts(config),
   });
 
   for (const finding of findings) {

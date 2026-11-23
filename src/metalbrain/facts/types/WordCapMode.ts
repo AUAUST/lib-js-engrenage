@@ -1,4 +1,4 @@
-import type { wordCapModes } from "#metalbrain/records/constants";
+import type { wordCapModes } from "#metalbrain/facts/constants";
 
 /**
  * How a word cap overrun is reported: `warn` adds it to the agent's context,

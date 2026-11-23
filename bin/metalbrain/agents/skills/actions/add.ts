@@ -11,6 +11,7 @@ import {
   listActiveExtensions,
 } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import {
   loadValidatedConfig,
@@ -29,7 +30,10 @@ async function getNames(config: LoadedConfig, name: string | undefined) {
   const templates = await getSkillTemplates({
     agents,
     extensions: await listActiveExtensions(config),
-    renderer: await createFragmentRenderer(config),
+    renderer: await createFragmentRenderer(
+      config,
+      await loadMetalbrainFacts(config),
+    ),
     runtimes: await getAgentRuntimes(config),
     roots: hookRoots,
   });
@@ -93,7 +97,12 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentSkills(config, names, hookRoots);
+  await addAgentSkills(
+    config,
+    names,
+    hookRoots,
+    await loadMetalbrainFacts(config),
+  );
 
   await settleChanges(config, {
     check: false,

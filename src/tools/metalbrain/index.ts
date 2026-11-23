@@ -23,7 +23,6 @@ export { agentsSection } from "#tools/metalbrain/config/sections/agentsSection";
 // @barrel operations
 export { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
 export { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
-export { fillAgentLimits } from "#tools/metalbrain/operations/fillAgentLimits";
 export { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
 export { guardClaudeDispatch } from "#tools/metalbrain/operations/guardClaudeDispatch";
 export { guardClaudeGit } from "#tools/metalbrain/operations/guardClaudeGit";
@@ -36,6 +35,7 @@ export { lintClaudeEdit } from "#tools/metalbrain/operations/lintClaudeEdit";
 export { listAgentReferenceFiles } from "#tools/metalbrain/operations/listAgentReferenceFiles";
 export { listLocalFilePatterns } from "#tools/metalbrain/operations/listLocalFilePatterns";
 export { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
+export { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 export { recordClaudeStop } from "#tools/metalbrain/operations/recordClaudeStop";
 export { reportMissingExtensionRules } from "#tools/metalbrain/operations/reportMissingExtensionRules";

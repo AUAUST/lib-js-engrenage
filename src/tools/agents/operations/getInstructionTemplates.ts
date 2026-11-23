@@ -16,12 +16,12 @@ import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
+import { createFragmentSources } from "#metalbrain/facts/index";
 import { metalbrain } from "#metalbrain/instructions/constants";
 import {
   parseInstruction,
   type FragmentRenderer,
 } from "#metalbrain/instructions/index";
-import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 import type { Extension } from "#project/config/index";
 
 type InstructionKind = "rules" | "sections" | "skills";
@@ -51,15 +51,9 @@ export async function getInstructionTemplates(
     supporting?: boolean;
   } = {},
 ) {
-  const active = new Set(
-    extensions.map(({ name }) => {
-      return name;
-    }),
-  );
+  const { extensions: active, origins } = createFragmentSources(extensions);
 
   const subpath = `./${metalbrain}/${kind}/*.md` as const;
-
-  const origins = listFragmentOrigins(extensions);
 
   async function render(content: string, source: string) {
     return renderer === undefined

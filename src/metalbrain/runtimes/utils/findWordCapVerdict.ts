@@ -1,8 +1,8 @@
 import {
   formatWordCapFinding,
   type WordCapFinding,
-  type WordCapMode,
 } from "#metalbrain/records/index";
+import type { WordCapMode } from "#metalbrain/facts/index";
 import type { HookVerdict } from "#metalbrain/runtimes/types/HookVerdict";
 
 /**

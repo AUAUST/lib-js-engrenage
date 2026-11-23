@@ -7,6 +7,7 @@ import {
   getMissingRuleTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -23,7 +24,10 @@ export default async function (name?: string): Promise<void> {
     const missing = await getMissingRuleTemplates({
       filesystem: config.context.filesystem,
       extensions: await listActiveExtensions(config),
-      renderer: await createFragmentRenderer(config),
+      renderer: await createFragmentRenderer(
+        config,
+        await loadMetalbrainFacts(config),
+      ),
     });
 
     if (missing.length === 0) {
@@ -67,7 +71,7 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentRules(config, names);
+  await addAgentRules(config, names, await loadMetalbrainFacts(config));
 
   await settleChanges(config, {
     check: false,

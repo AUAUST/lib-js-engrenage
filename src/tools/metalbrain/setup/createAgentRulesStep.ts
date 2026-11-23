@@ -7,6 +7,7 @@ import {
   getMissingRuleTemplates,
   listActiveExtensions,
 } from "#tools/agents/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { Step } from "#project/steps/index";
 
 export function createAgentRulesStep(): Step {
@@ -23,7 +24,10 @@ export function createAgentRulesStep(): Step {
       const missing = await getMissingRuleTemplates({
         filesystem: context.filesystem,
         extensions: await listActiveExtensions(context),
-        renderer: await createFragmentRenderer(context),
+        renderer: await createFragmentRenderer(
+          context,
+          await loadMetalbrainFacts(context),
+        ),
       });
 
       return missing.some((template) => template.default);
@@ -34,7 +38,10 @@ export function createAgentRulesStep(): Step {
       const templates = await getMissingRuleTemplates({
         filesystem,
         extensions: await listActiveExtensions(context),
-        renderer: await createFragmentRenderer(context),
+        renderer: await createFragmentRenderer(
+          context,
+          await loadMetalbrainFacts(context),
+        ),
       });
 
       const missing = templates.filter(({ name }) => name !== "backlog");
@@ -45,7 +52,7 @@ export function createAgentRulesStep(): Step {
         filterMap(missing, (template) => template.default, "name"),
       );
 
-      await addAgentRules(context, names);
+      await addAgentRules(context, names, await loadMetalbrainFacts(context));
     },
   };
 }

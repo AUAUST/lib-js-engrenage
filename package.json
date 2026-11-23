@@ -136,6 +136,14 @@
       "source": "./src/metalbrain/backlog/constants.ts",
       "default": "./dist/future/metalbrain/backlog/constants.mjs"
     },
+    "./future/metalbrain/facts": {
+      "source": "./src/metalbrain/facts/entry.ts",
+      "default": "./dist/future/metalbrain/facts.mjs"
+    },
+    "./future/metalbrain/facts/constants": {
+      "source": "./src/metalbrain/facts/constants.ts",
+      "default": "./dist/future/metalbrain/facts/constants.mjs"
+    },
     "./future/metalbrain/instructions": {
       "source": "./src/metalbrain/instructions/entry.ts",
       "default": "./dist/future/metalbrain/instructions.mjs"
@@ -469,6 +477,8 @@
       "./format/constants": "./dist/format/constants.mjs",
       "./future/metalbrain/backlog": "./dist/future/metalbrain/backlog.mjs",
       "./future/metalbrain/backlog/constants": "./dist/future/metalbrain/backlog/constants.mjs",
+      "./future/metalbrain/facts": "./dist/future/metalbrain/facts.mjs",
+      "./future/metalbrain/facts/constants": "./dist/future/metalbrain/facts/constants.mjs",
       "./future/metalbrain/instructions": "./dist/future/metalbrain/instructions.mjs",
       "./future/metalbrain/instructions/constants": "./dist/future/metalbrain/instructions/constants.mjs",
       "./future/metalbrain/records": "./dist/future/metalbrain/records.mjs",

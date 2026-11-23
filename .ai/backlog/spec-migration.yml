@@ -72,6 +72,8 @@ entries:
       - data/metalbrain/skills/curation.md:85
       - data/metalbrain/shared/request-analysis.md:7
       - data/metalbrain/skills/merging.md:105
-    why: "#811's instruction changes wait for one final switch; items append sites. `engrenage agents|planning|github|debt` → `metalbrain …`; `engrenage-hook claude` → `metalbrain hook claude` (`lintEdit`, `gateStop`). #824: drop `.ai/backlog/index.md` and its sync code, facts into the backlog rule, pointers → `backlog categories`. #825: `.md` log paths and hand-counted recurrence → `metalbrain friction|discarded|pending` with `stats`; sync migrates the logs once no instruction names them."
+      - data/metalbrain/rules/issue-drafts.md:82
+      - data/metalbrain/rules/word-caps.md:16
+    why: "#811's instruction changes wait for one final switch; items append sites. `engrenage agents|planning|github|debt` → `metalbrain …`; `engrenage-hook claude` → `metalbrain hook claude` (`lintEdit`, `gateStop`). #824: drop `.ai/backlog/index.md` and its sync code, facts into the backlog rule, pointers → `backlog categories`. #825: `.md` log paths and hand-counted recurrence → `metalbrain friction|discarded|pending` with `stats`; sync migrates the logs once no instruction names them. #826: word-cap prose → `@word-caps` blocks."
     want: "one writer dispatch applies them, then `pnpm engrenage sync` twice: the copies, then the log migration."
     done: "no instruction source names a command #811 renamed, `.ai/backlog/index.md` or a `.md` log."

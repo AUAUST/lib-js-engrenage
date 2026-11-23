@@ -35,9 +35,6 @@ export type * from "#metalbrain/records/types/RecordKind";
 export type * from "#metalbrain/records/types/RecordLocation";
 export type * from "#metalbrain/records/types/RecordValues";
 export type * from "#metalbrain/records/types/WordCapFinding";
-export type * from "#metalbrain/records/types/WordCapKind";
-export type * from "#metalbrain/records/types/WordCapMode";
-export type * from "#metalbrain/records/types/WordCaps";
 // @end
 
 // @barrel utils

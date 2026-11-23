@@ -20,6 +20,7 @@ import {
   listActiveExtensions,
 } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
@@ -52,7 +53,9 @@ export function createBacklogStep(): Step {
 
       const agents = await resolve("agents");
 
-      const renderer = await createFragmentRenderer(context);
+      const facts = await loadMetalbrainFacts(context);
+
+      const renderer = await createFragmentRenderer(context, facts);
 
       const extensions = await listActiveExtensions(context);
 
@@ -118,9 +121,11 @@ export function createBacklogStep(): Step {
         );
       }
 
-      await addAgentRules(context, ["backlog"]);
+      const facts = await loadMetalbrainFacts(context);
 
-      await addAgentSkills(context, skills, hookRoots);
+      await addAgentRules(context, ["backlog"], facts);
+
+      await addAgentSkills(context, skills, hookRoots, facts);
 
       await syncAgentFiles(context);
     },

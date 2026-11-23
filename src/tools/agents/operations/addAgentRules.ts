@@ -5,17 +5,19 @@ import { createFragmentRenderer } from "#tools/agents/operations/createFragmentR
 import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import type { MetalbrainFacts } from "#metalbrain/facts/index";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function addAgentRules(
   config: LoadedConfig,
   names: readonly string[],
+  facts: MetalbrainFacts,
 ) {
   const { filesystem } = config.context;
 
   const [extensions, renderer] = await Promise.all([
     listActiveExtensions(config),
-    createFragmentRenderer(config),
+    createFragmentRenderer(config, facts),
   ]);
 
   const templates = await getRuleTemplates({ extensions, renderer });

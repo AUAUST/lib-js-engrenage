@@ -2,6 +2,7 @@ import { createFragmentRenderer } from "#tools/agents/operations/createFragmentR
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
+import type { MetalbrainFacts } from "#metalbrain/facts/index";
 import type { HookRoots } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -9,6 +10,7 @@ export async function addAgentSkills(
   config: LoadedConfig,
   names: readonly string[],
   roots: HookRoots,
+  facts: MetalbrainFacts,
 ) {
   const { filesystem } = config.context;
 
@@ -17,7 +19,7 @@ export async function addAgentSkills(
   const templates = await getSkillTemplates({
     agents,
     extensions: await listActiveExtensions(config),
-    renderer: await createFragmentRenderer(config),
+    renderer: await createFragmentRenderer(config, facts),
     runtimes: await getAgentRuntimes(config),
     roots,
   });

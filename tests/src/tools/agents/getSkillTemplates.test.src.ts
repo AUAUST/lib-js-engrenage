@@ -12,6 +12,7 @@ import { createFragmentRenderer } from "#tools/agents/operations/createFragmentR
 import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
 import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 const skill = vi.hoisted(() => {
   return {
@@ -77,7 +78,10 @@ async function renderSkills() {
   return getSkillTemplates({
     agents,
     extensions: [],
-    renderer: await createFragmentRenderer(config),
+    renderer: await createFragmentRenderer(
+      config,
+      await loadMetalbrainFacts(config),
+    ),
     runtimes: await getAgentRuntimes(config),
     roots: hookRoots,
   });

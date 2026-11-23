@@ -4,6 +4,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 async function loadConsumer() {
   const project = createTemporaryProject({
@@ -18,7 +19,12 @@ describe("addAgentSkills", () => {
   test("installs an explicit skill and its agent", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["debugging"], hookRoots);
+    await addAgentSkills(
+      config,
+      ["debugging"],
+      hookRoots,
+      await loadMetalbrainFacts(config),
+    );
 
     expect(config.context.filesystem.changes()).toEqual(
       [
@@ -41,7 +47,12 @@ describe("addAgentSkills", () => {
   test("writes the agent model and effort to the Claude Code agent", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["implement"], hookRoots);
+    await addAgentSkills(
+      config,
+      ["implement"],
+      hookRoots,
+      await loadMetalbrainFacts(config),
+    );
 
     expect(
       await config.context.filesystem.read(".claude/agents/worker.md"),
@@ -53,7 +64,12 @@ describe("addAgentSkills", () => {
   test("lets the curation skill be invoked implicitly", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["curation"], hookRoots);
+    await addAgentSkills(
+      config,
+      ["curation"],
+      hookRoots,
+      await loadMetalbrainFacts(config),
+    );
 
     expect(
       await config.context.filesystem.read(".claude/skills/curation/SKILL.md"),
@@ -67,7 +83,12 @@ describe("addAgentSkills", () => {
   test("installs agents selectively, once", async () => {
     const config = await loadConsumer();
 
-    await addAgentSkills(config, ["implement"], hookRoots);
+    await addAgentSkills(
+      config,
+      ["implement"],
+      hookRoots,
+      await loadMetalbrainFacts(config),
+    );
 
     expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
       [".claude/agents/worker.md"],
@@ -77,6 +98,7 @@ describe("addAgentSkills", () => {
       config,
       ["debugging", "planning", "curation"],
       hookRoots,
+      await loadMetalbrainFacts(config),
     );
 
     expect(await config.context.filesystem.glob(".claude/agents/*.md")).toEqual(
@@ -93,6 +115,7 @@ describe("addAgentSkills", () => {
       config,
       ["implement", "debugging", "planning", "curation"],
       hookRoots,
+      await loadMetalbrainFacts(config),
     );
 
     expect(config.context.filesystem.changes()).toEqual([]);
@@ -107,7 +130,12 @@ describe("addAgentSkills", () => {
     const config = await loadConfig(project.root);
 
     await expect(
-      addAgentSkills(config, ["planning"], hookRoots),
+      addAgentSkills(
+        config,
+        ["planning"],
+        hookRoots,
+        await loadMetalbrainFacts(config),
+      ),
     ).rejects.toThrow("agents.preferred");
   });
 });

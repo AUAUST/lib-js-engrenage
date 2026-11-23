@@ -4,11 +4,11 @@ import { basename } from "node:path";
 import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
+import { createFragmentSources } from "#metalbrain/facts/index";
 import {
   metalbrain,
   sharedFilesKind,
 } from "#metalbrain/instructions/constants";
-import { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 import type { Extension } from "#project/config/index";
 
 /**
@@ -19,7 +19,7 @@ import type { Extension } from "#project/config/index";
  */
 export async function getSharedFiles(extensions: readonly Extension[]) {
   const shipped = await Promise.all(
-    listFragmentOrigins(extensions).map((origin) => {
+    createFragmentSources(extensions).origins.map((origin) => {
       return listDataFiles(origin, `./${metalbrain}/${sharedFilesKind}/*.md`);
     }),
   );

@@ -11,6 +11,7 @@ import {
   getSharedFiles,
   listActiveExtensions,
 } from "#tools/agents/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -142,7 +143,10 @@ export const fillReferenceBlock: DirectiveFill = async ({
 
   const body = parseInstruction(content, source).body;
 
-  const renderer = await createFragmentRenderer(config);
+  const renderer = await createFragmentRenderer(
+    config,
+    await loadMetalbrainFacts(config),
+  );
 
   const skillsDirectory = await findRuntimeSkills(config, file);
 

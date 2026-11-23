@@ -91,7 +91,7 @@ entries:
   - id: 261122-bb26
     title: One init or sync run rebuilds the same agent templates and skill definitions many times
     sites:
-      - src/tools/metalbrain/operations/fillAgentLimits.ts:4
+      - src/tools/agents/operations/createFragmentRenderer.ts:19
     why: an init with two runtimes called `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
     want: computed once per run and shared; a run lifecycle contract to decide first.
   - id: 261122-a80b

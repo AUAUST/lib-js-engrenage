@@ -10,14 +10,14 @@ import {
   unset,
 } from "#foundation/options/index";
 import {
+  defaultOutputLimit,
   defaultWordCapMode,
   defaultWordCaps,
   wordCapModes,
-} from "#metalbrain/records/constants";
+} from "#metalbrain/facts/constants";
 import { subagentCacheTtls } from "#metalbrain/runtimes/constants";
 import {
   defaultInstructionFiles,
-  defaultOutputLimit,
   defaultSubagentCacheTtl,
 } from "#tools/agents/constants";
 import { limitSchema } from "#tools/metalbrain/config/schemas/limitSchema";

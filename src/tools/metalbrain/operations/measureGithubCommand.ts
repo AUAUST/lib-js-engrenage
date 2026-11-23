@@ -5,11 +5,8 @@ import {
   parseIssueBody,
   type GithubWrite,
 } from "#tools/github/index";
-import type {
-  WordCapFinding,
-  WordCapKind,
-  WordCaps,
-} from "#metalbrain/records/index";
+import type { WordCapKind, WordCaps } from "#metalbrain/facts/index";
+import type { WordCapFinding } from "#metalbrain/records/index";
 
 const sectionKinds: Readonly<Partial<Record<string, WordCapKind>>> = {
   "Goal": "goal",

@@ -1,5 +1,3 @@
-export { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
-
 // @barrel operations
 export { addAgentRules } from "#tools/agents/operations/addAgentRules";
 export { addAgentSkills } from "#tools/agents/operations/addAgentSkills";
@@ -15,7 +13,6 @@ export { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
 export { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
 export { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 export { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-export { listFragmentOrigins } from "#tools/agents/operations/listFragmentOrigins";
 export { listMissingExtensionRules } from "#tools/agents/operations/listMissingExtensionRules";
 export { migrateSkillFiles } from "#tools/agents/operations/migrateSkillFiles";
 export { reportAgentChecks } from "#tools/agents/operations/reportAgentChecks";

@@ -116,18 +116,6 @@ export default {
     },
   },
   contributes: {
-    "agents.fillers": [
-      {
-        name: "agent-limits",
-        async load() {
-          const {
-            fillAgentLimits,
-          } = await import("#tools/metalbrain/operations/fillAgentLimits");
-
-          return fillAgentLimits;
-        },
-      },
-    ],
     "blocks.syntaxes": [
       {
         name: "markdown",

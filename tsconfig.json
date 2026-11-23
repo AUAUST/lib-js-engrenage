@@ -19,6 +19,12 @@
       "@auaust/engrenage/future/metalbrain/backlog/constants": [
         "./src/metalbrain/backlog/constants.ts"
       ],
+      "@auaust/engrenage/future/metalbrain/facts": [
+        "./src/metalbrain/facts/entry.ts"
+      ],
+      "@auaust/engrenage/future/metalbrain/facts/constants": [
+        "./src/metalbrain/facts/constants.ts"
+      ],
       "@auaust/engrenage/future/metalbrain/instructions": [
         "./src/metalbrain/instructions/entry.ts"
       ],

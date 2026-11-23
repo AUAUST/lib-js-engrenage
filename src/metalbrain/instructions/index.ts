@@ -25,6 +25,7 @@ export type * from "#metalbrain/instructions/types/SkillRendering";
 // @barrel utils
 export { createInstructionFile } from "#metalbrain/instructions/utils/createInstructionFile";
 export { createSkillFileFiller } from "#metalbrain/instructions/utils/createSkillFileFiller";
+export { createWordCapsFiller } from "#metalbrain/instructions/utils/createWordCapsFiller";
 export { filterConditionalBlocks } from "#metalbrain/instructions/utils/filterConditionalBlocks";
 export { formatBacklogIndex } from "#metalbrain/instructions/utils/formatBacklogIndex";
 export { formatReferenceMarker } from "#metalbrain/instructions/utils/formatReferenceMarker";

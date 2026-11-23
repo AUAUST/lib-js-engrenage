@@ -82,12 +82,6 @@ entries:
     title: No hook reminds a main session of records due at turn end
     why: "proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only."
     want: a decision on that hook.
-  - id: 261122-0e2c
-    title: The issue-drafts section budgets lag the configured defaults
-    sites:
-      - data/metalbrain/rules/issue-drafts.md:74
-    why: its table states Goal ~60, Context ~80, Done when ~60, while `defaultBudgets` (now `src/metalbrain/records/constants.ts`) became 150 each in 0fd960a2; a project's configured budgets can differ from both.
-    want: the rule rendering the configured values through an `agents.fillers` filler, as `agent-limits` does, also for the budgets rule.
   - id: 261122-8e75
     title: Handoffs and carry-overs travel as text an orchestrator rereads and repeats
     why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.

@@ -8,6 +8,7 @@ import { fillBlocks } from "#tests/utils/fillBlocks";
 import { getFixture } from "#tests/utils/getFixture";
 import { addAgentSkills } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 function createProject(instructions: string, fragment = "") {
   return createTemporaryProject({
@@ -104,7 +105,12 @@ describe("reference directive", () => {
 
       const config = await loadConfig(project.root);
 
-      await addAgentSkills(config, ["debugging"], hookRoots);
+      await addAgentSkills(
+        config,
+        ["debugging"],
+        hookRoots,
+        await loadMetalbrainFacts(config),
+      );
 
       const skill = await config.context.filesystem.read(
         ".claude/skills/debugging/SKILL.md",

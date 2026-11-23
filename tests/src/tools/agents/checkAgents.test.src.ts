@@ -10,6 +10,7 @@ import { checkAgents } from "#tools/agents/operations/checkAgents";
 import { syncClaudeSettings } from "#tools/metalbrain/claude/index";
 import { hookRoots } from "#tools/metalbrain/constants";
 import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
   const {
@@ -36,7 +37,12 @@ async function fixture(skills: readonly string[] = ["implement"]) {
 
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(config, skills, hookRoots);
+  await addAgentSkills(
+    config,
+    skills,
+    hookRoots,
+    await loadMetalbrainFacts(config),
+  );
 
   await syncClaudeSettings(config);
 
@@ -53,6 +59,7 @@ test("reports generated configuration without asserting runtime trust or changin
   const findings = await checkAgents(config, {
     format: await loadInstructionFormatter(config),
     roots: hookRoots,
+    facts: await loadMetalbrainFacts(config),
   });
 
   expect(findings.some(({ status }) => status === "conflicting")).toBe(false);
@@ -88,6 +95,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
     await checkAgents(config, {
       format: await loadInstructionFormatter(config),
       roots: hookRoots,
+      facts: await loadMetalbrainFacts(config),
     }),
   ).toEqual(
     expect.arrayContaining([
@@ -110,6 +118,7 @@ test("distinguishes an unavailable client from another unverified version", asyn
     await checkAgents(config, {
       format: await loadInstructionFormatter(config),
       roots: hookRoots,
+      facts: await loadMetalbrainFacts(config),
     }),
   ).toEqual(
     expect.arrayContaining([
@@ -145,6 +154,7 @@ test("recognizes inspected Claude capabilities while leaving effective overrides
   const findings = await checkAgents(config, {
     format: await loadInstructionFormatter(config),
     roots: hookRoots,
+    facts: await loadMetalbrainFacts(config),
   });
 
   expect(findings).toEqual(
@@ -174,6 +184,7 @@ test("reports a missing installed skill when its agent file remains", async () =
     await checkAgents(config, {
       format: await loadInstructionFormatter(config),
       roots: hookRoots,
+      facts: await loadMetalbrainFacts(config),
     }),
   ).toEqual(
     expect.arrayContaining([
@@ -191,6 +202,7 @@ test("accepts a skill whose rendered table sync formats", async () => {
   const findings = await checkAgents(config, {
     format: await loadInstructionFormatter(config),
     roots: hookRoots,
+    facts: await loadMetalbrainFacts(config),
   });
 
   expect(findings).toContainEqual(

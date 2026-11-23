@@ -9,6 +9,7 @@ import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import { reportAgentChecks } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
 import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import {
   createProgram as createDefinedProgram,
   defineCommand,
@@ -184,6 +185,7 @@ describe("sync --check", () => {
     const findings = await reportAgentChecks(config, {
       format: await loadInstructionFormatter(config),
       roots: hookRoots,
+      facts: await loadMetalbrainFacts(config),
     });
 
     expect(findings).not.toEqual([]);

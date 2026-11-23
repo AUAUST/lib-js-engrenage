@@ -4,6 +4,7 @@ import {
   type HookRoots,
 } from "#metalbrain/runtimes/index";
 import { checkAgents } from "#tools/agents/operations/checkAgents";
+import type { MetalbrainFacts } from "#metalbrain/facts/index";
 import type { InstructionFormatter } from "#metalbrain/instructions/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -17,9 +18,17 @@ const levels = {
 
 export async function reportAgentChecks(
   config: LoadedConfig,
-  { format, roots }: { format: InstructionFormatter; roots: HookRoots },
+  {
+    format,
+    roots,
+    facts,
+  }: { format: InstructionFormatter; roots: HookRoots; facts: MetalbrainFacts },
 ) {
-  const findings = await checkAgents(config, { format, roots });
+  const findings = await checkAgents(config, {
+    format,
+    roots,
+    facts,
+  });
 
   const { reporter } = config.context;
 

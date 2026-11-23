@@ -1,4 +1,4 @@
-import type { wordCapKinds } from "#metalbrain/records/constants";
+import type { wordCapKinds } from "#metalbrain/facts/constants";
 
 /**
  * Kind of agent-written text with a word cap.

@@ -42,6 +42,7 @@ import {
   migrateSkillFiles,
 } from "#tools/agents/index";
 import { hookRoots } from "#tools/metalbrain/constants";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Extension, LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -240,7 +241,10 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     resolve: context.path,
     agents: await resolve("agents"),
     extensions: await listActiveExtensions(loaded),
-    renderer: await createFragmentRenderer(loaded),
+    renderer: await createFragmentRenderer(
+      loaded,
+      await loadMetalbrainFacts(loaded),
+    ),
     runtimes: await getAgentRuntimes(loaded),
     roots: hookRoots,
     indentation: jsonIndentation,

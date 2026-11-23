@@ -16,6 +16,8 @@ export const mainSharedFiles = freeze(["request-analysis.md"] as const);
 export const agentsTemplate = `${engrenage}/${metalbrain}/templates/${agentsFile}`;
 
 export const builtInFillers = freeze([
+  "word-caps",
+  "agent-limits",
   "skill-file",
   "shared-file",
   "extension",
@@ -58,8 +60,6 @@ export const attributionRules = freeze({
 export const retiredRules = freeze([
   `${engrenage}/${metalbrain}/rules/instructions.md`,
 ] as const);
-
-export const defaultOutputLimit = 10_000;
 
 export const defaultSubagentCacheTtl = "5m" as const;
 
