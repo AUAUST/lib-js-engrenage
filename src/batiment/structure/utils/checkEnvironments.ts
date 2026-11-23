@@ -12,12 +12,12 @@ import type { ImportEdge } from "#batiment/structure/types/ImportEdge";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
 function isRootFile(
-  { environment, lineage, path, role }: Entity,
+  { namespace, lineage, path, role }: Entity,
   elements: ImportGrants["elements"],
 ): boolean {
   return (
-    environment !== undefined &&
-    elements.includes(environment) &&
+    namespace !== undefined &&
+    elements.includes(namespace) &&
     lineage.length === 1 &&
     lineage[0]?.path === path &&
     (role === indexRoleName || role === entryRoleName)
@@ -37,7 +37,7 @@ export function checkEnvironments(
   const isOwnExecutable = (
     target !== undefined &&
     importer.role === executableRoleName &&
-    importer.environment === target.environment &&
+    importer.namespace === target.namespace &&
     importer.path === target.path
   );
 
@@ -56,8 +56,8 @@ export function checkEnvironments(
   const category = getImportCategory(edge, entries);
 
   return category !== undefined &&
-    importer.environment !== undefined &&
-    environments[importer.environment]?.includes(category) === true
+    importer.namespace !== undefined &&
+    environments[importer.namespace]?.includes(category) === true
     ? freeze({
         cause: "environment",
         boundary: undefined,

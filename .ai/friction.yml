@@ -767,3 +767,7 @@ entries:
     subject: sync barrel export missing
     tried: engrenage sync after adding declarer
     stopped: barrel lacked export; added lines by hand, reran
+  - id: 261123-d56f
+    subject: BSD sed -E word boundary
+    tried: renamed identifiers with sed -E and \b
+    stopped: BSD sed silently matched nothing; reran without \b after checking no longer names contain them

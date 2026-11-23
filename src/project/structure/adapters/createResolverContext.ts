@@ -18,7 +18,7 @@ import { readStructureOption } from "#project/structure/operations/readStructure
 import type {
   ContextPort,
   EnvironmentDeclarations,
-  EnvironmentPlacement,
+  NamespacePlacement,
   RootFacts,
   ScopeDeclarations,
   WorkspaceExpectation,
@@ -36,7 +36,7 @@ const placementOption = looseObject({
 async function readPlacement(
   config: ConfigResolver,
   contributed: ContributedEnvironmentEntry,
-): Promise<EnvironmentPlacement> {
+): Promise<NamespacePlacement> {
   const key = getOptionsKey(contributed);
 
   const resolver: Resolver<ConfigContext> = config;
@@ -205,7 +205,7 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       ignored: await repository.ignored,
       kinds: freeze(kinds.map(({ entry }) => entry)),
       languages: freeze(languages.map(({ entry }) => entry.name)),
-      environments: freeze(
+      namespaces: freeze(
         await Promise.all(
           entries.map((contributed) => readPlacement(config, contributed)),
         ),

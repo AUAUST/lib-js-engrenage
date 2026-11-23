@@ -19,10 +19,7 @@ export function checkWorkspaces(
   }
 
   const crosses = importer.scope === rootScope
-    ? (
-        importer.environment !== undefined &&
-        entries.includes(importer.environment)
-      )
+    ? importer.namespace !== undefined && entries.includes(importer.namespace)
     : scopes.get(importer.scope)?.includes(target.scope) !== true;
 
   return crosses

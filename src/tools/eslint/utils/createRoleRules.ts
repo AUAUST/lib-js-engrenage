@@ -38,11 +38,11 @@ export async function createRoleRules(
       create(context) {
         const entity = entities.entityOf(context.filename);
 
-        if (entity?.environment === undefined) {
+        if (entity?.namespace === undefined) {
           return {};
         }
 
-        const environment = getOwn(structure, entity.environment);
+        const environment = getOwn(structure, entity.namespace);
 
         if (environment === undefined) {
           return {};

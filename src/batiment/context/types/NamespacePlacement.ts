@@ -2,7 +2,7 @@ import type { OptionSource } from "#batiment/report/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
-export interface EnvironmentPlacement {
+export interface NamespacePlacement {
   readonly name: string;
   /**
    * Describes the files of the top-level namespace the placement covers as an

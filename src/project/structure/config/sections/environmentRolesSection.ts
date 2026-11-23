@@ -30,9 +30,9 @@ export const environmentRolesSection = declareSection({
 
     const roles = await Promise.all(
       environments.map(async ({ entry: { name } }) => {
-        const { namespace } = await discoverDeclaredEnvironment(config, name);
+        const { kind } = await discoverDeclaredEnvironment(config, name);
 
-        return namespace.structure === undefined
+        return kind.structure === undefined
           ? []
           : [[name, await resolveEnvironmentRoles(config, name)] as const];
       }),

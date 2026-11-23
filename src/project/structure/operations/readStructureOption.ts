@@ -35,12 +35,10 @@ async function resolveLayout(
   environment: string,
   option: EnvironmentStructureOption,
 ): Promise<Layout | undefined> {
-  const { namespace } = await discoverDeclaredEnvironment(config, environment);
+  const { kind } = await discoverDeclaredEnvironment(config, environment);
 
   const selected = (
-    (option.enabled ? option.layout : undefined) ??
-    namespace.layout ??
-    domainsLayout
+    (option.enabled ? option.layout : undefined) ?? kind.layout ?? domainsLayout
   );
 
   if (selected === domainsLayout) {

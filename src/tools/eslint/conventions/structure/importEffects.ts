@@ -28,12 +28,12 @@ export default defineConvention({
       messages: {
         effects: "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
       },
-      create(context, { environment, role: roleName, effects: level }) {
+      create(context, { namespace, role: roleName, effects: level }) {
         const services = context.sourceCode.parserServices;
 
-        const environmentRoles = environment === undefined
+        const environmentRoles = namespace === undefined
           ? undefined
-          : getOwn(roles, environment);
+          : getOwn(roles, namespace);
 
         if (
           environmentRoles === undefined ||

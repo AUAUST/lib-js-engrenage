@@ -16,7 +16,7 @@ export async function readEnvironments(
       entries.map(async (contributed) => {
         const { name } = contributed.entry;
 
-        const [environment, { namespace }] = await Promise.all([
+        const [environment, { kind: namespace }] = await Promise.all([
           readEnvironment(config, name),
           discoverDeclaredEnvironment(config, name),
         ]);

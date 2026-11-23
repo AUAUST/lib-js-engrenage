@@ -40,7 +40,7 @@ export { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspa
 // @barrel utils
 export { createNamespaceKindPreset } from "#batiment/scopes/utils/createNamespaceKindPreset";
 export { createScopeTree } from "#batiment/scopes/utils/createScopeTree";
-export { getEnvironmentId } from "#batiment/scopes/utils/getEnvironmentId";
+export { getNamespaceId } from "#batiment/scopes/utils/getNamespaceId";
 export { listNamespaces } from "#batiment/scopes/utils/listNamespaces";
 export { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
 export { resolveNamespaceKind } from "#batiment/scopes/utils/resolveNamespaceKind";

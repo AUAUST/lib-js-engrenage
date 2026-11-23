@@ -2,7 +2,7 @@ import { map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { rootScope, workspaceMetadataFile } from "#batiment/scopes/constants";
-import { getEnvironmentId } from "#batiment/scopes/utils/getEnvironmentId";
+import { getNamespaceId } from "#batiment/scopes/utils/getNamespaceId";
 import type {
   OptionSource,
   StructureDiagnostic,
@@ -60,7 +60,7 @@ function createNamespaces(
 ): readonly NamespaceInstance[] {
   return freeze(
     namespaces.map(({ name, title, kind, dirs }) => {
-      const id = getEnvironmentId(scope, name);
+      const id = getNamespaceId(scope, name);
 
       return freeze({
         id,
@@ -153,18 +153,18 @@ export function createScopeTree({
       continue;
     }
 
-    for (const { name, dirs: environmentDirs } of namespaces) {
-      const container = environmentDirs.find((environmentDir) => {
-        return dir === environmentDir || isInside(dir, environmentDir);
+    for (const { name, dirs: namespaceDirs } of namespaces) {
+      const container = namespaceDirs.find((namespaceDir) => {
+        return dir === namespaceDir || isInside(dir, namespaceDir);
       });
 
-      // @debt the environment keeps the workspace inside its `dirs`; only the entity index's nearest-directory lookup takes it out, so the scope tree's environment dirs overstate its files
+      // @debt the namespace keeps the workspace inside its `dirs`; only the entity index's nearest-directory lookup takes it out, so the scope tree's namespace dirs overstate its files
       if (container !== undefined) {
         diagnostics.push(
           createDiagnostic(
-            "workspace-in-environment",
+            "workspace-in-namespace",
             dir,
-            `workspace inside directory "${container}" of environment "${name}", which leaves it out`,
+            `workspace inside directory "${container}" of namespace "${name}", which leaves it out`,
           ),
         );
       }
@@ -172,9 +172,9 @@ export function createScopeTree({
       if (dir === name) {
         diagnostics.push(
           createDiagnostic(
-            "workspace-environment-name",
+            "workspace-namespace-name",
             dir,
-            `workspace key equal to the name of environment "${name}"`,
+            `workspace key equal to the name of namespace "${name}"`,
           ),
         );
       }

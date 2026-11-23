@@ -60,11 +60,11 @@ async function partitionFiles(
       return;
     }
 
-    const { environment, domain } = entity;
+    const { namespace, domain } = entity;
 
-    const dirs = environment === undefined
+    const dirs = namespace === undefined
       ? []
-      : (structure[environment]?.dirs ?? []);
+      : (structure[namespace]?.dirs ?? []);
 
     if (!dirs.some((directory) => mirrors.has(directory))) {
       return;

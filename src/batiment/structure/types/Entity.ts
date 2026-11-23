@@ -4,16 +4,16 @@ import type { StructureKind } from "#batiment/structure/types/StructureKind";
 import type { Directory } from "#types/Directory";
 
 /**
- * Where a file sits in the project: its scope key, its environment ID or `dist`,
- * `undefined` in a scope outside every environment of it, the directory and
- * kind of its nearest structure node, the namespaces and domains above it, its
- * nearest domain with that domain's public specifiers and collected roles, and
- * the role and contract it holds, if any. `variant` names the test variant of a
- * file in a namespace holding tests.
+ * Where a file sits in the project: its scope key, its top-level namespace ID or
+ * `dist`, `undefined` in a scope outside every namespace of it, the directory
+ * and kind of its nearest structure node, the namespaces and domains above it,
+ * its nearest domain with that domain's public specifiers and collected roles,
+ * and the role and contract it holds, if any. `variant` names the test variant
+ * of a file in a namespace holding tests.
  */
 export interface Entity {
   readonly scope: string;
-  readonly environment: string | undefined;
+  readonly namespace: string | undefined;
   readonly path: Directory;
   readonly kind: StructureKind | undefined;
   readonly group: boolean;

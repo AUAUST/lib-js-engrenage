@@ -48,7 +48,7 @@ export default defineConvention({
         "types-none": "A module of {{role}} exports no type.{{hint}}",
         "missing": "A module of {{role}} exports `{{name}}`, named after the file, as a value or a type.{{hint}}",
       },
-      create(context, { environment, role, contract, fileRole }) {
+      create(context, { namespace, role, contract, fileRole }) {
         if (
           role === undefined ||
           contract === undefined ||
@@ -67,9 +67,9 @@ export default defineConvention({
 
         const name = basename(file, extname(file));
 
-        const structure = environment === undefined
+        const structure = namespace === undefined
           ? undefined
-          : getOwn(structures, environment);
+          : getOwn(structures, namespace);
 
         const hint = file === structure?.indexFile ? barrelHint : "";
 

@@ -27,7 +27,7 @@ export async function walkScope({
       async (environment): Promise<DeclaredEnvironment> => {
         const { name, declared } = environment;
 
-        const placement = getOwn(discovery.environments, name);
+        const placement = getOwn(discovery.namespaces, name);
 
         if (placement === undefined) {
           throw new Error(

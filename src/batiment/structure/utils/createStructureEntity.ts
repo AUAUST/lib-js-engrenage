@@ -7,20 +7,20 @@ import type { Directory } from "#types/Directory";
 const noLineage: readonly LineageMember[] = freeze([]);
 
 export function createStructureEntity(
-  environment: Entity["environment"],
+  namespace: Entity["namespace"],
   path: Directory,
   scope: Entity["scope"],
 ): Entity {
   return freeze({
     scope,
-    environment,
+    namespace,
     path,
     kind: undefined,
     group: false,
     lineage: noLineage,
     location: freeze({
-      // @debt a file outside every environment of its scope gets a role location with an empty environment, where it should get no role location
-      environment: environment ?? "",
+      // @debt a file outside every namespace of its scope gets a role location with an empty environment, where it should get no role location
+      environment: namespace ?? "",
       lineage: freeze([]),
       roles: freeze([]),
     }),

@@ -10,7 +10,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
-export async function discoverEnvironment({
+export async function discoverNamespace({
   name,
   dirs,
   files,

@@ -274,7 +274,7 @@ describe("workspaces", () => {
 
     expect(entities.entityOf(project.resolve(actionA))).toMatchObject({
       scope: "extensions/action-a",
-      environment: undefined,
+      namespace: undefined,
     });
 
     expect(check(actionA, actionB)).toBeUndefined();

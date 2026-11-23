@@ -27,9 +27,9 @@ function sourceExtensionOf(
   importer: Entity | undefined,
   filename: string,
 ): string {
-  const structure = importer?.environment === undefined
+  const structure = importer?.namespace === undefined
     ? undefined
-    : getOwn(graph.structure, importer.environment);
+    : getOwn(graph.structure, importer.namespace);
 
   return extname(structure?.indexFile ?? filename);
 }

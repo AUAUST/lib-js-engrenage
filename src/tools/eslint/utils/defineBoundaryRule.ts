@@ -106,7 +106,7 @@ export function defineBoundaryRule({
         : `\`${fix}\``,
       path,
       targetPath,
-      environment: importer?.environment ?? "",
+      environment: importer?.namespace ?? "",
       category: category === undefined ? "" : labelCategory(category),
       scope: importer?.scope ?? "",
       targetScope: target?.scope ?? "",

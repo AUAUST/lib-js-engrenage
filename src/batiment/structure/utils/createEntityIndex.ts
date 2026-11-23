@@ -96,9 +96,9 @@ export function createEntityIndex({
     }),
   );
 
-  function variantOf(environment: string | undefined, path: string) {
-    if (environment !== undefined) {
-      return variants.get(environment)?.find(({ name }) => {
+  function variantOf(namespace: string | undefined, path: string) {
+    if (namespace !== undefined) {
+      return variants.get(namespace)?.find(({ name }) => {
         return (getOwn(testPatterns, name) ?? []).some((glob) => {
           return matchesGlob(path, glob);
         });
@@ -356,7 +356,7 @@ export function createEntityIndex({
         role === indexRoleName ||
         role === entryRoleName
       ),
-      variant: variantOf(entity.environment, path),
+      variant: variantOf(entity.namespace, path),
     });
   });
 

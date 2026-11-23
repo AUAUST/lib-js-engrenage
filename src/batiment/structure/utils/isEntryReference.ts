@@ -7,8 +7,8 @@ export function isEntryReference(
 ): boolean {
   return (
     resolved?.kind === "alias" &&
-    importer?.environment !== undefined &&
-    entries.includes(importer.environment) &&
+    importer?.namespace !== undefined &&
+    entries.includes(importer.namespace) &&
     importer.role !== entryRoleName &&
     target !== undefined &&
     target.kind !== "role" &&

@@ -3,11 +3,11 @@ import { posix } from "node:path";
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze, record } from "@auaust/toolkit/object";
 
-import { discoverEnvironment } from "#batiment/context/operations/discoverEnvironment";
+import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
 import {
   createScopeTree,
-  getEnvironmentId,
+  getNamespaceId,
   resolveNamespaceKind,
   type DiscoveredNamespace,
   type DiscoveredWorkspace,
@@ -16,8 +16,8 @@ import {
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
 import type { ContextPort } from "#batiment/context/ports/ContextPort";
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
-import type { EnvironmentPlacement } from "#batiment/context/types/EnvironmentPlacement";
 import type { ExpectedWorkspaces } from "#batiment/context/types/ExpectedWorkspaces";
+import type { NamespacePlacement } from "#batiment/context/types/NamespacePlacement";
 import type { RootFacts } from "#batiment/context/types/RootFacts";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { Directory } from "#types/Directory";
@@ -95,8 +95,8 @@ async function listWorkspaceNamespaces({
           diagnostics,
         });
 
-        const { active } = await discoverEnvironment({
-          name: getEnvironmentId(dir, name),
+        const { active } = await discoverNamespace({
+          name: getNamespaceId(dir, name),
           dirs,
           files: [],
           claims: {},
@@ -121,7 +121,7 @@ async function listWorkspaceNamespaces({
 
 function resolveConfiguredKind(
   kinds: ReadonlyMap<string, NamespaceKind>,
-  { name, kind }: EnvironmentPlacement,
+  { name, kind }: NamespacePlacement,
 ): NamespaceKind {
   const resolved = kinds.get(kind.value);
 
@@ -145,10 +145,10 @@ export async function discoverContext(
   const kinds = new Map(root.kinds.map((kind) => [kind.name, kind]));
 
   const placed = await Promise.all(
-    root.environments.map(async (placement) => {
+    root.namespaces.map(async (placement) => {
       const { name, dirs, files } = placement;
 
-      const discovery = await discoverEnvironment({
+      const discovery = await discoverNamespace({
         name,
         dirs,
         files,
@@ -181,7 +181,7 @@ export async function discoverContext(
   const diagnostics: StructureDiagnostic[] = [...discovered.diagnostics];
 
   const resolved = placed.map(({ placement, configured, discovery }) => {
-    const namespace = resolveNamespaceKind({
+    const kind = resolveNamespaceKind({
       dir: discovery.dirs[0] ?? placement.name,
       kinds,
       metafiles: discovered.namespaces.filter(({ dir }) => {
@@ -193,7 +193,7 @@ export async function discoverContext(
 
     return {
       placement,
-      discovery: freeze({ ...discovery, namespace }),
+      discovery: freeze({ ...discovery, kind }),
     };
   });
 
@@ -234,7 +234,7 @@ export async function discoverContext(
         return {
           name: placement.name,
           title: placement.title,
-          kind: discovery.namespace,
+          kind: discovery.kind,
           dirs: discovery.dirs,
         };
       }),
@@ -249,7 +249,7 @@ export async function discoverContext(
   return freeze({
     workspaces: discovered.workspaces,
     metafiles: discovered.environments,
-    environments: freeze(
+    namespaces: freeze(
       record(
         resolved.map(({ placement, discovery }) => {
           return [placement.name, discovery] as const;

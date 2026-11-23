@@ -36,11 +36,11 @@ export default defineConvention({
         accepts: "The role {{role}} accepts only {{accepts}}; move this file out.",
         strict: "The strict role {{role}} accepts at its root only {{accepts}}; rename this file or move it into a nested role's directory.",
       },
-      create(context, { environment, kind, role, contract, path, fileRole }) {
+      create(context, { namespace, kind, role, contract, path, fileRole }) {
         if (
-          environment === "data" ||
-          environment === "dist" ||
-          environment === undefined ||
+          namespace === "data" ||
+          namespace === "dist" ||
+          namespace === undefined ||
           kind !== "role" ||
           role === undefined ||
           contract === undefined
@@ -48,7 +48,7 @@ export default defineConvention({
           return {};
         }
 
-        const structure = structures[environment];
+        const structure = structures[namespace];
 
         const relativePath = relativeWithin(join(root, path), context.filename);
 

@@ -13,9 +13,9 @@ export function getImportCategory(
     return "public-entries";
   }
 
-  const environment = target?.environment;
+  const namespace = target?.namespace;
 
-  switch (environment) {
+  switch (namespace) {
     case "dist": {
       return "dist-artefacts";
     }
@@ -25,7 +25,7 @@ export function getImportCategory(
     }
 
     default: {
-      return getEnvironmentCategory(environment, entries);
+      return getEnvironmentCategory(namespace, entries);
     }
   }
 }

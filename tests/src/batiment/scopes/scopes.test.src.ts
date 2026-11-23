@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import { keys } from "@auaust/toolkit/object";
 
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
-import { createScopeTree, getEnvironmentId } from "#batiment/scopes/index";
+import { createScopeTree, getNamespaceId } from "#batiment/scopes/index";
 import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { createProjectConfig } from "#project/config/index";
@@ -69,11 +69,11 @@ function summarize(
   });
 }
 
-describe("getEnvironmentId", () => {
+describe("getNamespaceId", () => {
   test("is the name at the root and prefixed by the scope elsewhere", () => {
-    expect(getEnvironmentId(".", "src")).toBe("src");
+    expect(getNamespaceId(".", "src")).toBe("src");
 
-    expect(getEnvironmentId("theme", "src")).toBe("theme/src");
+    expect(getNamespaceId("theme", "src")).toBe("theme/src");
   });
 });
 
@@ -112,7 +112,7 @@ describe("createScopeTree", () => {
         return { code, path };
       }),
     ).toEqual([
-      { code: "workspace-in-environment", path: "src/theme" },
+      { code: "workspace-in-namespace", path: "src/theme" },
       { code: "nested-workspace", path: "extensions/a/b" },
     ]);
 

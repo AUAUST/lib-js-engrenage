@@ -364,7 +364,7 @@ describe("contributed environments", () => {
 
     expect(aliases.global.map(({ key }) => key)).toContain("#workers/*");
 
-    expect(entities.entityOf("workers/queue/index.ts")?.environment).toBe(
+    expect(entities.entityOf("workers/queue/index.ts")?.namespace).toBe(
       "workers",
     );
 
@@ -459,9 +459,9 @@ describe("contributed environments", () => {
       languages: ["typescript", "tsx"],
     });
 
-    const { namespace } = await discoverDeclaredEnvironment(config, "site");
+    const { kind } = await discoverDeclaredEnvironment(config, "site");
 
-    expect(namespace).toMatchObject({
+    expect(kind).toMatchObject({
       name: "site",
       level: "enforced",
       structure: "domains",

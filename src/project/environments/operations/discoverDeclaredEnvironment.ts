@@ -1,6 +1,6 @@
 import { getOwn } from "@auaust/toolkit/object";
 
-import type { EnvironmentDiscovery } from "#batiment/context/index";
+import type { NamespaceDiscovery } from "#batiment/context/index";
 import type { ConfigResolver } from "#project/config/index";
 
 /**
@@ -10,12 +10,12 @@ import type { ConfigResolver } from "#project/config/index";
 export async function discoverDeclaredEnvironment(
   config: ConfigResolver,
   name: string,
-): Promise<EnvironmentDiscovery> {
+): Promise<NamespaceDiscovery> {
   const context = await config.resolve("structure.context");
 
-  const { environments } = await context.discover();
+  const { namespaces } = await context.discover();
 
-  const discovered = getOwn(environments, name);
+  const discovered = getOwn(namespaces, name);
 
   if (discovered === undefined) {
     throw new Error(

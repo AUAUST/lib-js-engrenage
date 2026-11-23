@@ -136,7 +136,7 @@ describe("createEntityIndex", () => {
     const index = await createIndex();
 
     expect(index.entityOf("src/project/feature/utils/own.ts")).toMatchObject({
-      environment: "src",
+      namespace: "src",
       domain: "project/feature",
       role: "utils",
       lineage: [
@@ -173,7 +173,7 @@ describe("createEntityIndex", () => {
     });
 
     expect(index.entityOf("tests/x.test.src.ts")).toMatchObject({
-      environment: "tests",
+      namespace: "tests",
       variant: "src",
     });
   });
