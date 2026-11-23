@@ -4,21 +4,21 @@ import { attributionRules } from "#metalbrain/instructions/constants";
 import { getRuleReferences } from "#metalbrain/instructions/operations/getRuleReferences";
 import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { FragmentSources } from "#metalbrain/facts/index";
 import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
+import type { InstructionRegistry } from "#metalbrain/instructions/types/InstructionRegistry";
 
 export async function getMissingRuleTemplates({
   filesystem,
-  fragments,
+  instructions,
   renderer,
 }: {
   filesystem: Filesystem;
-  fragments: FragmentSources;
+  instructions: InstructionRegistry;
   renderer: FragmentRenderer;
 }) {
   const [references, templates] = await Promise.all([
     getRuleReferences({ filesystem }),
-    getRuleTemplates({ fragments, renderer }),
+    getRuleTemplates({ instructions, renderer }),
   ]);
 
   const owned = new Set<string>(values(attributionRules));

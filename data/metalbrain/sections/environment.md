@@ -1,9 +1,6 @@
 ---
 title: Environment
 description: Check the session's location and run its tools.
-category: workflow
-default: true
-order: 35
 ---
 
 ## Environment

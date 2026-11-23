@@ -1,9 +1,6 @@
 ---
 title: Writing
 description: Write every text densely, once, in the structure its content has.
-category: workflow
-default: true
-order: 15
 ---
 
 ## Writing

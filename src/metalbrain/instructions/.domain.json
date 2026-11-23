@@ -1,4 +1,4 @@
 {
   "specifier": "future/metalbrain/instructions",
-  "purpose": "Parse agent instruction files, resolve their references and render their fragments and generated frontmatter."
+  "purpose": "The instruction registry of sections and rules built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter."
 }

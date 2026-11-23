@@ -1,11 +1,6 @@
 ---
 title: Issues
 description: Decide what to apply and what to record, then record findings as issues or backlog entries.
-category: workflow
-default: true
-order: 17
-paths:
-  - ".ai/issues/**"
 ---
 
 # Issues

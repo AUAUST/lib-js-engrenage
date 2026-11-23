@@ -1,9 +1,6 @@
 ---
 title: Backlog
 description: Record work deferred beyond the current task.
-category: workflow
-default: false
-order: 45
 ---
 
 ## Backlog

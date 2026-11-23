@@ -1,6 +1,7 @@
 // @barrel operations
 export { createFragmentSources } from "#metalbrain/facts/operations/createFragmentSources";
 export { createMetalbrainFacts } from "#metalbrain/facts/operations/createMetalbrainFacts";
+export { resolveMetalbrainRoot } from "#metalbrain/facts/operations/resolveMetalbrainRoot";
 // @end
 
 // @barrel types

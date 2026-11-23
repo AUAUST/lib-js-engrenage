@@ -2,16 +2,16 @@ import {
   ruleFrontmatterKeys,
   rulesDirectory,
 } from "#metalbrain/instructions/constants";
-import { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
+import { getRegisteredTemplates } from "#metalbrain/instructions/operations/getRegisteredTemplates";
 import { createInstructionFile } from "#metalbrain/instructions/utils/createInstructionFile";
-import type { FragmentSources } from "#metalbrain/facts/index";
 import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
+import type { InstructionRegistry } from "#metalbrain/instructions/types/InstructionRegistry";
 
 export async function getRuleTemplates(config: {
   renderer: FragmentRenderer;
-  fragments: FragmentSources;
+  instructions: InstructionRegistry;
 }) {
-  const templates = await getInstructionTemplates("rules", config);
+  const templates = await getRegisteredTemplates("rule", config);
 
   return templates.map((template) => {
     const { name, paths, reference, body } = template;

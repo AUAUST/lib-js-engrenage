@@ -1,11 +1,6 @@
 ---
 title: Backlog
 description: Maintain the shared backlog.
-category: workflow
-default: false
-order: 20
-paths:
-  - ".ai/backlog/*.yml"
 ---
 
 # Backlog

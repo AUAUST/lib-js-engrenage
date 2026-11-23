@@ -40,6 +40,7 @@ export { listMissingExtensionRules } from "#tools/metalbrain/operations/listMiss
 export { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 export { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
 export { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
+export { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 export { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 export { recordClaudeStop } from "#tools/metalbrain/operations/recordClaudeStop";

@@ -8,8 +8,9 @@ import {
 } from "#metalbrain/instructions/constants";
 import {
   formatReferenceMarker,
-  getInstructionTemplates,
+  getRegisteredTemplates,
 } from "#metalbrain/instructions/index";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
@@ -27,7 +28,9 @@ export function createAgentsStep(): Step {
 
       const template = resolveDataFile(agentsTemplate);
 
-      const templates = await getInstructionTemplates("sections");
+      const templates = await getRegisteredTemplates("section", {
+        instructions: await loadInstructionRegistry(context),
+      });
 
       const sections = templates.filter((section) => section.default);
 

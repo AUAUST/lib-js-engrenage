@@ -1,9 +1,6 @@
 ---
 title: Decision protocol
 description: Decide when to proceed and when to ask.
-category: workflow
-default: true
-order: 30
 ---
 
 ## Decision protocol

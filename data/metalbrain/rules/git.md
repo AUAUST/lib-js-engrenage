@@ -1,9 +1,6 @@
 ---
 title: Git and GitHub
 description: Commit, write commit messages and write to GitHub.
-category: workflow
-default: true
-order: 10
 ---
 
 # Git and GitHub

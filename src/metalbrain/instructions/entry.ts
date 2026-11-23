@@ -1,5 +1,6 @@
 export {
   createInstructionFile,
+  createInstructionRegistry,
   createSkillFileFiller,
   createWordCapsFiller,
   formatBacklogIndex,
@@ -23,8 +24,16 @@ export {
   syncFrontmatter,
 } from "#metalbrain/instructions/index";
 export type {
+  ContributedInstruction,
   FragmentConditions,
   FragmentRenderer,
   GeneratedFrontmatter,
   GeneratedRule,
+  InstructionEntry,
+  InstructionKind,
+  InstructionMetadata,
+  InstructionRegistry,
+  RegisteredInstruction,
+  RuleEntry,
+  SectionEntry,
 } from "#metalbrain/instructions/index";

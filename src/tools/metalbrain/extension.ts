@@ -3,6 +3,7 @@ import {
   agentLogFiles,
   agentRuntimeEntry,
   agentsTarget,
+  instructionEntry,
   markdownBlocks,
   rulesDirectory,
   statsDirectory,
@@ -10,6 +11,7 @@ import {
 import type {
   AgentFiller,
   AgentRuleGenerator,
+  InstructionEntry,
 } from "#metalbrain/instructions/index";
 import type {
   Extension,
@@ -19,17 +21,19 @@ import type {
 import type { File } from "#types/File";
 
 /**
- * Owns the `agents` config key, the `agents.runtimes`, `agents.fillers` and
- * `agents.rules` slots, the `debt` line marker, the instruction files, the agent
- * logs, the generated rules, the agent stats directory and the `reference`
- * directive, through which the `blocks` target fills the `@reference` blocks of
- * instruction files, and syncs agent files. Contributes the agent limits filler.
+ * Owns the `agents` config key, the `agents.runtimes`, `agents.instructions`,
+ * `agents.fillers` and `agents.rules` slots, the `debt` line marker, the
+ * instruction files, the agent logs, the generated rules, the agent stats
+ * directory and the `reference` directive, through which the `blocks` target
+ * fills the `@reference` blocks of instruction files, and syncs agent files.
+ * Contributes the agent limits filler.
  */
 export default {
   name: "tools/metalbrain",
   owns: {
     slots: {
       "agents.runtimes": { entry: agentRuntimeEntry },
+      "agents.instructions": { entry: instructionEntry },
       "agents.fillers": { entry: agentLoaderEntry },
       "agents.rules": { entry: agentLoaderEntry },
     },
@@ -207,6 +211,7 @@ export default {
 declare global {
   namespace Engrenage {
     interface Slots {
+      "agents.instructions": InstructionEntry;
       "agents.fillers": AgentFiller<LoadedConfig>;
       "agents.rules": AgentRuleGenerator<LoadedConfig>;
     }

@@ -24,7 +24,8 @@ import { metalbrain } from "#metalbrain/instructions/constants";
 import { parseInstruction } from "#metalbrain/instructions/operations/parseInstruction";
 import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
 
-type InstructionKind = "rules" | "sections" | "skills";
+// @debt skills still read their metadata from frontmatter until they join the instruction registry
+type InstructionKind = "skills";
 
 const templateSchema = looseObject({
   title: string(),
@@ -42,12 +43,10 @@ export async function getInstructionTemplates(
   {
     fragments = createFragmentSources([]),
     renderer,
-    inactive = false,
     supporting = false,
   }: {
     fragments?: FragmentSources | undefined;
     renderer?: FragmentRenderer;
-    inactive?: boolean;
     supporting?: boolean;
   } = {},
 ) {
@@ -85,11 +84,7 @@ export async function getInstructionTemplates(
       );
 
       // @debt an `extension` naming no known extension hides the fragment silently instead of failing
-      if (
-        !inactive &&
-        metadata.extension !== undefined &&
-        !active.has(metadata.extension)
-      ) {
+      if (metadata.extension !== undefined && !active.has(metadata.extension)) {
         return [];
       }
 

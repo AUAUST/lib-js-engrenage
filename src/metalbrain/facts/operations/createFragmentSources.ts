@@ -1,7 +1,4 @@
-import { pathToFileURL } from "node:url";
-
-import { engrenage } from "#constants";
-import { resolveDataFile } from "#foundation/data/index";
+import { resolveMetalbrainRoot } from "#metalbrain/facts/operations/resolveMetalbrainRoot";
 import type { FragmentExtension } from "#metalbrain/facts/types/FragmentExtension";
 import type { FragmentSources } from "#metalbrain/facts/types/FragmentSources";
 
@@ -12,11 +9,6 @@ import type { FragmentSources } from "#metalbrain/facts/types/FragmentSources";
 export function createFragmentSources(
   extensions: readonly FragmentExtension[],
 ): FragmentSources {
-  const dataRoot = new URL(
-    ".",
-    pathToFileURL(resolveDataFile(`${engrenage}/package.json`)),
-  );
-
   return {
     extensions: new Set(
       extensions.map(({ name }) => {
@@ -24,7 +16,7 @@ export function createFragmentSources(
       }),
     ),
     origins: [
-      dataRoot,
+      resolveMetalbrainRoot(),
       ...extensions.flatMap(({ root }) => {
         return root === undefined ? [] : [root];
       }),

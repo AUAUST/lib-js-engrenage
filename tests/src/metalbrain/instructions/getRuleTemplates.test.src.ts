@@ -1,12 +1,10 @@
-import { pathToFileURL } from "node:url";
-
 import { describe, expect, test } from "vitest";
 
-import { createFragmentSources } from "#metalbrain/facts/index";
 import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 
 async function renderFixtureRule(options: string, directive: string) {
   const project = createTemporaryProject({
@@ -17,7 +15,10 @@ async function renderFixtureRule(options: string, directive: string) {
       "  extensions: [{",
       '    name: "fixture",',
       '    root: new URL("./rules/", import.meta.url),',
-      '    contributes: { "agents.fillers": [{ name: "table", load: () => Promise.resolve((_config, ...args) => `| ${args.join(" | ")} |`) }] },',
+      "    contributes: {",
+      '      "agents.instructions": [{ kind: "rule", name: "filled-rule", category: "fixture", paths: ["fixture/**"] }],',
+      '      "agents.fillers": [{ name: "table", load: () => Promise.resolve((_config, ...args) => `| ${args.join(" | ")} |`) }],',
+      "    },",
       "  }],",
       "};",
     ].join("\n"),
@@ -29,8 +30,6 @@ async function renderFixtureRule(options: string, directive: string) {
       "---",
       "title: Filled rule",
       "description: A rule holding a filler directive.",
-      "category: fixture",
-      "order: 1",
       "---",
       "",
       "# Filled rule",
@@ -45,18 +44,19 @@ async function renderFixtureRule(options: string, directive: string) {
 
   const templates = await getRuleTemplates({
     renderer: await loadFragmentRenderer(config),
-    fragments: createFragmentSources([
-      {
-        name: "fixture",
-        root: pathToFileURL(`${project.root}/rules/`),
-      },
-    ]),
+    instructions: await loadInstructionRegistry(config),
   });
 
   return templates.find(({ name }) => name === "filled-rule")?.content;
 }
 
 describe("getRuleTemplates", () => {
+  test("writes the paths an extension registers its rule with to the rule file's frontmatter", async () => {
+    const content = await renderFixtureRule("", "@table a b");
+
+    expect(content).toMatch(/^---\npaths:\n {2}- fixture\/\*\*\n---\n/u);
+  });
+
   test("renders filler directives into the rule file it creates", async () => {
     const content = await renderFixtureRule("", "@table a b");
 

@@ -1,9 +1,6 @@
 ---
 title: Verification
 description: Verify and report changes.
-category: workflow
-default: true
-order: 70
 ---
 
 ## Verification

@@ -112,6 +112,14 @@ export default defineExtension({
     },
   },
   contributes: {
+    "agents.instructions": [
+      {
+        kind: "rule",
+        name: "fixture-rule",
+        category: "fixture",
+        paths: ["fixture/**"],
+      },
+    ],
     "fixture.entries": [
       {
         name: input.fixture.label,

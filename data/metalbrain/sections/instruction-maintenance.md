@@ -1,9 +1,6 @@
 ---
 title: Instruction maintenance
 description: Change agent instructions only with user consent, through the instruction-writing skill.
-category: workflow
-default: true
-order: 10
 ---
 
 ## Instruction maintenance

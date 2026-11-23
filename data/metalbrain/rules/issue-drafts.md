@@ -1,12 +1,6 @@
 ---
 title: Issue drafts
 description: Type, write and file GitHub issues through local drafts, within their sections' word caps.
-category: workflow
-default: true
-extension: tools/github/issues/planning
-order: 18
-paths:
-  - ".ai/issues/**"
 ---
 
 # Issue drafts

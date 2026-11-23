@@ -1,9 +1,6 @@
 ---
 title: TypeScript
 description: Write and validate TypeScript code.
-category: coding-style
-default: true
-order: 50
 ---
 
 ## TypeScript

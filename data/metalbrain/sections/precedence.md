@@ -1,9 +1,6 @@
 ---
 title: Precedence and conflicts
 description: Resolve conflicting instructions.
-category: workflow
-default: true
-order: 20
 ---
 
 ## Precedence and conflicts

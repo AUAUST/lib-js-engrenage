@@ -1,4 +1,12 @@
-import { function_, looseObject, optional, string } from "valibot";
+import {
+  array,
+  boolean,
+  function_,
+  looseObject,
+  optional,
+  picklist,
+  string,
+} from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
@@ -27,6 +35,17 @@ export const agentRuntimeEntry: StandardSchemaV1 = looseObject({
 export const agentLoaderEntry: StandardSchemaV1 = looseObject({
   name: string(),
   load: function_(),
+});
+
+// @debt restates the `InstructionEntry` port as a schema, typed as StandardSchemaV1 to pass auaust/readonly-constants
+export const instructionEntry: StandardSchemaV1 = looseObject({
+  kind: picklist(["section", "rule"]),
+  name: string(),
+  category: string(),
+  default: optional(boolean()),
+  when: optional(function_()),
+  paths: optional(array(string())),
+  formerly: optional(array(string())),
 });
 
 export const codexRemoval = "Codex support was removed; drop it from the config, then run engrenage sync to delete the Codex files it generated";

@@ -1,9 +1,6 @@
 ---
 title: Attribution
 description: Attribute commits and pull requests to the agent.
-category: workflow
-default: false
-order: 30
 ---
 
 # Attribution

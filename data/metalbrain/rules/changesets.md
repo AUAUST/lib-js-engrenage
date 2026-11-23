@@ -1,9 +1,6 @@
 ---
 title: Changesets
 description: Write release changesets.
-category: tools-dependencies
-default: false
-order: 10
 ---
 
 # Changesets

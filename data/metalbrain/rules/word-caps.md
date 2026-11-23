@@ -1,14 +1,6 @@
 ---
 title: Word caps
 description: Keep backlog entries and capped issue sections within their word caps.
-category: workflow
-default: true
-order: 16
-formerly:
-  - budgets
-paths:
-  - ".ai/issues/**"
-  - ".ai/backlog/**"
 ---
 
 # Word caps

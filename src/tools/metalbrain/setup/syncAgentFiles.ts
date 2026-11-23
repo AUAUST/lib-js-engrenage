@@ -12,7 +12,6 @@ import {
 import {
   createInstructionFile,
   formatReferenceMarker,
-  getInstructionTemplates,
   getRuleReferences,
   getRuleTemplates,
   getSharedFiles,
@@ -24,6 +23,7 @@ import {
   syncFrontmatter,
   type FragmentRenderer,
   type GeneratedFrontmatter,
+  type InstructionRegistry,
 } from "#metalbrain/instructions/index";
 import { migrateAgentLogs } from "#metalbrain/logs/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
@@ -46,7 +46,7 @@ import type { FileSync } from "#types/FileSync";
 async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
-  fragments: FragmentSources;
+  instructions: InstructionRegistry;
   renderer: FragmentRenderer;
 }) {
   const { attribution } = config.agents;
@@ -101,27 +101,17 @@ async function removeRuleBlocks(
   }
 }
 
-// @debt finds only rules of origins still configured, gated off by `extension` metadata: an extension removed from the config leaves its rules installed
-async function removeInactiveExtensionRules(config: {
+// @debt finds only rules still registered, gated off by their condition: an extension removed from the config leaves the rules it contributed installed
+async function removeInactiveRules(config: {
   filesystem: Filesystem;
-  fragments: FragmentSources;
+  instructions: InstructionRegistry;
 }) {
-  const active = config.fragments.extensions;
+  const references = await getRuleReferences(config);
 
-  const [references, templates] = await Promise.all([
-    getRuleReferences(config),
-    getInstructionTemplates("rules", {
-      fragments: config.fragments,
-      inactive: true,
-    }),
-  ]);
-
-  for (const { extension, reference } of templates) {
-    if (extension === undefined || active.has(extension)) {
-      continue;
+  for (const { entry, active, reference } of config.instructions) {
+    if (entry.kind === "rule" && !active) {
+      await removeRuleBlocks(config.filesystem, references, reference);
     }
-
-    await removeRuleBlocks(config.filesystem, references, reference);
   }
 }
 
@@ -135,7 +125,7 @@ async function removeRetiredRules(filesystem: Filesystem) {
 
 async function migrateFormerRules(config: {
   filesystem: Filesystem;
-  fragments: FragmentSources;
+  instructions: InstructionRegistry;
   renderer: FragmentRenderer;
 }) {
   const [
@@ -273,7 +263,7 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await syncAttributionRules(config);
 
-  await removeInactiveExtensionRules(config);
+  await removeInactiveRules(config);
 
   await installMainSharedFiles(config);
 

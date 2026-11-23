@@ -1,7 +1,9 @@
 // @barrel operations
 export { addAgentRules } from "#metalbrain/instructions/operations/addAgentRules";
+export { createInstructionRegistry } from "#metalbrain/instructions/operations/createInstructionRegistry";
 export { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#metalbrain/instructions/operations/getMissingRuleTemplates";
+export { getRegisteredTemplates } from "#metalbrain/instructions/operations/getRegisteredTemplates";
 export { getRuleReferences } from "#metalbrain/instructions/operations/getRuleReferences";
 export { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 export { getSharedFiles } from "#metalbrain/instructions/operations/getSharedFiles";
@@ -19,13 +21,21 @@ export { syncFrontmatter } from "#metalbrain/instructions/operations/syncFrontma
 export type * from "#metalbrain/instructions/ports/AgentFiller";
 export type * from "#metalbrain/instructions/ports/AgentRuleGenerator";
 export type * from "#metalbrain/instructions/ports/GeneratedRule";
+export type * from "#metalbrain/instructions/ports/InstructionEntry";
 export type * from "#metalbrain/instructions/ports/InstructionFormatter";
+export type * from "#metalbrain/instructions/ports/InstructionMetadata";
+export type * from "#metalbrain/instructions/ports/RuleEntry";
+export type * from "#metalbrain/instructions/ports/SectionEntry";
 // @end
 
 // @barrel types
+export type * from "#metalbrain/instructions/types/ContributedInstruction";
 export type * from "#metalbrain/instructions/types/FragmentConditions";
 export type * from "#metalbrain/instructions/types/FragmentRenderer";
 export type * from "#metalbrain/instructions/types/GeneratedFrontmatter";
+export type * from "#metalbrain/instructions/types/InstructionKind";
+export type * from "#metalbrain/instructions/types/InstructionRegistry";
+export type * from "#metalbrain/instructions/types/RegisteredInstruction";
 export type * from "#metalbrain/instructions/types/SkillRendering";
 // @end
 

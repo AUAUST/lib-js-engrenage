@@ -1,13 +1,6 @@
 ---
 title: Agent records
 description: Record friction, discarded solutions and debt so recurring ones surface.
-category: workflow
-default: true
-order: 30
-formerly:
-  - agent-friction
-  - debt-markers
-  - discarded-solutions
 ---
 
 # Agent records

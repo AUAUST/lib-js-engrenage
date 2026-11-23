@@ -4,8 +4,8 @@ import { attributionRules } from "#metalbrain/instructions/constants";
 import { getMissingRuleTemplates } from "#metalbrain/instructions/operations/getMissingRuleTemplates";
 import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { FragmentSources } from "#metalbrain/facts/index";
 import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
+import type { InstructionRegistry } from "#metalbrain/instructions/types/InstructionRegistry";
 
 /**
  * Writes the named rule templates the project lacks.
@@ -15,16 +15,16 @@ import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRe
 export async function addAgentRules(
   {
     filesystem,
-    fragments,
+    instructions,
     renderer,
   }: {
     filesystem: Filesystem;
-    fragments: FragmentSources;
+    instructions: InstructionRegistry;
     renderer: FragmentRenderer;
   },
   names: readonly string[],
 ) {
-  const templates = await getRuleTemplates({ fragments, renderer });
+  const templates = await getRuleTemplates({ instructions, renderer });
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -48,7 +48,7 @@ export async function addAgentRules(
 
   const missing = await getMissingRuleTemplates({
     filesystem,
-    fragments,
+    instructions,
     renderer,
   });
 

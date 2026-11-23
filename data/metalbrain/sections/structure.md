@@ -1,9 +1,6 @@
 ---
 title: Project structure
 description: Place code in the domains, layers and roles of the project structure.
-category: coding-style
-default: true
-order: 42
 ---
 
 ## Project structure

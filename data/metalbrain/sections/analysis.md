@@ -1,9 +1,6 @@
 ---
 title: Analysis
 description: Thoroughness levels, dependency choices and the main session's analysis method.
-category: workflow
-default: true
-order: 25
 ---
 
 ## Analysis

@@ -1,9 +1,6 @@
 ---
 title: Shell
 description: Avoid the traps of the shell agents run commands in.
-category: workflow
-default: true
-order: 36
 ---
 
 ## Shell

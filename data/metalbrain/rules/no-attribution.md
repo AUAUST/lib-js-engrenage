@@ -1,9 +1,6 @@
 ---
 title: No attribution
 description: Leave attribution out of commits and pull requests.
-category: workflow
-default: false
-order: 30
 ---
 
 # Attribution
