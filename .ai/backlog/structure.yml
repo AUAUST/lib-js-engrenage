@@ -224,3 +224,10 @@ entries:
       - src/tools/eslint/rules/extensionImports.ts:1
     why: roles/extension/extension-imports lets an extension.ts statically import only its own domain's constants, so tools/metalbrain, tools/typescript/tsc and tools/shopify/theme re-export foreign constants under @debt markers (#832 kept 4 in tools/metalbrain/constants.ts).
     want: "a user decision: the rule allowing another domain's public constants role, which drops every such re-export, or the pattern kept."
+  - id: 261123-213e
+    title: Instructions call the per-namespace project maps environment maps
+    sites:
+      - AGENTS.md:197
+    why: "Under #732's two dimensions maps describe top-level namespaces, keyed by their ID; environments are runtimes"
+    want: The instruction text naming the maps and telling agents which map to read speaks of top-level namespaces, covering workspace maps (project-map/theme/src.md); needs a writer with consent
+    done: "#760 lands its per-namespace maps"
