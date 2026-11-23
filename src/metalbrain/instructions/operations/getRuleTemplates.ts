@@ -1,15 +1,15 @@
-import { rulesDirectory } from "#metalbrain/instructions/constants";
 import {
-  createInstructionFile,
-  type FragmentRenderer,
-} from "#metalbrain/instructions/index";
-import { ruleFrontmatterKeys } from "#tools/agents/constants";
-import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import type { Extension } from "#project/config/index";
+  ruleFrontmatterKeys,
+  rulesDirectory,
+} from "#metalbrain/instructions/constants";
+import { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
+import { createInstructionFile } from "#metalbrain/instructions/utils/createInstructionFile";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
 
 export async function getRuleTemplates(config: {
   renderer: FragmentRenderer;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
 }) {
   const templates = await getInstructionTemplates("rules", config);
 

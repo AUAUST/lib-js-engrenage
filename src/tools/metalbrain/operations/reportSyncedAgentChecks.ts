@@ -1,10 +1,8 @@
 import { includes } from "@auaust/toolkit/array";
 
-import { reportAgentChecks } from "#tools/agents/index";
 import { claudeTarget } from "#tools/metalbrain/claude/constants";
-import { agentsTarget, hookRoots } from "#tools/metalbrain/constants";
-import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { agentsTarget } from "#tools/metalbrain/constants";
+import { reportAgentChecks } from "#tools/metalbrain/operations/reportAgentChecks";
 import type { SyncDone } from "#project/sync/index";
 
 export async function reportSyncedAgentChecks({
@@ -14,10 +12,6 @@ export async function reportSyncedAgentChecks({
   const reported = [agentsTarget, claudeTarget];
 
   if (targets.some((target) => includes(reported, target))) {
-    await reportAgentChecks(config, {
-      format: await loadInstructionFormatter(config),
-      roots: hookRoots,
-      facts: await loadMetalbrainFacts(config),
-    });
+    await reportAgentChecks(config);
   }
 }

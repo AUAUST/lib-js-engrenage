@@ -37,3 +37,7 @@ export const legacyBacklogExtension = ".md";
 export const backlogReferenceFiles = freeze([
   ".ai/**/*.md",
 ] as const) satisfies Globs;
+
+export const scratchpadFile = ".ai/scratchpad.md" satisfies File;
+
+export const scratchpadPlaceholder = "Write ideas, bugs and follow-ups here, one per line; curation turns them into backlog entries and issues.";

@@ -15,11 +15,11 @@ import {
   defaultWordCaps,
   wordCapModes,
 } from "#metalbrain/facts/constants";
-import { subagentCacheTtls } from "#metalbrain/runtimes/constants";
+import { defaultInstructionFiles } from "#metalbrain/instructions/constants";
 import {
-  defaultInstructionFiles,
   defaultSubagentCacheTtl,
-} from "#tools/agents/constants";
+  subagentCacheTtls,
+} from "#metalbrain/runtimes/constants";
 import { limitSchema } from "#tools/metalbrain/config/schemas/limitSchema";
 import { preferredSchema } from "#tools/metalbrain/config/schemas/preferredSchema";
 import { codexRemoval } from "#tools/metalbrain/constants";

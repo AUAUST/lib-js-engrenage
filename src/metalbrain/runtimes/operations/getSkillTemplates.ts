@@ -4,37 +4,33 @@ import {
   type GeneratedFrontmatter,
 } from "#metalbrain/instructions/index";
 import {
+  claudeAgentFrontmatterKeys,
+  claudeSkillFrontmatterKeys,
   claudeStopHook,
   claudeThoroughnessHookArgs,
   metalbrainHook,
-} from "#metalbrain/runtimes/constants";
-import {
-  createHookCommand,
-  type HookRoots,
-  type ResolvedAgents,
-} from "#metalbrain/runtimes/index";
-import {
-  claudeAgentFrontmatterKeys,
-  claudeSkillFrontmatterKeys,
   skillFileName,
   skillFrontmatterKeys,
-} from "#tools/agents/constants";
-import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+} from "#metalbrain/runtimes/constants";
+import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
+import { createHookCommand } from "#metalbrain/runtimes/utils/createHookCommand";
+import type { FragmentSources } from "#metalbrain/facts/index";
 import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
-import type { Extension } from "#project/config/index";
-import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
+import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
+import type { ResolvedAgents } from "#metalbrain/runtimes/types/ResolvedAgents";
+import type { SkillDefinition } from "#metalbrain/runtimes/types/SkillDefinition";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export async function getSkillTemplates({
   agents,
-  extensions,
+  fragments,
   renderer,
   runtimes,
   roots,
 }: {
   agents: ResolvedAgents;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   renderer: FragmentRenderer;
   runtimes: readonly AgentRuntime[];
   roots: HookRoots;
@@ -60,7 +56,7 @@ export async function getSkillTemplates({
     }
 
     const definitions = await getSkillDefinitions({
-      extensions,
+      fragments,
       render: { renderer, skillsDirectory: skills },
     });
 
@@ -76,7 +72,7 @@ export async function getSkillTemplates({
 
   // @debt the entry's top-level `body` belongs to the first preferred runtime; per-runtime renderings would belong in separate fields
   const primary = (
-    renderings[0]?.definitions ?? (await getSkillDefinitions({ extensions }))
+    renderings[0]?.definitions ?? (await getSkillDefinitions({ fragments }))
   );
 
   return primary.map((template) => {

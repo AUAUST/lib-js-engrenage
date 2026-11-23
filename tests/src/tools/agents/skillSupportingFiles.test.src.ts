@@ -2,14 +2,13 @@ import { existsSync, rmSync, writeFileSync } from "node:fs";
 
 import { describe, expect, test, vi } from "vitest";
 
+import { addAgentSkills } from "#metalbrain/runtimes/operations/addAgentSkills";
+import { checkAgents } from "#metalbrain/runtimes/operations/checkAgents";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { addAgentSkills } from "#tools/agents/index";
-import { checkAgents } from "#tools/agents/operations/checkAgents";
-import { hookRoots } from "#tools/metalbrain/constants";
 import { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
@@ -73,12 +72,7 @@ function createProject({
 async function install(project: ReturnType<typeof createProject>) {
   const config = await loadConfig(project.root);
 
-  await addAgentSkills(
-    config,
-    ["guide"],
-    hookRoots,
-    await loadMetalbrainFacts(config),
-  );
+  await addAgentSkills(await loadAgentInputs(config), ["guide"]);
 
   await config.context.filesystem.flush();
 
@@ -115,10 +109,9 @@ describe("skill supporting files", () => {
       );
     }
 
-    const findings = await checkAgents(config, {
+    const findings = await checkAgents({
+      ...(await loadAgentInputs(config)),
       format: await loadInstructionFormatter(config),
-      roots: hookRoots,
-      facts: await loadMetalbrainFacts(config),
     });
 
     expect(
@@ -164,10 +157,9 @@ describe("skill supporting files", () => {
       expect(project.read(file)).toContain("`.claude/skills/guide/mode.md`");
     }
 
-    const findings = await checkAgents(config, {
+    const findings = await checkAgents({
+      ...(await loadAgentInputs(config)),
       format: await loadInstructionFormatter(config),
-      roots: hookRoots,
-      facts: await loadMetalbrainFacts(config),
     });
 
     expect(
@@ -296,12 +288,7 @@ describe("shared skill files", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      config,
-      ["guide", "other"],
-      hookRoots,
-      await loadMetalbrainFacts(config),
-    );
+    await addAgentSkills(await loadAgentInputs(config), ["guide", "other"]);
 
     await config.context.filesystem.flush();
 
@@ -327,12 +314,7 @@ describe("shared skill files", () => {
 
     const config = await loadConfig(project.root);
 
-    await addAgentSkills(
-      config,
-      ["guide", "other"],
-      hookRoots,
-      await loadMetalbrainFacts(config),
-    );
+    await addAgentSkills(await loadAgentInputs(config), ["guide", "other"]);
 
     await config.context.filesystem.flush();
 

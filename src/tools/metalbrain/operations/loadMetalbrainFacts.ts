@@ -2,7 +2,7 @@ import {
   createMetalbrainFacts,
   type MetalbrainFacts,
 } from "#metalbrain/facts/index";
-import { listActiveExtensions } from "#tools/agents/index";
+import { listActiveExtensions } from "#tools/metalbrain/operations/listActiveExtensions";
 import type { LoadedConfig } from "#project/config/index";
 
 const facts = new WeakMap<LoadedConfig, Promise<MetalbrainFacts>>();

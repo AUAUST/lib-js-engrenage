@@ -1,26 +1,22 @@
 import { engrenage } from "#constants";
-import { backlogIndex } from "#metalbrain/backlog/constants";
-import { endMarker, metalbrain } from "#metalbrain/instructions/constants";
 import {
-  formatBacklogIndex,
-  formatReferenceMarker,
-} from "#metalbrain/instructions/index";
-import {
-  agentsFile,
+  backlogIndex,
   scratchpadFile,
   scratchpadPlaceholder,
-} from "#tools/agents/constants";
+} from "#metalbrain/backlog/constants";
+import {
+  agentsFile,
+  endMarker,
+  metalbrain,
+} from "#metalbrain/instructions/constants";
 import {
   addAgentRules,
-  addAgentSkills,
-  createFragmentRenderer,
-  getAgentRuntimes,
+  formatBacklogIndex,
+  formatReferenceMarker,
   getMissingRuleTemplates,
-  getSkillTemplates,
-  listActiveExtensions,
-} from "#tools/agents/index";
-import { hookRoots } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+} from "#metalbrain/instructions/index";
+import { addAgentSkills, getSkillTemplates } from "#metalbrain/runtimes/index";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
 import type { Step } from "#project/steps/index";
 
@@ -32,7 +28,7 @@ export function createBacklogStep(): Step {
     name: "shared backlog",
     message: "Set up the shared backlog in .ai/backlog/ and scratchpad in .ai/scratchpad.md?",
     async isMissing(context) {
-      const { resolve, filesystem, getAgents } = context;
+      const { filesystem, getAgents } = context;
 
       if (
         (getAgents()?.length ?? 0) === 0 ||
@@ -51,29 +47,11 @@ export function createBacklogStep(): Step {
         return true;
       }
 
-      const agents = await resolve("agents");
-
-      const facts = await loadMetalbrainFacts(context);
-
-      const renderer = await createFragmentRenderer(context, facts);
-
-      const extensions = await listActiveExtensions(context);
-
-      const runtimes = await getAgentRuntimes(context);
+      const inputs = await loadAgentInputs(context);
 
       const [missingRules, skillTemplates] = await Promise.all([
-        getMissingRuleTemplates({
-          filesystem,
-          extensions,
-          renderer,
-        }),
-        getSkillTemplates({
-          agents,
-          extensions,
-          renderer,
-          runtimes,
-          roots: hookRoots,
-        }),
+        getMissingRuleTemplates(inputs),
+        getSkillTemplates(inputs),
       ]);
 
       if (missingRules.some(({ name }) => name === "backlog")) {
@@ -121,11 +99,11 @@ export function createBacklogStep(): Step {
         );
       }
 
-      const facts = await loadMetalbrainFacts(context);
+      const inputs = await loadAgentInputs(context);
 
-      await addAgentRules(context, ["backlog"], facts);
+      await addAgentRules(inputs, ["backlog"]);
 
-      await addAgentSkills(context, skills, hookRoots, facts);
+      await addAgentSkills(inputs, skills);
 
       await syncAgentFiles(context);
     },

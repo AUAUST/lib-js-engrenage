@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import { renderAgentLimits } from "#tools/agents/utils/renderAgentLimits";
+import { renderAgentLimits } from "#metalbrain/runtimes/utils/renderAgentLimits";
 
 test("renders one row per agent skill with its limits", () => {
   expect(

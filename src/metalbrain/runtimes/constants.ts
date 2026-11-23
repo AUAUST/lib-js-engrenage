@@ -190,6 +190,28 @@ export const claudeSkillsDir = ".claude/skills" satisfies Directory;
 
 export const claudeAgentsDir = ".claude/agents" satisfies Directory;
 
+export const skillFileName = "SKILL.md" satisfies File;
+
+export const skillFrontmatterKeys = ["name", "description"] as const;
+
+export const claudeSkillFrontmatterKeys = [
+  "name",
+  "description",
+  "disable-model-invocation",
+] as const;
+
+export const claudeAgentFrontmatterKeys = [
+  "name",
+  "description",
+  "model",
+  "effort",
+  "tools",
+  "disallowedTools",
+  "hooks",
+] as const;
+
+export const defaultSubagentCacheTtl = "5m" as const;
+
 export const mainRole = "main";
 
 // @debt kept only so sync deletes the Codex files of releases before its removal; drop once consumers have synced past it

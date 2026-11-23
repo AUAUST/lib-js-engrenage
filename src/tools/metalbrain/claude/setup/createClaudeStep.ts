@@ -1,5 +1,5 @@
+import { agentsFile } from "#metalbrain/instructions/constants";
 import { claudeFile } from "#metalbrain/runtimes/constants";
-import { agentsFile } from "#tools/agents/constants";
 import type { Step } from "#project/steps/index";
 
 export function createClaudeStep(): Step {

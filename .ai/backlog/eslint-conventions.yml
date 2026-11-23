@@ -53,7 +53,7 @@ entries:
       - src/project/roles/constants.ts:14
       - src/project/sync/constants.ts:11
       - src/project/sync/constants.ts:21
-      - src/tools/agents/constants.ts:30
+      - src/tools/metalbrain/constants.ts:17
       - src/workflows/gate/constants.ts:8
       - src/batiment/environments/constants.ts:7
     want: "a readonly-constants form keeping the schema's output type (planning: the rule is shared)."

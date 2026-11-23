@@ -53,7 +53,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ tsconfig  Compose TypeScript project configurations.
 │  └─ workspaces  Resolve workspace groups and their projects.
 ├─ tools/  #tools/…  One domain per external tool, holding its adapters.
-│  ├─ agents{claude}  Generate shared agent instructions, skills and contributed rule files.
+│  ├─ agents{claude}  Holds the Claude runtime registration until it joins `tools/metalbrain/claude`.
 │  │  └─ claude  The Claude runtime: its constants and headless dispatch.
 │  ├─ changesets*  Configure release versioning and changelogs.
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.

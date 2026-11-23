@@ -4,22 +4,21 @@ import { basename } from "node:path";
 import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
-import { createFragmentSources } from "#metalbrain/facts/index";
 import {
   metalbrain,
   sharedFilesKind,
 } from "#metalbrain/instructions/constants";
-import type { Extension } from "#project/config/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
 
 /**
  * The supporting files several skills share, shipped by engrenage and the given
- * extensions under `metalbrain/shared/`, sorted by file name.
+ * fragment sources under `metalbrain/shared/`, sorted by file name.
  *
  * @throws {Error} Two origins ship a shared file of the same name.
  */
-export async function getSharedFiles(extensions: readonly Extension[]) {
+export async function getSharedFiles(fragments: FragmentSources) {
   const shipped = await Promise.all(
-    createFragmentSources(extensions).origins.map((origin) => {
+    fragments.origins.map((origin) => {
       return listDataFiles(origin, `./${metalbrain}/${sharedFilesKind}/*.md`);
     }),
   );

@@ -33,7 +33,7 @@ entries:
   - id: 261122-0326
     title: The resume hook names the walking skill
     sites:
-      - src/tools/agents/operations/checkAgentResume.ts:107
+      - src/metalbrain/runtimes/operations/checkAgentResume.ts:60
     why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
     want: a message naming the dispatching skill generically once another skill resumes such agents.
   - id: 261122-8564
@@ -57,10 +57,10 @@ entries:
   - id: 261122-fc25
     title: Runtime behaviour branches on runtime names
     sites:
-      - src/tools/agents/operations/checkAgents.ts:26
-      - src/tools/agents/operations/getSkillTemplates.ts:77
-      - src/tools/agents/operations/getSkillTemplates.ts:144
-      - src/tools/agents/operations/migrateSkillFiles.ts:225
+      - src/metalbrain/runtimes/operations/checkAgents.ts:26
+      - src/metalbrain/runtimes/operations/getSkillTemplates.ts:73
+      - src/metalbrain/runtimes/operations/getSkillTemplates.ts:140
+      - src/metalbrain/runtimes/operations/migrateSkillFiles.ts:248
       - src/metalbrain/runtimes/utils/createDispatchEnvironment.ts:5
       - src/metalbrain/runtimes/config/schemas/skillSchema.ts:36
     why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude, so a contributed runtime gets a bare name-and-description shape and leaks variables.
@@ -76,7 +76,7 @@ entries:
     title: Dispatch and resume checks read the wrong names
     sites:
       - src/tools/metalbrain/operations/dispatchAgent.ts:40
-      - src/tools/agents/operations/checkAgentResume.ts:74
+      - src/metalbrain/runtimes/operations/checkAgentResume.ts:30
     why: briefs are checked against the caller's contract names, not the target checkout's; a recipient that is no agent id resolves by role name, so other names escape the resume limit.
     want: the target's contract names; recipients resolved to agent ids.
   - id: 261122-f158
@@ -91,7 +91,7 @@ entries:
   - id: 261122-bb26
     title: One init or sync run rebuilds the same agent templates and skill definitions many times
     sites:
-      - src/tools/agents/operations/createFragmentRenderer.ts:19
+      - src/tools/metalbrain/operations/loadFragmentRenderer.ts:6
     why: an init with two runtimes called `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
     want: computed once per run and shared; a run lifecycle contract to decide first.
   - id: 261122-a80b
@@ -124,7 +124,7 @@ entries:
     title: Consultant freshness forces fresh consultants mid-walk
     sites:
       - data/metalbrain/skills/planning.md:15
-      - src/tools/agents/operations/checkAgentResume.ts:61
+      - src/metalbrain/runtimes/operations/checkAgentResume.ts:8
     why: "`freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809)."
     want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
   - id: 261122-ccbe
@@ -177,10 +177,3 @@ entries:
       - bin/metalbrain/executable.ts:29
     why: engrenage-hook appended 'regenerate the hooks with pnpm install, then pnpm engrenage sync' to usage errors; metalbrain hook opens with the bare Commander error, so a consumer whose settings name a removed event is not told to sync.
     want: metalbrain hook usage errors name the install-and-sync fix, as engrenage-hook's did.
-  - id: 261122-fd50
-    title: metalbrain agents actions compose host inputs by hand
-    sites:
-      - bin/metalbrain/agents/actions/check.ts:9
-    why: "#830: each bin action loads the config, the instruction formatter and hookRoots itself; jscpd flags check.ts against bin/metalbrain/github/labels/actions/prune.ts"
-    want: one tools/metalbrain operation supplies the host inputs these actions pass
-    done: no bin/metalbrain action repeats the host input composition

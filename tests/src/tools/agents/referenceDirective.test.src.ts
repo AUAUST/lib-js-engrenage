@@ -1,14 +1,13 @@
 import { describe, expect, test } from "vitest";
 
+import { addAgentSkills } from "#metalbrain/runtimes/operations/addAgentSkills";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { fillBlocks } from "#tests/utils/fillBlocks";
 import { getFixture } from "#tests/utils/getFixture";
-import { addAgentSkills } from "#tools/agents/index";
-import { hookRoots } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 
 function createProject(instructions: string, fragment = "") {
   return createTemporaryProject({
@@ -105,12 +104,7 @@ describe("reference directive", () => {
 
       const config = await loadConfig(project.root);
 
-      await addAgentSkills(
-        config,
-        ["debugging"],
-        hookRoots,
-        await loadMetalbrainFacts(config),
-      );
+      await addAgentSkills(await loadAgentInputs(config), ["debugging"]);
 
       const skill = await config.context.filesystem.read(
         ".claude/skills/debugging/SKILL.md",

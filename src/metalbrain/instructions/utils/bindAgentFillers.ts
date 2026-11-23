@@ -1,16 +1,22 @@
 import { loadLazy } from "#foundation/modules/index";
-import { builtInFillers } from "#tools/agents/constants";
-import type { LoadedConfig } from "#project/config/index";
+import { builtInFillers } from "#metalbrain/instructions/constants";
+import type { Contribution } from "#foundation/extensions/index";
+import type { AgentFiller } from "#metalbrain/instructions/ports/AgentFiller";
 import type { BlockFillers } from "#types/BlockFillers";
 
-export async function createAgentFillers(
-  config: LoadedConfig,
-): Promise<BlockFillers> {
-  const contributions = await config.context.registry.contributions(
-    "agents.fillers",
-    config,
-  );
-
+/**
+ * The contributed fillers, each bound to the host's input.
+ *
+ * @throws {Error} A filler takes a built-in filler's name, or two take
+ * the same name.
+ */
+export function bindAgentFillers<Host>(
+  contributions: readonly Contribution<
+    { readonly name: string },
+    AgentFiller<Host>
+  >[],
+  host: Host,
+): BlockFillers {
   const fillers: BlockFillers = {};
 
   for (const { entry, extension } of contributions) {
@@ -29,7 +35,7 @@ export async function createAgentFillers(
     fillers[entry.name] = async (...args) => {
       const fill = await loadLazy(entry);
 
-      return fill(config, ...args);
+      return fill(host, ...args);
     };
   }
 

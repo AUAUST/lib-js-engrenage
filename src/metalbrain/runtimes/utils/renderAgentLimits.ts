@@ -1,5 +1,5 @@
-import { formatCount } from "#metalbrain/runtimes/index";
-import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
+import { formatCount } from "#metalbrain/runtimes/utils/formatCount";
+import type { SkillDefinition } from "#metalbrain/runtimes/types/SkillDefinition";
 
 export function renderAgentLimits(
   definitions: readonly Pick<SkillDefinition, "agent">[],

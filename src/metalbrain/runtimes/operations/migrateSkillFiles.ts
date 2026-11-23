@@ -10,14 +10,16 @@ import {
   listReferences,
   relocateInstructionReference,
 } from "#metalbrain/instructions/index";
-import { formerCodexFiles } from "#metalbrain/runtimes/constants";
-import { skillFileName } from "#tools/agents/constants";
-import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
+import {
+  formerCodexFiles,
+  skillFileName,
+} from "#metalbrain/runtimes/constants";
+import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ResolvedAgents } from "#metalbrain/runtimes/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
 import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
-import type { Extension } from "#project/config/index";
-import type { SkillDefinition } from "#tools/agents/types/SkillDefinition";
+import type { ResolvedAgents } from "#metalbrain/runtimes/types/ResolvedAgents";
+import type { SkillDefinition } from "#metalbrain/runtimes/types/SkillDefinition";
 import type { Directory } from "#types/Directory";
 
 function isEngrenageSkillReference(reference: string): boolean {
@@ -95,7 +97,7 @@ async function moveSkillDirectory(
 export async function migrateSkillFiles(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   runtimes: readonly AgentRuntime[];
 }) {
   const { filesystem } = config;
@@ -107,7 +109,7 @@ export async function migrateSkillFiles(config: {
   });
 
   const definitions = await getSkillDefinitions({
-    extensions: config.extensions,
+    fragments: config.fragments,
   });
 
   const owners = new Map<string, SkillDefinition>();

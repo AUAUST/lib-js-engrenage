@@ -1,13 +1,15 @@
 import { object, string } from "valibot";
 
+import { resolveWithin } from "#foundation/filesystem/index";
 import {
+  checkAgentResume,
   resolveHookDirectory,
   resolveMainWorktree,
   validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { checkAgentResume } from "#tools/agents/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 const payloadSchema = object({
   cwd: string(),
@@ -34,7 +36,18 @@ export async function guardClaudeResume(
     await resolveMainWorktree(resolveHookDirectory(cwd)),
   );
 
-  const reason = await checkAgentResume(config, { session, recipient });
+  const [resources, { fragments }] = await Promise.all([
+    config.resolve("resources"),
+    loadMetalbrainFacts(config),
+  ]);
+
+  const reason = await checkAgentResume(
+    {
+      directory: resolveWithin(resources.path("agents.stats"), session),
+      fragments,
+    },
+    recipient,
+  );
 
   return reason === undefined ? undefined : { decision: "deny", reason };
 }

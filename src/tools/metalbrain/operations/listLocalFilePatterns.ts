@@ -1,7 +1,7 @@
 import { deduplicate } from "@auaust/toolkit/array";
 
 import { resolveListOption } from "#foundation/options/index";
-import { handoffsDirectory } from "#tools/agents/constants";
+import { handoffsDirectory } from "#metalbrain/instructions/constants";
 import { readIgnorePatterns } from "#tools/git/index";
 import { issueDraftsDirectory } from "#tools/github/index";
 import type { LoadedConfig } from "#project/config/index";

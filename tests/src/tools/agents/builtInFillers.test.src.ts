@@ -2,18 +2,14 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
 
 const planningConfig = 'export default { agents: { preferred: ["claude"] }, github: { planning: true } };';
 
 async function render(root: string, body: string) {
   const config = await loadConfig(root);
 
-  const renderer = await createFragmentRenderer(
-    config,
-    await loadMetalbrainFacts(config),
-  );
+  const renderer = await loadFragmentRenderer(config);
 
   return renderer.render(body, "fixture.md");
 }

@@ -1,9 +1,8 @@
 import { includes } from "@auaust/toolkit/array";
 
 import { hasPreferredAgents } from "#metalbrain/runtimes/index";
-import { listMissingExtensionRules } from "#tools/agents/index";
 import { addRuleCommand, agentsTarget } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { listMissingExtensionRules } from "#tools/metalbrain/operations/listMissingExtensionRules";
 import type { SyncDone } from "#project/sync/index";
 
 export async function reportMissingExtensionRules({
@@ -17,10 +16,7 @@ export async function reportMissingExtensionRules({
     return;
   }
 
-  const missing = await listMissingExtensionRules(
-    config,
-    await loadMetalbrainFacts(config),
-  );
+  const missing = await listMissingExtensionRules(config);
 
   if (missing.length === 0) {
     return;

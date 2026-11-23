@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { countWords, listTableCells } from "#foundation/markdown/index";
-import { tableCellWords } from "#tools/agents/constants";
+import { tableCellWords } from "#metalbrain/instructions/constants";
 
 const shippedData = fileURLToPath(
   new URL("../../../../data/", import.meta.url),

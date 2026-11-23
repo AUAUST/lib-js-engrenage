@@ -1,26 +1,30 @@
 import { values } from "@auaust/toolkit/object";
 
-import { attributionRules } from "#tools/agents/constants";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getMissingRuleTemplates } from "#tools/agents/operations/getMissingRuleTemplates";
-import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import type { MetalbrainFacts } from "#metalbrain/facts/index";
-import type { LoadedConfig } from "#project/config/index";
+import { attributionRules } from "#metalbrain/instructions/constants";
+import { getMissingRuleTemplates } from "#metalbrain/instructions/operations/getMissingRuleTemplates";
+import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
 
+/**
+ * Writes the named rule templates the project lacks.
+ *
+ * @throws {Error} A name is unknown or follows the `agents.attribution` option.
+ */
 export async function addAgentRules(
-  config: LoadedConfig,
+  {
+    filesystem,
+    fragments,
+    renderer,
+  }: {
+    filesystem: Filesystem;
+    fragments: FragmentSources;
+    renderer: FragmentRenderer;
+  },
   names: readonly string[],
-  facts: MetalbrainFacts,
 ) {
-  const { filesystem } = config.context;
-
-  const [extensions, renderer] = await Promise.all([
-    listActiveExtensions(config),
-    createFragmentRenderer(config, facts),
-  ]);
-
-  const templates = await getRuleTemplates({ extensions, renderer });
+  const templates = await getRuleTemplates({ fragments, renderer });
 
   const owned = new Set<string>(values(attributionRules));
 
@@ -44,7 +48,7 @@ export async function addAgentRules(
 
   const missing = await getMissingRuleTemplates({
     filesystem,
-    extensions,
+    fragments,
     renderer,
   });
 

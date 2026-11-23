@@ -2,11 +2,11 @@ import { pathToFileURL } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
+import { createFragmentSources } from "#metalbrain/facts/index";
+import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
 
 async function renderFixtureRule(options: string, directive: string) {
   const project = createTemporaryProject({
@@ -44,16 +44,13 @@ async function renderFixtureRule(options: string, directive: string) {
   const config = await loadConfig(project.root);
 
   const templates = await getRuleTemplates({
-    renderer: await createFragmentRenderer(
-      config,
-      await loadMetalbrainFacts(config),
-    ),
-    extensions: [
+    renderer: await loadFragmentRenderer(config),
+    fragments: createFragmentSources([
       {
         name: "fixture",
         root: pathToFileURL(`${project.root}/rules/`),
       },
-    ],
+    ]),
   });
 
   return templates.find(({ name }) => name === "filled-rule")?.content;

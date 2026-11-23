@@ -1,8 +1,10 @@
 import { spawnProcess } from "#foundation/processes/index";
+import { agentsFile } from "#metalbrain/instructions/constants";
 import {
   formatReferenceMarker,
   listStaleSkillFiles,
   syncFrontmatter,
+  type FragmentRenderer,
   type InstructionFormatter,
 } from "#metalbrain/instructions/index";
 import {
@@ -10,31 +12,37 @@ import {
   claudeFile,
   claudeSkillsDir,
 } from "#metalbrain/runtimes/constants";
-import {
-  checkAgentHooks,
-  type Agent,
-  type AgentCheckFinding,
-  type HookRoots,
-} from "#metalbrain/runtimes/index";
-import { agentsFile } from "#tools/agents/constants";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
-import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import type { MetalbrainFacts } from "#metalbrain/facts/index";
-import type { LoadedConfig } from "#project/config/index";
+import { checkAgentHooks } from "#metalbrain/runtimes/operations/checkAgentHooks";
+import { getSkillTemplates } from "#metalbrain/runtimes/operations/getSkillTemplates";
+import type { Filesystem } from "#foundation/filesystem/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
+import type { Agent } from "#metalbrain/runtimes/types/Agent";
+import type { AgentCheckFinding } from "#metalbrain/runtimes/types/AgentCheckFinding";
+import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
+import type { ResolvedAgents } from "#metalbrain/runtimes/types/ResolvedAgents";
+import type { Directory } from "#types/Directory";
 
 // @debt matches each runtime's skills and agents directories by hand instead of reading them from its `agents.runtimes` contribution
-export async function checkAgents(
-  config: LoadedConfig,
-  {
-    format,
-    roots,
-    facts,
-  }: { format: InstructionFormatter; roots: HookRoots; facts: MetalbrainFacts },
-): Promise<AgentCheckFinding[]> {
-  const agents = await config.resolve("agents");
-
+export async function checkAgents({
+  filesystem,
+  root,
+  agents,
+  fragments,
+  renderer,
+  runtimes,
+  roots,
+  format,
+}: {
+  filesystem: Filesystem;
+  root: Directory;
+  agents: ResolvedAgents;
+  fragments: FragmentSources;
+  renderer: FragmentRenderer;
+  runtimes: readonly AgentRuntime[];
+  roots: HookRoots;
+  format: InstructionFormatter;
+}): Promise<AgentCheckFinding[]> {
   const preferred = agents.preferred ?? [];
 
   const findings: AgentCheckFinding[] = [];
@@ -55,15 +63,11 @@ export async function checkAgents(
     });
   }
 
-  const { filesystem, root } = config.context;
-
-  const extensions = await listActiveExtensions(config);
-
   const templates = await getSkillTemplates({
     agents,
-    extensions,
-    renderer: await createFragmentRenderer(config, facts),
-    runtimes: await getAgentRuntimes(config),
+    fragments,
+    renderer,
+    runtimes,
     roots,
   });
 

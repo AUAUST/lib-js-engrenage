@@ -2,41 +2,22 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 
 import { empty } from "@auaust/toolkit";
 
+import { addAgentSkills, getSkillTemplates } from "#metalbrain/runtimes/index";
 import { settleChanges } from "#project/sync/index";
-import {
-  addAgentSkills,
-  createFragmentRenderer,
-  getAgentRuntimes,
-  getSkillTemplates,
-  listActiveExtensions,
-} from "#tools/agents/index";
-import { hookRoots } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/index";
+import { loadAgentInputs } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
-import {
-  loadValidatedConfig,
-  type LoadedConfig,
-} from "#workflows/config/index";
+import { loadValidatedConfig } from "#workflows/config/index";
 
-async function getNames(config: LoadedConfig, name: string | undefined) {
+type AgentInputs = Awaited<ReturnType<typeof loadAgentInputs>>;
+
+async function getNames(inputs: AgentInputs, name: string | undefined) {
   if (name !== undefined) {
     return [name];
   }
 
-  const filesystem = config.context.filesystem;
+  const { filesystem } = inputs;
 
-  const agents = await config.resolve("agents");
-
-  const templates = await getSkillTemplates({
-    agents,
-    extensions: await listActiveExtensions(config),
-    renderer: await createFragmentRenderer(
-      config,
-      await loadMetalbrainFacts(config),
-    ),
-    runtimes: await getAgentRuntimes(config),
-    roots: hookRoots,
-  });
+  const templates = await getSkillTemplates(inputs);
 
   const installed = await Promise.all(
     templates.map(async ({ files }) => {
@@ -91,18 +72,15 @@ export default async function (name?: string): Promise<void> {
     reporter: getRunContext().reporter,
   });
 
-  const names = await getNames(config, name);
+  const inputs = await loadAgentInputs(config);
+
+  const names = await getNames(inputs, name);
 
   if (empty(names)) {
     return;
   }
 
-  await addAgentSkills(
-    config,
-    names,
-    hookRoots,
-    await loadMetalbrainFacts(config),
-  );
+  await addAgentSkills(inputs, names);
 
   await settleChanges(config, {
     check: false,

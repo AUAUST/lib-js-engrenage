@@ -16,13 +16,13 @@ import { sort } from "@auaust/toolkit/array";
 
 import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
-import { createFragmentSources } from "#metalbrain/facts/index";
-import { metalbrain } from "#metalbrain/instructions/constants";
 import {
-  parseInstruction,
-  type FragmentRenderer,
-} from "#metalbrain/instructions/index";
-import type { Extension } from "#project/config/index";
+  createFragmentSources,
+  type FragmentSources,
+} from "#metalbrain/facts/index";
+import { metalbrain } from "#metalbrain/instructions/constants";
+import { parseInstruction } from "#metalbrain/instructions/operations/parseInstruction";
+import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
 
 type InstructionKind = "rules" | "sections" | "skills";
 
@@ -36,22 +36,22 @@ const templateSchema = looseObject({
   formerly: optional(array(string())),
 });
 
-// @debt init steps pass no active extensions, so they read only engrenage's own fragments
+// @debt init steps pass no fragment sources, so they read only engrenage's own fragments
 export async function getInstructionTemplates(
   kind: InstructionKind,
   {
-    extensions = [],
+    fragments = createFragmentSources([]),
     renderer,
     inactive = false,
     supporting = false,
   }: {
-    extensions?: readonly Extension[] | undefined;
+    fragments?: FragmentSources | undefined;
     renderer?: FragmentRenderer;
     inactive?: boolean;
     supporting?: boolean;
   } = {},
 ) {
-  const { extensions: active, origins } = createFragmentSources(extensions);
+  const { extensions: active, origins } = fragments;
 
   const subpath = `./${metalbrain}/${kind}/*.md` as const;
 

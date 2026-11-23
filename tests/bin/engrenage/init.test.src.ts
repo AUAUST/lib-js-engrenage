@@ -10,6 +10,7 @@ import { sort } from "@auaust/toolkit/array";
 import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
+import { scratchpadPlaceholder } from "#metalbrain/backlog/constants";
 import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -17,7 +18,6 @@ import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { scratchpadPlaceholder } from "#tools/agents/constants";
 import { defineGroup } from "#workflows/cli/index";
 import type { Prompter } from "#project/steps/index";
 

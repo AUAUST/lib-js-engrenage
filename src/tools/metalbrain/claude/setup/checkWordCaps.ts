@@ -4,6 +4,7 @@ import { integer, minValue, number, pipe, record, string } from "valibot";
 
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { agentsFile } from "#metalbrain/instructions/constants";
 import { parseInstruction } from "#metalbrain/instructions/index";
 import { throwViolations } from "#metalbrain/records/index";
 import {
@@ -13,7 +14,6 @@ import {
   claudeSkillsDir,
   mainRole,
 } from "#metalbrain/runtimes/constants";
-import { agentsFile } from "#tools/agents/constants";
 import {
   formerWordCapsFile,
   wordCapsFile,

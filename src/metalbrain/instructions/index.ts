@@ -1,5 +1,10 @@
 // @barrel operations
+export { addAgentRules } from "#metalbrain/instructions/operations/addAgentRules";
+export { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
+export { getMissingRuleTemplates } from "#metalbrain/instructions/operations/getMissingRuleTemplates";
 export { getRuleReferences } from "#metalbrain/instructions/operations/getRuleReferences";
+export { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
+export { getSharedFiles } from "#metalbrain/instructions/operations/getSharedFiles";
 export { listReferenceFiles } from "#metalbrain/instructions/operations/listReferenceFiles";
 export { listStaleSkillFiles } from "#metalbrain/instructions/operations/listStaleSkillFiles";
 export { migrateBacklogIndex } from "#metalbrain/instructions/operations/migrateBacklogIndex";
@@ -11,6 +16,8 @@ export { syncFrontmatter } from "#metalbrain/instructions/operations/syncFrontma
 // @end
 
 // @barrel ports
+export type * from "#metalbrain/instructions/ports/AgentFiller";
+export type * from "#metalbrain/instructions/ports/AgentRuleGenerator";
 export type * from "#metalbrain/instructions/ports/GeneratedRule";
 export type * from "#metalbrain/instructions/ports/InstructionFormatter";
 // @end
@@ -23,6 +30,7 @@ export type * from "#metalbrain/instructions/types/SkillRendering";
 // @end
 
 // @barrel utils
+export { bindAgentFillers } from "#metalbrain/instructions/utils/bindAgentFillers";
 export { createInstructionFile } from "#metalbrain/instructions/utils/createInstructionFile";
 export { createSkillFileFiller } from "#metalbrain/instructions/utils/createSkillFileFiller";
 export { createWordCapsFiller } from "#metalbrain/instructions/utils/createWordCapsFiller";

@@ -10,6 +10,6 @@ entries:
   - id: 261122-f496
     title: Init steps pass no active extensions to the instruction templates
     sites:
-      - src/tools/agents/operations/getInstructionTemplates.ts:37
+      - src/metalbrain/instructions/operations/getInstructionTemplates.ts:36
     why: "#473 moved the planning skills into an extension's data root, so init reads only engrenage's own templates and skips them."
     want: init steps resolve the active extensions as `engrenage sync agents` does.

@@ -1,13 +1,11 @@
 import { filterMap, pluck } from "@auaust/toolkit/array";
 
-import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import {
   addAgentRules,
-  createFragmentRenderer,
   getMissingRuleTemplates,
-  listActiveExtensions,
-} from "#tools/agents/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+} from "#metalbrain/instructions/index";
+import { hasPreferredAgents } from "#metalbrain/runtimes/index";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import type { Step } from "#project/steps/index";
 
 export function createAgentRulesStep(): Step {
@@ -21,28 +19,18 @@ export function createAgentRulesStep(): Step {
         return false;
       }
 
-      const missing = await getMissingRuleTemplates({
-        filesystem: context.filesystem,
-        extensions: await listActiveExtensions(context),
-        renderer: await createFragmentRenderer(
-          context,
-          await loadMetalbrainFacts(context),
-        ),
-      });
+      const missing = await getMissingRuleTemplates(
+        await loadAgentInputs(context),
+      );
 
       return missing.some((template) => template.default);
     },
     async plan(context) {
-      const { filesystem, multiselect } = context;
+      const { multiselect } = context;
 
-      const templates = await getMissingRuleTemplates({
-        filesystem,
-        extensions: await listActiveExtensions(context),
-        renderer: await createFragmentRenderer(
-          context,
-          await loadMetalbrainFacts(context),
-        ),
-      });
+      const inputs = await loadAgentInputs(context);
+
+      const templates = await getMissingRuleTemplates(inputs);
 
       const missing = templates.filter(({ name }) => name !== "backlog");
 
@@ -52,7 +40,7 @@ export function createAgentRulesStep(): Step {
         filterMap(missing, (template) => template.default, "name"),
       );
 
-      await addAgentRules(context, names, await loadMetalbrainFacts(context));
+      await addAgentRules(inputs, names);
     },
   };
 }

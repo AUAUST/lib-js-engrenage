@@ -177,3 +177,5 @@
 - `agents stats` stale thoroughness state: smoke-testing `metalbrain agents stats` — a pre-`opened`/`scanned` `.thoroughness.json` in `.ai/stats` fails the whole report; left it, covered by backlog 261122-737b
 - defineLazyCommand parse literals: returned `["name"]` for a literal-typed action parameter — widened to string[], no overload matched; annotated parse's return type
 - metalbrain hooks run from source: moving `metalbrain/runtimes` modules mid-task — every PreToolUse guard reported itself off until the imports settled; finished the move, no workaround
+- engrenage typecheck silent pass: ran it after moving modules — printed nothing, exit 0, while tests held missing imports; `pnpm exec tsc -b --force` showed them
+- hook graph import scan: `executable.test.src.ts` read `from "` inside a string literal of `runtimes/constants.ts` as an import; moved the new constants above `formerCodexFiles`

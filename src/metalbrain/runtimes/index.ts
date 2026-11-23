@@ -40,9 +40,16 @@ export {
 } from "#metalbrain/runtimes/hooks/index";
 
 // @barrel operations
+export { addAgentSkills } from "#metalbrain/runtimes/operations/addAgentSkills";
 export { checkAgentHooks } from "#metalbrain/runtimes/operations/checkAgentHooks";
+export { checkAgentResume } from "#metalbrain/runtimes/operations/checkAgentResume";
+export { checkAgents } from "#metalbrain/runtimes/operations/checkAgents";
+export { createFragmentRenderer } from "#metalbrain/runtimes/operations/createFragmentRenderer";
 export { findShellTrap } from "#metalbrain/runtimes/operations/findShellTrap";
+export { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
+export { getSkillTemplates } from "#metalbrain/runtimes/operations/getSkillTemplates";
 export { listAgentSessions } from "#metalbrain/runtimes/operations/listAgentSessions";
+export { migrateSkillFiles } from "#metalbrain/runtimes/operations/migrateSkillFiles";
 export { readAgentRun } from "#metalbrain/runtimes/operations/readAgentRun";
 export { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
 export { readClaudeAgentMeta } from "#metalbrain/runtimes/operations/readClaudeAgentMeta";
@@ -97,6 +104,7 @@ export type * from "#metalbrain/runtimes/types/ModelFacts";
 export type * from "#metalbrain/runtimes/types/Prices";
 export type * from "#metalbrain/runtimes/types/PriceTier";
 export type * from "#metalbrain/runtimes/types/ResolvedAgents";
+export type * from "#metalbrain/runtimes/types/SkillDefinition";
 export type * from "#metalbrain/runtimes/types/SubagentCacheTtl";
 export type * from "#metalbrain/runtimes/types/ThoroughnessLevel";
 export type * from "#metalbrain/runtimes/types/ThoroughnessLimits";
@@ -125,6 +133,7 @@ export { hasPreferredAgents } from "#metalbrain/runtimes/utils/hasPreferredAgent
 export { matchesHookEntry } from "#metalbrain/runtimes/utils/matchesHookEntry";
 export { parseAgentRunFile } from "#metalbrain/runtimes/utils/parseAgentRunFile";
 export { priceAgentUsage } from "#metalbrain/runtimes/utils/priceAgentUsage";
+export { renderAgentLimits } from "#metalbrain/runtimes/utils/renderAgentLimits";
 export { resolveAgentRunFile } from "#metalbrain/runtimes/utils/resolveAgentRunFile";
 export { resolveClaudeAgentTranscript } from "#metalbrain/runtimes/utils/resolveClaudeAgentTranscript";
 export { resolveHookDirectory } from "#metalbrain/runtimes/utils/resolveHookDirectory";

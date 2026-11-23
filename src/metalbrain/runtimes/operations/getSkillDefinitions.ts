@@ -1,26 +1,31 @@
 import { validate } from "#foundation/options/index";
-import { skillSchema } from "#metalbrain/runtimes/index";
-import { skillFileName } from "#tools/agents/constants";
-import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
-import { getSharedFiles } from "#tools/agents/operations/getSharedFiles";
-import type { FragmentRenderer } from "#metalbrain/instructions/index";
-import type { Extension } from "#project/config/index";
+import {
+  createFragmentSources,
+  type FragmentSources,
+} from "#metalbrain/facts/index";
+import {
+  getInstructionTemplates,
+  getSharedFiles,
+  type FragmentRenderer,
+} from "#metalbrain/instructions/index";
+import { skillSchema } from "#metalbrain/runtimes/config/schemas/skillSchema";
+import { skillFileName } from "#metalbrain/runtimes/constants";
 import type { Directory } from "#types/Directory";
 
 export async function getSkillDefinitions(config: {
   render?: { renderer: FragmentRenderer; skillsDirectory: Directory };
-  extensions?: readonly Extension[] | undefined;
+  fragments?: FragmentSources | undefined;
 }) {
   const { render } = config;
 
   const templates = await getInstructionTemplates("skills", {
-    extensions: config.extensions,
+    fragments: config.fragments,
     supporting: true,
   });
 
   const shared = render === undefined
     ? []
-    : await getSharedFiles(config.extensions ?? []);
+    : await getSharedFiles(config.fragments ?? createFragmentSources([]));
 
   return Promise.all(
     templates.map(async (template) => {

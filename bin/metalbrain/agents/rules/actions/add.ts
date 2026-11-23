@@ -1,13 +1,11 @@
 import { cancel, isCancel, multiselect } from "@clack/prompts";
 
-import { settleChanges } from "#project/sync/index";
 import {
   addAgentRules,
-  createFragmentRenderer,
   getMissingRuleTemplates,
-  listActiveExtensions,
-} from "#tools/agents/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/index";
+} from "#metalbrain/instructions/index";
+import { settleChanges } from "#project/sync/index";
+import { loadAgentInputs } from "#tools/metalbrain/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
@@ -16,19 +14,14 @@ export default async function (name?: string): Promise<void> {
     reporter: getRunContext().reporter,
   });
 
+  const inputs = await loadAgentInputs(config);
+
   let names: string[];
 
   if (name !== undefined) {
     names = [name];
   } else {
-    const missing = await getMissingRuleTemplates({
-      filesystem: config.context.filesystem,
-      extensions: await listActiveExtensions(config),
-      renderer: await createFragmentRenderer(
-        config,
-        await loadMetalbrainFacts(config),
-      ),
-    });
+    const missing = await getMissingRuleTemplates(inputs);
 
     if (missing.length === 0) {
       return void getRunContext().reporter.log(
@@ -71,7 +64,7 @@ export default async function (name?: string): Promise<void> {
     return;
   }
 
-  await addAgentRules(config, names, await loadMetalbrainFacts(config));
+  await addAgentRules(inputs, names);
 
   await settleChanges(config, {
     check: false,

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { getInstructionTemplates } from "#tools/agents/operations/getInstructionTemplates";
+import { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
 
 describe("getInstructionTemplates", () => {
   test.each(["sections", "rules", "skills"] as const)(

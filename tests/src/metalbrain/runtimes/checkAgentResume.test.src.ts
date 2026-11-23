@@ -1,10 +1,11 @@
 import { expect, test } from "vitest";
 
+import { checkAgentResume } from "#metalbrain/runtimes/operations/checkAgentResume";
 import { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
 import { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { checkAgentResume } from "#tools/agents/operations/checkAgentResume";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 
 function usage(startContext: number, peakContext: number) {
   return {
@@ -26,7 +27,9 @@ async function setUp() {
     }),
   });
 
-  const config = await loadConfig(project.root);
+  const {
+    fragments,
+  } = await loadMetalbrainFacts(await loadConfig(project.root));
 
   const directory = project.resolve(".ai/stats");
 
@@ -49,7 +52,10 @@ async function setUp() {
     directory,
     record,
     check(recipient: string) {
-      return checkAgentResume(config, { session: "session", recipient });
+      return checkAgentResume(
+        { directory: `${directory}/session`, fragments },
+        recipient,
+      );
     },
   };
 }

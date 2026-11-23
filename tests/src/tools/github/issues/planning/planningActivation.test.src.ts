@@ -1,11 +1,11 @@
 import { describe, expect, test } from "vitest";
 
+import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
-import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
 import { syncGeneratedRules } from "#tools/metalbrain/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
@@ -48,7 +48,7 @@ async function describePlanning(config: ReturnType<typeof createConfig>) {
   await syncGeneratedRules(config);
 
   const skills = await getSkillDefinitions({
-    extensions: await listActiveExtensions(config),
+    fragments: (await loadMetalbrainFacts(config)).fragments,
   });
 
   return {

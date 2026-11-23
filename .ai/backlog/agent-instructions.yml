@@ -49,7 +49,7 @@ entries:
       - src/tools/metalbrain/setup/syncAgentFiles.ts:81
       - src/tools/metalbrain/setup/syncAgentFiles.ts:134
       - src/tools/metalbrain/setup/syncAgentFiles.ts:227
-      - src/tools/agents/operations/getInstructionTemplates.ts:91
+      - src/metalbrain/instructions/operations/getInstructionTemplates.ts:84
       - src/metalbrain/instructions/operations/migrateInstructionLocations.ts:35
     why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; unknown `extension` hides fragments; external former markers stay unresolved.
     want: "sync reports or fails each. Related: #699."

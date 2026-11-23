@@ -5,14 +5,12 @@ import {
   claudeThoroughnessHookArgs,
   metalbrainHook,
 } from "#metalbrain/runtimes/constants";
+import { getSkillTemplates } from "#metalbrain/runtimes/operations/getSkillTemplates";
 import { createHookCommand } from "#metalbrain/runtimes/utils/createHookCommand";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createFragmentRenderer } from "#tools/agents/operations/createFragmentRenderer";
-import { getAgentRuntimes } from "#tools/agents/operations/getAgentRuntimes";
-import { getSkillTemplates } from "#tools/agents/operations/getSkillTemplates";
 import { hookRoots } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 
 const skill = vi.hoisted(() => {
   return {
@@ -21,28 +19,31 @@ const skill = vi.hoisted(() => {
   };
 });
 
-vi.mock(import("#tools/agents/operations/getInstructionTemplates"), () => {
-  return {
-    getInstructionTemplates: () => {
-      return Promise.resolve([
-        {
-          title: skill.name,
-          description: `${skill.name} skill`,
-          category: "workflow",
-          default: false,
-          order: 0,
-          name: skill.name,
-          source: `/skills/${skill.name}.md`,
-          reference: `@auaust/engrenage/metalbrain/skills/${skill.name}.md`,
-          body: `# ${skill.name}`,
-          paths: undefined,
-          supporting: [],
-          agent: skill.agent,
-        },
-      ]);
-    },
-  };
-});
+vi.mock(
+  import("#metalbrain/instructions/operations/getInstructionTemplates"),
+  () => {
+    return {
+      getInstructionTemplates: () => {
+        return Promise.resolve([
+          {
+            title: skill.name,
+            description: `${skill.name} skill`,
+            category: "workflow",
+            default: false,
+            order: 0,
+            name: skill.name,
+            source: `/skills/${skill.name}.md`,
+            reference: `@auaust/engrenage/metalbrain/skills/${skill.name}.md`,
+            body: `# ${skill.name}`,
+            paths: undefined,
+            supporting: [],
+            agent: skill.agent,
+          },
+        ]);
+      },
+    };
+  },
+);
 
 const thoroughnessHook = [
   {
@@ -73,18 +74,7 @@ async function renderSkills() {
 
   const config = await loadConfig(project.root);
 
-  const agents = await config.resolve("agents");
-
-  return getSkillTemplates({
-    agents,
-    extensions: [],
-    renderer: await createFragmentRenderer(
-      config,
-      await loadMetalbrainFacts(config),
-    ),
-    runtimes: await getAgentRuntimes(config),
-    roots: hookRoots,
-  });
+  return getSkillTemplates(await loadAgentInputs(config));
 }
 
 async function renderAgentFrontmatter() {

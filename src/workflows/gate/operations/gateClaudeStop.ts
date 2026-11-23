@@ -1,13 +1,14 @@
 import { looseObject, optional, string } from "valibot";
 
 import {
+  getSkillDefinitions,
   mainAgent,
   resolveHookDirectory,
   validateHookPayload,
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
-import { getSkillDefinitions, listActiveExtensions } from "#tools/agents/index";
+import { loadMetalbrainFacts } from "#tools/metalbrain/index";
 import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 
 const payloadSchema = looseObject({
@@ -21,9 +22,9 @@ async function isGatedAgent(
   config: LoadedConfig,
   name: string,
 ): Promise<boolean> {
-  const definitions = await getSkillDefinitions({
-    extensions: await listActiveExtensions(config),
-  });
+  const { fragments } = await loadMetalbrainFacts(config);
+
+  const definitions = await getSkillDefinitions({ fragments });
 
   return definitions.some(({ agent }) => {
     return agent?.name === name && agent.gate === true;

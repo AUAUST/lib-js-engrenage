@@ -4,9 +4,18 @@ import { syncFiles } from "#foundation/blocks/index";
 import { backlog, backlogIndex } from "#metalbrain/backlog/constants";
 import { migrateBacklogCategories } from "#metalbrain/backlog/index";
 import {
+  attributionRules,
+  mainSharedDirectory,
+  mainSharedFiles,
+  retiredRules,
+} from "#metalbrain/instructions/constants";
+import {
   createInstructionFile,
   formatReferenceMarker,
+  getInstructionTemplates,
   getRuleReferences,
+  getRuleTemplates,
+  getSharedFiles,
   listFormerReferences,
   listStaleSkillFiles,
   migrateBacklogIndex,
@@ -18,40 +27,26 @@ import {
 } from "#metalbrain/instructions/index";
 import { migrateAgentLogs } from "#metalbrain/logs/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
+import { skillFileName } from "#metalbrain/runtimes/constants";
 import {
+  getSkillTemplates,
   hasPreferredAgents,
+  migrateSkillFiles,
   removeCodexFiles,
   type ResolvedAgents,
 } from "#metalbrain/runtimes/index";
 import { jsonIndentation } from "#project/format/constants";
-import {
-  attributionRules,
-  mainSharedDirectory,
-  mainSharedFiles,
-  retiredRules,
-  skillFileName,
-} from "#tools/agents/constants";
-import {
-  createFragmentRenderer,
-  getAgentRuntimes,
-  getInstructionTemplates,
-  getRuleTemplates,
-  getSharedFiles,
-  getSkillTemplates,
-  listActiveExtensions,
-  migrateSkillFiles,
-} from "#tools/agents/index";
-import { hookRoots } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension, LoadedConfig } from "#project/config/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 import type { FileSync } from "#types/FileSync";
 
 async function syncAttributionRules(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   renderer: FragmentRenderer;
 }) {
   const { attribution } = config.agents;
@@ -109,18 +104,14 @@ async function removeRuleBlocks(
 // @debt finds only rules of origins still configured, gated off by `extension` metadata: an extension removed from the config leaves its rules installed
 async function removeInactiveExtensionRules(config: {
   filesystem: Filesystem;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
 }) {
-  const active = new Set(
-    config.extensions.map(({ name }) => {
-      return name;
-    }),
-  );
+  const active = config.fragments.extensions;
 
   const [references, templates] = await Promise.all([
     getRuleReferences(config),
     getInstructionTemplates("rules", {
-      extensions: config.extensions,
+      fragments: config.fragments,
       inactive: true,
     }),
   ]);
@@ -144,7 +135,7 @@ async function removeRetiredRules(filesystem: Filesystem) {
 
 async function migrateFormerRules(config: {
   filesystem: Filesystem;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   renderer: FragmentRenderer;
 }) {
   const [
@@ -193,10 +184,10 @@ async function removeStaleSkillFiles(
 
 async function installMainSharedFiles(config: {
   filesystem: Filesystem;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   renderer: FragmentRenderer;
 }) {
-  const shared = await getSharedFiles(config.extensions);
+  const shared = await getSharedFiles(config.fragments);
 
   for (const name of mainSharedFiles) {
     const found = shared.find((file) => file.name === name);
@@ -233,20 +224,12 @@ async function installMainSharedFiles(config: {
  * their `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
-  const { resolve, context } = loaded;
+  const { context } = loaded;
 
   const config = {
-    filesystem: context.filesystem,
+    ...(await loadAgentInputs(loaded)),
     reporter: context.reporter,
     resolve: context.path,
-    agents: await resolve("agents"),
-    extensions: await listActiveExtensions(loaded),
-    renderer: await createFragmentRenderer(
-      loaded,
-      await loadMetalbrainFacts(loaded),
-    ),
-    runtimes: await getAgentRuntimes(loaded),
-    roots: hookRoots,
     indentation: jsonIndentation,
   };
 

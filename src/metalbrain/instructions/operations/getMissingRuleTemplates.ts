@@ -1,26 +1,24 @@
 import { values } from "@auaust/toolkit/object";
 
-import {
-  getRuleReferences,
-  type FragmentRenderer,
-} from "#metalbrain/instructions/index";
-import { attributionRules } from "#tools/agents/constants";
-import { getRuleTemplates } from "#tools/agents/operations/getRuleTemplates";
+import { attributionRules } from "#metalbrain/instructions/constants";
+import { getRuleReferences } from "#metalbrain/instructions/operations/getRuleReferences";
+import { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Extension } from "#project/config/index";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { FragmentRenderer } from "#metalbrain/instructions/types/FragmentRenderer";
 
 export async function getMissingRuleTemplates({
   filesystem,
-  extensions,
+  fragments,
   renderer,
 }: {
   filesystem: Filesystem;
-  extensions: readonly Extension[];
+  fragments: FragmentSources;
   renderer: FragmentRenderer;
 }) {
   const [references, templates] = await Promise.all([
     getRuleReferences({ filesystem }),
-    getRuleTemplates({ extensions, renderer }),
+    getRuleTemplates({ fragments, renderer }),
   ]);
 
   const owned = new Set<string>(values(attributionRules));

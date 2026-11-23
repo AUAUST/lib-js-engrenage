@@ -4,9 +4,8 @@ import {
 } from "#metalbrain/instructions/index";
 import { throwViolations } from "#metalbrain/records/index";
 import { hasPreferredAgents } from "#metalbrain/runtimes/index";
-import { listMissingExtensionRules } from "#tools/agents/index";
 import { addRuleCommand } from "#tools/metalbrain/constants";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { listMissingExtensionRules } from "#tools/metalbrain/operations/listMissingExtensionRules";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
@@ -53,10 +52,7 @@ export async function checkFragmentFiles(config: LoadedConfig): Promise<void> {
     return;
   }
 
-  const missingRules = await listMissingExtensionRules(
-    config,
-    await loadMetalbrainFacts(config),
-  );
+  const missingRules = await listMissingExtensionRules(config);
 
   const rules = new Map(
     missingRules.map(({ file, name }) => {

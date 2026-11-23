@@ -7,7 +7,15 @@ import {
   rulesDirectory,
   statsDirectory,
 } from "#tools/metalbrain/constants";
-import type { Extension, FileLocation } from "#project/config/index";
+import type {
+  AgentFiller,
+  AgentRuleGenerator,
+} from "#metalbrain/instructions/index";
+import type {
+  Extension,
+  FileLocation,
+  LoadedConfig,
+} from "#project/config/index";
 import type { File } from "#types/File";
 
 /**
@@ -195,3 +203,12 @@ export default {
     ],
   },
 } satisfies Extension;
+
+declare global {
+  namespace Engrenage {
+    interface Slots {
+      "agents.fillers": AgentFiller<LoadedConfig>;
+      "agents.rules": AgentRuleGenerator<LoadedConfig>;
+    }
+  }
+}

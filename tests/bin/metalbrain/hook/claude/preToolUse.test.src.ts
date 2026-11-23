@@ -61,7 +61,10 @@ test(
 
     expect(status, stderr).toBe(0);
     expect(stdout).toBe("");
-    expect(stderr).not.toContain("/src/tools/agents/index.ts");
+
+    expect(stderr).not.toContain(
+      "/src/metalbrain/runtimes/operations/createFragmentRenderer.ts",
+    );
   },
 );
 

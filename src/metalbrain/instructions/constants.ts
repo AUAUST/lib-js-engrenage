@@ -4,6 +4,8 @@ import { engrenage } from "#constants";
 import type { WordCapKind } from "#metalbrain/facts/index";
 import type { BlockSyntax } from "#types/BlockSyntax";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
+import type { Globs } from "#types/Globs";
 
 export const markdownBlocks = freeze({
   open: "<!-- ",
@@ -34,3 +36,44 @@ export const wordCapLabels = freeze({
   backlogEntry: "Backlog entry",
   logEntry: "Agent log entry",
 } as const satisfies Record<WordCapKind, string>);
+
+export const agentsFile = "AGENTS.md" satisfies File;
+
+// @debt the main session's shared files sit under `.claude` though `AGENTS.md` names them to every runtime
+export const mainSharedDirectory = ".claude/shared" satisfies Directory;
+
+export const mainSharedFiles = freeze(["request-analysis.md"] as const);
+
+export const agentsTemplate = `${engrenage}/${metalbrain}/templates/${agentsFile}`;
+
+export const builtInFillers = freeze([
+  "word-caps",
+  "agent-limits",
+  "skill-file",
+  "shared-file",
+  "extension",
+  "file",
+] as const);
+
+export const handoffsDirectory = ".ai/handoffs/" satisfies Directory;
+
+export const ruleFrontmatterKeys = freeze(["paths"] as const);
+
+export const attributionRules = freeze({
+  true: "attribution",
+  false: "no-attribution",
+} as const);
+
+export const retiredRules = freeze([
+  `${engrenage}/${metalbrain}/rules/instructions.md`,
+] as const);
+
+export const defaultInstructionFiles = freeze([
+  "AGENTS.md",
+  ".claude/rules/**/*.md",
+  ".claude/skills/*/*.md",
+  ".claude/agents/*.md",
+  `${mainSharedDirectory}/*.md`,
+] as const) satisfies Globs;
+
+export const tableCellWords = 25;

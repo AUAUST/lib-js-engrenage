@@ -1,42 +1,37 @@
-import { resolveWithin } from "#foundation/filesystem/index";
-import {
-  formatCount,
-  readAgentRuns,
-  readRunningAgents,
-} from "#metalbrain/runtimes/index";
-import { getSkillDefinitions } from "#tools/agents/operations/getSkillDefinitions";
-import { listActiveExtensions } from "#tools/agents/operations/listActiveExtensions";
-import type { LoadedConfig } from "#project/config/index";
+import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
+import { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
+import { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
+import { formatCount } from "#metalbrain/runtimes/utils/formatCount";
+import type { FragmentSources } from "#metalbrain/facts/index";
+import type { Directory } from "#types/Directory";
 
 async function resolveCeiling(
-  config: LoadedConfig,
+  fragments: FragmentSources,
   role: string,
 ): Promise<number | undefined> {
-  const definitions = await getSkillDefinitions({
-    extensions: await listActiveExtensions(config),
-  });
+  const definitions = await getSkillDefinitions({ fragments });
 
   return definitions.find(({ agent }) => agent?.name === role)?.agent?.ceiling;
 }
 
+/**
+ * Why resuming `recipient`, an agent of the session whose runs `directory` holds,
+ * should start a fresh agent instead, or `undefined` when it may resume.
+ */
 export async function checkAgentResume(
-  config: LoadedConfig,
-  target: { session: string; recipient: string },
+  {
+    directory,
+    fragments,
+  }: { directory: Directory; fragments: FragmentSources },
+  recipient: string,
 ): Promise<string | undefined> {
-  const resources = await config.resolve("resources");
-
-  const directory = resolveWithin(
-    resources.path("agents.stats"),
-    target.session,
-  );
-
   const [runs, running] = await Promise.all([
     readAgentRuns(directory),
     readRunningAgents(directory),
   ]);
 
   // @debt a recipient that is not an agent id resolves to the agents whose role it names, so an agent addressed by any other name escapes the limit
-  const name = target.recipient.replace(/ \[[^\]]*\]$/u, "");
+  const name = recipient.replace(/ \[[^\]]*\]$/u, "");
 
   const isRecipient = (
     [...runs, ...running].some(({ agent }) => {
@@ -59,7 +54,7 @@ export async function checkAgentResume(
     return;
   }
 
-  const ceiling = await resolveCeiling(config, run.role);
+  const ceiling = await resolveCeiling(fragments, run.role);
 
   if (ceiling === undefined || run.peakContext <= ceiling) {
     return;

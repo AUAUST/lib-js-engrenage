@@ -9,8 +9,7 @@ import {
 } from "#metalbrain/instructions/constants";
 import { hasPreferredAgents } from "#metalbrain/runtimes/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
-import { createFragmentRenderer } from "#tools/agents/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
 import type { GeneratedRule } from "#metalbrain/instructions/ports/GeneratedRule";
 import type { File } from "#types/File";
 
@@ -37,9 +36,7 @@ export async function syncGeneratedRules(config: LoadedConfig) {
 
   const [generators, renderer] = await Promise.all([
     context.registry.contributions("agents.rules", config),
-    loadMetalbrainFacts(config).then((facts) => {
-      return createFragmentRenderer(config, facts);
-    }),
+    loadFragmentRenderer(config),
   ]);
 
   const written = new Set<File>();

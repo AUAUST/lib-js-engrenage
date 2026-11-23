@@ -1,16 +1,13 @@
 import { readFile } from "node:fs/promises";
 
 import {
+  getInstructionTemplates,
+  getSharedFiles,
   parseInstruction,
   resolveAgentReference,
 } from "#metalbrain/instructions/index";
-import {
-  createFragmentRenderer,
-  getAgentRuntimes,
-  getInstructionTemplates,
-  getSharedFiles,
-  listActiveExtensions,
-} from "#tools/agents/index";
+import { getAgentRuntimes } from "#tools/metalbrain/operations/getAgentRuntimes";
+import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
 import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -30,14 +27,14 @@ const loadedSkills = new WeakMap<
 async function indexSkills(
   config: LoadedConfig,
 ): Promise<ReadonlyMap<string, ShippedSkill>> {
-  const extensions = await listActiveExtensions(config);
+  const { fragments } = await loadMetalbrainFacts(config);
 
   const templates = await getInstructionTemplates("skills", {
-    extensions,
+    fragments,
     supporting: true,
   });
 
-  const sharedFiles = await getSharedFiles(extensions);
+  const sharedFiles = await getSharedFiles(fragments);
 
   const shared = sharedFiles.map(({ name }) => name);
 
@@ -143,10 +140,7 @@ export const fillReferenceBlock: DirectiveFill = async ({
 
   const body = parseInstruction(content, source).body;
 
-  const renderer = await createFragmentRenderer(
-    config,
-    await loadMetalbrainFacts(config),
-  );
+  const renderer = await loadFragmentRenderer(config);
 
   const skillsDirectory = await findRuntimeSkills(config, file);
 
