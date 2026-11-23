@@ -723,3 +723,11 @@ entries:
     subject: fragment-files check on log paths
     tried: named the .yml log paths in the git rule
     stopped: sync fails on a project file absent until a log has entries; named the logs instead
+  - id: 261123-2219
+    subject: sub_issues api cross-repo numbers
+    tried: claimed tree from gh sub_issues numbers
+    stopped: "engrenage #65 claimed for interscript #65; released, claimed interscript.65"
+  - id: 261123-397b
+    subject: publish of superseded Steps leaves
+    tried: publish parents dropping Steps leaves closed as duplicate
+    stopped: check refuses Steps leaves, parents need them in set; kept attached, closed via gh api

@@ -161,6 +161,7 @@ extensions:
     - 261122-35d0
     - 261122-071c
     - 261122-f10c
+    - 261123-e53e
 file-editing:
   purpose: In-memory editing of JSON and YAML files in the codegen tooling.
   entries:
