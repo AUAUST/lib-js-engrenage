@@ -136,7 +136,6 @@ export default {
         },
       },
       "data": {
-        input: "data",
         async load() {
           const {
             dataSection,
@@ -145,14 +144,33 @@ export default {
           return dataSection;
         },
       },
+      "data.options": {
+        input: "data",
+        async load() {
+          const {
+            dataOptionsSection,
+          } = await import("#project/environments/config/sections/dataOptionsSection");
+
+          return dataOptionsSection;
+        },
+      },
       "static": {
-        input: "static",
         async load() {
           const {
             staticSection,
           } = await import("#project/environments/config/sections/staticSection");
 
           return staticSection;
+        },
+      },
+      "static.options": {
+        input: "static",
+        async load() {
+          const {
+            staticOptionsSection,
+          } = await import("#project/environments/config/sections/staticOptionsSection");
+
+          return staticOptionsSection;
         },
       },
       "define": {

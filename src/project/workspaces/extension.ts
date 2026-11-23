@@ -1,20 +1,30 @@
 import type { Extension } from "#project/config/index";
 
 /**
- * Owns the `workspaces`, `scopes` and `scopes.discovery` config keys.
+ * Owns the `workspaces`, `workspaces.options`, `scopes` and `scopes.discovery`
+ * config keys.
  */
 export default {
   name: "project/workspaces",
   owns: {
     keys: {
       "workspaces": {
-        input: "workspaces",
         async load() {
           const {
             workspacesSection,
           } = await import("#project/workspaces/config/sections/workspacesSection");
 
           return workspacesSection;
+        },
+      },
+      "workspaces.options": {
+        input: "workspaces",
+        async load() {
+          const {
+            workspacesOptionsSection,
+          } = await import("#project/workspaces/config/sections/workspacesOptionsSection");
+
+          return workspacesOptionsSection;
         },
       },
       "scopes": {

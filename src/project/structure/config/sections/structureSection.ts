@@ -1,6 +1,6 @@
 import {
   flattenStructure,
-  listContestedOptionPaths,
+  listDeclaredOptionPaths,
   readStructureMetadata,
   resolveStructure,
   type DeclaredEnvironment,
@@ -88,9 +88,8 @@ export const structureSection = declareSection({
             ? await readOrigins(
                 config,
                 key,
-                listContestedOptionPaths({
+                listDeclaredOptionPaths({
                   declared: flattened,
-                  metadata: read.metadata,
                   optionPaths: flattened.optionPaths,
                 }),
               )

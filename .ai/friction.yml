@@ -735,3 +735,23 @@ entries:
     subject: "PreToolUse Bash hook: zsh `=` word"
     tried: echo ====== as a separator
     stopped: hook refused `=` command-path expansion; used a quoted separator
+  - id: 261123-4cf4
+    subject: publish refuses unchanged Steps leaves
+    tried: publishing every claimed issue, leaves kept as claimed
+    stopped: check rejects Steps bodies; deleted their drafts and ran release
+  - id: 261123-ae34
+    subject: zsh equals expansion hook
+    tried: echo of a ==== separator
+    stopped: hook refused; dropped the separator
+  - id: 261123-393a
+    subject: publish reparenting a Steps leaf
+    tried: "dissolve #726, move #729 under #675"
+    stopped: "publish needs #729 claimed, refuses claimed Steps leaf; kept #726 open until sweep"
+  - id: 261123-26fc
+    subject: "worker dispatch hook: plan Planning"
+    tried: "dispatching #861 with #732's Planning holding done batches"
+    stopped: "hook refused on ancestor Planning; drafted #732 without it"
+  - id: 261123-0786
+    subject: stale barrel after module rename
+    tried: pnpm engrenage sync after git mv of a util
+    stopped: sync refused the stale barrel; edited its export line by hand

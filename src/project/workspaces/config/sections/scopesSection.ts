@@ -22,10 +22,10 @@ async function readDeclaredSource(
   const path = `workspaces.${glob}.purpose`;
 
   return {
-    key: "workspaces",
+    key: "workspaces.options",
     path,
     // @debt the origin path splits on dots, so a glob holding one resolves another path's origin
-    origin: await config.origin("workspaces", path),
+    origin: await config.origin("workspaces.options", path),
   };
 }
 

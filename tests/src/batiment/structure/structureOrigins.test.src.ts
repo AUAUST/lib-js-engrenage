@@ -1,6 +1,10 @@
 import { describe, expect, test } from "vitest";
 
-import { collectStructureNodes } from "#batiment/structure/index";
+import {
+  collectStructureNodes,
+  flattenStructure,
+  listDeclaredOptionPaths,
+} from "#batiment/structure/index";
 import { createProjectConfig } from "#project/config/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
@@ -173,5 +177,49 @@ describe("structure origins", () => {
     ]);
 
     expect(nodes.get("src/group")).toEqual(without.nodes.get("src/group"));
+  });
+
+  test("every declared node and field has an option path to read its origin from", () => {
+    const declared = flattenStructure({
+      environment: "src",
+      root: "src.structure",
+      structure: {
+        purpose: undefined,
+        layers: undefined,
+        relation: undefined,
+        children: "domains",
+        roles: {
+          enable: [],
+        },
+        namespaces: {},
+        domains: {
+          feature: {
+            specifier: undefined,
+            purpose: "Feature.",
+            internals: undefined,
+            reexport: undefined,
+            collects: undefined,
+            public: undefined,
+            namespaces: {},
+            domains: {},
+          },
+        },
+      },
+      published: false,
+    });
+
+    expect(
+      listDeclaredOptionPaths({
+        declared,
+        optionPaths: declared.optionPaths,
+      }),
+    ).toEqual(
+      expect.arrayContaining([
+        "src.structure",
+        "src.structure.children",
+        "src.structure.domains.feature",
+        "src.structure.domains.feature.purpose",
+      ]),
+    );
   });
 });

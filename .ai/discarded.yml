@@ -711,3 +711,7 @@ entries:
     subject: nexus namespace now
     need: batiment interop layer (#851)
     reason: no second protocol consumer; layer before consumer
+  - id: 261123-72a4
+    subject: shopify.extension.toml type detector
+    need: per-type extension workspace defaults
+    reason: preset in .workspace.json states it, no TOML parser

@@ -16,5 +16,6 @@ export { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspa
 // @barrel config/sections
 export { discoverySection } from "#project/workspaces/config/sections/discoverySection";
 export { scopesSection } from "#project/workspaces/config/sections/scopesSection";
+export { workspacesOptionsSection } from "#project/workspaces/config/sections/workspacesOptionsSection";
 export { workspacesSection } from "#project/workspaces/config/sections/workspacesSection";
 // @end

@@ -73,6 +73,7 @@ export { resolveEnvironmentTsconfig } from "#project/environments/operations/res
 // @barrel config/sections
 export { binOptionsSection } from "#project/environments/config/sections/binOptionsSection";
 export { binSection } from "#project/environments/config/sections/binSection";
+export { dataOptionsSection } from "#project/environments/config/sections/dataOptionsSection";
 export { dataSection } from "#project/environments/config/sections/dataSection";
 export { defineSection } from "#project/environments/config/sections/defineSection";
 export { environmentClaimsSection } from "#project/environments/config/sections/environmentClaimsSection";
@@ -82,6 +83,7 @@ export { scriptsOptionsSection } from "#project/environments/config/sections/scr
 export { scriptsSection } from "#project/environments/config/sections/scriptsSection";
 export { sourceOptionsSection } from "#project/environments/config/sections/sourceOptionsSection";
 export { sourceSection } from "#project/environments/config/sections/sourceSection";
+export { staticOptionsSection } from "#project/environments/config/sections/staticOptionsSection";
 export { staticSection } from "#project/environments/config/sections/staticSection";
 export { testsOptionsSection } from "#project/environments/config/sections/testsOptionsSection";
 export { testsSection } from "#project/environments/config/sections/testsSection";

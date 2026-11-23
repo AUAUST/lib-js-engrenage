@@ -327,7 +327,7 @@ describe("scopes", () => {
         path: "extensions/a",
         files: ["extensions/a/.workspace.json"],
         config: {
-          key: "workspaces",
+          key: "workspaces.options",
           path: "workspaces.extensions/*.purpose",
           origin: { layer: "input" },
         },

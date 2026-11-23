@@ -3,9 +3,9 @@ import type { Directories } from "#types/Directories";
 
 export interface EnvironmentEntry extends EntryShape {
   /**
-   * Names the environment, its import category and the config key that resolves
-   * it to a `ResolvedEnvironment`; its options are read from the `<name>.options`
-   * key when its kind has a `structure`, otherwise from `<name>`.
+   * Names the environment, its import category and the config key that
+   * resolves it to a `ResolvedEnvironment`; its options are read from the
+   * `<name>.options` key.
    */
   readonly name: string;
   /**
