@@ -11,7 +11,7 @@ import { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues
 import { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
 import { throwViolations } from "#metalbrain/records/utils/throwViolations";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { RecordKind } from "#metalbrain/records/types/RecordKind";
+import type { GroupedRecordKind } from "#metalbrain/records/types/GroupedRecordKind";
 import type { File } from "#types/File";
 
 const groupNamePattern = /^[a-z\d]+(?:-[a-z\d]+)*$/u;
@@ -25,7 +25,7 @@ const groupNamePattern = /^[a-z\d]+(?:-[a-z\d]+)*$/u;
  */
 export async function createRecordGroup(
   filesystem: Filesystem,
-  kind: RecordKind,
+  kind: GroupedRecordKind,
   name: string,
   purpose: string,
 ): Promise<File> {

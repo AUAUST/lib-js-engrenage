@@ -7,7 +7,7 @@ import {
 } from "#metalbrain/records/constants";
 import { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { RecordKind } from "#metalbrain/records/types/RecordKind";
+import type { GroupedRecordKind } from "#metalbrain/records/types/GroupedRecordKind";
 import type { File } from "#types/File";
 
 const indexSchema = record(
@@ -28,7 +28,7 @@ const indexSchema = record(
  */
 export async function readRecordIndex(
   filesystem: Filesystem,
-  kind: RecordKind,
+  kind: GroupedRecordKind,
 ) {
   const { directory } = kind.location;
 

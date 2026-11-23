@@ -1,5 +1,5 @@
 import { listCodeRanges } from "#foundation/markdown/index";
-import { agentLogFiles } from "#metalbrain/records/constants";
+import { agentLogFiles } from "#metalbrain/logs/constants";
 import type { File } from "#types/File";
 
 const relativeFile = /^[\w.-]+(?:\/[\w.-]+)+\.\w+$/u;

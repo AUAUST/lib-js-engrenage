@@ -63,6 +63,13 @@ const groupSchema = strictObject(
   strictMessage,
 );
 
+const collectionSchema = strictObject(
+  {
+    entries: array(unknown()),
+  },
+  strictMessage,
+);
+
 const looseGroupSchema = fallback(
   looseObject({
     purpose: fallback(optional(textSchema), undefined),
@@ -84,13 +91,13 @@ function createEntrySchemas({ fields }: RecordKind) {
         check(isRecordId, "expected an ID as YYMMDD-xxxx, 4 hex characters"),
       ),
       ...Object.fromEntries(
-        declared.map(([key, type]) => [key, fieldSchemas[type]]),
+        declared.map(([key, { type }]) => [key, fieldSchemas[type]]),
       ),
     },
     strictMessage,
   );
 
-  const details = declared.filter(([, type]) => type === "detail");
+  const details = declared.filter(([, { type }]) => type === "detail");
 
   const loose: GenericSchema<
     unknown,
@@ -110,10 +117,11 @@ function createEntrySchemas({ fields }: RecordKind) {
 }
 
 /**
- * A `kind` group file's `content` read through the kind's schema: its parse
- * error, or its schema issues and each entry checked on its own, keeping the
- * purpose and each entry's keys read loosely, its ID and details checked for
- * form only, so a departure from the schema hides none of them.
+ * A `kind` group file's `content` read through the kind's schema, a `purpose`
+ * required only of a kind keeping a directory: its parse error, or its schema
+ * issues and each entry checked on its own, keeping the purpose and each entry's
+ * keys read loosely, its ID and details checked for form only, so a departure
+ * from the schema hides none of them.
  */
 export function parseRecordGroup(kind: RecordKind, content: string) {
   let data: unknown;
@@ -131,7 +139,10 @@ export function parseRecordGroup(kind: RecordKind, content: string) {
 
   const { purpose, entries } = parse(looseGroupSchema, data);
 
-  const strict = safeParse(groupSchema, data);
+  const strict = safeParse(
+    "directory" in kind.location ? groupSchema : collectionSchema,
+    data,
+  );
 
   return {
     kind: "parsed" as const,

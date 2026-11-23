@@ -32,6 +32,7 @@ describe("word caps", () => {
       doneWhen: 150,
       comment: 150,
       backlogEntry: 100,
+      logEntry: 60,
     });
   });
 

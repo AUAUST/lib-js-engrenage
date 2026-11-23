@@ -5,17 +5,22 @@ import {
   addRecord,
   createRecordGroup,
   readRecordGroups,
-  type RecordKind,
+  type GroupedRecordKind,
 } from "#metalbrain/records/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const notes = {
   name: "notes",
-  location: { directory: ".ai/notes" },
-  fields: { subject: "text", tried: "detail" },
+  location: {
+    directory: ".ai/notes",
+  },
+  fields: {
+    subject: { type: "text", description: "the subject" },
+    tried: { type: "detail", description: "what was tried" },
+  },
   detailLimit: 1,
   wordCap: "note",
-} as const satisfies RecordKind;
+} as const satisfies GroupedRecordKind;
 
 describe("record core", () => {
   test("stores and lists an entry of a kind declaring no storage code", async () => {

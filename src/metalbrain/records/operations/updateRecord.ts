@@ -34,7 +34,7 @@ export async function updateRecord<Kind extends RecordKind>(
     Record<string, string | readonly string[] | undefined>
   > = values;
 
-  const replaced = Object.entries(kind.fields).flatMap(([key, type]) => {
+  const replaced = Object.entries(kind.fields).flatMap(([key, { type }]) => {
     const value = toRecordValue(type, fields[key]);
 
     return value === undefined ? [] : [[key, value] as const];
@@ -47,14 +47,14 @@ export async function updateRecord<Kind extends RecordKind>(
   }
 
   for (const key of unset) {
-    const type = kind.fields[key];
+    const type = kind.fields[key]?.type;
 
     if (type === undefined || type === "text") {
       throw new Error(
         `Cannot unset "${key}" of a ${kind.name} entry: expected one of ${Object.keys(
           kind.fields,
         )
-          .filter((field) => kind.fields[field] !== "text")
+          .filter((field) => kind.fields[field]?.type !== "text")
           .join(", ")}`,
       );
     }

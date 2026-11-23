@@ -10,14 +10,23 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 import type { File } from "#types/File";
 
 /**
- * Stages the generated `index.yml` of `kind`: each group's name, `purpose` and
- * entry IDs, in name order, so a lookup reads one file.
+ * Stages the generated `index.yml` of `kind`: each group's name, `purpose`
+ * and entry IDs, in name order, so a lookup reads one file; a kind keeping
+ * one file has none.
+ *
+ * @returns The index file, `undefined` for a kind keeping one file.
  */
 export async function writeRecordIndex(
   filesystem: Filesystem,
   kind: RecordKind,
-): Promise<File> {
-  const file = `${kind.location.directory}/${recordIndexName}${recordFileExtension}` satisfies File;
+): Promise<File | undefined> {
+  const { location } = kind;
+
+  if (!("directory" in location)) {
+    return;
+  }
+
+  const file = `${location.directory}/${recordIndexName}${recordFileExtension}` satisfies File;
 
   const groups = await readRecordGroups(filesystem, kind);
 

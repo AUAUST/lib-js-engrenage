@@ -1,7 +1,5 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { Globs } from "#types/Globs";
-
 export const recordFileExtension = ".yml";
 
 export const recordIndexName = "index";
@@ -12,6 +10,7 @@ export const wordCapKinds = freeze([
   "doneWhen",
   "comment",
   "backlogEntry",
+  "logEntry",
 ] as const);
 
 export const wordCapModes = freeze(["warn", "deny"] as const);
@@ -24,9 +23,7 @@ export const defaultWordCaps = freeze({
   doneWhen: 150,
   comment: 150,
   backlogEntry: 100,
+  logEntry: 60,
 } as const);
 
-export const agentLogFiles = freeze([
-  ".ai/friction.md",
-  ".ai/discarded.md",
-] as const) satisfies Globs;
+export const recurringEntryCount = 3;

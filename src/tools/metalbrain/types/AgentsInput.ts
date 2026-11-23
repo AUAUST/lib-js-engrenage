@@ -61,7 +61,7 @@ export interface AgentsInput {
     hook?: (boolean | undefined)
   } | undefined)
   /**
-   * Word caps of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.
+   * Word caps of prose only, checked before `gh` writes issues and comments, by the `backlog` sync check for backlog entries, and by every record write.
    * Sections such as **Prerequisites** and **Tests** have no word cap.
    */
   wordCaps?: ({
@@ -95,5 +95,10 @@ export interface AgentsInput {
      * @default 100
      */
     backlogEntry?: (number | undefined)
+    /**
+     * Words of one friction, discarded or pending entry, written through `metalbrain friction|discarded|pending add`.
+     * @default 60
+     */
+    logEntry?: (number | undefined)
   } | undefined)
 }

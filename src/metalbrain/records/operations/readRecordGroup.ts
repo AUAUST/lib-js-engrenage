@@ -1,11 +1,10 @@
-import { recordFileExtension } from "#metalbrain/records/constants";
 import { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
+import { resolveRecordFile } from "#metalbrain/records/utils/resolveRecordFile";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
-import type { File } from "#types/File";
 
 /**
- * The `kind` group file `<name>.yml` read through the kind's schema as
+ * The `kind` group `name`, its file read through the kind's schema as
  * `parseRecordGroup` reads it; `undefined` when the file is missing.
  */
 export async function readRecordGroup(
@@ -13,7 +12,7 @@ export async function readRecordGroup(
   kind: RecordKind,
   name: string,
 ) {
-  const file = `${kind.location.directory}/${name}${recordFileExtension}` satisfies File;
+  const file = resolveRecordFile(kind, name);
 
   const content = await filesystem.read(file);
 

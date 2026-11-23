@@ -74,7 +74,7 @@
 - `pnpm engrenage planning walk 732`: walking the tree — unknown command; the subcommand is `walk check <n>`
 - published issue complexity: needed #749's complexity for its dispatch effort after `planning issue publish` — publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
 - grep is ugrep: `grep -o` with `.{0,1800}` context on a minified binary dump — ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`
-- `git reset --hard HEAD` to redo a `cherry-pick -n`: auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
+- `git reset --hard HEAD`: redo a `cherry-pick -n` — auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
 - commit gate vitest: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel — each passed alone; retried the commit
 - commit-msg hook: 77-character subject rejected — no git rule states the 72-character limit; shortened the subject
 - issue #733 placement of `rolePresetEntry`: moved it private into `extension.ts` as the issue mapped — `roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there

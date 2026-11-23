@@ -1,33 +1,33 @@
 import { isSeq, parseDocument } from "yaml";
 
-import { recordFileExtension } from "#metalbrain/records/constants";
+import { resolveRecordFile } from "#metalbrain/records/utils/resolveRecordFile";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
-import type { File } from "#types/File";
 
 /**
- * The `kind` group file `<group>.yml` as an editable YAML document, with
- * its `entries` list.
+ * The file of the `kind` group `group` as an editable YAML document, with
+ * its `entries` list; a kind keeping one file reads a missing file as
+ * holding no entries.
  *
- * @throws {Error} When the group is missing or unparsable, or holds no
- * `entries` list.
+ * @throws {Error} When a group of a kind keeping a directory is missing, or the
+ * file is unparsable or holds no `entries` list.
  */
 export async function readRecordDocument(
   filesystem: Filesystem,
   kind: RecordKind,
   group: string,
 ) {
-  const file = `${kind.location.directory}/${group}${recordFileExtension}` satisfies File;
+  const file = resolveRecordFile(kind, group);
 
   const content = await filesystem.read(file);
 
-  if (content === undefined) {
+  if (content === undefined && "directory" in kind.location) {
     throw new Error(
       `No ${kind.name} category "${group}": create it first with \`pnpm metalbrain ${kind.name} create ${group} "<purpose>"\``,
     );
   }
 
-  const document = parseDocument(content);
+  const document = parseDocument(content ?? "entries: []\n");
 
   const [error] = document.errors;
 

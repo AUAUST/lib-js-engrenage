@@ -193,6 +193,7 @@ git:
   entries:
     - 261122-4774
     - 261122-a06c
+    - 261123-e71e
 github:
   purpose: Generated GitHub workflows and templates.
   entries:

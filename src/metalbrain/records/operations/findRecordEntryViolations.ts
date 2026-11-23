@@ -13,7 +13,9 @@ type RecordEntry = Extract<
 >["entries"][number];
 
 function listKeys(kind: RecordKind, type: string): string[] {
-  return Object.keys(kind.fields).filter((key) => kind.fields[key] === type);
+  return Object.keys(kind.fields).filter((key) => {
+    return kind.fields[key]?.type === type;
+  });
 }
 
 function toItems(value: string | readonly string[] | undefined) {
@@ -88,7 +90,7 @@ export async function findRecordEntryViolations(
   }
 
   const prose = Object.keys(kind.fields)
-    .filter((key) => kind.fields[key] !== "sites")
+    .filter((key) => kind.fields[key]?.type !== "sites")
     .flatMap((key) => toItems(output[key]));
 
   const words = countWords(prose.join("\n"));

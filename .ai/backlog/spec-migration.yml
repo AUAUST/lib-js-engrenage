@@ -60,7 +60,18 @@ entries:
       - data/metalbrain/skills/curation.md:70
       - data/metalbrain/skills/curation.md:102
       - src/tools/metalbrain/setup/createBacklogStep.ts:98
-      - src/tools/metalbrain/setup/syncAgentFiles.ts:273
-    why: "the user defers the instruction changes #811 implies to one switch at the end; each item appends its sites here. Renames: `engrenage agents|planning|github|debt` → `metalbrain …` (#817–#819); `engrenage-hook claude` → `metalbrain hook claude` (#820; #835: PostToolUse `lintEdit`, Stop `gateStop`). #824: retire `.ai/backlog/index.md` and the code syncing it, its usage facts moving into the backlog rule, which then names only `metalbrain backlog` commands; category-list pointers → `metalbrain backlog categories`."
-    want: one writer dispatch applies these changes at these sites, then `pnpm engrenage sync` regenerates the copies.
-    done: "no instruction source names a command #811 renamed or `.ai/backlog/index.md`."
+      - src/tools/metalbrain/setup/syncAgentFiles.ts:281
+      - data/metalbrain/rules/agent-records.md:15
+      - data/metalbrain/rules/agent-records.md:16
+      - data/metalbrain/rules/agent-records.md:23
+      - data/metalbrain/rules/git.md:13
+      - data/metalbrain/shared/worktree-dispatch.md:19
+      - data/metalbrain/shared/worktree-dispatch.md:34
+      - data/metalbrain/skills/curation.md:35
+      - data/metalbrain/skills/curation.md:59
+      - data/metalbrain/skills/curation.md:85
+      - data/metalbrain/shared/request-analysis.md:7
+      - data/metalbrain/skills/merging.md:105
+    why: "#811's instruction changes wait for one final switch; items append sites. `engrenage agents|planning|github|debt` → `metalbrain …`; `engrenage-hook claude` → `metalbrain hook claude` (`lintEdit`, `gateStop`). #824: drop `.ai/backlog/index.md` and its sync code, facts into the backlog rule, pointers → `backlog categories`. #825: `.md` log paths and hand-counted recurrence → `metalbrain friction|discarded|pending` with `stats`; sync migrates the logs once no instruction names them."
+    want: "one writer dispatch applies them, then `pnpm engrenage sync` twice: the copies, then the log migration."
+    done: "no instruction source names a command #811 renamed, `.ai/backlog/index.md` or a `.md` log."

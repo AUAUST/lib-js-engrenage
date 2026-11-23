@@ -13,3 +13,10 @@ entries:
       - src/tools/git/constants.ts:60
     why: agent worktrees are not editor files.
     want: an agents group, or the agents domain contributing its own ignores.
+  - id: 261123-e71e
+    title: agent log YAML files lack the union merge the Markdown logs have
+    sites:
+      - .gitattributes:38
+    why: "#825 moves friction, discarded and pending logs to .ai/*.yml; .gitattributes merge=union covers only the .md logs, which worktree-dispatch cherry-picks conflict on"
+    want: parallel appends to the .yml logs merge without conflicts, or a reason they need none
+    done: the .yml logs have a merge strategy decided and written

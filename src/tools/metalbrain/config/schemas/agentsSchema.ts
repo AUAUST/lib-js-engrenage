@@ -117,10 +117,14 @@ export const agentsSchema = declareObject(
           description: "Words of the prose of one entry of `.ai/backlog/*.yml`.",
           optional: { value: defaultWordCaps.backlogEntry },
         }),
+        logEntry: declare(limitSchema, {
+          description: "Words of one friction, discarded or pending entry, written through `metalbrain friction|discarded|pending add`.",
+          optional: { value: defaultWordCaps.logEntry },
+        }),
       },
       {
         description: [
-          "Word caps of prose only, checked before `gh` writes issues and comments, and by the `backlog` sync check for backlog entries.",
+          "Word caps of prose only, checked before `gh` writes issues and comments, by the `backlog` sync check for backlog entries, and by every record write.",
           "Sections such as **Prerequisites** and **Tests** have no word cap.",
         ],
         optional: true,

@@ -10,7 +10,7 @@ bin/  (global roles: executable.ts *.ts)
 ├─ engrenage{batiment pnpm}  Project tooling commands.
 │  ├─ batiment  Walk the project structure and report how batiment classifies it.
 │  └─ pnpm  Package manager maintenance commands.
-└─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, debt markers, and the hooks the runtimes run directly from their settings.
+└─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} logs planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the agent logs, debt markers, and the hooks the runtimes run directly from their settings.
    ├─ agents{rules skills}  Agent lifecycle and instruction commands.
    │  ├─ rules  Install shared agent rules.
    │  └─ skills  Install shared agent skills.
@@ -19,6 +19,7 @@ bin/  (global roles: executable.ts *.ts)
    │  └─ labels  Sync the current repository's labels with the config.
    ├─ hook{claude}  Agent runtime hook commands of metalbrain.
    │  └─ claude  Claude hook events of metalbrain.
+   ├─ logs  Add, find, close and count the entries of one log record kind; registered once per kind, under the kind's name.
    └─ planning{issue walk}  Draft, publish and walk planned GitHub issues.
       ├─ issue  Create, claim, check and publish issue drafts, and check published issues.
       └─ walk  Check a walked issue tree.

@@ -2,8 +2,9 @@ import type { RecordFields } from "#metalbrain/records/types/RecordFields";
 import type { RecordLocation } from "#metalbrain/records/types/RecordLocation";
 
 /**
- * A record kind's declaration, all the record core needs to store, check and index
- * its entries; `WordCap` is the config word cap key bounding an entry's words.
+ * A record kind's declaration, all the record core needs to store, check,
+ * index and count its entries; `WordCap` is the config word cap key bounding
+ * an entry's words.
  */
 export interface RecordKind<WordCap extends string = string> {
   /**
@@ -17,4 +18,8 @@ export interface RecordKind<WordCap extends string = string> {
    */
   readonly detailLimit: number;
   readonly wordCap: WordCap;
+  /**
+   * The text field `countRecords` counts entries by.
+   */
+  readonly groupBy?: string;
 }

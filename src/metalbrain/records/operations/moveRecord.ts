@@ -5,7 +5,7 @@ import { writeRecordDocument } from "#metalbrain/records/operations/writeRecordD
 import { writeRecordIndex } from "#metalbrain/records/operations/writeRecordIndex";
 import { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { RecordKind } from "#metalbrain/records/types/RecordKind";
+import type { GroupedRecordKind } from "#metalbrain/records/types/GroupedRecordKind";
 
 /**
  * Stages the `kind` entry `id`, its ID kept, at the end of the group file
@@ -19,7 +19,7 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
  */
 export async function moveRecord(
   filesystem: Filesystem,
-  kind: RecordKind,
+  kind: GroupedRecordKind,
   id: string,
   group: string,
   { wordCap }: { wordCap: number },

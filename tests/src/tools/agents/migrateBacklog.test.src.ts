@@ -146,9 +146,16 @@ describe("backlog migration", () => {
 
     expect(first.why).toBe(`see \`${second.id}\``);
 
-    expect(project.read(".ai/friction.md")).toBe(
-      `# Agent friction\n\n- x: ${first.id} and tools.12 — y\n`,
-    );
+    expect(parse(project.read(".ai/friction.yml"))).toEqual({
+      entries: [
+        {
+          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
+          subject: "x",
+          tried: `${first.id} and tools.12`,
+          stopped: "y",
+        },
+      ],
+    });
 
     expect(project.read(".claude/rules/tools.md")).toBe(
       `# Tools\n\nSee ${second.id}.\n`,

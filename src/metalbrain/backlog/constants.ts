@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { RecordKind } from "#metalbrain/records/index";
+import type { GroupedRecordKind } from "#metalbrain/records/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -11,15 +11,24 @@ export const backlog = freeze({
   name: "backlog",
   location: freeze({ directory: backlogDirectory }),
   fields: freeze({
-    title: "text",
-    sites: "sites",
-    why: "detail",
-    want: "detail",
-    done: "detail",
+    title: freeze({
+      type: "text",
+      description: "the claim: the problem or need, stated exactly",
+    }),
+    sites: freeze({
+      type: "sites",
+      description: "code sites as `<path>:<line>`",
+    }),
+    why: freeze({ type: "detail", description: "context" }),
+    want: freeze({ type: "detail", description: "expected outcome" }),
+    done: freeze({
+      type: "detail",
+      description: "completion or obsolescence condition",
+    }),
   }),
   detailLimit: 3,
   wordCap: "backlogEntry",
-} as const) satisfies RecordKind;
+} as const) satisfies GroupedRecordKind;
 
 export const backlogIndex = `${backlogDirectory}/index.md` satisfies File;
 

@@ -16,6 +16,7 @@ import {
   type FragmentRenderer,
   type GeneratedFrontmatter,
 } from "#metalbrain/instructions/index";
+import { migrateAgentLogs } from "#metalbrain/logs/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
 import {
   hasPreferredAgents,
@@ -265,6 +266,13 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
   await removeCodexFiles(config);
 
   await migrateBacklogCategories(
+    config.filesystem,
+    new Date(),
+    config.agents.instructionFiles,
+  );
+
+  // @debt a log stays Markdown, silently, while an instruction file names it, read before this sync fills the instructions: the sync stopping their mention leaves the migration to the next one, and a project whose own rule names a log never learns why it stays
+  await migrateAgentLogs(
     config.filesystem,
     new Date(),
     config.agents.instructionFiles,

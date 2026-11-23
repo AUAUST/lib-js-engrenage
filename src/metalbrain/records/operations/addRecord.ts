@@ -37,7 +37,7 @@ export async function addRecord<Kind extends RecordKind>(
   appendRecordEntry(kind, record, {
     id,
     ...Object.fromEntries(
-      Object.entries(kind.fields).map(([key, type]) => {
+      Object.entries(kind.fields).map(([key, { type }]) => {
         return [key, toRecordValue(type, fields[key])];
       }),
     ),

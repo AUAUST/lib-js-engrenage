@@ -40,7 +40,7 @@
 - toolkit `barrels.exports` contribution for the `guard` entry: one entry collecting a role from every domain (#454) — re-derives the structure in toolkit, and lands after toolkit#203, whose names would drop meanwhile
 - ids in the planning sheet: direct GitHub calls without reading the snapshot (#207) — every agent would load them; the snapshot holds them
 - publish re-rendering an unclaimed Plan's Roadmap: segment members expanded when only the segment changes (#207) — writes an issue without its claim; the set must include the Plan instead
-- walk check computing the issue-walking handling-table row (#452) — restates the skill's table in code; findings carry their rule instead
+- walk check: computing the issue-walking handling-table row (#452) — restates the skill's table in code; findings carry their rule instead
 - `parent` and `after` on child drafts: sub-issue order (#323) — order scattered across children; parents' `subIssues` decided in #207
 - `tools/github/drafts` sub-domain only: placement of the planner code (#207) — leaves the mixed domain to a later split; layered `tools/github/issues` namespace chosen
 - @octokit/plugin-paginate-graphql: paginate issue-tree connections (#452) — new bundled dependency for one cursor loop; local loop as in the snapshot fetch

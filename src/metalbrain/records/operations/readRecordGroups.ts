@@ -8,21 +8,34 @@ import { readRecordGroup } from "#metalbrain/records/operations/readRecordGroup"
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
+async function listGroupNames(
+  filesystem: Filesystem,
+  kind: RecordKind,
+): Promise<string[]> {
+  const { location } = kind;
+
+  if (!("directory" in location)) {
+    return (await filesystem.exists(location.file)) ? [kind.name] : [];
+  }
+
+  const files = await filesystem.glob(
+    `${location.directory}/*${recordFileExtension}`,
+  );
+
+  return files
+    .map((file) => posix.basename(file, recordFileExtension))
+    .filter((name) => name !== recordIndexName);
+}
+
 /**
  * Every group file of `kind`, in name order, the generated index aside, read as
- * `readRecordGroup` reads it.
+ * `readRecordGroup` reads it: none for a kind keeping one file not yet written.
  */
 export async function readRecordGroups(
   filesystem: Filesystem,
   kind: RecordKind,
 ) {
-  const { directory } = kind.location;
-
-  const files = await filesystem.glob(`${directory}/*${recordFileExtension}`);
-
-  const names = files
-    .map((file) => posix.basename(file, recordFileExtension))
-    .filter((name) => name !== recordIndexName);
+  const names = await listGroupNames(filesystem, kind);
 
   return Promise.all(
     names.map(async (name) => {
@@ -30,7 +43,7 @@ export async function readRecordGroups(
 
       if (group === undefined) {
         throw new Error(
-          `${directory}/${name}${recordFileExtension}: listed by the ${kind.name} glob but unreadable`,
+          `The ${kind.name} group "${name}" is listed but unreadable`,
         );
       }
 

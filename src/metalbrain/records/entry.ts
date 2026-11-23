@@ -1,6 +1,7 @@
 export {
   addRecord,
   closeRecord,
+  countRecords,
   createRecordGroup,
   findRecord,
   findRecordViolations,
@@ -17,6 +18,8 @@ export {
 } from "#metalbrain/records/index";
 export type {
   FoundRecord,
+  GroupedRecordKind,
+  RecordField,
   RecordKind,
   WordCapFinding,
   WordCapKind,
