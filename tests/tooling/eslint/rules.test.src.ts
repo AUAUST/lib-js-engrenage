@@ -1,5 +1,5 @@
 import { ESLint } from "eslint";
-import { describe, expect, onTestFinished, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { assign } from "@auaust/toolkit/object";
 
@@ -9,26 +9,11 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 import { definerEntries, sectionDeclarations } from "#tooling/eslint/index";
 import { createEslintConfig } from "#tools/eslint/index";
-import { extensionImports } from "#tools/eslint/rules/extensionImports";
+import { extension } from "#tools/eslint/roles/index";
 
-const rulesKey = "__engrenageToolingRules";
-
-const configRole = `{ name: "config", roles: [{ name: "definers", file: "define*Config.ts", rules: { entries: globalThis.${rulesKey}.definerEntries } }, { name: "schemas", accepts: "*Schema.ts" }, { name: "sections", accepts: "*Section.ts", rules: { declarations: globalThis.${rulesKey}.sectionDeclarations } }] }`;
-
-const extensionRole = `{ name: "extension", file: "extension.ts", rules: { imports: globalThis.${rulesKey}.extensionImports } }`;
+const configRole = `{ name: "config", roles: [{ name: "definers", file: "define*Config.ts" }, { name: "schemas", accepts: "*Schema.ts" }, { name: "sections", accepts: "*Section.ts" }] }`;
 
 async function createLinter() {
-  // @debt the temporary config cannot import the repository's tooling, so the rules cross through `globalThis`; test configs should resolve them
-  Reflect.set(globalThis, rulesKey, {
-    definerEntries,
-    extensionImports,
-    sectionDeclarations,
-  });
-
-  onTestFinished(() => {
-    Reflect.deleteProperty(globalThis, rulesKey);
-  });
-
   const roles = renderCodeRoles(entrypoint()).slice(0, -1);
 
   const project = createTemporaryProject({
@@ -37,7 +22,7 @@ async function createLinter() {
       type: "module",
       imports: { "#project/*": "./src/project/*.ts" },
     }),
-    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${configRole}, ${extensionRole}], structure: { layers: ["project"] } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", src: { roles: ${roles}, ${configRole}, ${JSON.stringify(extension())}], structure: { layers: ["project"] } } };\n`,
     "src/project/listed/index.ts": "export {};\n",
     "src/project/listed/entry.ts": 'export { defineListedConfig } from "./config/defineListedConfig.ts";\n',
     "src/project/listed/config/sections/listedSection.ts": "export {};\n",
@@ -53,9 +38,18 @@ async function createLinter() {
     overrideConfigFile: true,
     overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
+      roleRules: {
+        "config/definers": {
+          "definer-entries": () => Promise.resolve(definerEntries),
+        },
+        "config/sections": {
+          "section-declarations": () => Promise.resolve(sectionDeclarations),
+        },
+      },
     }),
   });
 
+  // @debt the linting harness duplicates the one in tests/src/tools/eslint/boundaries.test.ts; a shared test util would own it
   async function report(filePath: string, source: string) {
     const [result] = await eslint.lintText(source, {
       filePath: project.resolve(filePath),
@@ -89,7 +83,7 @@ describe("tooling role rules", () => {
 
     expect(
       await lint(file, "export const listedSection = { name: 'listed' };\n"),
-    ).toEqual(["roles/config/sections/declarations"]);
+    ).toEqual(["roles/config/sections/section-declarations"]);
 
     expect(
       await lint(
@@ -109,7 +103,7 @@ describe("tooling role rules", () => {
         "src/project/unlisted/config/defineUnlistedConfig.ts",
         definer.replace("$", "Unlisted"),
       ),
-    ).toEqual(["roles/config/definers/entries"]);
+    ).toEqual(["roles/config/definers/definer-entries"]);
 
     expect(
       await lint(
