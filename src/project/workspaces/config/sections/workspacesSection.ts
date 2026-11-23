@@ -1,4 +1,4 @@
-import { flatMap, map, toDeduplicated } from "@auaust/toolkit/array";
+import { flatMap, toDeduplicated } from "@auaust/toolkit/array";
 
 import { withExtensions } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
@@ -15,9 +15,9 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const [options, discovery, kinds, languages] = await Promise.all([
+    const [options, context, kinds, languages] = await Promise.all([
       config.resolve("workspaces.options"),
-      config.resolve("scopes.discovery"),
+      config.resolve("structure.context"),
       config.context.registry.contributions("environmentKinds", config),
       config.context.registry.contributions("languages", config),
     ]);
@@ -38,6 +38,8 @@ export const workspacesSection = declareSection({
       return entry.modules === true ? entry.extensions : [];
     });
 
+    const { expected } = await context.discover();
+
     return resolveWorkspaces({
       root,
       filesystem,
@@ -45,7 +47,7 @@ export const workspacesSection = declareSection({
       // @debt a workspace's globs take every kind's default languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
       typescriptFiles: listLanguageFiles(selected),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
-      discoveredDirs: map(discovery.workspaces, ({ dir }) => dir),
+      expected,
     });
   },
 });

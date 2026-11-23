@@ -1,12 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import {
-  discoverWorkspaces,
-  type DiscoveredEnvironment,
-  type DiscoveredWorkspace,
-} from "#batiment/scopes/index";
 import { declareSection } from "#foundation/options/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
+import type {
+  DiscoveredEnvironment,
+  DiscoveredWorkspace,
+} from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 
@@ -20,24 +19,18 @@ export const discoverySection = declareSection({
     readonly diagnostics: readonly StructureDiagnostic[];
     readonly ignored: Globs;
   }> {
-    const [repository, kinds, languages] = await Promise.all([
-      config.resolve("git"),
-      config.context.registry.contributions("environmentKinds", config),
-      config.context.registry.contributions("languages", config),
-    ]);
+    const context = await config.resolve("structure.context");
 
-    const ignored = await repository.ignored;
-
-    const { workspaces, environments, diagnostics } = await discoverWorkspaces({
-      filesystem: config.context.filesystem,
+    const {
+      workspaces,
+      metafiles,
+      diagnostics,
       ignored,
-      kinds: kinds.map(({ entry }) => entry.name),
-      languages: languages.map(({ entry }) => entry.name),
-    });
+    } = await context.discover();
 
     return freeze({
       workspaces,
-      environments,
+      environments: metafiles,
       diagnostics,
       ignored,
     });

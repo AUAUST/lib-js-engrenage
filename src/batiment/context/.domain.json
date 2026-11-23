@@ -1,0 +1,3 @@
+{
+  "purpose": "The context port a host answers with root and scope facts, and the driver sequencing discovery and each scope's walk over its answers."
+}

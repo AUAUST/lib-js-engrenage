@@ -19,11 +19,11 @@ export const toolingSection = declareSection({
 
     const languages = await readEnvironmentLanguages(config, "tooling");
 
-    const { dirs, rootFiles, active } = await discoverDeclaredEnvironment(
-      config,
-      "tooling",
-      { dirs: option.dirs, files: option.files },
-    );
+    const {
+      dirs,
+      rootFiles,
+      active,
+    } = await discoverDeclaredEnvironment(config, "tooling");
 
     return freeze(
       compose(

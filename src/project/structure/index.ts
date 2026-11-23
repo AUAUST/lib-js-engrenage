@@ -18,6 +18,7 @@ export { createImportResolver } from "#project/structure/utils/createImportResol
 
 // @barrel config/sections
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+export { contextSection } from "#project/structure/config/sections/contextSection";
 export { effectModulesSection } from "#project/structure/config/sections/effectModulesSection";
 export { entitiesSection } from "#project/structure/config/sections/entitiesSection";
 export { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";

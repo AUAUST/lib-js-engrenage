@@ -43,36 +43,37 @@ const liquidSection = declareSection({
     const {
       dirs,
       active,
-    } = await discoverDeclaredEnvironment(config, "liquid", {
-      dirs: readInputDirs(await config.input("liquid.options")) ?? ["liquid"],
-      files: [],
-    });
+    } = await discoverDeclaredEnvironment(config, "liquid");
 
     return { active, dirs };
   },
 });
 
-const liquidOptionsSection = declareSection({
-  declaration: liquidSchema,
-  resolve() {
-    return {
-      dirs: [],
-      enabled: true,
-      roles: [],
-      structure: {
-        layers: undefined,
-        relation: "peers",
-        children: undefined,
-        purpose: undefined,
-        roles: { enable: [] },
-        namespaces: {},
-        domains: {},
-      },
-      optOut: [],
-      strictness: "loose",
-    };
-  },
-});
+function createOptionsSection(defaults: readonly string[]) {
+  return declareSection({
+    declaration: liquidSchema,
+    resolve(input) {
+      return {
+        dirs: readInputDirs(input) ?? defaults,
+        enabled: true,
+        roles: [],
+        structure: {
+          layers: undefined,
+          relation: "peers",
+          children: undefined,
+          purpose: undefined,
+          roles: { enable: [] },
+          namespaces: {},
+          domains: {},
+        },
+        optOut: [],
+        strictness: "loose",
+      };
+    },
+  });
+}
+
+const liquidOptionsSection = createOptionsSection(["liquid"]);
 
 function createLiquid(owns: readonly string[] = []): Extension {
   return {
@@ -122,10 +123,7 @@ function createWorkers(
       const {
         dirs,
         active,
-      } = await discoverDeclaredEnvironment(config, "workers", {
-        dirs: readInputDirs(await config.input("workers.options")) ?? defaults,
-        files: [],
-      });
+      } = await discoverDeclaredEnvironment(config, "workers");
 
       return {
         active,
@@ -148,7 +146,7 @@ function createWorkers(
         "workers.options": {
           input: "workers",
           load() {
-            return Promise.resolve(liquidOptionsSection);
+            return Promise.resolve(createOptionsSection(defaults));
           },
         },
       },

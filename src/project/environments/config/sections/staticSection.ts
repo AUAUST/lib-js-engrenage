@@ -7,15 +7,10 @@ import type { ResolvedStatic } from "#project/environments/types/ResolvedStatic"
 
 export const staticSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedStatic> {
-    const option = await config.resolve("static.options");
-
     const {
       dirs,
       active,
-    } = await discoverDeclaredEnvironment(config, "static", {
-      dirs: option.dirs,
-      files: [],
-    });
+    } = await discoverDeclaredEnvironment(config, "static");
 
     return freeze({
       active,

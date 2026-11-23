@@ -9,10 +9,7 @@ export const dataSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedData> {
     const option = await config.resolve("data.options");
 
-    const { dirs, active } = await discoverDeclaredEnvironment(config, "data", {
-      dirs: option.dirs,
-      files: [],
-    });
+    const { dirs, active } = await discoverDeclaredEnvironment(config, "data");
 
     return freeze({
       active,

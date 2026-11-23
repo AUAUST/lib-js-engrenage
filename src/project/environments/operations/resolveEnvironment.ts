@@ -6,22 +6,17 @@ import { resolveCodeEnvironment } from "#project/environments/operations/resolve
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 import type { ConfigResolver } from "#project/config/index";
-import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
 export async function resolveEnvironment(
   config: ConfigResolver,
   option: {
-    dirs: Directories;
     generated: Globs;
     discovered: Globs;
   },
   name: string,
 ) {
-  const { dirs, active } = await discoverDeclaredEnvironment(config, name, {
-    dirs: option.dirs,
-    files: [],
-  });
+  const { dirs, active } = await discoverDeclaredEnvironment(config, name);
 
   return freeze({
     ...resolveCodeEnvironment({

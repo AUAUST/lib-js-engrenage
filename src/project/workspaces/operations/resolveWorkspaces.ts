@@ -2,33 +2,22 @@ import { basename } from "node:path/posix";
 
 import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
-import { entries, freeze } from "@auaust/toolkit/object";
+import { freeze, getOwn } from "@auaust/toolkit/object";
 
-import {
-  filesIn,
-  findDirectories,
-  type Filesystem,
-} from "#foundation/filesystem/index";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
 import {
   directoryPlaceholder,
   workspaceTsconfigFile,
 } from "#project/workspaces/constants";
+import type { ExpectedWorkspaces } from "#batiment/context/index";
 import type { OutputOf } from "#foundation/options/index";
 import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
 import type { ResolvedWorkspace } from "#project/workspaces/types/ResolvedWorkspace";
 import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedWorkspaceGroup";
-import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
-
-async function listDirectories(
-  filesystem: Filesystem,
-  glob: Glob,
-): Promise<Directory[]> {
-  return [...(await findDirectories(filesystem, await filesystem.glob(glob)))];
-}
 
 export async function resolveWorkspaces({
   root,
@@ -36,45 +25,29 @@ export async function resolveWorkspaces({
   options,
   typescriptFiles,
   entryGlob,
-  discoveredDirs,
+  expected,
 }: {
   root: Directory;
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
   entryGlob: Glob;
-  discoveredDirs: Directories;
+  expected: readonly ExpectedWorkspaces[];
 }): Promise<readonly ResolvedWorkspaceGroup[]> {
-  const claimed = new Map<Directory, Glob>();
+  const matched = map(expected, ({ glob, dirs, missing }) => {
+    const option = getOwn(options, glob);
 
-  const listed = await Promise.all(
-    iterable.map(entries(options), async ([glob, option]) => {
-      return {
-        glob,
-        option,
-        dirs: await listDirectories(filesystem, glob),
-      };
-    }),
-  );
-
-  const matched = map(listed, ({ glob, option, dirs }) => {
-    for (const dir of dirs) {
-      const other = claimed.get(dir);
-
-      if (other !== undefined) {
-        throw new Error(
-          `The workspace ${dir} is matched by both workspaces.${other} and workspaces.${glob}: give each workspace one glob`,
-        );
-      }
-
-      claimed.set(dir, glob);
+    if (option === undefined) {
+      throw new Error(
+        `Discovery expected workspaces at ${glob}, which no workspaces option declares`,
+      );
     }
 
     return {
       glob,
       option,
-      dirs: dirs.filter((dir) => discoveredDirs.includes(dir)),
-      missing: dirs.filter((dir) => !discoveredDirs.includes(dir)),
+      dirs,
+      missing,
     };
   });
 

@@ -7,7 +7,8 @@ paths:
 
 ```
 src/  foundation < batiment < metalbrain < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
-├─ batiment/  #batiment/…  report < roles < environments < scopes < structure  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+├─ batiment/  #batiment/…  report < roles < environments < scopes < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+│  ├─ context  The context port a host answers with root and scope facts, and the driver sequencing discovery and each scope's walk over its answers.
 │  ├─ environments  Declare environment kinds and the namespace and domain declarations structuring them.
 │  ├─ report  The structure report's diagnostics and their codes, shared by every batiment domain.
 │  ├─ roles  Declare role contracts.
