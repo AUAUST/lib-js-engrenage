@@ -37,7 +37,7 @@ entries:
     title: "Instructions still name commands #811 renamed"
     sites:
       - data/metalbrain/shared/linked-checkouts.md:31
-      - data/metalbrain/skills/walking.md:213
+      - data/metalbrain/skills/walking.md:207
       - .claude/rules/agent-fragments.md:14
       - data/metalbrain/rules/issue-drafts.md:139
       - data/metalbrain/rules/issue-drafts.md:140
@@ -45,20 +45,20 @@ entries:
       - data/metalbrain/rules/issue-drafts.md:145
       - data/metalbrain/shared/issue-tree.md:61
       - data/metalbrain/shared/steps-migration.md:12
-      - data/metalbrain/skills/consultant.md:47
-      - data/metalbrain/skills/implement.md:45
-      - data/metalbrain/skills/walking.md:57
-      - data/metalbrain/skills/walking.md:73
+      - data/metalbrain/skills/consultant.md:43
+      - data/metalbrain/skills/implement.md:40
+      - data/metalbrain/skills/walking.md:51
+      - data/metalbrain/skills/walking.md:67
       - data/metalbrain/sections/environment.md:17
-      - data/metalbrain/skills/curation.md:71
+      - data/metalbrain/skills/curation.md:65
       - data/metalbrain/templates/backlog.md:1
       - data/metalbrain/rules/backlog.md:8
       - data/metalbrain/sections/backlog.md:8
       - data/metalbrain/shared/dispatching.md:23
       - data/metalbrain/rules/issue-drafts.md:86
       - data/metalbrain/rules/issue-drafts.md:88
-      - data/metalbrain/skills/curation.md:70
-      - data/metalbrain/skills/curation.md:102
+      - data/metalbrain/skills/curation.md:64
+      - data/metalbrain/skills/curation.md:96
       - src/tools/metalbrain/setup/createBacklogStep.ts:98
       - src/tools/metalbrain/setup/syncAgentFiles.ts:281
       - data/metalbrain/rules/agent-records.md:8
@@ -67,15 +67,15 @@ entries:
       - data/metalbrain/rules/git.md:10
       - data/metalbrain/shared/worktree-dispatch.md:19
       - data/metalbrain/shared/worktree-dispatch.md:34
-      - data/metalbrain/skills/curation.md:35
-      - data/metalbrain/skills/curation.md:59
-      - data/metalbrain/skills/curation.md:85
+      - data/metalbrain/skills/curation.md:29
+      - data/metalbrain/skills/curation.md:53
+      - data/metalbrain/skills/curation.md:79
       - data/metalbrain/shared/request-analysis.md:7
-      - data/metalbrain/skills/merging.md:105
+      - data/metalbrain/skills/merging.md:101
       - data/metalbrain/rules/issue-drafts.md:76
       - data/metalbrain/rules/word-caps.md:8
       - .claude/rules/agent-fragments.md:8
       - .claude/rules/agent-fragments.md:11
-    why: "#811's instruction changes wait for one final switch; items append sites. `engrenage agents|planning|github|debt` → `metalbrain …`; `engrenage-hook claude` → `metalbrain hook claude` (`lintEdit`, `gateStop`). #824: drop `.ai/backlog/index.md` and its sync code, facts into the backlog rule, pointers → `backlog categories`. #825: `.md` log paths and hand-counted recurrence → `metalbrain friction|discarded|pending` with `stats`; sync migrates the logs once no instruction names them. #826: word-cap prose → `@word-caps` blocks. #836: section and rule metadata → `agents.instructions` entries; `extension` frontmatter stays for skills only."
+    why: "#811's instruction changes wait for one final switch; items append sites. `engrenage agents|planning|github|debt`, `engrenage-hook claude` (`lintEdit`, `gateStop`) → `metalbrain …`. #824: drop `.ai/backlog/index.md` and its sync code, pointers → `backlog categories`. #825: `.md` logs, hand-counted recurrence → `metalbrain friction|discarded|pending`, `stats`. #826: word-cap prose → `@word-caps`. #836, #837: section, rule and skill metadata → `agents.instructions` entries; only skill `agent` blocks stay as frontmatter."
     want: "one writer dispatch applies them, then `pnpm engrenage sync` twice: the copies, then the log migration."
     done: "no instruction source names a command #811 renamed, `.ai/backlog/index.md` or a `.md` log."

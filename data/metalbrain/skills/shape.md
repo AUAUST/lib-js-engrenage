@@ -1,9 +1,6 @@
 ---
 title: Shape
 description: Shape, with the user, an idea whose definition or approach is not yet clear; settle its requirements while agents investigate and implement in the background, until it is implemented, planned, recorded in the backlog or dropped. Use only when the user invokes it.
-category: workflow
-order: 3
-invocation: explicit
 ---
 
 # Shape

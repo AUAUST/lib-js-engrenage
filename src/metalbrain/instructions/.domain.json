@@ -1,4 +1,4 @@
 {
   "specifier": "future/metalbrain/instructions",
-  "purpose": "The instruction registry of sections and rules built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter."
+  "purpose": "The instruction registry of sections, rules and skills built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter."
 }

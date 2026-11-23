@@ -5,7 +5,7 @@ import { startAgentRun } from "#metalbrain/runtimes/operations/startAgentRun";
 import { writeAgentRun } from "#metalbrain/runtimes/operations/writeAgentRun";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 
 function usage(startContext: number, peakContext: number) {
   return {
@@ -27,9 +27,9 @@ async function setUp() {
     }),
   });
 
-  const {
-    fragments,
-  } = await loadMetalbrainFacts(await loadConfig(project.root));
+  const instructions = await loadInstructionRegistry(
+    await loadConfig(project.root),
+  );
 
   const directory = project.resolve(".ai/stats");
 
@@ -53,7 +53,7 @@ async function setUp() {
     record,
     check(recipient: string) {
       return checkAgentResume(
-        { directory: `${directory}/session`, fragments },
+        { directory: `${directory}/session`, instructions },
         recipient,
       );
     },

@@ -1,13 +1,14 @@
 import { readFile } from "node:fs/promises";
 
 import {
-  getInstructionTemplates,
+  getRegisteredTemplates,
   getSharedFiles,
   parseInstruction,
   resolveAgentReference,
 } from "#metalbrain/instructions/index";
 import { getAgentRuntimes } from "#tools/metalbrain/operations/getAgentRuntimes";
 import { loadFragmentRenderer } from "#tools/metalbrain/operations/loadFragmentRenderer";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
 import type { DirectiveFill, LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -27,10 +28,13 @@ const loadedSkills = new WeakMap<
 async function indexSkills(
   config: LoadedConfig,
 ): Promise<ReadonlyMap<string, ShippedSkill>> {
-  const { fragments } = await loadMetalbrainFacts(config);
+  const [{ fragments }, instructions] = await Promise.all([
+    loadMetalbrainFacts(config),
+    loadInstructionRegistry(config),
+  ]);
 
-  const templates = await getInstructionTemplates("skills", {
-    fragments,
+  const templates = await getRegisteredTemplates("skill", {
+    instructions,
     supporting: true,
   });
 

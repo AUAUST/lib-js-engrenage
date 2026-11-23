@@ -6,6 +6,7 @@ import {
   syncFrontmatter,
   type FragmentRenderer,
   type InstructionFormatter,
+  type InstructionRegistry,
 } from "#metalbrain/instructions/index";
 import {
   claudeAgentsDir,
@@ -29,6 +30,7 @@ export async function checkAgents({
   root,
   agents,
   fragments,
+  instructions,
   renderer,
   runtimes,
   roots,
@@ -38,6 +40,7 @@ export async function checkAgents({
   root: Directory;
   agents: ResolvedAgents;
   fragments: FragmentSources;
+  instructions: InstructionRegistry;
   renderer: FragmentRenderer;
   runtimes: readonly AgentRuntime[];
   roots: HookRoots;
@@ -66,6 +69,7 @@ export async function checkAgents({
   const templates = await getSkillTemplates({
     agents,
     fragments,
+    instructions,
     renderer,
     runtimes,
     roots,

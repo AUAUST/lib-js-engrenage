@@ -1,12 +1,6 @@
 ---
 title: Walking
 description: Walk a planned tree of GitHub issues in order, dispatching each leaf to a worker or debugger, then reviewing and committing it. Use only when the user asks to walk an issue tree.
-category: workflow
-extension: tools/github/issues/planning
-order: 25
-invocation: explicit
-formerly:
-  - issue-walking
 ---
 
 # Walking

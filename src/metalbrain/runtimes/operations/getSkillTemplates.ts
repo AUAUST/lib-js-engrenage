@@ -2,6 +2,7 @@ import {
   createInstructionFile,
   type FragmentRenderer,
   type GeneratedFrontmatter,
+  type InstructionRegistry,
 } from "#metalbrain/instructions/index";
 import {
   claudeAgentFrontmatterKeys,
@@ -25,12 +26,14 @@ import type { File } from "#types/File";
 export async function getSkillTemplates({
   agents,
   fragments,
+  instructions,
   renderer,
   runtimes,
   roots,
 }: {
   agents: ResolvedAgents;
   fragments: FragmentSources;
+  instructions: InstructionRegistry;
   renderer: FragmentRenderer;
   runtimes: readonly AgentRuntime[];
   roots: HookRoots;
@@ -56,6 +59,7 @@ export async function getSkillTemplates({
     }
 
     const definitions = await getSkillDefinitions({
+      instructions,
       fragments,
       render: { renderer, skillsDirectory: skills },
     });
@@ -72,7 +76,8 @@ export async function getSkillTemplates({
 
   // @debt the entry's top-level `body` belongs to the first preferred runtime; per-runtime renderings would belong in separate fields
   const primary = (
-    renderings[0]?.definitions ?? (await getSkillDefinitions({ fragments }))
+    renderings[0]?.definitions ??
+    (await getSkillDefinitions({ instructions, fragments }))
   );
 
   return primary.map((template) => {

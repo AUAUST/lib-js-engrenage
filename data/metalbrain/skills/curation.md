@@ -1,12 +1,6 @@
 ---
 title: Curation
 description: Turn the scratchpad, `@debt` markers, code clones and agent logs into backlog entries, filing the ready ones as issues where GitHub planning is on. Use when the user asks to triage the scratchpad, harvest debt markers or friction, or update, settle or file backlog entries.
-category: workflow
-order: 40
-formerly:
-  - scratchpad
-  - debt-harvesting
-  - backlog-handling
 ---
 
 # Curation

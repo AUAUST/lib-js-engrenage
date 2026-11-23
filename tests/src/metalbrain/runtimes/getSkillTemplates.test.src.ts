@@ -19,31 +19,28 @@ const skill = vi.hoisted(() => {
   };
 });
 
-vi.mock(
-  import("#metalbrain/instructions/operations/getInstructionTemplates"),
-  () => {
-    return {
-      getInstructionTemplates: () => {
-        return Promise.resolve([
-          {
-            title: skill.name,
-            description: `${skill.name} skill`,
-            category: "workflow",
-            default: false,
-            order: 0,
-            name: skill.name,
-            source: `/skills/${skill.name}.md`,
-            reference: `@auaust/engrenage/metalbrain/skills/${skill.name}.md`,
-            body: `# ${skill.name}`,
-            paths: undefined,
-            supporting: [],
-            agent: skill.agent,
-          },
-        ]);
-      },
-    };
-  },
-);
+vi.mock("#metalbrain/instructions/operations/getRegisteredTemplates", () => {
+  return {
+    getRegisteredTemplates: () => {
+      return Promise.resolve([
+        {
+          kind: "skill",
+          title: skill.name,
+          description: `${skill.name} skill`,
+          category: "workflow",
+          default: false,
+          name: skill.name,
+          source: `/skills/${skill.name}.md`,
+          reference: `@auaust/engrenage/metalbrain/skills/${skill.name}.md`,
+          conditional: false,
+          body: `# ${skill.name}`,
+          supporting: [],
+          agent: skill.agent,
+        },
+      ]);
+    },
+  };
+});
 
 const thoroughnessHook = [
   {

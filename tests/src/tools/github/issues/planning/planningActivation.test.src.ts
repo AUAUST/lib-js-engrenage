@@ -5,7 +5,7 @@ import { createProjectConfig } from "#project/config/operations/createProjectCon
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { syncGeneratedRules } from "#tools/metalbrain/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 
@@ -48,7 +48,7 @@ async function describePlanning(config: ReturnType<typeof createConfig>) {
   await syncGeneratedRules(config);
 
   const skills = await getSkillDefinitions({
-    fragments: (await loadMetalbrainFacts(config)).fragments,
+    instructions: await loadInstructionRegistry(config),
   });
 
   return {

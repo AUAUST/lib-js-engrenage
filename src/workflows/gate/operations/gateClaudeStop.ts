@@ -8,7 +8,7 @@ import {
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/index";
+import { loadInstructionRegistry } from "#tools/metalbrain/index";
 import { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 
 const payloadSchema = looseObject({
@@ -22,9 +22,9 @@ async function isGatedAgent(
   config: LoadedConfig,
   name: string,
 ): Promise<boolean> {
-  const { fragments } = await loadMetalbrainFacts(config);
-
-  const definitions = await getSkillDefinitions({ fragments });
+  const definitions = await getSkillDefinitions({
+    instructions: await loadInstructionRegistry(config),
+  });
 
   return definitions.some(({ agent }) => {
     return agent?.name === name && agent.gate === true;

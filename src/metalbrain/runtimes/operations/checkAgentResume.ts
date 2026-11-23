@@ -2,14 +2,14 @@ import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDef
 import { readAgentRuns } from "#metalbrain/runtimes/operations/readAgentRuns";
 import { readRunningAgents } from "#metalbrain/runtimes/operations/readRunningAgents";
 import { formatCount } from "#metalbrain/runtimes/utils/formatCount";
-import type { FragmentSources } from "#metalbrain/facts/index";
+import type { InstructionRegistry } from "#metalbrain/instructions/index";
 import type { Directory } from "#types/Directory";
 
 async function resolveCeiling(
-  fragments: FragmentSources,
+  instructions: InstructionRegistry,
   role: string,
 ): Promise<number | undefined> {
-  const definitions = await getSkillDefinitions({ fragments });
+  const definitions = await getSkillDefinitions({ instructions });
 
   return definitions.find(({ agent }) => agent?.name === role)?.agent?.ceiling;
 }
@@ -21,8 +21,8 @@ async function resolveCeiling(
 export async function checkAgentResume(
   {
     directory,
-    fragments,
-  }: { directory: Directory; fragments: FragmentSources },
+    instructions,
+  }: { directory: Directory; instructions: InstructionRegistry },
   recipient: string,
 ): Promise<string | undefined> {
   const [runs, running] = await Promise.all([
@@ -54,7 +54,7 @@ export async function checkAgentResume(
     return;
   }
 
-  const ceiling = await resolveCeiling(fragments, run.role);
+  const ceiling = await resolveCeiling(instructions, run.role);
 
   if (ceiling === undefined || run.peakContext <= ceiling) {
     return;

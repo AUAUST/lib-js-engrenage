@@ -1,7 +1,6 @@
 // @barrel operations
 export { addAgentRules } from "#metalbrain/instructions/operations/addAgentRules";
 export { createInstructionRegistry } from "#metalbrain/instructions/operations/createInstructionRegistry";
-export { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
 export { getMissingRuleTemplates } from "#metalbrain/instructions/operations/getMissingRuleTemplates";
 export { getRegisteredTemplates } from "#metalbrain/instructions/operations/getRegisteredTemplates";
 export { getRuleReferences } from "#metalbrain/instructions/operations/getRuleReferences";
@@ -26,6 +25,7 @@ export type * from "#metalbrain/instructions/ports/InstructionFormatter";
 export type * from "#metalbrain/instructions/ports/InstructionMetadata";
 export type * from "#metalbrain/instructions/ports/RuleEntry";
 export type * from "#metalbrain/instructions/ports/SectionEntry";
+export type * from "#metalbrain/instructions/ports/SkillEntry";
 // @end
 
 // @barrel types

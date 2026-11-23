@@ -122,6 +122,7 @@ export async function createInstructionRegistry({
       entry,
       source: found.file,
       reference: found.specifier,
+      origin,
       active: entry.when?.(facts) ?? true,
       contributed,
     };

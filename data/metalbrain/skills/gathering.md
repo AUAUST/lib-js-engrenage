@@ -1,9 +1,6 @@
 ---
 title: Gathering
 description: Locate strings and files and run searches scoped to some domains or files, read-only, reporting the facts found. Use only when a skill you follow or the user asks for a gatherer.
-category: workflow
-order: 4
-invocation: explicit
 agent:
   name: gatherer
   description: Gatherer that locates strings and files and runs searches scoped to some domains or files, read-only, reporting the facts found. Dispatch it only when a skill you follow or the user asks for a gatherer; otherwise do the work yourself.

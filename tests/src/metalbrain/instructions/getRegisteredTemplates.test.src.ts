@@ -2,14 +2,10 @@ import { describe, expect, test } from "vitest";
 
 import { createFragmentSources } from "#metalbrain/facts/index";
 import { createInstructionRegistry } from "#metalbrain/instructions/operations/createInstructionRegistry";
-import { getInstructionTemplates } from "#metalbrain/instructions/operations/getInstructionTemplates";
 import { getRegisteredTemplates } from "#metalbrain/instructions/operations/getRegisteredTemplates";
+import type { InstructionKind } from "#metalbrain/instructions/types/InstructionKind";
 
-async function listTemplates(kind: "section" | "rule" | "skills") {
-  if (kind === "skills") {
-    return getInstructionTemplates(kind);
-  }
-
+async function listTemplates(kind: InstructionKind) {
   const instructions = await createInstructionRegistry({
     facts: {
       wordCaps: {
@@ -30,8 +26,8 @@ async function listTemplates(kind: "section" | "rule" | "skills") {
   return getRegisteredTemplates(kind, { instructions });
 }
 
-describe("getInstructionTemplates", () => {
-  test.each(["section", "rule", "skills"] as const)(
+describe("getRegisteredTemplates", () => {
+  test.each(["section", "rule", "skill"] as const)(
     "%s fragments write engrenage commands in their runnable pnpm form",
     async (kind) => {
       const templates = await listTemplates(kind);

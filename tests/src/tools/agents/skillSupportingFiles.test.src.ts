@@ -43,7 +43,7 @@ function createProject({
     "engrenage.config.ts": [
       "export default {",
       `  agents: { preferred: ${JSON.stringify(preferred)}, ${agents} },`,
-      `  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { ${contributes} } }],`,
+      `  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { "agents.instructions": [{ kind: "skill", name: "guide", category: "fixture" }], ${contributes} } }],`,
       "};",
     ].join("\n"),
     "AGENTS.md": "Instructions\n",
@@ -55,8 +55,6 @@ function createProject({
       "---",
       "title: Guide",
       "description: A skill with a supporting file.",
-      "category: fixture",
-      "order: 1",
       metadata,
       "---",
       "",
@@ -243,8 +241,6 @@ function createSharedProject() {
       "---",
       `title: ${name}`,
       "description: A skill sharing a file.",
-      "category: fixture",
-      "order: 1",
       "---",
       "",
       body,
@@ -259,7 +255,7 @@ function createSharedProject() {
     "engrenage.config.ts": [
       "export default {",
       '  agents: { preferred: ["claude"] },',
-      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
+      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { "agents.instructions": [{ kind: "skill", name: "guide", category: "fixture" }, { kind: "skill", name: "other", category: "fixture" }] } }],',
       "};",
     ].join("\n"),
     "AGENTS.md": "Instructions\n",
@@ -333,7 +329,7 @@ describe("shared skill files", () => {
 
     writeFileSync(
       guide,
-      "---\ntitle: Guide\ndescription: A skill sharing a file.\ncategory: fixture\norder: 1\n---\n\nNo steps.\n",
+      "---\ntitle: Guide\ndescription: A skill sharing a file.\n---\n\nNo steps.\n",
     );
 
     await sync(project);

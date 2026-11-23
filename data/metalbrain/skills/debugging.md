@@ -1,9 +1,6 @@
 ---
 title: Debugging
 description: Investigate a problem, fix it at its root when the fix is contained, and otherwise write the fix up as an issue or backlog entry. Use only when a skill you follow or the user asks for a debugger.
-category: workflow
-order: 15
-invocation: explicit
 agent:
   name: debugger
   description: Debugger that investigates a bug, issue, backlog entry, debt marker or reported failure, fixes it at its root when the fix is contained, and otherwise writes the fix up as an issue or backlog entry. Dispatch it only when a skill you follow or the user asks for a debugger; otherwise do the work yourself.

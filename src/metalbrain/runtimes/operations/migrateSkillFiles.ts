@@ -9,6 +9,7 @@ import {
   listFormerReferences,
   listReferences,
   relocateInstructionReference,
+  type InstructionRegistry,
 } from "#metalbrain/instructions/index";
 import {
   formerCodexFiles,
@@ -98,6 +99,7 @@ export async function migrateSkillFiles(config: {
   filesystem: Filesystem;
   agents: ResolvedAgents;
   fragments: FragmentSources;
+  instructions: InstructionRegistry;
   runtimes: readonly AgentRuntime[];
 }) {
   const { filesystem } = config;
@@ -108,9 +110,7 @@ export async function migrateSkillFiles(config: {
     return preferred.some((agent) => agent === name);
   });
 
-  const definitions = await getSkillDefinitions({
-    fragments: config.fragments,
-  });
+  const definitions = await getSkillDefinitions(config);
 
   const owners = new Map<string, SkillDefinition>();
 

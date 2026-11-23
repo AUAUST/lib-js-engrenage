@@ -7,9 +7,3 @@ entries:
       - src/workflows/init/operations/createStepContext.ts:173
     why: '`setKey("preset", …)` bypasses the preset `getPreset` reads; an override resolving to `undefined` falls back to the config value.'
     want: overriding one key updates every accessor of it; an override can clear a key.
-  - id: 261122-f496
-    title: Init steps pass no active extensions to the instruction templates
-    sites:
-      - src/metalbrain/instructions/operations/getInstructionTemplates.ts:36
-    why: "#473 moved the planning skills into an extension's data root, so init reads only engrenage's own templates and skips them."
-    want: init steps resolve the active extensions as `engrenage sync agents` does.

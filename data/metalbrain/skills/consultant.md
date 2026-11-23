@@ -1,10 +1,6 @@
 ---
 title: Consultant
 description: Settle, against a walked plan and its issues, the stops, deviations, plan findings and set-aside issues the walker sends, and edit the issues they change; convert issues holding Steps in a Steps sweep. Use only when the walker or a Steps sweep dispatches a consultant.
-category: workflow
-extension: tools/github/issues/planning
-order: 26
-invocation: explicit
 agent:
   name: consultant
   description: Consultant subagent, never for direct requests. The walker starts it on first need and resumes it to settle what the walk raises against the plan and edit the issues it changes; a planning session starts one per Steps sweep.

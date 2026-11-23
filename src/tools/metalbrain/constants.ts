@@ -39,12 +39,13 @@ export const agentLoaderEntry: StandardSchemaV1 = looseObject({
 
 // @debt restates the `InstructionEntry` port as a schema, typed as StandardSchemaV1 to pass auaust/readonly-constants
 export const instructionEntry: StandardSchemaV1 = looseObject({
-  kind: picklist(["section", "rule"]),
+  kind: picklist(["section", "rule", "skill"]),
   name: string(),
   category: string(),
   default: optional(boolean()),
   when: optional(function_()),
   paths: optional(array(string())),
+  invocation: optional(picklist(["explicit", "implicit"])),
   formerly: optional(array(string())),
 });
 

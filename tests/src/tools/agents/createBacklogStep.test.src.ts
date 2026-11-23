@@ -12,7 +12,7 @@ test("installs curation and analysis, with the analyser agent, in a project with
     "engrenage.config.ts": [
       "export default {",
       '  agents: { preferred: ["claude"] },',
-      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url) }],',
+      '  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { "agents.instructions": [{ kind: "skill", name: "guide", category: "fixture" }] } }],',
       "};",
     ].join("\n"),
     "AGENTS.md": "Instructions\n",
@@ -24,8 +24,6 @@ test("installs curation and analysis, with the analyser agent, in a project with
       "---",
       "title: Guide",
       "description: An extension skill.",
-      "category: fixture",
-      "order: 1",
       "---",
       "",
       "# Guide",

@@ -4,22 +4,23 @@ import {
   renderFragment,
   type FragmentConditions,
   type FragmentRenderer,
+  type InstructionRegistry,
   type SkillRendering,
 } from "#metalbrain/instructions/index";
 import { getSkillDefinitions } from "#metalbrain/runtimes/operations/getSkillDefinitions";
 import { renderAgentLimits } from "#metalbrain/runtimes/utils/renderAgentLimits";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { FragmentSources, MetalbrainFacts } from "#metalbrain/facts/index";
+import type { MetalbrainFacts } from "#metalbrain/facts/index";
 import type { BlockFillers } from "#types/BlockFillers";
 import type { File } from "#types/File";
 
 function createAgentLimitsFiller(
-  fragments: FragmentSources,
+  instructions: InstructionRegistry,
 ): BlockFillers[string] {
   let definitions: ReturnType<typeof getSkillDefinitions> | undefined;
 
   return async (...names) => {
-    definitions ??= getSkillDefinitions({ fragments });
+    definitions ??= getSkillDefinitions({ instructions });
 
     const all = await definitions;
 
@@ -34,24 +35,26 @@ function createAgentLimitsFiller(
 }
 
 /**
- * Creates the renderer of agent instruction fragments for a manifest and the
- * host's contributed fillers, adding the built-in `@word-caps`, `@agent-limits`,
- * `@skill-file` and `@shared-file` fillers, and filtering its `@extension`
- * and `@file` blocks.
+ * Creates the renderer of agent instruction fragments for a manifest, its
+ * instruction registry and the host's contributed fillers, adding the built-in
+ * `@word-caps`, `@agent-limits`, `@skill-file` and `@shared-file` fillers, and
+ * filtering its `@extension` and `@file` blocks.
  */
 export function createFragmentRenderer({
   facts,
+  instructions,
   fillers: contributed,
   filesystem,
 }: {
   facts: MetalbrainFacts;
+  instructions: InstructionRegistry;
   fillers: BlockFillers;
   filesystem: Filesystem;
 }): FragmentRenderer {
   const fillers: BlockFillers = {
     ...contributed,
     "word-caps": createWordCapsFiller(facts.wordCaps),
-    "agent-limits": createAgentLimitsFiller(facts.fragments),
+    "agent-limits": createAgentLimitsFiller(instructions),
   };
 
   const conditions: FragmentConditions = {

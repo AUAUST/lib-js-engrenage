@@ -9,7 +9,7 @@ import {
   type HookVerdict,
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig } from "#project/config/index";
-import { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrainFacts";
+import { loadInstructionRegistry } from "#tools/metalbrain/operations/loadInstructionRegistry";
 
 const payloadSchema = object({
   cwd: string(),
@@ -36,15 +36,15 @@ export async function guardClaudeResume(
     await resolveMainWorktree(resolveHookDirectory(cwd)),
   );
 
-  const [resources, { fragments }] = await Promise.all([
+  const [resources, instructions] = await Promise.all([
     config.resolve("resources"),
-    loadMetalbrainFacts(config),
+    loadInstructionRegistry(config),
   ]);
 
   const reason = await checkAgentResume(
     {
       directory: resolveWithin(resources.path("agents.stats"), session),
-      fragments,
+      instructions,
     },
     recipient,
   );

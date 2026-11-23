@@ -83,6 +83,7 @@ export const tableCellWords = 25;
 export const instructionDirectories = freeze({
   section: "sections",
   rule: "rules",
+  skill: "skills",
 } as const satisfies Record<InstructionKind, string>);
 
 // @debt metalbrain names engrenage's planning extension; a planning fact in the manifest would free the condition from it
@@ -243,5 +244,76 @@ export const builtInInstructions = freeze([
     name: "prefer-toolkit",
     category: "tools-dependencies",
     paths: ["**/*.ts"],
+  },
+  {
+    kind: "skill",
+    name: "shape",
+    category: "workflow",
+    invocation: "explicit",
+  },
+  {
+    kind: "skill",
+    name: "gathering",
+    category: "workflow",
+    invocation: "explicit",
+  },
+  {
+    kind: "skill",
+    name: "analysis",
+    category: "workflow",
+    invocation: "explicit",
+  },
+  {
+    kind: "skill",
+    name: "planning",
+    category: "workflow",
+    when: isPlanning,
+    formerly: ["issue-planning"],
+  },
+  {
+    kind: "skill",
+    name: "debugging",
+    category: "workflow",
+    invocation: "explicit",
+  },
+  {
+    kind: "skill",
+    name: "implement",
+    category: "workflow",
+    invocation: "explicit",
+    formerly: ["issue-implementation"],
+  },
+  {
+    kind: "skill",
+    name: "walking",
+    category: "workflow",
+    invocation: "explicit",
+    when: isPlanning,
+    formerly: ["issue-walking"],
+  },
+  {
+    kind: "skill",
+    name: "consultant",
+    category: "workflow",
+    invocation: "explicit",
+    when: isPlanning,
+  },
+  {
+    kind: "skill",
+    name: "merging",
+    category: "workflow",
+    invocation: "explicit",
+    when: isPlanning,
+  },
+  {
+    kind: "skill",
+    name: "curation",
+    category: "workflow",
+    formerly: ["scratchpad", "debt-harvesting", "backlog-handling"],
+  },
+  {
+    kind: "skill",
+    name: "instruction-writing",
+    category: "workflow",
   },
 ] as const satisfies readonly InstructionEntry[]);

@@ -1,11 +1,6 @@
 ---
 title: Planning
 description: Plan work as a tree of GitHub issues (a plan, ordered items, and segments grouping independent ones) without implementing it, as a rolling wave that makes ready the items whose foundation exists and leaves the rest to deepen once the work they build on lands. Use proactively in the main session when the user asks to plan, scope, break down or design work, or to create, restructure or review planned issues, so its questions reach the user directly.
-category: workflow
-extension: tools/github/issues/planning
-order: 10
-formerly:
-  - issue-planning
 agent:
   name: planner
   description: Planner subagent, never for direct requests. A planning session starts one to deepen an item over one agent's worth or tied to a Model-section contract.

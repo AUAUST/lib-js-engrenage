@@ -1,7 +1,10 @@
 import { getSkillTemplates } from "#metalbrain/runtimes/operations/getSkillTemplates";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { FragmentSources } from "#metalbrain/facts/index";
-import type { FragmentRenderer } from "#metalbrain/instructions/index";
+import type {
+  FragmentRenderer,
+  InstructionRegistry,
+} from "#metalbrain/instructions/index";
 import type { AgentRuntime } from "#metalbrain/runtimes/ports/AgentRuntime";
 import type { HookRoots } from "#metalbrain/runtimes/types/HookRoots";
 import type { ResolvedAgents } from "#metalbrain/runtimes/types/ResolvedAgents";
@@ -19,6 +22,7 @@ export async function addAgentSkills(
     filesystem: Filesystem;
     agents: ResolvedAgents;
     fragments: FragmentSources;
+    instructions: InstructionRegistry;
     renderer: FragmentRenderer;
     runtimes: readonly AgentRuntime[];
     roots: HookRoots;

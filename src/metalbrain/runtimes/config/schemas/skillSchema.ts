@@ -17,9 +17,8 @@ import { thoroughnessLevels } from "#metalbrain/runtimes/hooks/index";
 
 const effortSchema = picklist(efforts);
 
+// @debt the agent block moves to the instruction registry with the agents' own entries
 export const skillSchema = looseObject({
-  invocation: optional(picklist(["explicit", "implicit"]), "implicit"),
-  formerly: optional(array(string())),
   agent: optional(
     strictObject({
       name: string(),

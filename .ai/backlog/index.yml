@@ -202,7 +202,6 @@ init:
   purpose: Init steps and their step context.
   entries:
     - 261122-d0ff
-    - 261122-f496
 issues:
   purpose: GitHub issue drafts, checks and planning commands.
   entries:
