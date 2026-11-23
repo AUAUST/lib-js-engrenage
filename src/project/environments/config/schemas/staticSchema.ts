@@ -1,3 +1,4 @@
+import { declareNamespaceKind } from "#batiment/scopes/index";
 import {
   declareList,
   declareObject,
@@ -8,6 +9,7 @@ import type { ResolvedTraits } from "#project/presets/index";
 
 export const staticSchema = declareObject(
   {
+    kind: declareNamespaceKind(),
     dirs: declareList(directorySchema, {
       description: "Directories of files served as-is and fetched at runtime by URL, never imported by code; Vite takes a single one as its `publicDir`.",
       optional: { value: defaultStaticDirectories },

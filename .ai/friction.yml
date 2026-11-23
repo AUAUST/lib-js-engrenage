@@ -763,3 +763,7 @@ entries:
     subject: codegen config on moved generated file
     tried: pnpm support codegen config after moving NamespaceInput.ts
     stopped: formatted it until sync rewrote .prettierignore; synced, restored, regenerated
+  - id: 261123-a9ba
+    subject: sync barrel export missing
+    tried: engrenage sync after adding declarer
+    stopped: barrel lacked export; added lines by hand, reran

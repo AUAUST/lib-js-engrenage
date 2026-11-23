@@ -120,7 +120,7 @@ async function indexProject(root: string) {
     roles,
     testPatterns: tests.patterns,
     scopes: createScopeTree({
-      environments: [],
+      namespaces: [],
       workspaces: [],
       missing: [],
     }),

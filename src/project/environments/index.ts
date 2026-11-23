@@ -65,7 +65,6 @@ export { listEnvironmentEntries } from "#project/environments/operations/listEnv
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
-export { readKinds } from "#project/environments/operations/readKinds";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";

@@ -43,7 +43,6 @@ export async function walkScope({
               environment: name,
               filesystem,
               dirs,
-              metafiles: discovery.metafiles,
             });
 
         return {

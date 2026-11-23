@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 import { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 import { readEnvironment } from "#project/environments/operations/readEnvironment";
 import type { ConfigResolver } from "#project/config/index";
@@ -13,9 +14,17 @@ export async function readEnvironments(
   return freeze(
     await Promise.all(
       entries.map(async (contributed) => {
+        const { name } = contributed.entry;
+
+        const [environment, { namespace }] = await Promise.all([
+          readEnvironment(config, name),
+          discoverDeclaredEnvironment(config, name),
+        ]);
+
         return freeze({
           ...contributed,
-          environment: await readEnvironment(config, contributed.entry.name),
+          environment,
+          namespace,
         });
       }),
     ),

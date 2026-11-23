@@ -5,6 +5,10 @@
     "$schema": {
       "type": "string"
     },
+    "kind": {
+      "type": "string",
+      "description": "The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.\n@default its config `kind` at the root, its directory name in a workspace; ignored below a top-level namespace"
+    },
     "layers": {
       "type": "array",
       "items": {

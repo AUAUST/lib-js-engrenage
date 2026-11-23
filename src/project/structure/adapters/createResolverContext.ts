@@ -27,6 +27,7 @@ import type { ConfigContext, ConfigResolver } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 
 const placementOption = looseObject({
+  kind: optional(string()),
   dirs: array(string()),
   files: optional(array(string())),
 });
@@ -43,13 +44,27 @@ async function readPlacement(
 
   if (!is(placementOption, option)) {
     throw new Error(
-      `Config key "${key}" resolves to no environment options: it lacks a \`dirs\` list, or holds a \`files\` that is not a list`,
+      `Config key "${key}" resolves to no environment options: it lacks a \`dirs\` list, or holds a \`kind\` that is not a string or a \`files\` that is not a list`,
     );
   }
 
+  const { name, title } = contributed.entry;
+
+  const path = `${name}.kind`;
+
   return freeze({
-    name: contributed.entry.name,
-    kind: contributed.kind.name,
+    name,
+    title,
+    kind: freeze({
+      value: option.kind ?? name,
+      config: freeze({
+        key,
+        path,
+        ...(option.kind === undefined
+          ? {}
+          : { origin: await config.origin(key, path) }),
+      }),
+    }),
     dirs: option.dirs,
     files: option.files ?? [],
   });

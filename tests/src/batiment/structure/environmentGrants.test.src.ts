@@ -1,8 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { resolveEnvironmentGrants } from "#batiment/structure/index";
-import type { EnvironmentInstance } from "#batiment/environments/index";
-import type { NamespaceKind } from "#batiment/scopes/index";
+import type { NamespaceInstance, NamespaceKind } from "#batiment/scopes/index";
 
 import environments from "#project/environments/extension";
 
@@ -19,16 +18,17 @@ function getKind(name: string): NamespaceKind {
 }
 
 function createInstance(
-  name: string,
-  namespace: NamespaceKind,
+  id: string,
+  kind: NamespaceKind,
   scope = ".",
-): EnvironmentInstance {
+): NamespaceInstance {
   return {
-    name,
+    id,
     scope,
-    title: name,
-    kind: { name: namespace.name },
-    namespace,
+    name: id,
+    title: id,
+    kind,
+    dirs: [id],
   };
 }
 

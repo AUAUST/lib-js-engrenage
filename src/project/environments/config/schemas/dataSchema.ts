@@ -1,3 +1,4 @@
+import { declareNamespaceKind } from "#batiment/scopes/index";
 import {
   declare,
   declareList,
@@ -9,6 +10,7 @@ import { exposedFilesSchema } from "#project/package/index";
 
 export const dataSchema = declareObject(
   {
+    kind: declareNamespaceKind(),
     dirs: declareList(directorySchema, {
       description: "Directories of static data files shipped with the package, listed in the `files` of `package.json`.",
       optional: { value: defaultDataDirectories },

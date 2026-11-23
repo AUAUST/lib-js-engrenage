@@ -10,6 +10,11 @@ import type { ListOption, ManagedListOption } from "#foundation/options/index";
  */
 export interface ToolingInput {
   /**
+   * The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.
+   * @default the namespace kind named like the environment; a `kind` in its `.namespace.json` overrides it
+   */
+  kind?: (string | undefined)
+  /**
    * A grouping directory: no `index.ts` and no roles, it holds domains and namespaces and orders them with `layers`.
    * An environment's `structure` is its root namespace, the environment directory itself.
    * @default an empty namespace, so the tree is inferred

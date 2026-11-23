@@ -6,8 +6,8 @@ import {
   sourceEnvironment,
 } from "#batiment/structure/constants";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
-import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
+import type { NamespaceInstance } from "#batiment/scopes/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
@@ -68,28 +68,28 @@ function renderSurface({ surface }: ImportGrants): string {
 }
 
 function listCategories(
-  environments: readonly EnvironmentInstance[],
+  namespaces: readonly NamespaceInstance[],
 ): readonly (readonly [ImportCategory, string])[] {
   return [
     ["public-entries", importCategories["public-entries"]],
     ["internal-aliases", importCategories["internal-aliases"]],
-    ...environments
+    ...namespaces
       .filter(({ kind }) => kind.name !== sourceEnvironment)
-      .map(({ name, title }) => [name, title] as const),
+      .map(({ id, title }) => [id, title] as const),
     ["dist-artefacts", importCategories["dist-artefacts"]],
   ];
 }
 
 export function renderProjectMap({
   structure,
-  environments,
+  namespaces,
   grants,
   patterns,
   roles,
   directory,
 }: {
   structure: ResolvedStructure;
-  environments: readonly EnvironmentInstance[];
+  namespaces: readonly NamespaceInstance[];
   grants: ImportGrants;
   patterns: { plain: Globs; source: Globs; dist: Globs };
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
@@ -99,7 +99,7 @@ export function renderProjectMap({
     .filter(([, environment]) => environment !== undefined)
     .map(([name]) => name);
 
-  const categories = listCategories(environments);
+  const categories = listCategories(namespaces);
 
   const columns = categories.map(([category]) => category);
 

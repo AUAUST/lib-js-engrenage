@@ -1,4 +1,4 @@
-import type { ScopedEnvironment } from "#batiment/scopes/types/ScopedEnvironment";
+import type { NamespaceInstance } from "#batiment/scopes/types/NamespaceInstance";
 import type { Directory } from "#types/Directory";
 
 export interface Scope {
@@ -6,5 +6,5 @@ export interface Scope {
   readonly dir: Directory;
   readonly parent: string | undefined;
   readonly purpose?: string;
-  readonly environments: readonly ScopedEnvironment[];
+  readonly namespaces: readonly NamespaceInstance[];
 }

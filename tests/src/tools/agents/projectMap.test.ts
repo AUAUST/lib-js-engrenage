@@ -283,6 +283,40 @@ describe("project map", () => {
     },
   );
 
+  test("seals a root namespace whose `.namespace.json` names the static kind", async () => {
+    const project = createProject();
+
+    project.write("data/.namespace.json", '{ "kind": "static" }');
+    project.write("data/a.json", "{}");
+    project.write("scripts/run.ts", "");
+
+    await syncProject(project);
+
+    const lines = project.read(overviewFile).split("\n");
+
+    const header = lines.find((line) => line.startsWith("| from / to |"));
+
+    const column = header
+      ?.split("|")
+      .map((cell) => {
+        return cell.trim();
+      })
+      .indexOf("data");
+
+    const rows = lines.filter((line) => {
+      return /^\| `[^*]/u.test(line) && line.endsWith(".md` |");
+    });
+
+    expect(column).toBeGreaterThan(0);
+    expect(rows.length).toBeGreaterThan(1);
+
+    for (const row of rows) {
+      expect(row.split("|").map((cell) => cell.trim())[column ?? -1]).toBe(
+        "never",
+      );
+    }
+  });
+
   test("peer domains add no line to the src map", async () => {
     const few = await sync();
 

@@ -79,26 +79,29 @@ describe("getEnvironmentId", () => {
 
 describe("createScopeTree", () => {
   test("reports workspaces inside an environment or another workspace", () => {
+    const kind = { name: "code", level: "enforced" } as const;
+
     const { scopes, diagnostics } = createScopeTree({
-      environments: [
+      namespaces: [
         {
           name: "src",
-          kind: "code",
+          title: "the source",
+          kind,
           dirs: ["src"],
         },
       ],
       workspaces: [
         {
           dir: "src/theme",
-          environments: [],
+          namespaces: [],
         },
         {
           dir: "extensions/a",
-          environments: [],
+          namespaces: [],
         },
         {
           dir: "extensions/a/b",
-          environments: [],
+          namespaces: [],
         },
       ],
       missing: [],
@@ -115,12 +118,13 @@ describe("createScopeTree", () => {
 
     expect(keys(scopes).sort()).toEqual([".", "extensions/a", "src/theme"]);
 
-    expect(scopes["."]?.environments).toEqual([
+    expect(scopes["."]?.namespaces).toEqual([
       {
         id: "src",
         scope: ".",
         name: "src",
-        kind: "code",
+        title: "the source",
+        kind,
         dirs: ["src"],
       },
     ]);
@@ -168,7 +172,7 @@ describe("discoverWorkspaces", () => {
     const { environments, diagnostics } = await discoverWorkspaces({
       filesystem: createFilesystem(project.root),
       ignored: [],
-      kinds: ["src"],
+      dirs: [],
       languages: ["typescript"],
     });
 
@@ -192,7 +196,7 @@ describe("discoverWorkspaces", () => {
     const { workspaces, diagnostics } = await discoverWorkspaces({
       filesystem: createFilesystem(project.root),
       ignored: [],
-      kinds: [],
+      dirs: [],
       languages: [],
     });
 
@@ -223,28 +227,39 @@ describe("scopes", () => {
     expect(keys(scopes).sort()).toEqual([".", "tools/c"]);
   });
 
-  test("registers a workspace's environment metafiles of known kinds", async () => {
+  test("takes a workspace's top-level namespace from its `.namespace.json`", async () => {
     const { scopes, diagnostics } = await resolveScopes({
       "theme/.workspace.json": "{}",
-      "theme/src/.environment.json": "{}",
+      "theme/src/.namespace.json": "{}",
       "theme/src/a.ts": "",
-      "theme/assets/.environment.json": "{}",
+    });
+
+    expect(diagnostics).toEqual([]);
+
+    expect(scopes.theme?.namespaces).toEqual([
+      expect.objectContaining({
+        id: "theme/src",
+        scope: "theme",
+        name: "src",
+        title: "the theme/src namespace's files",
+        kind: expect.objectContaining({ name: "src" }),
+        dirs: ["theme/src"],
+      }),
+    ]);
+  });
+
+  test("reports a workspace namespace of an unknown kind and adds none", async () => {
+    const { scopes, diagnostics } = await resolveScopes({
+      "theme/.workspace.json": "{}",
+      "theme/assets/.namespace.json": "{}",
       "theme/assets/a.png": "",
     });
 
     expect(summarize(diagnostics)).toEqual([
-      { code: "unknown-environment-kind", path: "theme/assets" },
+      { code: "unknown-namespace-kind", path: "theme/assets" },
     ]);
 
-    expect(scopes.theme?.environments).toEqual([
-      {
-        id: "theme/src",
-        scope: "theme",
-        name: "src",
-        kind: "src",
-        dirs: ["theme/src"],
-      },
-    ]);
+    expect(scopes.theme?.namespaces).toEqual([]);
   });
 
   test("reports an environment metafile outside a scope's direct child", async () => {
@@ -260,15 +275,35 @@ describe("scopes", () => {
     ]);
   });
 
-  test("reports an environment metafile beside a namespace metafile", async () => {
+  test("keeps an environment metafile beside a namespace metafile", async () => {
     const { diagnostics } = await resolveScopes({
       "src/.environment.json": "{}",
       "src/.namespace.json": "{}",
+      "src/a.ts": "",
+    });
+
+    expect(diagnostics).toEqual([]);
+  });
+
+  test("reports a root kind set by both the config and the metafile, keeping the metafile's", async () => {
+    const { scopes, diagnostics } = await resolvePresetScopes({
+      input: {
+        data: { kind: "data" },
+      },
+      preset: {},
+      files: {
+        "data/.namespace.json": JSON.stringify({ kind: "static" }),
+        "data/a.json": "{}",
+      },
     });
 
     expect(summarize(diagnostics)).toEqual([
-      { code: "environment-metafile-beside-namespace", path: "src" },
+      { code: "config-metafile-conflict", path: "data" },
     ]);
+
+    expect(
+      scopes["."]?.namespaces.find(({ name }) => name === "data")?.kind.name,
+    ).toBe("static");
   });
 
   test("reports a workspace inside another", async () => {

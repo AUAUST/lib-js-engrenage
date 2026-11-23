@@ -1,5 +1,6 @@
 // @barrel config/declarers
 export { declareLayout } from "#batiment/scopes/config/declarers/declareLayout";
+export { declareNamespaceKind } from "#batiment/scopes/config/declarers/declareNamespaceKind";
 export { declareStructureNodes } from "#batiment/scopes/config/declarers/declareStructureNodes";
 export { declareStructureOptions } from "#batiment/scopes/config/declarers/declareStructureOptions";
 // @end
@@ -10,6 +11,7 @@ export type * from "#batiment/scopes/ports/NamespaceKind";
 // @end
 
 // @barrel types
+export type * from "#batiment/scopes/types/DiscoveredNamespace";
 export type * from "#batiment/scopes/types/DiscoveredWorkspace";
 export type * from "#batiment/scopes/types/DomainDeclaration";
 export type * from "#batiment/scopes/types/DomainInput";
@@ -17,10 +19,10 @@ export type * from "#batiment/scopes/types/InwardPolicy";
 export type * from "#batiment/scopes/types/LayoutContext";
 export type * from "#batiment/scopes/types/NamespaceDeclaration";
 export type * from "#batiment/scopes/types/NamespaceInput";
+export type * from "#batiment/scopes/types/NamespaceInstance";
 export type * from "#batiment/scopes/types/NamespaceKindPreset";
 export type * from "#batiment/scopes/types/NamespaceRelation";
 export type * from "#batiment/scopes/types/Scope";
-export type * from "#batiment/scopes/types/ScopedEnvironment";
 export type * from "#batiment/scopes/types/ScopeTree";
 // @end
 
@@ -38,5 +40,7 @@ export { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspa
 export { createNamespaceKindPreset } from "#batiment/scopes/utils/createNamespaceKindPreset";
 export { createScopeTree } from "#batiment/scopes/utils/createScopeTree";
 export { getEnvironmentId } from "#batiment/scopes/utils/getEnvironmentId";
+export { listNamespaces } from "#batiment/scopes/utils/listNamespaces";
 export { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
+export { resolveNamespaceKind } from "#batiment/scopes/utils/resolveNamespaceKind";
 // @end

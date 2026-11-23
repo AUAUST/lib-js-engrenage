@@ -9,6 +9,14 @@ import type { ListOption } from "#foundation/options/index";
  */
 export interface StaticInput {
   /**
+   * The namespace kind the top-level namespace takes, naming a `namespaceKinds`
+   * entry giving its boundary facts.
+   *
+   * @default the namespace kind named like the environment; a `kind` in its
+   * `.namespace.json` overrides it
+   */
+  kind?: string | undefined;
+  /**
    * Directories of files served as-is and fetched at runtime by URL, never
    * imported by code; Vite takes a single one as its `publicDir`.
    *

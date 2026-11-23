@@ -15,7 +15,7 @@ export function declareLayout() {
       return picklist([domainsLayout, ...context.layouts]);
     },
     optional: unset(
-      "the layout of the namespace kind named like the environment, otherwise `domains`",
+      "the layout of the environment's namespace kind, otherwise `domains`",
     ),
   });
 }

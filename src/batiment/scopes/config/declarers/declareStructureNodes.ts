@@ -11,6 +11,7 @@ import {
 import { freeze } from "@auaust/toolkit/object";
 
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
+import { declareNamespaceKind } from "#batiment/scopes/config/declarers/declareNamespaceKind";
 import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
 import { structureKeySchema } from "#batiment/scopes/config/schemas/structureKeySchema";
 import {
@@ -158,6 +159,9 @@ const nodes = freeze({
   metadata: freeze({
     namespace: declareObject({
       $schema: schemaReferenceSchema,
+      kind: declareNamespaceKind(
+        "its config `kind` at the root, its directory name in a workspace; ignored below a top-level namespace",
+      ),
       ...namespaceFields,
     }),
     domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),

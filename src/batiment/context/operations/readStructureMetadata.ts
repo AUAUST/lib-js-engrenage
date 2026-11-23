@@ -20,7 +20,6 @@ import {
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import type { DiscoveredEnvironment } from "#batiment/environments/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type {
   MetadataField,
@@ -223,12 +222,10 @@ export async function readStructureMetadata({
   environment,
   filesystem,
   dirs,
-  metafiles,
 }: {
   environment: string;
   filesystem: Filesystem;
   dirs: Directories;
-  metafiles: readonly DiscoveredEnvironment[];
 }): Promise<{
   readonly metadata: readonly StructureMetadata[];
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -263,28 +260,12 @@ export async function readStructureMetadata({
       }),
     );
 
-    const metafile = metafiles.find(({ dir }) => {
-      return dir === toPosixPath(directory);
-    });
-
-    const parsed: StructureMetadata[] = metafile === undefined
-      ? []
-      : [
-          createNamespaceMetadata(
-            environmentRoot,
-            metafile.namespace,
-            metafile.file,
-          ),
-        ];
+    const parsed: StructureMetadata[] = [];
 
     for (const result of read) {
       if ("code" in result) {
         report(result);
-      } else if (
-        metafile === undefined ||
-        result.kind !== "namespace" ||
-        result.path !== environmentRoot
-      ) {
+      } else {
         parsed.push(result);
       }
     }

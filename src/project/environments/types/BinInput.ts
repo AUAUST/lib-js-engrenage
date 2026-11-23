@@ -10,6 +10,11 @@ import type { ListOption, ManagedListOption } from "#foundation/options/index";
  */
 export interface BinInput {
   /**
+   * The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.
+   * @default the namespace kind named like the environment; a `kind` in its `.namespace.json` overrides it
+   */
+  kind?: (string | undefined)
+  /**
    * A grouping directory: no `index.ts` and no roles, it holds domains and namespaces and orders them with `layers`.
    * An environment's `structure` is its root namespace, the environment directory itself.
    * @default an empty namespace, so the tree is inferred
@@ -115,7 +120,7 @@ export interface BinInput {
   /**
    * The layout shaping the environment's tree, by name: one the `layouts` slot holds, or `domains` for the namespace and domain walk.
    * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` names its subcommands and their aliases, the root group's `executable.ts` runs it, and each other module is one command.
-   * @default the layout of the namespace kind named like the environment, otherwise `domains`
+   * @default the layout of the environment's namespace kind, otherwise `domains`
    */
   layout?: (string | undefined)
   /**

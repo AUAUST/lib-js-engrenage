@@ -3,7 +3,7 @@ import { custom, is } from "valibot";
 import { isArray, isBoolean, isObject } from "@auaust/toolkit";
 
 import { loadLazy } from "#foundation/modules/index";
-import { listEnvironmentEntries } from "#project/environments/index";
+import { discoverDeclaredEnvironment } from "#project/environments/index";
 import type {
   EnvironmentStructureOption,
   Layout,
@@ -35,15 +35,11 @@ async function resolveLayout(
   environment: string,
   option: EnvironmentStructureOption,
 ): Promise<Layout | undefined> {
-  const environments = await listEnvironmentEntries(config);
-
-  const namespace = environments.find(({ entry }) => {
-    return entry.name === environment;
-  })?.namespace;
+  const { namespace } = await discoverDeclaredEnvironment(config, environment);
 
   const selected = (
     (option.enabled ? option.layout : undefined) ??
-    namespace?.layout ??
+    namespace.layout ??
     domainsLayout
   );
 

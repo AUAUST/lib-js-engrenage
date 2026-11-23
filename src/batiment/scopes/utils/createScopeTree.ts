@@ -8,8 +8,9 @@ import type {
   StructureDiagnostic,
   StructureDiagnosticCode,
 } from "#batiment/report/index";
+import type { NamespaceKind } from "#batiment/scopes/ports/NamespaceKind";
+import type { NamespaceInstance } from "#batiment/scopes/types/NamespaceInstance";
 import type { Scope } from "#batiment/scopes/types/Scope";
-import type { ScopedEnvironment } from "#batiment/scopes/types/ScopedEnvironment";
 import type { ScopeTree } from "#batiment/scopes/types/ScopeTree";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -18,15 +19,19 @@ import type { Glob } from "#types/Glob";
 
 const noFiles = freeze([]);
 
-interface ScopeTreeEnvironment {
+interface ScopeTreeNamespace {
   readonly name: string;
-  readonly kind: string;
+  readonly kind: NamespaceKind;
   readonly dirs: Directories;
+}
+
+interface ScopeTreeRootNamespace extends ScopeTreeNamespace {
+  readonly title: string;
 }
 
 interface ScopeTreeWorkspace {
   readonly dir: Directory;
-  readonly environments: readonly ScopeTreeEnvironment[];
+  readonly namespaces: readonly ScopeTreeNamespace[];
   readonly purpose?: { readonly value: string; readonly file: File };
   readonly declared?: { readonly value: string; readonly config: OptionSource };
 }
@@ -49,16 +54,19 @@ function createDiagnostic(
   });
 }
 
-function createEnvironments(
+function createNamespaces(
   scope: Directory,
-  environments: readonly ScopeTreeEnvironment[],
-): readonly ScopedEnvironment[] {
+  namespaces: readonly (ScopeTreeNamespace & { readonly title?: string })[],
+): readonly NamespaceInstance[] {
   return freeze(
-    environments.map(({ name, kind, dirs }) => {
+    namespaces.map(({ name, title, kind, dirs }) => {
+      const id = getEnvironmentId(scope, name);
+
       return freeze({
-        id: getEnvironmentId(scope, name),
+        id,
         scope,
         name,
+        title: title ?? `the ${id} namespace's files`,
         kind,
         dirs,
       });
@@ -91,11 +99,11 @@ function resolvePurpose(
 }
 
 export function createScopeTree({
-  environments,
+  namespaces,
   workspaces,
   missing,
 }: {
-  environments: readonly ScopeTreeEnvironment[];
+  namespaces: readonly ScopeTreeRootNamespace[];
   workspaces: readonly ScopeTreeWorkspace[];
   missing: readonly { readonly dir: Directory; readonly glob: Glob }[];
 }): ScopeTree {
@@ -122,7 +130,7 @@ export function createScopeTree({
       key: rootScope,
       dir: rootScope,
       parent: undefined,
-      environments: createEnvironments(rootScope, environments),
+      namespaces: createNamespaces(rootScope, namespaces),
     }),
   };
 
@@ -145,7 +153,7 @@ export function createScopeTree({
       continue;
     }
 
-    for (const { name, dirs: environmentDirs } of environments) {
+    for (const { name, dirs: environmentDirs } of namespaces) {
       const container = environmentDirs.find((environmentDir) => {
         return dir === environmentDir || isInside(dir, environmentDir);
       });
@@ -179,7 +187,7 @@ export function createScopeTree({
       dir,
       parent: rootScope,
       ...(purpose === undefined ? {} : { purpose }),
-      environments: createEnvironments(dir, workspace.environments),
+      namespaces: createNamespaces(dir, workspace.namespaces),
     });
   }
 

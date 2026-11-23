@@ -3,7 +3,10 @@ import { freeze, record } from "@auaust/toolkit/object";
 import { noRoles } from "#batiment/roles/constants";
 import { resolveRoles, type ResolvedRoles } from "#batiment/roles/index";
 import { declareSection } from "#foundation/options/index";
-import { listEnvironmentEntries } from "#project/environments/index";
+import {
+  discoverDeclaredEnvironment,
+  listEnvironmentEntries,
+} from "#project/environments/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import type { ConfigResolver } from "#project/config/index";
 
@@ -26,13 +29,15 @@ export const environmentRolesSection = declareSection({
     const environments = await listEnvironmentEntries(config);
 
     const roles = await Promise.all(
-      environments
-        .filter(({ namespace }) => namespace.structure !== undefined)
-        .map(async ({ entry: { name } }) => {
-          return [name, await resolveEnvironmentRoles(config, name)] as const;
-        }),
+      environments.map(async ({ entry: { name } }) => {
+        const { namespace } = await discoverDeclaredEnvironment(config, name);
+
+        return namespace.structure === undefined
+          ? []
+          : [[name, await resolveEnvironmentRoles(config, name)] as const];
+      }),
     );
 
-    return freeze(record(roles));
+    return freeze(record(roles.flat()));
   },
 });

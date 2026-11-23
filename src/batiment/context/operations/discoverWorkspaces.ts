@@ -16,16 +16,19 @@ import {
   workspaceMetadataFile,
 } from "#batiment/scopes/constants";
 import {
+  namespaceMetadataSchema,
   workspaceMetadataSchema,
+  type DiscoveredNamespace,
   type DiscoveredWorkspace,
 } from "#batiment/scopes/index";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import type {
   StructureDiagnostic,
   StructureDiagnosticCode,
 } from "#batiment/report/index";
-import type { Filesystem } from "#foundation/filesystem/index";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
@@ -127,13 +130,11 @@ async function readEnvironment({
   filesystem,
   file,
   scopes,
-  kinds,
   languages,
 }: {
   filesystem: Filesystem;
   file: File;
   scopes: ReadonlySet<Directory>;
-  kinds: ReadonlySet<string>;
   languages: ReadonlySet<string>;
 }): Promise<{
   readonly environment?: DiscoveredEnvironment;
@@ -164,36 +165,6 @@ async function readEnvironment({
 
   const diagnostics: StructureDiagnostic[] = [];
 
-  const besideNamespace = await filesystem.exists(
-    `${dir}/${namespaceMetadataFile}`,
-  );
-
-  if (besideNamespace) {
-    diagnostics.push(
-      createDiagnostic(
-        "environment-metafile-beside-namespace",
-        file,
-        `${dir}/${namespaceMetadataFile} lies beside ${file}; keeping ${file}`,
-      ),
-    );
-  }
-
-  const kind = (
-    metadata.kind ?? (scope === rootScope ? undefined : posix.basename(dir))
-  );
-
-  const known = kind === undefined || kinds.has(kind);
-
-  if (!known) {
-    diagnostics.push(
-      createDiagnostic(
-        "unknown-environment-kind",
-        file,
-        `${file} names the kind "${kind}", which no environment kind declares; ignoring the kind`,
-      ),
-    );
-  }
-
   const selected = metadata.languages?.filter((name) => {
     if (languages.has(name)) {
       return true;
@@ -214,27 +185,50 @@ async function readEnvironment({
     environment: freeze({
       dir,
       file,
-      ...(kind === undefined || !known ? {} : { kind }),
       ...(selected === undefined ? {} : { languages: freeze(selected) }),
-      namespace: freeze(omit(metadata, "$schema", "kind", "languages")),
     }),
     diagnostics,
   };
 }
 
+async function readNamespace(
+  filesystem: Filesystem,
+  file: File,
+): Promise<DiscoveredNamespace | StructureDiagnostic> {
+  const read = await readMetafile(filesystem, file, namespaceMetadataSchema);
+
+  if ("diagnostic" in read) {
+    return read.diagnostic;
+  }
+
+  const { kind } = read.metadata;
+
+  return freeze({
+    dir: posix.dirname(file),
+    file,
+    ...(kind === undefined ? {} : { kind }),
+  });
+}
+
+/**
+ * Discovers the workspaces, the `.environment.json` metafiles and the
+ * `.namespace.json` metafiles of top-level namespaces: those in `dirs`, the
+ * root's, and those in each workspace's direct child directories.
+ */
 export async function discoverWorkspaces({
   filesystem,
   ignored,
-  kinds,
+  dirs,
   languages,
 }: {
   filesystem: Filesystem;
   ignored: Globs;
-  kinds: readonly string[];
+  dirs: Directories;
   languages: readonly string[];
 }): Promise<{
   readonly workspaces: readonly DiscoveredWorkspace[];
   readonly environments: readonly DiscoveredEnvironment[];
+  readonly namespaces: readonly DiscoveredNamespace[];
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
   const files = await filesystem.glob(
@@ -263,8 +257,6 @@ export async function discoverWorkspaces({
 
   const scopes = new Set([rootScope, ...workspaces.map(({ dir }) => dir)]);
 
-  const known = new Set(kinds);
-
   const registered = new Set(languages);
 
   const discovered = await Promise.all(
@@ -275,7 +267,6 @@ export async function discoverWorkspaces({
           filesystem,
           file,
           scopes,
-          kinds: known,
           languages: registered,
         });
       }),
@@ -291,11 +282,38 @@ export async function discoverWorkspaces({
     }
   }
 
+  const namespaceFiles = await filesystem.glob(
+    [
+      ...filesIn(
+        dirs.filter((dir) => dir !== rootScope),
+        namespaceMetadataFile,
+      ),
+      ...filesIn(
+        workspaces.map(({ dir }) => dir),
+        `*/${namespaceMetadataFile}`,
+      ),
+    ],
+    { exclude: [...ignored, "**/node_modules"] },
+  );
+
+  const namespaces: DiscoveredNamespace[] = [];
+
+  for (const result of await Promise.all(
+    namespaceFiles.map((file) => readNamespace(filesystem, file)),
+  )) {
+    if ("code" in result) {
+      diagnostics.push(result);
+    } else {
+      namespaces.push(result);
+    }
+  }
+
   return freeze({
     workspaces: freeze(
       sort(workspaces, (left, right) => left.dir.localeCompare(right.dir)),
     ),
     environments: freeze(environments),
+    namespaces: freeze(namespaces),
     diagnostics: freeze(diagnostics),
   });
 }

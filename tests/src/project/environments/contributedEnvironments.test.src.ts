@@ -459,7 +459,9 @@ describe("contributed environments", () => {
       languages: ["typescript", "tsx"],
     });
 
-    expect(listed?.namespace).toMatchObject({
+    const { namespace } = await discoverDeclaredEnvironment(config, "site");
+
+    expect(namespace).toMatchObject({
       name: "site",
       level: "enforced",
       structure: "domains",

@@ -8,6 +8,11 @@ import type { ListOption } from "#foundation/options/index";
  */
 export interface DataInput {
   /**
+   * The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.
+   * @default the namespace kind named like the environment; a `kind` in its `.namespace.json` overrides it
+   */
+  kind?: (string | undefined)
+  /**
    * Directories of static data files shipped with the package, listed in the `files` of `package.json`.
    * @default `data`
    */

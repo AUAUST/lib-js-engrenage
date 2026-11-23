@@ -8,7 +8,6 @@ export type * from "#batiment/environments/ports/EnvironmentKind";
 
 // @barrel types
 export type * from "#batiment/environments/types/DiscoveredEnvironment";
-export type * from "#batiment/environments/types/EnvironmentInstance";
 // @end
 
 // @barrel config/schemas

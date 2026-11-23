@@ -2,21 +2,23 @@ import { freeze, record } from "@auaust/toolkit/object";
 
 import { sourceEnvironment } from "#batiment/structure/constants";
 import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
-import type { EnvironmentInstance } from "#batiment/environments/index";
-import type { NamespaceRelation } from "#batiment/scopes/index";
+import type {
+  NamespaceInstance,
+  NamespaceRelation,
+} from "#batiment/scopes/index";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
 function resolveRelation(
-  importer: EnvironmentInstance,
-  target: EnvironmentInstance,
+  importer: NamespaceInstance,
+  target: NamespaceInstance,
 ): NamespaceRelation | undefined {
   if (importer.scope !== target.scope) {
     return;
   }
 
-  const relation = importer.namespace.imports?.[target.namespace.name];
+  const relation = importer.kind.imports?.[target.kind.name];
 
-  switch (target.namespace.inward) {
+  switch (target.kind.inward) {
     case "open": {
       return relation;
     }
@@ -31,24 +33,24 @@ function resolveRelation(
 
 export function resolveEnvironmentGrants(
   published: boolean,
-  environments: readonly EnvironmentInstance[],
+  namespaces: readonly NamespaceInstance[],
 ): Pick<ImportGrants, "environments" | "surface" | "elements" | "variants"> {
-  const relations = environments.map((importer) => {
-    const targets = environments
-      .filter((target) => target.name !== importer.name)
+  const relations = namespaces.map((importer) => {
+    const targets = namespaces
+      .filter((target) => target.id !== importer.id)
       .map((target) => {
         return [target, resolveRelation(importer, target)] as const;
       });
 
     const forbidden = targets
       .filter(([, relation]) => relation === undefined)
-      .map(([target]) => getEnvironmentCategory(target.name));
+      .map(([target]) => getEnvironmentCategory(target.id));
 
     const surface = targets
       .filter(([, relation]) => relation === "surface")
-      .map(([target]) => target.name);
+      .map(([target]) => target.id);
 
-    return [importer.name, freeze(forbidden), freeze(surface)] as const;
+    return [importer.id, freeze(forbidden), freeze(surface)] as const;
   });
 
   const consumers = relations
@@ -67,9 +69,9 @@ export function resolveEnvironmentGrants(
       ),
     ),
     elements: freeze(
-      environments
-        .filter(({ namespace }) => namespace.structure === "domains")
-        .map(({ name }) => name),
+      namespaces
+        .filter(({ kind }) => kind.structure === "domains")
+        .map(({ id }) => id),
     ),
     variants: published
       ? freeze({
