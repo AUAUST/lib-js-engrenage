@@ -1,3 +1,5 @@
+import { filterMap, pluck } from "@auaust/toolkit/iterable";
+
 import { resolveMetalbrainRoot } from "#metalbrain/facts/operations/resolveMetalbrainRoot";
 import type { FragmentExtension } from "#metalbrain/facts/types/FragmentExtension";
 import type { FragmentSources } from "#metalbrain/facts/types/FragmentSources";
@@ -10,15 +12,11 @@ export function createFragmentSources(
   extensions: readonly FragmentExtension[],
 ): FragmentSources {
   return {
-    extensions: new Set(
-      extensions.map(({ name }) => {
-        return name;
-      }),
-    ),
+    extensions: new Set(pluck(extensions, "name")),
     origins: [
       resolveMetalbrainRoot(),
-      ...extensions.flatMap(({ root }) => {
-        return root === undefined ? [] : [root];
+      ...filterMap(extensions, ({ root }) => {
+        return root;
       }),
     ],
   };

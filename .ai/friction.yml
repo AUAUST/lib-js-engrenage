@@ -731,3 +731,7 @@ entries:
     subject: publish of superseded Steps leaves
     tried: publish parents dropping Steps leaves closed as duplicate
     stopped: check refuses Steps leaves, parents need them in set; kept attached, closed via gh api
+  - id: 261123-f7c5
+    subject: "PreToolUse Bash hook: zsh `=` word"
+    tried: echo ====== as a separator
+    stopped: hook refused `=` command-path expansion; used a quoted separator

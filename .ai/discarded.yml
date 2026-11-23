@@ -699,3 +699,15 @@ entries:
     subject: agent check in `instructionEntry`
     need: validate contributed agents at the slot (#838)
     reason: the extension would load the runtimes barrel at collection; `getSkillDefinitions` validates them, naming the skill
+  - id: 261123-8c6b
+    subject: engrenage driving batiment's sequence
+    need: batiment interop (#851)
+    reason: "two drivers of one sequence; contradicts #853"
+  - id: 261123-8dca
+    subject: per-scope engrenage --json calls from batiment CLI
+    need: batiment standalone context (#851)
+    reason: one process and config load per workspace
+  - id: 261123-2d11
+    subject: nexus namespace now
+    need: batiment interop layer (#851)
+    reason: no second protocol consumer; layer before consumer
