@@ -28,6 +28,7 @@ export const entitiesSection = declareSection({
       aliases,
       packageJson,
       outDir,
+      context,
     ] = await Promise.all([
       config.resolve("structure"),
       readEnvironments(config),
@@ -37,16 +38,20 @@ export const entitiesSection = declareSection({
       config.resolve("aliases"),
       config.resolve("packageJson"),
       readOutDir(config),
+      config.resolve("structure.context"),
     ]);
+
+    const discovery = await context.discover();
 
     return createEntityIndex({
       root: config.context.root,
       structure,
-      placements: record(
+      namespacePlacements: record(
         environments.map(({ entry, environment }) => {
           return [entry.name, environment];
         }),
       ),
+      environments: discovery.environments.placements,
       roles,
       testPatterns,
       scopes,

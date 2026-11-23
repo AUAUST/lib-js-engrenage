@@ -94,6 +94,7 @@ async function indexProject(root: string) {
     aliases,
     roles,
     scopes,
+    context,
   ] = await Promise.all([
     config.resolve("structure"),
     config.resolve("src"),
@@ -105,12 +106,15 @@ async function indexProject(root: string) {
     config.resolve("aliases"),
     config.resolve("environmentRoles"),
     config.resolve("scopes"),
+    config.resolve("structure.context"),
   ]);
+
+  const { environments } = await context.discover();
 
   return createEntityIndex({
     root,
     structure,
-    placements: {
+    namespacePlacements: {
       src: source,
       tests,
       bin,
@@ -118,6 +122,7 @@ async function indexProject(root: string) {
       tooling,
       data,
     },
+    environments: environments.placements,
     roles,
     testPatterns: {
       plain: tests.patterns.plain,
@@ -170,11 +175,13 @@ describe("createEntityIndex", () => {
     expect(index.entityOf("src/project/feature/constants.ts")).toMatchObject({
       role: "constants",
       fileRole: "constants",
+      environment: "src",
     });
 
     expect(index.entityOf("tests/x.test.src.ts")).toMatchObject({
       namespace: "tests",
       variant: "src",
+      environment: "tests",
     });
   });
 

@@ -5,6 +5,10 @@ import { memoize } from "@auaust/toolkit/function";
 import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
 import {
+  getFileEnvironment,
+  type EnvironmentPlacements,
+} from "#batiment/environments/index";
+import {
   entryRoleName,
   indexRoleName,
   noRoles,
@@ -58,7 +62,8 @@ function sortVariants(
 export function createEntityIndex({
   root,
   structure,
-  placements,
+  namespacePlacements,
+  environments,
   roles: namespaceRoles,
   testPatterns,
   scopes,
@@ -68,7 +73,8 @@ export function createEntityIndex({
 }: {
   root: Directory;
   structure: ResolvedStructure;
-  placements: Readonly<Record<string, CodeNamespace>>;
+  namespacePlacements: Readonly<Record<string, CodeNamespace>>;
+  environments: EnvironmentPlacements;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   testPatterns: Readonly<Partial<Record<string, Globs>>>;
   scopes: ScopeTree;
@@ -261,7 +267,7 @@ export function createEntityIndex({
     }
   }
 
-  for (const [name, { active, dirs }] of entries(placements)) {
+  for (const [name, { active, dirs }] of entries(namespacePlacements)) {
     if (active) {
       for (const directory of dirs) {
         register(directory, {
@@ -357,6 +363,7 @@ export function createEntityIndex({
         role === entryRoleName
       ),
       variant: variantOf(entity.namespace, path),
+      environment: getFileEnvironment(environments, path),
     });
   });
 

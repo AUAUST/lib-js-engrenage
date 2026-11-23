@@ -64,13 +64,13 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 export { createDefine } from "#project/environments/operations/createDefine";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
+export { listPlacementGlobs } from "#project/environments/operations/listPlacementGlobs";
 export { listTsconfigRegistrations } from "#project/environments/operations/listTsconfigRegistrations";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
 export { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
-export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 export { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 // @end

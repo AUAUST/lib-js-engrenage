@@ -1,4 +1,5 @@
 import { map } from "@auaust/toolkit/array";
+import { entries } from "@auaust/toolkit/object";
 
 import { listStaticFileGlobs } from "#batiment/roles/index";
 import { filesIn } from "#foundation/filesystem/index";
@@ -60,6 +61,8 @@ async function listEnvironmentGlobs(
 
   const { environments } = await context.discover();
 
+  const placed = entries(environments.placements.dirs);
+
   const globs = await Promise.all(
     names.map(async (name) => {
       const registered = environments.registered.find(({ registration }) => {
@@ -74,9 +77,14 @@ async function listEnvironmentGlobs(
 
       const languages = await readEnvironmentLanguages(config, name);
 
+      const dirs = placed
+        .filter(([, environment]) => environment === name)
+        .map(([dir]) => dir);
+
+      // @debt file placements enter `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig
       return [
         ...registered.registration.files,
-        ...filesIn(registered.dirs, listLanguageFiles(languages)),
+        ...filesIn(dirs, listLanguageFiles(languages)),
       ];
     }),
   );

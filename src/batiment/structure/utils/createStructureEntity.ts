@@ -33,5 +33,6 @@ export function createStructureEntity(
     effects: undefined,
     public: false,
     variant: undefined,
+    environment: undefined,
   });
 }

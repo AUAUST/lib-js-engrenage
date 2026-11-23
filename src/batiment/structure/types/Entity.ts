@@ -9,7 +9,8 @@ import type { Directory } from "#types/Directory";
  * and kind of its nearest structure node, the namespaces and domains above it,
  * its nearest domain with that domain's public specifiers and collected roles,
  * and the role and contract it holds, if any. `variant` names the test variant
- * of a file in a namespace holding tests.
+ * of a file in a namespace holding tests, `environment` the ID of the registered
+ * environment its placements give it, if any.
  */
 export interface Entity {
   readonly scope: string;
@@ -28,4 +29,5 @@ export interface Entity {
   readonly effects: string | undefined;
   readonly public: boolean;
   readonly variant: string | undefined;
+  readonly environment: string | undefined;
 }

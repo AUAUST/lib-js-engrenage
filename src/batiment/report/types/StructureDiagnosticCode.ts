@@ -11,7 +11,7 @@
  * `workspaces` glob matches without a `.workspace.json`, an `.environment.json`
  * outside a scope's direct child directory, a top-level namespace taking a
  * kind no `namespaceKinds` entry names, or an `.environment.json` language no
- * `languages` entry names.
+ * `languages` entry names; or a directory or file two environments are placed on.
  *
  * @experimental
  */
@@ -44,4 +44,5 @@ export type StructureDiagnosticCode =
   | "missing-workspace"
   | "misplaced-environment-metafile"
   | "unknown-namespace-kind"
-  | "unknown-language";
+  | "unknown-language"
+  | "environment-placement-conflict";

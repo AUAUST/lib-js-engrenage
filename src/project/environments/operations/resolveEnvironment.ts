@@ -1,10 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
-import { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
-import { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";
+import { listPlacementGlobs } from "#project/environments/operations/listPlacementGlobs";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
-import { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 import type { ConfigResolver } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 
@@ -18,13 +16,14 @@ export async function resolveEnvironment(
 ) {
   const { dirs, active } = await discoverDeclaredEnvironment(config, name);
 
+  const globs = await listPlacementGlobs(config, dirs);
+
   return freeze({
-    ...resolveCodeEnvironment({
-      ...option,
-      dirs,
-      active,
-      files: listLanguageFiles(await readEnvironmentLanguages(config, name)),
-    }),
+    active,
+    dirs,
+    generated: option.generated,
+    discovered: option.discovered,
+    globs,
     tsconfig: await resolveEnvironmentTsconfig(config, name),
   });
 }

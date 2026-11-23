@@ -5,7 +5,10 @@ import { freeze, record } from "@auaust/toolkit/object";
 
 import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
-import { resolveRegisteredEnvironments } from "#batiment/environments/index";
+import {
+  discoverEnvironmentPlacements,
+  resolveRegisteredEnvironments,
+} from "#batiment/environments/index";
 import {
   createScopeTree,
   getNamespaceId,
@@ -136,22 +139,25 @@ function resolveConfiguredKind(
   return resolved;
 }
 
-function discoverEnvironments({
-  presets,
-  environments,
-}: RootFacts): EnvironmentDiscovery {
+async function discoverEnvironments(
+  { presets, environments, ignored }: RootFacts,
+  filesystem: Filesystem,
+): Promise<{
+  readonly discovery: EnvironmentDiscovery;
+  readonly diagnostics: readonly StructureDiagnostic[];
+}> {
   const registered = resolveRegisteredEnvironments(presets, environments);
 
-  return freeze({
+  const { placements, diagnostics } = await discoverEnvironmentPlacements({
     registered,
-    placements: freeze(
-      flatMap(registered, ({ registration, dirs }) => {
-        return map(dirs, (dir) => {
-          return freeze({ environment: registration.name, dir });
-        });
-      }),
-    ),
+    ignored,
+    filesystem,
   });
+
+  return {
+    discovery: freeze({ registered, placements }),
+    diagnostics,
+  };
 }
 
 export async function discoverContext(
@@ -164,7 +170,7 @@ export async function discoverContext(
 
   const kinds = new Map(root.kinds.map((kind) => [kind.name, kind]));
 
-  const environments = discoverEnvironments(root);
+  const environments = await discoverEnvironments(root, filesystem);
 
   const placed = await Promise.all(
     root.namespaces.map(async (placement) => {
@@ -200,7 +206,10 @@ export async function discoverContext(
     discovered.workspaces,
   );
 
-  const diagnostics: StructureDiagnostic[] = [...discovered.diagnostics];
+  const diagnostics: StructureDiagnostic[] = [
+    ...discovered.diagnostics,
+    ...environments.diagnostics,
+  ];
 
   const resolved = placed.map(({ placement, configured, discovery }) => {
     const kind = resolveNamespaceKind({
@@ -278,7 +287,7 @@ export async function discoverContext(
         }),
       ),
     ),
-    environments,
+    environments: environments.discovery,
     expected,
     tree: freeze({
       ...tree,
