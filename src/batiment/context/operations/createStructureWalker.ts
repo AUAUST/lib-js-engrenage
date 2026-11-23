@@ -2,18 +2,20 @@ import { join } from "node:path";
 
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
-import { listStructureDirectories } from "#batiment/structure/operations/listStructureDirectories";
-import { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";
-import { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
+import { listStructureDirectories } from "#batiment/context/operations/listStructureDirectories";
+import {
+  extendRoleLocation,
+  getStructureLayer,
+  type createMirrorClassifier,
+  type StaticLayout,
+  type StructureKind,
+  type StructureNode,
+  type StructureOptions,
+  type StructureParent,
+} from "#batiment/structure/index";
+import type { createStructureDomainResolver } from "#batiment/context/operations/createStructureDomainResolver";
+import type { createStructureRoleResolver } from "#batiment/context/operations/createStructureRoleResolver";
 import type { ResolvedRoles, RoleLocation } from "#batiment/roles/index";
-import type { createStructureDomainResolver } from "#batiment/structure/operations/createStructureDomainResolver";
-import type { createStructureRoleResolver } from "#batiment/structure/operations/createStructureRoleResolver";
-import type { StaticLayout } from "#batiment/structure/ports/StaticLayout";
-import type { StructureKind } from "#batiment/structure/types/StructureKind";
-import type { StructureNode } from "#batiment/structure/types/StructureNode";
-import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
-import type { StructureParent } from "#batiment/structure/types/StructureParent";
-import type { createMirrorClassifier } from "#batiment/structure/utils/createMirrorClassifier";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

@@ -2,11 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import {
-  createScopeTree,
-  discoverWorkspaces,
-  getEnvironmentId,
-} from "#batiment/scopes/index";
+import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
+import { createScopeTree, getEnvironmentId } from "#batiment/scopes/index";
 import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { createProjectConfig } from "#project/config/index";

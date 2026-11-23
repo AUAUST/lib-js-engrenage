@@ -2,19 +2,21 @@ import { matchesGlob, posix } from "node:path";
 
 import { freeze, hasOwn, keys, record, values } from "@auaust/toolkit/object";
 
-import { resolveEnvironmentStructure } from "#batiment/structure/operations/resolveEnvironmentStructure";
-import { collectStructureNodes } from "#batiment/structure/utils/collectStructureNodes";
-import { listStructureDiagnostics } from "#batiment/structure/utils/listStructureDiagnostics";
-import { mergeStructureMetadata } from "#batiment/structure/utils/mergeStructureMetadata";
-import { resolveDomainEntries } from "#batiment/structure/utils/resolveDomainEntries";
-import type { DeclaredEnvironment } from "#batiment/structure/types/DeclaredEnvironment";
-import type { DeclaredStructure } from "#batiment/structure/types/DeclaredStructure";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
-import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
-import type { StructureMetadata } from "#batiment/structure/types/StructureMetadata";
-import type { StructureNode } from "#batiment/structure/types/StructureNode";
-import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
-import type { TestsContext } from "#batiment/structure/types/TestsContext";
+import { resolveEnvironmentStructure } from "#batiment/context/operations/resolveEnvironmentStructure";
+import {
+  collectStructureNodes,
+  listStructureDiagnostics,
+  mergeStructureMetadata,
+  resolveDomainEntries,
+  type DeclaredEnvironment,
+  type DeclaredStructure,
+  type EnvironmentStructure,
+  type ResolvedStructure,
+  type StructureMetadata,
+  type StructureNode,
+  type StructureOptions,
+  type TestsContext,
+} from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 
 function listUnreached({

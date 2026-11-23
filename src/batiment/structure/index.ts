@@ -40,26 +40,12 @@ export type * from "#batiment/structure/types/TestVariant";
 export type * from "#batiment/structure/types/UnclassifiedReason";
 // @end
 
-export type * from "#batiment/structure/types/DeclaredEnvironment";
 // @barrel ports
 export type * from "#batiment/structure/ports/DerivedLayout";
 export type * from "#batiment/structure/ports/EnvironmentStructureOption";
 export type * from "#batiment/structure/ports/Layout";
 export type * from "#batiment/structure/ports/RecursiveLayout";
 export type * from "#batiment/structure/ports/StaticLayout";
-// @end
-
-// @barrel operations
-export { assignRoleFiles } from "#batiment/structure/operations/assignRoleFiles";
-export { createStructureDomainResolver } from "#batiment/structure/operations/createStructureDomainResolver";
-export { createStructureRoleResolver } from "#batiment/structure/operations/createStructureRoleResolver";
-export { createStructureWalker } from "#batiment/structure/operations/createStructureWalker";
-export { listStructureDirectories } from "#batiment/structure/operations/listStructureDirectories";
-export { listStructureFiles } from "#batiment/structure/operations/listStructureFiles";
-export { listStructureFilesAtAnyDepth } from "#batiment/structure/operations/listStructureFilesAtAnyDepth";
-export { readStructureMetadata } from "#batiment/structure/operations/readStructureMetadata";
-export { resolveEnvironmentStructure } from "#batiment/structure/operations/resolveEnvironmentStructure";
-export { resolveStructure } from "#batiment/structure/operations/resolveStructure";
 // @end
 
 // @barrel utils

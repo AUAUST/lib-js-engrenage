@@ -14,12 +14,6 @@ export type * from "#batiment/scopes/types/ScopeTree";
 export { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspaceMetadataSchema";
 // @end
 
-// @barrel operations
-export { discoverEnvironment } from "#batiment/scopes/operations/discoverEnvironment";
-export { discoverWorkspaces } from "#batiment/scopes/operations/discoverWorkspaces";
-export { hasUnignoredFile } from "#batiment/scopes/operations/hasUnignoredFile";
-// @end
-
 // @barrel utils
 export { createScopeTree } from "#batiment/scopes/utils/createScopeTree";
 export { getEnvironmentId } from "#batiment/scopes/utils/getEnvironmentId";

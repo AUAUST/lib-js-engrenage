@@ -22,8 +22,10 @@ import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { DiscoveredEnvironment } from "#batiment/scopes/index";
-import type { MetadataField } from "#batiment/structure/types/MetadataField";
-import type { StructureMetadata } from "#batiment/structure/types/StructureMetadata";
+import type {
+  MetadataField,
+  StructureMetadata,
+} from "#batiment/structure/index";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

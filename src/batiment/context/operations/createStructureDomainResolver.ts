@@ -2,6 +2,7 @@ import { basename, extname, join, matchesGlob } from "node:path";
 
 import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
+import { assignRoleFiles } from "#batiment/context/operations/assignRoleFiles";
 import {
   domainMetadataFile,
   namespaceMetadataFile,
@@ -12,13 +13,14 @@ import {
   type ResolvedRoles,
 } from "#batiment/roles/index";
 import { defaultReexport } from "#batiment/structure/constants";
-import { assignRoleFiles } from "#batiment/structure/operations/assignRoleFiles";
-import { constrainsFileRole } from "#batiment/structure/utils/constrainsFileRole";
-import { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
-import { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
-import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
+import {
+  constrainsFileRole,
+  getStructureCardinality,
+  groupRoleFiles,
+  listNamedFileRoles,
+  type StructureOptions,
+} from "#batiment/structure/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

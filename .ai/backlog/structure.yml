@@ -75,8 +75,8 @@ entries:
   - id: 261122-5213
     title: Structure resolvers and index hold loose rules
     sites:
-      - src/batiment/structure/operations/createStructureDomainResolver.ts:68
-      - src/batiment/structure/operations/createStructureRoleResolver.ts:131
+      - src/batiment/context/operations/createStructureDomainResolver.ts:70
+      - src/batiment/context/operations/createStructureRoleResolver.ts:133
       - src/batiment/structure/utils/createEntityIndex.ts:96
       - src/batiment/structure/utils/createEntityIndex.ts:101
       - src/project/structure/operations/findImportCycles.ts:238
@@ -114,7 +114,7 @@ entries:
     title: Namespaces declared under a domain glob are ignored
     sites:
       - src/batiment/structure/utils/flattenStructure.ts:75
-      - src/batiment/structure/operations/createStructureDomainResolver.ts:38
+      - src/batiment/context/operations/createStructureDomainResolver.ts:40
     why: "`flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches."
     want: namespaces under globs matched like domains, or rejected by the schema.
   - id: 261122-d263
@@ -152,7 +152,7 @@ entries:
     title: Role file assignments are re-derived by their consumers
     sites:
       - src/batiment/structure/utils/groupRoleFiles.ts:5
-      - src/batiment/structure/operations/createStructureDomainResolver.ts:122
+      - src/batiment/context/operations/createStructureDomainResolver.ts:124
       - src/tools/typescript/operations/listDomainModules.ts:20
     why: "`getStructureCardinality` regroups the assignments; `assignRoleFiles` recomputes the static globs; `listDomainModules` re-derives roles from `fileNames` though the walker classifies each file."
     want: the resolved structure carries each role node's files, groups and globs.
@@ -231,3 +231,9 @@ entries:
     why: "Under #732's two dimensions maps describe top-level namespaces, keyed by their ID; environments are runtimes"
     want: The instruction text naming the maps and telling agents which map to read speaks of top-level namespaces, covering workspace maps (project-map/theme/src.md); needs a writer with consent
     done: "#760 lands its per-namespace maps"
+  - id: 261123-58d2
+    title: batiment/context's operations mix discovery with the structure walk in one flat role
+    sites:
+      - src/batiment/context/index.ts:1
+    why: "16 modules: discovery and the walk with its resolvers landed together when #861 hid them"
+    want: "Sub-domains or a split along discovery and walk, once #841 and #844 reshape the port"

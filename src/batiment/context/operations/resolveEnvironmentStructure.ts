@@ -3,6 +3,10 @@ import { basename } from "node:path";
 import { flat, sort } from "@auaust/toolkit/array";
 import { entries, freeze, getOwn, keys } from "@auaust/toolkit/object";
 
+import { assignRoleFiles } from "#batiment/context/operations/assignRoleFiles";
+import { createStructureDomainResolver } from "#batiment/context/operations/createStructureDomainResolver";
+import { createStructureRoleResolver } from "#batiment/context/operations/createStructureRoleResolver";
+import { createStructureWalker } from "#batiment/context/operations/createStructureWalker";
 import {
   getEntryFile,
   getIndexFile,
@@ -10,21 +14,19 @@ import {
   type ResolvedRoles,
   type RoleRegistry,
 } from "#batiment/roles/index";
-import { assignRoleFiles } from "#batiment/structure/operations/assignRoleFiles";
-import { createStructureDomainResolver } from "#batiment/structure/operations/createStructureDomainResolver";
-import { createStructureRoleResolver } from "#batiment/structure/operations/createStructureRoleResolver";
-import { createStructureWalker } from "#batiment/structure/operations/createStructureWalker";
-import { collectStructureNodes } from "#batiment/structure/utils/collectStructureNodes";
-import { createMirrorClassifier } from "#batiment/structure/utils/createMirrorClassifier";
-import { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
-import { listStructureRoles } from "#batiment/structure/utils/listStructureRoles";
-import { loosenStructureNode } from "#batiment/structure/utils/loosenStructureNode";
+import {
+  collectStructureNodes,
+  createMirrorClassifier,
+  groupRoleFiles,
+  listStructureRoles,
+  loosenStructureNode,
+  type EnvironmentStructure,
+  type Layout,
+  type StructureNode,
+  type StructureOptions,
+  type TestsContext,
+} from "#batiment/structure/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { Layout } from "#batiment/structure/ports/Layout";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
-import type { StructureNode } from "#batiment/structure/types/StructureNode";
-import type { StructureOptions } from "#batiment/structure/types/StructureOptions";
-import type { TestsContext } from "#batiment/structure/types/TestsContext";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";

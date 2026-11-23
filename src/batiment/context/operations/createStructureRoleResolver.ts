@@ -4,6 +4,8 @@ import { toArray } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { freeze, record } from "@auaust/toolkit/object";
 
+import { listStructureFiles } from "#batiment/context/operations/listStructureFiles";
+import { listStructureFilesAtAnyDepth } from "#batiment/context/operations/listStructureFilesAtAnyDepth";
 import { noRoles } from "#batiment/roles/constants";
 import {
   findFileResolver,
@@ -13,15 +15,15 @@ import {
   type RoleLocation,
   type RoleRegistry,
 } from "#batiment/roles/index";
-import { listStructureFiles } from "#batiment/structure/operations/listStructureFiles";
-import { listStructureFilesAtAnyDepth } from "#batiment/structure/operations/listStructureFilesAtAnyDepth";
-import { constrainsFileRole } from "#batiment/structure/utils/constrainsFileRole";
-import { getLocalRoleName } from "#batiment/structure/utils/getLocalRoleName";
-import { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
-import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
-import { matchFileRole } from "#batiment/structure/utils/matchFileRole";
-import type { StructureNode } from "#batiment/structure/types/StructureNode";
-import type { StructureParent } from "#batiment/structure/types/StructureParent";
+import {
+  constrainsFileRole,
+  getLocalRoleName,
+  getStructureCardinality,
+  listNamedFileRoles,
+  matchFileRole,
+  type StructureNode,
+  type StructureParent,
+} from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";

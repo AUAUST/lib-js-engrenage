@@ -3,10 +3,10 @@ import { posix } from "node:path";
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze, record } from "@auaust/toolkit/object";
 
+import { discoverEnvironment } from "#batiment/context/operations/discoverEnvironment";
+import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
 import {
   createScopeTree,
-  discoverEnvironment,
-  discoverWorkspaces,
   getEnvironmentId,
   type DiscoveredEnvironment,
   type DiscoveredWorkspace,

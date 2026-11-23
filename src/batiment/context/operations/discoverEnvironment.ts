@@ -1,9 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { hasUnignoredFile } from "#batiment/context/operations/hasUnignoredFile";
 import { rootScope } from "#batiment/scopes/constants";
-import { hasUnignoredFile } from "#batiment/scopes/operations/hasUnignoredFile";
-import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
-import type { EnvironmentClaim } from "#batiment/scopes/ports/EnvironmentClaim";
+import {
+  reconcileEnvironmentDirs,
+  type EnvironmentClaim,
+} from "#batiment/scopes/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";

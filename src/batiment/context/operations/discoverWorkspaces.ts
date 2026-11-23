@@ -10,16 +10,18 @@ import {
   namespaceMetadataFile,
 } from "#batiment/environments/constants";
 import { environmentMetadataSchema } from "#batiment/environments/index";
-import { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspaceMetadataSchema";
 import { rootScope, workspaceMetadataFile } from "#batiment/scopes/constants";
+import {
+  workspaceMetadataSchema,
+  type DiscoveredEnvironment,
+  type DiscoveredWorkspace,
+} from "#batiment/scopes/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
 import type {
   StructureDiagnostic,
   StructureDiagnosticCode,
 } from "#batiment/report/index";
-import type { DiscoveredEnvironment } from "#batiment/scopes/types/DiscoveredEnvironment";
-import type { DiscoveredWorkspace } from "#batiment/scopes/types/DiscoveredWorkspace";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

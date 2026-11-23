@@ -1,13 +1,13 @@
 import { getOwn } from "@auaust/toolkit/object";
 
-import {
-  readStructureMetadata,
-  resolveStructure,
-  type DeclaredEnvironment,
-  type ResolvedStructure,
-} from "#batiment/structure/index";
+import { readStructureMetadata } from "#batiment/context/operations/readStructureMetadata";
+import { resolveStructure } from "#batiment/context/operations/resolveStructure";
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
 import type { ScopeDeclarations } from "#batiment/context/types/ScopeDeclarations";
+import type {
+  DeclaredEnvironment,
+  ResolvedStructure,
+} from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 

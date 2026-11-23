@@ -17,8 +17,5 @@ export type * from "#batiment/context/types/ScopeDeclarations";
 export type * from "#batiment/context/types/WorkspaceExpectation";
 // @end
 
-// @barrel operations
-export { discoverContext } from "#batiment/context/operations/discoverContext";
+// @debt `load` is exported by hand outside any barrel block, since a block lists every module of its role and the other operations must stay private
 export { load } from "#batiment/context/operations/load";
-export { walkScope } from "#batiment/context/operations/walkScope";
-// @end
