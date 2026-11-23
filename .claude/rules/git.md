@@ -4,7 +4,7 @@
 
 ## Commits
 
-Records here are uncommitted changes to `.ai/friction.md` and `.ai/discarded.md`, and files whose only uncommitted changes are debt markers.
+Records here are uncommitted changes to the files of the friction and discarded logs (agent-records rule), and files whose only uncommitted changes are debt markers.
 
 | When                                                                    | Do                                                                                                         |
 | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |

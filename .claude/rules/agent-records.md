@@ -2,16 +2,16 @@
 
 # Agent records
 
-- **Friction**, `.ai/friction.md` under `# Agent friction`: each retry, workaround or lookup anything but your own changes cost you. Form: `- <subject>: <what you tried> — <what stopped it and how you got past>`, the subject naming its cause.
-- **Discarded solution**, `.ai/discarded.md` under `# Discarded solutions`: each solution you set aside because its cost exceeded what the task or your role allows. Form: `- <subject>: <need> — <reason set aside>`, naming a library by its package name.
+- **Friction**, with `pnpm metalbrain friction add --subject <its cause> --tried <what you tried> --stopped <what stopped it and how you got past>`: each retry, workaround or lookup anything but your own changes cost you.
+- **Discarded solution**, with `pnpm metalbrain discarded add --subject <the solution> --need <need> --reason <reason set aside>`: each solution you set aside because its cost exceeded what the task or your role allows, naming a library by its package name.
 - **Debt**, as defined below, a comment at the code. Form: `@debt <statement>` at the start of its own comment, one per comment, stating what could be better as you see it; a fix only when you already know one.
 
 - Write each record yourself as soon as you find what it records, without asking or awaiting review, whatever your role, mode or brief; only in the current repository, reporting what you notice elsewhere.
 - Telling anyone a finding records nothing: record it first, under this rule or Backlog, and name where. Report unrecorded only a finding Backlog leaves to your caller, and, as pending, one whose entry waits on a dispatched agent's work.
 - Before your final report as a subagent, or ending a turn in the main session, ahead of any closing step your harness asks for, write each record and backlog entry due since your dispatch, resume or turn began.
-- Create a log with its heading when absent. Keep each part of a line to a few words, so mentions of one subject match.
-- Before weighing a solution or writing a friction line, search its log for the subject. A subject with three or more lines is recurring: report it as a candidate with its line count and the needs it records.
-- Remove a subject's log lines once a backlog entry, issue or change takes it up, and a debt marker only when your change resolves it.
+- Read and change the friction and discarded logs only through their `pnpm metalbrain friction|discarded` commands. Keep each field to a few words, so mentions of one subject match.
+- Before weighing a solution or adding a friction entry, search its log for the subject. A subject its log's `stats` flags as recurring is a candidate: report it with its entry count and the needs its entries record.
+- Close a subject's log entries once a backlog entry, issue or change takes it up, and remove a debt marker only when your change resolves it.
 
 ## Debt
 

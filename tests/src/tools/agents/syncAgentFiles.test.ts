@@ -451,7 +451,6 @@ describe("fragment fillers", () => {
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
       "AGENTS.md": "# Agents\n\n<!-- @reference @auaust/engrenage/agents/sections/writing.md -->\n<!-- @end -->\n\n<!-- @reference ./local.md -->\n<!-- @end -->\n",
       ".claude/rules/git.md": "<!-- @reference @auaust/engrenage/agents/rules/git.md -->\n<!-- @end -->\n",
-      ".ai/backlog/index.md": "# Backlog\n\n<!-- @reference @auaust/engrenage/agents/templates/backlog.md -->\n<!-- @end -->\n\n## Open categories\n",
     });
 
     const config = await loadConfig(project.root);
@@ -466,10 +465,6 @@ describe("fragment fillers", () => {
 
     expect(await filesystem.read(".claude/rules/git.md")).toBe(
       "<!-- @reference @auaust/engrenage/metalbrain/rules/git.md -->\n<!-- @end -->\n",
-    );
-
-    expect(await filesystem.read(".ai/backlog/index.md")).toContain(
-      "<!-- @reference @auaust/engrenage/metalbrain/templates/backlog.md -->",
     );
   });
 

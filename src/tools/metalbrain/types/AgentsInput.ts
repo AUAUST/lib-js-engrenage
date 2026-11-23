@@ -72,17 +72,17 @@ export interface AgentsInput {
     mode?: (("warn" | "deny") | undefined)
     /**
      * Words of the **Goal** section of an issue.
-     * @default 150
+     * @default 110
      */
     goal?: (number | undefined)
     /**
      * Words of the **Context** section of an issue.
-     * @default 150
+     * @default 120
      */
     context?: (number | undefined)
     /**
      * Words of the **Done when** section of an issue.
-     * @default 150
+     * @default 110
      */
     doneWhen?: (number | undefined)
     /**

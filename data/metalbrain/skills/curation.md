@@ -26,7 +26,7 @@ Read `.claude/rules/issues.md` before writing anything up. Your findings become 
 
 | Target           | Allowed                                                                                            |
 | ---------------- | -------------------------------------------------------------------------------------------------- |
-| Backlog and logs | Entries and categories in `.ai/backlog/`; `.ai/scratchpad.md`; `.ai/friction.md`                   |
+| Backlog and logs | Backlog entries and categories, and friction entries, through their commands; `.ai/scratchpad.md`  |
 | Code             | Only new `@debt` markers: existing ones stay until their fix lands, as its list of sites           |
 | Other local file | A configuration value or trivial edit a note explicitly asks for; anything larger becomes an entry |
 | GitHub           | A comment, pull request, label, push or message a note asks for: an entry                          |
@@ -44,13 +44,13 @@ Read this file before the first dispatch, for parallel agents, the brief lines, 
 
 | Analyser | Dispatched at | Skipped when             | Count         | Serves         |
 | -------- | ------------- | ------------------------ | ------------- | -------------- |
-| Records  | Stage 0       | No note and no log line  | One           | Stages 1 and 3 |
+| Records  | Stage 0       | No note and no log entry | One           | Stages 1 and 3 |
 | Debt     | Stage 0       | No marker and no clone   | One per batch | Stage 2        |
 | Triage   | Stage 4       | The run touched no entry | One           | Stage 4        |
 
 - Debt batches: the markers grouped by directory, at most about 100 per batch, one batch when all fit; each clone joins its first file's batch.
-- Brief each with the paths of what it reads, never their content, its scope (those inputs and the code and history they cite), for the triage analyser a `Backlog:` line per entry the run touched and `Thoroughness: standard`, and the facts wanted back:
-  - **Records.** Reads the scratchpad, `.ai/friction.md`, `.ai/discarded.md` and the backlog. Back: per note, the project context it touches, the entries covering or overlapping it, and any conflict with them or missing context, as a question; per friction subject, its variant names, the one name to merge them under, its line count and the entry tracking it; per discarded subject, its line count.
+- Brief each with the paths of the files it reads and the commands it runs, never their content, its scope (those inputs and the code and history they cite), for the triage analyser a `Backlog:` line per entry the run touched and `Thoroughness: standard`, and the facts wanted back:
+  - **Records.** Reads the scratchpad, the output of `pnpm metalbrain friction list`, `pnpm metalbrain friction stats` and `pnpm metalbrain discarded stats`, and the backlog. Back: per note, the project context it touches, the entries covering or overlapping it, and any conflict with them or missing context, as a question; per friction subject, its variant names, the one name to merge them under, its entry IDs and count and the backlog entry tracking it; per discarded subject, its entry count.
   - **Debt.** Reads the marker and clone files, its batch and the backlog. Back: its markers and clones grouped by matter, across wording and files, each group with its sites, the other sites the fix would benefit, the entry covering it, and a fix only when obvious; each marker or clone that is not debt, with why; each group whose matter reaches past the batch.
   - **Triage.** Reads the entries its `Backlog:` lines name, the request and the backlog, against the default branch. Back: per entry, the related entries and what they explain together, and what the request and the project's current state add to it, each with its site; per question, its answer with evidence, or the findings and candidate answers when the code, configuration, history, documentation and dependencies cannot settle it; the entries that are one matter, and each entry holding several.
 - Apply the stage-0 reports in stage order, checking each finding also against the entries this run already wrote: each analyser saw the backlog as it stood at its dispatch.
@@ -61,8 +61,8 @@ Read this file before the first dispatch, for parallel agents, the brief lines, 
 Run every stage, in this order; each feeds the next.
 
 0. **Load.**
-   - Read `.ai/backlog/index.md`, `.ai/friction.md` and `.ai/scratchpad.md`.
-   - Write the output of `pnpm engrenage debt --json`, one `{ file, line, column, statement }` per marker, and of `pnpm engrenage jscpd`, which lists code clones, to temporary files outside the repository; keep in context only the marker count per directory, to cut the debt batches.
+   - Run `pnpm metalbrain backlog categories` and `pnpm metalbrain friction stats`, and read `.ai/scratchpad.md`.
+   - Write the output of `pnpm metalbrain debt --json`, one `{ file, line, column, statement }` per marker, and of `pnpm engrenage jscpd`, which lists code clones, to temporary files outside the repository; keep in context only the marker count per directory, to cut the debt batches.
    - Dispatch the records and debt analysers.
 1. **Notes**, from the records report:
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.
@@ -75,8 +75,8 @@ Run every stage, in this order; each feeds the next.
    1. Merge the groups sharing a matter across batches. Set aside what is not debt, and what an entry already covers, extending that entry with what the group adds.
    2. Write each group as an entry in the category owning the code, with its `sites`, and a fix as `want` only when one is obvious.
 3. **Logs**, from the records report:
-   1. Rename the variants of each friction subject to the one name the report gives.
-   2. Turn each recurring subject (agent-records rule) into an entry, or extend the entry tracking it.
+   1. Add each entry of a friction subject's variants again under the one name the report gives, with `pnpm metalbrain friction add`, then close the variant entry.
+   2. Turn each subject `friction stats` flags as recurring into a backlog entry, or extend the entry tracking it.
    3. Report the recurring discarded subjects; never file work from them.
 4. **Triage**, over every entry the run touched, against the default branch:
    1. Dispatch the triage analyser.
@@ -93,7 +93,7 @@ Run every stage, in this order; each feeds the next.
 
 <!-- @end -->
 
-Every edit to `.ai/backlog/` follows `.ai/backlog/index.md`, and every edit to the logs the agent-records rule.
+Every backlog change follows Backlog, and every log change the agent-records rule.
 
 ## Report
 

@@ -75,8 +75,8 @@ describe("getRuleTemplates", () => {
         "| Text | Word cap |",
         "| --- | --- |",
         "| Issue **Goal** | 80 |",
-        "| Issue **Context** | 150 |",
-        "| Issue **Done when** | 150 |",
+        "| Issue **Context** | 120 |",
+        "| Issue **Done when** | 110 |",
       ].join("\n"),
     );
   });

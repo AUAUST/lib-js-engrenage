@@ -1,5 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import {
+  recordFileExtension,
+  recordIndexName,
+} from "#metalbrain/records/constants";
 import type { GroupedRecordKind } from "#metalbrain/records/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -30,7 +34,9 @@ export const backlog = freeze({
   wordCap: "backlogEntry",
 } as const) satisfies GroupedRecordKind;
 
-export const backlogIndex = `${backlogDirectory}/index.md` satisfies File;
+export const backlogRecordIndex = `${backlogDirectory}/${recordIndexName}${recordFileExtension}` satisfies File;
+
+export const legacyBacklogIndex = `${backlogDirectory}/index.md` satisfies File;
 
 export const legacyBacklogExtension = ".md";
 

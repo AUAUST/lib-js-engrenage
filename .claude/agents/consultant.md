@@ -57,7 +57,7 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
   - **Plan findings.** Settle each under §Changes, editing the issues it changes and adding one for work no open issue holds. Return each change to a leaf in flight's issue, for the walker to send its agent, and, for findings on a leaf's snap commit, whether its work stays for a new agent to build on or is dropped for the walker to revert.
   - **Open Questions the user leaves unanswered, with issues waiting behind it.** Only reorder around it, as below.
   - **`blockers` `outdated`.** Refresh it against the plan and the code, then remove `outdated` from its `blockers`.
-  - **Check findings for its structure.** Fix its structure until `pnpm engrenage planning issue check <n>` passes.
+  - **Check findings for its structure.** Fix its structure until `pnpm metalbrain planning issue check <n>` passes.
   - **`resource` or `idea` in the tree.** Take it out of its parent's `subIssues` and relate it to the plan (`issue-tree.md` › The tree).
 - Judge each deviation and discovery a worker reports before updating any issue; a choice its issue leaves to design is no deviation:
 

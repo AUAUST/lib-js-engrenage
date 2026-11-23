@@ -69,16 +69,16 @@ The range base is the range's first parent.
 
 Sort each finding by the first matching row:
 
-| Finding                                                           | Integration                          | Review                              |
-| ----------------------------------------------------------------- | ------------------------------------ | ----------------------------------- |
-| A plan finding (`review.md`)                                      | A plan finding                       | A plan finding                      |
-| Its fix within the fix radius                                     | Fix it                               | A finding                           |
-| In the reviewed files and the leaf's issue                        | A leaf finding                       | A finding                           |
-| In the reviewed files, outside the leaf's issue                   | A carry-over line for the review run | A finding                           |
-| A likely or proven bug beyond the reviewed files                  | A backlog entry                      | A backlog entry                     |
-| Any other finding located in the code, beyond the reviewed files  | A `@debt` marker at its site         | A `@debt` marker at its site        |
-| Not located: a missing abstraction, drift across domains, tooling | A backlog entry                      | A backlog entry                     |
-| A solution you weighed and set aside                              | A line under the agent-records rule  | A line under the agent-records rule |
+| Finding                                                           | Integration                           | Review                                |
+| ----------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| A plan finding (`review.md`)                                      | A plan finding                        | A plan finding                        |
+| Its fix within the fix radius                                     | Fix it                                | A finding                             |
+| In the reviewed files and the leaf's issue                        | A leaf finding                        | A finding                             |
+| In the reviewed files, outside the leaf's issue                   | A carry-over line for the review run  | A finding                             |
+| A likely or proven bug beyond the reviewed files                  | A backlog entry                       | A backlog entry                       |
+| Any other finding located in the code, beyond the reviewed files  | A `@debt` marker at its site          | A `@debt` marker at its site          |
+| Not located: a missing abstraction, drift across domains, tooling | A backlog entry                       | A backlog entry                       |
+| A solution you weighed and set aside                              | An entry under the agent-records rule | An entry under the agent-records rule |
 
 - Edit only your mechanical fixes, debt markers, the backlog and the agent logs, in the tree you review; never edit an issue or commit.
 
@@ -88,6 +88,6 @@ Report for the run or the leaf, under Writing › Reports:
 
 - The conflicts you resolved, each with its resolution, or the aborted rebase and the conflict that stopped it.
 - **Carry-over**, for the walker and the next run: the fixes you applied, light gaps included, the leaf findings (integration) or the findings (review), the plan findings, then the carry-over lines for the review run, each with its file, the defect or rule, and the expected change.
-- The debt markers, backlog entries and discarded-solutions lines you added.
+- The debt markers, backlog entries and discarded-solutions entries you added.
 
 <!-- @end -->

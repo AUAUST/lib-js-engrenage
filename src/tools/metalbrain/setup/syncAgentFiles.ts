@@ -1,8 +1,15 @@
 import { posix } from "node:path";
 
 import { syncFiles } from "#foundation/blocks/index";
-import { backlog, backlogIndex } from "#metalbrain/backlog/constants";
-import { migrateBacklogCategories } from "#metalbrain/backlog/index";
+import {
+  backlog,
+  backlogRecordIndex,
+  legacyBacklogIndex,
+} from "#metalbrain/backlog/constants";
+import {
+  migrateBacklogCategories,
+  removeLegacyBacklogIndex,
+} from "#metalbrain/backlog/index";
 import {
   attributionRules,
   mainSharedDirectory,
@@ -17,7 +24,6 @@ import {
   getSharedFiles,
   listFormerReferences,
   listStaleSkillFiles,
-  migrateBacklogIndex,
   migrateInstructionLocations,
   removeReferenceBlock,
   syncFrontmatter,
@@ -255,9 +261,14 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     config.agents.instructionFiles,
   );
 
-  await migrateBacklogIndex(config.filesystem);
+  const hasBacklog = (
+    (await config.filesystem.exists(backlogRecordIndex)) ||
+    (await config.filesystem.exists(legacyBacklogIndex))
+  );
 
-  if (await config.filesystem.exists(backlogIndex)) {
+  await removeLegacyBacklogIndex(config.filesystem);
+
+  if (hasBacklog) {
     await writeRecordIndex(config.filesystem, backlog);
   }
 

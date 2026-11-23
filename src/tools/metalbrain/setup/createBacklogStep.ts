@@ -1,6 +1,7 @@
 import { engrenage } from "#constants";
 import {
-  backlogIndex,
+  backlog,
+  backlogRecordIndex,
   scratchpadFile,
   scratchpadPlaceholder,
 } from "#metalbrain/backlog/constants";
@@ -11,10 +12,10 @@ import {
 } from "#metalbrain/instructions/constants";
 import {
   addAgentRules,
-  formatBacklogIndex,
   formatReferenceMarker,
   getMissingRuleTemplates,
 } from "#metalbrain/instructions/index";
+import { writeRecordIndex } from "#metalbrain/records/index";
 import { addAgentSkills, getSkillTemplates } from "#metalbrain/runtimes/index";
 import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import { syncAgentFiles } from "#tools/metalbrain/setup/syncAgentFiles";
@@ -40,7 +41,7 @@ export function createBacklogStep(): Step {
       const instructions = await filesystem.read(agentsFile);
 
       if (
-        !(await filesystem.exists(backlogIndex)) ||
+        !(await filesystem.exists(backlogRecordIndex)) ||
         !(await filesystem.exists(scratchpadFile)) ||
         !(instructions?.includes(sectionReference) ?? false)
       ) {
@@ -75,8 +76,8 @@ export function createBacklogStep(): Step {
     async plan(context) {
       const { filesystem } = context;
 
-      if (!(await filesystem.exists(backlogIndex))) {
-        await filesystem.write(backlogIndex, formatBacklogIndex("# Backlog"));
+      if (!(await filesystem.exists(backlogRecordIndex))) {
+        await writeRecordIndex(filesystem, backlog);
       }
 
       const instructions = await filesystem.read(agentsFile);

@@ -1,8 +1,8 @@
 import {
   backlog,
   backlogDirectory,
-  backlogIndex,
   legacyBacklogExtension,
+  legacyBacklogIndex,
 } from "#metalbrain/backlog/constants";
 import { createRecordGroup } from "#metalbrain/records/index";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -22,7 +22,7 @@ export async function createBacklogCategory(
 ): Promise<File> {
   const legacy = `${backlogDirectory}/${name}${legacyBacklogExtension}` satisfies File;
 
-  if (legacy !== backlogIndex && (await filesystem.exists(legacy))) {
+  if (legacy !== legacyBacklogIndex && (await filesystem.exists(legacy))) {
     throw new Error(`Backlog category "${name}" already exists: ${legacy}`);
   }
 

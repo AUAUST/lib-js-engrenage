@@ -73,19 +73,16 @@ State each decision, constraint or no-go with the concern it protects, in one cl
 | **Planning**      | plan, segment, item           | Design not finished yet; in a write-up of several ordered changes (issues rule › Outcome), the breakdown left to design                                   |
 | **Questions**     | plan, segment, item           | What investigation could not settle: the findings and the candidate answers                                                                               |
 
-| Section       | Word cap |
-| ------------- | -------- |
-| **Goal**      | ~60      |
-| **Context**   | ~80      |
-| **Done when** | ~60      |
+<!-- @word-caps goal context doneWhen -->
+<!-- @end -->
 
 - Other sections: as complete as the item's agent needs.
 - A segment's **Done when**: never the next item's or the parent's requirement, nor a restatement of its members' facts.
 - Never restate the project's instructions: agents follow them for everything an issue does not say.
 
-<!-- @file .ai/backlog/index.md -->
+<!-- @file .ai/backlog/index.yml -->
 
-- An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under `.ai/backlog/index.md`.
+- An issue you create or edit taking up a backlog entry's work: update the entry in the same run, under Backlog.
 
 <!-- @end -->
 
@@ -136,10 +133,10 @@ Write and edit issues as local drafts in `.ai/issues/`, revised as the work and 
 - Use only the types, fields, options and labels `.claude/rules/planning-sheet.md` lists, by their GitHub names: Read it before your first draft unless reading a draft loaded it.
 - Start by reading `.ai/issues/`, where other sessions draft too: resume only the drafts of your task, those the user names or those of the issues you were given. Edit, check and publish only those you created, claimed or resumed.
 - Read an issue from `.ai/issues/` when it holds a copy, and fetch it from GitHub only otherwise.
-- Create an issue with `pnpm engrenage planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest and body skeleton and lists the draft in its parent's `subIssues`.
-- Claim an issue on its first edit with `pnpm engrenage planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, report it and keep working.
+- Create an issue with `pnpm metalbrain planning issue create <type> [--slug <slug>] [--repo <name>] [--parent <ref> [--after <ref>]]`: it writes the manifest and body skeleton and lists the draft in its parent's `subIssues`.
+- Claim an issue on its first edit with `pnpm metalbrain planning issue claim <refs>`. Claim another repository's issue as `<repo>.123`: it takes no `drafting` lock. When it records `claim: existing`, report it and keep working.
 - Fill or remove every section `create` writes, to match the §Bodies shape you mean the item to take.
 - Order children only through their parent's `subIssues`: `publish` attaches and orders sub-issues and renders a plan's **Roadmap**, each header's ancestor chain and the **Re-split log**, refusing a re-split without its `resplit` reason. Write none of them by hand.
 - End each round with the drafts it changed and the changes waiting on each question you asked.
-- Run `pnpm engrenage planning issue check <refs>` on the drafts you changed before publishing them.
-- Publish when your skill says, by default before ending each turn, holding back the drafts any question you ask in that turn, to the user or your caller, concerns; an issue's own **Questions** never delay it. Run `pnpm engrenage planning issue publish <refs>` on every draft due in one call. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your next report.
+- Run `pnpm metalbrain planning issue check <refs>` on the drafts you changed before publishing them.
+- Publish when your skill says, by default before ending each turn, holding back the drafts any question you ask in that turn, to the user or your caller, concerns; an issue's own **Questions** never delay it. Run `pnpm metalbrain planning issue publish <refs>` on every draft due in one call. With the user in the conversation, report each claimed issue's change from `git diff --no-index <ref>.md <ref>.draft.md` before publishing it; as a subagent, publish without reporting first and put the diffs `publish` prints in your next report.

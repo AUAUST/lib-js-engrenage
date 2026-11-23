@@ -20,7 +20,7 @@ Leave the agent's checkout and commits out of its brief unless the user decided 
 - Iterate work deeper than one agent's level across fresh agents, each taking over from its predecessor's handoff; split work too large for one agent before dispatch: no level sizes the work handed over.
 - **A report opening with `Thoroughness stop:`.** Never resume the stopped agent. When what remains is part of what you dispatched it for, unless it is a successor that did none of what its predecessor left, commit the files it changed as your skill commits an agent's work, otherwise under the git rules, towards the task, then dispatch a new agent of the same role and level for what remains: briefed as the stopped one was, from the new dispatch base, plus that report's progress and the gaps your review of its work found. Otherwise take the report as it stands and handle what remains as your skill handles a blocked report or one missing what you asked.
 
-<!-- @file .ai/backlog/index.md -->
+<!-- @file .ai/backlog/index.yml -->
 
 ## Backlog
 

@@ -1,12 +1,9 @@
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
 
 import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
 
-import { resolveDataFile } from "#foundation/data/index";
-import { backlogIndex } from "#metalbrain/backlog/constants";
-import { backlogTemplate } from "#metalbrain/instructions/constants";
+import { legacyBacklogIndex } from "#metalbrain/backlog/constants";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { collectChanges, runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -21,7 +18,7 @@ function createProject(
     "package.json": '{"type":"module"}',
     "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',
     "AGENTS.md": "# Agents\n",
-    [backlogIndex]: index,
+    [legacyBacklogIndex]: index,
     ...files,
   });
 
@@ -39,16 +36,12 @@ async function sync(root: string) {
 }
 
 describe("backlog migration", () => {
-  test("replaces the inline instructions with the template block, the category list with index.yml", async () => {
+  test("removes the index page, listing the categories in index.yml", async () => {
     const project = createProject(
       [
         "# Backlog",
         "",
         "Deferred work.",
-        "",
-        "## Entries",
-        "",
-        "- An outdated rule.",
         "",
         "## Open categories",
         "",
@@ -62,14 +55,7 @@ describe("backlog migration", () => {
 
     await sync(project.root);
 
-    const index = project.read(backlogIndex);
-
-    const template = await readFile(resolveDataFile(backlogTemplate), "utf-8");
-
-    expect(index).toContain(template.trim());
-    expect(index).not.toContain("An outdated rule.");
-
-    expect(index).not.toContain("## Open categories");
+    expect(existsSync(project.resolve(legacyBacklogIndex))).toBe(false);
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
       toolkit: { purpose: "Upstream toolkit decisions.", entries: [] },
@@ -82,7 +68,7 @@ describe("backlog migration", () => {
       },
     );
 
-    expect(changes.filter(({ file }) => file === backlogIndex)).toEqual([]);
+    expect(changes).toEqual([]);
   });
 
   test("converts a legacy category, rewriting its references, once", async () => {

@@ -142,7 +142,7 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 | Run tests and type checking                                                                                         | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
 | Build and test the output, after changing entries, exports or bundling                                              | `pnpm build`                                        |
 | Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs               | `pnpm engrenage sync`                               |
-| List `@debt` markers                                                                                                | `pnpm engrenage debt --json`                        |
+| List `@debt` markers                                                                                                | `pnpm metalbrain debt --json`                       |
 | Make a user-facing change, one altering what a published package gives its users, where the project uses changesets | Add a changeset in `.changeset/` with it            |
 | Any other engrenage task                                                                                            | `pnpm engrenage --help`                             |
 
@@ -219,12 +219,19 @@ Place:
 
 ## Backlog
 
-Record out-of-scope findings and user-deferred work in the shared backlog by `.ai/backlog/index.md`; `index.yml` beside it lists the categories' purposes and entries.
+Record out-of-scope findings and user-deferred work in the shared backlog, reading and changing it only through `pnpm metalbrain backlog categories|list|search|show|create|add|update|move|close`.
 
 A finding outside your task that no agent record holds:
 
 - **You may edit files.** A backlog entry at once, named in your report.
 - **Your brief or skill makes you read-only.** Name it in your report, for your caller to record.
+
+Filing an entry:
+
+- **Category.** The one owning the dependency family or project subsystem that must change, from `categories`: upstream work under its dependency's product family, one per tool, never per vendor or integration; local coding conventions and linting under `coding-style`. When none owns it, create one without asking, its purpose naming the product or behavior it owns.
+- **Entry.** Search first, and update an entry covering the finding instead of adding a duplicate. Title: the problem or need, stated exactly; then `--sites` for its code sites and at most three items across `--why`, `--want` and `--done`, none restating the title.
+- **Closing.** Close an entry once resolved, obsolete or tracked in full by a GitHub issue; reduce one an issue tracks in part to what the issue leaves, linking it.
+- Cite an entry by its ID, only within this repository.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/typescript.md -->
 

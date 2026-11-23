@@ -11,6 +11,6 @@ Convert such an issue before any other edit to it or any dispatch of it, as a dr
 3. Add **Provides** only for what a Model section of the nearest plan expects from it.
 4. A `problem`: keep what the **Steps** settled or suspected about the fix under **Fix** or **Leads**, as the rule's rows hold them.
 5. Delete the **Steps** and every `Checkpoint:` line, with the procedure they held.
-6. Run `pnpm engrenage planning issue check` on it until it passes.
+6. Run `pnpm metalbrain planning issue check` on it until it passes.
 
 <!-- @end -->

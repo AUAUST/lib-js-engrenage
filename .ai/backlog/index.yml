@@ -36,6 +36,7 @@ agent-instructions:
     - 261122-0a07
     - 261122-6536
     - 261122-8421
+    - 261123-c6dc
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:
@@ -276,7 +277,6 @@ spec-migration:
     - 261122-30a3
     - 261122-e401
     - 261122-737b
-    - 261122-f251
 structure:
   purpose: Project structure description, its report and the tooling generated from it.
   entries:

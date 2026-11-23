@@ -16,7 +16,7 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 
 Each commit of an agent's work, made in the main checkout:
 
-1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to `.ai/friction.md` and `.ai/discarded.md`, where both sides' appends conflict; never otherwise rewrite those commits. Bring its lines in those logs by §Dropping work, steps 1 and 3. When the main checkout holds uncommitted records (git rules › Commits), stash them by path before the cherry-picks and pop the stash after the apply: a cherry-pick refuses a dirty file it touches.
+1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to the files of the friction and discarded logs, where both sides' additions conflict; never otherwise rewrite those commits. Bring its entries in those logs by §Dropping work, steps 1 and 3. When the main checkout holds uncommitted records (git rules › Commits), stash them by path before the cherry-picks and pop the stash after the apply: a cherry-pick refuses a dirty file it touches.
 2. Make the commit your skill sets on the uncommitted rest, empty when none is left; the agent's own commits stay as they are.
 3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
 4. Once the commit exists, remove the agent's worktree, when it has one, and write the backlog entries its report leaves you (`dispatching.md` › Backlog).
@@ -31,13 +31,13 @@ Moves an agent's work onto its own branch, so your work goes on from a clean tre
 
 ## Dropping work
 
-Takes an agent's work off the working branch, keeping the new lines in `.ai/friction.md` and `.ai/discarded.md` and every change that is not the agent's:
+Takes an agent's work off the working branch, keeping the new entries of the friction and discarded logs and every change that is not the agent's:
 
-1. Copy the lines those logs gained since the agent's dispatch base, whoever wrote them, from its hold branch when held, otherwise from its checkout.
+1. Run `pnpm metalbrain friction list` and `pnpm metalbrain discarded list` in the agent's checkout, on its hold branch when held, and keep their output.
 2. Return the main checkout to the working branch as it stood before the agent:
    - **Agent in the main checkout.** Held, switch back to the working branch; otherwise discard the uncommitted files the agent changed or added. Undo its commits, when any: held, `git reset --keep <dispatch base>`, uncommitted records stashed by path around it, the hold branch keeping them; otherwise `git revert --no-edit <dispatch base>..HEAD`, since auto mode denies a reset past commits no other branch holds.
    - **Agent in a worktree.** In the main checkout, discard the applied rest by path, then undo its cherry-picks, when any, with `git reset --keep` to the commit before them: its worktree keeps the originals. Then remove the agent's worktree with `--force`, since it may hold uncommitted work.
-3. Append the copied lines the main checkout's logs lack, left uncommitted for the next commit, and write the backlog entries the agent's report leaves you (`dispatching.md` › Backlog).
+3. Run both `list` commands in the main checkout, then add there each kept entry whose ID that output lacks, with `pnpm metalbrain friction add` or `pnpm metalbrain discarded add` and the fields its kept line holds, left uncommitted for the next commit, and write the backlog entries the agent's report leaves you (`dispatching.md` › Backlog).
 
 ## Stopping
 

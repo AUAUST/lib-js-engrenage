@@ -22,7 +22,7 @@ Implement one specified change: its specification states the end state and the c
 
 ## Before starting
 
-With an issue as specification, first run `pnpm engrenage planning issue check <n>`, `<n>` its number. When it fails, stop with a blocked report holding its findings and that command, to run again once they are settled.
+With an issue as specification, first run `pnpm metalbrain planning issue check <n>`, `<n>` its number. When it fails, stop with a blocked report holding its findings and that command, to run again once they are settled.
 
 With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when it holds information the issue needs.
 

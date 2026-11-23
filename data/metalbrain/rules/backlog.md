@@ -5,4 +5,4 @@ description: Maintain the shared backlog.
 
 # Backlog
 
-- Never write an entry's `id` or `.ai/backlog/index.yml` by hand: the commands `.ai/backlog/index.md` names write them.
+- Leave the backlog files unedited: the `pnpm metalbrain backlog` commands (Backlog) write them, assigning entry IDs, checking the schema and regenerating `index.yml`.

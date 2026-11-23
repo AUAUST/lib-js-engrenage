@@ -8,7 +8,6 @@ export { getRuleTemplates } from "#metalbrain/instructions/operations/getRuleTem
 export { getSharedFiles } from "#metalbrain/instructions/operations/getSharedFiles";
 export { listReferenceFiles } from "#metalbrain/instructions/operations/listReferenceFiles";
 export { listStaleSkillFiles } from "#metalbrain/instructions/operations/listStaleSkillFiles";
-export { migrateBacklogIndex } from "#metalbrain/instructions/operations/migrateBacklogIndex";
 export { migrateInstructionLocations } from "#metalbrain/instructions/operations/migrateInstructionLocations";
 export { parseInstruction } from "#metalbrain/instructions/operations/parseInstruction";
 export { removeReferenceBlock } from "#metalbrain/instructions/operations/removeReferenceBlock";
@@ -46,7 +45,6 @@ export { createInstructionFile } from "#metalbrain/instructions/utils/createInst
 export { createSkillFileFiller } from "#metalbrain/instructions/utils/createSkillFileFiller";
 export { createWordCapsFiller } from "#metalbrain/instructions/utils/createWordCapsFiller";
 export { filterConditionalBlocks } from "#metalbrain/instructions/utils/filterConditionalBlocks";
-export { formatBacklogIndex } from "#metalbrain/instructions/utils/formatBacklogIndex";
 export { formatReferenceMarker } from "#metalbrain/instructions/utils/formatReferenceMarker";
 export { isSkillFileReference } from "#metalbrain/instructions/utils/isSkillFileReference";
 export { isSupportingReference } from "#metalbrain/instructions/utils/isSupportingReference";

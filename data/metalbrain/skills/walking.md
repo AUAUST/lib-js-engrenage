@@ -48,7 +48,7 @@ walk check ──► route the ready set (§Handling table)
 
 ## Handling table
 
-Run `pnpm engrenage planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, and after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits; the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker`, `debugger`, or `orchestrator` (you) when it holds **Housekeeping**; and the next issue, or `Next: none, walk finished` once the walked issue is closed. It exits 1 only on a stuck walk: the walked issue open with an empty ready set.
+Run `pnpm metalbrain planning walk check <n> --depth <plan depth>` on the issue the user names: at the start, and after each commit, consultant return, debugger write-up and drop of a leaf's work, never in between. It reports every issue of the tree in tree order with its state, `blockers`, check findings, open **Planning** and **Questions** and local commits; the ready set, every issue actionable in turn within the plan depth, each `task` and `problem` with the agent its shape sends it to, `worker`, `debugger`, or `orchestrator` (you) when it holds **Housekeeping**; and the next issue, or `Next: none, walk finished` once the walked issue is closed. It exits 1 only on a stuck walk: the walked issue open with an empty ready set.
 
 A leaf is an issue a row of the table below dispatches to a worker or a debugger; a foreign leaf, one of another registered repository. On a foreign leaf or a worker report opening with `Linked defect:`, first read this file, which replaces each step of this skill it covers:
 
@@ -57,23 +57,23 @@ A leaf is an issue a row of the table below dispatches to a worker or a debugger
 
 Handle each issue by the first matching row; the `complexity` row applies on top of the row that dispatches. Every issue ordered after a set-aside one waits: keep walking the rest.
 
-| Issue                                                                                    | Walker                                                                                                                                      |
-| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Closed, or closed by an unpushed commit                                                  | Skip                                                                                                                                        |
-| A nested `plan` past the plan depth                                                      | Set aside: walked on its own                                                                                                                |
-| Open sub-issues                                                                          | Walk them in order (a `segment`'s in any), handling the issue's own check findings by the rows below without stopping; then its own work    |
-| `plan` or `segment` with no open sub-issue                                               | Closes with its last leaf's commit; the walked issue with §Boundary reviews' walk-end commit instead                                        |
-| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present                            | Set aside: it is being planned                                                                                                              |
-| `blockers` `drafting`, with no local draft                                               | Ask the user whether to clear the claim and walk it; on yes, run `pnpm engrenage planning issue release <n>` and handle it by the next rows |
-| `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                    | Set aside and report                                                                                                                        |
-| Check findings for **Steps** or `Checkpoint:` lines                                      | Set aside, never sent to the consultant; report it as a Steps-migration breakage, which the planning skill's Steps sweep converts           |
-| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant, open **Planning** once `walk check` lists it under `Planning due:`                                    |
-| Open **Questions**                                                                       | Set aside; batch the questions to the user                                                                                                  |
-| Foreign `task` or `problem` whose repository `pnpm engrenage link` lists no checkout for | Set aside and report                                                                                                                        |
-| `walk check` names `orchestrator` beside it in the ready set                             | Apply its **Housekeeping** yourself (§Housekeeping)                                                                                         |
-| `task` or `problem`                                                                      | The agent `walk check` names beside it in the ready set; foreign, through `cross-repository.md`                                             |
-| `complexity` set                                                                         | Dispatch at the effort §Agent limits gives the agent for that `complexity`; with none given, pass no effort                                 |
-| `resource` or `idea` in a tree                                                           | Never dispatched; report it to the consultant                                                                                               |
+| Issue                                                                                    | Walker                                                                                                                                       |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Closed, or closed by an unpushed commit                                                  | Skip                                                                                                                                         |
+| A nested `plan` past the plan depth                                                      | Set aside: walked on its own                                                                                                                 |
+| Open sub-issues                                                                          | Walk them in order (a `segment`'s in any), handling the issue's own check findings by the rows below without stopping; then its own work     |
+| `plan` or `segment` with no open sub-issue                                               | Closes with its last leaf's commit; the walked issue with §Boundary reviews' walk-end commit instead                                         |
+| `blockers` `drafting`, with `.ai/issues/<n>.draft.md` present                            | Set aside: it is being planned                                                                                                               |
+| `blockers` `drafting`, with no local draft                                               | Ask the user whether to clear the claim and walk it; on yes, run `pnpm metalbrain planning issue release <n>` and handle it by the next rows |
+| `blockers` `awaitingOthers` or `delayed`, or an open blocked-by issue                    | Set aside and report                                                                                                                         |
+| Check findings for **Steps** or `Checkpoint:` lines                                      | Set aside, never sent to the consultant; report it as a Steps-migration breakage, which the planning skill's Steps sweep converts            |
+| Open **Planning**, `blockers` `outdated`, or other check findings for its structure      | Set aside; send it to the consultant, open **Planning** once `walk check` lists it under `Planning due:`                                     |
+| Open **Questions**                                                                       | Set aside; batch the questions to the user                                                                                                   |
+| Foreign `task` or `problem` whose repository `pnpm engrenage link` lists no checkout for | Set aside and report                                                                                                                         |
+| `walk check` names `orchestrator` beside it in the ready set                             | Apply its **Housekeeping** yourself (§Housekeeping)                                                                                          |
+| `task` or `problem`                                                                      | The agent `walk check` names beside it in the ready set; foreign, through `cross-repository.md`                                              |
+| `complexity` set                                                                         | Dispatch at the effort §Agent limits gives the agent for that `complexity`; with none given, pass no effort                                  |
+| `resource` or `idea` in a tree                                                           | Never dispatched; report it to the consultant                                                                                                |
 
 `priority` never reorders a tree: order states dependencies.
 
@@ -193,7 +193,7 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 Every turn re-reads your whole context, and a long walk outgrows it.
 
 - Read only `walk check` output and agent reports, the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
-- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's record stash, cherry-picks and apply; its log append and commit; its worktree removal and the next `walk check`.
+- Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's record stash, cherry-picks and apply; its log entries' adds and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
 - Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.
 
@@ -204,4 +204,4 @@ End once no leaf is in flight and the ready set is empty, at the end of the tree
 1. The table of walked leaves, rebuilt from the walk's commits.
 2. Each merger run's findings and where each went.
 3. What is set aside, pending or blocked, and why, with each held leaf's branch.
-4. The walk's agent runs from `pnpm engrenage agents stats`, when the client records them.
+4. The walk's agent runs from `pnpm metalbrain agents stats`, when the client records them.

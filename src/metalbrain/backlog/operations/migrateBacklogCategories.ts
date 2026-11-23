@@ -8,9 +8,9 @@ import { splitSections } from "#foundation/markdown/index";
 import {
   backlog,
   backlogDirectory,
-  backlogIndex,
   backlogReferenceFiles,
   legacyBacklogExtension,
+  legacyBacklogIndex,
 } from "#metalbrain/backlog/constants";
 import { recordFileExtension } from "#metalbrain/records/constants";
 import { createRecordId, listRecordIds } from "#metalbrain/records/index";
@@ -156,7 +156,7 @@ function parseLegacyCategory(content: string) {
 async function readIndexPurposes(
   filesystem: Filesystem,
 ): Promise<Map<string, string>> {
-  const content = await filesystem.read(backlogIndex);
+  const content = await filesystem.read(legacyBacklogIndex);
 
   const purposes = new Map<string, string>();
 
@@ -230,7 +230,7 @@ export async function migrateBacklogCategories(
     `${backlogDirectory}/*${legacyBacklogExtension}`,
   );
 
-  const files = legacy.filter((file) => file !== backlogIndex);
+  const files = legacy.filter((file) => file !== legacyBacklogIndex);
 
   if (files.length === 0) {
     return;

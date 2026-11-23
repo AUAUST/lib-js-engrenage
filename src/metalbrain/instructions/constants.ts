@@ -23,10 +23,6 @@ export const sharedFilesKind = "shared";
 
 export const preserveDirective = "@preserve";
 
-export const backlogCategoriesHeading = "## Open categories";
-
-export const backlogTemplate = `${engrenage}/${metalbrain}/templates/backlog.md`;
-
 export const rulesDirectory = ".claude/rules" satisfies Directory;
 
 export const wordCapLabels = freeze({

@@ -179,3 +179,10 @@ entries:
       - data/metalbrain/sections/shell.md:1
     why: Seven friction lines across walkers, writers and workers
     want: Agents stop writing separators the hook refuses, through the Shell traps table or a hook message naming the alternative
+  - id: 261123-c6dc
+    title: no instruction says when agents write a pending log entry
+    sites:
+      - src/metalbrain/logs/constants.ts:1
+    why: "#825 added the pending kind for follow-up work left outside a pass; the #811 instruction switch introduced the friction and discarded commands only, user deferring the pending log's use"
+    want: agents know when a follow-up becomes a pending entry rather than a backlog entry or issue
+    done: an instruction names when to add pending entries, or the kind is dropped

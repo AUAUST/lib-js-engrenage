@@ -60,7 +60,7 @@ Deepen an item until it is ready for its agent (§Readiness).
 
 ## Readiness
 
-An issue is ready for a worker when `pnpm engrenage planning issue check <n>` passes, it holds one agent's worth (issue-drafts rule › Size) and, read with its ancestors as a worker reads it:
+An issue is ready for a worker when `pnpm metalbrain planning issue check <n>` passes, it holds one agent's worth (issue-drafts rule › Size) and, read with its ancestors as a worker reads it:
 
 - its **Done when** states an observable end state serving the plan's **Done when** within its **Goal** and **Decisions**;
 - each contract other items or users rely on is stated, in a Model section or the item's **Provides**;

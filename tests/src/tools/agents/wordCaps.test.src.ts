@@ -27,9 +27,9 @@ describe("word caps", () => {
 
     expect(await loadWordCaps(project.root)).toEqual({
       mode: "warn",
-      goal: 150,
-      context: 150,
-      doneWhen: 150,
+      goal: 110,
+      context: 120,
+      doneWhen: 110,
       comment: 150,
       backlogEntry: 100,
       logEntry: 60,
@@ -75,13 +75,13 @@ describe("word caps", () => {
         subject: "gh issue create, Context",
         kind: "context",
         words: 200,
-        cap: 150,
+        cap: 120,
       },
     ]);
 
     expect(
       measureGithubCommand(
-        task(`${words(140)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
+        task(`${words(100)} \`${words(30)}\`\n\n\`\`\`\n${words(30)}\n\`\`\``),
         wordCaps,
       ),
     ).toEqual([]);
