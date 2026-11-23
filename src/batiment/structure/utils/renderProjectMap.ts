@@ -159,7 +159,7 @@ export function renderProjectMap({
 
       return `| ${code(name)} | ${cells.join(" | ")} | ${code(`${directory}/${name}.md`)} |`;
     }),
-    ...(grants.published
+    ...(grants.published && variantRows.length > 0
       ? [
           "",
           "## Test files",

@@ -242,6 +242,7 @@ describe("project map", () => {
 
       project.write("data/.gitkeep", "");
       project.write("scripts/run.ts", "");
+      project.write("tests/run.test.ts", "");
 
       await syncProject(project);
 
@@ -282,6 +283,14 @@ describe("project map", () => {
       expect(never).toContain("`tooling`");
     },
   );
+
+  test("omits the test files section without a test namespace", async () => {
+    const project = createProject();
+
+    await syncProject(project);
+
+    expect(project.read(overviewFile)).not.toContain("## Test files");
+  });
 
   test("seals a root namespace whose `.namespace.json` names the static kind", async () => {
     const project = createProject();
