@@ -8,16 +8,15 @@ import {
   type ConfigContext,
   type ConfigResolver,
 } from "#project/config/index";
-import { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
-import { getOptionsKey } from "#project/environments/utils/getOptionsKey";
+import { listTsconfigRegistrations } from "#project/environments/operations/listTsconfigRegistrations";
 import {
   resolveTsconfig,
   type ResolvedEnvironmentTsconfig,
   type ResolvedEnvironmentTsconfigOption,
   type TsconfigKey,
 } from "#project/tsconfig/index";
+import type { EnvironmentRegistration } from "#batiment/environments/index";
 import type { Resolver } from "#foundation/options/index";
-import type { ContributedEnvironmentEntry } from "#project/environments/types/ContributedEnvironmentEntry";
 import type { File } from "#types/File";
 
 // @debt the check covers `enabled` only, so the rest of the tsconfig option a contributed environment resolves is trusted unchecked
@@ -29,9 +28,9 @@ const tsconfigOption = object({
 
 async function readTsconfigOption(
   config: Resolver<ConfigContext>,
-  environment: ContributedEnvironmentEntry,
+  { name }: EnvironmentRegistration,
 ): Promise<readonly [string, ResolvedEnvironmentTsconfigOption]> {
-  const key = getOptionsKey(environment);
+  const key = `${name}.options`;
 
   const option = await config.resolve(key);
 
@@ -41,20 +40,20 @@ async function readTsconfigOption(
     );
   }
 
-  return [environment.entry.name, option.tsconfig];
+  return [name, option.tsconfig];
 }
 
 export async function resolveEnvironmentTsconfig(
   config: ConfigResolver,
   key: TsconfigKey,
 ): Promise<ResolvedEnvironmentTsconfig> {
-  const environments = await listEnvironmentEntries(config);
+  const registrations = await listTsconfigRegistrations(config);
 
   const [groups, tests] = await Promise.all([
     Promise.all(
-      environments
-        .filter(({ kind }) => kind.tsconfig === true)
-        .map((environment) => readTsconfigOption(config, environment)),
+      registrations.map((registration) => {
+        return readTsconfigOption(config, registration);
+      }),
     ),
     config.resolve("tests.options"),
   ]);

@@ -1,8 +1,12 @@
-import { flatMap, map } from "@auaust/toolkit/array";
+import { map } from "@auaust/toolkit/array";
 
 import { listStaticFileGlobs } from "#batiment/roles/index";
 import { filesIn } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
+import {
+  listLanguageFiles,
+  readEnvironmentLanguages,
+} from "#project/environments/index";
 import { declarations, testsetup } from "#project/roles/index";
 import {
   globalDeclarationsFile,
@@ -11,7 +15,6 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
-import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -49,6 +52,38 @@ async function listSourceDeclarations(
     : [];
 }
 
+async function listEnvironmentGlobs(
+  config: LoadedConfig,
+  names: readonly string[],
+): Promise<readonly string[]> {
+  const context = await config.resolve("structure.context");
+
+  const { environments } = await context.discover();
+
+  const globs = await Promise.all(
+    names.map(async (name) => {
+      const registered = environments.registered.find(({ registration }) => {
+        return registration.name === name;
+      });
+
+      if (registered === undefined) {
+        throw new Error(
+          `The tsconfig of the ${name} environment includes its placements, yet no environment named ${name} is registered`,
+        );
+      }
+
+      const languages = await readEnvironmentLanguages(config, name);
+
+      return [
+        ...registered.registration.files,
+        ...filesIn(registered.dirs, listLanguageFiles(languages)),
+      ];
+    }),
+  );
+
+  return globs.flat();
+}
+
 async function createDefaultInclude(
   config: LoadedConfig,
   key: TsconfigKey,
@@ -59,20 +94,14 @@ async function createDefaultInclude(
     environments,
   } = await resolveTsconfigEnvironments(config, key);
 
-  const resolved = await Promise.all(
-    environments.map((name) => resolveTsconfigEnvironment(config, name)),
-  );
+  const globs = await listEnvironmentGlobs(config, environments);
 
   const declarations = [
     ...(await listGlobalDeclarations(config)),
     ...(await listSourceDeclarations(config, owner)),
   ];
 
-  return () => {
-    const globs = flatMap(resolved, ({ globs }) => globs);
-
-    return toTsconfigGlobs(file, [...globs, ...declarations]);
-  };
+  return () => toTsconfigGlobs(file, [...globs, ...declarations]);
 }
 
 async function createDistTestsInclude(

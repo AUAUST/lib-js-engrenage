@@ -1,3 +1,4 @@
+import type { EnvironmentDiscovery } from "#batiment/context/types/EnvironmentDiscovery";
 import type { ExpectedWorkspaces } from "#batiment/context/types/ExpectedWorkspaces";
 import type { NamespaceDiscovery } from "#batiment/context/types/NamespaceDiscovery";
 import type { DiscoveredEnvironment } from "#batiment/environments/index";
@@ -9,6 +10,7 @@ export interface ContextDiscovery {
   readonly workspaces: readonly DiscoveredWorkspace[];
   readonly metafiles: readonly DiscoveredEnvironment[];
   readonly namespaces: Readonly<Record<string, NamespaceDiscovery>>;
+  readonly environments: EnvironmentDiscovery;
   readonly expected: readonly ExpectedWorkspaces[];
   readonly tree: ScopeTree;
   readonly diagnostics: readonly StructureDiagnostic[];

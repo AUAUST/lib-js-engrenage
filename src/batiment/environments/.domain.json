@@ -1,3 +1,3 @@
 {
-  "purpose": "Declare environment kinds, the runtime facts of the environments placed in scopes."
+  "purpose": "Declare environment presets and their registrations, the runtime facts of the environments placed in scopes."
 }

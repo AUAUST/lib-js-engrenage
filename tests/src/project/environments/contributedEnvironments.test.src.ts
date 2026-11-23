@@ -102,7 +102,7 @@ function createLiquid(owns: readonly string[] = []): Extension {
           imports: {},
         },
       ],
-      environmentKinds: [
+      environmentPresets: [
         {
           name: "liquid",
         },
@@ -110,7 +110,6 @@ function createLiquid(owns: readonly string[] = []): Extension {
       environments: [
         {
           name: "liquid",
-          kind: "liquid",
           title: "the Liquid templates",
           owns,
         },
@@ -165,7 +164,7 @@ function createWorkers(
           code: "private",
         },
       ],
-      environmentKinds: [
+      environmentPresets: [
         {
           name: "workers",
         },
@@ -173,7 +172,6 @@ function createWorkers(
       environments: [
         {
           name: "workers",
-          kind: "workers",
           title: "the workers",
         },
       ],
@@ -379,7 +377,7 @@ describe("contributed environments", () => {
     );
   });
 
-  test("select no language when their kind and options name none", async () => {
+  test("select no language when their preset and options name none", async () => {
     const config = createWorkersConfig(createWorkers("enforced"));
 
     expect(
@@ -410,7 +408,7 @@ describe("contributed environments", () => {
     ]);
   });
 
-  test("list an environment of a contributed kind under its own config key", async () => {
+  test("register under their own config key, tuning the preset the record names", async () => {
     const site: Extension = {
       name: "fixture/site",
       owns: {
@@ -439,7 +437,6 @@ describe("contributed environments", () => {
         environments: [
           {
             name: "site",
-            kind: "src",
             title: "the site",
           },
         ],
@@ -447,16 +444,26 @@ describe("contributed environments", () => {
     };
 
     const config = createWorkersConfig(site, {
-      site: { dirs: ["web"] },
+      site: {
+        dirs: ["web"],
+      },
+      environments: {
+        site: { preset: "src" },
+      },
     });
 
-    const environments = await listEnvironmentEntries(config);
+    const context = await config.resolve("structure.context");
 
-    const listed = environments.find(({ entry }) => entry.name === "site");
+    const { environments } = await context.discover();
 
-    expect(listed?.kind).toMatchObject({
-      name: "src",
+    expect(
+      environments.registered.find(({ registration }) => {
+        return registration.name === "site";
+      }),
+    ).toMatchObject({
+      preset: { name: "src" },
       languages: ["typescript", "tsx"],
+      dirs: ["web"],
     });
 
     const { kind } = await discoverDeclaredEnvironment(config, "site");
@@ -467,44 +474,83 @@ describe("contributed environments", () => {
       structure: "domains",
     });
 
-    const key = listed === undefined ? undefined : getOptionsKey(listed);
+    const environmentEntries = await listEnvironmentEntries(config);
 
-    expect(key).toBe("site.options");
+    const listed = environmentEntries.find(({ entry }) => {
+      return entry.name === "site";
+    });
+
+    expect(listed === undefined ? undefined : getOptionsKey(listed)).toBe(
+      "site.options",
+    );
 
     const claims = await config.resolve("environments.claims");
 
     expect(claims.site?.dirs).toEqual(["web"]);
   });
 
-  test("fail on a kind two extensions contribute", () => {
+  test("fail on a preset two extensions contribute", () => {
     expect(() => {
       return createWorkersConfig({
         name: "fixture/twin",
         contributes: {
-          environmentKinds: [{ name: "src" }],
+          environmentPresets: [{ name: "src" }],
         },
       });
     }).toThrow(
-      'Slot "environmentKinds" has two entries named "src", from project/environments and fixture/twin',
+      'Slot "environmentPresets" has two entries named "src", from project/environments and fixture/twin',
     );
   });
 
-  test("fail on an environment naming a kind no extension contributes", async () => {
-    const config = createWorkersConfig({
-      name: "fixture/nope",
-      contributes: {
-        environments: [
-          {
-            name: "nope",
-            kind: "nope",
-            title: "nothing",
-          },
-        ],
+  test("fail on a registration naming a preset no extension contributes", async () => {
+    const config = createWorkersConfig(createWorkers("enforced"), {
+      environments: {
+        edge: { preset: "nope", dirs: ["workers"] },
       },
     });
 
-    await expect(listEnvironmentEntries(config)).rejects.toThrow(
-      'Environment "nope" names the kind "nope", which no active extension contributes',
+    const context = await config.resolve("structure.context");
+
+    await expect(context.discover()).rejects.toThrow(
+      'The environment edge names the environment preset "nope", which no active extension contributes',
     );
+  });
+});
+
+describe("registered environments", () => {
+  test("default to one registration per built-in on its resolved directories and tooling's root files", async () => {
+    const config = createWorkersConfig(createWorkers("enforced"));
+
+    const registrations = await config.resolve("environments");
+
+    expect(registrations.find(({ name }) => name === "src")).toEqual({
+      name: "src",
+      preset: "src",
+      dirs: ["src"],
+      files: [],
+    });
+
+    expect(registrations.find(({ name }) => name === "tooling")).toEqual({
+      name: "tooling",
+      preset: "tooling",
+      dirs: ["tooling"],
+      files: ["*.config.ts", ".*.ts"],
+    });
+  });
+
+  test("place a new environment on a workspace's directory, its languages tuned", async () => {
+    const config = createWorkersConfig(createWorkers("enforced"), {
+      environments: {
+        edge: {
+          preset: "src",
+          languages: ["typescript"],
+          dirs: ["extensions/edge/src"],
+        },
+      },
+    });
+
+    expect(
+      listLanguageFiles(await readEnvironmentLanguages(config, "edge")),
+    ).toEqual(["**/*{.ts,.mts,.cts}"]);
   });
 });

@@ -12,7 +12,7 @@ export { readInputDirs } from "#project/environments/utils/readInputDirs";
 
 // @barrel ports
 export type * from "#project/environments/ports/EnvironmentEntry";
-export type * from "#project/environments/ports/EnvironmentKindEntry";
+export type * from "#project/environments/ports/EnvironmentPresetEntry";
 export type * from "#project/environments/ports/LanguageEntry";
 export type * from "#project/environments/ports/NamespaceKindEntry";
 export type * from "#project/environments/ports/ResolvedEnvironment";
@@ -50,6 +50,7 @@ export { aliasesSchema } from "#project/environments/config/schemas/aliasesSchem
 export { binSchema } from "#project/environments/config/schemas/binSchema";
 export { dataSchema } from "#project/environments/config/schemas/dataSchema";
 export { defineSchema } from "#project/environments/config/schemas/defineSchema";
+export { environmentsSchema } from "#project/environments/config/schemas/environmentsSchema";
 export { globalsSchema } from "#project/environments/config/schemas/globalsSchema";
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
 export { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
@@ -63,8 +64,10 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 export { createDefine } from "#project/environments/operations/createDefine";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
+export { listTsconfigRegistrations } from "#project/environments/operations/listTsconfigRegistrations";
 export { readEnvironment } from "#project/environments/operations/readEnvironment";
 export { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
+export { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { resolveCodeEnvironment } from "#project/environments/operations/resolveCodeEnvironment";

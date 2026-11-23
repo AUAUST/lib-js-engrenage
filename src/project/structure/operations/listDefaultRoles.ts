@@ -1,3 +1,5 @@
+import { getOwn } from "@auaust/toolkit/object";
+
 import { loadLazy } from "#foundation/modules/index";
 import type { Role } from "#batiment/roles/index";
 import type { ConfigResolver } from "#project/config/index";
@@ -6,18 +8,21 @@ export async function listDefaultRoles(
   config: ConfigResolver,
   environment: string,
 ): Promise<readonly Role[]> {
-  const [contributions, traits, environments] = await Promise.all([
+  const [contributions, traits, context] = await Promise.all([
     config.context.registry.contributions("roles", config),
     config.resolve("traits"),
-    config.resolve("environments"),
+    config.resolve("structure.context"),
   ]);
 
-  const kind = environments.find(({ entry }) => entry.name === environment)
-    ?.namespace.name;
+  const { namespaces } = await context.discover();
 
-  if (kind == null) {
+  const discovered = getOwn(namespaces, environment);
+
+  if (discovered?.active !== true) {
     return [];
   }
+
+  const kind = discovered.kind.name;
 
   const entries = contributions
     .map(({ entry }) => entry)

@@ -62,3 +62,10 @@ entries:
       - tests/src/tools/github/issues/drafts/publish.test.src.ts:809
     why: the interrupted-publish test checked the Re-split log written once on resume through a child addition, which S.1 no longer counts as a re-split.
     want: one case resuming a failed publish of a genuine re-split, expecting a single log line.
+  - id: 261123-da4f
+    title: Four tests fail on a full local run at main 611110e6
+    sites:
+      - tests/tooling/eslint/rules.test.src.ts:21
+      - tests/src/tools/agents/projectMap.test.ts:1
+    why: three tooling role rule tests reject role rules as 'Expected a rule entry'; projectMap 'renders enforced grants for published=true' lacks '| source and dist |'
+    done: a full pnpm engrenage vitest passes at main

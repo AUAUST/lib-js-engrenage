@@ -4,7 +4,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
-import { listEnvironmentEntries } from "#project/environments/index";
+import { listTsconfigRegistrations } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   isLeftAlone,
@@ -121,18 +121,14 @@ async function createEdits(
 async function listDeclaredTsconfigFiles(
   config: LoadedConfig,
 ): Promise<readonly File[]> {
-  const environments = await listEnvironmentEntries(config);
+  const registrations = await listTsconfigRegistrations(config);
 
   const files: File[] = [];
 
-  for (const { entry, kind } of environments) {
-    if (kind.tsconfig !== true) {
-      continue;
-    }
+  for (const { name } of registrations) {
+    const { tsconfig } = await resolveTsconfigEnvironment(config, name);
 
-    const { tsconfig } = await resolveTsconfigEnvironment(config, entry.name);
-
-    if (tsconfig.owner === entry.name && tsconfig.file !== undefined) {
+    if (tsconfig.owner === name && tsconfig.file !== undefined) {
       files.push(tsconfig.file);
     }
   }

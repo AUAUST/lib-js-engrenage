@@ -11,10 +11,11 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { environmentKindFields } from "#batiment/environments/constants";
+import { environmentPresetFields } from "#batiment/environments/constants";
 import { namespaceKindFields } from "#batiment/scopes/constants";
 import { unmanagedTsconfig } from "#project/tsconfig/constants";
 import type { NamespaceKind, TestVariant } from "#batiment/scopes/index";
+import type { EnvironmentPresetEntry } from "#project/environments/ports/EnvironmentPresetEntry";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
@@ -110,9 +111,40 @@ export const testsNamespaceKind = freeze({
   variants: testVariants,
 } as const) satisfies NamespaceKind;
 
+// @debt built as frozen data rather than with `createEnvironmentPreset`, since an extension imports statically only its constants, which import no confined util
+export const builtinEnvironmentPresets = freeze([
+  freeze({
+    name: "src",
+    tsconfig: true,
+    languages: ["typescript", "tsx"],
+  } as const),
+  freeze({
+    name: "tests",
+    tsconfig: true,
+    languages: ["typescript", "tsx"],
+  } as const),
+  freeze({
+    name: "bin",
+    tsconfig: true,
+    languages: ["typescript"],
+  } as const),
+  freeze({
+    name: "scripts",
+    tsconfig: true,
+    languages: ["typescript"],
+  } as const),
+  freeze({
+    name: "tooling",
+    tsconfig: true,
+    languages: ["typescript"],
+  } as const),
+  freeze({ name: "data" } as const),
+  freeze({ name: "static" } as const),
+] as const) satisfies readonly EnvironmentPresetEntry[];
+
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
-export const environmentKindEntry: StandardSchemaV1 = looseObject({
-  ...environmentKindFields,
+export const environmentPresetEntry: StandardSchemaV1 = looseObject({
+  ...environmentPresetFields,
   tsconfig: optional(boolean()),
 });
 
@@ -124,7 +156,6 @@ export const namespaceKindEntry: StandardSchemaV1 = looseObject(
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const environmentEntry: StandardSchemaV1 = looseObject({
   name: string(),
-  kind: string(),
   title: string(),
   owns: optional(array(string())),
 });

@@ -15,17 +15,17 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const [options, context, kinds, languages] = await Promise.all([
+    const [options, context, presets, languages] = await Promise.all([
       config.resolve("workspaces.options"),
       config.resolve("structure.context"),
-      config.context.registry.contributions("environmentKinds", config),
+      config.context.registry.contributions("environmentPresets", config),
       config.context.registry.contributions("languages", config),
     ]);
 
     const byName = new Map(languages.map(({ entry }) => [entry.name, entry]));
 
     const selected = toDeduplicated(
-      flatMap(kinds, ({ entry }) => {
+      flatMap(presets, ({ entry }) => {
         return entry.languages ?? [];
       }),
     ).flatMap((name) => {
@@ -44,7 +44,7 @@ export const workspacesSection = declareSection({
       root,
       filesystem,
       options,
-      // @debt a workspace's globs take every kind's default languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
+      // @debt a workspace's globs take every preset's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
       typescriptFiles: listLanguageFiles(selected),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
       expected,

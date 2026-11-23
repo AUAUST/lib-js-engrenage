@@ -1,6 +1,7 @@
 import {
+  builtinEnvironmentPresets,
   environmentEntry,
-  environmentKindEntry,
+  environmentPresetEntry,
   languageEntry,
   namespaceKindEntry,
   testsNamespaceKind,
@@ -8,24 +9,26 @@ import {
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns the `namespaceKinds`, `environmentKinds`, `environments` and `languages`
+ * Owns the `namespaceKinds`, `environmentPresets`, `environments` and `languages`
  * slots, the config keys of each built-in environment and its options,
- * `environments.claims`, `define` and `runtime`, the uncommitted coverage
- * directory and the unlinted static directories. Contributes the `src`, `tests`,
- * `bin`, `scripts`, `tooling`, `data` and `static` namespace and environment
- * kinds, one environment of each, named after it, and the `javascript` language.
+ * `environments`, `environments.claims`, `define` and `runtime`, the uncommitted
+ * coverage directory and the unlinted static directories. Contributes the
+ * `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
+ * kinds and environment presets, one environment of each, named after it, and
+ * the `javascript` language.
  */
 export default {
   name: "project/environments",
   owns: {
     slots: {
       namespaceKinds: { entry: namespaceKindEntry },
-      environmentKinds: { entry: environmentKindEntry },
+      environmentPresets: { entry: environmentPresetEntry },
       environments: { entry: environmentEntry },
       languages: { entry: languageEntry },
     },
     keys: {
       "environments": {
+        input: "environments",
         async load() {
           const {
             environmentsSection,
@@ -273,73 +276,34 @@ export default {
         level: "enforced",
       },
     ],
-    environmentKinds: [
-      {
-        name: "src",
-        tsconfig: true,
-        languages: ["typescript", "tsx"],
-      },
-      {
-        name: "tests",
-        tsconfig: true,
-        languages: ["typescript", "tsx"],
-      },
-      {
-        name: "bin",
-        tsconfig: true,
-        languages: ["typescript"],
-      },
-      {
-        name: "scripts",
-        tsconfig: true,
-        languages: ["typescript"],
-      },
-      {
-        name: "tooling",
-        tsconfig: true,
-        languages: ["typescript"],
-      },
-      {
-        name: "data",
-      },
-      {
-        name: "static",
-      },
-    ],
+    environmentPresets: builtinEnvironmentPresets,
     environments: [
       {
         name: "src",
-        kind: "src",
         title: "the src environment's files",
       },
       {
         name: "tests",
-        kind: "tests",
         title: "the tests environment's files",
       },
       {
         name: "bin",
-        kind: "bin",
         title: "the bin environment's files",
       },
       {
         name: "scripts",
-        kind: "scripts",
         title: "the scripts environment's files",
       },
       {
         name: "tooling",
-        kind: "tooling",
         title: "the tooling environment's files",
       },
       {
         name: "data",
-        kind: "data",
         title: "the data environment's files",
       },
       {
         name: "static",
-        kind: "static",
         title: "the static environment's files",
       },
     ],

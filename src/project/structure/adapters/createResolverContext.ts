@@ -1,6 +1,4 @@
-import { array, is, looseObject, optional, string } from "valibot";
-
-import { entries, freeze } from "@auaust/toolkit/object";
+import { entries, freeze, getOwn } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
 import {
@@ -9,8 +7,8 @@ import {
   listKindConflictPaths,
 } from "#batiment/structure/index";
 import {
-  getOptionsKey,
   listEnvironmentEntries,
+  readEnvironmentOptions,
   type ContributedEnvironmentEntry,
 } from "#project/environments/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
@@ -23,33 +21,15 @@ import type {
   ScopeDeclarations,
   WorkspaceExpectation,
 } from "#batiment/context/index";
-import type { Resolver, ValueOrigin } from "#foundation/options/index";
-import type { ConfigContext, ConfigResolver } from "#project/config/index";
+import type { ValueOrigin } from "#foundation/options/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { Directory } from "#types/Directory";
-
-const placementOption = looseObject({
-  kind: optional(string()),
-  dirs: array(string()),
-  files: optional(array(string())),
-});
 
 async function readPlacement(
   config: ConfigResolver,
-  contributed: ContributedEnvironmentEntry,
+  { entry: { name, title } }: ContributedEnvironmentEntry,
 ): Promise<NamespacePlacement> {
-  const key = getOptionsKey(contributed);
-
-  const resolver: Resolver<ConfigContext> = config;
-
-  const option = await resolver.resolve(key);
-
-  if (!is(placementOption, option)) {
-    throw new Error(
-      `Config key "${key}" resolves to no environment options: it lacks a \`dirs\` list, or holds a \`kind\` that is not a string or a \`files\` that is not a list`,
-    );
-  }
-
-  const { name, title } = contributed.entry;
+  const { key, option } = await readEnvironmentOptions(config, name);
 
   const path = `${name}.kind`;
 
@@ -118,13 +98,12 @@ async function readOrigins(
   return new Map(origins);
 }
 
-async function readEnvironmentDeclarations(
+async function readNamespaceDeclarations(
   config: ConfigResolver,
-  contributed: ContributedEnvironmentEntry,
+  name: string,
   published: boolean,
 ): Promise<NamespaceDeclarations> {
-  const { name } = contributed.entry;
-  const key = getOptionsKey(contributed);
+  const key = `${name}.options`;
 
   const { option, layout } = await readStructureOption(config, name);
 
@@ -188,15 +167,19 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
     const [
       repository,
       kinds,
+      presets,
       languages,
       entries,
+      environments,
       claims,
       workspaces,
     ] = await Promise.all([
       config.resolve("git"),
       config.context.registry.contributions("namespaceKinds", config),
+      config.context.registry.contributions("environmentPresets", config),
       config.context.registry.contributions("languages", config),
       listEnvironmentEntries(config),
+      config.resolve("environments"),
       config.resolve("environments.claims"),
       readWorkspaceExpectations(config),
     ]);
@@ -204,20 +187,23 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
     return freeze({
       ignored: await repository.ignored,
       kinds: freeze(kinds.map(({ entry }) => entry)),
+      presets: freeze(presets.map(({ entry }) => entry)),
       languages: freeze(languages.map(({ entry }) => entry.name)),
       namespaces: freeze(
         await Promise.all(
           entries.map((contributed) => readPlacement(config, contributed)),
         ),
       ),
+      environments,
       claims,
       workspaces: freeze(workspaces),
     });
   }
 
   async function scope(dir: Directory): Promise<ScopeDeclarations> {
-    const [environments, { internals }, { published }] = await Promise.all([
-      config.resolve("environments"),
+    const [context, entries, { internals }, { published }] = await Promise.all([
+      config.resolve("structure.context"),
+      listEnvironmentEntries(config),
       config.resolve("structure.options"),
       config.resolve("traits"),
     ]);
@@ -226,19 +212,23 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       return freeze({ internals, namespaces: freeze([]) });
     }
 
+    const { namespaces } = await context.discover();
+
+    const structured = entries.filter(({ entry }) => {
+      const discovered = getOwn(namespaces, entry.name);
+
+      return (
+        discovered?.active === true && discovered.kind.structure !== undefined
+      );
+    });
+
     return freeze({
       internals,
       namespaces: freeze(
         await Promise.all(
-          environments
-            .filter(({ namespace }) => namespace.structure !== undefined)
-            .map((contributed) => {
-              return readEnvironmentDeclarations(
-                config,
-                contributed,
-                published,
-              );
-            }),
+          structured.map(({ entry }) => {
+            return readNamespaceDeclarations(config, entry.name, published);
+          }),
         ),
       ),
     });

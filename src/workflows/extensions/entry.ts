@@ -1,4 +1,5 @@
 export {
+  createEnvironmentPreset,
   createNamespaceKindPreset,
   declare,
   declareList,
@@ -16,6 +17,7 @@ export type {
   BarrelExportsEntry,
   BarrelExportsResolver,
   CardinalityViolation,
+  EnvironmentPreset,
   Extension,
   ExtensionSections,
   FileLocation,

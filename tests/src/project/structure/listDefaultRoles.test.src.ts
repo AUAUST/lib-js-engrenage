@@ -44,10 +44,15 @@ const library: Extension = {
         structure: "domains",
       },
     ],
+    environmentPresets: [
+      {
+        name: "lib",
+        languages: ["typescript", "tsx"],
+      },
+    ],
     environments: [
       {
         name: "lib",
-        kind: "src",
         title: "the library",
       },
     ],

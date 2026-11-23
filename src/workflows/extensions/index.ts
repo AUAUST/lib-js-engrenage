@@ -1,3 +1,4 @@
+export { createEnvironmentPreset } from "#batiment/environments/index";
 export { createNamespaceKindPreset } from "#batiment/scopes/index";
 export {
   declare,
@@ -9,6 +10,7 @@ export {
   declareSection,
 } from "#foundation/options/index";
 export { loadConfig, loadValidatedConfig } from "#project/config/index";
+export type { EnvironmentPreset } from "#batiment/environments/index";
 export type {
   StructureDiagnostic,
   StructureDiagnosticCode,

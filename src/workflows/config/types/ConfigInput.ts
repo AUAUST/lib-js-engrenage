@@ -31,6 +31,38 @@ export interface BuiltinConfigInput {
    */
   docs?: (DocsInput | undefined)
   /**
+   * Environments of the project by name, each registering an environment preset placed on directories and root files.
+   * An entry named after a built-in environment adjusts its default registration field by field.
+   * @default none
+   */
+  environments?: ({
+    /**
+     * The registration of one environment: its preset, its tuning and its placements.
+     */
+    [k: string]: {
+      /**
+       * Name of the environment preset the environment tunes; defaults to the preset of a built-in environment's name, and is required for any other.
+       * @default none
+       */
+      preset?: (string | undefined)
+      /**
+       * Names of the registered languages the environment holds instead of its preset's; a built-in environment defaults to its options' `languages`.
+       * @default none
+       */
+      languages?: (string[] | undefined)
+      /**
+       * Directories the environment is placed on, each covering its subtree, a workspace's included; a built-in environment defaults to its top-level namespace's resolved directories.
+       * @default none
+       */
+      dirs?: (string[] | undefined)
+      /**
+       * Globs, matched at the project root only, of the files the environment is placed on; a built-in environment defaults to its options' `files` when its `dirs` option includes `.`.
+       * @default none
+       */
+      files?: (string[] | undefined)
+    }
+  } | undefined)
+  /**
    * The environment of the command-line entries of the package.
    * `false` disables it.
    */

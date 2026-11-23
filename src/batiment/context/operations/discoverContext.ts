@@ -5,6 +5,7 @@ import { freeze, record } from "@auaust/toolkit/object";
 
 import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
+import { resolveRegisteredEnvironments } from "#batiment/environments/index";
 import {
   createScopeTree,
   getNamespaceId,
@@ -16,6 +17,7 @@ import {
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
 import type { ContextPort } from "#batiment/context/ports/ContextPort";
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
+import type { EnvironmentDiscovery } from "#batiment/context/types/EnvironmentDiscovery";
 import type { ExpectedWorkspaces } from "#batiment/context/types/ExpectedWorkspaces";
 import type { NamespacePlacement } from "#batiment/context/types/NamespacePlacement";
 import type { RootFacts } from "#batiment/context/types/RootFacts";
@@ -134,6 +136,24 @@ function resolveConfiguredKind(
   return resolved;
 }
 
+function discoverEnvironments({
+  presets,
+  environments,
+}: RootFacts): EnvironmentDiscovery {
+  const registered = resolveRegisteredEnvironments(presets, environments);
+
+  return freeze({
+    registered,
+    placements: freeze(
+      flatMap(registered, ({ registration, dirs }) => {
+        return map(dirs, (dir) => {
+          return freeze({ environment: registration.name, dir });
+        });
+      }),
+    ),
+  });
+}
+
 export async function discoverContext(
   port: ContextPort,
   filesystem: Filesystem,
@@ -143,6 +163,8 @@ export async function discoverContext(
   const { ignored, claims } = root;
 
   const kinds = new Map(root.kinds.map((kind) => [kind.name, kind]));
+
+  const environments = discoverEnvironments(root);
 
   const placed = await Promise.all(
     root.namespaces.map(async (placement) => {
@@ -256,6 +278,7 @@ export async function discoverContext(
         }),
       ),
     ),
+    environments,
     expected,
     tree: freeze({
       ...tree,

@@ -6,13 +6,10 @@ export interface EnvironmentEntry extends EntryShape {
    * Names the environment, its import category and the config key that resolves
    * it to a `ResolvedEnvironment`; its options are read from the `<name>.options`
    * key, whose `dirs` list, and `files` globs when set, place it for discovery,
-   * which decides its directories and activity.
+   * which decides its directories and activity, and give its default environment
+   * registration, naming the preset of the same name.
    */
   readonly name: string;
-  /**
-   * Names the environment's kind, the `environmentKinds` entry giving its nature.
-   */
-  readonly kind: string;
   /**
    * Describes the environment's files as an import category in the project map.
    */
