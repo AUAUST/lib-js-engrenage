@@ -1,12 +1,35 @@
+import { Minimatch } from "minimatch";
+
 import { freeze, record } from "@auaust/toolkit/object";
 
+import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
 import type { EnvironmentPlacements } from "#batiment/environments/types/EnvironmentPlacements";
 import type { RegisteredEnvironment } from "#batiment/environments/types/RegisteredEnvironment";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { Filesystem } from "#foundation/filesystem/index";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
+
+async function expandDirectories(
+  dirs: Directories,
+  ignored: Globs,
+  filesystem: Filesystem,
+): Promise<Directories> {
+  const expanded = await Promise.all(
+    dirs.map(async (dir) => {
+      if (!new Minimatch(dir).hasMagic()) {
+        return [dir];
+      }
+
+      const matched = await filesystem.glob(dir, { exclude: ignored });
+
+      return findDirectories(filesystem, matched);
+    }),
+  );
+
+  return expanded.flat();
+}
 
 function createConflict(
   rank: "directory" | "file",
@@ -24,9 +47,10 @@ function createConflict(
 }
 
 /**
- * Places each registered environment on its directories and on the root files
- * its `files` globs match, keeping the first in registration order where two
- * place one directory or file, each such clash an error diagnostic.
+ * Places each registered environment on its directories, a glob placing it on
+ * each directory it matches, and on the root files its `files` globs match,
+ * keeping the first in registration order where two place one directory or file,
+ * each such clash an error diagnostic.
  */
 export async function discoverEnvironmentPlacements({
   registered,
@@ -40,6 +64,10 @@ export async function discoverEnvironmentPlacements({
   readonly placements: EnvironmentPlacements;
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
+  const expanded = await Promise.all(
+    registered.map(({ dirs }) => expandDirectories(dirs, ignored, filesystem)),
+  );
+
   const globbed = await Promise.all(
     registered.map(async ({ registration: { files } }) => {
       return files.length === 0
@@ -52,10 +80,10 @@ export async function discoverEnvironmentPlacements({
   const files = new Map<File, string>();
   const diagnostics: StructureDiagnostic[] = [];
 
-  for (const [index, { registration, dirs: placed }] of registered.entries()) {
+  for (const [index, { registration }] of registered.entries()) {
     const { name } = registration;
 
-    for (const dir of placed) {
+    for (const dir of expanded[index] ?? []) {
       const kept = dirs.get(dir);
 
       if (kept === undefined) {

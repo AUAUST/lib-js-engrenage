@@ -78,13 +78,13 @@ export interface TestsInput {
     /**
      * Value of `include`.
      * `false` leaves the field to the file.
-     * @default the TypeScript files of the environments that share this tsconfig, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
+     * @default the TypeScript files of the environments that share this tsconfig, from their placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
      */
     include?: (ManagedListOption<string> | undefined)
     /**
      * Value of `exclude`.
      * `false` leaves the field to the file.
-     * @default the test fixtures for a tsconfig that includes tests, nothing otherwise
+     * @default the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the directories of the environments sharing this tsconfig
      */
     exclude?: (ManagedListOption<string> | undefined)
     /**
@@ -185,13 +185,13 @@ export interface TestsInput {
       /**
        * Value of `include`.
        * `false` leaves the field to the file.
-       * @default the TypeScript files of the environments that share this tsconfig, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
+       * @default the TypeScript files of the environments that share this tsconfig, from their placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
        */
       include?: (ManagedListOption<string> | undefined)
       /**
        * Value of `exclude`.
        * `false` leaves the field to the file.
-       * @default the test fixtures for a tsconfig that includes tests, nothing otherwise
+       * @default the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the directories of the environments sharing this tsconfig
        */
       exclude?: (ManagedListOption<string> | undefined)
       /**

@@ -1,5 +1,6 @@
 import { isNonEmptyArray } from "@auaust/toolkit/array";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { resolveListOption } from "#foundation/options/index";
 import {
   toTsconfigGlobs,
@@ -10,6 +11,23 @@ import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolv
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
+
+async function listNestedPlacements(
+  config: LoadedConfig,
+  names: readonly string[],
+): Promise<readonly string[]> {
+  const context = await config.resolve("structure.context");
+
+  const { environments } = await context.discover();
+
+  return environments.instances
+    .filter(({ environment, scope }) => {
+      return scope === rootScope && names.includes(environment);
+    })
+    .flatMap(({ nested }) => nested)
+    .filter(({ environment }) => !names.includes(environment))
+    .map(({ dir }) => `${dir}/**`);
+}
 
 async function createDefaultExclude(
   config: LoadedConfig,
@@ -22,8 +40,13 @@ async function createDefaultExclude(
 
   const { fixtures } = await config.resolve("files");
 
+  const nested = await listNestedPlacements(config, environments);
+
   return () => {
-    return includesTests ? toTsconfigGlobs(file, fixtures) : [];
+    return toTsconfigGlobs(file, [
+      ...(includesTests ? fixtures : []),
+      ...nested,
+    ]);
   };
 }
 

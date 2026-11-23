@@ -4,6 +4,7 @@ import {
   createEnvironmentPreset,
   discoverEnvironmentPlacements,
   getFileEnvironment,
+  listEnvironmentInstances,
   resolveRegisteredEnvironments,
   type EnvironmentRegistration,
 } from "#batiment/environments/index";
@@ -101,6 +102,56 @@ describe("environment placements", () => {
         files: ["vite.config.ts"],
         message: expect.stringMatching(/tooling.*bundle/),
       }),
+    ]);
+  });
+
+  test("forms one instance per scope a globbed placement reaches, listing the placements nested in it", async () => {
+    const { placements, registered } = await place(
+      {
+        "extensions/home/src/index.ts": "",
+        "extensions/cart/src/index.ts": "",
+        "app/server/index.ts": "",
+      },
+      [
+        register("frontend", "web", { dirs: ["app", "extensions/*/src"] }),
+        register("server", "node", { dirs: ["app/server"] }),
+      ],
+    );
+
+    const instances = listEnvironmentInstances(registered, placements, [
+      "extensions/cart",
+      "extensions/home",
+    ]);
+
+    expect(instances).toEqual([
+      {
+        environment: "frontend",
+        scope: ".",
+        dirs: ["app"],
+        files: [],
+        nested: [{ environment: "server", dir: "app/server" }],
+      },
+      {
+        environment: "frontend",
+        scope: "extensions/cart",
+        dirs: ["extensions/cart/src"],
+        files: [],
+        nested: [],
+      },
+      {
+        environment: "frontend",
+        scope: "extensions/home",
+        dirs: ["extensions/home/src"],
+        files: [],
+        nested: [],
+      },
+      {
+        environment: "server",
+        scope: ".",
+        dirs: ["app/server"],
+        files: [],
+        nested: [],
+      },
     ]);
   });
 });

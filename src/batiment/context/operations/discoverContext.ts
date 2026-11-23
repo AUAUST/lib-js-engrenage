@@ -7,6 +7,7 @@ import { discoverNamespace } from "#batiment/context/operations/discoverNamespac
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
 import {
   discoverEnvironmentPlacements,
+  listEnvironmentInstances,
   resolveRegisteredEnvironments,
 } from "#batiment/environments/index";
 import {
@@ -142,6 +143,7 @@ function resolveConfiguredKind(
 async function discoverEnvironments(
   { presets, environments, ignored }: RootFacts,
   filesystem: Filesystem,
+  workspaces: readonly DiscoveredWorkspace[],
 ): Promise<{
   readonly discovery: EnvironmentDiscovery;
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -154,8 +156,18 @@ async function discoverEnvironments(
     filesystem,
   });
 
+  const instances = listEnvironmentInstances(
+    registered,
+    placements,
+    map(workspaces, ({ dir }) => dir),
+  );
+
   return {
-    discovery: freeze({ registered, placements }),
+    discovery: freeze({
+      registered,
+      placements,
+      instances,
+    }),
     diagnostics,
   };
 }
@@ -169,8 +181,6 @@ export async function discoverContext(
   const { ignored, claims } = root;
 
   const kinds = new Map(root.kinds.map((kind) => [kind.name, kind]));
-
-  const environments = await discoverEnvironments(root, filesystem);
 
   const placed = await Promise.all(
     root.namespaces.map(async (placement) => {
@@ -199,6 +209,12 @@ export async function discoverContext(
     dirs: flatMap(placed, ({ discovery }) => discovery.dirs),
     languages: root.languages,
   });
+
+  const environments = await discoverEnvironments(
+    root,
+    filesystem,
+    discovered.workspaces,
+  );
 
   const expected = await matchWorkspaces(
     filesystem,

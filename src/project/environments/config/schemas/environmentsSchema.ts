@@ -27,7 +27,7 @@ export const environmentsSchema = declareRecord(
         optional: { value: undefined },
       }),
       dirs: declare(array(directorySchema), {
-        description: "Directories the environment is placed on, each covering its subtree, a workspace's included; a built-in environment defaults to its top-level namespace's resolved directories.",
+        description: "Directories the environment is placed on, each covering its subtree, a workspace's included, a glob placing it on each directory it matches; a built-in environment defaults to its top-level namespace's resolved directories.",
         optional: { value: undefined },
       }),
       files: declare(array(globSchema), {

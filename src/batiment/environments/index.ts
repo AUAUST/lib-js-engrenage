@@ -10,6 +10,7 @@ export type * from "#batiment/environments/ports/EnvironmentPreset";
 // @barrel types
 export type * from "#batiment/environments/types/DiscoveredEnvironment";
 export type * from "#batiment/environments/types/EnvironmentCoverage";
+export type * from "#batiment/environments/types/EnvironmentInstance";
 export type * from "#batiment/environments/types/EnvironmentPlacement";
 export type * from "#batiment/environments/types/EnvironmentPlacements";
 export type * from "#batiment/environments/types/EnvironmentRegistration";
@@ -21,6 +22,7 @@ export { createEnvironmentPreset } from "#batiment/environments/utils/createEnvi
 export { getDirectoryEnvironment } from "#batiment/environments/utils/getDirectoryEnvironment";
 export { getEnvironmentCoverage } from "#batiment/environments/utils/getEnvironmentCoverage";
 export { getFileEnvironment } from "#batiment/environments/utils/getFileEnvironment";
+export { listEnvironmentInstances } from "#batiment/environments/utils/listEnvironmentInstances";
 export { resolveRegisteredEnvironments } from "#batiment/environments/utils/resolveRegisteredEnvironments";
 // @end
 

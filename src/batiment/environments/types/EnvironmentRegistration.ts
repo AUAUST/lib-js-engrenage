@@ -21,7 +21,8 @@ export interface EnvironmentRegistration {
    */
   readonly bundled?: boolean;
   /**
-   * The directories the environment is placed on, each covering its subtree.
+   * The directories the environment is placed on, each covering its subtree, a
+   * glob placing it on each directory it matches.
    */
   readonly dirs: Directories;
   /**

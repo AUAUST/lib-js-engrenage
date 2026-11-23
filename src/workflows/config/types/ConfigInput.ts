@@ -85,7 +85,7 @@ export interface BuiltinConfigInput {
        */
       bundled?: (boolean | undefined)
       /**
-       * Directories the environment is placed on, each covering its subtree, a workspace's included; a built-in environment defaults to its top-level namespace's resolved directories.
+       * Directories the environment is placed on, each covering its subtree, a workspace's included, a glob placing it on each directory it matches; a built-in environment defaults to its top-level namespace's resolved directories.
        * @default none
        */
       dirs?: (string[] | undefined)

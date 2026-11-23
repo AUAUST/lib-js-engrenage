@@ -322,6 +322,21 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.src.json").exclude).toBeUndefined();
   });
 
+  test("excludes another environment's placement nested in the environment's directories", async () => {
+    const read = await syncProject(
+      {
+        environments: {
+          server: { preset: "bin", dirs: ["src/server"] },
+        },
+      },
+      {
+        "src/server/index.ts": "",
+      },
+    );
+
+    expect(read("tsconfig.src.json").exclude).toEqual(["src/server/**"]);
+  });
+
   test("writes globs relative to a tsconfig in a subdirectory", async () => {
     const read = await syncProject({
       src: {

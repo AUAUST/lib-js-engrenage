@@ -771,3 +771,7 @@ entries:
     subject: BSD sed -E word boundary
     tried: renamed identifiers with sed -E and \b
     stopped: BSD sed silently matched nothing; reran without \b after checking no longer names contain them
+  - id: 261123-125a
+    subject: dispatch brief Issue line format
+    tried: "Issue: #n, then slug plus title"
+    stopped: hook wants bare owner/repo#n line
