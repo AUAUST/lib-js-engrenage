@@ -161,6 +161,53 @@ describe("structure origins", () => {
     ]);
   });
 
+  test("a higher config layer's node kind overrides a lower layer's", async () => {
+    const domain = await resolveSource({
+      preset: {
+        "src.structure.namespaces": {
+          feature: {
+            domains: {
+              inner: {},
+            },
+          },
+        },
+      },
+      input: {
+        src: {
+          structure: {
+            domains: {
+              feature: {},
+            },
+          },
+        },
+      },
+    });
+
+    expect(domain.blocking).toEqual([]);
+    expect(domain.nodes.get("src/feature")?.kind).toBe("domain");
+    expect(domain.nodes.has("src/feature/inner")).toBe(false);
+
+    const namespace = await resolveSource({
+      preset: {
+        "src.structure.domains": {
+          feature: {},
+        },
+      },
+      input: {
+        src: {
+          structure: {
+            namespaces: {
+              feature: {},
+            },
+          },
+        },
+      },
+    });
+
+    expect(namespace.blocking).toEqual([]);
+    expect(namespace.nodes.get("src/feature")?.kind).toBe("namespace");
+  });
+
   test("an invalid metafile is reported and ignored", async () => {
     const without = await resolveSource({});
 
@@ -206,6 +253,7 @@ describe("structure origins", () => {
         },
       },
       published: false,
+      origins: new Map(),
     });
 
     expect(

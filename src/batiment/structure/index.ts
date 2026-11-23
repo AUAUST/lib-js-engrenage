@@ -78,6 +78,7 @@ export { isPlaced } from "#batiment/structure/utils/isPlaced";
 export { isViolatingNode } from "#batiment/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingDiagnostics";
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";
+export { listKindConflictPaths } from "#batiment/structure/utils/listKindConflictPaths";
 export { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 export { listNodeViolations } from "#batiment/structure/utils/listNodeViolations";
 export { listStructureDiagnostics } from "#batiment/structure/utils/listStructureDiagnostics";

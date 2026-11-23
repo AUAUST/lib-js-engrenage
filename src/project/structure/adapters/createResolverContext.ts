@@ -6,6 +6,7 @@ import { rootScope } from "#batiment/scopes/constants";
 import {
   flattenStructure,
   listDeclaredOptionPaths,
+  listKindConflictPaths,
 } from "#batiment/structure/index";
 import {
   getOptionsKey,
@@ -139,11 +140,20 @@ async function readEnvironmentDeclarations(
     };
   }
 
+  const root = `${name}.structure`;
+
+  const kindOrigins = await readOrigins(
+    config,
+    key,
+    listKindConflictPaths({ root, structure: option.structure }),
+  );
+
   const declared = flattenStructure({
     environment: name,
-    root: `${name}.structure`,
+    root,
     structure: option.structure,
     published,
+    origins: kindOrigins,
   });
 
   const origins = layout?.nature === "derived"
