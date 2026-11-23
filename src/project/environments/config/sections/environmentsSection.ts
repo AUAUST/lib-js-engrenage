@@ -8,6 +8,7 @@ import { listEnvironmentEntries } from "#project/environments/operations/listEnv
 import { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 import type { EnvironmentRegistration } from "#batiment/environments/index";
 import type { ConfigResolver } from "#project/config/index";
+import type { Execution } from "#project/environments/types/Execution";
 
 async function listDefaultRegistrations(
   config: ConfigResolver,
@@ -56,10 +57,23 @@ function registerEnvironment(
 
   const languages = input?.languages ?? fallback?.languages;
 
+  const { globals, apis, syntax, module } = input?.execution ?? {};
+
+  const execution: Execution = {
+    ...(globals === undefined ? {} : { globals }),
+    ...(apis === undefined ? {} : { apis }),
+    ...(syntax === undefined ? {} : { syntax }),
+    ...(module === undefined ? {} : { module }),
+  };
+
+  const bundled = input?.bundled;
+
   return freeze({
     name,
     preset,
     ...(languages === undefined ? {} : { languages }),
+    ...(keys(execution).length === 0 ? {} : { execution: freeze(execution) }),
+    ...(bundled === undefined ? {} : { bundled }),
     dirs: input?.dirs ?? fallback?.dirs ?? freeze([]),
     files: input?.files ?? fallback?.files ?? freeze([]),
   });

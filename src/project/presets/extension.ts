@@ -5,7 +5,7 @@ import type { Extension } from "#project/config/index";
  * Owns the `preset`, `traits` and `traits.adjustments` keys and the `presets`
  * slot, which takes one active preset, and contributes the `library` preset with
  * the `published` trait, preferring tsdown as build tool, and the `app` preset,
- * preferring Vite and defaulting the source host to the browser.
+ * preferring Vite and defaulting the src environment's globals to the browser's.
  */
 export default {
   name: "project/presets",
@@ -57,7 +57,9 @@ export default {
         traits: [],
         prefers: { "build.tools": "vite" },
         load() {
-          return Promise.resolve({ "src.host": "browser" });
+          return Promise.resolve({
+            "environments.src.execution.globals": "browser",
+          });
         },
       },
     ],

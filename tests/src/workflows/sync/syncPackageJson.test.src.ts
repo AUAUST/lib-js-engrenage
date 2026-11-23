@@ -48,8 +48,10 @@ function isPrivateWarning(text: string) {
 const library = `{
   preset: "library",
   runtime: { node: 24 },
-  src: { node: 24 },
-  bin: { node: 26 },
+  environments: {
+    src: { execution: { globals: "node", syntax: 24 } },
+    bin: { execution: { syntax: 26 } },
+  },
   build: { outDir: "dist" },
   data: { exports: { "./templates/*.md": "data/templates/*.md" } },
 }`;
@@ -205,7 +207,7 @@ describe("syncPackageJson", () => {
     expect(resolved.context.filesystem.changes()).toEqual([]);
   });
 
-  test("syncs an inactive src without src.baseline", async () => {
+  test("syncs an inactive src without a syntax level", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ type: "module" }),
       "engrenage.config.ts": "export default {};",
@@ -214,11 +216,10 @@ describe("syncPackageJson", () => {
     const resolved = await loadConfig(project.root);
 
     expect((await resolved.resolve("src")).active).toBe(false);
-    expect((await resolved.resolve("src")).runtime).toBeUndefined();
     expect(() => syncPackageJson(resolved)).not.toThrow();
   });
 
-  test("syncs an active src without src.baseline, warning and leaving engines out", async () => {
+  test("syncs an active src without a syntax level, warning and leaving engines out", async () => {
     const reporter = createTestReporter();
 
     const project = createTemporaryProject({
@@ -229,8 +230,9 @@ describe("syncPackageJson", () => {
 
     const resolved = await loadConfig(project.root, { reporter });
 
-    expect((await resolved.resolve("src")).runtime).toBeUndefined();
-    expect((await resolved.resolve("src")).runtime).toBeUndefined();
+    const execution = await resolved.resolve("environments.execution");
+
+    expect(execution.src?.runtime).toBeUndefined();
 
     const warnings = reporter.messages
       .filter(({ level }) => level === "warn")
@@ -238,7 +240,7 @@ describe("syncPackageJson", () => {
 
     expect(warnings).toEqual([
       expect.stringMatching(
-        /src\.baseline is not set[^]*set it to \d{4}-\d{2}/,
+        /environments\.src\.execution\.syntax is not set[^]*set it to \d{4}-\d{2}/,
       ),
     ]);
 

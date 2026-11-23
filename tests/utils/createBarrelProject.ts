@@ -37,8 +37,12 @@ export function createBarrelProject({
       agents: {
         preferred: ["claude"],
       },
+      environments: {
+        src: {
+          execution: { globals: "node", syntax: 24 },
+        },
+      },
       src: {
-        node: 24,
         roles: [index(), entrypoint(), ...roles],
         structure: {
           namespaces: {

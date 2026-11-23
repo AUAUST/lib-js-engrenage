@@ -1,3 +1,7 @@
 export default {
-  src: { baseline: "2026-10" },
+  environments: {
+    src: {
+      execution: { syntax: "2026-10" },
+    },
+  },
 };

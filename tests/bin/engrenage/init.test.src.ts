@@ -759,7 +759,9 @@ test("defaults an app's build tool to vite and its source host to the browser", 
 
   expect(await config.resolve("build.tool")).toMatchObject({ name: "vite" });
 
-  expect((await config.resolve("src")).host).toBe("browser");
+  const execution = await config.resolve("environments.execution");
+
+  expect(execution.src?.globals).toBe("browser");
 });
 
 test("writes an empty library's config without role lists", async () => {
@@ -775,7 +777,7 @@ test("writes an empty library's config without role lists", async () => {
 export default defineConfig({
   preset: "library",
   visibility: "public",
-  src: { baseline: "${findCurrentMonth()}" },
+  environments: { src: { execution: { syntax: "${findCurrentMonth()}" } } },
   agents: { preferred: [], attribution: false },
 });
 `);

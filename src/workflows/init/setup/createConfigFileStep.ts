@@ -47,9 +47,9 @@ function renderOptions(
     ? ""
     : `preferred: ${JSON.stringify(agents)}, `;
 
-  const source = `  src: { baseline: ${JSON.stringify(findCurrentMonth())} },\n`;
+  const environments = `  environments: { src: { execution: { syntax: ${JSON.stringify(findCurrentMonth())} } } },\n`;
 
-  return `{\n${preset}${declaredVisibility}${source}  agents: { ${preferred}attribution: false },\n}`;
+  return `{\n${preset}${declaredVisibility}${environments}  agents: { ${preferred}attribution: false },\n}`;
 }
 
 export function createConfigFileStep(): Step {

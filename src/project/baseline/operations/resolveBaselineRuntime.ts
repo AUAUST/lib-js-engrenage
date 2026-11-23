@@ -4,54 +4,51 @@ import { assertBaselineSnapshot } from "#project/baseline/utils/assertBaselineSn
 import { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
 import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
-import { resolveNodeRuntime } from "#project/baseline/utils/resolveNodeRuntime";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
 import type { Reporter } from "#foundation/reports/index";
 import type { Runtime } from "#project/baseline/types/Runtime";
 
-export function resolveSourceRuntime(
-  {
-    baseline,
-    node,
-  }: {
-    baseline: string | undefined;
-    node: number | undefined;
-  },
+/**
+ * The baseline runtime of `snapshot`, the setting `subject` names; without one,
+ * a warning and `undefined`.
+ *
+ * @throws {Error} `snapshot` is no `YYYY-MM` month, is after the current month
+ * or predates every widely available ES edition.
+ */
+export function resolveBaselineRuntime(
+  snapshot: string | undefined,
+  subject: string,
   reporter: Reporter,
-): Runtime | undefined {
-  if (node !== undefined) {
-    return resolveNodeRuntime(node, "src.node");
-  }
-
-  if (baseline === undefined) {
+): Extract<Runtime, { kind: "baseline" }> | undefined {
+  if (snapshot === undefined) {
     return void reporter.warn(
-      "src.baseline is not set, so the src tsconfig gets no baseline libraries or types and the build no target",
+      `${subject} is not set, so its tsconfig gets no baseline libraries or types and its build no target`,
       { fix: `set it to ${findCurrentMonth()}, the current month` },
     );
   }
 
-  assertBaselineSnapshot(baseline);
+  assertBaselineSnapshot(snapshot);
 
   const current = findCurrentMonth();
 
-  if (baseline > current) {
+  if (snapshot > current) {
     throw new Error(
-      `src.baseline ${baseline} is after the current month ${current}`,
+      `${subject} ${snapshot} is after the current month ${current}`,
     );
   }
 
-  const minimums = resolveBaselineMinimums(baseline);
-  const library = selectEsLibraries(baseline);
+  const minimums = resolveBaselineMinimums(snapshot);
+  const library = selectEsLibraries(snapshot);
 
   if (library === undefined) {
     throw new Error(
-      `src.baseline ${baseline} predates every widely available ES edition: the earliest accepted snapshot is ${listEsSelections()[0]?.from}`,
+      `${subject} ${snapshot} predates every widely available ES edition: the earliest accepted snapshot is ${listEsSelections()[0]?.from}`,
     );
   }
 
   return freeze({
     kind: "baseline",
-    snapshot: baseline,
+    snapshot,
     lib: library,
     ...minimums,
   });

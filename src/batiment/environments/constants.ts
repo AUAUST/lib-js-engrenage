@@ -1,4 +1,12 @@
-import { array, optional, string } from "valibot";
+import {
+  array,
+  boolean,
+  number,
+  object,
+  optional,
+  string,
+  union,
+} from "valibot";
 
 import { freeze } from "@auaust/toolkit/object";
 
@@ -7,6 +15,15 @@ import { freeze } from "@auaust/toolkit/object";
 export const environmentPresetFields = freeze({
   name: string(),
   languages: optional(array(string())),
+  execution: optional(
+    object({
+      globals: optional(string()),
+      apis: optional(array(string())),
+      syntax: optional(union([number(), string()])),
+      module: optional(string()),
+    }),
+  ),
+  bundled: optional(boolean()),
 });
 
 export const environmentMetadataFile = ".environment.json";

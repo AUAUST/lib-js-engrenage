@@ -6,7 +6,11 @@ import { project as pluginPrefix } from "#constants";
 import { resolveWithin } from "#foundation/filesystem/index";
 import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine, type ResolvedSource } from "#project/environments/index";
+import {
+  createDefine,
+  resolveEntriesRuntime,
+  type ResolvedSource,
+} from "#project/environments/index";
 import { createEmittedManifestPlugin } from "#tools/vite/plugins/createEmittedManifestPlugin";
 import type { LoadedConfig } from "#project/config/index";
 import type { Config } from "#tools/vite/types/Config";
@@ -76,6 +80,8 @@ export async function createViteConfig(
 
   const source = await config.resolve("src");
 
+  const runtime = await resolveEntriesRuntime(config);
+
   return {
     root: resolveViteRoot(root, source, isTesting),
     envDir: root,
@@ -107,10 +113,10 @@ export async function createViteConfig(
         : {
             outDir: resolveWithin(root, outDir),
           }),
-      ...(source.runtime === undefined
+      ...(runtime === undefined
         ? {}
         : {
-            target: resolveBuildTarget(source.runtime),
+            target: resolveBuildTarget(runtime),
           }),
       emptyOutDir: clean === "all",
       sourcemap,

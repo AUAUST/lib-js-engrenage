@@ -13,7 +13,7 @@ export const aliasesSchema = declareObject(
       optional: { value: true },
     }),
     define: declareRecord(string(), declare(string()), {
-      description: "Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.",
+      description: "Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only when the src environment runs through a bundler pass (`environments.src.bundled`).",
       optional: {
         value: {},
       },

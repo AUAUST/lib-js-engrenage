@@ -140,8 +140,12 @@ export default defineConfig({
       extends: ["./data/tsconfig/library.json"],
     },
   },
+  environments: {
+    src: {
+      execution: { globals: "node", syntax: 24 },
+    },
+  },
   src: {
-    node: 24,
     roles: [
       extension(),
       strictUtils,

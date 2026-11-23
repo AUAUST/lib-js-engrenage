@@ -15,7 +15,7 @@ test(
   async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ type: "module" }),
-      "engrenage.config.ts": 'enum Unused {\n  Value = "value",\n}\n\nexport default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'enum Unused {\n  Value = "value",\n}\n\nexport default { environments: { src: { execution: { syntax: "2026-10" } } } };\n',
     });
 
     const failure = run(

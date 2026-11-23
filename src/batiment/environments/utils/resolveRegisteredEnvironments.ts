@@ -6,7 +6,8 @@ import type { EnvironmentRegistration } from "#batiment/environments/types/Envir
 import type { RegisteredEnvironment } from "#batiment/environments/types/RegisteredEnvironment";
 
 /**
- * Pairs each registration with the preset it names, its languages tuned.
+ * Pairs each registration with the preset it names, its languages, execution
+ * fields and bundler pass tuned.
  *
  * @throws When a registration names a preset absent from `presets`.
  */
@@ -26,10 +27,17 @@ export function resolveRegisteredEnvironments(
         );
       }
 
+      const bundled = registration.bundled ?? preset.bundled;
+
       return freeze({
         registration,
         preset,
         languages: registration.languages ?? preset.languages ?? [],
+        execution: freeze({
+          ...preset.execution,
+          ...registration.execution,
+        }),
+        ...(bundled === undefined ? {} : { bundled }),
         dirs: freeze(
           registration.dirs.filter((directory) => directory !== rootScope),
         ),

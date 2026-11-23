@@ -705,7 +705,11 @@ describe("createTsdownConfig", () => {
     test("targets the browsers and the Node minimum of the baseline", async () => {
       const project = createProject({
         config: {
-          src: { baseline: "2026-10" },
+          environments: {
+            src: {
+              execution: { syntax: "2026-10" },
+            },
+          },
         },
       });
 
@@ -725,10 +729,14 @@ describe("createTsdownConfig", () => {
       ]);
     });
 
-    test("targets the Node major of src.node", async () => {
+    test("targets the Node major of the src registration's syntax", async () => {
       const project = createProject({
         config: {
-          src: { node: 24 },
+          environments: {
+            src: {
+              execution: { globals: "node", syntax: 24 },
+            },
+          },
         },
       });
 
@@ -743,7 +751,11 @@ describe("createTsdownConfig", () => {
 
     test("ignores engines.node", async () => {
       const config = {
-        src: { node: 24 },
+        environments: {
+          src: {
+            execution: { globals: "node", syntax: 24 },
+          },
+        },
       };
 
       const withEngines = createProject({

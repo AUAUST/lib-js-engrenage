@@ -13,7 +13,10 @@ import { readJsonFile, resolveWithin } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { resolveBuildTarget } from "#project/baseline/index";
 import { emittedManifestFile } from "#project/build/constants";
-import { createDefine } from "#project/environments/index";
+import {
+  createDefine,
+  resolveEntriesRuntime,
+} from "#project/environments/index";
 import { sourceCondition } from "#project/package/constants";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
 import {
@@ -133,6 +136,8 @@ export async function createTsdownConfig(
 
   const source = await config.resolve("src");
 
+  const runtime = await resolveEntriesRuntime(config);
+
   const tsconfigPath = await config.resolve("tsconfigPath");
 
   const declarationsTsconfigPath = await source.tsconfig.path;
@@ -204,10 +209,10 @@ export async function createTsdownConfig(
     cwd: root,
     entry: createTsdownEntries(sourceEntries, bins, workspaceEntries),
     format: "esm",
-    ...(source.runtime === undefined
+    ...(runtime === undefined
       ? {}
       : {
-          target: resolveBuildTarget(source.runtime),
+          target: resolveBuildTarget(runtime),
         }),
     outDir,
     clean: clean === "all",

@@ -526,6 +526,7 @@ describe("registered environments", () => {
     expect(registrations.find(({ name }) => name === "src")).toEqual({
       name: "src",
       preset: "src",
+      execution: { syntax: "2026-10" },
       dirs: ["src"],
       files: [],
     });

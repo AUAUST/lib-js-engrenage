@@ -91,13 +91,13 @@ export interface SourceInput {
     /**
      * Value of `compilerOptions.lib`.
      * `false` leaves the field to the file.
-     * @default the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime
+     * @default the ES libs selected from the registration's Baseline syntax snapshot, `ESNext` for a Node runtime
      */
     lib?: (ManagedListOption<string> | undefined)
     /**
      * Value of `compilerOptions.types`.
      * `false` leaves the field to the file.
-     * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning
+     * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each group of its environment's `execution.apis`, except library groups whose lib is already in `lib`, which are left out with a warning
      */
     types?: (ManagedListOption<string> | undefined)
     /**
@@ -134,11 +134,6 @@ export interface SourceInput {
    */
   aliases?: ((false | AliasesInput) | undefined)
   /**
-   * Whether the source only runs through a bundler. It sets the src tsconfig `module` and `moduleResolution` to the bundler ones, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.
-   * @default whether the selected build tool bundles the source, `false` without a build tool
-   */
-  bundled?: (boolean | undefined)
-  /**
    * Subpaths the package exposes besides its public domains, mapped to their source file; both sides use the same single `*` or none.
    * A public domain, one holding the entry role's file, exposes that file on its own, so only other files are listed here; a subpath a public domain already exposes fails.
    * They feed the tsdown entries, hence the `exports` of `package.json`, and the `paths` of the base tsconfig.
@@ -147,31 +142,4 @@ export interface SourceInput {
   exports?: ({
     [k: string]: string
   } | undefined)
-  /**
-   * Baseline snapshot of the runtime the source targets, as `YYYY-MM` (at most the current month).
-   * It selects the TypeScript ES libs of the src tsconfig (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own), the tsdown `target` and the `engines.node` floor of `package.json`.
-   * Exclusive with `src.node`.
-   * @default none, so all three are skipped with a warning
-   */
-  baseline?: (string | undefined)
-  /**
-   * Extra API groups of a baseline runtime, added to the src tsconfig `types` as `@auaust/engrenage/apis/<group>`.
-   * Only valid with `src.baseline`.
-   * Groups with their root globals: `abort` (`AbortController`, `AbortSignal`), `blob` (`Blob`, `File`), `compression` (`CompressionStream`, `DecompressionStream`), `console` (`console`), `crypto` (`crypto`), `encoding` (`TextEncoder`, `TextDecoder`, `atob`, `btoa`), `events` (`Event`, `EventTarget`, `CustomEvent`), `exceptions` (`DOMException`), `microtasks` (`queueMicrotask`), `performance` (`performance`), `streams` (`ReadableStream`, `WritableStream`, `TransformStream`, `ByteLengthQueuingStrategy`, `CountQueuingStrategy`, `TextEncoderStream`, `TextDecoderStream`), `timers` (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`), `url` (`URL`, `URLSearchParams`), `disposable` (the whole `lib.esnext.disposable.d.ts` of TypeScript, only for a project whose own lib provides it), `float16` (the whole `lib.es2025.float16.d.ts` of TypeScript, only for a project whose own lib provides it).
-   * @default none
-   */
-  apis?: (ListOption<"abort" | "blob" | "compression" | "console" | "crypto" | "encoding" | "events" | "exceptions" | "microtasks" | "performance" | "streams" | "timers" | "url" | "disposable" | "float16"> | undefined)
-  /**
-   * Host the source runs in: `isomorphic` for code any runtime can host, `browser` for code only browsers host.
-   * A browser host appends `DOM` and `DOM.Iterable` to the default `lib` of the src tsconfig.
-   * `browser` is exclusive with `src.node` and `src.apis`.
-   * @default `isomorphic`
-   */
-  host?: (("isomorphic" | "browser") | undefined)
-  /**
-   * Node major the source targets instead of a baseline: it feeds the Node types and lib of the src tsconfig, the tsdown `target` and the `engines.node` floor.
-   * Exclusive with `src.baseline` and `src.apis`.
-   * @default none, so `src.baseline` decides
-   */
-  node?: (number | undefined)
 }

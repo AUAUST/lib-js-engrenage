@@ -130,7 +130,7 @@ function createDefinedAliases(
   return map(entries(option.define), ([key, target]): Alias => {
     if (!key.startsWith(bundlerPrefix) && !bundled) {
       throw new Error(
-        `${source} defines the bundler alias ${key}, which needs src.bundled`,
+        `${source} defines the bundler alias ${key}, which needs the src environment's bundler pass, environments.src.bundled`,
       );
     }
 

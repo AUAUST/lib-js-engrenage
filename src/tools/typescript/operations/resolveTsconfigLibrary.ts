@@ -1,6 +1,6 @@
 import { resolveListOption } from "#foundation/options/index";
 import { memoizeByContext, type LoadedConfig } from "#project/config/index";
-import { resolveTsconfigRuntime } from "#tools/typescript/operations/resolveTsconfigRuntime";
+import { resolveTsconfigExecution } from "#tools/typescript/operations/resolveTsconfigExecution";
 import type { TsconfigTarget } from "#project/tsconfig/index";
 
 const librariesOf = memoizeByContext(() => {
@@ -17,15 +17,15 @@ async function computeTsconfigLibrary(
     return false;
   }
 
-  const runtime = await resolveTsconfigRuntime(config, key);
+  const execution = await resolveTsconfigExecution(config, key);
+
+  const runtime = execution?.runtime;
 
   if (runtime === undefined && (option == null || option === true)) {
     return false;
   }
 
-  const { host } = await config.resolve("src");
-
-  const browser = key === "src" && host === "browser";
+  const browser = execution?.globals === "browser";
 
   return resolveListOption(
     option,

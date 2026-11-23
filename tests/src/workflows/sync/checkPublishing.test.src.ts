@@ -11,7 +11,7 @@ const library = `{
   preset: "library",
   visibility: "private",
   runtime: { node: 24 },
-  src: { node: 24 },
+  environments: { src: { execution: { globals: "node", syntax: 24 } } },
   build: { outDir: "dist" },
   workspaces: { "extensions/*": { name: "ext-${placeholder}" } },
 }`;

@@ -139,7 +139,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     project.write(
       "engrenage.config.ts",
       `export default {
-  src: { baseline: "2026-10" },
+  environments: { src: { execution: { syntax: "2026-10" } } },
   extensions: [
     {
       name: "gate-fixture",
@@ -196,7 +196,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     project.write(
       "engrenage.config.ts",
       `export default {
-  src: { baseline: "2026-10" },
+  environments: { src: { execution: { syntax: "2026-10" } } },
   extensions: [
     {
       name: "gate-fixture",

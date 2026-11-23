@@ -15,7 +15,7 @@ async function cyclesOf(
   const project = createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "tsconfig.json": "{}",
-    "engrenage.config.ts": `export default { src: { node: 24 }, typescript: ${typescript} };\n`,
+    "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, typescript: ${typescript} };\n`,
     "src/index.ts": "",
     ...files,
   });

@@ -79,8 +79,12 @@ describe("syncTsconfigFiles", () => {
   test("leaves a false list and an unmanaged scalar untouched", async () => {
     const { project, config } = await createProject(
       {
+        environments: {
+          src: {
+            execution: { globals: "node", syntax: 24 },
+          },
+        },
         src: {
-          node: 24,
           tsconfig: {
             include: false,
             lib: false,

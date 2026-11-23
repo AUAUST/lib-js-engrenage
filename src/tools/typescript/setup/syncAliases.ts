@@ -13,7 +13,7 @@ import {
 
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 import { map, sort } from "@auaust/toolkit/array";
-import { entries, hasOwn, keys, record } from "@auaust/toolkit/object";
+import { entries, getOwn, hasOwn, keys, record } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
@@ -219,7 +219,12 @@ export async function syncAliases(config: LoadedConfig) {
     return;
   }
 
-  const { bundled, aliases } = await config.resolve("src.options");
+  const [{ aliases }, execution] = await Promise.all([
+    config.resolve("src.options"),
+    config.resolve("environments.execution"),
+  ]);
+
+  const bundled = getOwn(execution, "src")?.bundled ?? false;
 
   const generated = bundled
     ? src.filter(({ key }) => {

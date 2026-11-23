@@ -1,4 +1,4 @@
-import { array, string } from "valibot";
+import { array, boolean, string } from "valibot";
 
 import { declareLanguages } from "#batiment/environments/index";
 import {
@@ -8,6 +8,7 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
+import { executionSchema } from "#project/environments/config/schemas/executionSchema";
 
 export const environmentsSchema = declareRecord(
   string(),
@@ -20,6 +21,11 @@ export const environmentsSchema = declareRecord(
       languages: declareLanguages(
         "Names of the registered languages the environment holds instead of its preset's; a built-in environment defaults to its options' `languages`.",
       ),
+      execution: executionSchema,
+      bundled: declare(boolean(), {
+        description: "Whether the environment's code only runs through a bundler pass, instead of its preset's; unset in both, the build tool's for the environments on the package entries, else `false`. It sets the tsconfig `module` and `moduleResolution` to the bundler ones and, on `src`, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.",
+        optional: { value: undefined },
+      }),
       dirs: declare(array(directorySchema), {
         description: "Directories the environment is placed on, each covering its subtree, a workspace's included; a built-in environment defaults to its top-level namespace's resolved directories.",
         optional: { value: undefined },

@@ -93,7 +93,7 @@ describe("validateConfig", () => {
   test("validates every section eagerly while a partial resolution ignores the others", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",
-      "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { unknown: true } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { syntax: "2026-10" } } }, agents: { unknown: true } };\n`,
     });
 
     const partial = await loadConfig(project.root);
@@ -129,7 +129,7 @@ describe("validateConfig", () => {
       "package.json": JSON.stringify({
         devDependencies: { prettier: "*" },
       }),
-      "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { preferred: ["claude"] } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { syntax: "2026-10" } } }, agents: { preferred: ["claude"] } };\n`,
     });
 
     const config = await validateConfig(await loadConfig(project.root));

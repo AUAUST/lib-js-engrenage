@@ -27,12 +27,22 @@ describe("defineConfig", () => {
     expectTypeOf(defineConfig).returns.toEqualTypeOf<Resolvable<ConfigInput>>();
   });
 
-  test("types src.apis with the known groups", () => {
+  test("types execution.apis with the known groups", () => {
     expectTypeOf(defineConfig).toBeCallableWith({
-      src: { baseline: "2026-10", apis: ["timers"] },
+      environments: {
+        src: {
+          execution: { syntax: "2026-10", apis: ["timers"] },
+        },
+      },
     });
 
-    type Apis = NonNullable<Extract<ConfigInput["src"], object>["apis"]>;
+    type Apis = NonNullable<
+      NonNullable<
+        NonNullable<
+          NonNullable<ConfigInput["environments"]>[string]
+        >["execution"]
+      >["apis"]
+    >;
 
     expectTypeOf<["timers"]>().toExtend<Apis>();
     expectTypeOf<["unknown"]>().not.toExtend<Apis>();

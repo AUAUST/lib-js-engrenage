@@ -9,18 +9,22 @@ import {
   readTsconfigValue,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { resolveTsconfigExecution } from "#tools/typescript/operations/resolveTsconfigExecution";
 import { resolveTsconfigLibrary } from "#tools/typescript/operations/resolveTsconfigLibrary";
-import { resolveTsconfigRuntime } from "#tools/typescript/operations/resolveTsconfigRuntime";
 import type { JsonEdit } from "#foundation/json/index";
 import type { Reporter } from "#foundation/reports/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { ResolvedExecution } from "#project/environments/index";
 
 const apiTypesPrefix = `${engrenage}/apis/`;
 
 async function createDefaultTypes(
   config: LoadedConfig,
   target: TsconfigTarget,
-  runtime: Runtime | undefined,
+  {
+    runtime,
+    apis,
+  }: { runtime: Runtime | undefined; apis: ResolvedExecution["apis"] },
 ): Promise<() => readonly string[]> {
   if (runtime === undefined) {
     return () => [];
@@ -37,8 +41,6 @@ async function createDefaultTypes(
   const library = (
     (await resolveTsconfigLibrary(config, target)) || runtime.lib
   ).map((name) => name.toLowerCase());
-
-  const { apis } = await config.resolve("src");
 
   return () => {
     return [
@@ -85,7 +87,7 @@ function listBaselineTypes(
         }
 
         reporter.warn(
-          `src.apis lists ${api}, whose lib ${name} is already in the ${target.key} tsconfig lib: it is left out of types; remove it from src.apis`,
+          `The ${target.key} environment's execution.apis lists ${api}, whose lib ${name} is already in its tsconfig lib: it is left out of types; remove it from execution.apis`,
         );
 
         return false;
@@ -139,7 +141,9 @@ export async function produceTsconfigTypes(
     return [];
   }
 
-  const runtime = await resolveTsconfigRuntime(config, key);
+  const execution = await resolveTsconfigExecution(config, key);
+
+  const runtime = execution?.runtime;
 
   if (runtime === undefined && (option == null || option === true)) {
     return removeBaselineTypes(config, target);
@@ -147,7 +151,10 @@ export async function produceTsconfigTypes(
 
   const types = resolveListOption(
     option,
-    await createDefaultTypes(config, target, runtime),
+    await createDefaultTypes(config, target, {
+      runtime,
+      apis: execution?.apis ?? [],
+    }),
     `${key}.tsconfig.types`,
     config.context.reporter,
   );

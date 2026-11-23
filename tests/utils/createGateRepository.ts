@@ -22,7 +22,7 @@ export function createGateRepository(
           },
         },
       }),
-      "engrenage.config.ts": `export default { src: { baseline: "2026-10" }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { syntax: "2026-10" } } }, agents: { gate: { commands: ${JSON.stringify(commands)} } } };\n`,
       ".gitignore": "node_modules\n.runs*\n.env.*\n!.env.example\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: {

@@ -1,4 +1,4 @@
-import { record } from "@auaust/toolkit/object";
+import { getOwn, record } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
 import {
@@ -52,17 +52,18 @@ export const aliasesSection = declareSection({
 
     const global = aliasesSchema.resolve(input, undefined, "aliases");
 
-    const [environments, data, traits, trees] = await Promise.all([
+    const [environments, data, traits, trees, execution] = await Promise.all([
       readEnvironments(config),
       config.resolve("data"),
       config.resolve("traits"),
       config.resolve("structure"),
+      config.resolve("environments.execution"),
     ]);
 
     return resolveAliases({
       filesystem: config.context.filesystem,
       options: { global, src: option.aliases },
-      bundled: option.bundled,
+      bundled: getOwn(execution, "src")?.bundled ?? false,
       environments: record(
         environments
           .filter(({ namespace, environment }) => {

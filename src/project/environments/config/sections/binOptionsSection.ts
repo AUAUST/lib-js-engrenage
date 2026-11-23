@@ -13,7 +13,6 @@ export const binOptionsSection = declareSection({
       input,
       {
         ...(await readLayoutContext(config)),
-        runtime: await config.resolve("runtime"),
         reporter: config.context.reporter,
       },
       "bin",

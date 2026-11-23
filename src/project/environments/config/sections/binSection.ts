@@ -16,13 +16,6 @@ export const binSection = declareSection({
           entries: option.entries,
         },
         compose.values(await resolveEnvironment(config, option, "bin")),
-        compose.getters({
-          runtime: () => {
-            return option.enabled
-              ? freeze({ kind: "node" as const, major: option.node })
-              : undefined;
-          },
-        }),
       ),
     );
   },

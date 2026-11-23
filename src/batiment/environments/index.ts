@@ -3,6 +3,7 @@ export { declareLanguages } from "#batiment/environments/config/declarers/declar
 // @end
 
 // @barrel ports
+export type * from "#batiment/environments/ports/EnvironmentExecution";
 export type * from "#batiment/environments/ports/EnvironmentPreset";
 // @end
 

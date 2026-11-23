@@ -67,14 +67,14 @@ export function declareEnvironmentTsconfig<Context = unknown>(
           "Value of `compilerOptions.lib`.",
           "`false` leaves the field to the file.",
         ],
-        explain: "the ES libs selected from `src.baseline` for a baseline runtime, `ESNext` for a Node runtime",
+        explain: "the ES libs selected from the registration's Baseline syntax snapshot, `ESNext` for a Node runtime",
       }),
       types: declareManagedList(string(), {
         description: [
           "Value of `compilerOptions.types`.",
           "`false` leaves the field to the file.",
         ],
-        explain: "`node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each `src.apis` group, except library groups whose lib is already in `lib`, which are left out with a warning",
+        explain: "`node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each group of its environment's `execution.apis`, except library groups whose lib is already in `lib`, which are left out with a warning",
       }),
       compilerOptions: declare(record(string(), unknown()), {
         description: "Options written into `compilerOptions` after the ones engrenage derives; it wins over them.",

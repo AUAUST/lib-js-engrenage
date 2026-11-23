@@ -524,7 +524,7 @@ export const values = [path, v, things, alias];
     ]);
 
     const noDependencies: Dependencies = {
-      hasDependency(name): name is never {
+      hasDependency(_name): _name is never {
         return false;
       },
     };
@@ -1458,7 +1458,7 @@ export async function run(): Promise<unknown> {
   test("lints Error subclasses clean in a baseline environment", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "baseline", "type": "module" }',
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { environments: { src: { execution: { syntax: "2026-10" } } } };\n',
       "tsconfig.json": JSON.stringify({
         compilerOptions: { strict: true, module: "nodenext" },
         files: [],

@@ -11,13 +11,19 @@ function createProject(config: string) {
   });
 }
 
+async function resolveRuntime(config: string, environment: string) {
+  const loaded = await loadConfig(createProject(config).root);
+
+  const execution = await loaded.resolve("environments.execution");
+
+  return execution[environment]?.runtime;
+}
+
+const baseline = '{ environments: { src: { execution: { syntax: "2026-10" } } } }';
+
 describe("runtime", () => {
   test("derives the minimums of the 2026-10 snapshot", async () => {
-    const config = await loadConfig(
-      createProject('{ src: { baseline: "2026-10" } }').root,
-    );
-
-    expect((await config.resolve("src")).runtime).toMatchObject({
+    expect(await resolveRuntime(baseline, "src")).toMatchObject({
       kind: "baseline",
       snapshot: "2026-10",
       browsers: { chrome: "123" },
@@ -25,87 +31,56 @@ describe("runtime", () => {
     });
   });
 
-  test("runs tests, scripts and tooling on runtime.node", async () => {
-    const config = await loadConfig(
-      createProject('{ src: { baseline: "2026-10" } }').root,
-    );
+  test.each(["tests", "scripts", "tooling", "bin"])(
+    "runs %s on runtime.node",
+    async (environment) => {
+      expect(await resolveRuntime(baseline, environment)).toEqual({
+        kind: "node",
+        major: 24,
+      });
+    },
+  );
 
-    expect((await config.resolve("runtime")).node).toBe(24);
+  test("tunes a Node registration's major", async () => {
+    expect(
+      await resolveRuntime(
+        "{ environments: { bin: { execution: { syntax: 22 } } } }",
+        "bin",
+      ),
+    ).toEqual({ kind: "node", major: 22 });
 
-    expect((await config.resolve("tests")).runtime).toEqual({
-      kind: "node",
-      major: 24,
-    });
-
-    expect((await config.resolve("scripts")).runtime).toEqual({
-      kind: "node",
-      major: 24,
-    });
-
-    expect((await config.resolve("tooling")).runtime).toEqual({
-      kind: "node",
-      major: 24,
-    });
+    expect(
+      await resolveRuntime(
+        '{ environments: { src: { execution: { globals: "node", syntax: 24 } } } }',
+        "src",
+      ),
+    ).toEqual({ kind: "node", major: 24 });
   });
 
-  test("defaults bin.node to runtime.node", async () => {
-    const config = await loadConfig(
-      createProject('{ src: { baseline: "2026-10" } }').root,
-    );
-
-    expect((await config.resolve("bin")).runtime).toEqual({
-      kind: "node",
-      major: 24,
-    });
-
-    const configured = await loadConfig(
-      createProject("{ bin: { node: 22 } }").root,
-    );
-
-    expect((await configured.resolve("bin")).runtime).toEqual({
-      kind: "node",
-      major: 22,
-    });
-  });
-
-  test("resolves src.node to a node runtime", async () => {
-    const config = await loadConfig(
-      createProject("{ src: { node: 24 } }").root,
-    );
-
-    expect((await config.resolve("src")).runtime).toEqual({
-      kind: "node",
-      major: 24,
-    });
-  });
-
-  test("fails when src sets both baseline and node", async () => {
-    const config = await loadConfig(
-      createProject('{ src: { baseline: "2026-10", node: 24 } }').root,
-    );
-
+  test("fails on a baseline snapshot beside Node globals", async () => {
     await expect(
-      async () => (await config.resolve("src")).runtime,
-    ).rejects.toThrow("mutually exclusive");
+      resolveRuntime(
+        '{ environments: { src: { execution: { globals: "node", syntax: "2026-10" } } } }',
+        "src",
+      ),
+    ).rejects.toThrow("set it to a Node major");
   });
 
   test("names the earliest accepted snapshot for an unsupported one", async () => {
-    const config = await loadConfig(
-      createProject('{ src: { baseline: "2020-01" } }').root,
-    );
-
     await expect(
-      async () => (await config.resolve("src")).runtime,
+      resolveRuntime(
+        '{ environments: { src: { execution: { syntax: "2020-01" } } } }',
+        "src",
+      ),
     ).rejects.toThrow("the earliest accepted snapshot is 2022-08");
   });
 
   test("fails on a Node major that node-releases does not list", async () => {
-    const config = await loadConfig(
-      createProject("{ src: { node: 999 } }").root,
-    );
-
     await expect(
-      async () => (await config.resolve("src")).runtime,
+      resolveRuntime(
+        '{ environments: { src: { execution: { globals: "node", syntax: 999 } } } }',
+        "src",
+      ),
     ).rejects.toThrow("node-releases does not list");
   });
 });

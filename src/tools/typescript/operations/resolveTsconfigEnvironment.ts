@@ -6,7 +6,7 @@ import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/index";
 import type { TsconfigEnvironment } from "#tools/typescript/types/TsconfigEnvironment";
 
-// @debt the check covers the shape of the fields, so their contents and the runtime a contributed environment resolves are trusted unchecked
+// @debt the check covers the shape of the fields, so their contents are trusted unchecked
 const tsconfigEnvironment = custom<TsconfigEnvironment>((value) => {
   return (
     isObject(value) &&
@@ -17,8 +17,7 @@ const tsconfigEnvironment = custom<TsconfigEnvironment>((value) => {
     "globs" in value &&
     isArray(value.globs) &&
     "tsconfig" in value &&
-    isObject(value.tsconfig) &&
-    "runtime" in value
+    isObject(value.tsconfig)
   );
 });
 

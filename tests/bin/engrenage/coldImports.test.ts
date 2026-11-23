@@ -32,7 +32,7 @@ test(
         name: "project",
         type: "module",
       }),
-      "engrenage.config.ts": 'export default { src: { baseline: "2026-10" } };\n',
+      "engrenage.config.ts": 'export default { environments: { src: { execution: { syntax: "2026-10" } } } };\n',
     });
 
     const { stderr } = await run(

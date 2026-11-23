@@ -61,7 +61,7 @@ async function buildProject(options?: Options) {
   });
 
   expect(reporter.warnings).toContainEqual(
-    expect.stringContaining("src.baseline is not set"),
+    expect.stringContaining("environments.src.execution.syntax is not set"),
   );
 
   return project;

@@ -1,5 +1,5 @@
 // @barrel operations
-export { resolveSourceRuntime } from "#project/baseline/operations/resolveSourceRuntime";
+export { resolveBaselineRuntime } from "#project/baseline/operations/resolveBaselineRuntime";
 // @end
 
 // @barrel config/schemas

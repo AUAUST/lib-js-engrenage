@@ -1,12 +1,13 @@
 import { toArray } from "@auaust/toolkit/array";
 import { concat, unique } from "@auaust/toolkit/iterable";
 import { max } from "@auaust/toolkit/math";
-import { entries } from "@auaust/toolkit/object";
+import { entries, getOwn } from "@auaust/toolkit/object";
 
 import { noRoles } from "#batiment/roles/constants";
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
 import { findDirectories } from "#foundation/filesystem/index";
+import { listNamespaceEnvironments } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
@@ -18,7 +19,6 @@ import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
 import type { Runtime } from "#project/baseline/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { ResolvedBin, ResolvedSource } from "#project/environments/index";
 import type { ResolvedTraits } from "#project/presets/index";
 
 interface Field {
@@ -32,19 +32,17 @@ function toNodeMajor(runtime: Runtime): number {
   return runtime.kind === "node" ? runtime.major : runtime.node;
 }
 
-function createEnginesFields({
-  bin,
-  src,
-}: {
-  bin: ResolvedBin;
-  src: ResolvedSource;
-}): Field[] {
-  const majors = [
-    ...(bin.active && bin.runtime !== undefined
-      ? [toNodeMajor(bin.runtime)]
-      : []),
-    ...(src.runtime === undefined ? [] : [toNodeMajor(src.runtime)]),
-  ];
+async function createEnginesFields(config: LoadedConfig): Promise<Field[]> {
+  const [names, execution] = await Promise.all([
+    listNamespaceEnvironments(config, (kind) => kind.code === "published"),
+    config.resolve("environments.execution"),
+  ]);
+
+  const majors = names.flatMap((name) => {
+    const runtime = getOwn(execution, name)?.runtime;
+
+    return runtime === undefined ? [] : toNodeMajor(runtime);
+  });
 
   return majors.length === 0
     ? []
@@ -128,10 +126,7 @@ async function createFields(
       location: ["publishConfig", "access"],
       value: accessByVisibility[await resolve("visibility")],
     },
-    ...createEnginesFields({
-      bin: await resolve("bin"),
-      src: await resolve("src"),
-    }),
+    ...(await createEnginesFields(config)),
     ...(await createPublishedFields(config)),
   ];
 }

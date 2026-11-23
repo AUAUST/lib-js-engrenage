@@ -130,7 +130,7 @@ describe("createViteConfig", () => {
     expect(mergeConfig(vite, { root }).build?.outDir).toBe(join(root, "dist"));
 
     expect(reporter.warnings).toContainEqual(
-      expect.stringContaining("src.baseline is not set"),
+      expect.stringContaining("environments.src.execution.syntax is not set"),
     );
   });
 
@@ -148,7 +148,7 @@ describe("createViteConfig", () => {
     expect(vite.root).toBe(config.context.root);
 
     expect(reporter.warnings).toContainEqual(
-      expect.stringContaining("src.baseline is not set"),
+      expect.stringContaining("environments.src.execution.syntax is not set"),
     );
   });
 
@@ -172,7 +172,11 @@ describe("createViteConfig", () => {
   test("targets the same browsers as tsdown for a baseline", async () => {
     const config = await loadProject(
       {
-        src: { baseline: "2026-10" },
+        environments: {
+          src: {
+            execution: { syntax: "2026-10" },
+          },
+        },
       },
       {
         "package.json": viteManifest,
@@ -180,7 +184,8 @@ describe("createViteConfig", () => {
       },
     );
 
-    const { runtime } = await config.resolve("src");
+    const runtime = (await config.resolve("environments.execution")).src
+      ?.runtime;
 
     if (runtime === undefined) {
       throw new Error("expected a source runtime");

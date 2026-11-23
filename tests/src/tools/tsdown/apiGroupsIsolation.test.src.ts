@@ -126,7 +126,7 @@ describe("api groups of a library", () => {
     const { library, reporter } = await buildLibrary();
 
     expect(reporter.warnings).toContainEqual(
-      expect.stringContaining("src.baseline is not set"),
+      expect.stringContaining("environments.src.execution.syntax is not set"),
     );
 
     expect(runTsc(library.root)).toBe("");

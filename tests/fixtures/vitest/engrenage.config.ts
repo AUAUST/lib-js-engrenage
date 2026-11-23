@@ -1,4 +1,8 @@
 export default {
   preset: "library",
-  src: { node: 24 },
+  environments: {
+    src: {
+      execution: { globals: "node", syntax: 24 },
+    },
+  },
 };

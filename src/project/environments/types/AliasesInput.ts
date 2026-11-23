@@ -12,7 +12,7 @@ export interface AliasesInput {
    */
   generated?: (boolean | undefined)
   /**
-   * Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only with `src.bundled`.
+   * Aliases to add, mapped to their target. A key not starting with `#` is a bundler alias, valid only when the src environment runs through a bundler pass (`environments.src.bundled`).
    * @default none
    */
   define?: ({

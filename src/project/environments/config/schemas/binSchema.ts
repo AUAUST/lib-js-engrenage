@@ -8,13 +8,11 @@ import {
   fileSchema,
   unset,
 } from "#foundation/options/index";
-import { nodeMajorSchema } from "#project/baseline/index";
 import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 import {
   defaultBinDirectories,
   disabledCodeEnvironment,
 } from "#project/environments/constants";
-import type { ResolvedRuntimeSettings } from "#project/config/index";
 
 export const binSchema = declareObject(
   {
@@ -31,17 +29,6 @@ export const binSchema = declareObject(
       ],
       optional: unset("the entry files found in the bin directories"),
     }),
-    node: declare(nodeMajorSchema, {
-      description: [
-        "Node major the commands target: it feeds the `engines.node` floor of `package.json`.",
-      ],
-      optional: {
-        explain: "`runtime.node`",
-        compute(context: { runtime: ResolvedRuntimeSettings }) {
-          return context.runtime.node;
-        },
-      },
-    }),
   },
   {
     description: [
@@ -56,7 +43,6 @@ export const binSchema = declareObject(
       value: {
         ...disabledCodeEnvironment,
         entries: undefined,
-        node: undefined,
       },
     },
   },

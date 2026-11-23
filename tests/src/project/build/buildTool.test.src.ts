@@ -43,12 +43,16 @@ describe("build.tool", () => {
     );
   });
 
-  test("leaves an explicit src.bundled resolvable with several build tools active", async () => {
+  test("leaves an explicit bundler pass resolvable with several build tools active", async () => {
     const config = createConfig({
-      src: { bundled: true },
+      environments: {
+        src: { bundled: true },
+      },
     });
 
-    expect((await config.resolve("src")).bundled).toBe(true);
+    const execution = await config.resolve("environments.execution");
+
+    expect(execution.src?.bundled).toBe(true);
   });
 
   test("resolves the tool the library preset prefers, without the Vite values", async () => {
@@ -58,7 +62,9 @@ describe("build.tool", () => {
 
     expect(tool && tool.name).toBe("tsdown");
 
-    expect((await config.resolve("src")).bundled).toBe(false);
+    const execution = await config.resolve("environments.execution");
+
+    expect(execution.src?.bundled).toBe(false);
   });
 
   test("resolves the only active tool when the preferred one is inactive", async () => {
@@ -80,12 +86,18 @@ describe("Vite defaults", () => {
     const config = createProjectConfig({
       root: project.root,
       raw: withSourceRuntime({
-        src: { node: 22 },
+        environments: {
+          src: {
+            execution: { globals: "node", syntax: 22 },
+          },
+        },
       }),
       configFile: undefined,
     });
 
-    expect((await config.resolve("src")).bundled).toBe(true);
+    const execution = await config.resolve("environments.execution");
+
+    expect(execution.src?.bundled).toBe(true);
 
     expect(await config.resolve("build.outDir")).toBe("dist");
 

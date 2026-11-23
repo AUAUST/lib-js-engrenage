@@ -67,6 +67,14 @@ export const defaultTestsFixtures = freeze([
 
 export const defaultTestsCoverageDirectory = "coverage" satisfies Directory;
 
+export const executionGlobals = freeze([
+  "isomorphic",
+  "browser",
+  "node",
+] as const);
+
+export const moduleFormats = freeze(["esm"] as const);
+
 export const disabledCodeEnvironment = freeze({
   dirs: [],
   generated: [],
@@ -112,31 +120,37 @@ export const testsNamespaceKind = freeze({
 } as const) satisfies NamespaceKind;
 
 // @debt built as frozen data rather than with `createEnvironmentPreset`, since an extension imports statically only its constants, which import no confined util
+// @debt the Node presets state no module format, so their tsconfigs keep the base tsconfig's `module` and `moduleResolution` rather than Node's
 export const builtinEnvironmentPresets = freeze([
   freeze({
     name: "src",
     tsconfig: true,
     languages: ["typescript", "tsx"],
+    execution: freeze({ globals: "isomorphic", module: "esm" }),
   } as const),
   freeze({
     name: "tests",
     tsconfig: true,
     languages: ["typescript", "tsx"],
+    execution: freeze({ globals: "node" }),
   } as const),
   freeze({
     name: "bin",
     tsconfig: true,
     languages: ["typescript"],
+    execution: freeze({ globals: "node" }),
   } as const),
   freeze({
     name: "scripts",
     tsconfig: true,
     languages: ["typescript"],
+    execution: freeze({ globals: "node" }),
   } as const),
   freeze({
     name: "tooling",
     tsconfig: true,
     languages: ["typescript"],
+    execution: freeze({ globals: "node" }),
   } as const),
   freeze({ name: "data" } as const),
   freeze({ name: "static" } as const),

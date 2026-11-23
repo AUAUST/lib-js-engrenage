@@ -1,22 +1,32 @@
 import { isPlainObject } from "@auaust/toolkit";
 
+function readObject(value: unknown): Record<string, unknown> {
+  return isPlainObject(value) ? value : {};
+}
+
 export function withSourceRuntime(
   input: Record<string, unknown> = {},
 ): Record<string, unknown> {
-  const { src } = input;
-
-  if (src === false) {
+  if (input.src === false) {
     return input;
   }
 
-  const source = isPlainObject(src) ? src : {};
+  const environments = readObject(input.environments);
+  const source = readObject(environments.src);
+  const execution = readObject(source.execution);
 
-  if (source.baseline !== undefined || source.node !== undefined) {
+  if (execution.syntax !== undefined || execution.globals !== undefined) {
     return input;
   }
 
   return {
     ...input,
-    src: { ...source, baseline: "2026-10" },
+    environments: {
+      ...environments,
+      src: {
+        ...source,
+        execution: { ...execution, syntax: "2026-10" },
+      },
+    },
   };
 }

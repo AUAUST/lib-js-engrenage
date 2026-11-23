@@ -51,6 +51,40 @@ export interface BuiltinConfigInput {
        */
       languages?: (string[] | undefined)
       /**
+       * How the environment's code executes, each field set instead of its preset's.
+       */
+      execution?: ({
+        /**
+         * Host whose globals the environment's code reaches: `isomorphic` for code any runtime can host, `browser` for code only browsers host, `node` for Node.
+         * A browser host appends `DOM` and `DOM.Iterable` to the default `lib` of its tsconfig; a Node host adds the Node types.
+         * @default none
+         */
+        globals?: (("isomorphic" | "browser" | "node") | undefined)
+        /**
+         * Extra API groups of an `isomorphic` host, added to its tsconfig `types` as `@auaust/engrenage/apis/<group>`.
+         * Only valid beside a baseline snapshot in `syntax`.
+         * Groups with their root globals: `abort` (`AbortController`, `AbortSignal`), `blob` (`Blob`, `File`), `compression` (`CompressionStream`, `DecompressionStream`), `console` (`console`), `crypto` (`crypto`), `encoding` (`TextEncoder`, `TextDecoder`, `atob`, `btoa`), `events` (`Event`, `EventTarget`, `CustomEvent`), `exceptions` (`DOMException`), `microtasks` (`queueMicrotask`), `performance` (`performance`), `streams` (`ReadableStream`, `WritableStream`, `TransformStream`, `ByteLengthQueuingStrategy`, `CountQueuingStrategy`, `TextEncoderStream`, `TextDecoderStream`), `timers` (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`), `url` (`URL`, `URLSearchParams`), `disposable` (the whole `lib.esnext.disposable.d.ts` of TypeScript, only for a project whose own lib provides it), `float16` (the whole `lib.es2025.float16.d.ts` of TypeScript, only for a project whose own lib provides it).
+         * @default none
+         */
+        apis?: (("abort" | "blob" | "compression" | "console" | "crypto" | "encoding" | "events" | "exceptions" | "microtasks" | "performance" | "streams" | "timers" | "url" | "disposable" | "float16")[] | undefined)
+        /**
+         * Syntax level the code may use: for an `isomorphic` or `browser` host, a Baseline snapshot as `YYYY-MM` (at most the current month), selecting its tsconfig ES libs (the newest edition entirely widely available at the snapshot, plus each newer ES lib widely available on its own); for a `node` host, the Node major, `runtime.node` when unset.
+         * The environments on the package entries give the build `target`, and those on published namespaces the `engines.node` floor of `package.json`.
+         * @default none
+         */
+        syntax?: ((string | number) | undefined)
+        /**
+         * Module format the code is written in; with it, the tsconfig `module` and `moduleResolution` are the bundler ones under a bundler pass and `NodeNext` otherwise.
+         * @default none
+         */
+        module?: ("esm" | undefined)
+      } | undefined)
+      /**
+       * Whether the environment's code only runs through a bundler pass, instead of its preset's; unset in both, the build tool's for the environments on the package entries, else `false`. It sets the tsconfig `module` and `moduleResolution` to the bundler ones and, on `src`, writes the src aliases to the tsconfig `paths` and allows bundler aliases in `aliases.define`.
+       * @default none
+       */
+      bundled?: (boolean | undefined)
+      /**
        * Directories the environment is placed on, each covering its subtree, a workspace's included; a built-in environment defaults to its top-level namespace's resolved directories.
        * @default none
        */

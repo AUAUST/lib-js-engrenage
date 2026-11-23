@@ -1,4 +1,3 @@
-import type { Runtime } from "#project/baseline/index";
 import type { ResolvedCodeEnvironment } from "#project/environments/types/ResolvedCodeEnvironment";
 import type { ResolvedTestsPatterns } from "#project/environments/types/ResolvedTestsPatterns";
 import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/index";
@@ -12,5 +11,4 @@ export interface ResolvedTests extends ResolvedCodeEnvironment {
   readonly fixtures: Globs;
   readonly coverageDir: Directory;
   readonly dist: { readonly tsconfig: ResolvedEnvironmentTsconfig };
-  readonly runtime: Extract<Runtime, { kind: "node" }>;
 }

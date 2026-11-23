@@ -326,8 +326,12 @@ describe("runSync with generated sources", () => {
         agents: {
           preferred: ["claude"],
         },
+        environments: {
+          src: {
+            execution: { globals: "node", syntax: 24 },
+          },
+        },
         src: {
-          node: 24,
           roles: [index(), entrypoint()],
         },
         extensions: [

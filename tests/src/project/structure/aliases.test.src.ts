@@ -36,10 +36,10 @@ async function sync(config: string, files: Record<string, string> = {}) {
   };
 }
 
-const source = "src: { node: 24 }";
+const source = 'environments: { src: { execution: { globals: "node", syntax: 24 } } }';
 
 const bundled = (define: Record<string, string>) => {
-  return `{ src: { node: 24, bundled: true, aliases: { define: ${JSON.stringify(define)} } } }`;
+  return `{ environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: ${JSON.stringify(define)} } } }`;
 };
 
 async function syncOnDisk(root: string) {
@@ -55,7 +55,7 @@ async function syncOnDisk(root: string) {
 describe("aliases", () => {
   test("generates namespace and global file aliases without source root aliases", async () => {
     const { read } = await sync(
-      `{ preset: "library", src: { node: 24, roles: ${JSON.stringify([entrypoint()])} }, data: { exports: {} } }`,
+      `{ preset: "library", environments: { src: { execution: { globals: "node", syntax: 24 } } }, src: { roles: ${JSON.stringify([entrypoint()])} }, data: { exports: {} } }`,
       { "data/a.json": "{}", "src/entry.ts": "" },
     );
 
@@ -71,7 +71,7 @@ describe("aliases", () => {
 
   test("keeps the source root alias when generated source aliases are disabled", async () => {
     const { read } = await sync(
-      '{ preset: "library", src: { node: 24, aliases: { generated: false } } }',
+      '{ preset: "library", environments: { src: { execution: { globals: "node", syntax: 24 } } }, src: { aliases: { generated: false } } }',
     );
 
     expect((await read("package.json")).imports).toMatchObject({
@@ -85,7 +85,7 @@ describe("aliases", () => {
 
   test("gives a namespace holding domains its own alias only", async () => {
     const { read } = await sync(
-      `{ preset: "library", src: { node: 24, structure: { namespaces: { tools: {} } } } }`,
+      `{ preset: "library", environments: { src: { execution: { globals: "node", syntax: 24 } } }, src: { structure: { namespaces: { tools: {} } } } }`,
       {
         "src/tools/git/index.ts": "",
         "src/tools/git/constants.ts": "",
@@ -109,7 +109,7 @@ describe("aliases", () => {
 
   test("gives a bundled app's src aliases both TypeScript extensions, and only bundler aliases to the tsconfig paths", async () => {
     const { read } = await sync(
-      `{ src: { node: 24, bundled: true, aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
+      `{ environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
       { "data/a.json": "{}" },
     );
 
@@ -157,7 +157,7 @@ describe("aliases", () => {
   test("fails on a bundler alias unless the source is bundled", async () => {
     await expect(
       sync(
-        `{ src: { node: 24, aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
+        `{ environments: { src: { execution: { globals: "node", syntax: 24 } } }, src: { aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
       ),
     ).rejects.toThrow(/bundler alias \$shopify\/\*/);
   });
@@ -301,7 +301,7 @@ describe("aliases", () => {
   test("resolves a bundled app's .tsx module, type-checked and built through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        src: { baseline: "2026-10", bundled: true },
+        environments: { src: { execution: { syntax: "2026-10" }, bundled: true } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", jsx: "preserve", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',

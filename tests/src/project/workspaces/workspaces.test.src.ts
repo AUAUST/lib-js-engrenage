@@ -19,7 +19,7 @@ import sync from "#bin/engrenage/sync";
 const placeholder = "{dir}";
 
 const config = `export default {
-  src: { node: 24 },
+  environments: { src: { execution: { globals: "node", syntax: 24 } } },
   workspaces: {
     "extensions/action-*": { name: "@scope/app-${placeholder}" },
     "extensions/functions-*": {
@@ -173,7 +173,7 @@ describe("workspaces", () => {
   test("accepts a literal name for a glob without wildcard", async () => {
     const project = createTemporaryProject({
       ...files,
-      "engrenage.config.ts": `export default { src: { node: 24 }, workspaces: { "theme": { name: "@scope/theme" } } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { "theme": { name: "@scope/theme" } } };\n`,
       "theme/.workspace.json": "{}",
       "theme/src/index.ts": "",
     });
@@ -194,7 +194,7 @@ describe("workspaces", () => {
   test("rejects a literal name for a wildcard glob", async () => {
     const project = createTemporaryProject({
       ...files,
-      "engrenage.config.ts": `export default { src: { node: 24 }, workspaces: { "extensions/action-*": { name: "@scope/app" } } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { "extensions/action-*": { name: "@scope/app" } } };\n`,
     });
 
     await expect(
@@ -310,7 +310,7 @@ describe("workspace modules", () => {
   test("import their own #self modules and a src alias, type-check and build through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        src: { node: 24, bundled: true, aliases: { define: { "$shared/*": "./shared/*.ts" } } },
+        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
         workspaces: { "extensions/action-*": { name: "@scope/app-${placeholder}" } },
       };\n`,

@@ -19,7 +19,8 @@ export interface BuildTool extends EntryShape {
    */
   readonly outDir?: Directory;
   /**
-   * Default of `src.bundled`; `false` when unset.
+   * Whether the tool bundles: the bundler pass of the environments on the package
+   * entries whose registration and preset state none; `false` when unset.
    */
   readonly bundled?: boolean;
   /**

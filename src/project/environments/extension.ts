@@ -11,11 +11,11 @@ import type { Extension, FileLocation } from "#project/config/index";
 /**
  * Owns the `namespaceKinds`, `environmentPresets`, `environments` and `languages`
  * slots, the config keys of each built-in environment and its options,
- * `environments`, `environments.claims`, `define` and `runtime`, the uncommitted
- * coverage directory and the unlinted static directories. Contributes the
- * `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
- * kinds and environment presets, one environment of each, named after it, and
- * the `javascript` language.
+ * `environments`, `environments.claims`, `environments.execution`, `define`
+ * and `runtime`, the uncommitted coverage directory and the unlinted static
+ * directories. Contributes the `src`, `tests`, `bin`, `scripts`, `tooling`,
+ * `data` and `static` namespace kinds and environment presets, one environment
+ * of each, named after it, and the `javascript` language.
  */
 export default {
   name: "project/environments",
@@ -35,6 +35,15 @@ export default {
           } = await import("#project/environments/config/sections/environmentsSection");
 
           return environmentsSection;
+        },
+      },
+      "environments.execution": {
+        async load() {
+          const {
+            executionSection,
+          } = await import("#project/environments/config/sections/executionSection");
+
+          return executionSection;
         },
       },
       "environments.claims": {
