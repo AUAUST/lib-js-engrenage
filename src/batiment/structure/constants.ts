@@ -6,8 +6,6 @@ import type { ImportRelation } from "#batiment/structure/types/ImportRelation";
 
 export const defaultReexport = "namespace" satisfies ReexportMode;
 
-export const sourceEnvironment = "src";
-
 export const importRelations = freeze({
   "own-roles": "its own roles and files, excluding its index and entry",
   "global-roles": "the global roles of the environment root",
@@ -21,6 +19,5 @@ export const importRelations = freeze({
 
 export const importCategories = freeze({
   "public-entries": "the package name and its subpaths",
-  "internal-aliases": "`#…` aliases into `src`",
   "dist-artefacts": "the build output",
 } as const satisfies Record<ImportCategory, string>);

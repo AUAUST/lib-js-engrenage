@@ -28,6 +28,7 @@ export type {
   NamespaceKind,
   NamespaceKindPreset,
   NamespaceRelation,
+  TestVariant,
 } from "#batiment/scopes/index";
 export type {
   CardinalityViolation,

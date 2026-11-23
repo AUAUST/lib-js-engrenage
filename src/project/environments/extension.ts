@@ -3,6 +3,7 @@ import {
   environmentKindEntry,
   languageEntry,
   namespaceKindEntry,
+  testsNamespaceKind,
 } from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
@@ -234,21 +235,9 @@ export default {
         code: "published",
         imports: { data: "whole" },
         inward: "open",
+        entries: true,
       },
-      {
-        name: "tests",
-        level: "enforced",
-        structure: "roles",
-        layout: "mirror",
-        code: "private",
-        imports: {
-          src: "whole",
-          bin: "whole",
-          scripts: "whole",
-          tooling: "whole",
-          data: "whole",
-        },
-      },
+      testsNamespaceKind,
       {
         name: "bin",
         level: "enforced",

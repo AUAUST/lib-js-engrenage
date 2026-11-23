@@ -7,18 +7,18 @@ import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
 export function checkTests(
   edge: ImportEdge,
-  { variants }: ImportGrants,
+  { variants, entries }: ImportGrants,
 ): BoundaryViolation | undefined {
-  const { importer } = edge;
+  const variant = edge.importer?.variant;
 
-  if (importer?.environment !== "tests" || importer.variant === undefined) {
+  if (variant === undefined) {
     return;
   }
 
-  const category = getImportCategory(edge);
+  const category = getImportCategory(edge, entries);
 
   return category !== undefined &&
-    variants[importer.variant]?.includes(category) === true
+    variants[variant]?.includes(category) === true
     ? freeze({
         cause: "testVariant",
         boundary: undefined,

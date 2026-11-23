@@ -1,9 +1,8 @@
-import { entries, values } from "@auaust/toolkit/object";
+import { entries, getOwn, values } from "@auaust/toolkit/object";
 
 import {
   importCategories,
   importRelations,
-  sourceEnvironment,
 } from "#batiment/structure/constants";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
 import type { ResolvedRoles } from "#batiment/roles/index";
@@ -11,7 +10,6 @@ import type { NamespaceInstance } from "#batiment/scopes/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
-import type { TestVariant } from "#batiment/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
@@ -27,6 +25,7 @@ function renderCell(
   name: string,
   category: ImportCategory,
   grants: ImportGrants,
+  testNamespaces: readonly string[],
 ): string {
   const forbidden = grants.environments[name]?.includes(category) === true;
 
@@ -34,7 +33,7 @@ function renderCell(
     return "never";
   }
 
-  if (name === "tests") {
+  if (testNamespaces.includes(name)) {
     const variants = values(grants.variants).map((categories) => {
       return categories?.includes(category) === true;
     });
@@ -69,12 +68,13 @@ function renderSurface({ surface }: ImportGrants): string {
 
 function listCategories(
   namespaces: readonly NamespaceInstance[],
+  { entries: entryNamespaces }: ImportGrants,
 ): readonly (readonly [ImportCategory, string])[] {
   return [
     ["public-entries", importCategories["public-entries"]],
-    ["internal-aliases", importCategories["internal-aliases"]],
+    ["internal-aliases", `\`#…\` aliases into ${list(entryNamespaces)}`],
     ...namespaces
-      .filter(({ kind }) => kind.name !== sourceEnvironment)
+      .filter(({ id }) => !entryNamespaces.includes(id))
       .map(({ id, title }) => [id, title] as const),
     ["dist-artefacts", importCategories["dist-artefacts"]],
   ];
@@ -91,7 +91,7 @@ export function renderProjectMap({
   structure: ResolvedStructure;
   namespaces: readonly NamespaceInstance[];
   grants: ImportGrants;
-  patterns: { plain: Globs; source: Globs; dist: Globs };
+  patterns: Readonly<Partial<Record<string, Globs>>>;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   directory: Directory;
 }): string {
@@ -99,30 +99,30 @@ export function renderProjectMap({
     .filter(([, environment]) => environment !== undefined)
     .map(([name]) => name);
 
-  const categories = listCategories(namespaces);
+  const categories = listCategories(namespaces, grants);
 
   const columns = categories.map(([category]) => category);
 
-  const variants: readonly TestVariant[] = ["plain", "src", "dist"];
+  const testNamespaces = namespaces
+    .filter(({ kind }) => kind.variants !== undefined)
+    .map(({ id }) => id);
 
-  const variantRows = variants.map((variant) => {
-    const forbidden = grants.variants[variant] ?? [];
+  const variants = new Map(
+    namespaces
+      .flatMap(({ kind }) => {
+        return kind.variants ?? [];
+      })
+      .map((variant) => [variant.name, variant] as const),
+  );
+
+  const variantRows = [...variants.values()].map(({ name, against }) => {
+    const forbidden = getOwn(grants.variants, name) ?? [];
 
     const allowed = columns.filter((category) => !forbidden.includes(category));
 
-    const globs = {
-      plain: patterns.plain,
-      src: patterns.source,
-      dist: patterns.dist,
-    }[variant];
+    const globs = getOwn(patterns, name) ?? [];
 
-    const against = {
-      plain: "source and dist",
-      src: "source",
-      dist: "dist",
-    }[variant];
-
-    return `| ${list(globs)} | ${against} | ${list(allowed)} | ${list(forbidden)} |`;
+    return `| ${list(globs)} | ${against.join(" and ")} | ${list(allowed)} | ${list(forbidden)} |`;
   });
 
   return [
@@ -154,7 +154,7 @@ export function renderProjectMap({
     `| --- |${columns.map(() => " --- |").join("")} --- |`,
     ...mapped.map((name) => {
       const cells = columns.map((category) => {
-        return renderCell(name, category, grants);
+        return renderCell(name, category, grants, testNamespaces);
       });
 
       return `| ${code(name)} | ${cells.join(" | ")} | ${code(`${directory}/${name}.md`)} |`;
@@ -176,7 +176,7 @@ export function renderProjectMap({
           "## Scopes",
           "",
           importRelations.scope,
-          "Root src never imports another scope.",
+          `Root ${grants.entries.join(", ")} never imports another scope.`,
           "",
           ...[...grants.scopes].map(([scope, dependencies]) => {
             return `- ${code(scope)}: ${dependencies.length === 0 ? "no scope dependencies" : list(dependencies)}`;

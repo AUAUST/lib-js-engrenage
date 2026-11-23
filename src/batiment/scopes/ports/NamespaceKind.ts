@@ -1,5 +1,6 @@
 import type { InwardPolicy } from "#batiment/scopes/types/InwardPolicy";
 import type { NamespaceRelation } from "#batiment/scopes/types/NamespaceRelation";
+import type { TestVariant } from "#batiment/scopes/types/TestVariant";
 
 /**
  * The boundary facts of a top-level namespace, reusable by name: each top-level
@@ -42,4 +43,15 @@ export interface NamespaceKind {
    * grant as given, `surface` at most surface, `sealed`, the default, nothing.
    */
   readonly inward?: InwardPolicy;
+  /**
+   * Whether the kind's root-scope namespaces hold the package entries: their
+   * files are imported through `#…` aliases, the `internal-aliases` import
+   * category, and from outside the package through its name.
+   */
+  readonly entries?: boolean;
+  /**
+   * The test files the kind's namespaces hold, by variant; without any, their
+   * files have no variant.
+   */
+  readonly variants?: readonly TestVariant[];
 }

@@ -1,5 +1,6 @@
 import { extname, matchesGlob, posix, relative } from "node:path";
 
+import { toSorted } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { entries, freeze, getOwn, values } from "@auaust/toolkit/object";
 
@@ -9,6 +10,11 @@ import {
   noRoles,
 } from "#batiment/roles/constants";
 import { rootScope } from "#batiment/scopes/constants";
+import {
+  listNamespaces,
+  type ScopeTree,
+  type TestVariant,
+} from "#batiment/scopes/index";
 import { classifyEntityFile } from "#batiment/structure/utils/classifyEntityFile";
 import { createStructureEntity } from "#batiment/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
@@ -17,7 +23,6 @@ import { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
 import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
-import type { ScopeTree } from "#batiment/scopes/index";
 import type { EntityIndex } from "#batiment/structure/apis/EntityIndex";
 import type { Entity } from "#batiment/structure/types/Entity";
 import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
@@ -27,7 +32,6 @@ import type { NamedFileRole } from "#batiment/structure/types/NamedFileRole";
 import type { ResolvedAliases } from "#batiment/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
-import type { TestVariant } from "#batiment/structure/types/TestVariant";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -42,6 +46,14 @@ const projectRoot = ".";
 const selfSubpath = ".";
 const noLineage: readonly LineageMember[] = freeze([]);
 const noNamedFileRoles: readonly NamedFileRole[] = freeze([]);
+
+function sortVariants(
+  variants: readonly TestVariant[],
+): readonly TestVariant[] {
+  return toSorted(variants, (first, second) => {
+    return second.marker.length - first.marker.length;
+  });
+}
 
 export function createEntityIndex({
   root,
@@ -58,11 +70,7 @@ export function createEntityIndex({
   structure: ResolvedStructure;
   environments: Readonly<Record<string, CodeEnvironment>>;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
-  testPatterns: {
-    readonly plain: Globs;
-    readonly source: Globs;
-    readonly dist: Globs;
-  };
+  testPatterns: Readonly<Partial<Record<string, Globs>>>;
   scopes: ScopeTree;
   outDir: Directory | undefined;
   aliases: ResolvedAliases;
@@ -71,17 +79,32 @@ export function createEntityIndex({
   const directories = new Map<Directory, LocatedEntity>();
   const specifiers = [...aliases.src, ...aliases.global];
 
+  const namespaces = listNamespaces(scopes).filter(({ scope }) => {
+    return scope === rootScope;
+  });
+
   const publicEntries = new Map(
-    entries(structure.src?.entries ?? {}).map(([subpath, file]) => {
-      return [file, subpath] as const;
+    namespaces
+      .filter(({ kind }) => kind.entries === true)
+      .flatMap(({ id }) => entries(structure[id]?.entries ?? {}))
+      .map(([subpath, file]) => [file, subpath] as const),
+  );
+
+  const variants = new Map(
+    namespaces.map(({ id, kind }) => {
+      return [id, sortVariants(kind.variants ?? [])] as const;
     }),
   );
 
-  const variants: readonly (readonly [TestVariant, Globs])[] = [
-    ["src", testPatterns.source],
-    ["dist", testPatterns.dist],
-    ["plain", testPatterns.plain],
-  ];
+  function variantOf(environment: string | undefined, path: string) {
+    if (environment !== undefined) {
+      return variants.get(environment)?.find(({ name }) => {
+        return (getOwn(testPatterns, name) ?? []).some((glob) => {
+          return matchesGlob(path, glob);
+        });
+      })?.name;
+    }
+  }
 
   function rolesOf(name: string): ResolvedRoles {
     return getOwn(environmentRoles, name) ?? noRoles;
@@ -333,11 +356,7 @@ export function createEntityIndex({
         role === indexRoleName ||
         role === entryRoleName
       ),
-      variant: entity.environment === "tests"
-        ? variants.find(([, globs]) => {
-            return globs.some((glob) => matchesGlob(path, glob));
-          })?.[0]
-        : undefined,
+      variant: variantOf(entity.environment, path),
     });
   });
 

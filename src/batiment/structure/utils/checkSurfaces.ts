@@ -13,7 +13,7 @@ export function checkSurfaces(
   const { importer, target, resolved, kind } = edge;
 
   if (
-    isEntryReference(edge) ||
+    isEntryReference(edge, grants.entries) ||
     importer === undefined ||
     target === undefined ||
     (resolved?.kind !== "relative" && resolved?.kind !== "alias")

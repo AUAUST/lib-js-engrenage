@@ -1,4 +1,12 @@
-import { optional, picklist, record, string } from "valibot";
+import {
+  array,
+  boolean,
+  object,
+  optional,
+  picklist,
+  record,
+  string,
+} from "valibot";
 
 import { freeze } from "@auaust/toolkit/object";
 
@@ -20,4 +28,15 @@ export const namespaceKindFields = freeze({
   code: optional(picklist(["published", "private"] as const)),
   imports: optional(record(string(), picklist(["whole", "surface"] as const))),
   inward: optional(picklist(["open", "surface", "sealed"] as const)),
+  entries: optional(boolean()),
+  variants: optional(
+    array(
+      object({
+        name: string(),
+        marker: string(),
+        against: array(picklist(["source", "dist"] as const)),
+        through: picklist(["public-entries", "internal-aliases"] as const),
+      }),
+    ),
+  ),
 });

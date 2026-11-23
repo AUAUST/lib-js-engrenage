@@ -36,7 +36,6 @@ export type * from "#batiment/structure/types/StructureReport";
 export type * from "#batiment/structure/types/StructureRole";
 export type * from "#batiment/structure/types/StructureSource";
 export type * from "#batiment/structure/types/TestsContext";
-export type * from "#batiment/structure/types/TestVariant";
 export type * from "#batiment/structure/types/UnclassifiedReason";
 // @end
 

@@ -1,6 +1,8 @@
-import { sourceEnvironment } from "#batiment/structure/constants";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 
-export function getEnvironmentCategory(environment: string): ImportCategory {
-  return environment === sourceEnvironment ? "internal-aliases" : environment;
+export function getEnvironmentCategory(
+  environment: string,
+  entries: readonly string[],
+): ImportCategory {
+  return entries.includes(environment) ? "internal-aliases" : environment;
 }

@@ -4,6 +4,7 @@ export { declareCodeEnvironment } from "#project/environments/config/declarers/d
 
 // @barrel utils
 export { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
+export { composeVariantPatterns } from "#project/environments/utils/composeVariantPatterns";
 export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 export { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";

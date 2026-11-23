@@ -11,7 +11,6 @@ import type {
   ImportCategory,
   ImportEdge,
   ImportGrants,
-  TestVariant,
 } from "#batiment/structure/index";
 import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
@@ -43,7 +42,7 @@ const variantGuidance = freeze({
     move: "a source-only test",
   },
 } as const satisfies Record<
-  TestVariant,
+  string,
   { readonly reach: string; readonly move: string }
 >);
 
@@ -91,7 +90,7 @@ export function defineBoundaryRule({
 
     const guidance = importer?.variant === undefined
       ? undefined
-      : variantGuidance[importer.variant];
+      : getOwn(variantGuidance, importer.variant);
 
     return {
       file: within(environment, file),

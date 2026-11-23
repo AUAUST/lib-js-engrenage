@@ -1,11 +1,12 @@
 import { freeze, record } from "@auaust/toolkit/object";
 
-import { sourceEnvironment } from "#batiment/structure/constants";
+import { rootScope } from "#batiment/scopes/constants";
 import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
 import type {
   NamespaceInstance,
   NamespaceRelation,
 } from "#batiment/scopes/index";
+import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
 function resolveRelation(
@@ -34,7 +35,19 @@ function resolveRelation(
 export function resolveEnvironmentGrants(
   published: boolean,
   namespaces: readonly NamespaceInstance[],
-): Pick<ImportGrants, "environments" | "surface" | "elements" | "variants"> {
+): Pick<
+  ImportGrants,
+  "environments" | "surface" | "elements" | "entries" | "variants"
+> {
+  // @debt only the root scope's namespaces hold the package entries, since the `internal-aliases` category names the root's aliases; each scope's own entries wait on per-scope aliases
+  const entries = freeze(
+    namespaces
+      .filter(({ scope, kind }) => {
+        return scope === rootScope && kind.entries === true;
+      })
+      .map(({ id }) => id),
+  );
+
   const relations = namespaces.map((importer) => {
     const targets = namespaces
       .filter((target) => target.id !== importer.id)
@@ -44,7 +57,7 @@ export function resolveEnvironmentGrants(
 
     const forbidden = targets
       .filter(([, relation]) => relation === undefined)
-      .map(([target]) => getEnvironmentCategory(target.id));
+      .map(([target]) => getEnvironmentCategory(target.id, entries));
 
     const surface = targets
       .filter(([, relation]) => relation === "surface")
@@ -54,8 +67,17 @@ export function resolveEnvironmentGrants(
   });
 
   const consumers = relations
-    .filter(([, , surface]) => surface.includes(sourceEnvironment))
+    .filter(([, , surface]) => surface.some((id) => entries.includes(id)))
     .map(([name]) => name);
+
+  const reaches = freeze({
+    "public-entries": freeze(["internal-aliases", ...consumers]),
+    "internal-aliases": freeze(["public-entries"]),
+  } as const satisfies Record<string, readonly ImportCategory[]>);
+
+  const variants = namespaces.flatMap(({ kind }) => {
+    return kind.variants ?? [];
+  });
 
   return freeze({
     environments: freeze(
@@ -73,12 +95,15 @@ export function resolveEnvironmentGrants(
         .filter(({ kind }) => kind.structure === "domains")
         .map(({ id }) => id),
     ),
+    entries,
     variants: published
-      ? freeze({
-          plain: freeze(["internal-aliases", ...consumers]),
-          src: freeze(["public-entries"] as const),
-          dist: freeze(["internal-aliases", ...consumers]),
-        })
+      ? freeze(
+          record(
+            variants.map(({ name, through }) => {
+              return [name, reaches[through]] as const;
+            }),
+          ),
+        )
       : freeze({}),
   });
 }

@@ -24,6 +24,7 @@ export type * from "#batiment/scopes/types/NamespaceKindPreset";
 export type * from "#batiment/scopes/types/NamespaceRelation";
 export type * from "#batiment/scopes/types/Scope";
 export type * from "#batiment/scopes/types/ScopeTree";
+export type * from "#batiment/scopes/types/TestVariant";
 // @end
 
 // @barrel config/schemas

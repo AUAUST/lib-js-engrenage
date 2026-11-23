@@ -14,6 +14,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { environmentKindFields } from "#batiment/environments/constants";
 import { namespaceKindFields } from "#batiment/scopes/constants";
 import { unmanagedTsconfig } from "#project/tsconfig/constants";
+import type { NamespaceKind, TestVariant } from "#batiment/scopes/index";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
@@ -72,9 +73,42 @@ export const disabledCodeEnvironment = freeze({
   tsconfig: unmanagedTsconfig,
 } as const);
 
-export const sourceTestsVariant = ".src";
+export const testVariants = freeze([
+  freeze({
+    name: "plain",
+    marker: "",
+    against: freeze(["source", "dist"] as const),
+    through: "public-entries",
+  }),
+  freeze({
+    name: "src",
+    marker: ".src",
+    against: freeze(["source"] as const),
+    through: "internal-aliases",
+  }),
+  freeze({
+    name: "dist",
+    marker: ".dist",
+    against: freeze(["dist"] as const),
+    through: "public-entries",
+  }),
+] as const) satisfies readonly TestVariant[];
 
-export const distTestsVariant = ".dist";
+export const testsNamespaceKind = freeze({
+  name: "tests",
+  level: "enforced",
+  structure: "roles",
+  layout: "mirror",
+  code: "private",
+  imports: freeze({
+    src: "whole",
+    bin: "whole",
+    scripts: "whole",
+    tooling: "whole",
+    data: "whole",
+  }),
+  variants: testVariants,
+} as const) satisfies NamespaceKind;
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const environmentKindEntry: StandardSchemaV1 = looseObject({

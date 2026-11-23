@@ -3,6 +3,7 @@ import { record } from "@auaust/toolkit/object";
 import { createEntityIndex, type EntityIndex } from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
 import { readEnvironments } from "#project/environments/index";
+import { resolveTestPatterns } from "#project/structure/operations/resolveTestPatterns";
 import type { ConfigResolver } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 
@@ -21,7 +22,7 @@ export const entitiesSection = declareSection({
     const [
       structure,
       environments,
-      tests,
+      testPatterns,
       roles,
       scopes,
       aliases,
@@ -30,7 +31,7 @@ export const entitiesSection = declareSection({
     ] = await Promise.all([
       config.resolve("structure"),
       readEnvironments(config),
-      config.resolve("tests"),
+      resolveTestPatterns(config),
       config.resolve("environmentRoles"),
       config.resolve("scopes"),
       config.resolve("aliases"),
@@ -47,7 +48,7 @@ export const entitiesSection = declareSection({
         }),
       ),
       roles,
-      testPatterns: tests.patterns,
+      testPatterns,
       scopes,
       outDir,
       aliases,

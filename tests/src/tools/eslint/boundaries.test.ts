@@ -474,6 +474,50 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
+  test("grants test variants from the namespace kind declaring them, whatever its name", async () => {
+    const project = createBoundaryProject();
+
+    project.write(
+      "engrenage.config.ts",
+      `export default {
+  preset: "library",
+  tests: { kind: "spec" },
+  src: { roles: ${renderCodeRoles(entry())}, structure: { layers: ["foundation", "project"] } },
+  extensions: [
+    {
+      name: "fixture/spec",
+      contributes: {
+        namespaceKinds: [
+          {
+            name: "spec",
+            level: "enforced",
+            structure: "roles",
+            code: "private",
+            imports: { src: "whole" },
+            variants: [
+              { name: "plain", marker: "", against: ["source", "dist"], through: "public-entries" },
+              { name: "src", marker: ".src", against: ["source"], through: "internal-aliases" },
+              { name: "dist", marker: ".dist", against: ["dist"], through: "public-entries" },
+            ],
+          },
+        ],
+      },
+    },
+  ],
+};
+`,
+    );
+
+    const lint = await createLinter("auaust/import-tests", project);
+
+    expect(
+      await lint(
+        "tests/a.test.dist.ts",
+        'import { value } from "#foundation/base/index";\nexport { value };\n',
+      ),
+    ).toEqual(["auaust/import-tests"]);
+  });
+
   test("lets bin reach src only through domain surfaces, tests through their variant", async () => {
     const lint = await createLinter("auaust/import-", createConsumerProject());
 

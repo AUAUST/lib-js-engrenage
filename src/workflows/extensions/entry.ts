@@ -61,5 +61,6 @@ export type {
   SyncFlags,
   SyncRun,
   SyncTarget,
+  TestVariant,
   UnclassifiedReason,
 } from "#workflows/extensions/index";

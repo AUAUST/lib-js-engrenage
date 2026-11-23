@@ -5,10 +5,11 @@ import type { ImportEdge } from "#batiment/structure/types/ImportEdge";
 
 export function getImportCategory(
   edge: ImportEdge,
+  entries: readonly string[],
 ): ImportCategory | undefined {
   const { resolved, target } = edge;
 
-  if (isEntryReference(edge) || resolved?.kind === "self") {
+  if (isEntryReference(edge, entries) || resolved?.kind === "self") {
     return "public-entries";
   }
 
@@ -24,7 +25,7 @@ export function getImportCategory(
     }
 
     default: {
-      return getEnvironmentCategory(environment);
+      return getEnvironmentCategory(environment, entries);
     }
   }
 }

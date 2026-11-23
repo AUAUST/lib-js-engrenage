@@ -1,7 +1,6 @@
 import type { ResolvedRoleContract, RoleLocation } from "#batiment/roles/index";
 import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
-import type { TestVariant } from "#batiment/structure/types/TestVariant";
 import type { Directory } from "#types/Directory";
 
 /**
@@ -9,7 +8,8 @@ import type { Directory } from "#types/Directory";
  * `undefined` in a scope outside every environment of it, the directory and
  * kind of its nearest structure node, the namespaces and domains above it, its
  * nearest domain with that domain's public specifiers and collected roles, and
- * the role and contract it holds, if any. `variant` is set only for test files.
+ * the role and contract it holds, if any. `variant` names the test variant of a
+ * file in a namespace holding tests.
  */
 export interface Entity {
   readonly scope: string;
@@ -27,5 +27,5 @@ export interface Entity {
   readonly contract: ResolvedRoleContract | undefined;
   readonly effects: string | undefined;
   readonly public: boolean;
-  readonly variant: TestVariant | undefined;
+  readonly variant: string | undefined;
 }

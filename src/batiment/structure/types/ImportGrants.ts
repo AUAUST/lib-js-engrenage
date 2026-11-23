@@ -1,15 +1,20 @@
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
-import type { TestVariant } from "#batiment/structure/types/TestVariant";
 
+/**
+ * The import categories each namespace and test variant may not import, by ID
+ * and name; `entries` lists the IDs of the root namespaces holding the package
+ * entries, whose files form the `internal-aliases` category.
+ */
 export interface ImportGrants {
   readonly published: boolean;
   readonly environments: Readonly<
     Partial<Record<string, readonly ImportCategory[]>>
   >;
   readonly elements: readonly string[];
+  readonly entries: readonly string[];
   readonly surface: Readonly<Partial<Record<string, readonly string[]>>>;
   readonly variants: Readonly<
-    Partial<Record<TestVariant, readonly ImportCategory[]>>
+    Partial<Record<string, readonly ImportCategory[]>>
   >;
   readonly scopes: ReadonlyMap<string, readonly string[]>;
 }

@@ -26,7 +26,7 @@ function isRootFile(
 
 export function checkEnvironments(
   edge: ImportEdge,
-  { environments, elements }: ImportGrants,
+  { environments, elements, entries }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { importer, target } = edge;
 
@@ -53,7 +53,7 @@ export function checkEnvironments(
     });
   }
 
-  const category = getImportCategory(edge);
+  const category = getImportCategory(edge, entries);
 
   return category !== undefined &&
     importer.environment !== undefined &&

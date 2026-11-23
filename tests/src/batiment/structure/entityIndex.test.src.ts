@@ -3,7 +3,6 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, test } from "vitest";
 
 import { createRolePreset } from "#batiment/roles/index";
-import { createScopeTree } from "#batiment/scopes/index";
 import { createEntityIndex } from "#batiment/structure/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import {
@@ -94,6 +93,7 @@ async function indexProject(root: string) {
     data,
     aliases,
     roles,
+    scopes,
   ] = await Promise.all([
     config.resolve("structure"),
     config.resolve("src"),
@@ -104,6 +104,7 @@ async function indexProject(root: string) {
     config.resolve("data"),
     config.resolve("aliases"),
     config.resolve("environmentRoles"),
+    config.resolve("scopes"),
   ]);
 
   return createEntityIndex({
@@ -118,12 +119,12 @@ async function indexProject(root: string) {
       data,
     },
     roles,
-    testPatterns: tests.patterns,
-    scopes: createScopeTree({
-      namespaces: [],
-      workspaces: [],
-      missing: [],
-    }),
+    testPatterns: {
+      plain: tests.patterns.plain,
+      src: tests.patterns.source,
+      dist: tests.patterns.dist,
+    },
+    scopes,
     outDir: "dist",
     aliases,
     packageName: "library",

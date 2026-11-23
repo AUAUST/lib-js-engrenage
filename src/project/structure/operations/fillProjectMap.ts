@@ -1,6 +1,7 @@
 import { listNamespaces } from "#batiment/scopes/index";
 import { renderProjectMap } from "#batiment/structure/index";
 import { listMappedEnvironments } from "#project/structure/operations/listMappedEnvironments";
+import { resolveTestPatterns } from "#project/structure/operations/resolveTestPatterns";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 
@@ -14,12 +15,12 @@ export async function fillProjectMap(
     );
   }
 
-  const [{ structure }, tree, grants, roles, tests] = await Promise.all([
+  const [{ structure }, tree, grants, roles, patterns] = await Promise.all([
     listMappedEnvironments(config),
     config.resolve("scopes"),
     config.resolve("importGrants"),
     config.resolve("environmentRoles"),
-    config.resolve("tests"),
+    resolveTestPatterns(config),
   ]);
 
   return renderProjectMap({
@@ -27,7 +28,7 @@ export async function fillProjectMap(
     namespaces: listNamespaces(tree),
     grants,
     roles,
-    patterns: tests.patterns,
+    patterns,
     directory,
   });
 }
