@@ -1,3 +1,4 @@
+export { createNamespaceKindPreset } from "#batiment/scopes/index";
 export {
   declare,
   declareList,
@@ -22,6 +23,12 @@ export type {
   ResolvedRoleContract,
   ResolvedRoleExports,
 } from "#batiment/roles/index";
+export type {
+  InwardPolicy,
+  NamespaceKind,
+  NamespaceKindPreset,
+  NamespaceRelation,
+} from "#batiment/scopes/index";
 export type {
   CardinalityViolation,
   EnvironmentFileNames,

@@ -97,3 +97,9 @@ entries:
       - src/tools/eslint/operations/listDebtMarkers.ts:24
     why: "a cold run takes seconds. Related: #554."
     want: only the debt-marker rule loaded.
+  - id: 261123-6d7b
+    title: Extensions cannot attach lint rules to the role presets they contribute
+    sites:
+      - src/tools/eslint/config/schemas/optionsSchema.ts:50
+    why: "#862 moved role rule loaders to defineEslintConfig's roleRules option, which only the user's ESLint config sets"
+    want: an eslint.roleRules extension slot, shaped like eslint.conventions

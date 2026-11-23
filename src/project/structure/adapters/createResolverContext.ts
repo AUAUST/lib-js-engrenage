@@ -169,7 +169,7 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       workspaces,
     ] = await Promise.all([
       config.resolve("git"),
-      config.context.registry.contributions("environmentKinds", config),
+      config.context.registry.contributions("namespaceKinds", config),
       config.context.registry.contributions("languages", config),
       listEnvironmentEntries(config),
       config.resolve("environments.claims"),
@@ -178,7 +178,7 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
 
     return freeze({
       ignored: await repository.ignored,
-      kinds: freeze(kinds.map(({ entry }) => entry.name)),
+      kinds: freeze(kinds.map(({ entry }) => entry)),
       languages: freeze(languages.map(({ entry }) => entry.name)),
       environments: freeze(
         await Promise.all(
@@ -206,7 +206,7 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       environments: freeze(
         await Promise.all(
           environments
-            .filter(({ kind }) => kind.structure !== undefined)
+            .filter(({ namespace }) => namespace.structure !== undefined)
             .map((contributed) => {
               return readEnvironmentDeclarations(
                 config,

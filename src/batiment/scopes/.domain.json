@@ -1,3 +1,3 @@
 {
-  "purpose": "Build the scope tree: the root workspace, the workspaces in it and the IDs of their environments."
+  "purpose": "Build the scope tree: the root workspace, the workspaces in it and the IDs of their environments; declare namespace kinds, their relations and the namespace and domain declarations structuring them."
 }

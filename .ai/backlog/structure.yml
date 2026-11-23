@@ -128,8 +128,8 @@ entries:
   - id: 261122-a24d
     title: Structure types restate schema vocabulary and field names
     sites:
-      - src/batiment/environments/types/NamespaceDeclaration.ts:6
-      - src/batiment/environments/types/DomainDeclaration.ts:4
+      - src/batiment/scopes/types/NamespaceDeclaration.ts:6
+      - src/batiment/scopes/types/DomainDeclaration.ts:4
       - src/batiment/structure/types/StructureNode.ts:28
       - src/batiment/structure/types/StructureOptions.ts:20
       - src/batiment/structure/types/DeclaredStructure.ts:14
@@ -138,7 +138,7 @@ entries:
   - id: 261122-bae0
     title: Structure node records accept undefined children
     sites:
-      - src/batiment/environments/config/declarers/declareStructureNodes.ts:135
+      - src/batiment/scopes/config/declarers/declareStructureNodes.ts:115
     why: the root `structure` needs optionality, so child records also accept `undefined`, resolved as empty namespaces.
     want: optional only at the root.
   - id: 261122-5857

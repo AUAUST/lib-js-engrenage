@@ -1,7 +1,7 @@
 import { picklist, string } from "valibot";
 
-import { declare } from "#foundation/options/index";
-import type { LayoutContext } from "#batiment/environments/types/LayoutContext";
+import { declare, unset } from "#foundation/options/index";
+import type { LayoutContext } from "#batiment/scopes/types/LayoutContext";
 
 const domainsLayout = "domains";
 
@@ -14,11 +14,8 @@ export function declareLayout() {
     schema(context: LayoutContext) {
       return picklist([domainsLayout, ...context.layouts]);
     },
-    optional: {
-      explain: "the layout of the environment's kind, otherwise `domains`",
-      compute(context: LayoutContext) {
-        return context.layout ?? domainsLayout;
-      },
-    },
+    optional: unset(
+      "the layout of the namespace kind named like the environment, otherwise `domains`",
+    ),
   });
 }

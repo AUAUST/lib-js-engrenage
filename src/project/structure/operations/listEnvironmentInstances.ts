@@ -2,6 +2,7 @@ import { flatMap } from "@auaust/toolkit/array";
 import { freeze, values } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
+import { readKinds } from "#project/environments/index";
 import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { ConfigResolver } from "#project/config/index";
 
@@ -11,10 +12,8 @@ export async function listEnvironmentInstances(
   const [{ scopes }, environments, kinds] = await Promise.all([
     config.resolve("scopes"),
     config.resolve("environments"),
-    config.context.registry.contributions("environmentKinds", config),
+    readKinds(config),
   ]);
-
-  const kindsByName = new Map(kinds.map(({ entry }) => [entry.name, entry]));
 
   const titles = new Map(
     environments.map(({ entry }) => [entry.name, entry.title]),
@@ -24,11 +23,19 @@ export async function listEnvironmentInstances(
     flatMap(values(scopes), (scope) => {
       return scope?.environments ?? [];
     }).map(({ id, scope, name, kind }) => {
-      const resolved = kindsByName.get(kind);
+      const resolved = kinds.environments.get(kind);
 
       if (resolved === undefined) {
         throw new Error(
           `Environment "${id}" names the kind "${kind}", which no active extension contributes`,
+        );
+      }
+
+      const namespace = kinds.namespaces.get(name);
+
+      if (namespace === undefined) {
+        throw new Error(
+          `Environment "${id}" covers the top-level namespace "${name}", whose namespace kind no active extension contributes`,
         );
       }
 
@@ -47,6 +54,7 @@ export async function listEnvironmentInstances(
         scope,
         title,
         kind: resolved,
+        namespace,
       });
     }),
   );

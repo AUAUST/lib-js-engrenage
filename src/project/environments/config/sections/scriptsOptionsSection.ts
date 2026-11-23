@@ -12,7 +12,7 @@ export const scriptsOptionsSection = declareSection({
     return scriptsSchema.resolve(
       input,
       {
-        ...(await readLayoutContext(config, "scripts")),
+        ...(await readLayoutContext(config)),
         reporter: config.context.reporter,
       },
       "scripts",

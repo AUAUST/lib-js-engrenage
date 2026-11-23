@@ -9,8 +9,8 @@
 /src/project/environments/types/BinInput.ts linguist-generated
 /src/project/environments/types/DataInput.ts linguist-generated
 /src/project/environments/types/DefineInput.ts linguist-generated
-/src/batiment/environments/types/DomainInput.ts linguist-generated
-/src/batiment/environments/types/NamespaceInput.ts linguist-generated
+/src/batiment/scopes/types/DomainInput.ts linguist-generated
+/src/batiment/scopes/types/NamespaceInput.ts linguist-generated
 /src/project/environments/types/RuntimeInput.ts linguist-generated
 /src/project/environments/types/ScriptsInput.ts linguist-generated
 /src/project/environments/types/SourceInput.ts linguist-generated

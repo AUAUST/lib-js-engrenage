@@ -1,5 +1,5 @@
-import type { NamespaceDeclaration } from "#batiment/environments/index";
 import type { Role } from "#batiment/roles/index";
+import type { NamespaceDeclaration } from "#batiment/scopes/index";
 import type { Directory } from "#types/Directory";
 
 export type EnvironmentStructureOption =

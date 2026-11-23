@@ -1,5 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { readKinds } from "#project/environments/operations/readKinds";
 import type { ConfigResolver } from "#project/config/index";
 import type { ContributedEnvironmentEntry } from "#project/environments/types/ContributedEnvironmentEntry";
 
@@ -8,14 +9,12 @@ export async function listEnvironmentEntries(
 ): Promise<readonly ContributedEnvironmentEntry[]> {
   const [environments, kinds] = await Promise.all([
     config.context.registry.contributions("environments", config),
-    config.context.registry.contributions("environmentKinds", config),
+    readKinds(config),
   ]);
-
-  const kindsByName = new Map(kinds.map(({ entry }) => [entry.name, entry]));
 
   return freeze(
     environments.map(({ entry }) => {
-      const kind = kindsByName.get(entry.kind);
+      const kind = kinds.environments.get(entry.kind);
 
       if (kind === undefined) {
         throw new Error(
@@ -23,7 +22,19 @@ export async function listEnvironmentEntries(
         );
       }
 
-      return freeze({ entry, kind });
+      const namespace = kinds.namespaces.get(entry.name);
+
+      if (namespace === undefined) {
+        throw new Error(
+          `Environment "${entry.name}" covers the top-level namespace "${entry.name}", whose namespace kind no active extension contributes`,
+        );
+      }
+
+      return freeze({
+        entry,
+        kind,
+        namespace,
+      });
     }),
   );
 }

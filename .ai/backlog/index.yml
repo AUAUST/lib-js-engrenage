@@ -144,6 +144,7 @@ eslint-conventions:
     - 261122-9d32
     - 261122-f52a
     - 261122-732e
+    - 261123-6d7b
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:

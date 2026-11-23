@@ -1,4 +1,5 @@
-import { declareStructureOptions } from "#batiment/environments/index";
+import { declareLanguages } from "#batiment/environments/index";
+import { declareStructureOptions } from "#batiment/scopes/index";
 import {
   declareList,
   directorySchema,
@@ -13,6 +14,9 @@ export function declareCodeEnvironment(
 ) {
   return {
     ...declareStructureOptions(),
+    languages: declareLanguages(
+      "Names of the registered languages the environment holds; defaults to its kind's `languages`.",
+    ),
     dirs: declareList(directorySchema, {
       description: [
         `Directories of the ${name} environment: its files of the languages it selects (\`languages\`) are included in its tsconfig, linted with its rules and, for \`src\` and \`bin\`, published.`,

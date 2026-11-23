@@ -1,7 +1,5 @@
 // @barrel config/declarers
-export { declareLayout } from "#batiment/environments/config/declarers/declareLayout";
-export { declareStructureNodes } from "#batiment/environments/config/declarers/declareStructureNodes";
-export { declareStructureOptions } from "#batiment/environments/config/declarers/declareStructureOptions";
+export { declareLanguages } from "#batiment/environments/config/declarers/declareLanguages";
 // @end
 
 // @barrel ports
@@ -9,22 +7,10 @@ export type * from "#batiment/environments/ports/EnvironmentKind";
 // @end
 
 // @barrel types
-export type * from "#batiment/environments/types/DomainDeclaration";
-export type * from "#batiment/environments/types/DomainInput";
+export type * from "#batiment/environments/types/DiscoveredEnvironment";
 export type * from "#batiment/environments/types/EnvironmentInstance";
-export type * from "#batiment/environments/types/EnvironmentRelation";
-export type * from "#batiment/environments/types/InwardPolicy";
-export type * from "#batiment/environments/types/LayoutContext";
-export type * from "#batiment/environments/types/NamespaceDeclaration";
-export type * from "#batiment/environments/types/NamespaceInput";
 // @end
 
 // @barrel config/schemas
-export { domainMetadataSchema } from "#batiment/environments/config/schemas/domainMetadataSchema";
-export { domainSchema } from "#batiment/environments/config/schemas/domainSchema";
 export { environmentMetadataSchema } from "#batiment/environments/config/schemas/environmentMetadataSchema";
-export { namespaceMetadataSchema } from "#batiment/environments/config/schemas/namespaceMetadataSchema";
-export { namespaceSchema } from "#batiment/environments/config/schemas/namespaceSchema";
-export { schemaReferenceSchema } from "#batiment/environments/config/schemas/schemaReferenceSchema";
-export { structureKeySchema } from "#batiment/environments/config/schemas/structureKeySchema";
 // @end

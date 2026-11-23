@@ -10,17 +10,17 @@ import {
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { schemaReferenceSchema } from "#batiment/environments/config/schemas/schemaReferenceSchema";
-import { structureKeySchema } from "#batiment/environments/config/schemas/structureKeySchema";
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
+import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
+import { structureKeySchema } from "#batiment/scopes/config/schemas/structureKeySchema";
 import {
   declare,
   declareObject,
   declareRecord,
   type Declaration,
 } from "#foundation/options/index";
-import type { DomainDeclaration } from "#batiment/environments/types/DomainDeclaration";
-import type { NamespaceDeclaration } from "#batiment/environments/types/NamespaceDeclaration";
+import type { DomainDeclaration } from "#batiment/scopes/types/DomainDeclaration";
+import type { NamespaceDeclaration } from "#batiment/scopes/types/NamespaceDeclaration";
 
 type NodeDeclaration<Output> = Declaration<unknown, Output, unknown>;
 
@@ -161,18 +161,6 @@ const nodes = freeze({
       ...namespaceFields,
     }),
     domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),
-    environment: declareObject({
-      $schema: schemaReferenceSchema,
-      kind: declare(string(), {
-        description: "Kind of the environment, naming an `environmentKinds` entry. Unset in a workspace's environment, its directory name.",
-        optional: { value: undefined },
-      }),
-      languages: declare(array(string()), {
-        description: "Names of the registered languages the environment holds; overrides its options' and its kind's `languages`.",
-        optional: { value: undefined },
-      }),
-      ...namespaceFields,
-    }),
   }),
 });
 

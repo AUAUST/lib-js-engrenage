@@ -1,5 +1,5 @@
-import { declareLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
+import { declareLayout } from "#batiment/scopes/index";
 import { declareObject } from "#foundation/options/index";
 import { declareCodeEnvironment } from "#project/environments/config/declarers/declareCodeEnvironment";
 import {

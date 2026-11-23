@@ -2,21 +2,23 @@ import {
   environmentEntry,
   environmentKindEntry,
   languageEntry,
+  namespaceKindEntry,
 } from "#project/environments/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns the `environmentKinds`, `environments` and `languages` slots, the config
- * keys of each built-in environment and its options, `environments.claims`,
- * `define` and `runtime`, the uncommitted coverage directory and the unlinted
- * static directories. Contributes the `src`, `tests`, `bin`, `scripts`, `tooling`,
- * `data` and `static` environment kinds, one environment of each, named after
- * it, and the `javascript` language.
+ * Owns the `namespaceKinds`, `environmentKinds`, `environments` and `languages`
+ * slots, the config keys of each built-in environment and its options,
+ * `environments.claims`, `define` and `runtime`, the uncommitted coverage
+ * directory and the unlinted static directories. Contributes the `src`, `tests`,
+ * `bin`, `scripts`, `tooling`, `data` and `static` namespace and environment
+ * kinds, one environment of each, named after it, and the `javascript` language.
  */
 export default {
   name: "project/environments",
   owns: {
     slots: {
+      namespaceKinds: { entry: namespaceKindEntry },
       environmentKinds: { entry: environmentKindEntry },
       environments: { entry: environmentEntry },
       languages: { entry: languageEntry },
@@ -224,22 +226,21 @@ export default {
     },
   },
   contributes: {
-    environmentKinds: [
+    namespaceKinds: [
       {
         name: "src",
         level: "enforced",
-        code: "published",
         structure: "domains",
+        code: "published",
         imports: { data: "whole" },
         inward: "open",
-        tsconfig: true,
-        languages: ["typescript", "tsx"],
       },
       {
         name: "tests",
         level: "enforced",
-        code: "private",
         structure: "roles",
+        layout: "mirror",
+        code: "private",
         imports: {
           src: "whole",
           bin: "whole",
@@ -247,31 +248,24 @@ export default {
           tooling: "whole",
           data: "whole",
         },
-        layout: "mirror",
-        tsconfig: true,
-        languages: ["typescript", "tsx"],
       },
       {
         name: "bin",
         level: "enforced",
-        code: "published",
         structure: "roles",
+        layout: "commands",
+        code: "published",
         imports: { src: "surface" },
         inward: "open",
-        layout: "commands",
-        tsconfig: true,
-        languages: ["typescript"],
       },
       {
         name: "scripts",
         level: "enforced",
-        code: "private",
         structure: "domains",
+        layout: "commands",
+        code: "private",
         imports: { src: "surface", data: "whole" },
         inward: "open",
-        layout: "commands",
-        tsconfig: true,
-        languages: ["typescript"],
       },
       {
         name: "tooling",
@@ -279,8 +273,6 @@ export default {
         structure: "domains",
         imports: { src: "surface" },
         inward: "open",
-        tsconfig: true,
-        languages: ["typescript"],
       },
       {
         name: "data",
@@ -290,6 +282,39 @@ export default {
       {
         name: "static",
         level: "enforced",
+      },
+    ],
+    environmentKinds: [
+      {
+        name: "src",
+        tsconfig: true,
+        languages: ["typescript", "tsx"],
+      },
+      {
+        name: "tests",
+        tsconfig: true,
+        languages: ["typescript", "tsx"],
+      },
+      {
+        name: "bin",
+        tsconfig: true,
+        languages: ["typescript"],
+      },
+      {
+        name: "scripts",
+        tsconfig: true,
+        languages: ["typescript"],
+      },
+      {
+        name: "tooling",
+        tsconfig: true,
+        languages: ["typescript"],
+      },
+      {
+        name: "data",
+      },
+      {
+        name: "static",
       },
     ],
     environments: [

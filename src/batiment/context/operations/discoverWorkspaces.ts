@@ -5,15 +5,18 @@ import { looseObject, type GenericSchema, type InferOutput } from "valibot";
 import { sort } from "@auaust/toolkit/array";
 import { freeze, keys, mapValues, omit } from "@auaust/toolkit/object";
 
+import { environmentMetadataFile } from "#batiment/environments/constants";
 import {
-  environmentMetadataFile,
+  environmentMetadataSchema,
+  type DiscoveredEnvironment,
+} from "#batiment/environments/index";
+import {
   namespaceMetadataFile,
-} from "#batiment/environments/constants";
-import { environmentMetadataSchema } from "#batiment/environments/index";
-import { rootScope, workspaceMetadataFile } from "#batiment/scopes/constants";
+  rootScope,
+  workspaceMetadataFile,
+} from "#batiment/scopes/constants";
 import {
   workspaceMetadataSchema,
-  type DiscoveredEnvironment,
   type DiscoveredWorkspace,
 } from "#batiment/scopes/index";
 import { parseJson } from "#foundation/json/index";

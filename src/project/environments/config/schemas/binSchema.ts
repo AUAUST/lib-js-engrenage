@@ -1,7 +1,7 @@
 import { record, string } from "valibot";
 
-import { declareLayout } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
+import { declareLayout } from "#batiment/scopes/index";
 import {
   declare,
   declareObject,

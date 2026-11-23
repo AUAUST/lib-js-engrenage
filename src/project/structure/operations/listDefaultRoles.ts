@@ -13,7 +13,7 @@ export async function listDefaultRoles(
   ]);
 
   const kind = environments.find(({ entry }) => entry.name === environment)
-    ?.kind.name;
+    ?.namespace.name;
 
   if (kind == null) {
     return [];

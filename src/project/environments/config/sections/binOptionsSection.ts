@@ -12,7 +12,7 @@ export const binOptionsSection = declareSection({
     return binSchema.resolve(
       input,
       {
-        ...(await readLayoutContext(config, "bin")),
+        ...(await readLayoutContext(config)),
         runtime: await config.resolve("runtime"),
         reporter: config.context.reporter,
       },

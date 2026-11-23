@@ -94,12 +94,17 @@ function createLiquid(owns: readonly string[] = []): Extension {
       },
     },
     contributes: {
-      environmentKinds: [
+      namespaceKinds: [
         {
           name: "liquid",
           level: "described",
           structure: "roles",
           imports: {},
+        },
+      ],
+      environmentKinds: [
+        {
+          name: "liquid",
         },
       ],
       environments: [
@@ -152,12 +157,17 @@ function createWorkers(
       },
     },
     contributes: {
-      environmentKinds: [
+      namespaceKinds: [
         {
           name: "workers",
           level,
           structure: "domains",
           code: "private",
+        },
+      ],
+      environmentKinds: [
+        {
+          name: "workers",
         },
       ],
       environments: [
@@ -419,6 +429,13 @@ describe("contributed environments", () => {
         },
       },
       contributes: {
+        namespaceKinds: [
+          {
+            name: "site",
+            level: "enforced",
+            structure: "domains",
+          },
+        ],
         environments: [
           {
             name: "site",
@@ -439,6 +456,11 @@ describe("contributed environments", () => {
 
     expect(listed?.kind).toMatchObject({
       name: "src",
+      languages: ["typescript", "tsx"],
+    });
+
+    expect(listed?.namespace).toMatchObject({
+      name: "site",
       level: "enforced",
       structure: "domains",
     });
@@ -457,7 +479,7 @@ describe("contributed environments", () => {
       return createWorkersConfig({
         name: "fixture/twin",
         contributes: {
-          environmentKinds: [{ name: "src", level: "described" }],
+          environmentKinds: [{ name: "src" }],
         },
       });
     }).toThrow(

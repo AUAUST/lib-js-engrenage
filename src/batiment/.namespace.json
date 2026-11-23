@@ -3,8 +3,8 @@
   "layers": [
     "report",
     "roles",
-    "environments",
     "scopes",
+    "environments",
     "structure",
     "context"
   ]

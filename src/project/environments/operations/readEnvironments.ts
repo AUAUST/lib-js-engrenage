@@ -12,11 +12,10 @@ export async function readEnvironments(
 
   return freeze(
     await Promise.all(
-      entries.map(async ({ entry, kind }) => {
+      entries.map(async (contributed) => {
         return freeze({
-          entry,
-          kind,
-          environment: await readEnvironment(config, entry.name),
+          ...contributed,
+          environment: await readEnvironment(config, contributed.entry.name),
         });
       }),
     ),

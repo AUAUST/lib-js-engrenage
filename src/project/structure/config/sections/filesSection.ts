@@ -17,8 +17,8 @@ function shippedGlobs(
   environments: readonly ContributedEnvironment[],
   code: "published" | "private",
 ): Globs {
-  return flatMap(environments, ({ kind, environment }) => {
-    return kind.code === code ? (environment.globs ?? []) : [];
+  return flatMap(environments, ({ namespace, environment }) => {
+    return namespace.code === code ? (environment.globs ?? []) : [];
   });
 }
 

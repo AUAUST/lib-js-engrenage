@@ -4,7 +4,6 @@ import {
   looseObject,
   minLength,
   optional,
-  picklist,
   pipe,
   string,
 } from "valibot";
@@ -13,6 +12,7 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { freeze } from "@auaust/toolkit/object";
 
 import { environmentKindFields } from "#batiment/environments/constants";
+import { namespaceKindFields } from "#batiment/scopes/constants";
 import { unmanagedTsconfig } from "#project/tsconfig/constants";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -80,8 +80,12 @@ export const distTestsVariant = ".dist";
 export const environmentKindEntry: StandardSchemaV1 = looseObject({
   ...environmentKindFields,
   tsconfig: optional(boolean()),
-  code: optional(picklist(["published", "private"])),
 });
+
+// @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
+export const namespaceKindEntry: StandardSchemaV1 = looseObject(
+  namespaceKindFields,
+);
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const environmentEntry: StandardSchemaV1 = looseObject({

@@ -3,12 +3,12 @@ import { optional, strictObject, type GenericSchema } from "valibot";
 
 import { keys, mapValues, omit } from "@auaust/toolkit/object";
 
+import { environmentMetadataSchema } from "#batiment/environments/index";
 import {
   domainMetadataSchema,
-  environmentMetadataSchema,
   namespaceMetadataSchema,
-} from "#batiment/environments/index";
-import { workspaceMetadataSchema } from "#batiment/scopes/index";
+  workspaceMetadataSchema,
+} from "#batiment/scopes/index";
 import { workspaceSchema } from "#project/workspaces/index";
 import type { LoadedConfig } from "#project/config/index";
 

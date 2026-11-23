@@ -3,7 +3,7 @@ import { custom, is } from "valibot";
 import { isArray, isBoolean, isObject } from "@auaust/toolkit";
 
 import { loadLazy } from "#foundation/modules/index";
-import { readLayoutContext } from "#project/environments/index";
+import { listEnvironmentEntries } from "#project/environments/index";
 import type {
   EnvironmentStructureOption,
   Layout,
@@ -35,10 +35,16 @@ async function resolveLayout(
   environment: string,
   option: EnvironmentStructureOption,
 ): Promise<Layout | undefined> {
-  const { layout: kindLayout } = await readLayoutContext(config, environment);
+  const environments = await listEnvironmentEntries(config);
+
+  const namespace = environments.find(({ entry }) => {
+    return entry.name === environment;
+  })?.namespace;
 
   const selected = (
-    (option.enabled ? option.layout : undefined) ?? kindLayout ?? domainsLayout
+    (option.enabled ? option.layout : undefined) ??
+    namespace?.layout ??
+    domainsLayout
   );
 
   if (selected === domainsLayout) {
@@ -62,7 +68,7 @@ async function resolveLayout(
 
 /**
  * Reads an environment's structure option and the layout it selects, its own or
- * its kind's; none for the namespace and domain walk.
+ * its namespace kind's; none for the namespace and domain walk.
  */
 export async function readStructureOption(
   config: ConfigResolver,

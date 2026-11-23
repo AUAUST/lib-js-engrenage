@@ -1,6 +1,6 @@
 import { string } from "valibot";
 
-import { schemaReferenceSchema } from "#batiment/environments/index";
+import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
 import { declare, declareObject } from "#foundation/options/index";
 
 export const workspaceMetadataSchema = declareObject({

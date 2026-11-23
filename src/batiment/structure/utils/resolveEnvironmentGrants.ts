@@ -2,23 +2,21 @@ import { freeze, record } from "@auaust/toolkit/object";
 
 import { sourceEnvironment } from "#batiment/structure/constants";
 import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
-import type {
-  EnvironmentInstance,
-  EnvironmentRelation,
-} from "#batiment/environments/index";
+import type { EnvironmentInstance } from "#batiment/environments/index";
+import type { NamespaceRelation } from "#batiment/scopes/index";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
 function resolveRelation(
   importer: EnvironmentInstance,
   target: EnvironmentInstance,
-): EnvironmentRelation | undefined {
+): NamespaceRelation | undefined {
   if (importer.scope !== target.scope) {
     return;
   }
 
-  const relation = importer.kind.imports?.[target.kind.name];
+  const relation = importer.namespace.imports?.[target.namespace.name];
 
-  switch (target.kind.inward) {
+  switch (target.namespace.inward) {
     case "open": {
       return relation;
     }
@@ -70,7 +68,7 @@ export function resolveEnvironmentGrants(
     ),
     elements: freeze(
       environments
-        .filter(({ kind }) => kind.structure === "domains")
+        .filter(({ namespace }) => namespace.structure === "domains")
         .map(({ name }) => name),
     ),
     variants: published

@@ -1,11 +1,11 @@
 import { freeze } from "@auaust/toolkit/object";
 
+import { environmentMetadataFile } from "#batiment/environments/constants";
 import {
   domainMetadataFile,
-  environmentMetadataFile,
   namespaceMetadataFile,
-} from "#batiment/environments/constants";
-import { workspaceMetadataFile } from "#batiment/scopes/constants";
+  workspaceMetadataFile,
+} from "#batiment/scopes/constants";
 import { engrenage, eslint, prettier, typescript } from "#constants";
 import { eslintFlags } from "#tools/eslint/constants";
 import type { Integration } from "#tools/vscode/types/Integration";

@@ -8,11 +8,11 @@ import { entries, freeze } from "@auaust/toolkit/object";
 import {
   domainMetadataFile,
   namespaceMetadataFile,
-} from "#batiment/environments/constants";
+} from "#batiment/scopes/constants";
 import {
   domainMetadataSchema,
   namespaceMetadataSchema,
-} from "#batiment/environments/index";
+} from "#batiment/scopes/index";
 import {
   filesIn,
   toPosixPath,
@@ -20,8 +20,8 @@ import {
 } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import type { DiscoveredEnvironment } from "#batiment/environments/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { DiscoveredEnvironment } from "#batiment/scopes/index";
 import type {
   MetadataField,
   StructureMetadata,

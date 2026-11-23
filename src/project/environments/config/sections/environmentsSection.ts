@@ -15,7 +15,13 @@ export const environmentsSection = declareSection({
     return freeze(
       environments
         .filter(({ environment }) => environment.active)
-        .map(({ entry, kind }) => freeze({ entry, kind })),
+        .map(({ entry, kind, namespace }) => {
+          return freeze({
+            entry,
+            kind,
+            namespace,
+          });
+        }),
     );
   },
 });

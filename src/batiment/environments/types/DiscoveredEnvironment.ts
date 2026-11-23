@@ -1,6 +1,6 @@
 import type { InferOutput } from "valibot";
 
-import type { environmentMetadataSchema } from "#batiment/environments/index";
+import type { environmentMetadataSchema } from "#batiment/environments/config/schemas/environmentMetadataSchema";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 

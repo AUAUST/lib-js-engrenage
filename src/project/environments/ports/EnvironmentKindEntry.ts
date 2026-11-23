@@ -11,12 +11,6 @@ export interface EnvironmentKindEntry extends EntryShape, EnvironmentKind {
    * read from the `tsconfig` option their options key must resolve.
    */
   readonly tsconfig?: boolean;
-  /**
-   * Whether the code of the kind's environments ships with the package
-   * (`published`) or stays in the repository (`private`); without one, it
-   * counts as neither.
-   */
-  readonly code?: "published" | "private";
 }
 
 declare global {

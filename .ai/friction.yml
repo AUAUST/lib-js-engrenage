@@ -751,3 +751,15 @@ entries:
     subject: "commit gate: codegen config test 5s timeout"
     tried: "committing #862 twice"
     stopped: timed out under gate load, passed alone in 2.5s; retried
+  - id: 261123-a98e
+    subject: zsh leading = word
+    tried: echo ====== as separator
+    stopped: hook refused; used quoted separator
+  - id: 261123-1fe3
+    subject: "#842 leaf exceeds standard thoroughness"
+    tried: "implementing #842 after mapping readers"
+    stopped: warning reached before first edit, second dispatch; stopped with a decided file-by-file plan
+  - id: 261123-08ff
+    subject: codegen config on moved generated file
+    tried: pnpm support codegen config after moving NamespaceInput.ts
+    stopped: formatted it until sync rewrote .prettierignore; synced, restored, regenerated

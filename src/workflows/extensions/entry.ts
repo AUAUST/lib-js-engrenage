@@ -1,4 +1,5 @@
 export {
+  createNamespaceKindPreset,
   declare,
   declareList,
   declareLocation,
@@ -28,7 +29,11 @@ export type {
   GateStage,
   GateStepEntry,
   HookEntry,
+  InwardPolicy,
   LoadedConfig,
+  NamespaceKind,
+  NamespaceKindPreset,
+  NamespaceRelation,
   Prompter,
   ReexportMode,
   ReportData,

@@ -37,6 +37,13 @@ const library: Extension = {
     },
   },
   contributes: {
+    namespaceKinds: [
+      {
+        name: "lib",
+        level: "enforced",
+        structure: "domains",
+      },
+    ],
     environments: [
       {
         name: "lib",
@@ -78,7 +85,7 @@ function createConfig(
                 load() {
                   return Promise.resolve(helpers);
                 },
-                environments: ["src"],
+                environments: ["src", "lib"],
               },
             ],
           },
@@ -108,7 +115,7 @@ describe("listDefaultRoles", () => {
     );
   });
 
-  test("applies the defaults of an environment's kind", async () => {
+  test("applies the defaults of the namespace kind named like an environment", async () => {
     const config = createConfig("helpers", [], [library]);
 
     const roles = (await config.resolve("environmentRoles")).lib?.roles;

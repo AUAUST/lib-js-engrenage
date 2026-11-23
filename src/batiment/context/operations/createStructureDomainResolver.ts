@@ -4,14 +4,14 @@ import { entries, freeze, keys, values } from "@auaust/toolkit/object";
 
 import { assignRoleFiles } from "#batiment/context/operations/assignRoleFiles";
 import {
-  domainMetadataFile,
-  namespaceMetadataFile,
-} from "#batiment/environments/constants";
-import {
   listReexportModes,
   listStaticFileGlobs,
   type ResolvedRoles,
 } from "#batiment/roles/index";
+import {
+  domainMetadataFile,
+  namespaceMetadataFile,
+} from "#batiment/scopes/constants";
 import { defaultReexport } from "#batiment/structure/constants";
 import {
   constrainsFileRole,

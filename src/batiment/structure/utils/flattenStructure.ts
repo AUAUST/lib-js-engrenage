@@ -4,7 +4,7 @@ import { registerRoles, type RoleRegistry } from "#batiment/roles/index";
 import type {
   DomainDeclaration,
   NamespaceDeclaration,
-} from "#batiment/environments/index";
+} from "#batiment/scopes/index";
 import type { DeclaredStructure } from "#batiment/structure/types/DeclaredStructure";
 import type { Directory } from "#types/Directory";
 

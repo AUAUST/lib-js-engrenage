@@ -1,5 +1,6 @@
-import { declareStructureOptions } from "#batiment/environments/index";
+import { declareLanguages } from "#batiment/environments/index";
 import { omitRolesSchema, rolesSchema } from "#batiment/roles/index";
+import { declareStructureOptions } from "#batiment/scopes/index";
 import {
   declareList,
   declareObject,
@@ -18,6 +19,9 @@ import {
 export const toolingSchema = declareObject(
   {
     ...declareStructureOptions(),
+    languages: declareLanguages(
+      "Names of the registered languages the environment holds; defaults to its kind's `languages`.",
+    ),
     dirs: declareList(directorySchema, {
       description: "Directories of the tooling environment: all their files of the languages it selects (`languages`) are included and walked like `src`. `.` contributes only the files matched by `files`.",
       optional: { value: defaultToolingDirectories },

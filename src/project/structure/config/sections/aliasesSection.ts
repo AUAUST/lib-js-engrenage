@@ -65,11 +65,11 @@ export const aliasesSection = declareSection({
       bundled: option.bundled,
       environments: record(
         environments
-          .filter(({ kind, environment }) => {
+          .filter(({ namespace, environment }) => {
             return (
               environment.active &&
-              kind.level === "enforced" &&
-              kind.structure !== undefined
+              namespace.level === "enforced" &&
+              namespace.structure !== undefined
             );
           })
           .map(({ entry, environment }) => [entry.name, environment.dirs]),

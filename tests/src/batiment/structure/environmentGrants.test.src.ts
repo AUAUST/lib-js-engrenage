@@ -1,16 +1,14 @@
 import { describe, expect, test } from "vitest";
 
 import { resolveEnvironmentGrants } from "#batiment/structure/index";
-import type {
-  EnvironmentInstance,
-  EnvironmentKind,
-} from "#batiment/environments/index";
+import type { EnvironmentInstance } from "#batiment/environments/index";
+import type { NamespaceKind } from "#batiment/scopes/index";
 
 import environments from "#project/environments/extension";
 
-const kinds = environments.contributes.environmentKinds;
+const kinds = environments.contributes.namespaceKinds;
 
-function getKind(name: string): EnvironmentKind {
+function getKind(name: string): NamespaceKind {
   const kind = kinds.find((candidate) => candidate.name === name);
 
   if (kind === undefined) {
@@ -22,14 +20,15 @@ function getKind(name: string): EnvironmentKind {
 
 function createInstance(
   name: string,
-  kind: EnvironmentKind,
+  namespace: NamespaceKind,
   scope = ".",
 ): EnvironmentInstance {
   return {
     name,
     scope,
     title: name,
-    kind,
+    kind: { name: namespace.name },
+    namespace,
   };
 }
 

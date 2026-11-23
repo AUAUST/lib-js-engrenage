@@ -1,11 +1,9 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
+import type { DiscoveredEnvironment } from "#batiment/environments/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type {
-  DiscoveredEnvironment,
-  DiscoveredWorkspace,
-} from "#batiment/scopes/index";
+import type { DiscoveredWorkspace } from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 

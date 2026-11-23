@@ -1,4 +1,4 @@
-import { array, optional, picklist, record, string } from "valibot";
+import { array, optional, string } from "valibot";
 
 import { freeze } from "@auaust/toolkit/object";
 
@@ -6,16 +6,7 @@ import { freeze } from "@auaust/toolkit/object";
 // eslint-disable-next-line auaust/readonly-constants -- the only mutable members are type-only, absent at runtime
 export const environmentKindFields = freeze({
   name: string(),
-  level: picklist(["foreign", "described", "enforced"] as const),
-  structure: optional(picklist(["domains", "roles"] as const)),
-  imports: optional(record(string(), picklist(["whole", "surface"] as const))),
-  inward: optional(picklist(["open", "surface", "sealed"] as const)),
-  layout: optional(string()),
   languages: optional(array(string())),
 });
 
 export const environmentMetadataFile = ".environment.json";
-
-export const namespaceMetadataFile = ".namespace.json";
-
-export const domainMetadataFile = ".domain.json";

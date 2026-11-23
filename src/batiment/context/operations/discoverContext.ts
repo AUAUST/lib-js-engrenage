@@ -8,7 +8,6 @@ import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspa
 import {
   createScopeTree,
   getEnvironmentId,
-  type DiscoveredEnvironment,
   type DiscoveredWorkspace,
 } from "#batiment/scopes/index";
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
@@ -16,6 +15,7 @@ import type { ContextPort } from "#batiment/context/ports/ContextPort";
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
 import type { ExpectedWorkspaces } from "#batiment/context/types/ExpectedWorkspaces";
 import type { RootFacts } from "#batiment/context/types/RootFacts";
+import type { DiscoveredEnvironment } from "#batiment/environments/index";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
@@ -115,7 +115,8 @@ export async function discoverContext(
   const discovered = await discoverWorkspaces({
     filesystem,
     ignored,
-    kinds: root.kinds,
+    // @debt an `.environment.json` names its kind among the namespace kinds, which share their names with the environment kinds only by convention, until namespaces name their kind (#866)
+    kinds: map(root.kinds, ({ name }) => name),
     languages: root.languages,
   });
 
