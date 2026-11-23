@@ -1,4 +1,4 @@
-import { isFunction, isString } from "@auaust/toolkit";
+import { isString } from "@auaust/toolkit";
 import { entries, freeze, record, values } from "@auaust/toolkit/object";
 
 import { defaultEffectLevels } from "#batiment/roles/constants";
@@ -37,16 +37,14 @@ function resolveEffects(
   }
 
   for (const ranking of modules) {
-    if (!isFunction(ranking)) {
-      for (const [pattern, level] of entries(ranking)) {
-        if (isString(level)) {
-          assertLevel(level, `The modules ${pattern}`);
-        } else {
-          assertLevel(level.default, `The modules ${pattern}`);
+    for (const [pattern, level] of entries(ranking)) {
+      if (isString(level)) {
+        assertLevel(level, `The modules ${pattern}`);
+      } else {
+        assertLevel(level.default, `The modules ${pattern}`);
 
-          for (const symbolLevel of values(level.symbols)) {
-            assertLevel(symbolLevel, `The symbols of ${pattern}`);
-          }
+        for (const symbolLevel of values(level.symbols)) {
+          assertLevel(symbolLevel, `The symbols of ${pattern}`);
         }
       }
     }

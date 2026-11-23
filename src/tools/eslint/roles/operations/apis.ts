@@ -11,11 +11,4 @@ export const apis = createRolePreset({
   typeOnly: true,
   public: true,
   effects: "pure",
-  rules: {
-    "api-interface": async () => {
-      const { apiInterface } = await import("#tools/eslint/rules/apiInterface");
-
-      return apiInterface;
-    },
-  },
 });

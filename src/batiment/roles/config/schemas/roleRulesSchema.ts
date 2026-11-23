@@ -10,11 +10,6 @@ import {
   type InferInput,
 } from "valibot";
 
-import { isFunction, isObject, isString } from "@auaust/toolkit";
-
-import type { RoleRuleModule } from "#batiment/roles/ports/RoleRuleModule";
-import type { RoleRuleLoader } from "#batiment/roles/types/RoleRuleLoader";
-
 const severitySchema = picklist(["off", "warn", "error", 0, 1, 2]);
 
 const ruleEntrySchema = union([
@@ -22,23 +17,17 @@ const ruleEntrySchema = union([
   tupleWithRest([severitySchema], unknown()),
 ]);
 
-type RoleRule =
-  | InferInput<typeof ruleEntrySchema>
-  | RoleRuleModule
-  | RoleRuleLoader;
+type RuleEntry = InferInput<typeof ruleEntrySchema>;
 
-function isRuleModule(value: unknown): value is RoleRuleModule {
-  return isObject(value) && "tool" in value && isString(value.tool);
+function isRuleEntry(value: unknown): value is RuleEntry {
+  return is(ruleEntrySchema, value);
 }
 
-function isRoleRule(value: unknown): value is RoleRule {
-  return is(ruleEntrySchema, value) || isRuleModule(value) || isFunction(value);
-}
-
+// @debt rule entries are ESLint's, a tool the language- and tool-agnostic role contract should not name; lint could key them by role name as it keys rule loaders
 export const roleRulesSchema = record(
   string(),
-  custom<RoleRule>(
-    isRoleRule,
-    "Expected a rule entry, a role rule module or its loader; wrap a raw rule module with `defineRoleRule`",
+  custom<RuleEntry>(
+    isRuleEntry,
+    "Expected a rule entry; give a role rule module to `defineEslintConfig`'s `roleRules` option, keyed by role name",
   ),
 );

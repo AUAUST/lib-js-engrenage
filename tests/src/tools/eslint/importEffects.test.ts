@@ -208,9 +208,9 @@ describe("import effects", () => {
     ).rejects.toThrow("effect levels");
   });
 
-  test("rank external modules by function, with an opt-in fallback", async () => {
+  test("rank external modules by configured entry, with an opt-in fallback", async () => {
     const ranked = await createLinter({
-      effects: 'modules: (specifier) => specifier === "my-db" ? "effectful" : undefined',
+      effects: 'modules: { "my-db": "effectful" }',
     });
 
     expect(await ranked(utility, importing("my-db", "connect"))).toHaveLength(

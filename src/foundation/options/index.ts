@@ -9,7 +9,6 @@ export { declareSection } from "#foundation/options/config/declarers/declareSect
 // @end
 
 // @barrel config/schemas
-export { describedResolverSchema } from "#foundation/options/config/schemas/describedResolverSchema";
 export { directorySchema } from "#foundation/options/config/schemas/directorySchema";
 export { fileSchema } from "#foundation/options/config/schemas/fileSchema";
 export { globSchema } from "#foundation/options/config/schemas/globSchema";
@@ -48,7 +47,6 @@ export type * from "#foundation/options/ports/Section";
 // @barrel types
 export type * from "#foundation/options/types/Accessors";
 export type * from "#foundation/options/types/DeclarationEntries";
-export type * from "#foundation/options/types/DescribedResolver";
 export type * from "#foundation/options/types/Description";
 export type * from "#foundation/options/types/InputLayer";
 export type * from "#foundation/options/types/InputOf";

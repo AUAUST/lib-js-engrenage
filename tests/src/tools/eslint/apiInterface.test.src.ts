@@ -1,22 +1,12 @@
-import { describe, expect, onTestFinished, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { entrypoint } from "#project/roles/index";
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
-import { apiInterface } from "#tools/eslint/rules/apiInterface";
 
-const ruleKey = "__engrenageApiInterfaceRule";
-
-const apisRole = `{ name: "apis", typeOnly: true, rules: { "api-interface": globalThis.${ruleKey} } }`;
+const apisRole = '{ name: "apis", typeOnly: true }';
 
 async function createLinter() {
-  // @debt the temporary config cannot import `@auaust/engrenage`, so the rule crosses through `globalThis`; test configs should resolve the package
-  Reflect.set(globalThis, ruleKey, apiInterface);
-
-  onTestFinished(() => {
-    Reflect.deleteProperty(globalThis, ruleKey);
-  });
-
   const roles = renderCodeRoles(entrypoint()).slice(0, -1);
 
   const { lint } = await createProjectLinter(

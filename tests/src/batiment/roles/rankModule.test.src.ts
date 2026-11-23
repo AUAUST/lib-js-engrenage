@@ -65,7 +65,7 @@ describe("module effect levels", () => {
     expect(rankModule(effects, "unknown-package", "read")).toBeUndefined();
   });
 
-  test("supports structured resolver entries, module patterns and fallback", () => {
+  test("supports structured entries, module patterns and fallback", () => {
     const entry = {
       default: "effectful",
       symbols: { default: "pure", readFileSync: "observing" },
@@ -73,12 +73,7 @@ describe("module effect levels", () => {
 
     const effects: ResolvedEffects = {
       levels: defaultEffectLevels,
-      modules: [
-        (specifier) => {
-          return specifier === "custom" ? entry : undefined;
-        },
-        { "custom/*": "pure" },
-      ],
+      modules: [{ custom: entry }, { "custom/*": "pure" }],
       fallback: "confined",
     };
 
@@ -97,11 +92,11 @@ describe("module effect levels", () => {
         {
           ...effects,
           modules: [
-            () => {
-              return {
+            {
+              custom: {
                 default: "pure",
                 symbols: { invalid: "missing" },
-              };
+              },
             },
           ],
         },

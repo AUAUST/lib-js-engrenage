@@ -12,15 +12,13 @@ import {
 } from "valibot";
 
 import { reexportSchema } from "#batiment/roles/config/schemas/reexportSchema";
-import { roleCompanionResolverSchema } from "#batiment/roles/config/schemas/roleCompanionResolverSchema";
 import { roleExportsSchema } from "#batiment/roles/config/schemas/roleExportsSchema";
-import { roleFileResolverSchema } from "#batiment/roles/config/schemas/roleFileResolverSchema";
+import { roleGlobsSchema } from "#batiment/roles/config/schemas/roleGlobsSchema";
 import { roleRulesSchema } from "#batiment/roles/config/schemas/roleRulesSchema";
 import { roleContractDefaults, roleSurfaces } from "#batiment/roles/constants";
 import {
   declare,
   describeDefault,
-  describedResolverSchema,
   globsSchema,
   unset,
 } from "#foundation/options/index";
@@ -38,15 +36,12 @@ export function declareRoleContractEntries<Nested>(
       description: "One line stating what the role holds.",
       optional: { value: undefined },
     }),
-    file: declare(
-      union([globsSchema, describedResolverSchema(roleFileResolverSchema)]),
-      {
-        description: "Makes the role a file role, matched by these names or globs, or by those `resolve` returns for each owning location, shown in maps as `description`; a nested role's also match files at its owner's root.",
-        optional: { value: undefined },
-      },
-    ),
-    companions: declare(describedResolverSchema(roleCompanionResolverSchema), {
-      description: "Files each module of the role requires: `resolve` returns them as project-relative paths for the module, and maps show `description`; lint reports each one missing on the module, so a deleted companion is reported once its module is linted again.",
+    file: declare(roleGlobsSchema, {
+      description: "Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root. `<domain>` stands for the name of the nearest enclosing namespace or domain, `<Domain>` for it in PascalCase, which only a nested role takes.",
+      optional: { value: undefined },
+    }),
+    companions: declare(roleGlobsSchema, {
+      description: "Files each module of the role requires, as project-relative paths or globs: `<name>` stands for the module's file name without extension and `<domain>` for the name of the nearest enclosing namespace or domain, `<Name>` and `<Domain>` for them in PascalCase. Lint reports each one no file matches on the module, so a deleted companion is reported once its module is linted again.",
       optional: { value: undefined },
     }),
     accepts: declare(globsSchema, {
@@ -144,7 +139,7 @@ export function declareRoleContractEntries<Nested>(
     rules: declare(roleRulesSchema, {
       description: [
         "ESLint rules applied to the role's files only, never to the files of its nested roles.",
-        "Each value is a rule entry for a rule already registered, or a rule module, registered as `roles/<role>/<key>` and reported as errors.",
+        "Each value is a rule entry for a rule already registered; `defineEslintConfig`'s `roleRules` option gives a role its rule modules.",
       ],
       optional: { value: undefined },
     }),

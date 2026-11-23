@@ -1,11 +1,45 @@
 import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
+import { uncapitalize } from "@auaust/toolkit/string";
 
 import { roleSchema } from "#batiment/roles/config/schemas/roleSchema";
+import {
+  roleCompanionPlaceholders,
+  roleFilePlaceholders,
+} from "#batiment/roles/constants";
 import { completeRole } from "#batiment/roles/utils/completeRole";
-import { findFileResolver } from "#batiment/roles/utils/findFileResolver";
+import { isLocatedRoleFile } from "#batiment/roles/utils/isLocatedRoleFile";
+import { listRolePlaceholders } from "#batiment/roles/utils/listRolePlaceholders";
 import type { Role } from "#batiment/roles/types/Role";
 import type { RoleRegistry } from "#batiment/roles/types/RoleRegistry";
+import type { Glob } from "#types/Glob";
+import type { Globs } from "#types/Globs";
+
+function assertPlaceholders(
+  globs: Glob | Globs | undefined,
+  known: readonly string[],
+  subject: string,
+) {
+  const unknown = globs === undefined
+    ? []
+    : listRolePlaceholders(globs).filter((name) => {
+        return !known.includes(uncapitalize(name));
+      });
+
+  if (unknown.length > 0) {
+    throw new Error(
+      `${subject} names ${unknown
+        .map((name) => {
+          return `<${name}>`;
+        })
+        .join(", ")}, which only ${known
+        .map((name) => {
+          return `<${name}>`;
+        })
+        .join(", ")} and their PascalCase forms fill`,
+    );
+  }
+}
 
 // @debt an environment's positions count its default roles before its listed ones, so an error names `src.roles[9]` for the config's `src.roles[0]`
 export function registerRoles({
@@ -47,9 +81,21 @@ export function registerRoles({
 
     const registered = owner === undefined ? name : `${owner}/${name}`;
 
-    if (owner === undefined && findFileResolver(declared.file) !== undefined) {
+    assertPlaceholders(
+      declared.file,
+      roleFilePlaceholders,
+      `${path}[${position}].file`,
+    );
+
+    assertPlaceholders(
+      declared.companions,
+      roleCompanionPlaceholders,
+      `${path}[${position}].companions`,
+    );
+
+    if (owner === undefined && isLocatedRoleFile(declared.file)) {
       throw new Error(
-        `${path}[${position}] gives the role ${registered} a \`file\` callback, which only a nested file role takes`,
+        `${path}[${position}] gives the role ${registered} \`file\` placeholders, which only a nested file role takes`,
       );
     }
 

@@ -1,21 +1,7 @@
-import { pascal } from "@auaust/toolkit";
-
-import { role, type RoleLocation } from "#batiment/roles/index";
+import { role } from "#batiment/roles/index";
 import { utils } from "#project/roles/index";
 import { extension } from "#tools/eslint/roles/index";
 import { defineConfig } from "#workflows/config/index";
-
-function definerFile({ lineage }: RoleLocation): string {
-  const owner = lineage.at(-1);
-
-  if (owner === undefined) {
-    throw new Error("A config role sits outside any namespace or domain");
-  }
-
-  const name = pascal(owner.name);
-
-  return name === "Config" ? "defineConfig.ts" : `define${name}Config.ts`;
-}
 
 const config = role({
   name: "config",
@@ -26,21 +12,11 @@ const config = role({
     {
       name: "definers",
       purpose: "The domain's `define…Config` definer.",
-      file: {
-        resolve: definerFile,
-        description: "define<Domain>Config.ts",
-      },
+      // @debt `defineConfig.ts` matches in every domain only so the `config` domain's definer drops the doubled `Config`
+      file: ["define<Domain>Config.ts", "defineConfig.ts"],
       unique: true,
       exports: "named-match",
       effects: "effectful",
-      rules: {
-        // @debt the rule loads lazily only so a config load skips `tools/eslint`; #331 injects the tools a run needs, which may make loaders unnecessary
-        "definer-entries": async () => {
-          const { definerEntries } = await import("#tooling/eslint/index");
-
-          return definerEntries;
-        },
-      },
     },
     {
       name: "schemas",
@@ -62,13 +38,6 @@ const config = role({
       accepts: "*Section.ts",
       exports: "named-match",
       effects: "effectful",
-      rules: {
-        "section-declarations": async () => {
-          const { sectionDeclarations } = await import("#tooling/eslint/index");
-
-          return sectionDeclarations;
-        },
-      },
     },
   ],
 });
@@ -96,7 +65,7 @@ const plugins = role({
 
 const rules = role({
   name: "rules",
-  purpose: "ESLint rules a role preset carries, one per module.",
+  purpose: "ESLint rules lint runs on the files of a role, one per module.",
   exports: "named-match",
   effects: "effectful",
 });

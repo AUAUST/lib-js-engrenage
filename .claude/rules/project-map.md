@@ -86,9 +86,9 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 | `setup` | Init steps and sync targets of the domain. |  |  | values `named-match`, types `named-match` | effectful |  | `src` |
 | `plugins` | The tool's own plugins, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tests` |
 | `conventions` | Formatting conventions, discovered by category. |  |  | values `default`, types `none`, `index` | effectful |  | `src`, `tests` |
-| `rules` | ESLint rules a role preset carries, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tooling` |
+| `rules` | ESLint rules lint runs on the files of a role, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tooling` |
 | `presets` | Presets of the domain's declarations, one per module. |  |  | values `named-match`, types `none` | confined |  | `src` |
-| `config/definers` | The domain's `define…Config` definer. | `define<Domain>Config.ts` |  | values `named-match`, types `named-match` | effectful |  | `src` |
+| `config/definers` | The domain's `define…Config` definer. | `define<Domain>Config.ts`, `defineConfig.ts` |  | values `named-match`, types `named-match` | effectful |  | `src` |
 | `config/declarers` | Functions creating option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
 | `config/schemas` | Validation schemas of the option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
 | `config/sections` | Section values the domain contributes to the loaded config. |  |  | values `named-match`, types `named-match` | effectful |  | `src` |

@@ -743,3 +743,11 @@ entries:
     subject: "worker dispatch hook: plan Planning"
     tried: "dispatching #861 with #732's Planning holding done batches"
     stopped: "hook refused on ancestor Planning; drafted #732 without it"
+  - id: 261123-e4ad
+    subject: eslint:fix destructuring default
+    tried: map(([, name = ""]) => name)
+    stopped: fixer rewrote it to a fallback the same rule rejects; used filter(isString)
+  - id: 261123-0b31
+    subject: "commit gate: codegen config test 5s timeout"
+    tried: "committing #862 twice"
+    stopped: timed out under gate load, passed alone in 2.5s; retried

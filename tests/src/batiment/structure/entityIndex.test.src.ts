@@ -196,10 +196,10 @@ describe("createEntityIndex", () => {
     ).toMatchObject({ role: "config", effects: "confined" });
   });
 
-  test("matches a nested role's root files against the names its callback returns for the location", async () => {
+  test("matches a nested role's root files against its globs with their placeholders filled for the location", async () => {
     const index = await createIndex(
       "index.ts",
-      '{ resolve: ({ lineage }) => [`define${lineage.at(-1).name}Config.ts`, "setupFeature.ts"], description: "define<Domain>Config.ts" }',
+      JSON.stringify(["define<domain>Config.ts", "setup<Domain>.ts"]),
     );
 
     expect(

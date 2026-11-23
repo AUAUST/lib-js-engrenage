@@ -490,7 +490,7 @@ export interface AuaustRules {
    */
   "auaust/return-await"?: Rule<AuaustReturnAwait>;
   /**
-   * A module of a role with `companions` has each file they name.
+   * A module of a role with `companions` has a file matching each of them.
    */
   "auaust/role-companions"?: Rule<[]>;
   /**

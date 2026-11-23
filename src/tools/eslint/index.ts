@@ -53,6 +53,8 @@ export type * from "#tools/eslint/types/Options";
 export type * from "#tools/eslint/types/Plugin";
 export type * from "#tools/eslint/types/ReportDescriptor";
 export type * from "#tools/eslint/types/ResolvedSections";
+export type * from "#tools/eslint/types/RoleRuleLoader";
+export type * from "#tools/eslint/types/RoleRuleLoaders";
 export type * from "#tools/eslint/types/Rule";
 export type * from "#tools/eslint/types/RuleModule";
 export type * from "#tools/eslint/types/RuleOptions";

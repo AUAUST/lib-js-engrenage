@@ -1,4 +1,4 @@
-import { describe, expect, onTestFinished, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { createEslintConfig, defineRoleRule } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
@@ -7,8 +7,6 @@ import { entry } from "@auaust/engrenage/roles";
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
-
-const sectionsRuleKey = "__engrenageSectionsRule";
 
 const sectionsRule = defineRoleRule({
   description: "Reports the entity a role rule receives.",
@@ -30,22 +28,23 @@ const sectionsRule = defineRoleRule({
   },
 });
 
-const ownRule = "{ tool: 'eslint', rule: { create(context) { return { Program(node) { context.report({ node, message: 'own' }); } }; } } }";
+const ownRule = defineRoleRule({
+  description: "Reports every file.",
+  messages: { own: "own" },
+  create(context) {
+    return {
+      Program(node) {
+        context.report({ node, messageId: "own" });
+      },
+    };
+  },
+});
 
-const stylelintRule = "{ tool: 'stylelint', rule: {} }";
+const checkedRole = '{ name: "checked", rules: { "no-console": "error" }, roles: [{ name: "inner", rules: { "no-alert": "error" } }] }';
 
-const checkedRole = `{ name: "checked", rules: { "no-console": "error", own: ${ownRule}, styles: ${stylelintRule} }, roles: [{ name: "inner", rules: { "no-alert": "error" } }] }`;
-
-const configRole = `{ name: "config", roles: [{ name: "sections", rules: { entity: globalThis.${sectionsRuleKey} } }] }`;
+const configRole = '{ name: "config", roles: [{ name: "sections" }] }';
 
 async function createLinter() {
-  // @debt the temporary config cannot import `@auaust/engrenage`, so the rule crosses through `globalThis`; test configs should resolve the package
-  Reflect.set(globalThis, sectionsRuleKey, sectionsRule);
-
-  onTestFinished(() => {
-    Reflect.deleteProperty(globalThis, sectionsRuleKey);
-  });
-
   const roles = renderCodeRoles(entry()).slice(0, -1);
 
   const { lint } = await createProjectLinter(
@@ -57,6 +56,16 @@ async function createLinter() {
       "src/project/feature/utils/three.ts": "export {};\n",
       "src/project/feature/config/four.ts": "export {};\n",
       "src/project/feature/config/sections/five.ts": "export {};\n",
+    },
+    {
+      roleRules: {
+        "checked": {
+          own: () => Promise.resolve(ownRule),
+        },
+        "config/sections": {
+          entity: () => Promise.resolve(sectionsRule),
+        },
+      },
     },
   );
 
@@ -84,7 +93,7 @@ async function createRuleLinter() {
 }
 
 describe("role rules", () => {
-  test("apply a role's rule entries to its files only, never to a sibling or nested role's", async () => {
+  test("apply a role's rule entries and rule loaders to its files only, never to a sibling or nested role's", async () => {
     const lint = await createRuleLinter();
 
     expect(await lint("src/project/feature/checked/one.ts")).toEqual([
@@ -97,22 +106,6 @@ describe("role rules", () => {
     expect(await lint("src/project/feature/checked/inner/two.ts")).toEqual([
       "no-alert",
     ]);
-  });
-
-  test("ignore a role rule module of another tool", async () => {
-    const lint = await createRuleLinter();
-
-    expect(await lint("src/project/feature/checked/one.ts")).not.toContain(
-      "roles/checked/styles",
-    );
-  });
-
-  test("register a role's rule modules as roles/<role>/<rule>", async () => {
-    const lint = await createRuleLinter();
-
-    expect(await lint("src/project/feature/checked/one.ts")).toContain(
-      "roles/checked/own",
-    );
   });
 
   test("pass a defineRoleRule module the file's entity and its environment's file names, on its role's files only", async () => {
@@ -128,19 +121,19 @@ describe("role rules", () => {
     expect(await lint("src/project/feature/config/four.ts")).toEqual([]);
   });
 
-  test("reject a raw rule module, naming defineRoleRule", async () => {
+  test("reject a rule module in a role's contract, naming the roleRules option", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({
         name: "library",
         type: "module",
       }),
-      "engrenage.config.ts": `export default { src: { roles: [{ name: "raw", rules: { own: { create() { return {}; } } } }] } };\n`,
+      "engrenage.config.ts": `export default { src: { roles: [{ name: "raw", rules: { own: async () => ({}) } }] } };\n`,
     });
 
     const config = await loadConfig(project.root);
 
     await expect(
       createEslintConfig(config, { typeAware: false }),
-    ).rejects.toThrow("defineRoleRule");
+    ).rejects.toThrow("roleRules");
   });
 });

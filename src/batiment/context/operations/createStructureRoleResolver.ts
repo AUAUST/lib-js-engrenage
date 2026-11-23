@@ -1,6 +1,5 @@
 import { join } from "node:path";
 
-import { toArray } from "@auaust/toolkit/array";
 import { memoize } from "@auaust/toolkit/function";
 import { freeze, record } from "@auaust/toolkit/object";
 
@@ -8,7 +7,8 @@ import { listStructureFiles } from "#batiment/context/operations/listStructureFi
 import { listStructureFilesAtAnyDepth } from "#batiment/context/operations/listStructureFilesAtAnyDepth";
 import { noRoles } from "#batiment/roles/constants";
 import {
-  findFileResolver,
+  fillRolePlaceholders,
+  isLocatedRoleFile,
   resolveRoles,
   type EnvironmentRoles,
   type ResolvedRoles,
@@ -91,11 +91,11 @@ export function createStructureRoleResolver({
     const { roles: contracts } = rolesFor(scopes);
 
     const resolved = (contracts[owner]?.roles ?? []).flatMap((nested) => {
-      const resolver = findFileResolver(contracts[nested]?.file);
+      const file = contracts[nested]?.file;
 
-      return resolver === undefined
+      return file === undefined || !isLocatedRoleFile(file)
         ? []
-        : [[nested, freeze(toArray(resolver.resolve(location)))] as const];
+        : [[nested, freeze(fillRolePlaceholders(file, location))] as const];
     });
 
     return resolved.length === 0 ? {} : { fileNames: freeze(record(resolved)) };

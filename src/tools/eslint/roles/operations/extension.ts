@@ -15,13 +15,4 @@ export const extension = createRolePreset({
   public: true,
   collected: true,
   effects: "effectful",
-  rules: {
-    "extension-imports": async () => {
-      const {
-        extensionImports,
-      } = await import("#tools/eslint/rules/extensionImports");
-
-      return extensionImports;
-    },
-  },
 });

@@ -14,11 +14,8 @@ export type {
 } from "#batiment/report/index";
 export type {
   ReexportMode,
-  RoleFileResolver,
   RoleLocation,
   RoleLocationMember,
-  RoleRuleLoader,
-  RoleRuleModule,
   RoleRules,
 } from "#batiment/roles/index";
 export type {

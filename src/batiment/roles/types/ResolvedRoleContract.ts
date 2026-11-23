@@ -1,10 +1,7 @@
 import type { roleSurfaces } from "#batiment/roles/constants";
 import type { ReexportMode } from "#batiment/roles/types/ReexportMode";
 import type { ResolvedRoleExports } from "#batiment/roles/types/ResolvedRoleExports";
-import type { RoleCompanionResolver } from "#batiment/roles/types/RoleCompanionResolver";
-import type { RoleFileResolver } from "#batiment/roles/types/RoleFileResolver";
 import type { RoleRules } from "#batiment/roles/types/RoleRules";
-import type { DescribedResolver } from "#foundation/options/index";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
@@ -15,8 +12,8 @@ import type { Globs } from "#types/Globs";
  * @experimental
  */
 export interface ResolvedRoleContract {
-  readonly file: Glob | Globs | DescribedResolver<RoleFileResolver> | undefined;
-  readonly companions: DescribedResolver<RoleCompanionResolver> | undefined;
+  readonly file: Glob | Globs | undefined;
+  readonly companions: Glob | Globs | undefined;
   readonly accepts: Glob | Globs | undefined;
   readonly nesting: number | "any";
   readonly roles: readonly string[] | undefined;

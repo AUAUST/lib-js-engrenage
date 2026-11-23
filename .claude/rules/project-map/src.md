@@ -59,7 +59,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  │  └─ claude  The Claude runtime: its constants and headless dispatch.
 │  ├─ changesets*  Configure release versioning and changelogs.
 │  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
-│  │  └─ roles*  Role presets carrying ESLint rules, loadable without ESLint.
+│  │  └─ roles*  Role presets with their own lint rules, and those rules' loaders by role name, loadable without ESLint.
 │  ├─ git*  Configure Git conventions and repository files.
 │  ├─ github*{issues/{api contract drafts planning}}  Generate GitHub repository workflows; holds the GitHub issue namespace.
 │  │  └─ issues/  api < contract < drafts < planning  GitHub issues: API access, the issue contract and local drafts.

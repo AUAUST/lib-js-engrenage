@@ -1,42 +1,39 @@
 import type { Linter } from "eslint";
 
-import { isArray, isNumber, isString } from "@auaust/toolkit";
-import { entries, getOwn, values } from "@auaust/toolkit/object";
+import { isFunction, isObject } from "@auaust/toolkit";
+import { entries, getOwn, keys, values } from "@auaust/toolkit/object";
 
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
-import type { RoleRuleModule } from "#batiment/roles/index";
 import type { EntityIndex, ResolvedStructure } from "#batiment/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
+import type { RoleRuleLoaders } from "#tools/eslint/types/RoleRuleLoaders";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 
-function isRoleRule(module: RoleRuleModule): module is RoleRule {
-  return module.tool === "eslint" && "rule" in module;
+function isRoleRule(value: unknown): value is RoleRule {
+  return (
+    isObject(value) &&
+    "rule" in value &&
+    isObject(value.rule) &&
+    "create" in value.rule &&
+    isFunction(value.rule.create)
+  );
 }
 
 export async function createRoleRules(
   structure: ResolvedStructure,
   entities: EntityIndex,
+  loaders: RoleRuleLoaders,
 ): Promise<{
   readonly plugin: Plugin;
   readonly configs: readonly Config[];
 }> {
-  const originals: Record<string, RoleRule> = {};
-  const wrapped = new Map<RoleRule, RuleModule>();
   const modules: Record<string, RuleModule> = {};
   const configs: Config[] = [];
 
-  function wrap(roleRule: RoleRule): RuleModule {
-    const existing = wrapped.get(roleRule);
-
-    if (existing !== undefined) {
-      return existing;
-    }
-
-    const { rule } = roleRule;
-
-    const module: RuleModule = {
+  function wrap({ rule }: RoleRule): RuleModule {
+    return {
       ...(rule.meta === undefined ? {} : { meta: rule.meta }),
       create(context) {
         const entity = entities.entityOf(context.filename);
@@ -57,10 +54,24 @@ export async function createRoleRules(
         });
       },
     };
+  }
 
-    wrapped.set(roleRule, module);
+  async function register(role: string, key: string): Promise<string> {
+    const name = `${role}/${key}`;
 
-    return module;
+    if (modules[name] === undefined) {
+      const loaded: unknown = await getOwn(loaders, role)?.[key]?.();
+
+      if (!isRoleRule(loaded)) {
+        throw new Error(
+          `The role rule ${name} loads no rule; create it with defineRoleRule`,
+        );
+      }
+
+      modules[name] = wrap(loaded);
+    }
+
+    return `${rolesPluginName}/${name}`;
   }
 
   for (const environment of values(structure)) {
@@ -71,37 +82,19 @@ export async function createRoleRules(
     for (const [role, { contract, files, ignores }] of entries(
       environment.roles,
     )) {
-      if (contract.rules === undefined || files.length === 0) {
+      const ruleKeys = keys(getOwn(loaders, role) ?? {});
+
+      if (
+        (contract.rules === undefined && ruleKeys.length === 0) ||
+        files.length === 0
+      ) {
         continue;
       }
 
-      const rules: Linter.RulesRecord = {};
+      const rules: Linter.RulesRecord = { ...contract.rules };
 
-      for (const [key, entry] of entries(contract.rules)) {
-        if (isArray(entry) || isString(entry) || isNumber(entry)) {
-          rules[key] = entry;
-
-          continue;
-        }
-
-        const rule = "tool" in entry ? entry : await entry();
-
-        if (!isRoleRule(rule)) {
-          continue;
-        }
-
-        const name = `${role}/${key}`;
-        const registered = originals[name];
-
-        if (registered !== undefined && registered !== rule) {
-          throw new Error(
-            `Several roles named ${role} define different rule modules as ${key}`,
-          );
-        }
-
-        originals[name] = rule;
-        modules[name] = wrap(rule);
-        rules[`${rolesPluginName}/${name}`] = "error";
+      for (const key of ruleKeys) {
+        rules[await register(role, key)] = "error";
       }
 
       configs.push({

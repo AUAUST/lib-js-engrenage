@@ -1,11 +1,8 @@
 import { matchesGlob } from "node:path";
 
-import { parse } from "valibot";
-
-import { isPlainObject, isString } from "@auaust/toolkit";
+import { isString } from "@auaust/toolkit";
 import { entries, values } from "@auaust/toolkit/object";
 
-import { effectModuleSchema } from "#batiment/roles/config/schemas/effectModuleSchema";
 import type { ResolvedEffects } from "#batiment/roles/types/ResolvedEffects";
 
 export function rankModule(
@@ -24,17 +21,13 @@ export function rankModule(
   }
 
   for (const ranking of modules) {
-    const resolved = isPlainObject(ranking)
-      ? entries(ranking).find(([pattern]) => {
-          return pattern === specifier || matchesGlob(specifier, pattern);
-        })?.[1]
-      : ranking(specifier);
+    const entry = entries(ranking).find(([pattern]) => {
+      return pattern === specifier || matchesGlob(specifier, pattern);
+    })?.[1];
 
-    if (resolved === undefined) {
+    if (entry === undefined) {
       continue;
     }
-
-    const entry = parse(effectModuleSchema, resolved);
 
     if (isString(entry)) {
       return check(entry);

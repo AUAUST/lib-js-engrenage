@@ -5,8 +5,7 @@ import type { Entity, EnvironmentFileNames } from "#batiment/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 
 /**
- * Creates an ESLint rule a role preset carries, with `description` and
- * `messages` as its metadata.
+ * Creates a role rule, with `description` and `messages` as its metadata.
  */
 export function defineRoleRule({
   description,
@@ -22,7 +21,6 @@ export function defineRoleRule({
   ): Rule.RuleListener;
 }): RoleRule {
   return {
-    tool: "eslint",
     rule: {
       meta: createRuleMeta({ description, messages }),
       create,

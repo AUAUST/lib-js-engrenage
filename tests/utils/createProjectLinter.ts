@@ -1,6 +1,6 @@
 import { ESLint, type Linter } from "eslint";
 
-import { createEslintConfig } from "@auaust/engrenage/eslint";
+import { createEslintConfig, type Options } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { isString } from "@auaust/toolkit";
 
@@ -9,6 +9,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 export async function createProjectLinter(
   config: string,
   files: Readonly<Record<string, string>> = {},
+  options: Options = {},
 ) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
@@ -33,6 +34,7 @@ export async function createProjectLinter(
     overrideConfigFile: true,
     overrideConfig: await createEslintConfig(await loadConfig(project.root), {
       typeAware: false,
+      ...options,
     }),
   });
 

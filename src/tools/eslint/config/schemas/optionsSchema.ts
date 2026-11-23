@@ -1,8 +1,18 @@
-import { boolean, custom, objectWithRest, optional, union } from "valibot";
+import {
+  boolean,
+  custom,
+  objectWithRest,
+  optional,
+  record,
+  string,
+  union,
+} from "valibot";
 
-import { isBoolean, isPlainObject } from "@auaust/toolkit";
+import { isBoolean, isFunction, isPlainObject } from "@auaust/toolkit";
 import { every } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
+
+import type { RoleRuleLoader } from "#tools/eslint/types/RoleRuleLoader";
 
 import type * as conventionCategories from "#tools/eslint/conventions/index";
 
@@ -28,7 +38,8 @@ function categorySchema<Category extends object>() {
  * Validates `defineEslintConfig`'s options: built-in rule groups default
  * to enabled, and each convention category takes a boolean or a record of
  * convention names to booleans, unknown names being rejected later when
- * conventions are selected.
+ * conventions are selected. `roleRules` maps role names to rule keys to the
+ * loaders of their role rules.
  */
 export const optionsSchema = objectWithRest(
   {
@@ -36,6 +47,19 @@ export const optionsSchema = objectWithRest(
     recommended: optional(boolean(), true),
     packageJson: optional(boolean(), true),
     typeAware: optional(boolean(), true),
+    roleRules: optional(
+      record(
+        string(),
+        record(
+          string(),
+          custom<RoleRuleLoader>(
+            isFunction,
+            "Expected a function loading a `defineRoleRule` rule",
+          ),
+        ),
+      ),
+      {},
+    ),
     comparisons: categorySchema<typeof conventionCategories.comparisons>(),
     stylistic: categorySchema<typeof conventionCategories.stylistic>(),
     imports: categorySchema<typeof conventionCategories.imports>(),

@@ -1,9 +1,8 @@
-import { existsSync } from "node:fs";
-import { basename, extname, join } from "node:path";
-
-import { toArray } from "@auaust/toolkit/array";
+import { globSync } from "node:fs";
+import { basename, extname } from "node:path";
 
 import { indexRoleName } from "#batiment/roles/constants";
+import { fillRolePlaceholders } from "#batiment/roles/index";
 import { relativeWithin } from "#foundation/filesystem/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
@@ -14,7 +13,7 @@ export default defineConvention({
   rule: ({ entities }, { root }) => {
     return defineStructureRule({
       entities,
-      description: "A module of a role with `companions` has each file they name.",
+      description: "A module of a role with `companions` has a file matching each of them.",
       messages: {
         missing: "The {{role}} role requires {{companion}} for this module; create it.",
       },
@@ -31,13 +30,13 @@ export default defineConvention({
 
         const file = relativeWithin(root, context.filename);
 
-        const missing = toArray(
-          companions.resolve({
-            file,
-            name: basename(file, extname(file)),
-            location,
-          }),
-        ).filter((companion) => !existsSync(join(root, companion)));
+        const missing = fillRolePlaceholders(
+          companions,
+          location,
+          basename(file, extname(file)),
+        ).filter((companion) => {
+          return globSync(companion, { cwd: root }).length === 0;
+        });
 
         return {
           Program() {

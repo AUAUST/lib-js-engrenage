@@ -25,9 +25,4 @@ export {
   types,
   utils,
 } from "#project/roles/index";
-export type {
-  Role,
-  RoleCompanionResolver,
-  RoleModule,
-  RolePreset,
-} from "#project/roles/index";
+export type { Role, RolePreset } from "#project/roles/index";

@@ -8,6 +8,7 @@ import { configs as typescriptConfigs } from "typescript-eslint";
 
 import { map } from "@auaust/toolkit/array";
 import { flatMap } from "@auaust/toolkit/iterable";
+import { entries, getOwn, record } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
 import { withExtensions } from "#foundation/filesystem/index";
@@ -28,6 +29,7 @@ import { resolveConventionSections } from "#tools/eslint/operations/resolveConve
 import { resolveScope } from "#tools/eslint/operations/resolveScope";
 import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 import { selectConventions } from "#tools/eslint/operations/selectConventions";
+import { roleRuleLoaders } from "#tools/eslint/roles/index";
 import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
 import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
 import { createPlugin } from "#tools/eslint/utils/createPlugin";
@@ -80,6 +82,7 @@ export async function createEslintConfig(
     recommended,
     packageJson: packageJsonEnabled,
     typeAware,
+    roleRules: roleRuleOptions,
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
@@ -171,7 +174,17 @@ export async function createEslintConfig(
     config.resolve("entities"),
   ]);
 
-  const roleRules = await createRoleRules(structure, entities);
+  const roleRules = await createRoleRules(structure, entities, {
+    ...roleRuleLoaders,
+    ...record(
+      entries(roleRuleOptions).map(([role, loaders]) => {
+        return [
+          role,
+          { ...getOwn(roleRuleLoaders, role), ...loaders },
+        ] as const;
+      }),
+    ),
+  });
 
   return defineConfig(
     {

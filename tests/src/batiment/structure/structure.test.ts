@@ -732,27 +732,24 @@ describe("inline roles", () => {
     });
   });
 
-  test("take a `file` callback only as nested file roles", async () => {
+  test("take `file` placeholders only as nested file roles", async () => {
     const roles = renderCodeRoles(
-      createRolePreset({ name: "setup", file: "<setup>" })(),
-    ).replace(
-      JSON.stringify("<setup>"),
-      '{ resolve: () => "setup.ts", description: "setup.ts" }',
+      createRolePreset({ name: "setup", file: "<domain>.setup.ts" })(),
     );
 
     await expect(
       describeProject(`{ src: { roles: ${roles} } }`),
-    ).rejects.toThrow("gives the role setup a `file` callback");
+    ).rejects.toThrow("gives the role setup `file` placeholders");
   });
 
-  test("reject `companions` without a description", async () => {
-    const guards = '{ name: "guards", companions: { resolve: () => "src/assert.ts" } }';
+  test("reject a `file` resolver function, naming the glob form", async () => {
+    const setup = '{ name: "setup", file: () => "setup.ts" }';
 
     await expect(
       describeProject(
-        `{ src: { roles: [...${renderCodeRoles()}, ${guards}] } }`,
+        `{ src: { roles: [...${renderCodeRoles()}, ${setup}] } }`,
       ),
-    ).rejects.toThrow("at roles.9.companions.description");
+    ).rejects.toThrow("Expected a glob or a list of globs");
   });
 
   test("fail when type-only with exported values", async () => {

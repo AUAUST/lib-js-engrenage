@@ -1,17 +1,15 @@
 import type { Rule } from "eslint";
 
-import type { RoleRuleModule } from "#batiment/roles/index";
 import type { Entity, EnvironmentFileNames } from "#batiment/structure/index";
 
-export interface RoleRule extends RoleRuleModule {
+/**
+ * A rule lint runs as an error on the files of the role its loader is keyed by.
+ */
+export interface RoleRule {
   /**
-   * Marks the module as an ESLint rule; modules for other tools are skipped.
-   */
-  readonly tool: "eslint";
-  /**
-   * Rule run as an error on the files of each role carrying it; `create` also
-   * receives the linted file's entity and its environment's index and entry file
-   * names, and is skipped for files outside the structure.
+   * Rule run on the files of each role whose `roleRules` entry loads it; `create`
+   * also receives the linted file's entity and its environment's index and entry
+   * file names, and is skipped for files outside the structure.
    */
   readonly rule: {
     readonly meta?: Rule.RuleMetaData;

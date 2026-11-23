@@ -1,10 +1,5 @@
 export { createRolePreset, role } from "#batiment/roles/index";
-export type {
-  Role,
-  RoleCompanionResolver,
-  RoleModule,
-  RolePreset,
-} from "#batiment/roles/index";
+export type { Role, RolePreset } from "#batiment/roles/index";
 
 // @barrel ports
 export type * from "#project/roles/ports/RolePresetEntry";

@@ -130,7 +130,7 @@ describe("project map", () => {
     );
   });
 
-  test("renders nested file descriptions, global file roles and root tooling paths", async () => {
+  test("renders nested file globs as written, global file roles and root tooling paths", async () => {
     const { project } = await syncProject(
       createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
@@ -141,7 +141,7 @@ describe("project map", () => {
           { name: "constants", file: "constants.ts", effects: "pure", public: true },
           { name: "config", roles: [{
             name: "definers",
-            file: { resolve: () => "defineFeatureConfig.ts", description: "define<Domain>Config.ts" },
+            file: "define<Domain>Config.ts",
             effects: "effectful"
           }] }
         ] },
@@ -166,7 +166,7 @@ describe("project map", () => {
     );
   });
 
-  test("renders companion descriptions and barrel options", async () => {
+  test("renders companions and barrel options", async () => {
     const { project } = await syncProject(
       createTemporaryProject({
         "package.json": '{ "name": "project", "type": "module" }',
@@ -174,7 +174,7 @@ describe("project map", () => {
         preset: "library",
         agents: { preferred: ["claude"] },
         src: { roles: [
-          { name: "guards", companions: { resolve: ({ name }) => [\`src/assert/assert\${name}.ts\`], description: "src/assert/assert<Name>.ts" } },
+          { name: "guards", companions: "src/assert/assert<Name>.ts" },
           { name: "models", index: true, public: true, subpath: "root" },
           { name: "notes" },
         ] },

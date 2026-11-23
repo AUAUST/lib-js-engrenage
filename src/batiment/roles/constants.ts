@@ -71,3 +71,9 @@ export const noRoles = freeze({
     fallback: undefined,
   }),
 }) satisfies DeepReadonly<ResolvedRoles>;
+
+export const rolePlaceholderPattern = "<([A-Za-z]+)>";
+
+export const roleFilePlaceholders = freeze(["domain"] as const);
+
+export const roleCompanionPlaceholders = freeze(["domain", "name"] as const);
