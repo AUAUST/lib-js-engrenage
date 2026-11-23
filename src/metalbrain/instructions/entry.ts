@@ -36,5 +36,6 @@ export type {
   RegisteredInstruction,
   RuleEntry,
   SectionEntry,
+  SkillAgent,
   SkillEntry,
 } from "#metalbrain/instructions/index";

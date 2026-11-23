@@ -1,4 +1,5 @@
 import type { InstructionMetadata } from "#metalbrain/instructions/ports/InstructionMetadata";
+import type { SkillAgent } from "#metalbrain/instructions/ports/SkillAgent";
 
 /**
  * A skill of the instruction registry.
@@ -18,4 +19,8 @@ export interface SkillEntry extends InstructionMetadata {
    * Former names of the skill, whose installed files sync migrates to it.
    */
   readonly formerly?: readonly string[];
+  /**
+   * The subagent the skill defines; none without it.
+   */
+  readonly agent?: SkillAgent;
 }

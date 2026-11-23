@@ -173,3 +173,5 @@
 - hook settings code in `metalbrain/runtimes` (#830): move `syncHooks`, `checkAgentHooks`, `removeCodexFiles`, `summarizeAgentTask` there — runtimes index loads in every hook, the hook load test forbids their valibot, jsonc and records imports until #831 splits the cheap core
 - non-cheap sub-domain of `metalbrain/runtimes` (#830): house the hook settings code — inverts #831's planned split, which #831 would undo
 - fragment renderer loading facts: renderer reading the manifest through loadMetalbrainFacts — tools/agents importing tools/metalbrain closes an import cycle batiment map rejects; callers pass the facts instead
+- agent vocabularies in instructions: type `SkillAgent` effort and thoroughness as literals (#838) — thoroughness levels belong to the cheap hook core in runtimes, which instructions sits below
+- agent check in `instructionEntry`: validate contributed agents at the slot (#838) — the extension would load the runtimes barrel at collection; `getSkillDefinitions` validates them, naming the skill

@@ -17,7 +17,7 @@ import { thoroughnessLevels } from "#metalbrain/runtimes/hooks/index";
 
 const effortSchema = picklist(efforts);
 
-// @debt the agent block moves to the instruction registry with the agents' own entries
+// @debt validates the agent of a skill registry entry, which no option declares, so it sits outside its role's contract
 export const skillSchema = looseObject({
   agent: optional(
     strictObject({

@@ -35,7 +35,7 @@ export async function getSkillDefinitions(config: {
         const { agent } = validate(
           skillSchema,
           { agent: block },
-          `${template.source} skill metadata`,
+          `Skill "${template.name}" entry`,
         );
 
         for (const { name, source } of template.supporting) {

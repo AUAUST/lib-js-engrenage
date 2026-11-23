@@ -7,8 +7,8 @@ import {
   resolveMetalbrainRoot,
   type MetalbrainFacts,
 } from "#metalbrain/facts/index";
+import { builtInInstructions } from "#metalbrain/instructions/builtins/index";
 import {
-  builtInInstructions,
   instructionDirectories,
   metalbrain,
 } from "#metalbrain/instructions/constants";

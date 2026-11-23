@@ -1,24 +1,6 @@
 ---
 title: Instruction writing
 description: Turn a request about agent instructions, in whatever form it arrives, into the instructions it implies, grounded in current model guidance, and read them as each target agent would before reporting; or audit instructions for conflicts, gaps and misplaced rules without changing them. Use for every change to instructions that determine agent behavior, and for audits of them.
-agent:
-  name: writer
-  description: Writer that reads a request about agent instructions as a symptom, derives the behavior it implies, writes it where each target agent loads it, grounded in current model guidance, and reads the result as each target would to remove misreadings, conflicts and gaps; under a read-only brief, it audits instructions for them without fixing. Dispatch it for every change to instructions that determine agent behavior, once the user consented, with the request as it came and the reach the consent covers, and read-only to audit instructions; never write those instructions yourself, beyond the self-writing cases Instruction maintenance sets.
-  model: opus
-  effort: medium
-  thoroughness: standard
-  efforts:
-    trivial: low
-    complex: high
-  tools:
-    - Bash
-    - Read
-    - Edit
-    - Write
-    - Skill
-    - ToolSearch
-    - WebSearch
-    - WebFetch
 ---
 
 # Instruction writing

@@ -25,6 +25,7 @@ export type * from "#metalbrain/instructions/ports/InstructionFormatter";
 export type * from "#metalbrain/instructions/ports/InstructionMetadata";
 export type * from "#metalbrain/instructions/ports/RuleEntry";
 export type * from "#metalbrain/instructions/ports/SectionEntry";
+export type * from "#metalbrain/instructions/ports/SkillAgent";
 export type * from "#metalbrain/instructions/ports/SkillEntry";
 // @end
 

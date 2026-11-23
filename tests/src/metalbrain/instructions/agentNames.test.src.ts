@@ -3,9 +3,9 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test } from "vitest";
 
-const root = fileURLToPath(new URL("../../../../", import.meta.url));
+import { builtInInstructions } from "#metalbrain/instructions/builtins/index";
 
-const agentDefinition = /^agent:\n {2}name: (?<name>[a-z-]+)$/mu;
+const root = fileURLToPath(new URL("../../../../", import.meta.url));
 
 const agentMentions = [
   /`(?<name>[a-z-]+)` (?:sub)?agents?\b/gu,
@@ -20,17 +20,15 @@ function read(file: string) {
 }
 
 function listDefinedAgents() {
-  return new Set(
-    globSync(["data/metalbrain/skills/*.md"], { cwd: root })
-      .map((file) => {
-        return agentDefinition.exec(read(file))?.groups?.name;
-      })
-      .filter((name) => name != null),
+  return new Set<string>(
+    builtInInstructions
+      .filter((entry) => "agent" in entry)
+      .map(({ agent }) => agent.name),
   );
 }
 
 describe("agent names", () => {
-  test("every agent an instruction source names is defined by a skill", () => {
+  test("every agent an instruction source names is a built-in skill's agent", () => {
     const agents = listDefinedAgents();
 
     const sources = globSync(["data/metalbrain/**/*.md", "AGENTS.md"], {

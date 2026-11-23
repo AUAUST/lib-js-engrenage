@@ -1,20 +1,6 @@
 ---
 title: Merging
 description: Review what a walk landed across its leaves, integrating each concurrent leaf onto the walked branch and reviewing each segment at its close. Use only when a skill you follow or the user asks for a merger.
-agent:
-  name: merger
-  description: Merger that rebases a walked leaf onto the walked branch and reviews it against its issue and its siblings, or reviews a closed segment or plan against its siblings and the code around it, fixing only mechanical, behaviour-neutral edits inside the diff. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself.
-  model: opus
-  effort: medium
-  thoroughness: scoped
-  ceiling: 100000
-  tools:
-    - Bash
-    - Read
-    - Edit
-    - Write
-    - Skill
-    - ToolSearch
 ---
 
 # Merging

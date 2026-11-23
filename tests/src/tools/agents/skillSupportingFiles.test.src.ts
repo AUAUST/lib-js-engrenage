@@ -24,14 +24,14 @@ const reference = "@fixtures/skills/metalbrain/skills/guide/notes.md";
 const synced = [".claude/skills/guide/notes.md"];
 
 function createProject({
-  metadata = "",
+  agent = "",
   body = "Read `notes.md` beside this skill.",
   supporting = "notes.md",
   agents = "",
   preferred = ["claude"],
   contributes = "",
 }: {
-  metadata?: string;
+  agent?: string;
   body?: string;
   supporting?: string;
   agents?: string | undefined;
@@ -43,7 +43,7 @@ function createProject({
     "engrenage.config.ts": [
       "export default {",
       `  agents: { preferred: ${JSON.stringify(preferred)}, ${agents} },`,
-      `  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { "agents.instructions": [{ kind: "skill", name: "guide", category: "fixture" }], ${contributes} } }],`,
+      `  extensions: [{ name: "fixture-skills", root: new URL("./skills/", import.meta.url), contributes: { "agents.instructions": [{ kind: "skill", name: "guide", category: "fixture"${agent} }], ${contributes} } }],`,
       "};",
     ].join("\n"),
     "AGENTS.md": "Instructions\n",
@@ -55,7 +55,6 @@ function createProject({
       "---",
       "title: Guide",
       "description: A skill with a supporting file.",
-      metadata,
       "---",
       "",
       "# Guide",
@@ -198,7 +197,7 @@ describe("skill supporting files", () => {
     const project = createProject({
       preferred: ["fixture"],
       contributes: '"agents.runtimes": [{ name: "fixture", skills: ".fixture/skills", agents: ".fixture/agents" }]',
-      metadata: "agent:\n  name: guider\n  description: Guider",
+      agent: ', agent: { name: "guider", description: "Guider" }',
       body: "Read this file first:\n\n<!-- @skill-file mode.md -->\n<!-- @end -->",
       supporting: "mode.md",
     });
@@ -347,7 +346,7 @@ describe("shared skill files", () => {
 function createAgentProject(file: string, agents?: string) {
   return createProject({
     agents,
-    metadata: "agent:\n  name: guider\n  description: Guider",
+    agent: ', agent: { name: "guider", description: "Guider" }',
     body: `Read this file first:\n\n<!-- @skill-file ${file} -->\n<!-- @end -->`,
     supporting: "mode.md",
   });

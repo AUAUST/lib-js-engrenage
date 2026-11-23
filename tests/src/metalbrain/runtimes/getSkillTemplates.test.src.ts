@@ -105,7 +105,7 @@ describe("getSkillTemplates", () => {
     });
   });
 
-  test("rejects an invalid agent effort, naming the skill source", async () => {
+  test("rejects an invalid agent effort, naming the skill", async () => {
     mockSkill("broken", {
       name: "breaker",
       description: "Breaker",
@@ -113,7 +113,7 @@ describe("getSkillTemplates", () => {
     });
 
     await expect(renderSkills()).rejects.toThrow(
-      /\/skills\/broken\.md skill metadata[\s\S]*received "extreme"[\s\S]*agent\.effort/,
+      /Skill "broken" entry[\s\S]*received "extreme"[\s\S]*agent\.effort/,
     );
   });
 
@@ -173,7 +173,7 @@ describe("getSkillTemplates", () => {
     });
   });
 
-  test("rejects a non-string tool, naming the skill source", async () => {
+  test("rejects a non-string tool, naming the skill", async () => {
     mockSkill("broken", {
       name: "breaker",
       description: "Breaker",
@@ -181,7 +181,7 @@ describe("getSkillTemplates", () => {
     });
 
     await expect(renderSkills()).rejects.toThrow(
-      /\/skills\/broken\.md skill metadata[\s\S]*agent\.tools/,
+      /Skill "broken" entry[\s\S]*agent\.tools/,
     );
   });
 });

@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { basename } from "node:path";
 
-import { optional, strictObject, string, unknown } from "valibot";
+import { strictObject, string } from "valibot";
 
 import { listDataFiles } from "#foundation/data/index";
 import { validate } from "#foundation/options/index";
@@ -19,12 +19,6 @@ import type { RegisteredInstruction } from "#metalbrain/instructions/types/Regis
 const frontmatterSchema = strictObject({
   title: string(),
   description: string(),
-});
-
-// @debt skill files keep the `agent` block their agent files derive from until agents join the instruction registry
-const skillFrontmatterSchema = strictObject({
-  ...frontmatterSchema.entries,
-  agent: optional(unknown()),
 });
 
 function isKind<Kind extends InstructionKind>(kind: Kind) {
@@ -78,20 +72,11 @@ export async function getRegisteredTemplates<Kind extends InstructionKind>(
           source,
         );
 
-        const { title, description, agent } = kind === "skill"
-          ? validate(
-              skillFrontmatterSchema,
-              instruction.metadata,
-              `${source} frontmatter`,
-            )
-          : {
-              ...validate(
-                frontmatterSchema,
-                instruction.metadata,
-                `${source} frontmatter`,
-              ),
-              agent: undefined,
-            };
+        const { title, description } = validate(
+          frontmatterSchema,
+          instruction.metadata,
+          `${source} frontmatter`,
+        );
 
         const supportingFiles = supporting
           ? await listDataFiles(origin, subpath, { within: entry.name })
@@ -102,7 +87,6 @@ export async function getRegisteredTemplates<Kind extends InstructionKind>(
           default: entry.default ?? false,
           title,
           description,
-          agent,
           source,
           reference,
           conditional: contributed || entry.when !== undefined,

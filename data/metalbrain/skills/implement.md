@@ -1,20 +1,6 @@
 ---
 title: Implementation
 description: Implement one specified change (a GitHub issue, an issue draft, a brief or a request), designing the code that delivers the end state its specification states. Use only when the user invokes it or asks for a worker, or a skill you follow asks for one.
-agent:
-  name: worker
-  description: Worker that implements one specified change (an issue, a draft, a brief or a request), designing the code that delivers its end state, and stops to report when that end state or a contract it does not own must change. Dispatch it only when a skill you follow or the user asks for a worker; otherwise do the work yourself.
-  model: opus
-  effort: medium
-  thoroughness: standard
-  gate: true
-  tools:
-    - Bash
-    - Read
-    - Edit
-    - Write
-    - Skill
-    - ToolSearch
 ---
 
 # Implementation
