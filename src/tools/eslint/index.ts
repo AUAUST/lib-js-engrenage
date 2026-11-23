@@ -87,6 +87,6 @@ export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export { visitImportSources } from "#tools/eslint/utils/visitImportSources";
 export type {
   Entity,
-  EnvironmentFileNames,
   LineageMember,
+  NamespaceFileNames,
 } from "#batiment/structure/index";

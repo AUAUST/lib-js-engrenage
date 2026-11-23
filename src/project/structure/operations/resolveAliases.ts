@@ -5,7 +5,7 @@ import { entries, freeze } from "@auaust/toolkit/object";
 
 import type {
   Alias,
-  EnvironmentStructure,
+  NamespaceStructure,
   ResolvedAliases,
 } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -68,7 +68,7 @@ async function createDirectoryAliases(
 
 async function createSourceAliases(
   filesystem: Filesystem,
-  { dirs, root: tree, indexFile, entryFile }: EnvironmentStructure,
+  { dirs, root: tree, indexFile, entryFile }: NamespaceStructure,
   { extension, declarations }: AliasedFiles,
 ): Promise<Alias[]> {
   const directories = flat(
@@ -176,7 +176,7 @@ export async function resolveAliases({
   data: Directories;
   published: boolean;
   outDir: Directory | undefined;
-  structure: EnvironmentStructure | undefined;
+  structure: NamespaceStructure | undefined;
   language: LanguageEntry;
 }): Promise<ResolvedAliases> {
   if (!options.global.enabled) {

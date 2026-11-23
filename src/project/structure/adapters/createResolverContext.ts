@@ -17,7 +17,7 @@ import { readEnvironmentRoles } from "#project/structure/operations/readEnvironm
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import type {
   ContextPort,
-  EnvironmentDeclarations,
+  NamespaceDeclarations,
   NamespacePlacement,
   RootFacts,
   ScopeDeclarations,
@@ -122,7 +122,7 @@ async function readEnvironmentDeclarations(
   config: ConfigResolver,
   contributed: ContributedEnvironmentEntry,
   published: boolean,
-): Promise<EnvironmentDeclarations> {
+): Promise<NamespaceDeclarations> {
   const { name } = contributed.entry;
   const key = getOptionsKey(contributed);
 
@@ -149,7 +149,7 @@ async function readEnvironmentDeclarations(
   );
 
   const declared = flattenStructure({
-    environment: name,
+    namespaceName: name,
     root,
     structure: option.structure,
     published,
@@ -223,12 +223,12 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
     ]);
 
     if (dir !== rootScope) {
-      return freeze({ internals, environments: freeze([]) });
+      return freeze({ internals, namespaces: freeze([]) });
     }
 
     return freeze({
       internals,
-      environments: freeze(
+      namespaces: freeze(
         await Promise.all(
           environments
             .filter(({ namespace }) => namespace.structure !== undefined)

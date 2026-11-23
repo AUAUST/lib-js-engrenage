@@ -5,7 +5,7 @@ import { resolveStructure } from "#batiment/context/operations/resolveStructure"
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
 import type { ScopeDeclarations } from "#batiment/context/types/ScopeDeclarations";
 import type {
-  DeclaredEnvironment,
+  DeclaredNamespace,
   ResolvedStructure,
 } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -22,10 +22,10 @@ export async function walkScope({
   discovery: ContextDiscovery;
   filesystem: Filesystem;
 }): Promise<ResolvedStructure> {
-  const environments = await Promise.all(
-    declarations.environments.map(
-      async (environment): Promise<DeclaredEnvironment> => {
-        const { name, declared } = environment;
+  const namespaces = await Promise.all(
+    declarations.namespaces.map(
+      async (namespace): Promise<DeclaredNamespace> => {
+        const { name, declared } = namespace;
 
         const placement = getOwn(discovery.namespaces, name);
 
@@ -40,13 +40,13 @@ export async function walkScope({
         const read = declared === undefined || !active
           ? undefined
           : await readStructureMetadata({
-              environment: name,
+              namespace: name,
               filesystem,
               dirs,
             });
 
         return {
-          ...environment,
+          ...namespace,
           dirs,
           active,
           read,
@@ -58,6 +58,6 @@ export async function walkScope({
   return resolveStructure({
     filesystem,
     internals: declarations.internals,
-    environments,
+    namespaces,
   });
 }

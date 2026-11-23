@@ -1,4 +1,4 @@
-import { renderEnvironmentMap } from "#batiment/structure/index";
+import { renderNamespaceMap } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function fillEnvironmentMap(
@@ -19,9 +19,9 @@ export async function fillEnvironmentMap(
     );
   }
 
-  return renderEnvironmentMap({
+  return renderNamespaceMap({
     name,
-    environment,
+    namespace: environment,
     roles: roles[name],
     aliases: [...aliases.global, ...aliases.src],
   });

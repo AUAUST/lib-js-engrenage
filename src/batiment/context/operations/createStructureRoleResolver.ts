@@ -10,7 +10,7 @@ import {
   fillRolePlaceholders,
   isLocatedRoleFile,
   resolveRoles,
-  type EnvironmentRoles,
+  type NamespaceRoles,
   type ResolvedRoles,
   type RoleLocation,
   type RoleRegistry,
@@ -38,7 +38,7 @@ export function createStructureRoleResolver({
 }: {
   name: string;
   filesystem: Filesystem;
-  roles: EnvironmentRoles | undefined;
+  roles: NamespaceRoles | undefined;
   defined: RoleRegistry | undefined;
 }) {
   const rolesFor = memoize(
@@ -47,7 +47,7 @@ export function createStructureRoleResolver({
         ? noRoles
         : resolveRoles({
             ...roles,
-            environment: name,
+            namespace: name,
             ...(defined === undefined ? {} : { defined }),
             scopes,
           });

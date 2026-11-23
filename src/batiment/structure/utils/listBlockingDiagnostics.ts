@@ -7,8 +7,8 @@ import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStruct
 export function listBlockingDiagnostics(
   structure: ResolvedStructure,
 ): StructureDiagnostic[] {
-  return flatMap(values(structure), (environment) => {
-    return (environment?.diagnostics ?? []).filter(({ blocking }) => {
+  return flatMap(values(structure), (namespace) => {
+    return (namespace?.diagnostics ?? []).filter(({ blocking }) => {
       return blocking === true;
     });
   });

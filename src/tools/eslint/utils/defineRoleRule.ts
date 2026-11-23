@@ -1,7 +1,7 @@
 import type { Rule } from "eslint";
 
 import { createRuleMeta } from "#tools/eslint/utils/createRuleMeta";
-import type { Entity, EnvironmentFileNames } from "#batiment/structure/index";
+import type { Entity, NamespaceFileNames } from "#batiment/structure/index";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 
 /**
@@ -17,7 +17,7 @@ export function defineRoleRule({
   create(
     context: Rule.RuleContext,
     entity: Entity,
-    files: EnvironmentFileNames,
+    files: NamespaceFileNames,
   ): Rule.RuleListener;
 }): RoleRule {
   return {

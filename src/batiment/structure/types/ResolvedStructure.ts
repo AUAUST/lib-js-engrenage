@@ -1,11 +1,11 @@
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 
 /**
- * The structure of each environment by name; `undefined` for an environment whose
+ * The structure of each top-level namespace by name; `undefined` for one whose
  * structure is disabled or whose directories do not exist.
  *
  * @experimental
  */
 export type ResolvedStructure = Readonly<
-  Record<string, EnvironmentStructure | undefined>
+  Record<string, NamespaceStructure | undefined>
 >;

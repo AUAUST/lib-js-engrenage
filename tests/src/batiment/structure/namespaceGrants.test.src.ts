@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { resolveEnvironmentGrants } from "#batiment/structure/index";
+import { resolveNamespaceGrants } from "#batiment/structure/index";
 import type { NamespaceInstance, NamespaceKind } from "#batiment/scopes/index";
 
 import environments from "#project/environments/extension";
@@ -34,21 +34,21 @@ function createInstance(
 
 const root = kinds.map((kind) => createInstance(kind.name, kind));
 
-describe("resolveEnvironmentGrants", () => {
+describe("resolveNamespaceGrants", () => {
   test("derives the built-in kinds' grants over the root environments", () => {
-    const grants = resolveEnvironmentGrants(true, root);
+    const grants = resolveNamespaceGrants(true, root);
 
-    expect(grants.environments.bin).toEqual(
+    expect(grants.namespaces.bin).toEqual(
       expect.arrayContaining(["tests", "scripts", "tooling", "data"]),
     );
 
     expect(grants.surface.bin).toEqual(["src"]);
 
-    expect(grants.environments.scripts).not.toContain("data");
+    expect(grants.namespaces.scripts).not.toContain("data");
 
-    expect(grants.environments.tests).toEqual(["static"]);
+    expect(grants.namespaces.tests).toEqual(["static"]);
 
-    expect(grants.environments.src).toEqual([
+    expect(grants.namespaces.src).toEqual([
       "tests",
       "bin",
       "scripts",
@@ -70,7 +70,7 @@ describe("resolveEnvironmentGrants", () => {
       imports: { lib: "whole", static: "whole" },
     });
 
-    const grants = resolveEnvironmentGrants(false, [
+    const grants = resolveNamespaceGrants(false, [
       library,
       app,
       createInstance("static", getKind("static")),
@@ -78,18 +78,18 @@ describe("resolveEnvironmentGrants", () => {
 
     expect(grants.surface.app).toEqual(["lib"]);
 
-    expect(grants.environments.app).toEqual(["static"]);
+    expect(grants.namespaces.app).toEqual(["static"]);
   });
 
   test("grants nothing across scopes", () => {
-    const grants = resolveEnvironmentGrants(false, [
+    const grants = resolveNamespaceGrants(false, [
       createInstance("src", getKind("src")),
       createInstance("bin", getKind("bin")),
       createInstance("theme/src", getKind("src"), "theme"),
     ]);
 
-    expect(grants.environments.src).toContain("theme/src");
+    expect(grants.namespaces.src).toContain("theme/src");
 
-    expect(grants.environments.bin).toContain("theme/src");
+    expect(grants.namespaces.bin).toContain("theme/src");
   });
 });

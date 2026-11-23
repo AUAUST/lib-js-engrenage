@@ -18,7 +18,7 @@ async function resolveEnvironmentRoles(
 
   return roles === undefined
     ? noRoles
-    : resolveRoles({ ...roles, environment: name });
+    : resolveRoles({ ...roles, namespace: name });
 }
 
 export const environmentRolesSection = declareSection({

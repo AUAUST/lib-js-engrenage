@@ -5,8 +5,8 @@ import { entries, freeze, getOwn, record } from "@auaust/toolkit/object";
 import { entryRoleName } from "#batiment/roles/constants";
 import { isPlaced } from "#batiment/structure/utils/isPlaced";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { EnvironmentFileNames } from "#batiment/structure/types/EnvironmentFileNames";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceFileNames } from "#batiment/structure/types/NamespaceFileNames";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { StructureRole } from "#batiment/structure/types/StructureRole";
 import type { File } from "#types/File";
@@ -52,7 +52,7 @@ function collectRoleSubpaths(
 function collectRoleBarrels(
   subpath: string,
   node: StructureNode,
-  files: EnvironmentFileNames,
+  files: NamespaceFileNames,
   roles: Roles,
 ): (readonly [string, File])[] {
   return node.children.flatMap((child) => {
@@ -79,7 +79,7 @@ function collectRoleBarrels(
 function collectEntries(
   node: StructureNode,
   segments: readonly string[],
-  files: EnvironmentFileNames,
+  files: NamespaceFileNames,
   roles: Roles,
 ): (readonly [string, File])[] {
   return node.children.flatMap((child) => {
@@ -116,10 +116,7 @@ function collectEntries(
 }
 
 export function resolveDomainEntries(
-  structure: Omit<
-    EnvironmentStructure,
-    "entries" | "unreached" | "diagnostics"
-  >,
+  structure: Omit<NamespaceStructure, "entries" | "unreached" | "diagnostics">,
 ): {
   readonly entries: Readonly<Record<string, File>>;
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -146,7 +143,7 @@ export function resolveDomainEntries(
           code: "shared-specifier",
           message: `${previous} and ${file} share the specifier '${subpath}': declare a distinct 'specifier' on the domain of one of them; keeping ${previous}`,
           blocking: true,
-          environment: structure.name,
+          namespace: structure.name,
           files: freeze([previous, file]),
         }),
       );

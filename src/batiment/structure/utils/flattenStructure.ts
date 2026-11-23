@@ -9,7 +9,7 @@ import type { DeclaredStructure } from "#batiment/structure/types/DeclaredStruct
 import type { ValueOrigin } from "#foundation/options/index";
 import type { Directory } from "#types/Directory";
 
-const environmentRoot = ".";
+const namespaceRoot = ".";
 
 // @debt every default layer ranks alike, so two presets declaring a path as different kinds fail instead of the higher one winning
 const originRanks: Readonly<Record<ValueOrigin["layer"], number>> = {
@@ -19,13 +19,13 @@ const originRanks: Readonly<Record<ValueOrigin["layer"], number>> = {
 };
 
 export function flattenStructure({
-  environment,
+  namespaceName,
   root,
   structure,
   published,
   origins,
 }: {
-  environment: string;
+  namespaceName: string;
   root: string;
   structure: NamespaceDeclaration;
   published: boolean;
@@ -50,7 +50,7 @@ export function flattenStructure({
   const optionPaths: Record<Directory, string> = {};
 
   function childPath(parent: Directory, name: string): Directory {
-    return parent === environmentRoot ? name : `${parent}/${name}`;
+    return parent === namespaceRoot ? name : `${parent}/${name}`;
   }
 
   function rankOrigin(optionPath: string): number {
@@ -75,7 +75,7 @@ export function flattenStructure({
 
     if (namespace === domain) {
       throw new Error(
-        `${childPath(path, name)} is declared as a namespace and as a domain in the ${environment} environment`,
+        `${childPath(path, name)} is declared as a namespace and as a domain in the ${namespaceName} environment`,
       );
     }
 
@@ -134,7 +134,7 @@ export function flattenStructure({
     option: string,
   ) {
     const enable = registerRoles({
-      owner: `${environment}:${path}`,
+      owner: `${namespaceName}:${path}`,
       path: `${option}.roles.enable`,
       roles: namespace.roles.enable,
       registry: defined,
@@ -154,7 +154,7 @@ export function flattenStructure({
     visitChildren(path, namespace, option);
   }
 
-  visitNamespace(environmentRoot, structure, root);
+  visitNamespace(namespaceRoot, structure, root);
 
   return freeze({
     namespaces: freeze(namespaces),

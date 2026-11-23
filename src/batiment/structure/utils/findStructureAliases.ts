@@ -1,9 +1,9 @@
 import type { Alias } from "#batiment/structure/types/Alias";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 
 // @debt matches only the `#<name>/*` alias shape of the TypeScript binding, so another language's aliases get no tree label
 export function findStructureAliases(
-  { root }: EnvironmentStructure,
+  { root }: NamespaceStructure,
   aliases: readonly Alias[],
 ): Map<string, string> {
   const found = new Map<string, string>();

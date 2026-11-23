@@ -1,13 +1,13 @@
 import type { Role } from "#batiment/roles/types/Role";
 
-export function listEnvironmentRoles({
-  environment,
+export function listNamespaceRoles({
+  namespace,
   layoutRoles = [],
   roles = [],
   omitRoles = [],
   defaults,
 }: {
-  environment: string;
+  namespace: string;
   layoutRoles?: readonly Role[] | undefined;
   roles?: readonly Role[] | undefined;
   omitRoles?: readonly string[] | undefined;
@@ -19,7 +19,7 @@ export function listEnvironmentRoles({
 
   if (unknown !== undefined) {
     throw new Error(
-      `\`${environment}.omitRoles\` drops "${unknown}", which is no default role of ${environment}: ${[...defaultNames].join(", ")}`,
+      `\`${namespace}.omitRoles\` drops "${unknown}", which is no default role of ${namespace}: ${[...defaultNames].join(", ")}`,
     );
   }
 

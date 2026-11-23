@@ -7,7 +7,7 @@ import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
  */
 export interface ImportGrants {
   readonly published: boolean;
-  readonly environments: Readonly<
+  readonly namespaces: Readonly<
     Partial<Record<string, readonly ImportCategory[]>>
   >;
   readonly elements: readonly string[];

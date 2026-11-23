@@ -2,13 +2,13 @@ import { posix } from "node:path";
 
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import type {
-  EnvironmentStructure,
+  NamespaceStructure,
   StructureNode,
 } from "#batiment/structure/index";
 import type { Directory } from "#types/Directory";
 
 export function locateDomain(
-  { dirs }: EnvironmentStructure,
+  { dirs }: NamespaceStructure,
   node: StructureNode,
 ): Directory {
   const directory = dirs.find((candidate) => isBelow(candidate, node.path));

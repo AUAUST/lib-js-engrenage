@@ -1,6 +1,6 @@
 import type { Rule } from "eslint";
 
-import type { Entity, EnvironmentFileNames } from "#batiment/structure/index";
+import type { Entity, NamespaceFileNames } from "#batiment/structure/index";
 
 /**
  * A rule lint runs as an error on the files of the role its loader is keyed by.
@@ -16,7 +16,7 @@ export interface RoleRule {
     create(
       context: Rule.RuleContext,
       entity: Entity,
-      files: EnvironmentFileNames,
+      files: NamespaceFileNames,
     ): Rule.RuleListener;
   };
 }

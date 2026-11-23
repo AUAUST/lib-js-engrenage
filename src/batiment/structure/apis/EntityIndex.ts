@@ -4,9 +4,9 @@ import type { File } from "#types/File";
 export interface EntityIndex {
   /**
    * Describes where `file`, absolute or relative to the project root, sits in
-   * the structure of its environment, scope or build output; `undefined` when
-   * it lies in none of them or in a directory the structure leaves uncovered.
-   * Memoized per file.
+   * the structure of its top-level namespace, scope or build output; `undefined`
+   * when it lies in none of them or in a directory the structure leaves
+   * uncovered. Memoized per file.
    */
   entityOf(file: File): Entity | undefined;
   /**
@@ -15,8 +15,8 @@ export interface EntityIndex {
    */
   specifierOf(file: File): string | undefined;
   /**
-   * Whether `file` lies under the directory of an environment, a scope or the
-   * build output, even one `entityOf` leaves uncovered.
+   * Whether `file` lies under the directory of a top-level namespace, a scope or
+   * the build output, even one `entityOf` leaves uncovered.
    */
-  withinEnvironment(file: File): boolean;
+  withinStructure(file: File): boolean;
 }

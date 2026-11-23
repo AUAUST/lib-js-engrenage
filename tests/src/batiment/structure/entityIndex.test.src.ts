@@ -110,7 +110,7 @@ async function indexProject(root: string) {
   return createEntityIndex({
     root,
     structure,
-    environments: {
+    placements: {
       src: source,
       tests,
       bin,

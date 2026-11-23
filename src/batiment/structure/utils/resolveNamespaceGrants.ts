@@ -1,7 +1,7 @@
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
-import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
+import { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
 import type {
   NamespaceInstance,
   NamespaceRelation,
@@ -32,12 +32,12 @@ function resolveRelation(
   }
 }
 
-export function resolveEnvironmentGrants(
+export function resolveNamespaceGrants(
   published: boolean,
   namespaces: readonly NamespaceInstance[],
 ): Pick<
   ImportGrants,
-  "environments" | "surface" | "elements" | "entries" | "variants"
+  "namespaces" | "surface" | "elements" | "entries" | "variants"
 > {
   // @debt only the root scope's namespaces hold the package entries, since the `internal-aliases` category names the root's aliases; each scope's own entries wait on per-scope aliases
   const entries = freeze(
@@ -57,7 +57,7 @@ export function resolveEnvironmentGrants(
 
     const forbidden = targets
       .filter(([, relation]) => relation === undefined)
-      .map(([target]) => getEnvironmentCategory(target.id, entries));
+      .map(([target]) => getNamespaceCategory(target.id, entries));
 
     const surface = targets
       .filter(([, relation]) => relation === "surface")
@@ -80,7 +80,7 @@ export function resolveEnvironmentGrants(
   });
 
   return freeze({
-    environments: freeze(
+    namespaces: freeze(
       record(relations.map(([name, forbidden]) => [name, forbidden] as const)),
     ),
     surface: freeze(

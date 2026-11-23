@@ -4,7 +4,7 @@ import { getOwn, keys, values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
-  type EnvironmentStructure,
+  type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
 import { domainsBlock } from "#tools/typescript/constants";
@@ -23,7 +23,7 @@ import type { File } from "#types/File";
 
 async function planDomainsBlock(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   file: File,
 ): Promise<BarrelPlan> {
   const { dirs, entryFile, root } = environment;
@@ -57,7 +57,7 @@ async function planDomainsBlock(
 // @debt a block naming a collected role lists it across the environment, while the generated entry of an entry-only domain lists it in that domain only, so `collected` scopes differently in blocks and in whole files
 async function listBlockModules(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   { owner, directory }: { owner: StructureNode; directory: Directory },
   role: string,
   contract: ResolvedRoleContract,

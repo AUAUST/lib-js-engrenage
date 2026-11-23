@@ -16,7 +16,7 @@ import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStruct
 interface RoleRow {
   name: string;
   contract: ResolvedRoleContract;
-  environments: string[];
+  namespaces: string[];
 }
 
 function code(value: string): string {
@@ -56,14 +56,14 @@ export function renderProjectMapRoles(
 ): string[] {
   const rows: RoleRow[] = [];
 
-  for (const [environment, resolved] of entries(roles)) {
-    if (structure[environment] === undefined) {
+  for (const [namespace, resolved] of entries(roles)) {
+    if (structure[namespace] === undefined) {
       continue;
     }
 
     const candidates = [
       ...entries(resolved?.roles ?? {}),
-      ...entries(structure[environment]?.roles ?? {}).map(([name, role]) => {
+      ...entries(structure[namespace]?.roles ?? {}).map(([name, role]) => {
         return [name, role.contract] as const;
       }),
     ];
@@ -77,10 +77,10 @@ export function renderProjectMapRoles(
         rows.push({
           name,
           contract,
-          environments: [environment],
+          namespaces: [namespace],
         });
-      } else if (!existing.environments.includes(environment)) {
-        existing.environments.push(environment);
+      } else if (!existing.namespaces.includes(namespace)) {
+        existing.namespaces.push(namespace);
       }
     }
   }
@@ -95,9 +95,9 @@ export function renderProjectMapRoles(
       return `- ${code(level)}: ${effectLevelPurposes[level]}`;
     }),
     "",
-    "| Role | Purpose | Files | Companions | Exports | Level | Imports | Environments |",
+    "| Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |",
     "| --- | --- | --- | --- | --- | --- | --- | --- |",
-    ...rows.map(({ name, contract, environments }) => {
+    ...rows.map(({ name, contract, namespaces }) => {
       const files = toArray(contract.file ?? [])
         .map(code)
         .join(", ");
@@ -117,7 +117,7 @@ export function renderProjectMapRoles(
 
       const purpose = (contract.purpose ?? "").replaceAll("|", String.raw`\|`);
 
-      return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${environments.map(code).join(", ")} |`;
+      return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${namespaces.map(code).join(", ")} |`;
     }),
   ];
 }

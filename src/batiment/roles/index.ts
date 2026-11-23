@@ -20,7 +20,7 @@ export { declareRoleContractEntries } from "#batiment/roles/config/declarers/dec
 // @barrel types
 export type * from "#batiment/roles/types/EffectModule";
 export type * from "#batiment/roles/types/EffectModules";
-export type * from "#batiment/roles/types/EnvironmentRoles";
+export type * from "#batiment/roles/types/NamespaceRoles";
 export type * from "#batiment/roles/types/ReexportMode";
 export type * from "#batiment/roles/types/ResolvedEffects";
 export type * from "#batiment/roles/types/ResolvedRoleContract";
@@ -46,7 +46,7 @@ export { getExecutableFile } from "#batiment/roles/utils/getExecutableFile";
 export { getIndexFile } from "#batiment/roles/utils/getIndexFile";
 export { isLocatedRoleFile } from "#batiment/roles/utils/isLocatedRoleFile";
 export { listDiscoveredGlobs } from "#batiment/roles/utils/listDiscoveredGlobs";
-export { listEnvironmentRoles } from "#batiment/roles/utils/listEnvironmentRoles";
+export { listNamespaceRoles } from "#batiment/roles/utils/listNamespaceRoles";
 export { listReexportModes } from "#batiment/roles/utils/listReexportModes";
 export { listRolePlaceholders } from "#batiment/roles/utils/listRolePlaceholders";
 export { listStaticFileGlobs } from "#batiment/roles/utils/listStaticFileGlobs";

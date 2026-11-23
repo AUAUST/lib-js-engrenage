@@ -20,16 +20,16 @@ Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[
 | Relation | A domain may import |
 | --- | --- |
 | `own-roles` | its own roles and files, excluding its index and entry |
-| `global-roles` | the global roles of the environment root |
+| `global-roles` | the global roles of the top-level namespace root |
 | `ancestor-roles` | the roles of its ancestor domains, as a sub-domain |
 | `sub-domain` | the target's `index.ts` and public roles, through its nearest sub-domain's surface |
 | `lower-layer` | the target's `index.ts` and public roles, through a domain in a lower layer |
 | `peer` | the target's `index.ts` and public roles, through a peer domain (same layer, unless isolated) |
-| `root-entry` | any public surface, from the environment root file |
+| `root-entry` | any public surface, from the top-level namespace root file |
 
-## Environments
+## Namespaces
 
-The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root `executable.ts` may import a root index or entry file of `src`, `scripts`, `tooling`. `bin`, `scripts`, `tooling` import `src` only through a domain's `index.ts`, `entry.ts` and public roles.
+The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root `executable.ts` may import a root index or entry file of `src`, `scripts`, `tooling`. `bin`, `scripts`, `tooling` import `src` only through a domain's `index.ts`, `entry.ts` and public roles.
 
 | Category | Meaning |
 | --- | --- |
@@ -67,7 +67,7 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 - `observing`: Read the context or write diagnostics without changing state later operations read.
 - `effectful`: Change state later operations can read, including staged writes and spawned processes.
 
-| Role | Purpose | Files | Companions | Exports | Level | Imports | Environments |
+| Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `index` | The domain's public surface. | `index.ts` |  |  |  |  | `src`, `tests`, `bin`, `scripts`, `tooling` |
 | `constants` | Deeply read-only constants of the domain. | `constants.ts` |  | `subpath` | pure | public | `src`, `tests`, `scripts`, `tooling` |

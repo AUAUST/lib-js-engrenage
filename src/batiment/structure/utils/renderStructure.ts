@@ -10,17 +10,17 @@ export function renderStructure(
   structure: ResolvedStructure,
   aliases: readonly Alias[],
 ): string[] {
-  return flatMap(values(structure), (environment, index) => {
-    return environment === undefined
+  return flatMap(values(structure), (namespace, index) => {
+    return namespace === undefined
       ? []
       : [
           ...(index === 0 ? [] : [""]),
           ...renderStructureTree({
-            environment,
+            namespace,
             aliases,
             detailed: true,
           }),
-          ...environment.diagnostics
+          ...namespace.diagnostics
             .filter(({ code }) => code === "unreached")
             .map(renderStructureDiagnostic),
         ];

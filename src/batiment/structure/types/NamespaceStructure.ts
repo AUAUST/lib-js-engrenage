@@ -1,13 +1,13 @@
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { Layout } from "#batiment/structure/ports/Layout";
-import type { EnvironmentFileNames } from "#batiment/structure/types/EnvironmentFileNames";
+import type { NamespaceFileNames } from "#batiment/structure/types/NamespaceFileNames";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { StructureRole } from "#batiment/structure/types/StructureRole";
 import type { Directories } from "#types/Directories";
 import type { File } from "#types/File";
 
 /**
- * The classified directory tree of one environment, rooted at a namespace
+ * The classified directory tree of one top-level namespace, rooted at a namespace
  * gathering every directory of `dirs`. Under `strict`, an unclassified directory
  * is a violation; under `loose`, it counts as a domain, or a mirror in `tests`.
  * `roles` holds every role the walk met, by name. `unreached` lists, by path, each
@@ -19,7 +19,7 @@ import type { File } from "#types/File";
  *
  * @experimental
  */
-export interface EnvironmentStructure extends EnvironmentFileNames {
+export interface NamespaceStructure extends NamespaceFileNames {
   readonly name: string;
   readonly dirs: Directories;
   readonly strictness: "strict" | "loose";

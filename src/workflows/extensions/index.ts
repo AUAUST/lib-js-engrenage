@@ -32,8 +32,8 @@ export type {
 } from "#batiment/scopes/index";
 export type {
   CardinalityViolation,
-  EnvironmentFileNames,
-  EnvironmentStructure,
+  NamespaceFileNames,
+  NamespaceStructure,
   ResolvedStructure,
   StructureKind,
   StructureMirror,

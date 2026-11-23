@@ -228,7 +228,7 @@ describe("structure origins", () => {
 
   test("every declared node and field has an option path to read its origin from", () => {
     const declared = flattenStructure({
-      environment: "src",
+      namespaceName: "src",
       root: "src.structure",
       structure: {
         purpose: undefined,

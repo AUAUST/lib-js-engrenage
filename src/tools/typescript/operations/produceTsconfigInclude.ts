@@ -29,9 +29,9 @@ async function listSourceDeclarations(
   config: LoadedConfig,
   owner: string,
 ): Promise<readonly File[]> {
-  const { environments } = await config.resolve("importGrants");
+  const { namespaces } = await config.resolve("importGrants");
 
-  const forbidden = environments[owner];
+  const forbidden = namespaces[owner];
 
   if (
     owner === "src" ||

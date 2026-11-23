@@ -1,15 +1,15 @@
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { Directories } from "#types/Directories";
 
 export interface TestsContext {
   readonly mirror: boolean;
-  readonly environments: Readonly<
+  readonly namespaces: Readonly<
     Partial<
       Record<
         string,
         {
           readonly dirs: Directories;
-          readonly structure: EnvironmentStructure | undefined;
+          readonly structure: NamespaceStructure | undefined;
         }
       >
     >

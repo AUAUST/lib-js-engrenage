@@ -10,7 +10,7 @@ import { createStructureWalker } from "#batiment/context/operations/createStruct
 import {
   getEntryFile,
   getIndexFile,
-  type EnvironmentRoles,
+  type NamespaceRoles,
   type ResolvedRoles,
   type RoleRegistry,
 } from "#batiment/roles/index";
@@ -20,8 +20,8 @@ import {
   groupRoleFiles,
   listStructureRoles,
   loosenStructureNode,
-  type EnvironmentStructure,
   type Layout,
+  type NamespaceStructure,
   type StructureNode,
   type StructureOptions,
   type TestsContext,
@@ -31,7 +31,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
-const environmentRoot = ".";
+const namespaceRoot = ".";
 const projectRoot = ".";
 
 function dropCollects(
@@ -49,7 +49,7 @@ function dropCollects(
   });
 }
 
-export async function resolveEnvironmentStructure({
+export async function resolveNamespaceStructure({
   name,
   filesystem,
   dirs,
@@ -65,13 +65,13 @@ export async function resolveEnvironmentStructure({
   dirs: Directories;
   options: StructureOptions;
   internals?: boolean;
-  roles?: EnvironmentRoles | undefined;
+  roles?: NamespaceRoles | undefined;
   defined?: RoleRegistry;
   tests?: TestsContext;
   layout?: Layout | undefined;
 }): Promise<{
   readonly structure: Omit<
-    EnvironmentStructure,
+    NamespaceStructure,
     "unreached" | "diagnostics" | "entries"
   >;
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -122,7 +122,7 @@ export async function resolveEnvironmentStructure({
       : createMirrorClassifier(tests),
   });
 
-  const rootDeclaration = namespaces[environmentRoot];
+  const rootDeclaration = namespaces[namespaceRoot];
   const rootScopes = rootDeclaration?.roles.enable ?? [];
 
   const walked = dirs.filter((directory) => directory !== projectRoot);
@@ -130,7 +130,7 @@ export async function resolveEnvironmentStructure({
   const children = flat(
     await Promise.all(
       walked.map((directory) => {
-        return walk(directory, environmentRoot, {
+        return walk(directory, namespaceRoot, {
           kind: "root",
           layers: rootDeclaration?.layers,
           ...(rootDeclaration?.children === undefined
@@ -141,7 +141,7 @@ export async function resolveEnvironmentStructure({
           structured: false,
           source: rootDeclaration?.source ?? "inferred",
           location: freeze({
-            environment: name,
+            namespace: name,
             lineage: freeze([
               freeze({
                 name: basename(directory),
@@ -167,7 +167,7 @@ export async function resolveEnvironmentStructure({
             code: "unlisted-layout-entry",
             message: `${child.path} is no entry of the ${layout.name} layout of ${name}: ${keys(layout.entries).join(", ")}`,
             blocking: true,
-            environment: name,
+            namespace: name,
             files: freeze([]),
           }),
         );
@@ -182,7 +182,7 @@ export async function resolveEnvironmentStructure({
             code: "missing-layout-entry",
             message: `${name} lacks ${entry}, a required entry of its ${layout.name} layout`,
             blocking: true,
-            environment: name,
+            namespace: name,
             files: freeze([]),
           }),
         );
@@ -201,7 +201,7 @@ export async function resolveEnvironmentStructure({
   );
 
   const resolvedRoot: StructureNode = freeze({
-    path: environmentRoot,
+    path: namespaceRoot,
     name,
     kind: "namespace",
     source: rootDeclaration?.source ?? "inferred",
@@ -252,7 +252,7 @@ export async function resolveEnvironmentStructure({
           code: "collected-role-not-public",
           message: `${path} collects the role ${role}, which is not a public collected role of its environment; dropping it from its collects`,
           blocking: true,
-          environment: name,
+          namespace: name,
           files: freeze([...(source?.files ?? [])]),
           ...(source?.config === undefined ? {} : { config: source.config }),
         }),

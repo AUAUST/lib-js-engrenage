@@ -20,7 +20,7 @@ export function createStructureEntity(
     lineage: noLineage,
     location: freeze({
       // @debt a file outside every namespace of its scope gets a role location with an empty environment, where it should get no role location
-      environment: namespace ?? "",
+      namespace: namespace ?? "",
       lineage: freeze([]),
       roles: freeze([]),
     }),

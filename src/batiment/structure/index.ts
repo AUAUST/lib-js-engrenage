@@ -7,11 +7,9 @@ export type * from "#batiment/structure/types/Alias";
 export type * from "#batiment/structure/types/BoundaryCause";
 export type * from "#batiment/structure/types/BoundaryViolation";
 export type * from "#batiment/structure/types/CardinalityViolation";
-export type * from "#batiment/structure/types/DeclaredEnvironment";
+export type * from "#batiment/structure/types/DeclaredNamespace";
 export type * from "#batiment/structure/types/DeclaredStructure";
 export type * from "#batiment/structure/types/Entity";
-export type * from "#batiment/structure/types/EnvironmentFileNames";
-export type * from "#batiment/structure/types/EnvironmentStructure";
 export type * from "#batiment/structure/types/ImportCategory";
 export type * from "#batiment/structure/types/ImportCycle";
 export type * from "#batiment/structure/types/ImportEdge";
@@ -22,6 +20,8 @@ export type * from "#batiment/structure/types/LineageMember";
 export type * from "#batiment/structure/types/LocatedEntity";
 export type * from "#batiment/structure/types/MetadataField";
 export type * from "#batiment/structure/types/NamedFileRole";
+export type * from "#batiment/structure/types/NamespaceFileNames";
+export type * from "#batiment/structure/types/NamespaceStructure";
 export type * from "#batiment/structure/types/ResolvedAliases";
 export type * from "#batiment/structure/types/ResolvedSpecifier";
 export type * from "#batiment/structure/types/ResolvedStructure";
@@ -41,16 +41,16 @@ export type * from "#batiment/structure/types/UnclassifiedReason";
 
 // @barrel ports
 export type * from "#batiment/structure/ports/DerivedLayout";
-export type * from "#batiment/structure/ports/EnvironmentStructureOption";
 export type * from "#batiment/structure/ports/Layout";
+export type * from "#batiment/structure/ports/NamespaceStructureOption";
 export type * from "#batiment/structure/ports/RecursiveLayout";
 export type * from "#batiment/structure/ports/StaticLayout";
 // @end
 
 // @barrel utils
 export { checkBoundary } from "#batiment/structure/utils/checkBoundary";
-export { checkEnvironments } from "#batiment/structure/utils/checkEnvironments";
 export { checkLayers } from "#batiment/structure/utils/checkLayers";
+export { checkNamespaces } from "#batiment/structure/utils/checkNamespaces";
 export { checkSurfaces } from "#batiment/structure/utils/checkSurfaces";
 export { checkTests } from "#batiment/structure/utils/checkTests";
 export { checkWorkspaces } from "#batiment/structure/utils/checkWorkspaces";
@@ -65,10 +65,10 @@ export { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation
 export { findStructureAliases } from "#batiment/structure/utils/findStructureAliases";
 export { flattenStructure } from "#batiment/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
-export { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
-export { getEnvironmentRootRole } from "#batiment/structure/utils/getEnvironmentRootRole";
 export { getImportCategory } from "#batiment/structure/utils/getImportCategory";
 export { getLocalRoleName } from "#batiment/structure/utils/getLocalRoleName";
+export { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
+export { getNamespaceRootRole } from "#batiment/structure/utils/getNamespaceRootRole";
 export { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
 export { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
@@ -87,9 +87,9 @@ export { matchFileRole } from "#batiment/structure/utils/matchFileRole";
 export { mergeStructureMetadata } from "#batiment/structure/utils/mergeStructureMetadata";
 export { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
 export { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
-export { renderEnvironmentMap } from "#batiment/structure/utils/renderEnvironmentMap";
 export { renderImportCycle } from "#batiment/structure/utils/renderImportCycle";
 export { renderImportCycles } from "#batiment/structure/utils/renderImportCycles";
+export { renderNamespaceMap } from "#batiment/structure/utils/renderNamespaceMap";
 export { renderProjectMap } from "#batiment/structure/utils/renderProjectMap";
 export { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
 export { renderStructure } from "#batiment/structure/utils/renderStructure";
@@ -97,5 +97,5 @@ export { renderStructureDiagnostic } from "#batiment/structure/utils/renderStruc
 export { renderStructureLabel } from "#batiment/structure/utils/renderStructureLabel";
 export { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
 export { resolveDomainEntries } from "#batiment/structure/utils/resolveDomainEntries";
-export { resolveEnvironmentGrants } from "#batiment/structure/utils/resolveEnvironmentGrants";
+export { resolveNamespaceGrants } from "#batiment/structure/utils/resolveNamespaceGrants";
 // @end

@@ -3,7 +3,7 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { listNamespaces } from "#batiment/scopes/index";
 import {
-  resolveEnvironmentGrants,
+  resolveNamespaceGrants,
   type ImportGrants,
 } from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
@@ -19,7 +19,7 @@ export const importGrantsSection = declareSection({
 
     return freeze({
       published: traits.published,
-      ...resolveEnvironmentGrants(traits.published, listNamespaces(tree)),
+      ...resolveNamespaceGrants(traits.published, listNamespaces(tree)),
       scopes: new Map(
         flatMap(groups, (group) => {
           return group.workspaces.map(({ dir, dependencies }) => {

@@ -4,7 +4,7 @@ import { entries, freeze, record, values } from "@auaust/toolkit/object";
 import { defaultEffectLevels } from "#batiment/roles/constants";
 import { registerRoles } from "#batiment/roles/utils/registerRoles";
 import type { EffectModules } from "#batiment/roles/types/EffectModules";
-import type { EnvironmentRoles } from "#batiment/roles/types/EnvironmentRoles";
+import type { NamespaceRoles } from "#batiment/roles/types/NamespaceRoles";
 import type { ResolvedEffects } from "#batiment/roles/types/ResolvedEffects";
 import type { ResolvedRoleContract } from "#batiment/roles/types/ResolvedRoleContract";
 import type { ResolvedRoles } from "#batiment/roles/types/ResolvedRoles";
@@ -13,7 +13,7 @@ import type { RoleRegistry } from "#batiment/roles/types/RoleRegistry";
 
 function resolveEffects(
   effects: RoleEffects,
-  environment: string,
+  namespace: string,
   defaults: EffectModules | undefined,
 ): ResolvedEffects {
   const levels = effects.levels ?? defaultEffectLevels;
@@ -27,7 +27,7 @@ function resolveEffects(
   function assertLevel(level: string, subject: string) {
     if (!levels.includes(level)) {
       throw new Error(
-        `${subject} is ranked ${level}, which is not one of the effect levels of ${environment}: ${levels.join(", ")}`,
+        `${subject} is ranked ${level}, which is not one of the effect levels of ${namespace}: ${levels.join(", ")}`,
       );
     }
   }
@@ -59,7 +59,7 @@ function resolveEffects(
 
 // @debt `scopes` names the opt-in roles a namespace or structured role enables, as `StructureParent.scopes` and the structure resolvers do, colliding with the `batiment/scopes` scope tree the `optIn` rename cleared the flag from; `enabled` would match `roles.enable`
 export function resolveRoles({
-  environment,
+  namespace,
   roles,
   effects,
   defaultModules,
@@ -67,8 +67,8 @@ export function resolveRoles({
   published,
   defined,
   scopes = [],
-}: EnvironmentRoles & {
-  environment: string;
+}: NamespaceRoles & {
+  namespace: string;
   defined?: RoleRegistry;
   scopes?: readonly string[];
 }): ResolvedRoles {
@@ -79,7 +79,7 @@ export function resolveRoles({
 
   registerRoles({
     owner: undefined,
-    path: `${environment}.roles`,
+    path: `${namespace}.roles`,
     roles,
     registry,
     published,
@@ -88,12 +88,12 @@ export function resolveRoles({
   for (const name of scopes) {
     if (!(name in registry.contracts)) {
       throw new Error(
-        `The scope enables the role ${name}, which is not defined for ${environment}`,
+        `The scope enables the role ${name}, which is not defined for ${namespace}`,
       );
     }
   }
 
-  const resolvedEffects = resolveEffects(effects, environment, defaultModules);
+  const resolvedEffects = resolveEffects(effects, namespace, defaultModules);
 
   const resolved: Record<string, ResolvedRoleContract> = {};
 
@@ -107,7 +107,7 @@ export function resolveRoles({
       !resolvedEffects.levels.includes(contract.effects)
     ) {
       throw new Error(
-        `The role ${name} is ranked ${contract.effects}, which is not one of the effect levels of ${environment}: ${resolvedEffects.levels.join(", ")}`,
+        `The role ${name} is ranked ${contract.effects}, which is not one of the effect levels of ${namespace}: ${resolvedEffects.levels.join(", ")}`,
       );
     }
 

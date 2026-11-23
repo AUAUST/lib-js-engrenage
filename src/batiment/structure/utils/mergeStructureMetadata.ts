@@ -18,19 +18,19 @@ import type { StructureSource } from "#batiment/structure/types/StructureSource"
 import type { ValueOrigin } from "#foundation/options/index";
 import type { Directory } from "#types/Directory";
 
-const environmentRoot = ".";
+const namespaceRoot = ".";
 
 type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
 
 export function mergeStructureMetadata({
-  environment,
+  namespaceName,
   key,
   declared,
   metadata,
   optionPaths,
   origins,
 }: {
-  environment: string;
+  namespaceName: string;
   key: string;
   declared: DeclaredStructure;
   metadata: readonly StructureMetadata[];
@@ -43,7 +43,7 @@ export function mergeStructureMetadata({
     const option = getOwn(optionPaths, path);
 
     if (option === undefined) {
-      throw new Error(`${environment}:${path} has no declared option path`);
+      throw new Error(`${namespaceName}:${path} has no declared option path`);
     }
 
     return option;
@@ -89,7 +89,7 @@ export function mergeStructureMetadata({
       freeze({
         severity: "error",
         blocking: true,
-        environment,
+        namespace: namespaceName,
         ...finding,
         files: freeze(finding.files),
         ...(config === undefined ? {} : { config: freeze(config) }),
@@ -129,7 +129,7 @@ export function mergeStructureMetadata({
         reportInput(
           {
             code: "config-metafile-conflict",
-            message: `${environment}:${path} sets ${field} in both the config and ${located.file}; keeping the value of ${located.file}`,
+            message: `${namespaceName}:${path} sets ${field} in both the config and ${located.file}; keeping the value of ${located.file}`,
             files: [located.file],
           },
           `${optionPath(path)}.${field}`,
@@ -149,7 +149,7 @@ export function mergeStructureMetadata({
       reportInput(
         {
           code: "config-metafile-kind",
-          message: `${environment}:${path} is declared as a ${other} by the config and as a ${kind} by ${sources}; keeping the ${kind} and dropping the config's ${other}`,
+          message: `${namespaceName}:${path} is declared as a ${other} by the config and as a ${kind} by ${sources}; keeping the ${kind} and dropping the config's ${other}`,
           files,
         },
         optionPath(path),
@@ -171,7 +171,7 @@ export function mergeStructureMetadata({
         reportInput(
           {
             code: "domain-glob-namespace",
-            message: `${environment}:${path} is declared as a namespace by ${sources}, but the config domain glob ${glob} matches it; keeping the namespace`,
+            message: `${namespaceName}:${path} is declared as a namespace by ${sources}, but the config domain glob ${glob} matches it; keeping the namespace`,
             files,
           },
           optionPath(glob),
@@ -215,7 +215,7 @@ export function mergeStructureMetadata({
   );
 
   for (const { path, kind, files } of metadata) {
-    if (kind !== "namespace" || path === environmentRoot) {
+    if (kind !== "namespace" || path === namespaceRoot) {
       continue;
     }
 
@@ -227,7 +227,7 @@ export function mergeStructureMetadata({
 
     const finding = {
       code: "children-domains-namespace" as const,
-      message: `${environment}:${path} is declared as a namespace by ${files.join(", ")}, but ${parent}'s children are domains; keeping the namespace`,
+      message: `${namespaceName}:${path} is declared as a namespace by ${files.join(", ")}, but ${parent}'s children are domains; keeping the namespace`,
     };
 
     const declaring = metadataAt.get(parent)?.fields.children;

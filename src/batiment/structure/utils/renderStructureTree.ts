@@ -4,7 +4,7 @@ import { findStructureAliases } from "#batiment/structure/utils/findStructureAli
 import { listNodeViolations } from "#batiment/structure/utils/listNodeViolations";
 import { renderStructureLabel } from "#batiment/structure/utils/renderStructureLabel";
 import type { Alias } from "#batiment/structure/types/Alias";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 
 interface TreeRow {
@@ -87,23 +87,23 @@ function renderRows(
 }
 
 export function renderStructureTree({
-  environment,
+  namespace,
   aliases,
   globalRoles = [],
   detailed = false,
 }: {
-  environment: EnvironmentStructure;
+  namespace: NamespaceStructure;
   aliases: readonly Alias[];
   globalRoles?: readonly string[];
   detailed?: boolean;
 }): string[] {
-  const { root } = environment;
+  const { root } = namespace;
 
   const options = {
-    aliases: findStructureAliases(environment, aliases),
+    aliases: findStructureAliases(namespace, aliases),
     detailed,
-    groupLabel: environment.layout?.nature === "recursive"
-      ? environment.layout.node.label
+    groupLabel: namespace.layout?.nature === "recursive"
+      ? namespace.layout.node.label
       : undefined,
   };
 
@@ -111,9 +111,9 @@ export function renderStructureTree({
     renderStructureLabel({
       node: root,
       ...options,
-      name: `${environment.dirs.join("/ ")}/`,
+      name: `${namespace.dirs.join("/ ")}/`,
       extras: [
-        ...(detailed ? [`(${environment.strictness})`] : []),
+        ...(detailed ? [`(${namespace.strictness})`] : []),
         ...(globalRoles.length === 0
           ? []
           : [`(global roles: ${globalRoles.join(" ")})`]),

@@ -1,9 +1,9 @@
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 
 export function isViolatingNode(
   node: StructureNode,
-  strictness: EnvironmentStructure["strictness"],
+  strictness: NamespaceStructure["strictness"],
 ): boolean {
   return (
     (strictness === "strict" && node.kind === "unclassified") ||

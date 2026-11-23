@@ -56,7 +56,7 @@ export default defineConvention({
       targetFile,
       target,
     }: ImportEdge): BoundaryViolation | undefined {
-      if (importer === undefined && entities.withinEnvironment(file)) {
+      if (importer === undefined && entities.withinStructure(file)) {
         return unknownPath(file);
       }
 
@@ -73,7 +73,7 @@ export default defineConvention({
         return violation("selfImport");
       }
 
-      if (target === undefined && entities.withinEnvironment(targetFile)) {
+      if (target === undefined && entities.withinStructure(targetFile)) {
         return unknownPath(targetFile);
       }
 

@@ -5,7 +5,7 @@ import { values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
-  type EnvironmentStructure,
+  type NamespaceStructure,
 } from "#batiment/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
@@ -20,7 +20,7 @@ import type { File } from "#types/File";
 
 async function planRootEntries(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],
 ): Promise<BarrelPlan[]> {
@@ -60,7 +60,7 @@ async function planRootEntries(
 
 async function planEnvironment(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
 ): Promise<BarrelPlan[]> {
   const { root, indexFile, entryFile } = environment;
 

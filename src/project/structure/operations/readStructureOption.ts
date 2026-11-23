@@ -5,8 +5,8 @@ import { isArray, isBoolean, isObject } from "@auaust/toolkit";
 import { loadLazy } from "#foundation/modules/index";
 import { discoverDeclaredEnvironment } from "#project/environments/index";
 import type {
-  EnvironmentStructureOption,
   Layout,
+  NamespaceStructureOption,
 } from "#batiment/structure/index";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext, ConfigResolver } from "#project/config/index";
@@ -14,7 +14,7 @@ import type { ConfigContext, ConfigResolver } from "#project/config/index";
 const domainsLayout = "domains";
 
 // @debt the check covers the fields every structure reads, so the roles, layout and mirror flag a contributed environment resolves are trusted unchecked
-const structureOption = custom<EnvironmentStructureOption>((value) => {
+const structureOption = custom<NamespaceStructureOption>((value) => {
   if (!isObject(value) || !("enabled" in value) || !isBoolean(value.enabled)) {
     return false;
   }
@@ -33,7 +33,7 @@ const structureOption = custom<EnvironmentStructureOption>((value) => {
 async function resolveLayout(
   config: ConfigResolver,
   environment: string,
-  option: EnvironmentStructureOption,
+  option: NamespaceStructureOption,
 ): Promise<Layout | undefined> {
   const { kind } = await discoverDeclaredEnvironment(config, environment);
 
@@ -68,7 +68,7 @@ export async function readStructureOption(
   config: ConfigResolver,
   name: string,
 ): Promise<{
-  readonly option: EnvironmentStructureOption;
+  readonly option: NamespaceStructureOption;
   readonly layout: Layout | undefined;
 }> {
   const key = `${name}.options`;

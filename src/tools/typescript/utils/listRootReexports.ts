@@ -5,7 +5,7 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
-  type EnvironmentStructure,
+  type NamespaceStructure,
 } from "#batiment/structure/index";
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import type { ReexportMode } from "#batiment/roles/index";
@@ -36,7 +36,7 @@ function reexportAs(
 }
 
 export function listRootReexports(
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   directory: Directory,
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],

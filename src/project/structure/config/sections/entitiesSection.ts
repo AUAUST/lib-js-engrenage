@@ -42,7 +42,7 @@ export const entitiesSection = declareSection({
     return createEntityIndex({
       root: config.context.root,
       structure,
-      environments: record(
+      placements: record(
         environments.map(({ entry, environment }) => {
           return [entry.name, environment];
         }),

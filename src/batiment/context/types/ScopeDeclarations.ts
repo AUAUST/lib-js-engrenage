@@ -1,6 +1,6 @@
-import type { EnvironmentDeclarations } from "#batiment/context/types/EnvironmentDeclarations";
+import type { NamespaceDeclarations } from "#batiment/context/types/NamespaceDeclarations";
 
 export interface ScopeDeclarations {
   readonly internals: boolean;
-  readonly environments: readonly EnvironmentDeclarations[];
+  readonly namespaces: readonly NamespaceDeclarations[];
 }

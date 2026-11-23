@@ -5,7 +5,7 @@ import { filter } from "@auaust/toolkit/array";
 
 import {
   collectStructureNodes,
-  type EnvironmentStructure,
+  type NamespaceStructure,
 } from "#batiment/structure/index";
 import { packages } from "#constants";
 import { runGateBinary, type GateResult } from "#project/gate/index";
@@ -21,7 +21,7 @@ interface GateTests {
 }
 
 function listMirrors(
-  tests: EnvironmentStructure | undefined,
+  tests: NamespaceStructure | undefined,
 ): ReadonlyMap<Directory, Directory> {
   const nodes = tests === undefined ? [] : collectStructureNodes(tests.root);
 

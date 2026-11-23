@@ -4,21 +4,21 @@ import { collectStructureNodes } from "#batiment/structure/utils/collectStructur
 import { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
 import { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
 import type { StructureDiagnostic } from "#batiment/report/index";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 
 function listNodeErrors(
   node: StructureNode,
-  environment: Omit<EnvironmentStructure, "diagnostics">,
+  namespace: Omit<NamespaceStructure, "diagnostics">,
 ): StructureDiagnostic[] {
   const located = {
     severity: "error",
-    environment: environment.name,
+    namespace: namespace.name,
     path: node.path,
   } as const;
 
   return [
-    ...(environment.strictness === "strict" && node.kind === "unclassified"
+    ...(namespace.strictness === "strict" && node.kind === "unclassified"
       ? [
           {
             ...located,
@@ -55,20 +55,20 @@ function listNodeErrors(
 }
 
 export function listStructureDiagnostics(
-  environment: Omit<EnvironmentStructure, "diagnostics">,
+  namespace: Omit<NamespaceStructure, "diagnostics">,
 ): StructureDiagnostic[] {
-  const nodes = collectStructureNodes(environment.root);
+  const nodes = collectStructureNodes(namespace.root);
 
   return [
-    ...flatMap(nodes, (node) => listNodeErrors(node, environment)),
-    ...environment.unreached.map(({ path, kind, config, files }) => {
+    ...flatMap(nodes, (node) => listNodeErrors(node, namespace)),
+    ...namespace.unreached.map(({ path, kind, config, files }) => {
       const sources = [...(config ? ["the config"] : []), ...files];
 
       return {
         severity: "error" as const,
         code: "unreached" as const,
         message: `unreached ${kind}, declared by ${sources.join(", ")}`,
-        environment: environment.name,
+        namespace: namespace.name,
         path,
         files,
       };
@@ -82,7 +82,7 @@ export function listStructureDiagnostics(
           severity: "warning" as const,
           code: "missing-purpose" as const,
           message: "has no purpose: set one on its `domains` entry.",
-          environment: environment.name,
+          namespace: namespace.name,
           path: node.path,
           files: [],
         };

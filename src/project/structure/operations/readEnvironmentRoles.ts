@@ -1,19 +1,16 @@
-import {
-  listEnvironmentRoles,
-  type EnvironmentRoles,
-} from "#batiment/roles/index";
+import { listNamespaceRoles, type NamespaceRoles } from "#batiment/roles/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
 import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 
 const readsFor = memoizeByContext(() => {
-  return new Map<string, Promise<EnvironmentRoles | undefined>>();
+  return new Map<string, Promise<NamespaceRoles | undefined>>();
 });
 
 async function createEnvironmentRoles(
   config: ConfigResolver,
   environment: string,
-): Promise<EnvironmentRoles | undefined> {
+): Promise<NamespaceRoles | undefined> {
   const { option, layout } = await readStructureOption(config, environment);
 
   if (!option.enabled) {
@@ -35,9 +32,9 @@ async function createEnvironmentRoles(
   ]);
 
   return {
-    roles: listEnvironmentRoles({
+    roles: listNamespaceRoles({
       ...option,
-      environment,
+      namespace: environment,
       defaults,
       layoutRoles: layout?.nature === "recursive" ? layout.roles : [],
     }),
@@ -57,7 +54,7 @@ async function createEnvironmentRoles(
 export function readEnvironmentRoles(
   config: ConfigResolver,
   environment: string,
-): Promise<EnvironmentRoles | undefined> {
+): Promise<NamespaceRoles | undefined> {
   const reads = readsFor(config.context);
 
   let read = reads.get(environment);

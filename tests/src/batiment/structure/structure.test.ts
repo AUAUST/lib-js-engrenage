@@ -497,7 +497,7 @@ describe("structure", () => {
         severity: "warning",
         code: "missing-purpose",
         message: "has no purpose: set one on its `domains` entry.",
-        environment: "src",
+        namespace: "src",
         path: "src/feature",
         files: [],
       },
@@ -538,12 +538,12 @@ describe("structure", () => {
 
       expect(nodes.get("tests/src")).toMatchObject({
         kind: "mirror",
-        mirror: { environment: "src" },
+        mirror: { namespace: "src" },
       });
 
       expect(nodes.get("tests/src/a")).toMatchObject({
         kind: "mirror",
-        mirror: { environment: "src", path: "src/a" },
+        mirror: { namespace: "src", path: "src/a" },
       });
 
       expect(nodes.get("tests/fixtures")).toMatchObject({

@@ -12,7 +12,7 @@ export interface StructureParent {
   readonly source: StructureSource;
   readonly location: RoleLocation;
   readonly mirrored?: {
-    readonly environment: string;
+    readonly namespace: string;
     readonly subpath: string;
   };
 }

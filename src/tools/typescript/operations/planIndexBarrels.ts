@@ -8,7 +8,7 @@ import { getOwn } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   isPlaced,
-  type EnvironmentStructure,
+  type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
@@ -84,7 +84,7 @@ function planRoleBarrels(
 
 export async function planIndexBarrels(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
 ): Promise<BarrelPlan[]> {
   const { root, roles, indexFile } = environment;
 

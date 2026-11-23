@@ -25,10 +25,10 @@ import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { EntityIndex } from "#batiment/structure/apis/EntityIndex";
 import type { Entity } from "#batiment/structure/types/Entity";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
 import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { LocatedEntity } from "#batiment/structure/types/LocatedEntity";
 import type { NamedFileRole } from "#batiment/structure/types/NamedFileRole";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { ResolvedAliases } from "#batiment/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
@@ -37,7 +37,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
-interface CodeEnvironment {
+interface CodeNamespace {
   readonly active: boolean;
   readonly dirs: Directories;
 }
@@ -58,8 +58,8 @@ function sortVariants(
 export function createEntityIndex({
   root,
   structure,
-  environments,
-  roles: environmentRoles,
+  placements,
+  roles: namespaceRoles,
   testPatterns,
   scopes,
   outDir,
@@ -68,7 +68,7 @@ export function createEntityIndex({
 }: {
   root: Directory;
   structure: ResolvedStructure;
-  environments: Readonly<Record<string, CodeEnvironment>>;
+  placements: Readonly<Record<string, CodeNamespace>>;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   testPatterns: Readonly<Partial<Record<string, Globs>>>;
   scopes: ScopeTree;
@@ -107,7 +107,7 @@ export function createEntityIndex({
   }
 
   function rolesOf(name: string): ResolvedRoles {
-    return getOwn(environmentRoles, name) ?? noRoles;
+    return getOwn(namespaceRoles, name) ?? noRoles;
   }
 
   function register(path: Directory, located: LocatedEntity) {
@@ -116,10 +116,10 @@ export function createEntityIndex({
     }
   }
 
-  function surfaceOf(node: StructureNode, environment: EnvironmentStructure) {
-    const extension = extname(environment.indexFile);
+  function surfaceOf(node: StructureNode, namespace: NamespaceStructure) {
+    const extension = extname(namespace.indexFile);
 
-    const entry = publicEntries.get(`${node.path}/${environment.entryFile}`);
+    const entry = publicEntries.get(`${node.path}/${namespace.entryFile}`);
 
     // @debt reads a child role's visibility from the environment's roles, which miss the opt-in roles a namespace enables; `environment.roles` holds every role the walk met
     const roles = node.children
@@ -127,7 +127,7 @@ export function createEntityIndex({
         return (
           child.kind === "role" &&
           child.role !== undefined &&
-          rolesOf(environment.name).roles[child.role]?.public
+          rolesOf(namespace.name).roles[child.role]?.public
         );
       })
       .map((child) => {
@@ -135,12 +135,12 @@ export function createEntityIndex({
       });
 
     const roleFiles = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
-      return rolesOf(environment.name).roles[role]?.public ? files : [];
+      return rolesOf(namespace.name).roles[role]?.public ? files : [];
     });
 
     const barrels = node.children
       .filter((child) => child.kind === "role")
-      .map((child) => posix.join(child.path, environment.indexFile));
+      .map((child) => posix.join(child.path, namespace.indexFile));
 
     const packaged = [...roleFiles, ...barrels].map((file) => {
       const subpath = publicEntries.get(file);
@@ -154,7 +154,7 @@ export function createEntityIndex({
       [
         getAliasSpecifier(
           specifiers,
-          posix.join(node.path, environment.indexFile),
+          posix.join(node.path, namespace.indexFile),
         ),
         ...roles,
         ...roleFiles.map((file) => getAliasSpecifier(specifiers, file)),
@@ -169,21 +169,21 @@ export function createEntityIndex({
   function visit(
     node: StructureNode,
     parent: Entity,
-    environment: EnvironmentStructure,
+    namespace: NamespaceStructure,
     directory: Directory,
   ) {
     const role = node.kind === "role" ? node.role : undefined;
-    const roles = rolesOf(environment.name);
+    const roles = rolesOf(namespace.name);
 
     const contract = role === undefined
       ? undefined
-      : environment.roles[role]?.contract;
+      : namespace.roles[role]?.contract;
 
     const named = freeze(
       listNamedFileRoles(
         contract?.roles ?? [],
         (name) => {
-          return environment.roles[name]?.contract;
+          return namespace.roles[name]?.contract;
         },
         node.fileNames,
       ),
@@ -200,7 +200,7 @@ export function createEntityIndex({
         ? node.path.slice(directory.length + 1)
         : parent.domain,
       surface: node.kind === "domain"
-        ? surfaceOf(node, environment)
+        ? surfaceOf(node, namespace)
         : parent.surface,
       collects: node.kind === "domain"
         ? freeze([...(node.collects ?? [])])
@@ -219,18 +219,18 @@ export function createEntityIndex({
     });
 
     for (const child of node.children) {
-      visit(child, entity, environment, directory);
+      visit(child, entity, namespace, directory);
     }
   }
 
-  for (const environment of values(structure)) {
-    if (environment === undefined) {
+  for (const namespace of values(structure)) {
+    if (namespace === undefined) {
       continue;
     }
 
-    const { root: tree, name } = environment;
+    const { root: tree, name } = namespace;
 
-    for (const directory of environment.dirs) {
+    for (const directory of namespace.dirs) {
       const entity: Entity = freeze({
         ...createStructureEntity(name, directory, rootScope),
         kind: tree.kind,
@@ -255,13 +255,13 @@ export function createEntityIndex({
 
       for (const child of tree.children) {
         if (child.path.startsWith(`${directory}/`)) {
-          visit(child, entity, environment, directory);
+          visit(child, entity, namespace, directory);
         }
       }
     }
   }
 
-  for (const [name, { active, dirs }] of entries(environments)) {
+  for (const [name, { active, dirs }] of entries(placements)) {
     if (active) {
       for (const directory of dirs) {
         register(directory, {
@@ -369,7 +369,7 @@ export function createEntityIndex({
     specifierOf(file) {
       return getAliasSpecifier(specifiers, toProjectPath(file));
     },
-    withinEnvironment(file) {
+    withinStructure(file) {
       return nearest(posix.dirname(toProjectPath(file))) !== undefined;
     },
   };

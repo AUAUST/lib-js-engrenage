@@ -1,6 +1,6 @@
 import {
   collectStructureNodes,
-  type EnvironmentStructure,
+  type NamespaceStructure,
 } from "#batiment/structure/index";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { isCollected } from "#tools/typescript/utils/isCollected";
@@ -9,7 +9,7 @@ import type { BarrelModule } from "#tools/typescript/types/BarrelModule";
 
 export async function listCollectedModules(
   filesystem: Filesystem,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   roles: readonly string[],
 ): Promise<BarrelModule[]> {
   if (roles.length === 0) {

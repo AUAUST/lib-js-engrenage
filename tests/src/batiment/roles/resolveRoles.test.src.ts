@@ -23,7 +23,7 @@ function resolve({
   published?: boolean;
 }) {
   return resolveRoles({
-    environment: "src",
+    namespace: "src",
     roles,
     effects: {
       levels: undefined,

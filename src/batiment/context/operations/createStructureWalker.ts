@@ -20,7 +20,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-const environmentRoot = ".";
+const namespaceRoot = ".";
 
 export function createStructureWalker({
   filesystem,
@@ -303,7 +303,7 @@ export function createStructureWalker({
       return [];
     }
 
-    const base = subpath === environmentRoot ? "" : `${subpath}/`;
+    const base = subpath === namespaceRoot ? "" : `${subpath}/`;
 
     const directories = await listStructureDirectories(
       filesystem,

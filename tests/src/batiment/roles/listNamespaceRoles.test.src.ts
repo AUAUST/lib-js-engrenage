@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
-import { listEnvironmentRoles, resolveRoles } from "#batiment/roles/index";
+import { listNamespaceRoles, resolveRoles } from "#batiment/roles/index";
 import {
   actions,
   commands,
@@ -11,12 +11,12 @@ import {
   utils,
 } from "#project/roles/index";
 
-describe("listEnvironmentRoles", () => {
+describe("listNamespaceRoles", () => {
   test("lets a listed role replace the layout's role of the same name", () => {
     const resolved = resolveRoles({
-      environment: "scripts",
-      roles: listEnvironmentRoles({
-        environment: "scripts",
+      namespace: "scripts",
+      roles: listNamespaceRoles({
+        namespace: "scripts",
         layoutRoles: [index(), executable(), commands(), actions()],
         roles: [index({ purpose: "The group." })],
         defaults: [],
@@ -41,8 +41,8 @@ describe("listEnvironmentRoles", () => {
   });
 
   test("lets a listed role replace the default of its name", () => {
-    const roles = listEnvironmentRoles({
-      environment: "src",
+    const roles = listNamespaceRoles({
+      namespace: "src",
       roles: [utils({ effects: "pure" })],
       defaults: [index(), utils()],
     });
@@ -53,8 +53,8 @@ describe("listEnvironmentRoles", () => {
   });
 
   test("drops an omitted default", () => {
-    const roles = listEnvironmentRoles({
-      environment: "src",
+    const roles = listNamespaceRoles({
+      namespace: "src",
       omitRoles: ["index"],
       defaults: [index(), utils()],
     });
@@ -64,8 +64,8 @@ describe("listEnvironmentRoles", () => {
 
   test("rejects omitting a role that is no default", () => {
     expect(() => {
-      return listEnvironmentRoles({
-        environment: "src",
+      return listNamespaceRoles({
+        namespace: "src",
         omitRoles: ["pages"],
         defaults: [index(), utils()],
       });

@@ -4,7 +4,7 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   isPlaced,
-  type EnvironmentStructure,
+  type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
@@ -35,7 +35,7 @@ function nameRoleFiles(node: StructureNode) {
 export async function listDomainModules(
   filesystem: Filesystem,
   domain: StructureNode,
-  environment: EnvironmentStructure,
+  environment: NamespaceStructure,
   accepts: (role: string, contract: ResolvedRoleContract) => boolean,
 ): Promise<BarrelModule[]> {
   const { roles, indexFile } = environment;

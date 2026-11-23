@@ -5,7 +5,7 @@ import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
 import { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
 import type { Alias } from "#batiment/structure/types/Alias";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 
 // @debt map renderers repeat code and list text formatting helpers
 function code(value: string): string {
@@ -16,18 +16,18 @@ function list(values: readonly string[]): string {
   return values.map(code).join(", ");
 }
 
-export function renderEnvironmentMap({
+export function renderNamespaceMap({
   name,
-  environment,
+  namespace,
   roles,
   aliases,
 }: {
   name: string;
-  environment: EnvironmentStructure;
+  namespace: NamespaceStructure;
   roles: ResolvedRoles | undefined;
   aliases: readonly Alias[];
 }): string {
-  const { root, layout } = environment;
+  const { root, layout } = namespace;
 
   // @debt "global roles" mixes role directories present at the root with file roles allowed there
   const globalRoles = [
@@ -42,7 +42,7 @@ export function renderEnvironmentMap({
   ];
 
   const tree = renderStructureTree({
-    environment,
+    namespace,
     aliases,
     globalRoles,
   });
@@ -50,18 +50,18 @@ export function renderEnvironmentMap({
   return [
     `# Project map: ${name}`,
     "",
-    ...(environment.strictness === "loose"
+    ...(namespace.strictness === "loose"
       ? ["Strictness: loose, unclassified directories are plain domains.", ""]
       : []),
     "```",
     ...tree,
     "```",
-    ...(environment.unclassified.length === 0
+    ...(namespace.unclassified.length === 0
       ? []
       : [
           "",
           `Unclassified: ${list(
-            environment.unclassified.map(({ path }) => {
+            namespace.unclassified.map(({ path }) => {
               return path;
             }),
           )}`,

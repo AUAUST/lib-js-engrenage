@@ -24,9 +24,9 @@ function isRootFile(
   );
 }
 
-export function checkEnvironments(
+export function checkNamespaces(
   edge: ImportEdge,
-  { environments, elements, entries }: ImportGrants,
+  { namespaces, elements, entries }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { importer, target } = edge;
 
@@ -57,9 +57,9 @@ export function checkEnvironments(
 
   return category !== undefined &&
     importer.namespace !== undefined &&
-    environments[importer.namespace]?.includes(category) === true
+    namespaces[importer.namespace]?.includes(category) === true
     ? freeze({
-        cause: "environment",
+        cause: "namespace",
         boundary: undefined,
         fix: undefined,
         category,

@@ -6,7 +6,7 @@ export type BoundaryCause =
   | "typeOnly"
   | "globalRole"
   | "entrySurface"
-  | "environment"
+  | "namespace"
   | "rootEntry"
   | "testVariant"
   | "scope"

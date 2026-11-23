@@ -12,7 +12,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ environments  Declare environment kinds, the runtime facts of the environments placed in scopes.
 │  ├─ report  The structure report's diagnostics and their codes, shared by every batiment domain.
 │  ├─ roles  Declare role contracts.
-│  ├─ scopes  Build the scope tree: the root workspace, the workspaces in it and the IDs of their environments; declare namespace kinds, their relations and the namespace and domain declarations structuring them.
+│  ├─ scopes  Build the scope tree: the root workspace, the workspaces in it and the IDs of their namespaces; declare namespace kinds, their relations and the namespace and domain declarations structuring them.
 │  └─ structure  The structure model a walk yields: its nodes, roles and boundaries, its metafiles merged over declarations, and the checks and renderings of its report.
 ├─ foundation/  #foundation/…  Primitives without project knowledge.
 │  ├─ blocks  Composable content blocks for generated files.

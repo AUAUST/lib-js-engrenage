@@ -106,7 +106,7 @@ entries:
   - id: 261122-3d2e
     title: Map and tree renderers are ad hoc
     sites:
-      - src/batiment/structure/utils/renderEnvironmentMap.ts:10
+      - src/batiment/structure/utils/renderNamespaceMap.ts:10
       - src/batiment/structure/utils/renderStructureTree.ts:15
     why: map renderers repeat code; one `detailed` flag branches every tree helper.
     want: one structured renderer shared by the map renderers; two row policies over one drawing.
@@ -123,7 +123,7 @@ entries:
     want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.
   - id: 261122-ee03
     title: Duplicate-role errors name merged positions, not the config's
-    why: since default roles (AUAUST/lib-js-engrenage#629), `listEnvironmentRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/batiment/roles/utils/registerRoles.ts`.
+    why: since default roles (AUAUST/lib-js-engrenage#629), `listNamespaceRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/batiment/roles/utils/registerRoles.ts`.
     want: "`resolveRoles` receives each role's own config position (or none for a default) and errors name it."
   - id: 261122-a24d
     title: Structure types restate schema vocabulary and field names

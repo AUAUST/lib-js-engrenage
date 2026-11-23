@@ -1,4 +1,4 @@
-import { getEnvironmentCategory } from "#batiment/structure/utils/getEnvironmentCategory";
+import { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
 import { isEntryReference } from "#batiment/structure/utils/isEntryReference";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportEdge } from "#batiment/structure/types/ImportEdge";
@@ -25,7 +25,7 @@ export function getImportCategory(
     }
 
     default: {
-      return getEnvironmentCategory(namespace, entries);
+      return getNamespaceCategory(namespace, entries);
     }
   }
 }

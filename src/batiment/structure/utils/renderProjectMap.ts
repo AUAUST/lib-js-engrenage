@@ -27,7 +27,7 @@ function renderCell(
   grants: ImportGrants,
   testNamespaces: readonly string[],
 ): string {
-  const forbidden = grants.environments[name]?.includes(category) === true;
+  const forbidden = grants.namespaces[name]?.includes(category) === true;
 
   if (forbidden) {
     return "never";
@@ -96,7 +96,7 @@ export function renderProjectMap({
   directory: Directory;
 }): string {
   const mapped = entries(structure)
-    .filter(([, environment]) => environment !== undefined)
+    .filter(([, namespace]) => namespace !== undefined)
     .map(([name]) => name);
 
   const categories = listCategories(namespaces, grants);
@@ -140,9 +140,9 @@ export function renderProjectMap({
       .filter(([relation]) => relation !== "scope")
       .map(([relation, meaning]) => `| ${code(relation)} | ${meaning} |`),
     "",
-    "## Environments",
+    "## Namespaces",
     "",
-    `The matrix states environment grants; domain and role boundaries still apply. No importer but its environment's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),
+    `The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),
     "",
     "| Category | Meaning |",
     "| --- | --- |",

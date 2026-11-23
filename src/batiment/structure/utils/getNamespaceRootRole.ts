@@ -1,9 +1,9 @@
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import type { ResolvedRoles } from "#batiment/roles/index";
-import type { EnvironmentStructure } from "#batiment/structure/types/EnvironmentStructure";
+import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 
-export function getEnvironmentRootRole(
-  { entryFile, indexFile }: EnvironmentStructure,
+export function getNamespaceRootRole(
+  { entryFile, indexFile }: NamespaceStructure,
   roles: ResolvedRoles["roles"],
 ): { readonly role: string; readonly file: string } | undefined {
   if (entryFile !== undefined) {

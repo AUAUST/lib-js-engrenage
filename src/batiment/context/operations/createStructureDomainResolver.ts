@@ -120,7 +120,7 @@ export function createStructureDomainResolver({
           code: "private-domain-entry",
           message: `${entry} exists, but its domain is declared \`public: false\`; keeping \`public: false\``,
           blocking: true,
-          environment: name,
+          namespace: name,
           files: freeze([entry]),
         }),
       );

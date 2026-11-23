@@ -2,7 +2,7 @@ import type { Role } from "#batiment/roles/index";
 import type { NamespaceDeclaration } from "#batiment/scopes/index";
 import type { Directory } from "#types/Directory";
 
-export type EnvironmentStructureOption =
+export type NamespaceStructureOption =
   | { readonly enabled: false }
   | {
       readonly enabled: true;

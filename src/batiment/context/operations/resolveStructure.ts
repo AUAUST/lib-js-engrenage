@@ -2,15 +2,15 @@ import { matchesGlob, posix } from "node:path";
 
 import { freeze, hasOwn, keys, record, values } from "@auaust/toolkit/object";
 
-import { resolveEnvironmentStructure } from "#batiment/context/operations/resolveEnvironmentStructure";
+import { resolveNamespaceStructure } from "#batiment/context/operations/resolveNamespaceStructure";
 import {
   collectStructureNodes,
   listStructureDiagnostics,
   mergeStructureMetadata,
   resolveDomainEntries,
-  type DeclaredEnvironment,
+  type DeclaredNamespace,
   type DeclaredStructure,
-  type EnvironmentStructure,
+  type NamespaceStructure,
   type ResolvedStructure,
   type StructureMetadata,
   type StructureNode,
@@ -25,14 +25,11 @@ function listUnreached({
   merged,
   metadata,
 }: {
-  structure: Omit<
-    EnvironmentStructure,
-    "unreached" | "diagnostics" | "entries"
-  >;
+  structure: Omit<NamespaceStructure, "unreached" | "diagnostics" | "entries">;
   declared: DeclaredStructure;
   merged: Pick<StructureOptions, "namespaces" | "domains">;
   metadata: readonly StructureMetadata[];
-}): EnvironmentStructure["unreached"] {
+}): NamespaceStructure["unreached"] {
   const walked = structure.dirs.filter((directory) => directory !== ".");
 
   const subpaths = collectStructureNodes(structure.root).flatMap((node) => {
@@ -79,40 +76,31 @@ function listUnreached({
   ].sort((left, right) => left.path.localeCompare(right.path));
 }
 
-async function resolveEnvironment({
+async function resolveNamespace({
   filesystem,
   internals,
-  environment,
+  namespace,
   tests,
 }: {
   filesystem: Filesystem;
   internals: boolean;
-  environment: DeclaredEnvironment;
+  namespace: DeclaredNamespace;
   tests?: TestsContext;
-}): Promise<EnvironmentStructure | undefined> {
-  const {
-    name,
-    key,
-    dirs,
-    active,
-    option,
-    layout,
-    roles,
-    origins,
-  } = environment;
+}): Promise<NamespaceStructure | undefined> {
+  const { name, key, dirs, active, option, layout, roles, origins } = namespace;
 
   if (!option.enabled || !active) {
     return;
   }
 
-  if (environment.declared === undefined || environment.read === undefined) {
+  if (namespace.declared === undefined || namespace.read === undefined) {
     throw new Error(
       `The structured ${name} environment carries no declared structure or metafiles`,
     );
   }
 
-  const { defined, optionPaths, ...declared } = environment.declared;
-  const { read } = environment;
+  const { defined, optionPaths, ...declared } = namespace.declared;
+  const { read } = namespace;
 
   const mirrored = tests === undefined
     ? []
@@ -122,7 +110,7 @@ async function resolveEnvironment({
           code: "mirrored-metafile" as const,
           message: `${files.join(", ")} describes the mirrored ${name} environment, whose structure follows its counterparts; ignoring every metafile of ${name}`,
           blocking: true as const,
-          environment: name,
+          namespace: name,
           files,
         });
       });
@@ -130,7 +118,7 @@ async function resolveEnvironment({
   const metadata = tests === undefined ? read.metadata : [];
 
   const merged = mergeStructureMetadata({
-    environment: name,
+    namespaceName: name,
     key,
     declared,
     metadata,
@@ -140,7 +128,7 @@ async function resolveEnvironment({
 
   const { namespaces, domains } = merged;
 
-  const walked = await resolveEnvironmentStructure({
+  const walked = await resolveNamespaceStructure({
     name,
     filesystem,
     dirs,
@@ -223,9 +211,9 @@ function freezeNode(node: StructureNode): StructureNode {
 }
 
 // @debt the role contracts keep the `file`, `accepts`, `roles` and `rules` values of their definitions unfrozen, since freezing them in place would freeze caller-owned preset values
-function freezeEnvironment(
-  structure: EnvironmentStructure | undefined,
-): EnvironmentStructure | undefined {
+function freezeNamespace(
+  structure: NamespaceStructure | undefined,
+): NamespaceStructure | undefined {
   if (structure === undefined) {
     return;
   }
@@ -266,10 +254,7 @@ function freezeEnvironment(
   return freeze(structure);
 }
 
-function mirrorOf({
-  option,
-  layout,
-}: DeclaredEnvironment): boolean | undefined {
+function mirrorOf({ option, layout }: DeclaredNamespace): boolean | undefined {
   if (layout?.nature !== "derived") {
     return;
   }
@@ -280,25 +265,25 @@ function mirrorOf({
 export async function resolveStructure({
   filesystem,
   internals,
-  environments,
+  namespaces,
 }: {
   filesystem: Filesystem;
   internals: boolean;
-  environments: readonly DeclaredEnvironment[];
+  namespaces: readonly DeclaredNamespace[];
 }): Promise<ResolvedStructure> {
-  const counterparts = environments.filter((environment) => {
-    return mirrorOf(environment) === undefined;
+  const counterparts = namespaces.filter((namespace) => {
+    return mirrorOf(namespace) === undefined;
   });
 
-  const structures = new Map<string, EnvironmentStructure | undefined>();
+  const structures = new Map<string, NamespaceStructure | undefined>();
 
-  for (const environment of counterparts) {
+  for (const namespace of counterparts) {
     structures.set(
-      environment.name,
-      await resolveEnvironment({
+      namespace.name,
+      await resolveNamespace({
         filesystem,
         internals,
-        environment,
+        namespace,
       }),
     );
   }
@@ -309,17 +294,17 @@ export async function resolveStructure({
     }),
   );
 
-  for (const environment of environments) {
-    const mirror = mirrorOf(environment);
+  for (const namespace of namespaces) {
+    const mirror = mirrorOf(namespace);
 
     if (mirror !== undefined) {
       structures.set(
-        environment.name,
-        await resolveEnvironment({
+        namespace.name,
+        await resolveNamespace({
           filesystem,
           internals,
-          environment,
-          tests: { mirror, environments: tests },
+          namespace,
+          tests: { mirror, namespaces: tests },
         }),
       );
     }
@@ -327,8 +312,8 @@ export async function resolveStructure({
 
   return freeze(
     record(
-      environments.map(({ name }) => {
-        return [name, freezeEnvironment(structures.get(name))] as const;
+      namespaces.map(({ name }) => {
+        return [name, freezeNamespace(structures.get(name))] as const;
       }),
     ),
   );

@@ -29,7 +29,7 @@ import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-const environmentRoot = ".";
+const namespaceRoot = ".";
 const projectRoot = ".";
 
 type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
@@ -219,11 +219,11 @@ function groupByDirectory(
 }
 
 export async function readStructureMetadata({
-  environment,
+  namespace,
   filesystem,
   dirs,
 }: {
-  environment: string;
+  namespace: string;
   filesystem: Filesystem;
   dirs: Directories;
 }): Promise<{
@@ -238,7 +238,7 @@ export async function readStructureMetadata({
       freeze({
         severity: "error",
         blocking: true,
-        environment,
+        namespace,
         ...finding,
         files: freeze(finding.files),
       }),
@@ -273,7 +273,7 @@ export async function readStructureMetadata({
     const grouped = groupByDirectory(parsed, report);
 
     for (const metadata of grouped) {
-      if (metadata.kind === "domain" && metadata.path === environmentRoot) {
+      if (metadata.kind === "domain" && metadata.path === namespaceRoot) {
         report({
           code: "domain-metafile-at-root",
           message: `${metadata.files.join(", ")} describes an environment root, which is a namespace; ignoring it`,
