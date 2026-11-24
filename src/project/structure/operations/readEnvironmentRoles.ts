@@ -20,7 +20,7 @@ async function createEnvironmentRoles(
   const [
     defaults,
     { effects },
-    { verbatimModuleSyntax },
+    { verbatimModuleSyntax: typeImports },
     defaultModules,
     { published },
   ] = await Promise.all([
@@ -40,7 +40,7 @@ async function createEnvironmentRoles(
     }),
     effects,
     defaultModules,
-    verbatimModuleSyntax,
+    typeImports,
     published,
   };
 }

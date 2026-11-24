@@ -89,7 +89,7 @@ export interface RoleInput {
    */
   surface?: (("barrel" | "modules") | undefined)
   /**
-   * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.
+   * Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs the namespace's type imports kept apart from runtime ones as written.
    * @default false
    */
   typeOnly?: (boolean | undefined)

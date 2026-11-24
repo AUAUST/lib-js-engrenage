@@ -5,12 +5,12 @@ import type { NamespaceKind } from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
 
 /**
- * Lists the environments placed on the active root top-level namespaces whose
- * kind `accepts` takes, each directory's covering one and those nested below it.
+ * Lists the environments placed on the active root top-level namespaces `accepts`
+ * takes by kind and name, each directory's covering one and those nested below it.
  */
 export async function listNamespaceEnvironments(
   config: ConfigResolver,
-  accepts: (kind: NamespaceKind) => boolean,
+  accepts: (kind: NamespaceKind, name: string) => boolean,
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
@@ -18,8 +18,8 @@ export async function listNamespaceEnvironments(
 
   const names = new Set<string>();
 
-  for (const [, { active, kind, dirs }] of entries(namespaces)) {
-    if (!active || !accepts(kind)) {
+  for (const [name, { active, kind, dirs }] of entries(namespaces)) {
+    if (!active || !accepts(kind, name)) {
       continue;
     }
 

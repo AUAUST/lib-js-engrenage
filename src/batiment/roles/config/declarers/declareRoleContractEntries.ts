@@ -100,7 +100,7 @@ export function declareRoleContractEntries<Nested>(
       optional: { value: undefined },
     }),
     typeOnly: declare(boolean(), {
-      description: "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs `typescript.verbatimModuleSyntax`.",
+      description: "Whether its modules declare and export no runtime value and import only through top-level `import type`, from anything their domain may import and its own modules. Needs the namespace's type imports kept apart from runtime ones as written.",
       optional: describedDefault(roleContractDefaults.typeOnly),
     }),
     aliases: declare(pipe(array(string()), readonly()), {

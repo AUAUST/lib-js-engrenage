@@ -1,5 +1,7 @@
 import { describe, expect, test } from "vitest";
 
+import { keys } from "@auaust/toolkit/object";
+
 import { createRolePreset } from "#batiment/roles/index";
 import { declareSection } from "#foundation/options/index";
 import { createProjectConfig, type Extension } from "#project/config/index";
@@ -47,7 +49,7 @@ const library: Extension = {
     environmentPresets: [
       {
         name: "lib",
-        languages: ["typescript", "tsx"],
+        languages: ["typescript"],
       },
     ],
     environments: [
@@ -63,6 +65,7 @@ function createConfig(
   contribution: string,
   omitRoles: readonly string[],
   extensions: readonly Extension[] = [],
+  environments: Record<string, unknown> = {},
 ) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
@@ -73,6 +76,7 @@ function createConfig(
   return createProjectConfig({
     root: project.root,
     raw: withSourceRuntime({
+      environments,
       traits: {
         enable: ["published"],
       },
@@ -126,5 +130,21 @@ describe("listDefaultRoles", () => {
     const roles = (await config.resolve("environmentRoles")).lib?.roles;
 
     expect(roles).toHaveProperty("helpers");
+  });
+
+  test("applies no TypeScript role preset where the environment selects only javascript", async () => {
+    const config = createConfig("helpers", [], [], {
+      src: { languages: ["javascript"] },
+    });
+
+    const roles = (await config.resolve("environmentRoles")).src?.roles;
+
+    expect(keys(roles ?? {})).toEqual(["helpers"]);
+
+    const typescript = createConfig("helpers", []);
+
+    expect(
+      (await typescript.resolve("environmentRoles")).src?.roles,
+    ).toHaveProperty("index");
   });
 });

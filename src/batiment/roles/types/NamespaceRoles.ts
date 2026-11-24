@@ -6,6 +6,6 @@ export interface NamespaceRoles {
   readonly roles: readonly Role[];
   readonly effects: RoleEffects;
   readonly defaultModules?: EffectModules;
-  readonly verbatimModuleSyntax: boolean;
+  readonly typeImports: boolean;
   readonly published: boolean;
 }

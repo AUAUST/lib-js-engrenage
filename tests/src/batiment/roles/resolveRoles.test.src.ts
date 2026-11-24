@@ -9,18 +9,27 @@ import {
   type Role,
   type RoleEffects,
 } from "#batiment/roles/index";
-import { adapters, constants, hooks, index, utils } from "#project/roles/index";
+import {
+  adapters,
+  constants,
+  hooks,
+  index,
+  types,
+  utils,
+} from "#project/roles/index";
 
 function resolve({
   roles,
   effects = {},
   scopes,
   published = true,
+  typeImports = true,
 }: {
   roles: readonly Role[];
   effects?: Partial<RoleEffects>;
   scopes?: readonly string[];
   published?: boolean;
+  typeImports?: boolean;
 }) {
   return resolveRoles({
     namespace: "src",
@@ -31,7 +40,7 @@ function resolve({
       fallback: undefined,
       ...effects,
     },
-    verbatimModuleSyntax: true,
+    typeImports,
     published,
     ...(scopes === undefined ? {} : { scopes }),
   });
@@ -97,6 +106,16 @@ describe("resolveRoles", () => {
     });
 
     expect(resolve({ roles: [] }).roles).toEqual({});
+  });
+
+  test("resolves a typeOnly role as not type-only without type imports", () => {
+    expect(resolve({ roles: [types()] }).roles.types).toMatchObject({
+      typeOnly: true,
+    });
+
+    expect(
+      resolve({ roles: [types()], typeImports: false }).roles.types,
+    ).toMatchObject({ typeOnly: false });
   });
 
   test("activates an opt-in role only where a scope enables it", () => {

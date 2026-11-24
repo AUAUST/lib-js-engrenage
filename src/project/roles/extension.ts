@@ -2,10 +2,11 @@ import { rolePresetEntry } from "#project/roles/constants";
 import type { Extension } from "#project/config/index";
 
 const codeEnvironments = ["src", "tests", "scripts", "tooling"];
+const typescript = ["typescript"];
 
 /**
  * Owns the `roles` slot and contributes the generic role presets, each a default
- * role of the environments it lists.
+ * role of the environment kinds it lists, for TypeScript.
  */
 export default {
   name: "project/roles",
@@ -24,6 +25,7 @@ export default {
           return index;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "constants",
@@ -35,6 +37,7 @@ export default {
           return constants;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "declarations",
@@ -46,6 +49,7 @@ export default {
           return declarations;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "types",
@@ -55,6 +59,7 @@ export default {
           return types;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "utils",
@@ -64,6 +69,7 @@ export default {
           return utils;
         },
         environments: ["src", "scripts", "tooling"],
+        languages: typescript,
       },
       {
         name: "errors",
@@ -73,6 +79,7 @@ export default {
           return errors;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "enums",
@@ -82,6 +89,7 @@ export default {
           return enums;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "ports",
@@ -91,6 +99,7 @@ export default {
           return ports;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "adapters",
@@ -100,6 +109,7 @@ export default {
           return adapters;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "operations",
@@ -111,6 +121,7 @@ export default {
           return operations;
         },
         environments: codeEnvironments,
+        languages: typescript,
       },
       {
         name: "testutils",
@@ -122,6 +133,7 @@ export default {
           return testutils;
         },
         environments: ["tests"],
+        languages: typescript,
       },
       {
         name: "fixtures",
@@ -131,6 +143,7 @@ export default {
           return fixtures;
         },
         environments: ["tests"],
+        languages: typescript,
       },
       {
         name: "testsetup",
@@ -142,6 +155,7 @@ export default {
           return testsetup;
         },
         environments: ["tests"],
+        languages: typescript,
       },
       {
         name: "entrypoint",
@@ -153,6 +167,7 @@ export default {
           return entrypoint;
         },
         environments: ["src"],
+        languages: typescript,
         traits: ["published"],
       },
     ],

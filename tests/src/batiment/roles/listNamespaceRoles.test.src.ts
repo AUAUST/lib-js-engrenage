@@ -26,7 +26,7 @@ describe("listNamespaceRoles", () => {
         modules: undefined,
         fallback: undefined,
       },
-      verbatimModuleSyntax: true,
+      typeImports: true,
       published: true,
     });
 

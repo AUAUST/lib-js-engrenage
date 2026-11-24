@@ -21,6 +21,12 @@ export interface RolePresetEntry extends EntryShape {
    * Traits the project must all have for the role to be a default.
    */
   readonly traits?: readonly Trait[];
+  /**
+   * The languages the role serves: it is a default of a top-level namespace
+   * only when an environment placed on one of its directories selects one
+   * of them. Unset, any.
+   */
+  readonly languages?: readonly string[];
 }
 
 declare global {

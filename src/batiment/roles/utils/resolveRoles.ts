@@ -63,7 +63,7 @@ export function resolveRoles({
   roles,
   effects,
   defaultModules,
-  verbatimModuleSyntax,
+  typeImports,
   published,
   defined,
   scopes = [],
@@ -111,7 +111,7 @@ export function resolveRoles({
       );
     }
 
-    resolved[name] = verbatimModuleSyntax
+    resolved[name] = typeImports
       ? contract
       : freeze({ ...contract, typeOnly: false });
   }

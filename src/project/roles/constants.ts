@@ -16,4 +16,5 @@ export const rolePresetEntry: StandardSchemaV1 = looseObject({
   load: function_(),
   environments: array(string()),
   traits: optional(array(picklist(traits))),
+  languages: optional(array(string())),
 });
