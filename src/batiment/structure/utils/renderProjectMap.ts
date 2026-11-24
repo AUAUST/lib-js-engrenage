@@ -116,7 +116,20 @@ export function renderProjectMap({
   );
 
   const variantRows = [...variants.values()].map(({ name, against }) => {
-    const forbidden = getOwn(grants.variants, name) ?? [];
+    const reached = getOwn(grants.variants, name) ?? [];
+
+    const holders = namespaces.filter(({ kind }) => {
+      return kind.variants?.some((variant) => variant.name === name) === true;
+    });
+
+    const forbidden = columns.filter((category) => {
+      return (
+        reached.includes(category) ||
+        holders.every(({ id }) => {
+          return grants.namespaces[id]?.includes(category) === true;
+        })
+      );
+    });
 
     const allowed = columns.filter((category) => !forbidden.includes(category));
 

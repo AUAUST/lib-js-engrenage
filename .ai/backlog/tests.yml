@@ -69,3 +69,12 @@ entries:
       - tests/src/tools/agents/projectMap.test.ts:1
     why: three tooling role rule tests reject role rules as 'Expected a rule entry'; projectMap 'renders enforced grants for published=true' lacks '| source and dist |'
     done: a full pnpm engrenage vitest passes at main
+  - id: 261124-5103
+    title: Five test files each derive the repository root from their own relative URL
+    sites:
+      - tests/src/tools/eslint/boundaries.test.ts:619
+      - tests/src/tools/eslint/conventionImports.test.src.ts:11
+      - tests/src/metalbrain/instructions/agentNames.test.src.ts:8
+      - tests/src/project/config/lazyLoading.test.src.ts:10
+      - tests/src/batiment/structure/entityIndex.test.src.ts:34
+    want: One testutil exporting the repository root, reused by each site

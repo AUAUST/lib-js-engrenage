@@ -46,7 +46,7 @@ describe("resolveNamespaceGrants", () => {
 
     expect(grants.namespaces.scripts).not.toContain("data");
 
-    expect(grants.namespaces.tests).toEqual(["static"]);
+    expect(grants.namespaces.tests).toEqual(["static", "shipped"]);
 
     expect(grants.namespaces.src).toEqual([
       "tests",
@@ -54,6 +54,7 @@ describe("resolveNamespaceGrants", () => {
       "scripts",
       "tooling",
       "static",
+      "shipped",
     ]);
   });
 

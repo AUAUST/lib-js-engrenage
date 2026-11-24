@@ -37,6 +37,7 @@ export const aliasesSection = declareSection({
           })
           .map(({ entry, environment }) => [entry.name, environment.dirs]),
       ),
+      // @debt the root's `data` alias follows the `data` environment and the `published` trait while a workspace's follows its namespace kind (`aliasScopesSection`), so an unpublished project whose `data` namespace is of kind `shipped` still gets an alias its grants forbid
       data: data.active && !traits.published ? data.dirs : [],
       outDir: await readOutDir(config),
       source: trees.src === undefined

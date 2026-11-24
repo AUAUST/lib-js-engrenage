@@ -16,8 +16,8 @@ import type { Extension, FileLocation } from "#project/config/index";
  * `environments.execution`, `environments.tsconfig`, `define` and `runtime`, the
  * uncommitted coverage directory and the unlinted static directories. Contributes
  * the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
- * kinds and environment presets, one environment of each, named after it, and
- * the `javascript` language.
+ * kinds and environment presets, one environment of each, named after it, the
+ * `shipped` namespace kind and the `javascript` language.
  */
 export default {
   name: "project/environments",
@@ -300,6 +300,10 @@ export default {
       dataNamespaceKind,
       {
         name: "static",
+        level: "enforced",
+      },
+      {
+        name: "shipped",
         level: "enforced",
       },
     ],
