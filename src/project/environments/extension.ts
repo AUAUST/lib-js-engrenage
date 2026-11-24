@@ -1,5 +1,6 @@
 import {
   builtinEnvironmentPresets,
+  builtinLanguages,
   dataNamespaceKind,
   environmentEntry,
   environmentPresetEntry,
@@ -18,7 +19,7 @@ import type { Extension, FileLocation } from "#project/config/index";
  * directory and the unlinted static directories. Contributes the `src`, `tests`,
  * `bin`, `scripts`, `tooling`, `data` and `static` namespace kinds and environment
  * presets, one environment of each, named after it, the `shipped` namespace kind
- * and the `javascript` language.
+ * and the `javascript` and `json` languages.
  */
 export default {
   name: "project/environments",
@@ -363,13 +364,7 @@ export default {
         title: "the static environment's files",
       },
     ],
-    languages: [
-      {
-        name: "javascript",
-        extensions: [".js", ".mjs", ".cjs"],
-        modules: true,
-      },
-    ],
+    languages: builtinLanguages,
   },
 } satisfies Extension;
 

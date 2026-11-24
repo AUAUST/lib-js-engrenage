@@ -74,8 +74,9 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*{preset*}  Configure code formatting.
 │  │  └─ preset*  The ready-made Prettier config, for Prettier to load from `package.json`.
-│  ├─ shopify{theme}  Configure Shopify apps and themes.
-│  │  └─ theme  Format and ignore Shopify theme files.
+│  ├─ shopify{theme{preset}}  Configure Shopify apps and themes.
+│  │  └─ theme{preset}  Format Shopify theme files and contribute the `shopify-theme` preset.
+│  │     └─ preset  The `shopify-theme` preset's structure in each scope selecting it: the theme's namespaces, Liquid environment and Vite output.
 │  ├─ tsdown*  Configure package bundling and packaging validation.
 │  ├─ typescript*{tsc}  Configure and run TypeScript checks.
 │  │  └─ tsc  Run the TypeScript compiler.

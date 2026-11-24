@@ -30,6 +30,8 @@ export const workspacesSection = declareSection({
       return entry.modules === true ? entry.extensions : [];
     });
 
+    const modules = selected.filter((language) => language.modules === true);
+
     const [
       { expected },
       configs,
@@ -51,7 +53,7 @@ export const workspacesSection = declareSection({
       filesystem,
       options,
       // @debt a workspace's globs take every registered environment's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
-      typescriptFiles: listLanguageFiles(selected),
+      typescriptFiles: listLanguageFiles(modules),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
       expected,
     });

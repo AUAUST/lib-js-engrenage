@@ -1,14 +1,10 @@
 import { execFile, execFileSync } from "node:child_process";
-import { matchesGlob } from "node:path";
 import { promisify } from "node:util";
 
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
-import { flatMap } from "@auaust/toolkit/array";
-
 import { loadConfig } from "#project/config/operations/loadConfig";
-import { readEnvironments } from "#project/environments/operations/readEnvironments";
 import { runSync } from "#project/sync/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -138,29 +134,5 @@ describe("shopify-theme", { timeout: binaryTimeout }, () => {
 
     expect(ignores).not.toContain("/assets/d-*");
     expect(ignores).not.toContain("/assets/.vite/**");
-  });
-
-  test("leaves the theme directories outside every environment", async () => {
-    const project = createTheme();
-
-    const environments = await readEnvironments(await loadConfig(project.root));
-
-    const active = environments.filter(({ environment }) => {
-      return environment.active;
-    });
-
-    expect(active).not.toHaveLength(0);
-
-    const claimed = flatMap(active, ({ environment }) => {
-      return [
-        ...environment.dirs.map((directory) => `${directory}/**`),
-        ...(environment.globs ?? []),
-        ...(environment.rootFiles ?? []),
-      ];
-    });
-
-    expect(
-      claimed.filter((glob) => matchesGlob("sections/a.liquid", glob)),
-    ).toEqual([]);
   });
 });

@@ -1,36 +1,15 @@
-import {
-  shopifyPrettierPluginLiquid,
-  themeLayoutGlob,
-} from "#tools/shopify/theme/constants";
-import type { Extension, FileLocation } from "#project/config/index";
+import { shopifyPrettierPluginLiquid } from "#tools/shopify/theme/constants";
+import type { Extension } from "#project/config/index";
 
 /**
- * Active when `@shopify/prettier-plugin-liquid` is installed; owns Vite's theme
- * assets when a theme layout exists, formats `.liquid` files and contributes
- * the `shopify-theme` preset.
+ * Active when `@shopify/prettier-plugin-liquid` is installed; formats
+ * `.liquid` files and contributes the `shopify-theme` preset, whose structure
+ * `tools/shopify/theme/preset` applies in each scope selecting it.
  */
 export default {
   name: "tools/shopify/theme",
   when: {
     installed: shopifyPrettierPluginLiquid,
-  },
-  owns: {
-    files: {
-      "shopify.theme.vite": {
-        title: "Vite",
-        committed: false,
-        scope: "scoped",
-        async locate(config): Promise<FileLocation | undefined> {
-          const layouts = await config.context.filesystem.glob(themeLayoutGlob);
-
-          if (layouts.length === 0) {
-            return;
-          }
-
-          return { globs: ["assets/d-*", "assets/.vite/**"] };
-        },
-      },
-    },
   },
   contributes: {
     "prettier.plugins": [

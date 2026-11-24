@@ -16,6 +16,7 @@ import { environmentPresetFields } from "#batiment/environments/constants";
 import { namespaceKindFields } from "#batiment/scopes/constants";
 import type { NamespaceKind, TestVariant } from "#batiment/scopes/index";
 import type { EnvironmentPresetEntry } from "#project/environments/ports/EnvironmentPresetEntry";
+import type { LanguageEntry } from "#project/environments/ports/LanguageEntry";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
@@ -158,6 +159,18 @@ export const builtinEnvironmentPresets = freeze([
   freeze({ name: "data" } as const),
   freeze({ name: "static" } as const),
 ] as const) satisfies readonly EnvironmentPresetEntry[];
+
+export const builtinLanguages = freeze([
+  freeze({
+    name: "javascript",
+    extensions: freeze([".js", ".mjs", ".cjs"] as const),
+    modules: true,
+  } as const),
+  freeze({
+    name: "json",
+    extensions: freeze([".json"] as const),
+  } as const),
+] as const) satisfies readonly LanguageEntry[];
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const environmentPresetEntry: StandardSchemaV1 = looseObject({

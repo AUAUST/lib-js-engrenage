@@ -27,6 +27,7 @@ export { default as toolsPnpm } from "#tools/pnpm/extension";
 export { default as toolsPrettier } from "#tools/prettier/extension";
 export { default as toolsShopify } from "#tools/shopify/extension";
 export { default as toolsShopifyTheme } from "#tools/shopify/theme/extension";
+export { default as toolsShopifyThemePreset } from "#tools/shopify/theme/preset/extension";
 export { default as toolsTsdown } from "#tools/tsdown/extension";
 export { default as toolsTypescript } from "#tools/typescript/extension";
 export { default as toolsTypescriptTsc } from "#tools/typescript/tsc/extension";

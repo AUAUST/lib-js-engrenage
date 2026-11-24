@@ -1,0 +1,3 @@
+{
+  "purpose": "The `shopify-theme` preset's structure in each scope selecting it: the theme's namespaces, Liquid environment and Vite output."
+}
