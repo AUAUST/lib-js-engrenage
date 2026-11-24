@@ -3,13 +3,16 @@ import { describe, expect, test } from "vitest";
 import {
   createEnvironmentPreset,
   discoverEnvironmentPlacements,
+  getDirectoryEnvironment,
   getFileEnvironment,
   listEnvironmentInstances,
   resolveRegisteredEnvironments,
   type EnvironmentRegistration,
 } from "#batiment/environments/index";
 import { createFilesystem } from "#foundation/filesystem/index";
+import { createPresetConfig } from "#tests/utils/createPresetConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
 const presets = [
   createEnvironmentPreset({ name: "web", languages: ["typescript", "css"] }),
@@ -40,6 +43,7 @@ async function place(
 
   const discovered = await discoverEnvironmentPlacements({
     registered,
+    metafiles: [],
     ignored: [],
     filesystem: createFilesystem(root),
   });
@@ -158,6 +162,110 @@ describe("environment placements", () => {
         nested: [],
         active: false,
       },
+    ]);
+  });
+});
+
+async function discoverConfigured({
+  input,
+  preset = {},
+  files,
+}: {
+  input: Readonly<Record<string, unknown>>;
+  preset?: Readonly<Record<string, unknown>>;
+  files: Record<string, string>;
+}) {
+  const config = createPresetConfig({
+    root: createTemporaryProject({
+      "package.json": JSON.stringify({ name: "app", type: "module" }),
+      ...files,
+    }).root,
+    preset,
+    input,
+  });
+
+  const context = await config.resolve("structure.context");
+
+  const { environments, diagnostics } = await context.discover();
+
+  return {
+    placements: environments.placements,
+    diagnostics: diagnostics.map(({ code, path }) => {
+      return { code, path };
+    }),
+  };
+}
+
+const appPlacement = {
+  environments: {
+    web: { preset: "src", dirs: ["app"] },
+    node: { preset: "bin" },
+  },
+};
+
+describe("environment metafiles", () => {
+  test("report an unregistered name, the directory keeping the environment placed above it", async () => {
+    const { placements, diagnostics } = await discoverConfigured({
+      input: withSourceRuntime({
+        environments: {
+          web: { preset: "src", dirs: ["theme"] },
+        },
+      }),
+      files: {
+        "theme/.workspace.json": "{}",
+        "theme/src/.environment.json": '{ "environment": "vue" }',
+        "theme/src/a.ts": "",
+      },
+    });
+
+    expect(diagnostics).toEqual([
+      { code: "unknown-environment", path: "theme/src" },
+    ]);
+
+    expect(getDirectoryEnvironment(placements, "theme/src")).toBe("web");
+  });
+
+  test.each([
+    {
+      layer: "the config input",
+      input: withSourceRuntime(appPlacement),
+      preset: {},
+      reported: [{ code: "config-metafile-conflict", path: "app" }],
+    },
+    {
+      layer: "a default layer",
+      input: {},
+      preset: withSourceRuntime(appPlacement),
+      reported: [],
+    },
+  ])("replace a placement $layer sets", async ({ input, preset, reported }) => {
+    const { placements, diagnostics } = await discoverConfigured({
+      input,
+      preset,
+      files: {
+        "app/.environment.json": '{ "environment": "node" }',
+        "app/a.ts": "",
+      },
+    });
+
+    expect(diagnostics).toEqual(reported);
+
+    expect(getDirectoryEnvironment(placements, "app")).toBe("node");
+  });
+
+  test("ignore a metafile holding anything but the environment, or at a scope's root", async () => {
+    const { diagnostics } = await discoverConfigured({
+      input: withSourceRuntime(),
+      files: {
+        "src/.environment.json": '{ "environment": "src", "languages": [] }',
+        "theme/.workspace.json": "{}",
+        "theme/.environment.json": '{ "environment": "src" }',
+      },
+    });
+
+    expect(diagnostics).toEqual([
+      { code: "invalid-metafile", path: "src" },
+      { code: "misplaced-environment-metafile", path: "theme" },
     ]);
   });
 });

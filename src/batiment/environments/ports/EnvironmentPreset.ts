@@ -6,6 +6,7 @@ export interface EnvironmentPreset {
    * as its `preset`.
    */
   readonly name: string;
+  // @debt the JSDoc below still lets an `.environment.json` name languages, which it no longer holds
   /**
    * The languages the preset's environments select unless their registration or
    * `.environment.json` name others.

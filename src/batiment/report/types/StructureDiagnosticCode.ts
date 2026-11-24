@@ -9,9 +9,9 @@
  * tree finding: a workspace inside a root environment's directory, a workspace
  * key equal to a root environment name, a workspace inside another, a directory a
  * `workspaces` glob matches without a `.workspace.json`, an `.environment.json`
- * outside a scope's direct child directory, a top-level namespace taking a
- * kind no `namespaceKinds` entry names, or an `.environment.json` language no
- * `languages` entry names; or a directory or file two environments are placed on.
+ * at a scope's root, a top-level namespace taking a kind no `namespaceKinds`
+ * entry names, or an `.environment.json` naming an environment no registration
+ * holds; or a directory or file two environments are placed on.
  *
  * @experimental
  */
@@ -44,5 +44,5 @@ export type StructureDiagnosticCode =
   | "missing-workspace"
   | "misplaced-environment-metafile"
   | "unknown-namespace-kind"
-  | "unknown-language"
+  | "unknown-environment"
   | "environment-placement-conflict";

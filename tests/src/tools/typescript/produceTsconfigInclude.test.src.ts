@@ -417,6 +417,27 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
+  test("moves a directory an environment metafile places from the enclosing environment's tsconfig to its own", async () => {
+    const listProgramFiles = await syncPlacedProject(
+      {
+        node: { preset: "bin" },
+      },
+      {
+        "src/web/legacy/.environment.json": '{ "environment": "node" }',
+        "src/web/legacy/old.ts": "",
+      },
+    );
+
+    expect(listProgramFiles("tsconfig.web.json")).toEqual([
+      "src/web/app.ts",
+      "src/web/pages/home.ts",
+    ]);
+
+    expect(listProgramFiles("tsconfig.node.json")).toEqual([
+      "src/web/legacy/old.ts",
+    ]);
+  });
+
   test("keeps the environment's file placements nested in another environment's placement", async () => {
     const listProgramFiles = await syncPlacedProject(
       {

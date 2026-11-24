@@ -11,7 +11,6 @@ export interface RootFacts {
   readonly ignored: Globs;
   readonly kinds: readonly NamespaceKind[];
   readonly presets: readonly EnvironmentPreset[];
-  readonly languages: readonly string[];
   readonly namespaces: readonly NamespacePlacement[];
   readonly environments: readonly EnvironmentRegistration[];
   readonly claims: Readonly<Record<string, EnvironmentClaim>>;

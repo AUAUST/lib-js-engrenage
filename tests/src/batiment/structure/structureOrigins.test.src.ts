@@ -5,7 +5,7 @@ import {
   flattenStructure,
   listDeclaredOptionPaths,
 } from "#batiment/structure/index";
-import { createProjectConfig } from "#project/config/index";
+import { createPresetConfig } from "#tests/utils/createPresetConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
@@ -25,29 +25,10 @@ async function resolveSource({
   input?: Readonly<Record<string, unknown>>;
   extra?: Readonly<Record<string, string>>;
 }) {
-  const fixture = {
-    name: "structure-origins-fixture",
-    contributes: {
-      presets: [
-        {
-          name: "fixture",
-          traits: [],
-          load() {
-            return Promise.resolve(preset);
-          },
-        },
-      ],
-    },
-  };
-
-  const config = createProjectConfig({
+  const config = createPresetConfig({
     root: createTemporaryProject({ ...files, ...extra }).root,
-    raw: withSourceRuntime({
-      extensions: [fixture],
-      preset: "fixture",
-      ...input,
-    }),
-    configFile: undefined,
+    preset,
+    input: withSourceRuntime(input),
   });
 
   const { src } = await config.resolve("structure");

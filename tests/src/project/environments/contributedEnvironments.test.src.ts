@@ -228,11 +228,12 @@ function createConfig(
 }
 
 describe("environment languages", () => {
-  test("follow an environment metafile over the kind's defaults, in globs and lint scopes", async () => {
+  test("follow the environment's options over the kind's defaults, in globs and lint scopes", async () => {
     const { config } = createConfig(
-      {},
       {
-        "src/.environment.json": '{ "languages": ["typescript"] }',
+        src: { languages: ["typescript"] },
+      },
+      {
         "src/index.ts": "",
       },
     );

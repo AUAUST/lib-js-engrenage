@@ -6,8 +6,8 @@ import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspa
 import { createScopeTree, getNamespaceId } from "#batiment/scopes/index";
 import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
 import { createFilesystem } from "#foundation/filesystem/index";
-import { createProjectConfig } from "#project/config/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { createPresetConfig } from "#tests/utils/createPresetConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
@@ -34,30 +34,11 @@ function resolvePresetScopes({
   preset: Readonly<Record<string, unknown>>;
   files: Record<string, string>;
 }) {
-  const fixture = {
-    name: "scopes-fixture",
-    contributes: {
-      presets: [
-        {
-          name: "fixture",
-          traits: [],
-          load() {
-            return Promise.resolve(preset);
-          },
-        },
-      ],
-    },
-  };
-
-  return createProjectConfig({
+  return createPresetConfig({
     root: createTemporaryProject({ "package.json": packageJson, ...files })
       .root,
-    raw: withSourceRuntime({
-      extensions: [fixture],
-      preset: "fixture",
-      ...input,
-    }),
-    configFile: undefined,
+    preset,
+    input: withSourceRuntime(input),
   }).resolve("scopes");
 }
 
@@ -164,27 +145,6 @@ describe("reconcileEnvironmentDirs", () => {
 });
 
 describe("discoverWorkspaces", () => {
-  test("drops an environment metafile's unknown language and keeps the others", async () => {
-    const project = createTemporaryProject({
-      "src/.environment.json": '{ "languages": ["vue", "typescript"] }',
-    });
-
-    const { environments, diagnostics } = await discoverWorkspaces({
-      filesystem: createFilesystem(project.root),
-      ignored: [],
-      dirs: [],
-      languages: ["typescript"],
-    });
-
-    expect(environments[0]?.languages).toEqual(["typescript"]);
-
-    expect(
-      diagnostics.map(({ code, path }) => {
-        return { code, path };
-      }),
-    ).toEqual([{ code: "unknown-language", path: "src" }]);
-  });
-
   test("reads the purpose and returns the other keys raw", async () => {
     const project = createTemporaryProject({
       "extensions/a/.workspace.json": JSON.stringify({
@@ -197,7 +157,6 @@ describe("discoverWorkspaces", () => {
       filesystem: createFilesystem(project.root),
       ignored: [],
       dirs: [],
-      languages: [],
     });
 
     expect(workspaces).toEqual([
@@ -262,22 +221,9 @@ describe("scopes", () => {
     expect(scopes.theme?.namespaces).toEqual([]);
   });
 
-  test("reports an environment metafile outside a scope's direct child", async () => {
-    const { diagnostics } = await resolveScopes({
-      "src/foo/.environment.json": "{}",
-    });
-
-    expect(summarize(diagnostics)).toEqual([
-      {
-        code: "misplaced-environment-metafile",
-        path: "src/foo",
-      },
-    ]);
-  });
-
   test("keeps an environment metafile beside a namespace metafile", async () => {
     const { diagnostics } = await resolveScopes({
-      "src/.environment.json": "{}",
+      "src/.environment.json": '{ "environment": "src" }',
       "src/.namespace.json": "{}",
       "src/a.ts": "",
     });

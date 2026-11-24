@@ -5,15 +5,12 @@
     "$schema": {
       "type": "string"
     },
-    "languages": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Names of the registered languages the environment holds; overrides its options' and its kind's `languages`.\n@default none"
+    "environment": {
+      "type": "string",
+      "description": "Name of the registered environment placed on the directory, covering its subtree."
     }
   },
-  "required": [],
+  "required": ["environment"],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

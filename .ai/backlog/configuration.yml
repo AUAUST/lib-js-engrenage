@@ -127,3 +127,16 @@ entries:
       - src/project/presets/ports/PresetEntry.ts:13
     why: the source context restates the `BuildTool` port below `build`; the host union restates `sourceSchema`'s picklist; only `enforced` changes behaviour, so `foreign` versus `described` is unstated; preset entries take any slot though only `build.tools` reads them, typos ignored.
     want: the bundling capability in a lower shared domain; types inferred; each kind's effect stated; slots checked.
+  - id: 261124-868c
+    title: A config-input `environments` record replaces a preset's whole record instead of merging per entry
+    sites:
+      - src/foundation/options/utils/applyInputDefaults.ts:45
+    why: "Registering one environment in the input drops every environment a preset registers (found in #846)"
+    want: Record options merge per entry across layers, or the contract states replacement and presets register outside the record
+  - id: 261124-06fb
+    title: An input list adjustment marks a whole list option as set by the input, so a metafile overriding a default item reports a false `config-metafile-conflict`
+    sites:
+      - src/project/structure/adapters/createResolverContext.ts:69
+      - src/foundation/options/utils/findValueOrigin.ts:7
+    why: 'Input `src: { dirs: { append: ["app"] } }` makes a `src/.environment.json` replacing the default `src` placement an error (#846)'
+    want: Origins per list item, or adjustments reported as their own layer

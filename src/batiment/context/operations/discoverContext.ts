@@ -10,6 +10,7 @@ import {
   discoverEnvironmentPlacements,
   listEnvironmentInstances,
   resolveRegisteredEnvironments,
+  type DiscoveredEnvironment,
 } from "#batiment/environments/index";
 import {
   createScopeTree,
@@ -144,7 +145,13 @@ function resolveConfiguredKind(
 async function discoverEnvironments(
   { presets, environments, ignored }: RootFacts,
   filesystem: Filesystem,
-  workspaces: readonly DiscoveredWorkspace[],
+  {
+    workspaces,
+    environments: metafiles,
+  }: {
+    workspaces: readonly DiscoveredWorkspace[];
+    environments: readonly DiscoveredEnvironment[];
+  },
 ): Promise<{
   readonly discovery: EnvironmentDiscovery;
   readonly diagnostics: readonly StructureDiagnostic[];
@@ -153,6 +160,7 @@ async function discoverEnvironments(
 
   const { placements, diagnostics } = await discoverEnvironmentPlacements({
     registered,
+    metafiles,
     ignored,
     filesystem,
   });
@@ -222,14 +230,9 @@ export async function discoverContext(
     filesystem,
     ignored,
     dirs: flatMap(placed, ({ discovery }) => discovery.dirs),
-    languages: root.languages,
   });
 
-  const environments = await discoverEnvironments(
-    root,
-    filesystem,
-    discovered.workspaces,
-  );
+  const environments = await discoverEnvironments(root, filesystem, discovered);
 
   const expected = await matchWorkspaces(
     filesystem,
@@ -310,7 +313,6 @@ export async function discoverContext(
 
   return freeze({
     workspaces: discovered.workspaces,
-    metafiles: discovered.environments,
     namespaces: freeze(
       record(
         resolved.map(({ placement, discovery }) => {

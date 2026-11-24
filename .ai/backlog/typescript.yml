@@ -105,3 +105,9 @@ entries:
       - src/tools/typescript/setup/syncTsconfigFiles.ts:123
     why: Sync keeps no record of the files it wrote, and deleting by registration path in every scope would delete hand-written tsconfig.json files (#879)
     want: Each tsconfig file sync wrote and no longer writes is removed, without deleting hand-written ones
+  - id: 261124-9d52
+    title: "`engrenage typecheck` exited 0 while `tsc -p tsconfig.tests.json` reported errors"
+    sites:
+      - src/tools/typescript/operations/resolveTscProjectArguments.ts:41
+    why: "Observed in #846 after a signature change (friction 261124-12aa); suspect `--build` with incremental tsbuildinfo skipping the tests project"
+    done: Reproduced and fixed, or shown to be a stale-cache one-off

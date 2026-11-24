@@ -3,6 +3,7 @@ import { Minimatch } from "minimatch";
 import { freeze, record } from "@auaust/toolkit/object";
 
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
+import type { DiscoveredEnvironment } from "#batiment/environments/types/DiscoveredEnvironment";
 import type { EnvironmentPlacements } from "#batiment/environments/types/EnvironmentPlacements";
 import type { RegisteredEnvironment } from "#batiment/environments/types/RegisteredEnvironment";
 import type { StructureDiagnostic } from "#batiment/report/index";
@@ -46,18 +47,71 @@ function createConflict(
   });
 }
 
+function placeMetafiles({
+  metafiles,
+  registered,
+  dirs,
+  sources,
+  diagnostics,
+}: {
+  metafiles: readonly DiscoveredEnvironment[];
+  registered: readonly RegisteredEnvironment[];
+  dirs: Map<Directory, string>;
+  sources: ReadonlyMap<Directory, RegisteredEnvironment>;
+  diagnostics: StructureDiagnostic[];
+}): void {
+  const names = new Set(registered.map(({ registration: { name } }) => name));
+
+  for (const { dir, file, environment } of metafiles) {
+    if (!names.has(environment)) {
+      diagnostics.push(
+        freeze({
+          severity: "error",
+          code: "unknown-environment",
+          message: `${file} names the environment "${environment}", which no registration holds; ignoring it`,
+          path: dir,
+          files: freeze([file]),
+        }),
+      );
+
+      continue;
+    }
+
+    const config = sources.get(dir)?.registration.dirsSource;
+
+    if (config?.origin?.layer === "input") {
+      diagnostics.push(
+        freeze({
+          severity: "error",
+          code: "config-metafile-conflict",
+          message: `${dir} is placed by both ${config.path} and ${file}; keeping the placement of ${file}`,
+          path: dir,
+          files: freeze([file]),
+          config,
+        }),
+      );
+    }
+
+    dirs.set(dir, environment);
+  }
+}
+
 /**
- * Places each registered environment on its directories, a glob placing it on
- * each directory it matches, and on the root files its `files` globs match,
- * keeping the first in registration order where two place one directory or file,
- * each such clash an error diagnostic.
+ * Places each registered environment on its directories, a glob placing it on each
+ * directory it matches, and on the root files its `files` globs match, keeping
+ * the first in registration order where two place one directory or file, each
+ * such clash an error diagnostic; then on each directory an `.environment.json`
+ * names it on, replacing the config's placement there, an error diagnostic when
+ * the config input sets it.
  */
 export async function discoverEnvironmentPlacements({
   registered,
+  metafiles,
   ignored,
   filesystem,
 }: {
   registered: readonly RegisteredEnvironment[];
+  metafiles: readonly DiscoveredEnvironment[];
   ignored: Globs;
   filesystem: Filesystem;
 }): Promise<{
@@ -77,17 +131,20 @@ export async function discoverEnvironmentPlacements({
   );
 
   const dirs = new Map<Directory, string>();
+  const sources = new Map<Directory, RegisteredEnvironment>();
   const files = new Map<File, string>();
   const diagnostics: StructureDiagnostic[] = [];
 
-  for (const [index, { registration }] of registered.entries()) {
-    const { name } = registration;
+  for (const [index, environment] of registered.entries()) {
+    const { name } = environment.registration;
 
     for (const dir of expanded[index] ?? []) {
       const kept = dirs.get(dir);
 
       if (kept === undefined) {
         dirs.set(dir, name);
+
+        sources.set(dir, environment);
       } else if (kept !== name) {
         diagnostics.push(createConflict("directory", dir, kept, name));
       }
@@ -103,6 +160,14 @@ export async function discoverEnvironmentPlacements({
       }
     }
   }
+
+  placeMetafiles({
+    metafiles,
+    registered,
+    dirs,
+    sources,
+    diagnostics,
+  });
 
   return freeze({
     placements: freeze({

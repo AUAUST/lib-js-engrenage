@@ -300,7 +300,7 @@ describe("structure", () => {
 
   test("reads the root namespace from its `.namespace.json` beside an `.environment.json`", async () => {
     const { structure } = await describeSource(declaration, {
-      "src/.environment.json": "{}",
+      "src/.environment.json": '{ "environment": "src" }',
       "src/.namespace.json": '{ "kind": "src", "layers": ["*", "zone"] }',
     });
 

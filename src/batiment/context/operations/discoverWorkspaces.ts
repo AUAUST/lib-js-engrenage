@@ -126,69 +126,32 @@ async function readWorkspace(
   });
 }
 
-async function readEnvironment({
-  filesystem,
-  file,
-  scopes,
-  languages,
-}: {
-  filesystem: Filesystem;
-  file: File;
-  scopes: ReadonlySet<Directory>;
-  languages: ReadonlySet<string>;
-}): Promise<{
-  readonly environment?: DiscoveredEnvironment;
-  readonly diagnostics: readonly StructureDiagnostic[];
-}> {
+async function readEnvironment(
+  filesystem: Filesystem,
+  file: File,
+  scopes: ReadonlySet<Directory>,
+): Promise<DiscoveredEnvironment | StructureDiagnostic> {
   const dir = posix.dirname(file);
-  const scope = posix.dirname(dir);
 
-  if (dir === rootScope || scopes.has(dir) || !scopes.has(scope)) {
-    return {
-      diagnostics: [
-        createDiagnostic(
-          "misplaced-environment-metafile",
-          file,
-          `${file} lies outside a direct child directory of a scope; ignoring it`,
-        ),
-      ],
-    };
+  if (scopes.has(dir)) {
+    return createDiagnostic(
+      "misplaced-environment-metafile",
+      file,
+      `${file} lies at a scope's root, which no metafile may place an environment on; ignoring it`,
+    );
   }
 
   const read = await readMetafile(filesystem, file, environmentMetadataSchema);
 
   if ("diagnostic" in read) {
-    return { diagnostics: [read.diagnostic] };
+    return read.diagnostic;
   }
 
-  const { metadata } = read;
-
-  const diagnostics: StructureDiagnostic[] = [];
-
-  const selected = metadata.languages?.filter((name) => {
-    if (languages.has(name)) {
-      return true;
-    }
-
-    diagnostics.push(
-      createDiagnostic(
-        "unknown-language",
-        file,
-        `${file} selects the language "${name}", which no language declares; ignoring it`,
-      ),
-    );
-
-    return false;
+  return freeze({
+    dir,
+    file,
+    environment: read.metadata.environment,
   });
-
-  return {
-    environment: freeze({
-      dir,
-      file,
-      ...(selected === undefined ? {} : { languages: freeze(selected) }),
-    }),
-    diagnostics,
-  };
 }
 
 async function readNamespace(
@@ -211,20 +174,18 @@ async function readNamespace(
 }
 
 /**
- * Discovers the workspaces, the `.environment.json` metafiles and the
- * `.namespace.json` metafiles of top-level namespaces: those in `dirs`, the
- * root's, and those in each workspace's direct child directories.
+ * Discovers the workspaces, the `.environment.json` metafiles but those at a
+ * scope's root, and the `.namespace.json` metafiles of top-level namespaces: those
+ * in `dirs`, the root's, and those in each workspace's direct child directories.
  */
 export async function discoverWorkspaces({
   filesystem,
   ignored,
   dirs,
-  languages,
 }: {
   filesystem: Filesystem;
   ignored: Globs;
   dirs: Directories;
-  languages: readonly string[];
 }): Promise<{
   readonly workspaces: readonly DiscoveredWorkspace[];
   readonly environments: readonly DiscoveredEnvironment[];
@@ -257,28 +218,19 @@ export async function discoverWorkspaces({
 
   const scopes = new Set([rootScope, ...workspaces.map(({ dir }) => dir)]);
 
-  const registered = new Set(languages);
-
   const discovered = await Promise.all(
     files
       .filter((file) => posix.basename(file) === environmentMetadataFile)
-      .map((file) => {
-        return readEnvironment({
-          filesystem,
-          file,
-          scopes,
-          languages: registered,
-        });
-      }),
+      .map((file) => readEnvironment(filesystem, file, scopes)),
   );
 
   const environments: DiscoveredEnvironment[] = [];
 
-  for (const { environment, diagnostics: found } of discovered) {
-    diagnostics.push(...found);
-
-    if (environment !== undefined) {
-      environments.push(environment);
+  for (const result of discovered) {
+    if ("code" in result) {
+      diagnostics.push(result);
+    } else {
+      environments.push(result);
     }
   }
 

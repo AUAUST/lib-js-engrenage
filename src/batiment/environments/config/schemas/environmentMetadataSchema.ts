@@ -1,10 +1,18 @@
-import { declareLanguages } from "#batiment/environments/config/declarers/declareLanguages";
-import { schemaReferenceSchema } from "#batiment/scopes/index";
-import { declareObject } from "#foundation/options/index";
+import { string } from "valibot";
 
-export const environmentMetadataSchema = declareObject({
-  $schema: schemaReferenceSchema,
-  languages: declareLanguages(
-    "Names of the registered languages the environment holds; overrides its options' and its kind's `languages`.",
-  ),
-}).schema;
+import { schemaReferenceSchema } from "#batiment/scopes/index";
+import { declare, declareObject } from "#foundation/options/index";
+
+export const environmentMetadataSchema = declareObject(
+  {
+    $schema: schemaReferenceSchema,
+    environment: declare(string(), {
+      description: "Name of the registered environment placed on the directory, covering its subtree.",
+    }),
+  },
+  {
+    removed: {
+      languages: "tune the languages of the registered environment the metafile names",
+    },
+  },
+).schema;

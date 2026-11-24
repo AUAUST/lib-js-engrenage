@@ -21,6 +21,8 @@ import type {
   ScopeDeclarations,
   WorkspaceExpectation,
 } from "#batiment/context/index";
+import type { EnvironmentRegistration } from "#batiment/environments/index";
+import type { OptionSource } from "#batiment/report/index";
 import type { ValueOrigin } from "#foundation/options/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Directory } from "#types/Directory";
@@ -49,6 +51,60 @@ async function readPlacement(
     dirs: option.dirs,
     files: option.files ?? [],
   });
+}
+
+/**
+ * Finds the option the registration's `dirs` come from: its `environments` entry
+ * when a layer sets it, else a built-in's options.
+ */
+async function readDirsSource(
+  config: ConfigResolver,
+  name: string,
+  builtIn: boolean,
+): Promise<OptionSource> {
+  const path = `environments.${name}.dirs`;
+
+  const origin = await config.origin("environments", path);
+
+  if (origin.layer !== "declaration" || !builtIn) {
+    return freeze({
+      key: "environments",
+      path,
+      origin,
+    });
+  }
+
+  const { key } = await readEnvironmentOptions(config, name);
+
+  const option = `${name}.dirs`;
+
+  return freeze({
+    key,
+    path: option,
+    origin: await config.origin(key, option),
+  });
+}
+
+async function readRegistrations(
+  config: ConfigResolver,
+  entries: readonly ContributedEnvironmentEntry[],
+): Promise<readonly EnvironmentRegistration[]> {
+  const registrations = await config.resolve("environments");
+
+  const builtIns = new Set(entries.map(({ entry }) => entry.name));
+
+  return freeze(
+    await Promise.all(
+      registrations.map(async (registration) => {
+        const { name } = registration;
+
+        return freeze({
+          ...registration,
+          dirsSource: await readDirsSource(config, name, builtIns.has(name)),
+        });
+      }),
+    ),
+  );
 }
 
 async function readWorkspaceExpectations(
@@ -159,8 +215,9 @@ async function readNamespaceDeclarations(
 
 /**
  * Answers the context port from the config resolver: the root's facts from the
- * raw options keys, the root's declarations from its active environments; a
- * workspace declares nothing until its child resolver exists (#745).
+ * raw options keys, each with the option it comes from where a metafile may
+ * override it, the root's declarations from its active environments; a workspace
+ * declares nothing until its child resolver exists (#745).
  */
 export function createResolverContext(config: ConfigResolver): ContextPort {
   async function root(): Promise<RootFacts> {
@@ -168,18 +225,14 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       repository,
       kinds,
       presets,
-      languages,
       entries,
-      environments,
       claims,
       workspaces,
     ] = await Promise.all([
       config.resolve("git"),
       config.context.registry.contributions("namespaceKinds", config),
       config.context.registry.contributions("environmentPresets", config),
-      config.context.registry.contributions("languages", config),
       listEnvironmentEntries(config),
-      config.resolve("environments"),
       config.resolve("environments.claims"),
       readWorkspaceExpectations(config),
     ]);
@@ -188,13 +241,12 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       ignored: await repository.ignored,
       kinds: freeze(kinds.map(({ entry }) => entry)),
       presets: freeze(presets.map(({ entry }) => entry)),
-      languages: freeze(languages.map(({ entry }) => entry.name)),
       namespaces: freeze(
         await Promise.all(
           entries.map((contributed) => readPlacement(config, contributed)),
         ),
       ),
-      environments,
+      environments: await readRegistrations(config, entries),
       claims,
       workspaces: freeze(workspaces),
     });
