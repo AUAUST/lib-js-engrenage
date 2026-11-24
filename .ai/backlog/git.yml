@@ -13,3 +13,11 @@ entries:
       - src/tools/git/constants.ts:60
     why: agent worktrees are not editor files.
     want: an agents group, or the agents domain contributing its own ignores.
+  - id: 261124-a168
+    title: Ignored-file globs list every ignored file, so ESLint and Vitest get thousands of ignore globs
+    sites:
+      - src/tools/git/operations/listIgnoredGlobs.ts:17
+      - src/tools/eslint/operations/createEslintConfig.ts:109
+      - src/tools/vitest/operations/createVitestConfig.ts:169
+    why: Interscript passes 2154 globs from partly tracked theme/assets and theme/data; their cost inside ESLint (19 s whole project) is unmeasured
+    want: measure their share, then collapse the list or pass tools a predicate

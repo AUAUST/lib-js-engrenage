@@ -206,6 +206,7 @@ git:
   entries:
     - 261122-4774
     - 261122-a06c
+    - 261124-a168
 github:
   purpose: Generated GitHub workflows and templates.
   entries:
@@ -342,7 +343,6 @@ sync:
     - 261122-c525
     - 261122-407c
     - 261122-abb6
-    - 261124-8c12
 tests:
   purpose: Test infrastructure and coverage gaps.
   entries:

@@ -7,7 +7,8 @@ import {
   stat,
   writeFile,
 } from "node:fs/promises";
-import { dirname, matchesGlob } from "node:path";
+import { dirname, join, matchesGlob } from "node:path";
+import type { Dirent } from "node:fs";
 
 import { toArray } from "@auaust/toolkit";
 import { flat, sort } from "@auaust/toolkit/array";
@@ -15,10 +16,10 @@ import { concat, map, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
+import { createGlobMatcher } from "#foundation/filesystem/utils/createGlobMatcher";
 import { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
-import { toPosixPath } from "#foundation/filesystem/utils/toPosixPath";
 import type { Filesystem } from "#foundation/filesystem/apis/Filesystem";
 import type { FileFormatter } from "#foundation/filesystem/types/FileFormatter";
 import type { Directory } from "#types/Directory";
@@ -44,13 +45,13 @@ async function restore({ path, original }: Backup) {
   }
 }
 
-function isExcluded(file: File, exclude: Globs): boolean {
+type PathMatcher = (path: File) => boolean;
+
+function isExcluded(file: File, excluded: PathMatcher): boolean {
   const segments = file.split("/");
 
   return segments.some((_, index) => {
-    const path = segments.slice(0, index + 1).join("/");
-
-    return exclude.some((pattern) => matchesGlob(path, pattern));
+    return excluded(segments.slice(0, index + 1).join("/"));
   });
 }
 
@@ -94,11 +95,6 @@ async function readEntries(path: string) {
 
 function isBelow(directory: File, file: File): boolean {
   return directory === "" || file.startsWith(`${directory}/`);
-}
-
-// @debt recompiles every skip glob for each path it checks, so large ignore lists cost millions of matches
-function isSkipped(path: File, skip: Globs): boolean {
-  return skip.some((pattern) => matchesGlob(path, pattern));
 }
 
 function joinLocated(directory: File, name: string): File {
@@ -183,57 +179,66 @@ export function createFilesystem(root: Directory): Filesystem {
     return stage(file, undefined);
   }
 
+  function isPresent(file: File): boolean {
+    return !contents.has(file) || contents.get(file) !== undefined;
+  }
+
+  function locateEntry(entry: Dirent): File {
+    return relativeWithin(root, join(entry.parentPath, entry.name));
+  }
+
   // @debt `globFiles` also yields the directories `patterns` match, so `glob` returns them as files
   async function glob(
     patterns: Glob | Globs,
     options?: { exclude?: Globs },
   ): Promise<Files> {
     const globs = toArray(patterns);
-    const exclude = options?.exclude ?? [];
+
+    const excluded = createGlobMatcher(options?.exclude ?? []);
 
     const found = map(
       await Array.fromAsync(
         globFiles(globs, {
           cwd: root,
-          exclude: [...exclude],
+          withFileTypes: true,
+          // @debt `globFiles` skips this callback for the files a literal pattern names, so the results are matched against `exclude` a second time
+          exclude: (entry) => excluded(locateEntry(entry)),
         }),
       ),
-      toPosixPath,
+      locateEntry,
     );
 
     const created = originals.keys().filter((file) => {
-      return (
-        globs.some((pattern) => matchesGlob(file, pattern)) &&
-        !isExcluded(file, exclude)
-      );
+      return globs.some((pattern) => matchesGlob(file, pattern));
     });
 
     return sort(toArray(unique(concat(found, created)))).filter((file) => {
-      return !contents.has(file) || contents.get(file) !== undefined;
+      return isPresent(file) && !isExcluded(file, excluded);
     });
   }
 
-  async function holdsOnDisk(directory: File, skip: Globs): Promise<boolean> {
+  async function holdsOnDisk(
+    directory: File,
+    skipped: PathMatcher,
+  ): Promise<boolean> {
     const entries = await readEntries(resolveWithin(root, directory));
 
     const kept = entries
       .map((entry) => {
         return { entry, path: joinLocated(directory, entry.name) };
       })
-      .filter(({ path }) => !isSkipped(path, skip));
+      .filter(({ path }) => !skipped(path));
 
-    const files = kept.filter(({ entry }) => !entry.isDirectory());
-
-    const present = files.some(({ path }) => {
-      return !contents.has(path) || contents.get(path) !== undefined;
-    });
-
-    if (present) {
+    if (
+      kept.some(({ entry, path }) => {
+        return !entry.isDirectory() && isPresent(path);
+      })
+    ) {
       return true;
     }
 
     for (const { entry, path } of kept) {
-      if (entry.isDirectory() && (await holdsOnDisk(path, skip))) {
+      if (entry.isDirectory() && (await holdsOnDisk(path, skipped))) {
         return true;
       }
     }
@@ -246,22 +251,23 @@ export function createFilesystem(root: Directory): Filesystem {
     options?: { skip?: Globs },
   ): Promise<boolean> {
     const located = locate(directory);
-    const skip = options?.skip ?? [];
+
+    const skipped = createGlobMatcher(options?.skip ?? []);
 
     const staged = contents.entries().some(([file, content]) => {
       return (
         content !== undefined &&
-        isListed(located, file, { skip, recursive: true }) &&
-        !isSkipped(file, skip)
+        isListed(located, file, { skipped, recursive: true }) &&
+        !skipped(file)
       );
     });
 
-    return staged || holdsOnDisk(located, skip);
+    return staged || holdsOnDisk(located, skipped);
   }
 
   async function listOnDisk(
     directory: File,
-    { skip, recursive }: { skip: Globs; recursive: boolean },
+    { skipped, recursive }: { skipped: PathMatcher; recursive: boolean },
   ): Promise<Files> {
     const entries = await readEntries(resolveWithin(root, directory));
 
@@ -273,9 +279,9 @@ export function createFilesystem(root: Directory): Filesystem {
           return [path];
         }
 
-        return !recursive || isSkipped(path, skip)
+        return !recursive || skipped(path)
           ? []
-          : listOnDisk(path, { skip, recursive });
+          : listOnDisk(path, { skipped, recursive });
       }),
     );
 
@@ -285,7 +291,7 @@ export function createFilesystem(root: Directory): Filesystem {
   function isListed(
     directory: File,
     file: File,
-    { skip, recursive }: { skip: Globs; recursive: boolean },
+    { skipped, recursive }: { skipped: PathMatcher; recursive: boolean },
   ): boolean {
     if (!isBelow(directory, file)) {
       return false;
@@ -301,9 +307,8 @@ export function createFilesystem(root: Directory): Filesystem {
     }
 
     return nested.every((_, index) => {
-      return !isSkipped(
+      return !skipped(
         joinLocated(directory, nested.slice(0, index + 1).join("/")),
-        skip,
       );
     });
   }
@@ -315,7 +320,7 @@ export function createFilesystem(root: Directory): Filesystem {
     const located = locate(directory);
 
     const listing = {
-      skip: options?.skip ?? [],
+      skipped: createGlobMatcher(options?.skip ?? []),
       recursive: options?.recursive ?? true,
     };
 
@@ -325,9 +330,7 @@ export function createFilesystem(root: Directory): Filesystem {
       return isListed(located, file, listing);
     });
 
-    return sort(toArray(unique(concat(found, staged)))).filter((file) => {
-      return !contents.has(file) || contents.get(file) !== undefined;
-    });
+    return sort(toArray(unique(concat(found, staged)))).filter(isPresent);
   }
 
   async function format(formatter: FileFormatter) {

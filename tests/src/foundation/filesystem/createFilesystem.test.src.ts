@@ -145,3 +145,19 @@ test("finds a file in a directory past skipped and removed ones", async () => {
   expect(await filesystem.hasFile("dir", { skip })).toBe(true);
   expect(await filesystem.hasFile("missing")).toBe(false);
 });
+
+test("excludes the files a literal pattern names", async () => {
+  const project = createTemporaryProject({
+    "dir/kept.ts": "",
+    "dir/local.ts": "",
+    "local.ts": "",
+  });
+
+  const filesystem = createFilesystem(project.root);
+
+  expect(
+    await filesystem.glob(["local.ts", "dir/kept.ts", "dir/local.ts"], {
+      exclude: ["local.ts", "dir/local.ts"],
+    }),
+  ).toEqual(["dir/kept.ts"]);
+});

@@ -1,4 +1,5 @@
 // @barrel utils
+export { createGlobMatcher } from "#foundation/filesystem/utils/createGlobMatcher";
 export { filesIn } from "#foundation/filesystem/utils/filesIn";
 export { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 export { isWithin } from "#foundation/filesystem/utils/isWithin";

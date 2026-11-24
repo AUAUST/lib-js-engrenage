@@ -727,3 +727,7 @@ entries:
     subject: aliases target reading workspaces output
     need: workspace imports after package.json exists
     reason: edge cycles through tsconfig#paths
+  - id: 261124-fe25
+    subject: gitignore patterns as ignore globs
+    need: shorter git.ignored list
+    reason: gitignore negation and anchoring semantics exceed the fix
