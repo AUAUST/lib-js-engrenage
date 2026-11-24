@@ -51,7 +51,7 @@ async function matchWorkspaces(
 
         if (other !== undefined) {
           throw new Error(
-            `The workspace ${dir} is matched by both workspaces.${other} and workspaces.${glob}: give each workspace one glob`,
+            `The workspace ${dir} is matched by both workspaces.globs.${other} and workspaces.globs.${glob}: give each workspace one glob`,
           );
         }
 

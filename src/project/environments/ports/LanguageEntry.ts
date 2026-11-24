@@ -12,8 +12,8 @@ export interface LanguageEntry extends EntryShape {
    */
   readonly extensions: readonly string[];
   /**
-   * Whether the language's files are modules: workspace entries and the import
-   * cycle check include them.
+   * Whether the language's files are modules: workspace entries and code globs
+   * and the import cycle check include them.
    */
   readonly modules?: boolean;
   /**

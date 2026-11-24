@@ -19,6 +19,7 @@ export function createNamespaceOptionsSection(
     throw new Error(`No Shopify theme namespace is named ${name}`);
   }
 
+  // @debt declares no option schema, so unlike a built-in environment's options a scope cannot move a theme namespace's directories or override its kind
   return declareSection({
     resolve() {
       return freeze({ dirs: freeze([name]), kind: namespace.kind });
