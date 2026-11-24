@@ -847,3 +847,7 @@ entries:
     subject: import-x no-extraneous skips unresolved imports
     tried: lint an undeclared package import in a fixture
     stopped: no report until a node_modules link resolved it; added the link
+  - id: 261124-ae88
+    subject: zsh = word expansion
+    tried: echo ====== as separator
+    stopped: bash hook refused; quoted the separator

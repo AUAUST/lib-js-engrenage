@@ -140,3 +140,10 @@ entries:
       - src/foundation/options/utils/findValueOrigin.ts:7
     why: 'Input `src: { dirs: { append: ["app"] } }` makes a `src/.environment.json` replacing the default `src` placement an error (#846)'
     want: Origins per list item, or adjustments reported as their own layer
+  - id: 261124-f612
+    title: project/config imports the built-in extensions list from workflows, a layer above it
+    sites:
+      - src/project/config/operations/createProjectConfig.ts:47
+      - src/project/config/types/ConfigSections.ts:3
+    why: "Dropped from #745 as no prerequisite: child resolvers reuse the root's registry"
+    want: "Registry collection apart from resolver creation, so project/config imports no #workflows/* (#731 › Groundwork steps 1-3)"

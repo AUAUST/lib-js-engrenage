@@ -19,6 +19,7 @@ export type * from "#foundation/filesystem/types/FileFormatter";
 
 // @barrel operations
 export { createFilesystem } from "#foundation/filesystem/operations/createFilesystem";
+export { createFilesystemView } from "#foundation/filesystem/operations/createFilesystemView";
 export { findDirectories } from "#foundation/filesystem/operations/findDirectories";
 export { importConfigFile } from "#foundation/filesystem/operations/importConfigFile";
 export { pathExists } from "#foundation/filesystem/operations/pathExists";

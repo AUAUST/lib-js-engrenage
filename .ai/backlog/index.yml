@@ -127,6 +127,7 @@ configuration:
     - 261122-ccf8
     - 261124-868c
     - 261124-06fb
+    - 261124-f612
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:
