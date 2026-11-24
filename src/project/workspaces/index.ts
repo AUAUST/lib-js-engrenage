@@ -1,7 +1,6 @@
 // @barrel types
 export type * from "#project/workspaces/types/ResolvedWorkspace";
 export type * from "#project/workspaces/types/ResolvedWorkspaceGroup";
-export type * from "#project/workspaces/types/WorkspaceTsconfig";
 // @end
 
 // @barrel config/schemas

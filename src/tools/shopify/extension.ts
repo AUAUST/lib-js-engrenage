@@ -55,11 +55,6 @@ export default {
               "generated/**",
               "schema.graphql",
             ],
-            [`workspaces.${extensionsGlob}.tsconfig.types`]: [
-              "@shopify/polaris-types",
-            ],
-            [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsx`]: "react-jsx",
-            [`workspaces.${extensionsGlob}.tsconfig.compilerOptions.jsxImportSource`]: "preact",
           });
         },
       },

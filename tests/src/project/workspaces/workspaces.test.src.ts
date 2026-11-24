@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
@@ -22,10 +23,7 @@ const config = `export default {
   environments: { src: { execution: { globals: "node", syntax: 24 } } },
   workspaces: {
     "extensions/action-*": { name: "@scope/app-${placeholder}" },
-    "extensions/functions-*": {
-      name: "@scope/fn-${placeholder}",
-      tsconfig: { compilerOptions: { jsx: "preserve" } },
-    },
+    "extensions/functions-*": { name: "@scope/fn-${placeholder}" },
   },
 };
 `;
@@ -100,16 +98,8 @@ describe("workspaces", () => {
     ).toBe("@scope/fn-functions-c");
 
     expect(
-      JSON.parse(project.read("extensions/action-b/tsconfig.json")),
-    ).toEqual({
-      extends: "../../tsconfig.json",
-      include: ["**/*.ts", "**/*.mts", "**/*.cts", "**/*.tsx"],
-    });
-
-    expect(
-      JSON.parse(project.read("extensions/functions-c/tsconfig.json"))
-        .compilerOptions,
-    ).toEqual({ jsx: "preserve" });
+      existsSync(project.resolve("extensions/action-b/tsconfig.json")),
+    ).toBe(false);
 
     await runCommand("sync", sync, "workspaces", "pnpm", "--check");
 
@@ -204,7 +194,7 @@ describe("workspaces", () => {
     );
   });
 
-  test("derives the lint scope and the solution references from the declaration", async () => {
+  test("derives the lint scope from the declaration", async () => {
     const project = createProject();
 
     const resolved = await loadConfig(project.root);
@@ -222,19 +212,6 @@ describe("workspaces", () => {
 
     expect(resolveScope(scopes, ["files.code"])).toEqual(
       expect.arrayContaining(resolveScope(scopes, ["files.workspaces"])),
-    );
-
-    await runSync(resolved, { names: ["tsconfig"] });
-
-    const filesystem = resolved.context.filesystem;
-
-    expect(
-      JSON.parse((await filesystem.read("tsconfig.json")) ?? "").references,
-    ).toEqual(
-      expect.arrayContaining([
-        { path: "./extensions/action-a/tsconfig.json" },
-        { path: "./extensions/functions-c/tsconfig.json" },
-      ]),
     );
   });
 
@@ -310,7 +287,7 @@ describe("workspace modules", () => {
   test("import their own #self modules and a src alias, type-check and build through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
+        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true }, actions: { preset: "src", dirs: ["extensions/*/src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
         workspaces: { "extensions/action-*": { name: "@scope/app-${placeholder}" } },
       };\n`,
@@ -336,7 +313,7 @@ describe("workspace modules", () => {
       [
         fileURLToPath(import.meta.resolve("typescript/bin/tsc")),
         "-p",
-        "extensions/action-a/tsconfig.json",
+        "extensions/action-a/tsconfig.actions.json",
       ],
       { cwd: project.root, stdio: "pipe" },
     );
@@ -348,5 +325,71 @@ describe("workspace modules", () => {
 
     expect(code).toContain("hello");
     expect(code).toContain("helped");
+  });
+});
+
+describe("workspace tsconfigs", () => {
+  async function syncTheme(environments: string) {
+    const project = createTemporaryProject({
+      "engrenage.config.ts": `export default {
+        environments: { src: { execution: { globals: "node", syntax: 24 } }, ${environments} },
+        workspaces: { theme: { name: "@scope/theme" } },
+      };\n`,
+      "package.json": '{ "name": "app", "type": "module" }',
+      "tsconfig.json": "{}",
+      "src/index.ts": "",
+      "theme/.workspace.json": "{}",
+      "theme/src/index.ts": "",
+      "theme/src/worker/index.ts": "",
+    });
+
+    const resolved = await loadConfig(project.root);
+
+    await runSync(resolved, { names: ["tsconfig", "workspaces"] });
+
+    await resolved.context.filesystem.flush();
+
+    return project;
+  }
+
+  test("gives a workspace instance its own tsconfig, referenced by the base one", async () => {
+    const project = await syncTheme(
+      'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" } }, worker: { preset: "bin", dirs: ["theme/src/worker"] }',
+    );
+
+    expect(JSON.parse(project.read("theme/tsconfig.web.json"))).toMatchObject({
+      extends: "../tsconfig.json",
+      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts", "src/**/*.tsx"],
+      exclude: ["src/worker/**"],
+    });
+
+    expect(JSON.parse(project.read("tsconfig.json")).references).toEqual(
+      expect.arrayContaining([
+        { path: "./theme/tsconfig.web.json" },
+        { path: "./theme/tsconfig.worker.json" },
+      ]),
+    );
+
+    expect(existsSync(project.resolve("theme/tsconfig.json"))).toBe(false);
+  });
+
+  test("writes a registration's tsconfig path inside the workspace", async () => {
+    const project = await syncTheme(
+      'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" }, tsconfig: { path: "tsconfig.json", compilerOptions: { jsx: "preserve" } } }',
+    );
+
+    expect(
+      JSON.parse(project.read("theme/tsconfig.json")).compilerOptions.jsx,
+    ).toBe("preserve");
+  });
+
+  test("rejects two tsconfigs resolving to one file", async () => {
+    await expect(
+      syncTheme(
+        'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" }, tsconfig: { path: "tsconfig.app.json" } }, worker: { preset: "bin", dirs: ["theme/src/worker"], tsconfig: { path: "tsconfig.app.json" } }',
+      ),
+    ).rejects.toThrow(
+      "the web tsconfig in theme and the worker tsconfig in theme both resolve to theme/tsconfig.app.json",
+    );
   });
 });

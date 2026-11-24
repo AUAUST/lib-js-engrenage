@@ -6,10 +6,7 @@ import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
-import {
-  directoryPlaceholder,
-  workspaceTsconfigFile,
-} from "#project/workspaces/constants";
+import { directoryPlaceholder } from "#project/workspaces/constants";
 import type { ExpectedWorkspaces } from "#batiment/context/index";
 import type { OutputOf } from "#foundation/options/index";
 import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
@@ -80,7 +77,6 @@ export async function resolveWorkspaces({
       dir,
       name: names.get(dir) ?? "",
       packageJson,
-      tsconfig: `${dir}/${workspaceTsconfigFile}`,
       entry: entries[0],
       globs: filesIn(dir, typescriptFiles),
       dependencies: names
@@ -96,7 +92,7 @@ export async function resolveWorkspaces({
   return freeze(
     await Promise.all(
       iterable.map(matched, async ({ glob, option, dirs, missing }) => {
-        const { purpose, generated, discovered, tsconfig } = option;
+        const { purpose, generated, discovered } = option;
 
         return freeze({
           glob,
@@ -107,7 +103,6 @@ export async function resolveWorkspaces({
           generated,
           discovered,
           globs: flatMap(dirs, (dir) => filesIn(dir, typescriptFiles)),
-          tsconfig,
           workspaces: await Promise.all(iterable.map(dirs, describe)),
         });
       }),

@@ -1,5 +1,6 @@
 import { resolve } from "node:path";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
 import { jsonIndentation } from "#project/format/constants";
@@ -48,7 +49,11 @@ export async function produceTsconfigOutDir(
 ): Promise<readonly JsonEdit[]> {
   const { configuredOutDir: outDir } = await config.resolve("build");
 
-  if (target.key !== "src" || outDir === undefined) {
+  if (
+    target.key !== "src" ||
+    target.scope !== rootScope ||
+    outDir === undefined
+  ) {
     return [];
   }
 

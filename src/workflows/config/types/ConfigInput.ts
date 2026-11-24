@@ -95,13 +95,13 @@ export interface BuiltinConfigInput {
        */
       files?: (string[] | undefined)
       /**
-       * Options of the tsconfig that sync writes for the environment's instance in the root scope, only when its preset has a tsconfig.
+       * Options of the tsconfigs that sync writes, one per active instance of the environment in each scope, the root and each workspace, only when its preset has a tsconfig.
        * `false` manages none.
-       * @default `tsconfig.<name>.json` with derived options, for a preset with a tsconfig
+       * @default `tsconfig.<name>.json` in each scope root with derived options, for a preset with a tsconfig
        */
       tsconfig?: ((false | {
         /**
-         * File of this tsconfig.
+         * File of this tsconfig, resolved against the root of each scope it is written in.
          * @default `tsconfig.<environment>.json`, named after its environment
          */
         path?: (string | undefined)
@@ -114,7 +114,7 @@ export interface BuiltinConfigInput {
         /**
          * Value of `include`.
          * `false` leaves the field to the file.
-         * @default the TypeScript files of the environment, from its placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
+         * @default the TypeScript files of the environment, from its placements in the tsconfig's scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
          */
         include?: (ManagedListOption<string> | undefined)
         /**
@@ -227,12 +227,12 @@ export interface BuiltinConfigInput {
   /**
    * Workspaces of the project, by the glob matching their directories (`extensions/*`).
    * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
-   * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json` and `tsconfig.json`.
+   * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json`.
    * @default none
    */
   workspaces?: ({
     /**
-     * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json` and `tsconfig.json`.
+     * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.
      */
     [k: string]: {
       /**
@@ -255,53 +255,6 @@ export interface BuiltinConfigInput {
        * @default none
        */
       discovered?: (ListOption<string> | undefined)
-      /**
-       * Options of the `tsconfig.json` sync writes in each workspace.
-       */
-      tsconfig?: ({
-        /**
-         * Value of `extends` in the `tsconfig.json` of each workspace.
-         * `false` leaves the field to the file.
-         * @default the base tsconfig
-         */
-        extends?: (ManagedListOption<string> | undefined)
-        /**
-         * Value of `include` in the `tsconfig.json` of each workspace.
-         * `false` leaves the field to the file.
-         * @default the TypeScript files of the workspace
-         */
-        include?: (ManagedListOption<string> | undefined)
-        /**
-         * Value of `exclude` in the `tsconfig.json` of each workspace.
-         * `false` leaves the field to the file.
-         * @default none, so the field is left to the file
-         */
-        exclude?: (ManagedListOption<string> | undefined)
-        /**
-         * Value of `compilerOptions.lib` in the `tsconfig.json` of each workspace.
-         * `false` leaves the field to the file.
-         * @default none, so the field is left to the file
-         */
-        lib?: (ManagedListOption<string> | undefined)
-        /**
-         * Value of `compilerOptions.types` in the `tsconfig.json` of each workspace.
-         * `false` leaves the field to the file.
-         * @default none, so the field is left to the file
-         */
-        types?: (ManagedListOption<string> | undefined)
-        /**
-         * Options written into `compilerOptions` of each workspace `tsconfig.json`.
-         * @default none
-         */
-        compilerOptions?: ({
-          [k: string]: unknown
-        } | undefined)
-        /**
-         * Dotted paths in each workspace `tsconfig.json` that sync never writes.
-         * @default none
-         */
-        unmanaged?: (ListOption<string> | undefined)
-      } | undefined)
     }
   } | undefined)
   git?: (GitInput | undefined)

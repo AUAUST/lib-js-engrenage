@@ -1,16 +1,20 @@
+import { rootScope } from "#batiment/scopes/constants";
 import { resolveEnvironmentTsconfig } from "#project/environments/index";
-import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
+import { listInstanceTsconfigs } from "#tools/typescript/operations/listInstanceTsconfigs";
 import type { ConfigResolver } from "#project/config/index";
 import type {
   ResolvedEnvironmentTsconfig,
   TsconfigKey,
   TsconfigTarget,
 } from "#project/tsconfig/index";
+import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 function toTarget(
   key: TsconfigKey,
+  scope: Directory,
+  file: File,
   {
-    file,
     extends: extended,
     include,
     exclude,
@@ -19,30 +23,75 @@ function toTarget(
     compilerOptions,
     unmanaged,
   }: ResolvedEnvironmentTsconfig,
-): TsconfigTarget | undefined {
-  return file === undefined
-    ? undefined
-    : {
-        key,
-        file,
-        extends: extended,
-        include,
-        exclude,
-        lib,
-        types,
-        compilerOptions,
-        unmanaged,
-      };
+): TsconfigTarget {
+  return {
+    key,
+    scope,
+    file,
+    extends: extended,
+    include,
+    exclude,
+    lib,
+    types,
+    compilerOptions,
+    unmanaged,
+  };
 }
 
-async function listVariantKeys(
+async function listEnvironmentTargets(
   config: ConfigResolver,
-): Promise<readonly TsconfigKey[]> {
-  const names = await listTsconfigEnvironments(config);
+): Promise<readonly TsconfigTarget[]> {
+  const targets: TsconfigTarget[] = [];
+
+  for (const { instance, tsconfig, file } of await listInstanceTsconfigs(
+    config,
+  )) {
+    if (file !== undefined) {
+      targets.push(
+        toTarget(instance.environment, instance.scope, file, tsconfig),
+      );
+    }
+  }
 
   const { active } = await config.resolve("tests");
 
-  return active ? [...names, "tests.dist"] : names;
+  if (!active) {
+    return targets;
+  }
+
+  const dist = await resolveEnvironmentTsconfig(config, "tests.dist");
+
+  if (dist.file !== undefined) {
+    targets.push(toTarget("tests.dist", rootScope, dist.file, dist));
+  }
+
+  return targets;
+}
+
+function describeTarget({ key, scope }: TsconfigTarget): string {
+  if (key === "base") {
+    return "the base tsconfig";
+  }
+
+  return scope === rootScope
+    ? `the ${key} tsconfig`
+    : `the ${key} tsconfig in ${scope}`;
+}
+
+function assertDistinctFiles(targets: readonly TsconfigTarget[]) {
+  const byFile = new Map<File, TsconfigTarget>();
+
+  for (const target of targets) {
+    const other = byFile.get(target.file);
+
+    if (other !== undefined) {
+      throw new Error(
+        `${describeTarget(other)} and ${describeTarget(target)} both resolve to ${target.file}: set another path on one of them`,
+      );
+    }
+
+    byFile.set(target.file, target);
+  }
 }
 
 export async function listTsconfigTargets(
@@ -53,6 +102,7 @@ export async function listTsconfigTargets(
   const targets: TsconfigTarget[] = [
     {
       key: "base",
+      scope: rootScope,
       file: tsconfig.file,
       extends: tsconfig.extends,
       include: undefined,
@@ -62,15 +112,10 @@ export async function listTsconfigTargets(
       compilerOptions: tsconfig.compilerOptions,
       unmanaged: tsconfig.unmanaged,
     },
+    ...(await listEnvironmentTargets(config)),
   ];
 
-  for (const key of await listVariantKeys(config)) {
-    const target = toTarget(key, await resolveEnvironmentTsconfig(config, key));
-
-    if (target !== undefined) {
-      targets.push(target);
-    }
-  }
+  assertDistinctFiles(targets);
 
   return targets;
 }

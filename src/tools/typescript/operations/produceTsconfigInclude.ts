@@ -12,7 +12,6 @@ import { declarations, testsetup } from "#project/roles/index";
 import {
   globalDeclarationsFile,
   toTsconfigGlobs,
-  type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
@@ -20,6 +19,7 @@ import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnviron
 import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 async function listGlobalDeclarations(
@@ -57,6 +57,7 @@ async function listSourceDeclarations(
 async function listEnvironmentGlobs(
   config: LoadedConfig,
   name: string,
+  scope: Directory,
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
@@ -74,27 +75,27 @@ async function listEnvironmentGlobs(
 
   const languages = await readEnvironmentLanguages(config, name);
 
-  const instance = environments.instances.find(({ environment, scope }) => {
-    return environment === name && scope === rootScope;
+  const instance = environments.instances.find((candidate) => {
+    return candidate.environment === name && candidate.scope === scope;
   });
 
   const dirs = instance?.dirs ?? [];
 
-  // @debt file placements enter `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig
-  return [
-    ...registered.registration.files,
-    ...filesIn(dirs, listLanguageFiles(languages)),
-  ];
+  // @debt file placements enter a root tsconfig's `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig; a workspace tsconfig lists its matched files instead, as globs matched at the project root would reach outside its scope
+  const files = scope === rootScope
+    ? registered.registration.files
+    : (instance?.files ?? []);
+
+  return [...files, ...filesIn(dirs, listLanguageFiles(languages))];
 }
 
 async function createDefaultInclude(
   config: LoadedConfig,
-  key: TsconfigKey,
-  file: File,
+  { key, scope, file }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   const name = toTsconfigEnvironment(key);
 
-  const globs = await listEnvironmentGlobs(config, name);
+  const globs = await listEnvironmentGlobs(config, name, scope);
 
   const declarations = [
     ...(await listGlobalDeclarations(config)),
@@ -139,8 +140,10 @@ async function createDistTestsInclude(
 
 export async function produceTsconfigInclude(
   config: LoadedConfig,
-  { key, file, include: option }: TsconfigTarget,
+  target: TsconfigTarget,
 ): Promise<readonly JsonEdit[]> {
+  const { key, file, include: option } = target;
+
   if (key === "base") {
     return [];
   }
@@ -149,7 +152,7 @@ export async function produceTsconfigInclude(
     option,
     key === "tests.dist"
       ? await createDistTestsInclude(config, file)
-      : await createDefaultInclude(config, key, file),
+      : await createDefaultInclude(config, target),
     `${toTsconfigOptionPath(key)}.include`,
     config.context.reporter,
   );

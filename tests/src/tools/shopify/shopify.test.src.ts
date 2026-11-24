@@ -69,7 +69,7 @@ afterEach(() => {
 });
 
 describe("shopify-app", () => {
-  test("syncs the extension workspaces with Preact and Polaris types", async () => {
+  test("syncs the extension workspaces", async () => {
     const project = createApp();
 
     await runCommand("sync", sync, "workspaces", "pnpm");
@@ -81,14 +81,6 @@ describe("shopify-app", () => {
     expect(JSON.parse(project.read("extensions/a/package.json")).name).toBe(
       "a",
     );
-
-    expect(
-      JSON.parse(project.read("extensions/a/tsconfig.json")).compilerOptions,
-    ).toEqual({
-      types: ["@shopify/polaris-types"],
-      jsx: "react-jsx",
-      jsxImportSource: "preact",
-    });
   });
 
   test("keeps the preset beside the paths a config sets", async () => {
@@ -98,7 +90,6 @@ describe("shopify-app", () => {
   workspaces: {
     "extensions/*": {
       name: "@scope/${placeholder}",
-      tsconfig: { compilerOptions: { strict: true } },
     },
   },
 };
@@ -110,15 +101,6 @@ describe("shopify-app", () => {
     expect(JSON.parse(project.read("extensions/a/package.json")).name).toBe(
       "@scope/a",
     );
-
-    expect(
-      JSON.parse(project.read("extensions/a/tsconfig.json")).compilerOptions,
-    ).toEqual({
-      types: ["@shopify/polaris-types"],
-      jsx: "react-jsx",
-      jsxImportSource: "preact",
-      strict: true,
-    });
   });
 
   test("ignores the host files of an app", async () => {

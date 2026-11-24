@@ -1,36 +1,12 @@
 import { map } from "@auaust/toolkit/array";
-import { flatMap } from "@auaust/toolkit/iterable";
 
-import { resolveEnvironmentTsconfig } from "#project/environments/index";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
+import { listReferencedTsconfigs } from "#tools/typescript/operations/listReferencedTsconfigs";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { File } from "#types/File";
-
-async function listReferencedFiles(
-  config: LoadedConfig,
-): Promise<readonly File[]> {
-  const files: File[] = [];
-
-  for (const name of await listTsconfigEnvironments(config)) {
-    const { file, check } = await resolveEnvironmentTsconfig(config, name);
-
-    if (check && file !== undefined) {
-      files.push(file);
-    }
-  }
-
-  return [
-    ...files,
-    ...flatMap(await config.resolve("workspaces"), ({ workspaces }) => {
-      return map(workspaces, ({ tsconfig }) => tsconfig);
-    }),
-  ];
-}
 
 export async function produceTsconfigSolution(
   config: LoadedConfig,
@@ -47,7 +23,7 @@ export async function produceTsconfigSolution(
     },
     {
       path: ["references"],
-      value: map(await listReferencedFiles(config), (referenced) => {
+      value: map(await listReferencedTsconfigs(config), (referenced) => {
         return { path: toTsconfigSpecifier(file, referenced) };
       }),
     },

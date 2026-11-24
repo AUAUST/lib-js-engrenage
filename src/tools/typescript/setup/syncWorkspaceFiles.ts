@@ -1,16 +1,4 @@
-import { isBoolean, iterable } from "@auaust/toolkit";
-import { entries } from "@auaust/toolkit/object";
-
 import { emptyObjectFile } from "#foundation/json/constants";
-import {
-  applyJsonEdits,
-  type JsonEdit,
-  type JsonValue,
-} from "#foundation/json/index";
-import {
-  resolveListOption,
-  type ManagedListOption,
-} from "#foundation/options/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
@@ -18,19 +6,12 @@ import {
   type PackageJson,
   type PublishAccess,
 } from "#project/package/index";
-import {
-  isLeftAlone,
-  toJsonValue,
-  toTsconfigGlobs,
-  toTsconfigSpecifier,
-} from "#project/tsconfig/index";
+import { toJsonValue } from "#project/tsconfig/index";
 import { readTypescriptExtensions } from "#tools/typescript/operations/readTypescriptExtensions";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
+import type { JsonValue } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
-import type {
-  ResolvedWorkspace,
-  ResolvedWorkspaceGroup,
-} from "#project/workspaces/index";
+import type { ResolvedWorkspace } from "#project/workspaces/index";
 
 const selfImportKey = "#self/*";
 
@@ -78,73 +59,6 @@ function createPackageFields(
   return fields;
 }
 
-function isManaged(option: ManagedListOption<string> | undefined): boolean {
-  return option !== undefined && !isBoolean(option);
-}
-
-async function createTsconfigEdits(
-  config: LoadedConfig,
-  { tsconfig: option }: ResolvedWorkspaceGroup,
-  { tsconfig, globs }: ResolvedWorkspace,
-): Promise<JsonEdit[]> {
-  const typescript = await config.resolve("typescript");
-
-  const base = typescript.tsconfig.file;
-
-  const lists = [
-    [
-      ["extends"],
-      option.extends,
-      () => {
-        return base === undefined ? [] : [toTsconfigSpecifier(tsconfig, base)];
-      },
-    ],
-    [["include"], option.include, () => toTsconfigGlobs(tsconfig, globs)],
-    [["exclude"], option.exclude, () => []],
-    [["compilerOptions", "lib"], option.lib, () => []],
-    [["compilerOptions", "types"], option.types, () => []],
-  ] as const;
-
-  const derived = iterable.flatMap(
-    lists,
-    ([path, listed, defaults]): JsonEdit[] => {
-      const items = resolveListOption(
-        listed,
-        defaults,
-        `workspaces tsconfig.${path.join(".")}`,
-        config.context.reporter,
-      );
-
-      if (items === false || (items.length === 0 && !isManaged(listed))) {
-        return [];
-      }
-
-      return [
-        {
-          path: [...path],
-          value: path[0] === "extends" && items.length === 1
-            ? items[0]
-            : [...items],
-        },
-      ];
-    },
-  );
-
-  const custom = iterable.map(
-    entries(option.compilerOptions),
-    ([name, value]): JsonEdit => {
-      return {
-        path: ["compilerOptions", name],
-        value: toJsonValue(value, `workspaces compilerOptions.${name}`),
-      };
-    },
-  );
-
-  return [...derived, ...custom].filter((edit) => {
-    return !isLeftAlone(edit, option.unmanaged);
-  });
-}
-
 export async function syncWorkspaceFiles(config: LoadedConfig) {
   const [
     groups,
@@ -184,16 +98,6 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
             );
           },
           (await filesystem.read(packageFile)) ?? emptyObjectFile,
-        ),
-      );
-
-      await filesystem.write(
-        workspace.tsconfig,
-        applyJsonEdits(
-          (await filesystem.read(workspace.tsconfig)) ?? emptyObjectFile,
-          workspace.tsconfig,
-          await createTsconfigEdits(config, group, workspace),
-          jsonIndentation,
         ),
       );
     }

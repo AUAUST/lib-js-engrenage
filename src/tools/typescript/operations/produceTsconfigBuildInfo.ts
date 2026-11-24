@@ -1,5 +1,4 @@
-import { relative } from "node:path";
-import { basename } from "node:path/posix";
+import { posix, relative } from "node:path";
 
 import { toPosixPath } from "#foundation/filesystem/index";
 import {
@@ -11,7 +10,7 @@ import type { LoadedConfig } from "#project/config/index";
 
 export async function produceTsconfigBuildInfo(
   config: LoadedConfig,
-  { key, file }: TsconfigTarget,
+  { key, scope, file }: TsconfigTarget,
 ): Promise<readonly JsonEdit[]> {
   if (key === "base") {
     return [];
@@ -23,7 +22,11 @@ export async function produceTsconfigBuildInfo(
     relative(config.context.root, resources.path("cache.typescript")),
   );
 
-  const buildInfo = `${cacheDirectory}/${basename(file, ".json")}.tsbuildinfo`;
+  const buildInfo = posix.join(
+    cacheDirectory,
+    scope,
+    `${posix.basename(file, ".json")}.tsbuildinfo`,
+  );
 
   return [
     {

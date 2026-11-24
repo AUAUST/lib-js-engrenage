@@ -103,7 +103,7 @@ export interface TestsInput {
      */
     tsconfig?: ((false | {
       /**
-       * File of this tsconfig.
+       * File of this tsconfig, resolved against the root of each scope it is written in.
        * @default `tsconfig.<environment>.json`, named after its environment
        */
       path?: (string | undefined)
@@ -116,7 +116,7 @@ export interface TestsInput {
       /**
        * Value of `include`.
        * `false` leaves the field to the file.
-       * @default the TypeScript files of the environment, from its placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
+       * @default the TypeScript files of the environment, from its placements in the tsconfig's scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
        */
       include?: (ManagedListOption<string> | undefined)
       /**

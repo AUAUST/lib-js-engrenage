@@ -8,7 +8,6 @@ export interface ResolvedWorkspace {
   readonly dir: Directory;
   readonly name: PackageName;
   readonly packageJson: File;
-  readonly tsconfig: File;
   readonly entry: File | undefined;
   readonly globs: Globs;
   readonly dependencies: Directories;
