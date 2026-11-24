@@ -37,14 +37,17 @@ function listNested(
 }
 
 /**
- * Forms one instance per registered environment and scope its placements reach,
- * in registration order, then in the order of `scopes`, the workspace directories
- * beside the root's: each placement belongs to the nearest scope at or above it.
+ * Forms one instance per registered environment and scope its placements
+ * reach, in registration order, then in the order of `scopes`, the workspace
+ * directories beside the root's: each placement belongs to the nearest scope at
+ * or above it. An instance is active when it has a file placement or one of its
+ * directories is in `activeDirs`.
  */
 export function listEnvironmentInstances(
   registered: readonly RegisteredEnvironment[],
   placements: EnvironmentPlacements,
   scopes: Directories,
+  activeDirs: ReadonlySet<Directory>,
 ): readonly EnvironmentInstance[] {
   const nearestFirst = sort(
     scopes.filter((scope) => scope !== rootScope),
@@ -92,17 +95,18 @@ export function listEnvironmentInstances(
           .filter(({ kind }) => kind === "dirs")
           .map(({ path }) => path);
 
+        const files = inScope
+          .filter(({ kind }) => kind === "files")
+          .map(({ path }) => path);
+
         return [
           freeze({
             environment: name,
             scope,
             dirs: freeze(dirs),
-            files: freeze(
-              inScope
-                .filter(({ kind }) => kind === "files")
-                .map(({ path }) => path),
-            ),
+            files: freeze(files),
             nested: listNested(placements, name, dirs),
+            active: files.length > 0 || dirs.some((dir) => activeDirs.has(dir)),
           }),
         ];
       });

@@ -67,7 +67,7 @@ export const testsSchema = declareObject(
     }),
     dist: declareObject(
       {
-        tsconfig: declareEnvironmentTsconfig("tests.dist", {
+        tsconfig: declareEnvironmentTsconfig({
           description: [
             "Options of the tsconfig that checks the tests against the built output (`engrenage typecheck:dist`).",
             "`false` manages none.",

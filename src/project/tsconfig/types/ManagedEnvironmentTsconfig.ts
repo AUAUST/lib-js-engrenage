@@ -1,8 +1,8 @@
-import type { ResolvedLocation } from "#foundation/options/index";
 import type { ManagedTsconfigFields } from "#project/tsconfig/types/ManagedTsconfigFields";
+import type { File } from "#types/File";
 
 export interface ManagedEnvironmentTsconfig extends ManagedTsconfigFields {
   readonly enabled: true;
-  readonly path: ResolvedLocation;
+  readonly path: File | undefined;
   readonly check: boolean;
 }

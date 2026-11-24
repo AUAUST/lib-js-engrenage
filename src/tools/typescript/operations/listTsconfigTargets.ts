@@ -1,5 +1,5 @@
+import { resolveEnvironmentTsconfig } from "#project/environments/index";
 import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
-import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { ConfigResolver } from "#project/config/index";
 import type {
   ResolvedEnvironmentTsconfig,
@@ -35,25 +35,12 @@ function toTarget(
       };
 }
 
-// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, toTsconfigEnvironment and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
-async function findTsconfig(config: ConfigResolver, key: TsconfigKey) {
-  if (key === "tests.dist") {
-    const { dist } = await config.resolve("tests");
-
-    return dist.tsconfig;
-  }
-
-  const { tsconfig } = await resolveTsconfigEnvironment(config, key);
-
-  return tsconfig;
-}
-
 async function listVariantKeys(
   config: ConfigResolver,
 ): Promise<readonly TsconfigKey[]> {
   const names = await listTsconfigEnvironments(config);
 
-  const { active } = await resolveTsconfigEnvironment(config, "tests");
+  const { active } = await config.resolve("tests");
 
   return active ? [...names, "tests.dist"] : names;
 }
@@ -78,7 +65,7 @@ export async function listTsconfigTargets(
   ];
 
   for (const key of await listVariantKeys(config)) {
-    const target = toTarget(key, await findTsconfig(config, key));
+    const target = toTarget(key, await resolveEnvironmentTsconfig(config, key));
 
     if (target !== undefined) {
       targets.push(target);

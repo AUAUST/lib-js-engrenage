@@ -4,7 +4,10 @@ import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
-import { listTsconfigRegistrations } from "#project/environments/index";
+import {
+  listTsconfigRegistrations,
+  resolveEnvironmentTsconfig,
+} from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import {
   isLeftAlone,
@@ -12,7 +15,6 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { listTsconfigTargets } from "#tools/typescript/operations/listTsconfigTargets";
-import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import { tsconfigProducers } from "#tools/typescript/operations/tsconfigProducers";
 import type { ManagedListOption } from "#foundation/options/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -46,13 +48,13 @@ async function inheritsTestsTsconfig(
   config: LoadedConfig,
   target: TsconfigTarget,
 ): Promise<boolean> {
-  const tests = await config.resolve("tests");
+  if (target.key !== "tests.dist") {
+    return false;
+  }
 
-  return (
-    target.key === "tests.dist" &&
-    tests.tsconfig.file !== undefined &&
-    isDefaultOption(target.extends)
-  );
+  const tests = await resolveEnvironmentTsconfig(config, "tests");
+
+  return tests.file !== undefined && isDefaultOption(target.extends);
 }
 
 async function listInheritedPaths(
@@ -125,18 +127,12 @@ async function listDeclaredTsconfigFiles(
 
   const files: File[] = [];
 
-  for (const { name } of registrations) {
-    const { tsconfig } = await resolveTsconfigEnvironment(config, name);
+  for (const key of [...registrations.map(({ name }) => name), "tests.dist"]) {
+    const { file } = await resolveEnvironmentTsconfig(config, key);
 
-    if (tsconfig.file !== undefined) {
-      files.push(tsconfig.file);
+    if (file !== undefined) {
+      files.push(file);
     }
-  }
-
-  const { dist } = await config.resolve("tests");
-
-  if (dist.tsconfig.file !== undefined) {
-    files.push(dist.tsconfig.file);
   }
 
   return files;

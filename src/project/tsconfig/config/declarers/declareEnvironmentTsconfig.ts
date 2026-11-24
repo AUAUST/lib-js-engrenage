@@ -3,32 +3,28 @@ import { boolean, record, string, unknown } from "valibot";
 import {
   declare,
   declareList,
-  declareLocation,
   declareManagedList,
   declareObject,
+  fileSchema,
+  unset,
   type Description,
 } from "#foundation/options/index";
-import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
-export function declareEnvironmentTsconfig<Context = unknown>(
-  key: TsconfigKey,
-  options: {
-    description: Description;
-    explain: string;
-    managed?(context: Context): boolean;
-    checked?: boolean;
-  },
-) {
+export function declareEnvironmentTsconfig<Context = unknown>(options: {
+  description: Description;
+  explain: string;
+  managed?(context: Context): boolean;
+  checked?: boolean;
+}) {
   const { checked = true } = options;
 
   return declareObject(
     {
-      path: declareLocation({
+      path: declare(fileSchema, {
         description: "File of this tsconfig.",
-        optional: {
-          value: `tsconfig.${key}.json`,
-          explain: "`tsconfig.<environment>.json`, named after its environment",
-        },
+        optional: unset(
+          "`tsconfig.<environment>.json`, named after its environment",
+        ),
       }),
       extends: declareManagedList(string(), {
         description: [

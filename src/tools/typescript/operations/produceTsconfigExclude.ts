@@ -8,6 +8,7 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
+import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -59,7 +60,7 @@ export async function produceTsconfigExclude(
   const exclude = resolveListOption(
     option,
     await createDefaultExclude(config, key, file),
-    `${key}.tsconfig.exclude`,
+    `${toTsconfigOptionPath(key)}.exclude`,
     config.context.reporter,
   );
 

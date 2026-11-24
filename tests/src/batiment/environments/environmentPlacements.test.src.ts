@@ -118,10 +118,12 @@ describe("environment placements", () => {
       ],
     );
 
-    const instances = listEnvironmentInstances(registered, placements, [
-      "extensions/cart",
-      "extensions/home",
-    ]);
+    const instances = listEnvironmentInstances(
+      registered,
+      placements,
+      ["extensions/cart", "extensions/home"],
+      new Set(["app"]),
+    );
 
     expect(instances).toEqual([
       {
@@ -130,6 +132,7 @@ describe("environment placements", () => {
         dirs: ["app"],
         files: [],
         nested: [{ environment: "server", dir: "app/server" }],
+        active: true,
       },
       {
         environment: "frontend",
@@ -137,6 +140,7 @@ describe("environment placements", () => {
         dirs: ["extensions/cart/src"],
         files: [],
         nested: [],
+        active: false,
       },
       {
         environment: "frontend",
@@ -144,6 +148,7 @@ describe("environment placements", () => {
         dirs: ["extensions/home/src"],
         files: [],
         nested: [],
+        active: false,
       },
       {
         environment: "server",
@@ -151,6 +156,7 @@ describe("environment placements", () => {
         dirs: ["app/server"],
         files: [],
         nested: [],
+        active: false,
       },
     ]);
   });

@@ -832,7 +832,9 @@ describe("createTsdownConfig", () => {
   test("leaves the declarations tsconfig unset without a src tsconfig", async () => {
     const project = createProject({
       config: {
-        src: { tsconfig: false },
+        environments: {
+          src: { tsconfig: false },
+        },
       },
       compilerOptions: declared,
       tsconfig: {

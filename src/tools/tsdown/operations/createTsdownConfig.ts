@@ -16,6 +16,7 @@ import { emittedManifestFile } from "#project/build/constants";
 import {
   createDefine,
   resolveEntriesRuntime,
+  resolveEnvironmentTsconfig,
 } from "#project/environments/index";
 import { sourceCondition } from "#project/package/constants";
 import { optionsSchema } from "#tools/tsdown/config/schemas/optionsSchema";
@@ -134,13 +135,13 @@ export async function createTsdownConfig(
 
   const packageJsonPath = await config.resolve("packageJsonPath");
 
-  const source = await config.resolve("src");
-
   const runtime = await resolveEntriesRuntime(config);
 
   const tsconfigPath = await config.resolve("tsconfigPath");
 
-  const declarationsTsconfigPath = await source.tsconfig.path;
+  const source = await resolveEnvironmentTsconfig(config, "src");
+
+  const declarationsTsconfigPath = await source.path;
 
   // @debt repeats the "No package.json found" guard of createStepContext and syncChangesetConfig
   if (packageJsonPath === undefined) {

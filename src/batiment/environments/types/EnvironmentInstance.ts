@@ -29,4 +29,8 @@ export interface EnvironmentInstance {
    * this environment in their subtrees.
    */
   readonly nested: readonly EnvironmentPlacement[];
+  /**
+   * Whether its placements hold a file Git does not ignore.
+   */
+  readonly active: boolean;
 }

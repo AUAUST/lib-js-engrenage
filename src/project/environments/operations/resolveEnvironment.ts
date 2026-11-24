@@ -2,7 +2,6 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 import { listPlacementGlobs } from "#project/environments/operations/listPlacementGlobs";
-import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import type { ConfigResolver } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 
@@ -24,6 +23,5 @@ export async function resolveEnvironment(
     generated: option.generated,
     discovered: option.discovered,
     globs,
-    tsconfig: await resolveEnvironmentTsconfig(config, name),
   });
 }

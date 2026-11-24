@@ -8,7 +8,10 @@ import type { Maybe } from "@auaust/toolkit/types";
 import { noRoles } from "#batiment/roles/constants";
 import { filesIn, resolve } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
-import { composeTestsPatterns } from "#project/environments/index";
+import {
+  composeTestsPatterns,
+  resolveEnvironmentTsconfig,
+} from "#project/environments/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -149,9 +152,11 @@ export async function createVitestConfig(
     ? tests.dist.tsconfig.path
     : config.resolve("tsconfigPath"));
 
-  const typecheckTsconfig = await (testsBuild
-    ? tests.dist.tsconfig.path
-    : tests.tsconfig.path);
+  const checked = testsBuild
+    ? tests.dist.tsconfig
+    : await resolveEnvironmentTsconfig(config, "tests");
+
+  const typecheckTsconfig = await checked.path;
 
   const testsPatterns = await createTestsPatterns(config, testsBuild);
 

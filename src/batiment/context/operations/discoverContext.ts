@@ -1,10 +1,11 @@
 import { posix } from "node:path";
 
 import { flatMap, map } from "@auaust/toolkit/array";
-import { freeze, record } from "@auaust/toolkit/object";
+import { freeze, keys, record } from "@auaust/toolkit/object";
 
 import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
+import { hasUnignoredFile } from "#batiment/context/operations/hasUnignoredFile";
 import {
   discoverEnvironmentPlacements,
   listEnvironmentInstances,
@@ -156,10 +157,24 @@ async function discoverEnvironments(
     filesystem,
   });
 
+  const placed = await Promise.all(
+    keys(placements.dirs).map(async (dir) => {
+      const active = await hasUnignoredFile({
+        filesystem,
+        ignored,
+        dirs: [dir],
+        files: [],
+      });
+
+      return active ? [dir] : [];
+    }),
+  );
+
   const instances = listEnvironmentInstances(
     registered,
     placements,
     map(workspaces, ({ dir }) => dir),
+    new Set(placed.flat()),
   );
 
   return {

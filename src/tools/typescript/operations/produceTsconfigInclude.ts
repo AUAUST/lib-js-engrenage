@@ -17,6 +17,7 @@ import {
 } from "#project/tsconfig/index";
 import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
 import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
+import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -149,7 +150,7 @@ export async function produceTsconfigInclude(
     key === "tests.dist"
       ? await createDistTestsInclude(config, file)
       : await createDefaultInclude(config, key, file),
-    `${key}.tsconfig.include`,
+    `${toTsconfigOptionPath(key)}.include`,
     config.context.reporter,
   );
 

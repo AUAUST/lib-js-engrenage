@@ -41,7 +41,6 @@ export async function listPlacementGlobs(
         nested,
       } = getEnvironmentCoverage(environments.placements, dir);
 
-      // @debt a nested placement's files stay in the enclosing directory's globs too, since excluding them is #868's
       const listed = await Promise.all([
         listEnvironmentFiles(config, environment, dir),
         ...nested.map((placement) => {

@@ -62,8 +62,10 @@ describe("solution tsconfig", () => {
 
   test("skips an environment with check false", async () => {
     const { read } = await syncProject({
-      tests: {
-        tsconfig: { check: false },
+      environments: {
+        tests: {
+          tsconfig: { check: false },
+        },
       },
     });
 
@@ -130,8 +132,10 @@ describe("tsconfig build info", () => {
 
   test("is relative to a tsconfig in a subdirectory", async () => {
     const { read } = await syncProject({
-      src: {
-        tsconfig: { path: "config/tsconfig.src.json" },
+      environments: {
+        src: {
+          tsconfig: { path: "config/tsconfig.src.json" },
+        },
       },
     });
 

@@ -2,7 +2,7 @@
 
 import type { RoleInput } from "#batiment/roles/index";
 import type { NamespaceInput } from "#batiment/scopes/index";
-import type { ListOption, ManagedListOption } from "#foundation/options/index";
+import type { ListOption } from "#foundation/options/index";
 
 /**
  * The environment of the maintenance scripts of the project, never published.
@@ -53,65 +53,6 @@ export interface ScriptsInput {
    * @default none
    */
   discovered?: (ListOption<string> | undefined)
-  /**
-   * Options of the tsconfig that sync writes for the scripts environment.
-   * `false` manages none.
-   * @default `tsconfig.scripts.json` with derived options
-   */
-  tsconfig?: ((false | {
-    /**
-     * File of this tsconfig.
-     * @default `tsconfig.<environment>.json`, named after its environment
-     */
-    path?: (string | undefined)
-    /**
-     * Value of `extends`.
-     * `false` leaves the field to the file.
-     * @default the base tsconfig (the `tests` tsconfig for `tests.dist`)
-     */
-    extends?: (ManagedListOption<string> | undefined)
-    /**
-     * Value of `include`.
-     * `false` leaves the field to the file.
-     * @default the TypeScript files of the environment, from its placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
-     */
-    include?: (ManagedListOption<string> | undefined)
-    /**
-     * Value of `exclude`.
-     * `false` leaves the field to the file.
-     * @default the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the environment's directories
-     */
-    exclude?: (ManagedListOption<string> | undefined)
-    /**
-     * Value of `compilerOptions.lib`.
-     * `false` leaves the field to the file.
-     * @default the ES libs selected from the registration's Baseline syntax snapshot, `ESNext` for a Node runtime
-     */
-    lib?: (ManagedListOption<string> | undefined)
-    /**
-     * Value of `compilerOptions.types`.
-     * `false` leaves the field to the file.
-     * @default `node` for a Node runtime; for a baseline runtime, `@auaust/engrenage/apis/<group>` for each group of its environment's `execution.apis`, except library groups whose lib is already in `lib`, which are left out with a warning
-     */
-    types?: (ManagedListOption<string> | undefined)
-    /**
-     * Options written into `compilerOptions` after the ones engrenage derives; it wins over them.
-     * @default none
-     */
-    compilerOptions?: ({
-      [k: string]: unknown
-    } | undefined)
-    /**
-     * Dotted paths in this tsconfig (such as `compilerOptions.paths`) that sync never writes.
-     * @default none
-     */
-    unmanaged?: (ListOption<string> | undefined)
-    /**
-     * Whether the base tsconfig references this tsconfig, so `engrenage typecheck` checks it.
-     * @default `true`, except for `tests.dist`
-     */
-    check?: (boolean | undefined)
-  }) | undefined)
   /**
    * The layout shaping the environment's tree, by name: one the `layouts` slot holds, or `domains` for the namespace and domain walk.
    * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` names its subcommands and their aliases, the root group's `executable.ts` runs it, and each other module is one command.

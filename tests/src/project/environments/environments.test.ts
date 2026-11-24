@@ -236,12 +236,14 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("src")).tsconfig).toMatchObject({
+    const tsconfigs = await config.resolve("environments.tsconfig");
+
+    expect(tsconfigs.src).toMatchObject({
       file: "tsconfig.src.json",
       check: true,
     });
 
-    expect((await config.resolve("tooling")).tsconfig).toMatchObject({
+    expect(tsconfigs.tooling).toMatchObject({
       file: "tsconfig.tooling.json",
     });
 
@@ -252,15 +254,58 @@ describe("environment tsconfigs", () => {
   });
 
   test("leave an environment without tsconfig when it is false", async () => {
-    const project = createProject("{ bin: { tsconfig: false } }");
+    const project = createProject(
+      "{ environments: { bin: { tsconfig: false } } }",
+    );
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("bin")).tsconfig.file).toBeUndefined();
+    const { bin } = await config.resolve("environments.tsconfig");
 
-    await expect(
-      (await config.resolve("bin")).tsconfig.path,
-    ).resolves.toBeUndefined();
+    expect(bin?.file).toBeUndefined();
+
+    await expect(bin?.path).resolves.toBeUndefined();
+  });
+
+  test("give a registration outside the built-in names its tsconfig", async () => {
+    const project = createProject(
+      '{ environments: { web: { preset: "src", dirs: ["web"], tsconfig: { check: false } } } }',
+    );
+
+    const config = await loadConfig(project.root);
+
+    const { web } = await config.resolve("environments.tsconfig");
+
+    expect(web).toMatchObject({ file: "tsconfig.web.json", check: false });
+  });
+
+  test("reject a tsconfig on a registration whose preset has none", async () => {
+    const project = createProject(
+      "{ environments: { data: { tsconfig: { check: false } } } }",
+    );
+
+    const config = await loadConfig(project.root);
+
+    await expect(config.resolve("environments.tsconfig")).rejects.toThrow(
+      "environments.data.tsconfig is set, but the preset data of the environment data has no tsconfig",
+    );
+  });
+
+  test("keep a nested placement's files in the enclosing environment's globs", async () => {
+    const project = createProject(
+      '{ environments: { web: { preset: "src", dirs: ["src/web"] } } }',
+      { "src/web/page.ts": "" },
+    );
+
+    const config = await loadConfig(project.root);
+
+    expect((await config.resolve("src")).globs).toContain(
+      "src/**/*{.ts,.mts,.cts}",
+    );
+
+    expect((await config.resolve("files")).published).toContain(
+      "src/**/*{.ts,.mts,.cts}",
+    );
   });
 
   test("warn when the base tsconfig is not named tsconfig.json", async () => {

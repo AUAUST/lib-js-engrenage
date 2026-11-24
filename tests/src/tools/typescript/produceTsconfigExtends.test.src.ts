@@ -48,8 +48,10 @@ describe("produceTsconfigExtends", () => {
 
   test("extends the base from an environment tsconfig in a subdirectory", async () => {
     const read = await syncProject({
-      src: {
-        tsconfig: { path: "config/tsconfig.src.json" },
+      environments: {
+        src: {
+          tsconfig: { path: "config/tsconfig.src.json" },
+        },
       },
     });
 
@@ -58,9 +60,11 @@ describe("produceTsconfigExtends", () => {
 
   test("appends a base as an array", async () => {
     const read = await syncProject({
-      src: {
-        tsconfig: {
-          extends: { append: ["./custom.json"] },
+      environments: {
+        src: {
+          tsconfig: {
+            extends: { append: ["./custom.json"] },
+          },
         },
       },
     });

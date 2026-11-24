@@ -58,10 +58,8 @@ entries:
     title: Contributed environments are trusted past their checks
     sites:
       - src/project/config/config/schemas/extensionSchema.ts:92
-      - src/project/environments/operations/resolveEnvironmentTsconfig.ts:22
       - src/project/structure/operations/readStructureOption.ts:11
-      - src/tools/typescript/operations/resolveTsconfigEnvironment.ts:11
-    why: entries are typed as their slot's though only `load`, `enabled`, structure fields or tsconfig shape are checked.
+    why: entries are typed as their slot's though only `load`, `enabled` or structure fields are checked.
     want: boundary validation for every field a contributed environment resolves.
   - id: 261122-10c3
     title: Config codegen asserts what it could type

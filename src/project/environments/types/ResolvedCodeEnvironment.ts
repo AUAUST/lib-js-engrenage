@@ -1,4 +1,3 @@
-import type { ResolvedEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
@@ -8,5 +7,4 @@ export interface ResolvedCodeEnvironment {
   readonly generated: Globs;
   readonly discovered: Globs;
   readonly globs: Globs;
-  readonly tsconfig: ResolvedEnvironmentTsconfig;
 }

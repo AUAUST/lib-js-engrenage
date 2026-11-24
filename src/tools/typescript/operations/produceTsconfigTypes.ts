@@ -11,6 +11,7 @@ import {
 } from "#project/tsconfig/index";
 import { resolveTsconfigExecution } from "#tools/typescript/operations/resolveTsconfigExecution";
 import { resolveTsconfigLibrary } from "#tools/typescript/operations/resolveTsconfigLibrary";
+import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
 import type { Reporter } from "#foundation/reports/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -155,7 +156,7 @@ export async function produceTsconfigTypes(
       runtime,
       apis: execution?.apis ?? [],
     }),
-    `${key}.tsconfig.types`,
+    `${toTsconfigOptionPath(key)}.types`,
     config.context.reporter,
   );
 

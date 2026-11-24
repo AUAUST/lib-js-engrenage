@@ -1,12 +1,12 @@
 import { map } from "@auaust/toolkit/array";
 import { flatMap } from "@auaust/toolkit/iterable";
 
+import { resolveEnvironmentTsconfig } from "#project/environments/index";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
-import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -17,9 +17,7 @@ async function listReferencedFiles(
   const files: File[] = [];
 
   for (const name of await listTsconfigEnvironments(config)) {
-    const { tsconfig } = await resolveTsconfigEnvironment(config, name);
-
-    const { file, check } = tsconfig;
+    const { file, check } = await resolveEnvironmentTsconfig(config, name);
 
     if (check && file !== undefined) {
       files.push(file);

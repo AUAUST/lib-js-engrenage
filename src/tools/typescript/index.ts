@@ -27,7 +27,6 @@ export type * from "#tools/typescript/ports/BarrelExportsResolver";
 export type * from "#tools/typescript/types/BarrelExport";
 export type * from "#tools/typescript/types/BarrelModule";
 export type * from "#tools/typescript/types/BarrelPlan";
-export type * from "#tools/typescript/types/TsconfigEnvironment";
 // @end
 export type { ApiGroup } from "#project/baseline/index";
 export type { SubpathImports } from "#project/package/index";

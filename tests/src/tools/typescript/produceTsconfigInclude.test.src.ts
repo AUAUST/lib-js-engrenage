@@ -117,8 +117,10 @@ describe("produceTsconfigInclude", () => {
   test("includes the declarations of src in the tests and consumers, never in tests.dist", async () => {
     const read = await syncProject(
       {
-        bin: {
-          tsconfig: { path: "config/tsconfig.bin.json" },
+        environments: {
+          bin: {
+            tsconfig: { path: "config/tsconfig.bin.json" },
+          },
         },
         tests: {
           dist: {
@@ -294,9 +296,11 @@ describe("produceTsconfigInclude", () => {
 
   test("removes an excluded glob", async () => {
     const read = await syncProject({
-      src: {
-        tsconfig: {
-          include: { exclude: ["src/**/*.tsx"] },
+      environments: {
+        src: {
+          tsconfig: {
+            include: { exclude: ["src/**/*.tsx"] },
+          },
         },
       },
     });
@@ -335,8 +339,10 @@ describe("produceTsconfigInclude", () => {
 
   test("writes globs relative to a tsconfig in a subdirectory", async () => {
     const read = await syncProject({
-      src: {
-        tsconfig: { path: "config/tsconfig.src.json" },
+      environments: {
+        src: {
+          tsconfig: { path: "config/tsconfig.src.json" },
+        },
       },
     });
 

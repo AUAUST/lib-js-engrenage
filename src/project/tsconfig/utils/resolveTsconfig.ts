@@ -1,8 +1,16 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import type { ResolvedEnvironmentTsconfigOption } from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
+import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
-export function resolveTsconfig(option: ResolvedEnvironmentTsconfigOption) {
+/**
+ * Flattens the tsconfig option of `key`, its unset `path` defaulting to
+ * `tsconfig.<key>.json`.
+ */
+export function resolveTsconfig(
+  key: TsconfigKey,
+  option: ResolvedEnvironmentTsconfigOption,
+) {
   if (!option.enabled) {
     return freeze({
       file: undefined,
@@ -18,9 +26,11 @@ export function resolveTsconfig(option: ResolvedEnvironmentTsconfigOption) {
     });
   }
 
+  const file = option.path ?? `tsconfig.${key}.json`;
+
   return freeze({
-    file: option.path.file,
-    location: option.path,
+    file,
+    location: { file, configured: option.path !== undefined },
     extends: option.extends,
     include: option.include,
     exclude: option.exclude,

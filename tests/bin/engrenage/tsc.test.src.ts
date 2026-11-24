@@ -143,7 +143,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       {
-        "engrenage.config.ts": "export default { tests: { tsconfig: { check: false } }, tooling: false };\n",
+        "engrenage.config.ts": "export default { environments: { tests: { tsconfig: { check: false } } }, tooling: false };\n",
         "tsconfig.json": JSON.stringify({
           compilerOptions: { noEmit: true },
           files: [],
@@ -159,7 +159,7 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
 
   test("passes when no environment is checked", async () => {
     createSolution("export {};\n", {
-      "engrenage.config.ts": "export default { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } }, tooling: false };\n",
+      "engrenage.config.ts": "export default { environments: { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } }, tooling: false };\n",
       "tsconfig.json": JSON.stringify({
         compilerOptions: { noEmit: true },
         files: [],

@@ -3,7 +3,6 @@ import { freeze } from "@auaust/toolkit/object";
 import { declareSection } from "#foundation/options/index";
 import { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 import { listPlacementGlobs } from "#project/environments/operations/listPlacementGlobs";
-import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import type { ConfigResolver } from "#project/config/index";
 import type { ResolvedTooling } from "#project/environments/types/ResolvedTooling";
 
@@ -22,7 +21,6 @@ export const toolingSection = declareSection({
       dirs,
       rootFiles,
       globs: [...rootFiles, ...globs],
-      tsconfig: await resolveEnvironmentTsconfig(config, "tooling"),
     });
   },
 });

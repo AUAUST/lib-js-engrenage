@@ -143,12 +143,12 @@ describe("runtime tsconfig fields", () => {
     const read = await syncCompilerOptions({
       environments: {
         src: {
-          execution: { syntax: "2026-11" },
-        },
-      },
-      src: {
-        tsconfig: {
-          lib: { append: ["esnext.array"], exclude: ["es2023.intl"] },
+          execution: {
+            syntax: "2026-11",
+          },
+          tsconfig: {
+            lib: { append: ["esnext.array"], exclude: ["es2023.intl"] },
+          },
         },
       },
     });
@@ -202,9 +202,11 @@ describe("runtime tsconfig fields", () => {
     const config = createProjectConfig({
       root: project.root,
       raw: withSourceRuntime({
-        src: {
-          tsconfig: {
-            lib: { exclude: "Absent" },
+        environments: {
+          src: {
+            tsconfig: {
+              lib: { exclude: "Absent" },
+            },
           },
         },
       }),
@@ -227,7 +229,8 @@ describe("runtime tsconfig fields", () => {
     expect(
       reporter.messages.filter(({ text }) => {
         return (
-          text === "src.tsconfig.lib excludes Absent, absent from its defaults"
+          text ===
+          "environments.src.tsconfig.lib excludes Absent, absent from its defaults"
         );
       }),
     ).toHaveLength(1);
@@ -467,12 +470,13 @@ describe("runtime tsconfig fields", () => {
     const read = await syncCompilerOptions({
       environments: {
         src: {
-          execution: { globals: "node", syntax: 24 },
-        },
-      },
-      src: {
-        tsconfig: {
-          compilerOptions: { target: "ES2022" },
+          execution: {
+            globals: "node",
+            syntax: 24,
+          },
+          tsconfig: {
+            compilerOptions: { target: "ES2022" },
+          },
         },
       },
     });

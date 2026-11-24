@@ -55,6 +55,7 @@ export { binSchema } from "#project/environments/config/schemas/binSchema";
 export { dataSchema } from "#project/environments/config/schemas/dataSchema";
 export { defineSchema } from "#project/environments/config/schemas/defineSchema";
 export { environmentsSchema } from "#project/environments/config/schemas/environmentsSchema";
+export { environmentTsconfigSchema } from "#project/environments/config/schemas/environmentTsconfigSchema";
 export { executionSchema } from "#project/environments/config/schemas/executionSchema";
 export { globalsSchema } from "#project/environments/config/schemas/globalsSchema";
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
@@ -67,6 +68,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
+export { createEnvironmentTsconfig } from "#project/environments/operations/createEnvironmentTsconfig";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { listNamespaceEnvironments } from "#project/environments/operations/listNamespaceEnvironments";
@@ -90,6 +92,7 @@ export { dataSection } from "#project/environments/config/sections/dataSection";
 export { defineSection } from "#project/environments/config/sections/defineSection";
 export { environmentClaimsSection } from "#project/environments/config/sections/environmentClaimsSection";
 export { environmentsSection } from "#project/environments/config/sections/environmentsSection";
+export { environmentTsconfigsSection } from "#project/environments/config/sections/environmentTsconfigsSection";
 export { executionSection } from "#project/environments/config/sections/executionSection";
 export { runtimeSection } from "#project/environments/config/sections/runtimeSection";
 export { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";

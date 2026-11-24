@@ -76,19 +76,52 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
+  test("writes the root tsconfig of a registration outside the built-in names", async () => {
+    const { project, config } = await createProject(
+      {
+        environments: {
+          web: {
+            preset: "src",
+            dirs: ["web"],
+            execution: { syntax: "2026-10" },
+          },
+        },
+      },
+      {
+        ...files,
+        "web/page.ts": "",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(JSON.parse(project.read("tsconfig.web.json")).include).toEqual([
+      "web/**/*.ts",
+      "web/**/*.mts",
+      "web/**/*.cts",
+      "web/**/*.tsx",
+    ]);
+
+    expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
+      { path: "./tsconfig.src.json" },
+      { path: "./tsconfig.web.json" },
+    ]);
+  });
+
   test("leaves a false list and an unmanaged scalar untouched", async () => {
     const { project, config } = await createProject(
       {
         environments: {
           src: {
-            execution: { globals: "node", syntax: 24 },
-          },
-        },
-        src: {
-          tsconfig: {
-            include: false,
-            lib: false,
-            unmanaged: ["compilerOptions.tsBuildInfoFile"],
+            execution: {
+              globals: "node",
+              syntax: 24,
+            },
+            tsconfig: {
+              include: false,
+              lib: false,
+              unmanaged: ["compilerOptions.tsBuildInfoFile"],
+            },
           },
         },
       },
@@ -116,11 +149,13 @@ describe("syncTsconfigFiles", () => {
   test("writes compilerOptions over managed and custom fields", async () => {
     const { project, config } = await createProject(
       {
-        src: {
-          tsconfig: {
-            compilerOptions: {
-              tsBuildInfoFile: "./custom.tsbuildinfo",
-              customFlag: { a: 1 },
+        environments: {
+          src: {
+            tsconfig: {
+              compilerOptions: {
+                tsBuildInfoFile: "./custom.tsbuildinfo",
+                customFlag: { a: 1 },
+              },
             },
           },
         },

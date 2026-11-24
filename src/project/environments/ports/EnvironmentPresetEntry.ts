@@ -10,7 +10,7 @@ export interface EnvironmentPresetEntry extends EntryShape, EnvironmentPreset {
   readonly name: string;
   /**
    * Whether the preset's environments have a TypeScript project configuration,
-   * read from the `tsconfig` option their options key must resolve.
+   * configured by `environments.<name>.tsconfig`.
    */
   readonly tsconfig?: boolean;
   /**

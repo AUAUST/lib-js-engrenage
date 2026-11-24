@@ -11,10 +11,6 @@ import {
   defaultToolingDirectories,
   defaultToolingFiles,
 } from "#project/environments/constants";
-import {
-  declareEnvironmentTsconfig,
-  unmanagedTsconfig,
-} from "#project/tsconfig/index";
 
 export const toolingSchema = declareObject(
   {
@@ -32,13 +28,6 @@ export const toolingSchema = declareObject(
     }),
     roles: rolesSchema,
     omitRoles: omitRolesSchema,
-    tsconfig: declareEnvironmentTsconfig("tooling", {
-      description: [
-        "Options of the tsconfig that sync writes for the tooling files.",
-        "`false` manages none.",
-      ],
-      explain: "`tsconfig.tooling.json` with derived options",
-    }),
   },
   {
     description: [
@@ -50,7 +39,6 @@ export const toolingSchema = declareObject(
       value: {
         dirs: [],
         files: [],
-        tsconfig: unmanagedTsconfig,
       },
     },
   },

@@ -1,9 +1,11 @@
 import { engrenage } from "#constants";
 import { resolveListOption } from "#foundation/options/index";
+import { resolveEnvironmentTsconfig } from "#project/environments/index";
 import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
+import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -21,13 +23,11 @@ async function createDefaultExtends(
     };
   }
 
-  const tests = await config.resolve("tests");
-
   const typescript = await config.resolve("typescript");
 
-  const parent = key === "tests.dist"
-    ? tests.tsconfig.file
-    : typescript.tsconfig.file;
+  const { file: parent } = key === "tests.dist"
+    ? await resolveEnvironmentTsconfig(config, "tests")
+    : typescript.tsconfig;
 
   return () => {
     return parent === undefined ? [] : [toTsconfigSpecifier(file, parent)];
@@ -41,7 +41,7 @@ export async function produceTsconfigExtends(
   const bases = resolveListOption(
     target.extends,
     await createDefaultExtends(config, target),
-    `${target.key}.tsconfig.extends`,
+    `${toTsconfigOptionPath(target.key)}.extends`,
     config.context.reporter,
   );
 

@@ -5,7 +5,6 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
-import { declareEnvironmentTsconfig } from "#project/tsconfig/index";
 import type { Directories } from "#types/Directories";
 
 export function declareCodeEnvironment(
@@ -37,13 +36,6 @@ export function declareCodeEnvironment(
         "ESLint lifts its default-export restriction for them.",
       ],
       optional: { value: [] },
-    }),
-    tsconfig: declareEnvironmentTsconfig(name, {
-      description: [
-        `Options of the tsconfig that sync writes for the ${name} environment.`,
-        "`false` manages none.",
-      ],
-      explain: `\`tsconfig.${name}.json\` with derived options`,
     }),
   };
 }

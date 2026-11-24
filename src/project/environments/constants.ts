@@ -13,7 +13,6 @@ import { freeze } from "@auaust/toolkit/object";
 
 import { environmentPresetFields } from "#batiment/environments/constants";
 import { namespaceKindFields } from "#batiment/scopes/constants";
-import { unmanagedTsconfig } from "#project/tsconfig/constants";
 import type { NamespaceKind, TestVariant } from "#batiment/scopes/index";
 import type { EnvironmentPresetEntry } from "#project/environments/ports/EnvironmentPresetEntry";
 import type { Directories } from "#types/Directories";
@@ -79,7 +78,6 @@ export const disabledCodeEnvironment = freeze({
   dirs: [],
   generated: [],
   discovered: [],
-  tsconfig: unmanagedTsconfig,
 } as const);
 
 export const testVariants = freeze([

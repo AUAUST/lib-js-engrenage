@@ -8,6 +8,7 @@ import {
   directorySchema,
   globSchema,
 } from "#foundation/options/index";
+import { environmentTsconfigSchema } from "#project/environments/config/schemas/environmentTsconfigSchema";
 import { executionSchema } from "#project/environments/config/schemas/executionSchema";
 
 export const environmentsSchema = declareRecord(
@@ -34,6 +35,7 @@ export const environmentsSchema = declareRecord(
         description: "Globs, matched at the project root only, of the files the environment is placed on; a built-in environment defaults to its options' `files` when its `dirs` option includes `.`.",
         optional: { value: undefined },
       }),
+      tsconfig: environmentTsconfigSchema,
     },
     {
       description: "The registration of one environment: its preset, its tuning and its placements.",

@@ -1,6 +1,7 @@
 import { resolveListOption } from "#foundation/options/index";
 import { memoizeByContext, type LoadedConfig } from "#project/config/index";
 import { resolveTsconfigExecution } from "#tools/typescript/operations/resolveTsconfigExecution";
+import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { TsconfigTarget } from "#project/tsconfig/index";
 
 const librariesOf = memoizeByContext(() => {
@@ -34,7 +35,7 @@ async function computeTsconfigLibrary(
 
       return browser ? [...library, "DOM", "DOM.Iterable"] : library;
     },
-    `${key}.tsconfig.lib`,
+    `${toTsconfigOptionPath(key)}.lib`,
     config.context.reporter,
   );
 }
