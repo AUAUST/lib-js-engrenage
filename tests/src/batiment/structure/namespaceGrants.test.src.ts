@@ -92,4 +92,25 @@ describe("resolveNamespaceGrants", () => {
 
     expect(grants.namespaces.bin).toContain("theme/src");
   });
+
+  test("keeps the stronger of a kind relation and an opt-in", () => {
+    const grants = resolveNamespaceGrants(false, [
+      {
+        ...createInstance("bin", getKind("bin")),
+        imports: { src: "whole" },
+      },
+      {
+        ...createInstance("scripts", getKind("scripts")),
+        imports: { data: "surface" },
+      },
+      createInstance("src", getKind("src")),
+      createInstance("data", getKind("data")),
+    ]);
+
+    expect(grants.surface.bin).toBeUndefined();
+
+    expect(grants.namespaces.bin).not.toContain("src");
+
+    expect(grants.surface.scripts).toEqual(["src"]);
+  });
 });

@@ -1,5 +1,5 @@
 import type { InwardPolicy } from "#batiment/scopes/types/InwardPolicy";
-import type { NamespaceRelation } from "#batiment/scopes/types/NamespaceRelation";
+import type { NamespaceImports } from "#batiment/scopes/types/NamespaceImports";
 import type { TestVariant } from "#batiment/scopes/types/TestVariant";
 
 /**
@@ -37,7 +37,7 @@ export interface NamespaceKind {
    * by relation: `whole` any file, `surface` only a domain's `index`, `entry`
    * and public roles.
    */
-  readonly imports?: Readonly<Record<string, NamespaceRelation>>;
+  readonly imports?: NamespaceImports;
   /**
    * What other namespaces' grants into the kind's namespaces yield: `open` the
    * grant as given, `surface` at most surface, `sealed`, the default, nothing.

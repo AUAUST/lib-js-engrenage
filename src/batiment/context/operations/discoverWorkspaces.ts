@@ -164,12 +164,13 @@ async function readNamespace(
     return read.diagnostic;
   }
 
-  const { kind } = read.metadata;
+  const { kind, imports } = read.metadata;
 
   return freeze({
     dir: posix.dirname(file),
     file,
     ...(kind === undefined ? {} : { kind }),
+    ...(imports === undefined ? {} : { imports: freeze(imports) }),
   });
 }
 

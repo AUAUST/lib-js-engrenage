@@ -18,6 +18,7 @@ export type * from "#batiment/scopes/types/DomainInput";
 export type * from "#batiment/scopes/types/InwardPolicy";
 export type * from "#batiment/scopes/types/LayoutContext";
 export type * from "#batiment/scopes/types/NamespaceDeclaration";
+export type * from "#batiment/scopes/types/NamespaceImports";
 export type * from "#batiment/scopes/types/NamespaceInput";
 export type * from "#batiment/scopes/types/NamespaceInstance";
 export type * from "#batiment/scopes/types/NamespaceKindPreset";
@@ -40,6 +41,7 @@ export { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspa
 // @barrel utils
 export { createNamespaceKindPreset } from "#batiment/scopes/utils/createNamespaceKindPreset";
 export { createScopeTree } from "#batiment/scopes/utils/createScopeTree";
+export { findMetafileField } from "#batiment/scopes/utils/findMetafileField";
 export { getNamespaceId } from "#batiment/scopes/utils/getNamespaceId";
 export { listNamespaces } from "#batiment/scopes/utils/listNamespaces";
 export { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";

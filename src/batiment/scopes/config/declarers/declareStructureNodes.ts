@@ -14,10 +14,12 @@ import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import { declareNamespaceKind } from "#batiment/scopes/config/declarers/declareNamespaceKind";
 import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
 import { structureKeySchema } from "#batiment/scopes/config/schemas/structureKeySchema";
+import { namespaceKindFields } from "#batiment/scopes/constants";
 import {
   declare,
   declareObject,
   declareRecord,
+  unset,
   type Declaration,
 } from "#foundation/options/index";
 import type { DomainDeclaration } from "#batiment/scopes/types/DomainDeclaration";
@@ -162,6 +164,15 @@ const nodes = freeze({
       kind: declareNamespaceKind(
         "its config `kind` at the root, its directory name in a workspace; ignored below a top-level namespace",
       ),
+      imports: declare(namespaceKindFields.imports.wrapped, {
+        description: [
+          "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.",
+          "A relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.",
+        ],
+        optional: unset(
+          "only its kind's `imports`; ignored below a top-level namespace",
+        ),
+      }),
       ...namespaceFields,
     }),
     domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),

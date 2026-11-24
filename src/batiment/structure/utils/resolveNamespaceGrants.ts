@@ -17,7 +17,10 @@ function resolveRelation(
     return;
   }
 
-  const relation = importer.kind.imports?.[target.kind.name];
+  const granted = importer.kind.imports?.[target.kind.name];
+  const optedIn = importer.imports?.[target.name];
+
+  const relation = granted === "whole" ? granted : (optedIn ?? granted);
 
   switch (target.kind.inward) {
     case "open": {

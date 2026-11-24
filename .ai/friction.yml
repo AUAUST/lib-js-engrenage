@@ -791,3 +791,11 @@ entries:
     subject: tsconfig sync in temp project
     tried: runCommand sync tsconfig
     stopped: base.json unresolvable; set typescript.tsconfig.extends false
+  - id: 261124-cba3
+    subject: gh issue view hook
+    tried: gh issue view of a sibling issue
+    stopped: hook points to the .ai/issues copy; read it instead
+  - id: 261124-7033
+    subject: sync barrel export missing
+    tried: engrenage sync after adding util and type
+    stopped: lint refused the missing export; added barrel lines by hand

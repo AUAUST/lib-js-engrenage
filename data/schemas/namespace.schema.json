@@ -9,6 +9,17 @@
       "type": "string",
       "description": "The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.\n@default its config `kind` at the root, its directory name in a workspace; ignored below a top-level namespace"
     },
+    "imports": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "enum": ["whole", "surface"],
+        "type": "string"
+      },
+      "description": "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.\nA relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.\n@default only its kind's `imports`; ignored below a top-level namespace"
+    },
     "layers": {
       "type": "array",
       "items": {

@@ -6,6 +6,7 @@ import { freeze, keys, record } from "@auaust/toolkit/object";
 import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
 import { hasUnignoredFile } from "#batiment/context/operations/hasUnignoredFile";
+import { resolveNamespaceImports } from "#batiment/context/operations/resolveNamespaceImports";
 import {
   discoverEnvironmentPlacements,
   listEnvironmentInstances,
@@ -112,19 +113,36 @@ async function listWorkspaceNamespaces({
           filesystem,
         });
 
-        return kind === undefined || !active
+        return kind === undefined
           ? []
           : [
               {
                 name,
                 kind,
                 dirs,
+                active,
+                metafile,
               },
             ];
       }),
   );
 
-  return found.flat();
+  const namespaces = found.flat();
+
+  return namespaces
+    .filter(({ active }) => active)
+    .map(({ name, kind, dirs, metafile }) => {
+      return {
+        name,
+        kind,
+        dirs,
+        ...resolveNamespaceImports({
+          metafiles: [metafile],
+          scope: namespaces,
+          diagnostics,
+        }),
+      };
+    });
 }
 
 function resolveConfiguredKind(
@@ -246,12 +264,14 @@ export async function discoverContext(
   ];
 
   const resolved = placed.map(({ placement, configured, discovery }) => {
+    const metafiles = discovered.namespaces.filter(({ dir }) => {
+      return discovery.dirs.includes(dir);
+    });
+
     const kind = resolveNamespaceKind({
       dir: discovery.dirs[0] ?? placement.name,
       kinds,
-      metafiles: discovered.namespaces.filter(({ dir }) => {
-        return discovery.dirs.includes(dir);
-      }),
+      metafiles,
       diagnostics,
       declared: { kind: configured, config: placement.kind.config },
     });
@@ -259,7 +279,12 @@ export async function discoverContext(
     return {
       placement,
       discovery: freeze({ ...discovery, kind }),
+      metafiles,
     };
+  });
+
+  const rootNamespaces = map(resolved, ({ placement, discovery }) => {
+    return { name: placement.name, kind: discovery.kind };
   });
 
   const workspaces = await Promise.all(
@@ -295,12 +320,17 @@ export async function discoverContext(
   const tree = createScopeTree({
     namespaces: resolved
       .filter(({ discovery }) => discovery.active)
-      .map(({ placement, discovery }) => {
+      .map(({ placement, discovery, metafiles }) => {
         return {
           name: placement.name,
           title: placement.title,
           kind: discovery.kind,
           dirs: discovery.dirs,
+          ...resolveNamespaceImports({
+            metafiles,
+            scope: rootNamespaces,
+            diagnostics,
+          }),
         };
       }),
     workspaces,

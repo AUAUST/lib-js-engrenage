@@ -3,8 +3,13 @@ import { describe, expect, test } from "vitest";
 import { keys } from "@auaust/toolkit/object";
 
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
-import { createScopeTree, getNamespaceId } from "#batiment/scopes/index";
+import {
+  createScopeTree,
+  getNamespaceId,
+  listNamespaces,
+} from "#batiment/scopes/index";
 import { reconcileEnvironmentDirs } from "#batiment/scopes/utils/reconcileEnvironmentDirs";
+import { resolveNamespaceGrants } from "#batiment/structure/index";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createPresetConfig } from "#tests/utils/createPresetConfig";
@@ -40,6 +45,15 @@ function resolvePresetScopes({
     preset,
     input: withSourceRuntime(input),
   }).resolve("scopes");
+}
+
+async function resolveGrants(files: Record<string, string>) {
+  const tree = await resolveScopes(files);
+
+  return {
+    diagnostics: summarize(tree.diagnostics),
+    grants: resolveNamespaceGrants(false, listNamespaces(tree)),
+  };
 }
 
 function summarize(
@@ -334,5 +348,77 @@ describe("scopes", () => {
     expect(scopes["extensions/a"]?.purpose).toBe("theme");
 
     expect(scopes["extensions/b"]?.purpose).toBe("preset");
+  });
+
+  test("grants a root namespace's opted-in import beside its kind's", async () => {
+    const { diagnostics, grants } = await resolveGrants({
+      "src/.namespace.json": JSON.stringify({
+        imports: { scripts: "surface" },
+      }),
+      "src/a.ts": "",
+      "scripts/a.ts": "",
+      "bin/a.ts": "",
+    });
+
+    expect(diagnostics).toEqual([]);
+
+    expect(grants.surface.src).toEqual(["scripts"]);
+
+    expect(grants.namespaces.src).toContain("bin");
+
+    expect(grants.namespaces.src).not.toContain("scripts");
+  });
+
+  test("reports and ignores an opt-in into a sealed namespace", async () => {
+    const { diagnostics, grants } = await resolveGrants({
+      "src/.namespace.json": JSON.stringify({
+        imports: { static: "whole" },
+      }),
+      "src/a.ts": "",
+      "public/a.png": "",
+    });
+
+    expect(diagnostics).toEqual([
+      { code: "sealed-import-target", path: "src" },
+    ]);
+
+    expect(grants.namespaces.src).toContain("static");
+  });
+
+  test("grants a workspace namespace an opt-in by name within its scope", async () => {
+    const files = {
+      "theme/.workspace.json": "{}",
+      "theme/src/a.ts": "",
+      "theme/tooling/.namespace.json": "{}",
+      "theme/tooling/a.ts": "",
+    };
+
+    const byName = await resolveGrants({
+      ...files,
+      "theme/src/.namespace.json": JSON.stringify({
+        imports: { tooling: "whole" },
+      }),
+    });
+
+    expect(byName.diagnostics).toEqual([]);
+
+    expect(byName.grants.namespaces["theme/src"]).not.toContain(
+      "theme/tooling",
+    );
+
+    expect(byName.grants.surface["theme/src"]).toBeUndefined();
+
+    const byId = await resolveGrants({
+      ...files,
+      "theme/src/.namespace.json": JSON.stringify({
+        imports: { "theme/tooling": "whole" },
+      }),
+    });
+
+    expect(byId.diagnostics).toEqual([
+      { code: "unknown-import-target", path: "theme/src" },
+    ]);
+
+    expect(byId.grants.namespaces["theme/src"]).toContain("theme/tooling");
   });
 });

@@ -10,8 +10,9 @@
  * key equal to a root environment name, a workspace inside another, a directory a
  * `workspaces` glob matches without a `.workspace.json`, an `.environment.json`
  * at a scope's root, a top-level namespace taking a kind no `namespaceKinds`
- * entry names, or an `.environment.json` naming an environment no registration
- * holds; or a directory or file two environments are placed on.
+ * entry names, a `.namespace.json` opting in to import a namespace its scope
+ * lacks or one of a sealed kind, or an `.environment.json` naming an environment
+ * no registration holds; or a directory or file two environments are placed on.
  *
  * @experimental
  */
@@ -44,5 +45,7 @@ export type StructureDiagnosticCode =
   | "missing-workspace"
   | "misplaced-environment-metafile"
   | "unknown-namespace-kind"
+  | "unknown-import-target"
+  | "sealed-import-target"
   | "unknown-environment"
   | "environment-placement-conflict";

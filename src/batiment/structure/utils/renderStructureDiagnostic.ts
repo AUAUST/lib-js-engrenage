@@ -34,6 +34,8 @@ const separators = {
   "missing-workspace": "  ",
   "misplaced-environment-metafile": "  ",
   "unknown-namespace-kind": "  ",
+  "unknown-import-target": "  ",
+  "sealed-import-target": "  ",
   "unknown-environment": "  ",
   "environment-placement-conflict": "  ",
 } as const satisfies Record<StructureDiagnosticCode, string>;

@@ -1,4 +1,5 @@
 import type { NamespaceKind } from "#batiment/scopes/ports/NamespaceKind";
+import type { NamespaceImports } from "#batiment/scopes/types/NamespaceImports";
 import type { Directories } from "#types/Directories";
 
 /**
@@ -20,5 +21,11 @@ export interface NamespaceInstance {
    */
   readonly title: string;
   readonly kind: NamespaceKind;
+  /**
+   * The namespaces of its scope the namespace imports besides its kind's
+   * `imports`, by name, from its `.namespace.json`: each names an existing
+   * namespace whose kind is not sealed.
+   */
+  readonly imports?: NamespaceImports;
   readonly dirs: Directories;
 }

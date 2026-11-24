@@ -2,6 +2,7 @@ import { posix } from "node:path";
 
 import { freeze } from "@auaust/toolkit/object";
 
+import { findMetafileField } from "#batiment/scopes/utils/findMetafileField";
 import type { OptionSource, StructureDiagnostic } from "#batiment/report/index";
 import type { NamespaceKind } from "#batiment/scopes/ports/NamespaceKind";
 import type { Directory } from "#types/Directory";
@@ -31,32 +32,6 @@ function report(
   diagnostics.push(freeze({ severity: "error", ...diagnostic }));
 }
 
-function findNamed(
-  metafiles: readonly NamespaceMetafile[],
-  diagnostics: StructureDiagnostic[],
-): { readonly kind: string; readonly file: File } | undefined {
-  let named: { readonly kind: string; readonly file: File } | undefined;
-
-  for (const { file, kind } of metafiles) {
-    if (kind === undefined) {
-      continue;
-    }
-
-    if (named === undefined) {
-      named = { kind, file };
-    } else if (named.kind !== kind) {
-      report(diagnostics, {
-        code: "metafile-field-conflict",
-        message: `${posix.dirname(named.file)} sets kind in both ${named.file} and ${file}; keeping the value of ${named.file}`,
-        path: posix.dirname(file),
-        files: freeze([named.file, file]),
-      });
-    }
-  }
-
-  return named;
-}
-
 /**
  * Resolves the namespace kind a top-level namespace takes: the one its
  * `.namespace.json` names, else the one its config declares, else, in a workspace,
@@ -78,13 +53,17 @@ export function resolveNamespaceKind({
 }: NamespaceKindSources & {
   readonly declared?: DeclaredNamespaceKind;
 }): NamespaceKind | undefined {
-  const named = findNamed(metafiles, diagnostics);
+  const named = findMetafileField({
+    metafiles,
+    field: "kind",
+    diagnostics,
+  });
 
   if (named === undefined && declared !== undefined) {
     return declared.kind;
   }
 
-  const name = named?.kind ?? posix.basename(dir);
+  const name = named?.value ?? posix.basename(dir);
   const kind = kinds.get(name);
 
   const files = named === undefined
@@ -107,7 +86,7 @@ export function resolveNamespaceKind({
   if (
     named !== undefined &&
     declared?.config.origin?.layer === "input" &&
-    declared.kind.name !== named.kind
+    declared.kind.name !== named.value
   ) {
     report(diagnostics, {
       code: "config-metafile-conflict",
