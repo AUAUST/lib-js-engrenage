@@ -201,6 +201,7 @@ gate:
     - 261122-67f6
     - 261122-c28e
     - 261122-bfc2
+    - 261124-0112
 git:
   purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
   entries:
