@@ -1,158 +1,28 @@
 import { isDeepStrictEqual } from "node:util";
 
-import {
-  array,
-  lazy,
-  null_,
-  optional,
-  record as recordOf,
-  string,
-  union,
-  type GenericSchema,
-} from "valibot";
-
-import { isArray, isPlainObject, isString } from "@auaust/toolkit";
-import { map, sort } from "@auaust/toolkit/array";
-import { entries, getOwn, hasOwn, keys, record } from "@auaust/toolkit/object";
+import { map } from "@auaust/toolkit/array";
+import { getOwn, hasOwn, keys, record } from "@auaust/toolkit/object";
 
 import { packageJsonFile } from "#constants";
-import { syncFiles } from "#foundation/blocks/index";
 import { emptyObjectFile } from "#foundation/json/constants";
-import {
-  applyJsonEdits,
-  readJsonValue,
-  type JsonValue,
-} from "#foundation/json/index";
-import { validate } from "#foundation/options/index";
+import { applyJsonEdits } from "#foundation/json/index";
 import { readEnvironmentLanguages } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
-import { writePackageJsonValue } from "#project/package/index";
 import { readGeneratedKeys, writeGeneratedKeys } from "#project/sync/index";
 import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
 import { importPrefix, typescript } from "#tools/typescript/constants";
+import { syncImports } from "#tools/typescript/operations/syncImports";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
+import { mergeGenerated } from "#tools/typescript/utils/mergeGenerated";
 import type { Alias } from "#batiment/structure/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { File } from "#types/File";
-
-const importsPart = "package.json#imports";
+import type { ImportTarget } from "#tools/typescript/types/ImportTarget";
 
 const pathsPart = "tsconfig#paths";
-
-type ImportTarget =
-  | string
-  | null
-  | readonly ImportTarget[]
-  | { readonly [condition: string]: ImportTarget };
-
-const importTargetSchema: GenericSchema<ImportTarget> = lazy(() => {
-  return union([
-    string(),
-    null_(),
-    array(importTargetSchema),
-    recordOf(string(), importTargetSchema),
-  ]);
-});
-
-const importsSchema = optional(recordOf(string(), importTargetSchema));
-
-function sortByKey<Item extends readonly [string, unknown]>(items: Item[]) {
-  return sort(items, ([a], [b]) => {
-    return a < b ? -1 : a > b ? 1 : 0;
-  });
-}
-
-function matchesImport(current: ImportTarget, generated: ImportTarget) {
-  if (isDeepStrictEqual(current, generated)) {
-    return true;
-  }
-
-  return (
-    isString(current) &&
-    isPlainObject(generated) &&
-    isArray(generated.types) &&
-    generated.types.includes(current)
-  );
-}
-
-function mergeGenerated<Value extends JsonValue>(
-  file: File,
-  current: Readonly<Record<string, Value>>,
-  generated: Readonly<Record<string, Value>>,
-  recorded: readonly string[] | undefined,
-  matches: (current: Value, generated: Value) => boolean,
-): Record<string, Value> {
-  const previous = (
-    recorded ??
-    keys(current).filter((key) => {
-      return hasOwn(generated, key) && matches(current[key], generated[key]);
-    })
-  );
-
-  const hand = entries(current).filter(([key]) => !previous.includes(key));
-
-  for (const [key, value] of hand) {
-    if (hasOwn(generated, key) && !isDeepStrictEqual(value, generated[key])) {
-      throw new Error(
-        `${file}: hand-declared ${key} → ${JSON.stringify(value)} collides with the generated ${key} → ${JSON.stringify(generated[key])}; rename it`,
-      );
-    }
-  }
-
-  const kept = hand.filter(([key]) => !hasOwn(generated, key));
-
-  return record(sortByKey([...kept, ...entries(generated)]));
-}
-
-async function syncImports(
-  config: LoadedConfig,
-  imports: Readonly<Record<string, ImportTarget>>,
-) {
-  const recorded = await readGeneratedKeys(config, importsPart);
-
-  await syncFiles(
-    {
-      filesystem: config.context.filesystem,
-      resolve: config.context.path,
-    },
-    [
-      {
-        file: packageJsonFile,
-        update(content, path) {
-          const current = validate(
-            importsSchema,
-            readJsonValue(content, path, ["imports"]),
-            `${path} imports`,
-          );
-
-          if (keys(imports).length === 0 && current === undefined) {
-            return content;
-          }
-
-          return writePackageJsonValue(
-            content,
-            path,
-            ["imports"],
-            mergeGenerated<ImportTarget>(
-              path,
-              current ?? {},
-              imports,
-              recorded,
-              matchesImport,
-            ),
-            jsonIndentation,
-          );
-        },
-      },
-    ],
-  );
-
-  await writeGeneratedKeys(config, importsPart, keys(imports));
-}
 
 async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
   const typescript = await config.resolve("typescript");
@@ -256,7 +126,7 @@ export async function syncAliases(config: LoadedConfig) {
     ),
   };
 
-  await syncImports(config, imports);
+  await syncImports(config, packageJsonFile, imports);
 
   if (bundled) {
     await syncPaths(

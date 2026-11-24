@@ -80,6 +80,7 @@ describe("workspaces", () => {
       version: "1.2.3",
       license: "MIT",
       imports: {
+        "#package.json": "./package.json",
         "#self/*": {
           types: ["./src/*.ts", "./src/*.mts", "./src/*.cts"],
           default: "./src/*",

@@ -807,3 +807,39 @@ entries:
     subject: git stash push untracked path
     tried: stash push -- untracked file, then stash pop
     stopped: push failed, pop applied an unrelated stash; restore denied by auto mode
+  - id: 261124-31ac
+    subject: Interscript source not checked out
+    tried: local search under Developer
+    stopped: read files through gh api contents
+  - id: 261124-9e3a
+    subject: zsh = word expansion
+    tried: echo ===== separator
+    stopped: hook refused; quoted it
+  - id: 261124-6a61
+    subject: gh issue view of locally cached issue
+    tried: batched gh issue view including a claimed issue
+    stopped: hook refused whole command; read .ai/issues copy instead
+  - id: 261124-c9fd
+    subject: planning check audience
+    tried: check on a debugger-routed Problem draft
+    stopped: fails with no audience option; publish skips it, so published anyway
+  - id: 261124-3d3f
+    subject: hook blocks gh issue view
+    tried: fetching issue states with gh
+    stopped: copy in .ai/issues; read drafts instead
+  - id: 261124-9360
+    subject: zsh equals-word expansion
+    tried: echo ==== separator
+    stopped: hook refused; used ---- instead
+  - id: 261124-c5da
+    subject: publish reparent closed children
+    tried: dropping a closed segment's parent
+    stopped: publish wanted its closed Steps children converted; kept the segment in its parent
+  - id: 261124-12d0
+    subject: publish leaf resplit
+    tried: resplit on parents only
+    stopped: each reparented leaf needs its own resplit; added them
+  - id: 261124-4883
+    subject: "`planning issue check` Provides lines"
+    tried: "Provides naming plan #732 Model headings in an unclaimed-plan tree"
+    stopped: check lists no Model headings without the plan draft; dropped Provides

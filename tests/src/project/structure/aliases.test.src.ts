@@ -462,6 +462,30 @@ describe("scope aliases", () => {
     );
   });
 
+  test("syncs a workspace's table into its package.json imports, keeping #self/*", async () => {
+    const { config } = await resolveScopes({
+      "engrenage.config.ts": `export default { ${source}, workspaces: { theme: { name: "theme" } } };\n`,
+    });
+
+    const rootPackage = await config.context.filesystem.read("package.json");
+
+    await runSync(config, { names: ["workspaces"] });
+
+    const { imports } = JSON.parse(
+      (await config.context.filesystem.read("theme/package.json")) ?? "",
+    );
+
+    expect(imports).toMatchObject({
+      "#package.json": "./package.json",
+      "#src/*": "./src/*.ts",
+      "#self/*": expect.anything(),
+    });
+
+    expect(await config.context.filesystem.read("package.json")).toBe(
+      rootPackage,
+    );
+  });
+
   test("lets a workspace's table repeat a key of the root's", async () => {
     const { scopes } = await resolveScopes({
       "theme/tests/.namespace.json": "{}",
