@@ -5,6 +5,7 @@ import { loadLazy } from "#foundation/modules/index";
 import {
   listNamespaceEnvironments,
   readEnvironmentLanguages,
+  readScopeNamespaces,
 } from "#project/environments/index";
 import type { Role } from "#batiment/roles/index";
 import type { ConfigResolver } from "#project/config/index";
@@ -35,13 +36,11 @@ export async function listDefaultRoles(
   config: ConfigResolver,
   environment: string,
 ): Promise<readonly Role[]> {
-  const [contributions, traits, context] = await Promise.all([
+  const [contributions, traits, namespaces] = await Promise.all([
     config.context.registry.contributions("roles", config),
     config.resolve("traits"),
-    config.resolve("structure.context"),
+    readScopeNamespaces(config),
   ]);
-
-  const { namespaces } = await context.discover();
 
   const discovered = getOwn(namespaces, environment);
 

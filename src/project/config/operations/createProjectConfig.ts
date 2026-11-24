@@ -224,14 +224,14 @@ export function createProjectConfig({
   }
 
   function createConfig({
-    directory,
+    dir,
     view,
     input,
     origin: from,
     defaults,
     parent,
   }: {
-    directory: Directory;
+    dir: Directory;
     view: Filesystem;
     input: RawConfig;
     origin: string;
@@ -241,6 +241,8 @@ export function createProjectConfig({
     ): Promise<readonly InputLayer[]>;
     parent?: ConfigResolver;
   }): LoadedConfig {
+    const directory = resolveWithin(root, dir);
+
     const {
       resolve,
       input: readInput,
@@ -252,6 +254,7 @@ export function createProjectConfig({
       input,
       {
         root: directory,
+        scopeDir: dir,
         filesystem: view,
         reporter,
         configFile,
@@ -297,7 +300,7 @@ export function createProjectConfig({
   }
 
   const project = createConfig({
-    directory: root,
+    dir: rootScope,
     view: filesystem,
     input: raw,
     origin: source,
@@ -335,7 +338,7 @@ export function createProjectConfig({
         });
 
     const child = createConfig({
-      directory: resolveWithin(root, dir),
+      dir,
       view: createFilesystemView(filesystem, root, dir),
       input: workspace.remainder,
       origin: workspace.file,

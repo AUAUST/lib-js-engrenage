@@ -9,6 +9,11 @@ import type { File } from "#types/File";
 
 export interface ConfigContext extends ReportingContext {
   readonly root: Directory;
+  /**
+   * The root-relative directory of the scope the config resolves, `.` for
+   * the project's root.
+   */
+  readonly scopeDir: Directory;
   readonly filesystem: Filesystem;
   readonly configFile: File | undefined;
   readonly registry: Registry<Extension, ConfigResolver>;

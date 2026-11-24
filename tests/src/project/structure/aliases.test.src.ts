@@ -5,12 +5,10 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { entrypoint } from "#project/roles/index";
-import { resolveAliases } from "#project/structure/operations/resolveAliases";
 import { runSync } from "#project/sync/index";
 import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
-import type { StructureNode } from "#batiment/structure/index";
 
 async function sync(config: string, files: Record<string, string> = {}) {
   const project = createTemporaryProject({
@@ -369,96 +367,39 @@ describe("scope aliases", () => {
   }
 
   test("aliases a workspace's unwalked structured namespace by directory, relative to the workspace", async () => {
-    const { scopes } = await resolveScopes({});
+    const { scopes } = await resolveScopes({
+      "theme/tasks/.namespace.json": '{ "kind": "scripts" }',
+      "theme/tasks/a.ts": "",
+    });
 
     expect(scopes.theme?.global).toContainEqual({
-      key: "#src/*",
-      target: "./src/*.ts",
-      source: "src environment",
-      path: "theme/src",
+      key: "#tasks/*",
+      target: "./tasks/*.ts",
+      source: "tasks environment",
+      path: "theme/tasks",
     });
   });
 
   test("aliases the children of a workspace's source structure relative to the workspace", async () => {
-    const { config } = await resolveScopes({ "theme/src/ui/index.ts": "" });
+    const { scopes } = await resolveScopes({ "theme/src/ui/index.ts": "" });
 
-    const languages = await config.context.registry.contributions(
-      "languages",
-      config,
-    );
-
-    const typescript = languages.find(({ entry }) => {
-      return entry.name === "typescript";
-    });
-
-    if (typescript === undefined) {
-      throw new Error("No typescript language is contributed");
-    }
-
-    const root: StructureNode = {
-      path: "theme/src",
-      name: "src",
-      kind: "namespace",
-      source: "inferred",
-      children: [
-        {
-          path: "theme/src/ui",
-          name: "ui",
-          kind: "domain",
-          source: "inferred",
-          children: [],
-        },
-      ],
-    };
-
-    const { global, src } = await resolveAliases({
-      filesystem: config.context.filesystem,
-      scope: "theme",
-      options: {
-        global: {
-          enabled: true,
-          generated: true,
-          define: {},
-        },
-        src: {
-          enabled: true,
-          generated: true,
-          define: {},
-        },
-      },
-      bundled: false,
-      namespaces: {
-        src: ["theme/src"],
-      },
-      data: [],
-      outDir: undefined,
-      source: {
-        name: "src",
-        structure: {
-          name: "src",
-          dirs: ["theme/src"],
-          strictness: "strict",
-          root,
-          unclassified: [],
-          roles: {},
-          unreached: [],
-          entries: {},
-          diagnostics: [],
-          indexFile: "index.ts",
-          entryFile: undefined,
-        },
-      },
-      language: typescript.entry,
-    });
-
-    expect(global.map(({ key }) => key)).toEqual(["#package.json"]);
-
-    expect(src).toContainEqual(
+    expect(scopes.theme?.src).toContainEqual(
       expect.objectContaining({
         key: "#ui",
         target: "./src/ui/index.ts",
         path: "theme/src/ui",
       }),
+    );
+  });
+
+  test("fails on a workspace holding several namespaces of package entries", async () => {
+    await expect(
+      resolveScopes({
+        "theme/lib/.namespace.json": '{ "kind": "src" }',
+        "theme/lib/a.ts": "",
+      }),
+    ).rejects.toThrow(
+      /several namespaces of package entries, (src and lib|lib and src)/,
     );
   });
 
@@ -477,7 +418,7 @@ describe("scope aliases", () => {
 
     expect(imports).toMatchObject({
       "#package.json": "./package.json",
-      "#src/*": "./src/*.ts",
+      "#a": "./src/a.ts",
       "#self/*": expect.anything(),
     });
 

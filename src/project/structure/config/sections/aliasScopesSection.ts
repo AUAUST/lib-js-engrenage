@@ -12,34 +12,23 @@ import type { LoadedContext } from "#batiment/context/index";
 import type { Scope } from "#batiment/scopes/index";
 import type { ResolvedAliases } from "#batiment/structure/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { AliasesOption } from "#project/structure/types/AliasesOption";
 
 async function resolveWorkspaceAliases({
   config,
   context,
   scope,
-  switches,
   language,
 }: {
   config: ConfigResolver;
   context: LoadedContext;
   scope: Scope;
-  switches: AliasesOption;
   language: LanguageEntry;
 }): Promise<ResolvedAliases> {
-  const structure = await context.walk(scope.dir);
+  const entries = scope.namespaces.filter(({ kind }) => kind.entries === true);
 
-  const sources = flatMap(scope.namespaces, ({ name, kind }) => {
-    const walked = getOwn(structure, name);
-
-    return kind.entries === true && walked !== undefined
-      ? [{ name, structure: walked }]
-      : [];
-  });
-
-  if (sources.length > 1) {
+  if (entries.length > 1) {
     throw new Error(
-      `Workspace ${scope.dir} holds several namespaces of package entries, ${sources
+      `Workspace ${scope.dir} holds several namespaces of package entries, ${entries
         .map(({ name }) => {
           return name;
         })
@@ -47,13 +36,33 @@ async function resolveWorkspaceAliases({
     );
   }
 
-  // @debt a workspace takes the root's `aliases` switches and its source namespace the schema defaults, until its child resolver reads its own options (#745)
+  const [scoped, structure] = await Promise.all([
+    config.context.scope(scope.dir),
+    context.walk(scope.dir),
+  ]);
+
+  const [switches, { aliases }] = await Promise.all([
+    scoped.input("aliases"),
+    // @debt the source aliases' options come from `src.options` whatever the name of the workspace's entries namespace
+    scoped.resolve("src.options"),
+  ]);
+
+  const source = flatMap(entries, ({ name }) => {
+    const walked = getOwn(structure, name);
+
+    return walked === undefined ? [] : [{ name, structure: walked }];
+  });
+
   return resolveAliases({
     filesystem: config.context.filesystem,
     scope: scope.dir,
     options: {
-      global: { ...switches, define: freeze({}) },
-      src: aliasesSchema.resolve(undefined, undefined, "aliases"),
+      // @debt a workspace's own `aliases.define` is dropped with the root's it inherits
+      global: {
+        ...aliasesSchema.resolve(switches, undefined, "aliases"),
+        define: freeze({}),
+      },
+      src: aliases,
     },
     bundled: false,
     namespaces: record(
@@ -65,7 +74,7 @@ async function resolveWorkspaceAliases({
       return kind.name === dataNamespaceKind.name ? dirs : [];
     }),
     outDir: undefined,
-    source: sources[0],
+    source: source[0],
     language,
   });
 }
@@ -73,11 +82,9 @@ async function resolveWorkspaceAliases({
 export const aliasScopesSection = declareSection({
   declaration: aliasesSchema,
   async resolve(
-    input,
+    _input,
     config: ConfigResolver,
   ): Promise<Readonly<Record<string, ResolvedAliases>>> {
-    const switches = aliasesSchema.resolve(input, undefined, "aliases");
-
     const [root, context, language] = await Promise.all([
       config.resolve("aliases"),
       config.resolve("structure.context"),
@@ -96,7 +103,6 @@ export const aliasScopesSection = declareSection({
               config,
               context,
               scope,
-              switches,
               language,
             }),
           ] as const;

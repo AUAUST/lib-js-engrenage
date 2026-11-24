@@ -1,12 +1,14 @@
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { getEnvironmentCoverage } from "#batiment/environments/index";
+import { readScopeNamespaces } from "#project/environments/operations/readScopeNamespaces";
 import type { NamespaceKind } from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
 
 /**
- * Lists the environments placed on the active root top-level namespaces `accepts`
- * takes by kind and name, each directory's covering one and those nested below it.
+ * Lists the environments placed on the active top-level namespaces of the scope
+ * `config` resolves that `accepts` takes by kind and name, each directory's
+ * covering one and those nested below it.
  */
 export async function listNamespaceEnvironments(
   config: ConfigResolver,
@@ -14,7 +16,10 @@ export async function listNamespaceEnvironments(
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
-  const { namespaces, environments } = await context.discover();
+  const [
+    { environments },
+    namespaces,
+  ] = await Promise.all([context.discover(), readScopeNamespaces(config)]);
 
   const names = new Set<string>();
 

@@ -82,6 +82,7 @@ export { readEnvironmentLanguages } from "#project/environments/operations/readE
 export { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
+export { readScopeNamespaces } from "#project/environments/operations/readScopeNamespaces";
 export { readSelectedLanguage } from "#project/environments/operations/readSelectedLanguage";
 export { readSelectedLanguages } from "#project/environments/operations/readSelectedLanguages";
 export { readTestsExtension } from "#project/environments/operations/readTestsExtension";

@@ -90,7 +90,7 @@ async function listWorkspaceNamespaces({
   ignored: Globs;
   filesystem: Filesystem;
 }) {
-  // @debt a workspace's top-level namespaces are only its `.namespace.json` dirs, with no defaults or multi-dir namespaces, until its child resolver declares them (#745)
+  // @debt a workspace's top-level namespaces are only its `.namespace.json` dirs, with no defaults or multi-dir namespaces, since discovery runs before any child resolver could declare them
   const found = await Promise.all(
     metafiles
       .filter((metafile) => posix.dirname(metafile.dir) === dir)

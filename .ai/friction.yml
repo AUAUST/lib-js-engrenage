@@ -851,3 +851,7 @@ entries:
     subject: zsh = word expansion
     tried: echo ====== as separator
     stopped: bash hook refused; quoted the separator
+  - id: 261124-664b
+    subject: sync barrel export missing
+    tried: engrenage sync after adding operation
+    stopped: barrel loaded before regen; added line by hand

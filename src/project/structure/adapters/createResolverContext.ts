@@ -1,6 +1,5 @@
 import { entries, freeze, getOwn } from "@auaust/toolkit/object";
 
-import { rootScope } from "#batiment/scopes/constants";
 import {
   flattenStructure,
   listDeclaredOptionPaths,
@@ -9,6 +8,7 @@ import {
 import {
   listEnvironmentEntries,
   readEnvironmentOptions,
+  readScopeNamespaces,
   type ContributedEnvironmentEntry,
 } from "#project/environments/index";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
@@ -214,10 +214,11 @@ async function readNamespaceDeclarations(
 }
 
 /**
- * Answers the context port from the config resolver: the root's facts from the
- * raw options keys, each with the option it comes from where a metafile may
- * override it, the root's declarations from its active environments; a workspace
- * declares nothing until its child resolver exists (#745).
+ * Answers the context port from the config resolver: the root's facts from
+ * the raw options keys, each with the option it comes from where a metafile
+ * may override it, each scope's declarations from its config, the root's or a
+ * workspace's child resolver, for its active top-level namespaces named after
+ * an environment entry.
  */
 export function createResolverContext(config: ConfigResolver): ContextPort {
   async function root(): Promise<RootFacts> {
@@ -253,18 +254,19 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
   }
 
   async function scope(dir: Directory): Promise<ScopeDeclarations> {
-    const [context, entries, { internals }, { published }] = await Promise.all([
-      config.resolve("structure.context"),
-      listEnvironmentEntries(config),
-      config.resolve("structure.options"),
-      config.resolve("traits"),
+    const scoped = await config.context.scope(dir);
+
+    const [
+      entries,
+      namespaces,
+      { internals },
+      { published },
+    ] = await Promise.all([
+      listEnvironmentEntries(scoped),
+      readScopeNamespaces(scoped),
+      scoped.resolve("structure.options"),
+      scoped.resolve("traits"),
     ]);
-
-    if (dir !== rootScope) {
-      return freeze({ internals, namespaces: freeze([]) });
-    }
-
-    const { namespaces } = await context.discover();
 
     const structured = entries.filter(({ entry }) => {
       const discovered = getOwn(namespaces, entry.name);
@@ -279,7 +281,7 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       namespaces: freeze(
         await Promise.all(
           structured.map(({ entry }) => {
-            return readNamespaceDeclarations(config, entry.name, published);
+            return readNamespaceDeclarations(scoped, entry.name, published);
           }),
         ),
       ),

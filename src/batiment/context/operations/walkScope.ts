@@ -22,22 +22,24 @@ export async function walkScope({
   discovery: ContextDiscovery;
   filesystem: Filesystem;
 }): Promise<ResolvedStructure> {
+  const instances = getOwn(discovery.tree.scopes, dir)?.namespaces ?? [];
+
   const namespaces = await Promise.all(
     declarations.namespaces.map(
       async (namespace): Promise<DeclaredNamespace> => {
         const { name, declared } = namespace;
 
-        const placement = getOwn(discovery.namespaces, name);
+        const placement = instances.find((instance) => instance.name === name);
 
         if (placement === undefined) {
           throw new Error(
-            `Scope "${dir}" declares the environment ${name}, which discovery never placed`,
+            `Scope "${dir}" declares the namespace ${name}, none of its active top-level namespaces`,
           );
         }
 
-        const { dirs, active } = placement;
+        const { dirs } = placement;
 
-        const read = declared === undefined || !active
+        const read = declared === undefined
           ? undefined
           : await readStructureMetadata({
               namespace: name,
@@ -48,7 +50,7 @@ export async function walkScope({
         return {
           ...namespace,
           dirs,
-          active,
+          active: true,
           read,
         };
       },

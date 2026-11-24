@@ -1,19 +1,19 @@
 import { getOwn } from "@auaust/toolkit/object";
 
+import { readScopeNamespaces } from "#project/environments/operations/readScopeNamespaces";
 import type { NamespaceDiscovery } from "#batiment/context/index";
 import type { ConfigResolver } from "#project/config/index";
 
 /**
  * Reads the directories, root files and activity discovery gives the environment
- * from the `dirs` and `files` of its `<name>.options` key.
+ * in the scope `config` resolves, from the `dirs` and `files` of its
+ * `<name>.options` key at the root.
  */
 export async function discoverDeclaredEnvironment(
   config: ConfigResolver,
   name: string,
 ): Promise<NamespaceDiscovery> {
-  const context = await config.resolve("structure.context");
-
-  const { namespaces } = await context.discover();
+  const namespaces = await readScopeNamespaces(config);
 
   const discovered = getOwn(namespaces, name);
 
