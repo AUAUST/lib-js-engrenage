@@ -218,12 +218,16 @@ async function readNamespaceDeclarations(
 async function readScopeRegistry(
   config: ConfigResolver,
 ): Promise<ScopeRegistry> {
-  const [entries, claims] = await Promise.all([
+  const [entries, claims, kinds, presets] = await Promise.all([
     listEnvironmentEntries(config),
     config.resolve("environments.claims"),
+    config.resolve("namespaceKinds"),
+    config.resolve("environmentPresets"),
   ]);
 
   return freeze({
+    kinds,
+    presets,
     namespaces: freeze(
       await Promise.all(
         entries.map((contributed) => readPlacement(config, contributed)),
@@ -244,16 +248,8 @@ async function readScopeRegistry(
  */
 export function createResolverContext(config: ConfigResolver): ContextPort {
   async function root(): Promise<RootFacts> {
-    const [
-      repository,
-      kinds,
-      presets,
-      registry,
-      workspaces,
-    ] = await Promise.all([
+    const [repository, registry, workspaces] = await Promise.all([
       config.resolve("git"),
-      config.resolve("namespaceKinds"),
-      config.context.registry.contributions("environmentPresets", config),
       readScopeRegistry(config),
       readWorkspaceExpectations(config),
     ]);
@@ -261,8 +257,6 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
     return freeze({
       ...registry,
       ignored: await repository.ignored,
-      kinds,
-      presets: freeze(presets.map(({ entry }) => entry)),
       workspaces: freeze(workspaces),
     });
   }

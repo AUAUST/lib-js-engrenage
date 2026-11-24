@@ -12,13 +12,11 @@ export async function listTsconfigRegistrations(
 ): Promise<readonly EnvironmentRegistration[]> {
   const [registrations, presets] = await Promise.all([
     config.resolve("environments"),
-    config.context.registry.contributions("environmentPresets", config),
+    config.resolve("environmentPresets"),
   ]);
 
   const withTsconfig = new Set(
-    presets
-      .filter(({ entry }) => entry.tsconfig === true)
-      .map(({ entry }) => entry.name),
+    presets.filter(({ tsconfig }) => tsconfig === true).map(({ name }) => name),
   );
 
   return freeze(registrations.filter(({ preset }) => withTsconfig.has(preset)));

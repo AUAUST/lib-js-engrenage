@@ -32,7 +32,7 @@ export interface BuiltinConfigInput {
   docs?: (DocsInput | undefined)
   /**
    * Overrides of the contributed namespace kinds' relations, by kind name, each set field replacing the kind's whole.
-   * A name no contributed kind takes fails the config.
+   * A name no registered extension contributes as a kind, active or not, fails the config.
    * @default none
    */
   namespaceKinds?: ({

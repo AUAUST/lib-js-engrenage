@@ -132,8 +132,6 @@ export async function discoverContext(
 
   const { ignored } = root;
 
-  const kinds = new Map(root.kinds.map((kind) => [kind.name, kind]));
-
   const discovered = await discoverWorkspaces({ filesystem, ignored });
 
   const expected = await matchWorkspaces(
@@ -169,8 +167,13 @@ export async function discoverContext(
 
   const placed = await Promise.all(
     scopes.map(async (scope) => {
+      const kinds = new Map(
+        scope.registry.kinds.map((kind) => [kind.name, kind]),
+      );
+
       return {
         dir: scope.dir,
+        kinds,
         namespaces: await placeNamespaces({
           scope,
           kinds,
@@ -190,7 +193,6 @@ export async function discoverContext(
   });
 
   const environments = await discoverEnvironments({
-    presets: root.presets,
     ignored,
     scopes,
     workspaces: discovered.workspaces,
@@ -204,7 +206,7 @@ export async function discoverContext(
     ...environments.diagnostics,
   ];
 
-  const resolved = placed.map(({ dir, namespaces }) => {
+  const resolved = placed.map(({ dir, kinds, namespaces }) => {
     return {
       dir,
       namespaces: namespaces.map(({ placement, configured, discovery }) => {

@@ -10,7 +10,6 @@ import {
   listForeignPlacementGlobs,
   resolveRegisteredEnvironments,
   type DiscoveredEnvironment,
-  type EnvironmentPreset,
   type RegisteredEnvironment,
 } from "#batiment/environments/index";
 import { rootScope } from "#batiment/scopes/constants";
@@ -50,22 +49,20 @@ function assertOwnPlacements(
 }
 
 /**
- * Discovers the environments every scope registers: their placements, each scope's
- * kept within it, a `dirs` glob skipping its matches inside nested workspaces,
- * and the instances they form.
+ * Discovers the environments every scope registers, against its own presets:
+ * their placements, each scope's kept within it, a `dirs` glob skipping its
+ * matches inside nested workspaces, and the instances they form.
  *
  * @throws When a scope places an environment on a directory inside a
  * nested workspace.
  */
 export async function discoverEnvironments({
-  presets,
   ignored,
   scopes,
   workspaces,
   metafiles,
   filesystem,
 }: {
-  presets: readonly EnvironmentPreset[];
   ignored: Globs;
   scopes: readonly DiscoveredScope[];
   workspaces: readonly DiscoveredWorkspace[];
@@ -76,7 +73,11 @@ export async function discoverEnvironments({
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
   const registered = flatMap(scopes, ({ dir, registry }) => {
-    return resolveRegisteredEnvironments(presets, registry.environments, dir);
+    return resolveRegisteredEnvironments(
+      registry.presets,
+      registry.environments,
+      dir,
+    );
   });
 
   assertOwnPlacements(registered, workspaces);

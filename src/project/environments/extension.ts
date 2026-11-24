@@ -11,13 +11,14 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Owns the `namespaceKinds`, `environmentPresets`, `environments` and
- * `languages` slots, the config keys of each built-in environment and
- * its options, `namespaceKinds`, `environments`, `environments.claims`,
- * `environments.execution`, `environments.tsconfig`, `define` and `runtime`, the
- * uncommitted coverage directory and the unlinted static directories. Contributes
- * the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
- * kinds and environment presets, one environment of each, named after it, the
- * `shipped` namespace kind and the `javascript` language.
+ * `languages` slots, the config keys of each built-in environment and its
+ * options, `namespaceKinds`, `namespaceKinds.overrides`, `environmentPresets`,
+ * `environments`, `environments.claims`, `environments.execution`,
+ * `environments.tsconfig`, `define` and `runtime`, the uncommitted coverage
+ * directory and the unlinted static directories. Contributes the `src`, `tests`,
+ * `bin`, `scripts`, `tooling`, `data` and `static` namespace kinds and environment
+ * presets, one environment of each, named after it, the `shipped` namespace kind
+ * and the `javascript` language.
  */
 export default {
   name: "project/environments",
@@ -30,14 +31,32 @@ export default {
     },
     keys: {
       "namespaceKinds": {
-        scope: "project",
-        input: "namespaceKinds",
         async load() {
           const {
             namespaceKindsSection,
           } = await import("#project/environments/config/sections/namespaceKindsSection");
 
           return namespaceKindsSection;
+        },
+      },
+      "namespaceKinds.overrides": {
+        scope: "project",
+        input: "namespaceKinds",
+        async load() {
+          const {
+            namespaceKindOverridesSection,
+          } = await import("#project/environments/config/sections/namespaceKindOverridesSection");
+
+          return namespaceKindOverridesSection;
+        },
+      },
+      "environmentPresets": {
+        async load() {
+          const {
+            environmentPresetsSection,
+          } = await import("#project/environments/config/sections/environmentPresetsSection");
+
+          return environmentPresetsSection;
         },
       },
       "environments": {

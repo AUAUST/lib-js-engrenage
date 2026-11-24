@@ -99,9 +99,11 @@ export { dataOptionsSection } from "#project/environments/config/sections/dataOp
 export { dataSection } from "#project/environments/config/sections/dataSection";
 export { defineSection } from "#project/environments/config/sections/defineSection";
 export { environmentClaimsSection } from "#project/environments/config/sections/environmentClaimsSection";
+export { environmentPresetsSection } from "#project/environments/config/sections/environmentPresetsSection";
 export { environmentsSection } from "#project/environments/config/sections/environmentsSection";
 export { environmentTsconfigsSection } from "#project/environments/config/sections/environmentTsconfigsSection";
 export { executionSection } from "#project/environments/config/sections/executionSection";
+export { namespaceKindOverridesSection } from "#project/environments/config/sections/namespaceKindOverridesSection";
 export { namespaceKindsSection } from "#project/environments/config/sections/namespaceKindsSection";
 export { runtimeSection } from "#project/environments/config/sections/runtimeSection";
 export { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";

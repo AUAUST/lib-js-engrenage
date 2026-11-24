@@ -118,13 +118,13 @@ export const executionSection = declareSection({
   ): Promise<Readonly<Record<string, ResolvedExecution>>> {
     const [registrations, presets, { node }, entries] = await Promise.all([
       config.resolve("environments"),
-      config.context.registry.contributions("environmentPresets", config),
+      config.resolve("environmentPresets"),
       config.resolve("runtime"),
       listNamespaceEnvironments(config, (kind) => kind.entries === true),
     ]);
 
     const registered = resolveRegisteredEnvironments(
-      presets.map(({ entry }) => entry),
+      presets,
       registrations,
       config.context.scopeDir,
     );
