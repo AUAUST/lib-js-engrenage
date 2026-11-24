@@ -719,3 +719,7 @@ entries:
     subject: matched files in tsconfig include
     need: file placements in tsconfig include
     reason: rewrites every generated tsconfig
+  - id: 261124-57fe
+    subject: re-entry files in tsconfig files
+    need: keep re-entries in root tsconfig (#878)
+    reason: rewrites the tsconfig on every new file

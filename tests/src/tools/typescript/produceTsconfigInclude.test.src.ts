@@ -1,3 +1,10 @@
+import { join } from "node:path";
+
+import {
+  flattenDiagnosticMessageText,
+  getParsedCommandLineOfConfigFile,
+  sys,
+} from "typescript";
 import { describe, expect, test } from "vitest";
 
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
@@ -35,6 +42,56 @@ async function syncProject(
   await config.context.filesystem.flush();
 
   return (file: string) => JSON.parse(project.read(file));
+}
+
+async function syncPlacedProject(
+  environments: Record<string, unknown>,
+  files: Record<string, string>,
+) {
+  const project = createTemporaryProject({
+    "package.json": "{}",
+    "tsconfig.json": "{}",
+    "src/index.ts": "",
+    "src/web/app.ts": "",
+    "src/web/pages/home.ts": "",
+    ...files,
+  });
+
+  const config = createProjectConfig({
+    root: project.root,
+    raw: withSourceRuntime({
+      environments: {
+        web: {
+          preset: "src",
+          dirs: ["src/web"],
+          execution: { syntax: "2026-10" },
+        },
+        ...environments,
+      },
+    }),
+    configFile: undefined,
+  });
+
+  await syncTsconfigFiles(config);
+
+  await config.context.filesystem.flush();
+
+  return (tsconfig: string) => {
+    const parsed = getParsedCommandLineOfConfigFile(
+      join(project.root, tsconfig),
+      undefined,
+      {
+        ...sys,
+        onUnRecoverableConfigFileDiagnostic({ messageText }) {
+          throw new Error(flattenDiagnosticMessageText(messageText, "\n"));
+        },
+      },
+    );
+
+    return parsed?.fileNames
+      .map((file) => file.slice(project.root.length + 1))
+      .toSorted();
+  };
 }
 
 describe("produceTsconfigInclude", () => {
@@ -335,6 +392,45 @@ describe("produceTsconfigInclude", () => {
     );
 
     expect(read("tsconfig.src.json").exclude).toEqual(["src/server/**"]);
+  });
+
+  test("keeps the environment's directory placements nested in another environment's placement", async () => {
+    const listProgramFiles = await syncPlacedProject(
+      {
+        src: { dirs: ["src", "src/web/legacy"] },
+      },
+      {
+        "src/web/legacy/old.ts": "",
+        "src/web/legacy/deep/older.ts": "",
+      },
+    );
+
+    expect(listProgramFiles("tsconfig.src.json")).toEqual([
+      "src/index.ts",
+      "src/web/legacy/deep/older.ts",
+      "src/web/legacy/old.ts",
+    ]);
+
+    expect(listProgramFiles("tsconfig.web.json")).toEqual([
+      "src/web/app.ts",
+      "src/web/pages/home.ts",
+    ]);
+  });
+
+  test("keeps the environment's file placements nested in another environment's placement", async () => {
+    const listProgramFiles = await syncPlacedProject(
+      {
+        src: { dirs: ["src"], files: ["src/web/pages/kept.ts"] },
+      },
+      {
+        "src/web/pages/kept.ts": "",
+      },
+    );
+
+    expect(listProgramFiles("tsconfig.src.json")).toEqual([
+      "src/index.ts",
+      "src/web/pages/kept.ts",
+    ]);
   });
 
   test("writes globs relative to a tsconfig in a subdirectory", async () => {
