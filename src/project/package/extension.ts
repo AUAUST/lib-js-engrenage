@@ -37,6 +37,7 @@ export default {
         },
       },
       visibility: {
+        scope: "project",
         input: "visibility",
         async load() {
           const {

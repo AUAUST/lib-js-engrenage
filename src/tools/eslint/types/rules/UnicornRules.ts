@@ -2476,7 +2476,7 @@ type UnicornCatchErrorName =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },
@@ -2501,7 +2501,7 @@ type UnicornCommentContent =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
 
@@ -2745,7 +2745,7 @@ type UnicornExpiringTodoComments =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
 
@@ -2786,7 +2786,7 @@ type UnicornFilenameCase =
           ignore?: (
             | string
             | {
-                [k: string]: unknown | undefined;
+                [k: string]: unknown;
               }
           )[];
 
@@ -2797,7 +2797,7 @@ type UnicornFilenameCase =
           directoryRoots?: (
             | string
             | {
-                [k: string]: unknown | undefined;
+                [k: string]: unknown;
               }
           )[];
         }
@@ -2817,7 +2817,7 @@ type UnicornFilenameCase =
           ignore?: (
             | string
             | {
-                [k: string]: unknown | undefined;
+                [k: string]: unknown;
               }
           )[];
 
@@ -2828,7 +2828,7 @@ type UnicornFilenameCase =
           directoryRoots?: (
             | string
             | {
-                [k: string]: unknown | undefined;
+                [k: string]: unknown;
               }
           )[];
         },
@@ -2981,7 +2981,7 @@ type UnicornNameReplacements =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },
@@ -3124,7 +3124,7 @@ type UnicornNoNonFunctionVerbPrefix =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },
@@ -3181,7 +3181,7 @@ type UnicornNoUnnecessaryPolyfills =
           | string
           | string[]
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             };
       },
     ];
@@ -3366,7 +3366,7 @@ type UnicornPreferHttps =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },
@@ -3549,7 +3549,7 @@ type UnicornSingleLineBlockCommentStyle =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },

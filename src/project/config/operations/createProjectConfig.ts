@@ -1,19 +1,16 @@
-import satisfies from "semver/functions/satisfies.js";
-import validRange from "semver/ranges/valid.js";
-
-import { isArray, isString } from "@auaust/toolkit";
 import {
-  flatMap,
   includes,
   isNonEmptyArray,
   map,
   toSorted,
 } from "@auaust/toolkit/array";
-import { freeze, getPath, keys, values } from "@auaust/toolkit/object";
+import { freeze, keys, values } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { collectExtensions } from "#foundation/extensions/index";
 import {
   createFilesystem,
+  createFilesystemView,
   resolveWithin,
   type Filesystem,
 } from "#foundation/filesystem/index";
@@ -23,7 +20,6 @@ import {
   validate,
   type InputLayer,
   type KeyedSection,
-  type Resolver,
 } from "#foundation/options/index";
 import {
   createConsoleReporter,
@@ -31,92 +27,27 @@ import {
 } from "#foundation/reports/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 import { unpresettable } from "#project/config/constants";
+import { checkCompatibility } from "#project/config/utils/checkCompatibility";
 import { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
+import { checkScopeInputs } from "#project/config/utils/checkScopeInputs";
+import { describeRemovedKey } from "#project/config/utils/describeRemovedKey";
+import { flattenExtensions } from "#project/config/utils/flattenExtensions";
+import { flattenInput } from "#project/config/utils/flattenInput";
+import { listInputScopes } from "#project/config/utils/listInputScopes";
+import { readConfigPath } from "#project/config/utils/readConfigPath";
+import { readGlobLayers } from "#project/config/utils/readGlobLayers";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
 import type { ConfigSlots } from "#project/config/types/ConfigSlots";
 import type { Extension } from "#project/config/types/Extension";
-import type { ExtensionOption } from "#project/config/types/ExtensionOption";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 import * as builtins from "#workflows/builtins/entry";
-
-import manifest from "#package.json" with { type: "json" };
-
-// @debt toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to, so a local guard restates it
-function isExtensionList(
-  option: ExtensionOption,
-): option is readonly ExtensionOption[] {
-  return isArray(option);
-}
-
-function checkCompatibility(extensions: readonly Extension[]): void {
-  const findings = flatMap(extensions, ({ name, compatibility }) => {
-    if (compatibility === undefined) {
-      return [];
-    }
-
-    const range = compatibility.engrenage;
-
-    if (validRange(range) === null) {
-      return [`${name} declares the invalid engrenage range "${range}"`];
-    }
-
-    return satisfies(manifest.version, range, {
-      includePrerelease: true,
-    })
-      ? []
-      : [
-          `${name} requires engrenage ${range}, but ${manifest.version} is installed`,
-        ];
-  });
-
-  if (isNonEmptyArray(findings)) {
-    throw new Error(`Incompatible extensions:\n${findings.join("\n")}`);
-  }
-}
-
-function describeRemovedKey(key: string, value: unknown): string | undefined {
-  switch (key) {
-    case "presets": {
-      const [name, ...rest] = isArray(value) ? value : [value];
-
-      return isString(name) && rest.length === 0
-        ? `replaced by \`preset: "${name}"\``
-        : "replaced by `preset`, which takes one preset name";
-    }
-
-    case "source": {
-      return 'renamed "src"';
-    }
-
-    case "test": {
-      return 'renamed "tests"';
-    }
-
-    case "code": {
-      return "replaced by each environment's `languages`, `tooling.files`, `generated` and `discovered`";
-    }
-
-    case "directories":
-    case "files": {
-      return "replaced by each environment's options";
-    }
-  }
-}
-
-function flattenExtensions(
-  options: readonly ExtensionOption[],
-): readonly Extension[] {
-  return flatMap(options, (option) => {
-    return isExtensionList(option) ? flattenExtensions(option) : [option];
-  });
-}
 
 export function createProjectConfig({
   root,
@@ -254,7 +185,7 @@ export function createProjectConfig({
     return [{ name: `preset "${name}"`, values: loaded }];
   }
 
-  async function defaults(
+  async function presetDefaults(
     input: string,
     reader: ConfigResolver,
   ): Promise<readonly InputLayer[]> {
@@ -275,61 +206,202 @@ export function createProjectConfig({
     return pending;
   }
 
-  const {
-    resolve,
-    input: readInput,
-    origin,
-    context,
-    validate: validateKeys,
-    forget,
-  } = createResolver<ConfigContext, ConfigSections>(
-    raw,
-    {
+  const inputScopes = listInputScopes(registry);
+
+  const children = new Map<Directory, Promise<LoadedConfig>>();
+
+  const created = new Set<LoadedConfig>();
+
+  function copy({
+    reporter: copied = reporter,
+  }: { reporter?: Reporter } = {}): LoadedConfig {
+    return createProjectConfig({
       root,
-      filesystem,
-      reporter,
+      raw,
       configFile,
-      registry,
-      path(...paths: string[]) {
-        return resolveWithin(root, ...paths);
-      },
-      copy({ reporter: copied = reporter } = {}) {
-        return createProjectConfig({
-          root,
-          raw,
-          configFile,
-          reporter: copied,
-        });
-      },
-    },
-    {
-      source,
-      sections: {
-        load,
-        refuse,
-      },
-      defaults,
-      unknownNote: `Registered extensions: ${names.join(", ")}`,
-      describeUnknown: describeRemovedKey,
-      reporter,
-    },
-  );
+      reporter: copied,
+    });
+  }
 
-  return freeze({
-    resolve,
-    input: readInput,
-    origin,
-    context,
-    validate: validateKeys,
-    forget,
+  function createConfig({
+    directory,
+    view,
+    input,
+    origin: from,
+    defaults,
+    parent,
+  }: {
+    directory: Directory;
+    view: Filesystem;
+    input: RawConfig;
+    origin: string;
+    defaults(
+      name: string,
+      reader: ConfigResolver,
+    ): Promise<readonly InputLayer[]>;
+    parent?: ConfigResolver;
+  }): LoadedConfig {
+    const {
+      resolve,
+      input: readInput,
+      origin,
+      context,
+      validate: validateKeys,
+      forget,
+    } = createResolver<ConfigContext, ConfigSections>(
+      input,
+      {
+        root: directory,
+        filesystem: view,
+        reporter,
+        configFile,
+        registry,
+        path(...paths: string[]) {
+          return resolveWithin(directory, ...paths);
+        },
+        // @debt a child resolver's `copy` returns a fresh root config, silently changing scope
+        copy,
+        scope,
+      },
+      {
+        source: from,
+        sections: {
+          load,
+          refuse,
+        },
+        defaults,
+        unknownNote: `Registered extensions: ${names.join(", ")}`,
+        describeUnknown: describeRemovedKey,
+        reporter,
+        ...(parent === undefined
+          ? {}
+          : {
+              parent: {
+                resolver: parent,
+                delegates(key: string): boolean {
+                  return registry.get("keys", key)?.scope === "project";
+                },
+              },
+            }),
+      },
+    );
+
+    return freeze({
+      resolve,
+      input: readInput,
+      origin,
+      context,
+      validate: validateKeys,
+      forget,
+    });
+  }
+
+  const project = createConfig({
+    directory: root,
+    view: filesystem,
+    input: raw,
+    origin: source,
+    defaults: presetDefaults,
   });
-}
 
-async function readConfigPath(
-  config: Resolver<ConfigContext>,
-  path: string,
-): Promise<unknown> {
-  const [key = "", ...rest] = path.split(".");
+  async function createWorkspaceConfig(dir: Directory): Promise<LoadedConfig> {
+    await project.resolve("workspaces.options");
 
-  return getPath(await config.resolve(key), rest);
+    const [{ workspaces }, context] = await Promise.all([
+      project.resolve("scopes.discovery"),
+      project.resolve("structure.context"),
+    ]);
+
+    const workspace = workspaces.find((discovered) => discovered.dir === dir);
+
+    if (workspace === undefined) {
+      throw new Error(`No workspace lies at ${dir}`);
+    }
+
+    checkScopeInputs(inputScopes, workspace.remainder, workspace.file);
+
+    const { expected } = await context.discover();
+
+    const glob = expected.find(({ dirs }) => dirs.includes(dir))?.glob;
+
+    const { configured, inherited } = glob === undefined
+      ? { configured: undefined, inherited: [] }
+      : readGlobLayers({
+          raw,
+          glob,
+          defaults: await presetDefaults("workspaces", project),
+          scopes: inputScopes,
+          reporter,
+        });
+
+    const child = createConfig({
+      directory: resolveWithin(root, dir),
+      view: createFilesystemView(filesystem, root, dir),
+      input: workspace.remainder,
+      origin: workspace.file,
+      parent: project,
+      async defaults(name, reader): Promise<readonly InputLayer[]> {
+        const scope = inputScopes.get(name);
+
+        const shared = scope?.scope === "inherited"
+          ? await project.input(scope.key)
+          : undefined;
+
+        return [
+          ...(configured === undefined ? [] : [configured]),
+          ...(await presetDefaults(name, reader)),
+          ...inherited,
+          ...(shared === undefined
+            ? []
+            : [
+                {
+                  name: "root config",
+                  values: flattenInput(name, shared),
+                },
+              ]),
+        ];
+      },
+    });
+
+    created.add(child);
+
+    return child;
+  }
+
+  function scope(dir: Directory): Promise<LoadedConfig> {
+    if (dir === rootScope) {
+      return Promise.resolve(config);
+    }
+
+    const known = children.get(dir);
+
+    if (known !== undefined) {
+      return known;
+    }
+
+    const pending = createWorkspaceConfig(dir);
+
+    children.set(dir, pending);
+
+    pending.catch(() => {
+      if (children.get(dir) === pending) {
+        children.delete(dir);
+      }
+    });
+
+    return pending;
+  }
+
+  const config: LoadedConfig = freeze({
+    ...project,
+    forget() {
+      project.forget();
+
+      for (const child of created) {
+        child.forget();
+      }
+    },
+  });
+
+  return config;
 }

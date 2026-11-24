@@ -13,6 +13,7 @@ export default {
     },
     keys: {
       docs: {
+        scope: "project",
         input: "docs",
         async load() {
           const {

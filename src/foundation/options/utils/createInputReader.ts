@@ -48,10 +48,23 @@ export function createInputReader<Context>(
       origins,
     } = applyInputDefaults(input[name], name, layers, reporter);
 
+    function locate(path: string): string | undefined {
+      const origin = findValueOrigin(
+        input[name],
+        name,
+        path === "" ? name : `${name}.${path}`,
+        layers,
+        origins,
+      );
+
+      return origin.layer === "default" ? origin.name : undefined;
+    }
+
     const validated = validate(
       declaration.schema,
       value,
       source === undefined ? `${name} config` : `${name} config in ${source}`,
+      locate,
     );
 
     return {

@@ -24,6 +24,7 @@ export default {
     },
     keys: {
       vscode: {
+        scope: "project",
         input: "vscode",
         async load() {
           const {

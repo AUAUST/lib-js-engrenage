@@ -8,6 +8,7 @@ import {
   literal,
   looseObject,
   objectWithRest,
+  picklist,
   pipe,
   record,
   string,
@@ -16,6 +17,7 @@ import {
 
 import { isFunction, isPlainObject } from "@auaust/toolkit";
 
+import { keyScopes } from "#project/config/constants";
 import type { SlotDeclaration } from "#foundation/extensions/index";
 import type { DirectiveDeclaration } from "#project/config/types/DirectiveDeclaration";
 import type { Extension } from "#project/config/types/Extension";
@@ -39,6 +41,7 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
         string(),
         looseObject({
           input: exactOptional(string()),
+          scope: exactOptional(picklist(keyScopes)),
           load: custom<KeyDeclaration["load"]>(
             isFunction,
             "Expected a load function",

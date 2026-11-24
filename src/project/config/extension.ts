@@ -10,6 +10,7 @@ export default {
   owns: {
     keys: {
       extensions: {
+        scope: "project",
         input: "extensions",
         async load() {
           const {
@@ -20,6 +21,7 @@ export default {
         },
       },
       resources: {
+        scope: "project",
         async load() {
           const {
             resourcesSection,

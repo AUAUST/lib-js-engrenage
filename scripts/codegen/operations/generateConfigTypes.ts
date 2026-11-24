@@ -246,6 +246,16 @@ function overrideSchema({
       jsonSchema,
     );
   }
+
+  if (valibotSchema.type === "loose_object") {
+    return {
+      ...allowUndefined(
+        valibotSchema as ConfigSchema & ObjectConfigSchema,
+        jsonSchema,
+      ),
+      additionalProperties: true,
+    };
+  }
 }
 
 function resolveNamedReferences(value: unknown): unknown {

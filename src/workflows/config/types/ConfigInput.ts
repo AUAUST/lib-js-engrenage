@@ -262,6 +262,7 @@ export interface BuiltinConfigInput {
   workspaces?: ({
     /**
      * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.
+     * Its other keys are config keys its workspaces resolve below their `.workspace.json`; project-only keys are refused.
      */
     [k: string]: {
       /**
@@ -284,6 +285,7 @@ export interface BuiltinConfigInput {
        * @default none
        */
       discovered?: (ListOption<string> | undefined)
+      [k: string]: unknown
     }
   } | undefined)
   git?: (GitInput | undefined)

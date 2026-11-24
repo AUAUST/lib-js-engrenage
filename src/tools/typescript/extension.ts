@@ -25,6 +25,7 @@ export default {
     },
     keys: {
       declarations: {
+        scope: "project",
         async load() {
           const {
             declarationsSection,

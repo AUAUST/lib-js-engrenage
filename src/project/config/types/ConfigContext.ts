@@ -13,5 +13,16 @@ export interface ConfigContext extends ReportingContext {
   readonly configFile: File | undefined;
   readonly registry: Registry<Extension, ConfigResolver>;
   path(...paths: string[]): string;
+  /**
+   * A fresh load of the project's root config, reporting through `reporter`.
+   */
   copy(options?: { reporter?: Reporter }): LoadedConfig;
+  /**
+   * The config of the scope at `dir`, root-relative: the root's for `.`, else
+   * the workspace's child resolver, created once per load.
+   *
+   * @throws When no workspace lies at `dir`, or its glob entry or
+   * `.workspace.json` sets a project-only or unknown key.
+   */
+  scope(dir: Directory): Promise<LoadedConfig>;
 }

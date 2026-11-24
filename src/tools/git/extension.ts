@@ -21,6 +21,7 @@ export default {
     },
     keys: {
       git: {
+        scope: "project",
         input: "git",
         async load() {
           const {

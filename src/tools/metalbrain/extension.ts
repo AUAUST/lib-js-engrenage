@@ -39,6 +39,7 @@ export default {
     },
     keys: {
       agents: {
+        scope: "project",
         input: "agents",
         async load() {
           const {

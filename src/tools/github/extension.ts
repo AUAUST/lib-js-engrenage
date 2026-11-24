@@ -8,6 +8,7 @@ export default {
   owns: {
     keys: {
       github: {
+        scope: "project",
         input: "github",
         async load() {
           const {

@@ -1,4 +1,5 @@
 import {
+  getDotPath,
   safeParse,
   summarize,
   type BaseIssue,
@@ -50,20 +51,34 @@ function describeIssue(issue: BaseIssue<unknown>): BaseIssue<unknown> {
   return issue;
 }
 
+/**
+ * The input `schema` validates, its issues named after `subject`; `locate` names
+ * the source of the value at an issue's dotted path, `""` for the input itself,
+ * appended to its message when it returns one.
+ *
+ * @throws Listing every issue, when `schema` rejects `input`.
+ */
 export function validate<Schema extends GenericSchema>(
   schema: Schema,
   input: unknown,
   subject: string,
+  locate?: (path: string) => string | undefined,
 ): InferOutput<Schema> {
   const result = safeParse(schema, input);
 
   if (!result.success) {
     const [issue, ...issues] = result.issues;
 
-    const [
-      first = issue,
-      ...others
-    ] = [issue, ...issues].flatMap(expandUnionIssue).map(describeIssue);
+    const [first = issue, ...others] = [issue, ...issues]
+      .flatMap(expandUnionIssue)
+      .map(describeIssue)
+      .map((described) => {
+        const source = locate?.(getDotPath(described) ?? "");
+
+        return source === undefined
+          ? described
+          : { ...described, message: `${described.message}, set by ${source}` };
+      });
 
     throw new Error(`Invalid ${subject}:\n${summarize([first, ...others])}`);
   }

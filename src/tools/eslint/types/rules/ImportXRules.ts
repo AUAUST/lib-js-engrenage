@@ -305,7 +305,7 @@ type ImportXDynamicImportChunkname =
         importFunctions?: string[];
         allowEmpty?: boolean;
         webpackChunknameFormat?: string;
-        [k: string]: unknown | undefined;
+        [k: string]: unknown;
       },
     ];
 
@@ -326,12 +326,12 @@ type ImportXExtensions =
         pathGroupOverrides?: {
           pattern: string;
           patternOptions?: {
-            [k: string]: unknown | undefined;
+            [k: string]: unknown;
           };
           action: "enforce" | "ignore";
         }[];
         fix?: boolean;
-        [k: string]: unknown | undefined;
+        [k: string]: unknown;
       },
     ]
   | []
@@ -345,12 +345,12 @@ type ImportXExtensions =
         pathGroupOverrides?: {
           pattern: string;
           patternOptions?: {
-            [k: string]: unknown | undefined;
+            [k: string]: unknown;
           };
           action: "enforce" | "ignore";
         }[];
         fix?: boolean;
-        [k: string]: unknown | undefined;
+        [k: string]: unknown;
       },
     ]
   | []
@@ -542,7 +542,7 @@ type ImportXNoNamespace =
   | [
       {
         ignore?: string[];
-        [k: string]: unknown | undefined;
+        [k: string]: unknown;
       },
     ];
 
@@ -649,11 +649,11 @@ type ImportXNoUnusedModules =
           unusedExports: true;
 
           src?: [unknown, ...unknown[]];
-          [k: string]: unknown | undefined;
+          [k: string]: unknown;
         }
       | {
           missingExports: true;
-          [k: string]: unknown | undefined;
+          [k: string]: unknown;
         },
     ];
 
@@ -678,7 +678,7 @@ type ImportXOrder =
         "pathGroups"?: {
           pattern: string;
           patternOptions?: {
-            [k: string]: unknown | undefined;
+            [k: string]: unknown;
           };
           group:
             | "builtin"

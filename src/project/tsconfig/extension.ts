@@ -19,6 +19,7 @@ export default {
         },
       },
       "typescript.options": {
+        scope: "inherited",
         input: "typescript",
         async load() {
           const {

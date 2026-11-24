@@ -36,6 +36,7 @@ export function createResolver<
     unknownNote,
     describeUnknown,
     reporter,
+    parent,
   }: {
     source?: string;
     sections: SectionSource<Context>;
@@ -46,6 +47,10 @@ export function createResolver<
     unknownNote?: string;
     describeUnknown?(key: string, value: unknown): string | undefined;
     reporter: Reporter;
+    parent?: {
+      readonly resolver: Resolver<Context>;
+      delegates(key: string): boolean;
+    };
   },
 ): InputResolver<Context, Sections> {
   const loaded = new Map<string, Promise<KeyedSection>>();
@@ -111,6 +116,10 @@ export function createResolver<
     key: string,
     reader: Resolver<Context>,
   ): Promise<unknown> {
+    if (parent?.delegates(key) === true) {
+      return parent.resolver.input(key);
+    }
+
     const { input: name, section } = await load(key);
 
     if (name === undefined || section.declaration === undefined) {
@@ -125,6 +134,10 @@ export function createResolver<
     path: string,
     reader: Resolver<Context>,
   ): Promise<ValueOrigin> {
+    if (parent?.delegates(key) === true) {
+      return parent.resolver.origin(key, path);
+    }
+
     const { input: name, section } = await load(key);
 
     return name === undefined || section.declaration === undefined
@@ -259,6 +272,10 @@ export function createResolver<
     key: string,
     trail: readonly string[],
   ): Promise<Reading> {
+    if (parent?.delegates(key) === true) {
+      return { value: await parent.resolver.resolve(key), live: new Map() };
+    }
+
     const { section } = await load(key);
 
     if (section.live) {
@@ -285,6 +302,14 @@ export function createResolver<
     chain: Chain<Context> | undefined,
   ): Promise<Reading> {
     const active = chain === undefined || chain.settled ? undefined : chain;
+
+    if (parent?.delegates(key) === true) {
+      const reading = await settle(key, []);
+
+      active?.live.set(key, reading.value);
+
+      return reading;
+    }
 
     const refusal = await sections.refuse?.(key, active?.reader ?? reader);
 
@@ -323,6 +348,10 @@ export function createResolver<
     const known = new Set<string>();
 
     for (const key of names) {
+      if (parent?.delegates(key) === true) {
+        continue;
+      }
+
       const { input: name, section } = await load(key);
 
       if (name === undefined || section.declaration === undefined) {

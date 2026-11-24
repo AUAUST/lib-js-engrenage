@@ -9,6 +9,7 @@ export default {
   owns: {
     keys: {
       "workspaces": {
+        scope: "project",
         async load() {
           const {
             workspacesSection,
@@ -18,6 +19,7 @@ export default {
         },
       },
       "workspaces.options": {
+        scope: "project",
         input: "workspaces",
         async load() {
           const {
@@ -28,6 +30,7 @@ export default {
         },
       },
       "scopes": {
+        scope: "project",
         async load() {
           const {
             scopesSection,
@@ -37,6 +40,7 @@ export default {
         },
       },
       "scopes.discovery": {
+        scope: "project",
         async load() {
           const {
             discoverySection,

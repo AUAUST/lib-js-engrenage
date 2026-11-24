@@ -1,6 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 import type { GlobalScope } from "#project/config/types/GlobalScope";
+import type { KeyScope } from "#project/config/types/KeyScope";
 import type { Directory } from "#types/Directory";
 
 export const stateDirectory = ".engrenage" satisfies Directory;
@@ -21,3 +22,7 @@ export const unpresettable: readonly string[] = freeze([
   "preset",
   "extensions",
 ]);
+
+export const keyScopes = freeze(["project", "scoped", "inherited"] as const);
+
+export const defaultKeyScope = "scoped" satisfies KeyScope;

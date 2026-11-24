@@ -19,6 +19,7 @@ export default {
     },
     keys: {
       prettier: {
+        scope: "project",
         input: "prettier",
         async load() {
           const {

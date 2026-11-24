@@ -8,6 +8,7 @@ export default {
   owns: {
     keys: {
       debug: {
+        scope: "project",
         input: "debug",
         async load() {
           const {

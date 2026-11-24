@@ -8,6 +8,7 @@ export default {
   owns: {
     keys: {
       cache: {
+        scope: "project",
         input: "cache",
         async load() {
           const {

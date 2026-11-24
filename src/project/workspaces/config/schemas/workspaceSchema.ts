@@ -8,6 +8,7 @@ import {
 } from "#foundation/options/index";
 import { directoryPlaceholder } from "#project/workspaces/constants";
 
+// @debt a glob entry's config keys are typed `unknown` and validated only when a workspace of its glob resolves them, not against their own declarations at the root
 export const workspaceSchema = declareObject(
   {
     name: declare(string(), {
@@ -30,6 +31,10 @@ export const workspaceSchema = declareObject(
     }),
   },
   {
-    description: "The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.",
+    description: [
+      "The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.",
+      "Its other keys are config keys its workspaces resolve below their `.workspace.json`; project-only keys are refused.",
+    ],
+    loose: true,
   },
 );

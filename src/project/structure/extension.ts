@@ -26,6 +26,7 @@ export default {
         },
       },
       "structure.options": {
+        scope: "inherited",
         input: "structure",
         async load() {
           const {
@@ -36,6 +37,7 @@ export default {
         },
       },
       "structure.context": {
+        scope: "project",
         async load() {
           const {
             contextSection,
@@ -45,6 +47,7 @@ export default {
         },
       },
       "aliases": {
+        scope: "inherited",
         input: "aliases",
         async load() {
           const {
@@ -55,6 +58,7 @@ export default {
         },
       },
       "aliases.scopes": {
+        scope: "project",
         input: "aliases",
         async load() {
           const {
@@ -74,6 +78,7 @@ export default {
         },
       },
       "entities": {
+        scope: "project",
         async load() {
           const {
             entitiesSection,
@@ -92,6 +97,7 @@ export default {
         },
       },
       "files": {
+        scope: "project",
         async load() {
           const {
             filesSection,
@@ -101,6 +107,7 @@ export default {
         },
       },
       "importGrants": {
+        scope: "project",
         async load() {
           const {
             importGrantsSection,
@@ -110,6 +117,7 @@ export default {
         },
       },
       "importResolver": {
+        scope: "project",
         async load() {
           const {
             importResolverSection,

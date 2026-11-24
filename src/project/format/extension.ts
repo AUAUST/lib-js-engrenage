@@ -16,6 +16,7 @@ export default {
     },
     keys: {
       "format": {
+        scope: "project",
         input: "format",
         async load() {
           const {
@@ -26,6 +27,7 @@ export default {
         },
       },
       "format.formatter": {
+        scope: "project",
         input: "format",
         async load() {
           const {

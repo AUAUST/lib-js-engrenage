@@ -37,7 +37,7 @@ function isDeclaration(value: unknown): value is Declaration {
 function isObjectConfigSchema(
   schema: ConfigSchema,
 ): schema is ConfigSchema & ObjectConfigSchema {
-  return schema.type === "strict_object";
+  return schema.type === "strict_object" || schema.type === "loose_object";
 }
 
 function childrenOf(schema: ConfigSchema): ConfigSchema[] {

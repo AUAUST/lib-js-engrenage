@@ -19,7 +19,9 @@ export type * from "#project/config/types/ExtensionSections";
 export type * from "#project/config/types/FileLocation";
 export type * from "#project/config/types/FileResource";
 export type * from "#project/config/types/GlobalScope";
+export type * from "#project/config/types/InputScope";
 export type * from "#project/config/types/KeyDeclaration";
+export type * from "#project/config/types/KeyScope";
 export type * from "#project/config/types/LoadedConfig";
 export type * from "#project/config/types/LocatedResource";
 export type * from "#project/config/types/RawConfig";
@@ -42,14 +44,22 @@ export { validateConfig } from "#project/config/operations/validateConfig";
 
 // @barrel utils
 export { assertSerializable } from "#project/config/utils/assertSerializable";
+export { checkCompatibility } from "#project/config/utils/checkCompatibility";
 export { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 export { checkFileParts } from "#project/config/utils/checkFileParts";
+export { checkScopeInputs } from "#project/config/utils/checkScopeInputs";
 export { createResourceIgnores } from "#project/config/utils/createResourceIgnores";
+export { describeRemovedKey } from "#project/config/utils/describeRemovedKey";
+export { flattenExtensions } from "#project/config/utils/flattenExtensions";
+export { flattenInput } from "#project/config/utils/flattenInput";
 export { isDefinition } from "#project/config/utils/isDefinition";
 export { isValidDefinition } from "#project/config/utils/isValidDefinition";
+export { listInputScopes } from "#project/config/utils/listInputScopes";
 export { listLocationGlobs } from "#project/config/utils/listLocationGlobs";
 export { locateFile } from "#project/config/utils/locateFile";
 export { memoizeByContext } from "#project/config/utils/memoizeByContext";
+export { readConfigPath } from "#project/config/utils/readConfigPath";
+export { readGlobLayers } from "#project/config/utils/readGlobLayers";
 export { resolveGlobal } from "#project/config/utils/resolveGlobal";
 export { serialize } from "#project/config/utils/serialize";
 // @end

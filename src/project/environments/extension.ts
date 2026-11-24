@@ -30,6 +30,7 @@ export default {
     },
     keys: {
       "namespaceKinds": {
+        scope: "project",
         input: "namespaceKinds",
         async load() {
           const {
@@ -40,6 +41,7 @@ export default {
         },
       },
       "environments": {
+        scope: "inherited",
         input: "environments",
         async load() {
           const {
@@ -50,6 +52,7 @@ export default {
         },
       },
       "environments.tsconfig": {
+        scope: "inherited",
         input: "environments",
         async load() {
           const {
@@ -211,6 +214,7 @@ export default {
         },
       },
       "define": {
+        scope: "project",
         input: "define",
         async load() {
           const {
@@ -221,6 +225,7 @@ export default {
         },
       },
       "runtime": {
+        scope: "inherited",
         input: "runtime",
         async load() {
           const {

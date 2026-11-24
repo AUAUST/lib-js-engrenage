@@ -704,7 +704,7 @@ type AuaustNameReplacements =
         ignore?: (
           | string
           | {
-              [k: string]: unknown | undefined;
+              [k: string]: unknown;
             }
         )[];
       },

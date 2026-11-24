@@ -1,4 +1,4 @@
-import { strictObject, type StrictObjectIssue } from "valibot";
+import { looseObject, strictObject, type StrictObjectIssue } from "valibot";
 
 import { isPlainObject, isString, object } from "@auaust/toolkit";
 
@@ -15,12 +15,14 @@ import type { ObjectResolution } from "#foundation/options/types/ObjectResolutio
 
 /**
  * Declares an object option resolving each of `entries` from its key, and
- * rejecting unknown keys. A missing input resolves, with `optional` `true`,
- * the entries from an empty object, and with a default, from its value. With
- * `disable`, a `false` input resolves to `disable.value` with `enabled: false`,
- * and any other input adds `enabled: true`. `assert` checks the input before its
- * entries resolve; the unknown-key error of a former key in `renamed` names the
- * key replacing it, and of one in `removed`, the reason it was removed.
+ * rejecting unknown keys unless `loose` is set, which accepts them unvalidated
+ * and leaves them out of the resolved value. A missing input resolves, with
+ * `optional` `true`, the entries from an empty object, and with a default, from
+ * its value. With `disable`, a `false` input resolves to `disable.value` with
+ * `enabled: false`, and any other input adds `enabled: true`. `assert` checks
+ * the input before its entries resolve; the unknown-key error of a former
+ * key in `renamed` names the key replacing it, and of one in `removed`, the
+ * reason it was removed.
  *
  * @throws {Error} At resolve, when the input is missing and `optional` unset.
  * @throws {TypeError} At resolve, when the input is no plain object.
@@ -32,6 +34,7 @@ export function declareObject<
   Optional = never,
   const Disabled extends object = never,
   DefaultContext = unknown,
+  const Loose extends boolean = false,
 >(
   entries: Entries,
   options?: {
@@ -48,10 +51,12 @@ export function declareObject<
     assert?(input: ObjectInput<Entries>, path: string): void;
     renamed?: Readonly<Record<string, keyof Entries & string>>;
     removed?: Readonly<Record<string, string>>;
+    loose?: Loose;
   },
 ): ObjectDeclaration<
   Entries,
-  | ObjectInput<Entries>
+  | (ObjectInput<Entries> &
+      ([Loose] extends [true] ? Readonly<Record<string, unknown>> : unknown))
   | ([NoInfer<Optional>] extends [never] ? never : undefined)
   | ([NoInfer<Disabled>] extends [never] ? never : false),
   ObjectResolution<Entries, NoInfer<Disabled>>,
@@ -66,6 +71,7 @@ export function declareObject(
     assert?(input: Record<string, unknown>, path: string): void;
     renamed?: Readonly<Record<string, string>>;
     removed?: Readonly<Record<string, string>>;
+    loose?: boolean;
   } = {},
 ): ObjectDeclaration<
   Readonly<Record<string, Declaration<unknown, unknown, unknown>>>,
@@ -73,7 +79,14 @@ export function declareObject(
   unknown,
   unknown
 > {
-  const { optional, disable, assert, renamed = {}, removed = {} } = options;
+  const {
+    optional,
+    disable,
+    assert,
+    renamed = {},
+    removed = {},
+    loose = false,
+  } = options;
 
   function describe(issue: StrictObjectIssue): string {
     const key = issue.expected === "never" && isString(issue.input)
@@ -91,15 +104,14 @@ export function declareObject(
     return issue.message;
   }
 
+  const shape = object.record(
+    object.entries(entries).map(([key, declaration]) => {
+      return [key, declaration.schema] as const;
+    }),
+  );
+
   const schema = createOptionSchema(
-    strictObject(
-      object.record(
-        object.entries(entries).map(([key, declaration]) => {
-          return [key, declaration.schema] as const;
-        }),
-      ),
-      describe,
-    ),
+    loose ? looseObject(shape) : strictObject(shape, describe),
     {
       description: options.description,
       fallback: optional === true ? undefined : optional,
