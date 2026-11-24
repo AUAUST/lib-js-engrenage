@@ -112,16 +112,16 @@ async function readRegistrations(
 async function readWorkspaceExpectations(
   config: ConfigResolver,
 ): Promise<readonly WorkspaceExpectation[]> {
-  const options = await config.resolve("workspaces.options");
+  const { globs } = await config.resolve("workspaces.options");
 
   return Promise.all(
-    entries(options).map(
+    entries(globs).map(
       async ([glob, { purpose }]): Promise<WorkspaceExpectation> => {
         if (purpose === undefined) {
           return freeze({ glob });
         }
 
-        const path = `workspaces.${glob}.purpose`;
+        const path = `workspaces.globs.${glob}.purpose`;
 
         return freeze({
           glob,
@@ -248,16 +248,18 @@ async function readScopeRegistry(
  */
 export function createResolverContext(config: ConfigResolver): ContextPort {
   async function root(): Promise<RootFacts> {
-    const [repository, registry, workspaces] = await Promise.all([
+    const [repository, registry, workspaces, { extra }] = await Promise.all([
       config.resolve("git"),
       readScopeRegistry(config),
       readWorkspaceExpectations(config),
+      config.resolve("workspaces.options"),
     ]);
 
     return freeze({
       ...registry,
       ignored: await repository.ignored,
       workspaces: freeze(workspaces),
+      extraWorkspaces: extra,
     });
   }
 

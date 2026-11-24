@@ -16,8 +16,8 @@ export const workspacesOptionsSection = declareSection({
 
     const fields = keys(workspaceSchema.entries);
 
-    for (const [glob, entry] of entries(input ?? {})) {
-      checkScopeInputs(scopes, entry, `workspaces "${glob}"`, fields);
+    for (const [glob, entry] of entries(input?.globs ?? {})) {
+      checkScopeInputs(scopes, entry, `workspaces.globs "${glob}"`, fields);
     }
 
     return workspacesSchema.resolve(

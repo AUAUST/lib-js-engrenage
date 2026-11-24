@@ -105,18 +105,32 @@ export function createScopeTree({
   namespaces,
   workspaces,
   missing,
+  unmatched,
 }: {
   namespaces: readonly ScopeTreeRootNamespace[];
   workspaces: readonly ScopeTreeWorkspace[];
   missing: readonly { readonly dir: Directory; readonly glob: Glob }[];
+  unmatched: readonly { readonly dir: Directory; readonly file: File }[];
 }): ScopeTree {
-  const diagnostics: StructureDiagnostic[] = map(missing, ({ dir, glob }) => {
-    return createDiagnostic(
-      "missing-workspace",
-      dir,
-      `directory matched by workspaces.${glob} holds no ${workspaceMetadataFile}`,
-    );
-  });
+  const diagnostics: StructureDiagnostic[] = [
+    ...map(missing, ({ dir, glob }) => {
+      return createDiagnostic(
+        "missing-workspace",
+        dir,
+        `directory matched by workspaces.globs.${glob} holds no ${workspaceMetadataFile}`,
+      );
+    }),
+    ...map(unmatched, ({ dir, file }) => {
+      return freeze({
+        ...createDiagnostic(
+          "unmatched-workspace",
+          dir,
+          `${file} lies in a directory no workspaces.globs entry matches, which workspaces.extra "report" refuses; ignoring it`,
+        ),
+        files: freeze([file]),
+      });
+    }),
+  ];
 
   const byDir = new Map<Directory, ScopeTreeWorkspace>();
 

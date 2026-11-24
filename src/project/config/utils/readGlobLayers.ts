@@ -24,9 +24,17 @@ function pickInputs(
   );
 }
 
+function readGlobEntry(workspaces: unknown, glob: Glob): unknown {
+  if (!isPlainObject(workspaces) || !isPlainObject(workspaces.globs)) {
+    return;
+  }
+
+  return getOwn(workspaces.globs, glob);
+}
+
 /**
- * The config keys the `workspaces` entry of `glob` sets, as input layers: the
- * one `raw` sets, then the one each of the root's `defaults` layers sets.
+ * The config keys the `workspaces.globs` entry of `glob` sets, as input layers:
+ * the one `raw` sets, then the one each of the root's `defaults` layers sets.
  */
 export function readGlobLayers({
   raw,
@@ -44,22 +52,18 @@ export function readGlobLayers({
   readonly configured: InputLayer;
   readonly inherited: readonly InputLayer[];
 } {
-  const label = `workspaces "${glob}"`;
+  const label = `workspaces.globs "${glob}"`;
 
-  const configured = isPlainObject(raw.workspaces)
-    ? getOwn(raw.workspaces, glob)
-    : undefined;
+  const configured = readGlobEntry(raw.workspaces, glob);
 
   const inherited = map(defaults, (layer) => {
     const {
       value,
     } = applyInputDefaults(undefined, "workspaces", [layer], reporter);
 
-    const entry = isPlainObject(value) ? getOwn(value, glob) : undefined;
-
     return {
       name: `${layer.name} for ${label}`,
-      values: pickInputs(scopes, entry),
+      values: pickInputs(scopes, readGlobEntry(value, glob)),
     };
   });
 

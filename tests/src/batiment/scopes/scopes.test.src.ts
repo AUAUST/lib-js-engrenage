@@ -23,7 +23,7 @@ const packageJson = JSON.stringify({ name: "app", type: "module" });
 async function resolveScopes(files: Record<string, string>) {
   const project = createTemporaryProject({
     "package.json": packageJson,
-    "engrenage.config.ts": `export default { workspaces: { "extensions/*": { name: "@x/${placeholder}" } } };\n`,
+    "engrenage.config.ts": `export default { workspaces: { globs: { "extensions/*": { name: "@x/${placeholder}" } } } };\n`,
     ...files,
   });
 
@@ -100,6 +100,7 @@ describe("createScopeTree", () => {
         },
       ],
       missing: [],
+      unmatched: [],
     });
 
     expect(
@@ -197,6 +198,36 @@ describe("scopes", () => {
     ]);
 
     expect(keys(scopes).sort()).toEqual([".", "tools/c"]);
+  });
+
+  test("reports an unmatched metafile under extra report, leaving it no scope", async () => {
+    const { scopes, diagnostics } = await resolvePresetScopes({
+      input: {
+        workspaces: {
+          globs: {
+            "extensions/*": { name: `@x/${placeholder}` },
+          },
+          extra: "report",
+        },
+      },
+      preset: {},
+      files: {
+        "extensions/a/.workspace.json": "{}",
+        "tools/c/.workspace.json": "{}",
+      },
+    });
+
+    expect(diagnostics).toEqual([
+      {
+        severity: "error",
+        code: "unmatched-workspace",
+        message: 'tools/c/.workspace.json lies in a directory no workspaces.globs entry matches, which workspaces.extra "report" refuses; ignoring it',
+        path: "tools/c",
+        files: ["tools/c/.workspace.json"],
+      },
+    ]);
+
+    expect(keys(scopes).sort()).toEqual([".", "extensions/a"]);
   });
 
   test("places a workspace's top-level namespace from the registration it inherits, without a `.namespace.json`", async () => {
@@ -302,7 +333,9 @@ describe("scopes", () => {
     const { scopes, diagnostics } = await resolvePresetScopes({
       input: {
         workspaces: {
-          "extensions/*": { name: `@x/${placeholder}`, purpose: "config" },
+          globs: {
+            "extensions/*": { name: `@x/${placeholder}`, purpose: "config" },
+          },
         },
       },
       preset: {},
@@ -315,12 +348,12 @@ describe("scopes", () => {
       {
         severity: "error",
         code: "config-metafile-conflict",
-        message: "extensions/a sets purpose in both workspaces.extensions/*.purpose and extensions/a/.workspace.json; keeping the value of extensions/a/.workspace.json",
+        message: "extensions/a sets purpose in both workspaces.globs.extensions/*.purpose and extensions/a/.workspace.json; keeping the value of extensions/a/.workspace.json",
         path: "extensions/a",
         files: ["extensions/a/.workspace.json"],
         config: {
           key: "workspaces.options",
-          path: "workspaces.extensions/*.purpose",
+          path: "workspaces.globs.extensions/*.purpose",
           origin: { layer: "input" },
         },
       },
@@ -334,7 +367,9 @@ describe("scopes", () => {
       input: {},
       preset: {
         workspaces: {
-          "extensions/*": { name: `@x/${placeholder}`, purpose: "preset" },
+          globs: {
+            "extensions/*": { name: `@x/${placeholder}`, purpose: "preset" },
+          },
         },
       },
       files: {

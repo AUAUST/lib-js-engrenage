@@ -118,8 +118,9 @@ async function placeNamespaces({
 
 /**
  * Discovers the scopes and their top-level namespaces and environments: the
- * root's from `port.root()`, each workspace's from `port.registry()`, asked once
- * the workspace is found and matched.
+ * root's from `port.root()`, each workspace's from `port.registry()`, asked
+ * once the workspace is found and matched. Under `extraWorkspaces` `report`, a
+ * workspace no glob matches is a diagnostic instead.
  *
  * @throws When a scope places an environment on a directory inside a
  * nested workspace.
@@ -140,12 +141,23 @@ export async function discoverContext(
     discovered.workspaces,
   );
 
-  const workspaces = await Promise.all(
-    discovered.workspaces.map(async (workspace) => {
-      const glob = expected.find(({ dirs }) => {
-        return dirs.includes(workspace.dir);
-      })?.glob;
+  const matched = map(discovered.workspaces, (workspace) => {
+    const glob = expected.find(({ dirs }) => {
+      return dirs.includes(workspace.dir);
+    })?.glob;
 
+    return { workspace, glob };
+  });
+
+  // @debt discoverWorkspaces still counts an unmatched workspace's directory as a scope root when it refuses `.environment.json` metafiles there, though under `report` the directory is no scope
+  const unmatched = root.extraWorkspaces === "report"
+    ? matched.filter(({ glob }) => glob === undefined)
+    : [];
+
+  const accepted = matched.filter((entry) => !unmatched.includes(entry));
+
+  const workspaces = await Promise.all(
+    accepted.map(async ({ workspace, glob }) => {
       const registry = await port.registry(
         freeze({ ...workspace, ...(glob === undefined ? {} : { glob }) }),
       );
@@ -195,7 +207,7 @@ export async function discoverContext(
   const environments = await discoverEnvironments({
     ignored,
     scopes,
-    workspaces: discovered.workspaces,
+    workspaces: map(accepted, ({ workspace }) => workspace),
     metafiles: discovered.environments,
     filesystem,
   });
@@ -287,10 +299,13 @@ export async function discoverContext(
         return { dir, glob };
       });
     }),
+    unmatched: map(unmatched, ({ workspace: { dir, file } }) => {
+      return { dir, file };
+    }),
   });
 
   return freeze({
-    workspaces: discovered.workspaces,
+    workspaces: freeze(map(workspaces, ({ workspace }) => workspace)),
     namespaces: freeze(
       record(
         resolved.map(({ dir, namespaces }) => {

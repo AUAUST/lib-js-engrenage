@@ -33,7 +33,9 @@ function createThemeWorkspace({ root, preset }: ThemeWorkspaceOptions) {
     "engrenage.config.ts": `export default ${JSON.stringify({
       ...(root === undefined ? {} : { preset: root }),
       workspaces: {
-        theme: { name: "theme" },
+        globs: {
+          theme: { name: "theme" },
+        },
       },
     })};\n`,
     "package.json": JSON.stringify({

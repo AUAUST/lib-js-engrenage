@@ -5,7 +5,9 @@ export { typescript } from "#constants";
 
 export const extensionsGlob = "extensions/*" satisfies Glob;
 
-export const extensionsEnvironmentKey = `workspaces.${extensionsGlob}.environments.shopify-extensions`;
+export const extensionsWorkspaceKey = `workspaces.globs.${extensionsGlob}`;
+
+export const extensionsEnvironmentKey = `${extensionsWorkspaceKey}.environments.shopify-extensions`;
 
 export const appConfigGlob = "shopify.app*.toml" satisfies Glob;
 

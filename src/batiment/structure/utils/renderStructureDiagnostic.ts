@@ -32,6 +32,7 @@ const separators = {
   "workspace-namespace-name": "  ",
   "nested-workspace": "  ",
   "missing-workspace": "  ",
+  "unmatched-workspace": "  ",
   "misplaced-environment-metafile": "  ",
   "unknown-namespace-kind": "  ",
   "unknown-import-target": "  ",

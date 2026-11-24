@@ -76,8 +76,10 @@ function loadProject({
       extensions: [themeExtension],
       ...input,
       workspaces: {
-        theme: { name: "theme" },
-        other: { name: "other" },
+        globs: {
+          theme: { name: "theme" },
+          other: { name: "other" },
+        },
       },
     }),
     configFile: undefined,

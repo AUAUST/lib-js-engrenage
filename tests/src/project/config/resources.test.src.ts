@@ -237,7 +237,9 @@ describe("file resources", () => {
           },
         ],
         workspaces: {
-          theme: { name: "theme" },
+          globs: {
+            theme: { name: "theme" },
+          },
         },
       }),
       configFile: undefined,

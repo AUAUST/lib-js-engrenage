@@ -13,7 +13,7 @@ const library = `{
   runtime: { node: 24 },
   environments: { src: { execution: { globals: "node", syntax: 24 } } },
   build: { outDir: "dist" },
-  workspaces: { "extensions/*": { name: "ext-${placeholder}" } },
+  workspaces: { globs: { "extensions/*": { name: "ext-${placeholder}" } } },
 }`;
 
 async function check(

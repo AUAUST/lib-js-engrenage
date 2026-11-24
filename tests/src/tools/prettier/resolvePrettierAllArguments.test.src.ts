@@ -10,7 +10,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { resolvePrettierAllArguments } from "#tools/prettier/index";
 
 const files = {
-  "engrenage.config.ts": 'export default { workspaces: { "packages/*": { name: "@scope/{dir}" } } };\n',
+  "engrenage.config.ts": 'export default { workspaces: { globs: { "packages/*": { name: "@scope/{dir}" } } } };\n',
   "package.json": JSON.stringify({
     type: "module",
     devDependencies: { prettier: "*" },

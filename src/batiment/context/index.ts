@@ -11,6 +11,7 @@ export type * from "#batiment/context/types/ContextDiscovery";
 export type * from "#batiment/context/types/DiscoveredScope";
 export type * from "#batiment/context/types/EnvironmentDiscovery";
 export type * from "#batiment/context/types/ExpectedWorkspaces";
+export type * from "#batiment/context/types/ExtraWorkspaces";
 export type * from "#batiment/context/types/MatchedWorkspace";
 export type * from "#batiment/context/types/NamespaceDeclarations";
 export type * from "#batiment/context/types/NamespaceDiscovery";

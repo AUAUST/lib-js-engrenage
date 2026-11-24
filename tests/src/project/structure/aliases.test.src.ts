@@ -410,7 +410,7 @@ describe("scope aliases", () => {
 
   test("syncs a workspace's table into its package.json imports", async () => {
     const { config } = await resolveScopes({
-      "engrenage.config.ts": `export default { ${source}, workspaces: { theme: { name: "theme" } } };\n`,
+      "engrenage.config.ts": `export default { ${source}, workspaces: { globs: { theme: { name: "theme" } } } };\n`,
     });
 
     const rootPackage = await config.context.filesystem.read("package.json");

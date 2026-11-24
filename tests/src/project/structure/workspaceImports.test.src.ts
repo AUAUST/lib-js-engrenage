@@ -26,7 +26,7 @@ const placeholder = "{dir}";
 
 const config = `export default {
   environments: { src: { execution: { globals: "node", syntax: 24 } } },
-  workspaces: { "extensions/*": { name: "@project/${placeholder}" } },
+  workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
 };
 `;
 

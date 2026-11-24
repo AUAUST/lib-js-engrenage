@@ -3,6 +3,7 @@ import {
   directoryPlaceholder,
   extensionsEnvironmentKey,
   extensionsGlob,
+  extensionsWorkspaceKey,
   shopifyCli,
   typescript,
 } from "#tools/shopify/constants";
@@ -53,8 +54,8 @@ export default {
         traits: [],
         load() {
           return Promise.resolve({
-            [`workspaces.${extensionsGlob}.name`]: directoryPlaceholder,
-            [`workspaces.${extensionsGlob}.generated`]: [
+            [`${extensionsWorkspaceKey}.name`]: directoryPlaceholder,
+            [`${extensionsWorkspaceKey}.generated`]: [
               "dist/**",
               "generated/**",
               "schema.graphql",
@@ -69,7 +70,7 @@ export default {
             ],
             [`${extensionsEnvironmentKey}.execution.globals`]: "browser",
             [`${extensionsEnvironmentKey}.bundled`]: true,
-            [`workspaces.${extensionsGlob}.environments.src.dirs`]: [],
+            [`${extensionsWorkspaceKey}.environments.src.dirs`]: [],
             [`${extensionsEnvironmentKey}.dirs`]: ["src"],
             [`${extensionsEnvironmentKey}.tsconfig.path`]: "tsconfig.json",
             [`${extensionsEnvironmentKey}.tsconfig.types`]: {

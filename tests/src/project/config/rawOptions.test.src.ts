@@ -39,7 +39,9 @@ describe("raw options", () => {
         dirs: ["public"],
       },
       workspaces: {
-        "packages/*": { name: "@scope/{dir}" },
+        globs: {
+          "packages/*": { name: "@scope/{dir}" },
+        },
       },
     });
 
@@ -54,7 +56,10 @@ describe("raw options", () => {
     });
 
     expect(await config.resolve("workspaces.options")).toMatchObject({
-      "packages/*": { name: "@scope/{dir}" },
+      globs: {
+        "packages/*": { name: "@scope/{dir}" },
+      },
+      extra: "accept",
     });
   });
 

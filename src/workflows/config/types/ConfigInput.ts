@@ -10,6 +10,7 @@ import type { FormatInput } from "#project/format/index";
 import type { TraitsInput } from "#project/presets/index";
 import type { StructureInput } from "#project/structure/index";
 import type { TypescriptInput } from "#project/tsconfig/index";
+import type { WorkspacesInput } from "#project/workspaces/index";
 import type { GitInput } from "#tools/git/index";
 import type { GithubInput } from "#tools/github/index";
 import type { AgentsInput } from "#tools/metalbrain/index";
@@ -260,40 +261,9 @@ export interface BuiltinConfigInput {
    */
   name?: (string | undefined)
   /**
-   * Workspaces of the project, by the glob matching their directories (`extensions/*`).
-   * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
-   * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json`.
-   * @default none
+   * Workspaces of the project: the globs matching their directories, and how a workspace outside them is handled.
    */
-  workspaces?: ({
-    /**
-     * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.
-     * Its other keys are config keys its workspaces resolve below their `.workspace.json`; project-only keys are refused.
-     */
-    [k: string]: {
-      /**
-       * Package name of every workspace the glob matches, with `{dir}` standing for the directory name of the workspace; required when the glob holds a wildcard.
-       * Sync writes it as the `name` of the workspace `package.json`.
-       */
-      name: string
-      /**
-       * Purpose of every workspace the glob matches, unless its `.workspace.json` sets one.
-       * @default none
-       */
-      purpose?: (string | undefined)
-      /**
-       * Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.
-       * @default none
-       */
-      generated?: (ListOption<string> | undefined)
-      /**
-       * Globs, inside each workspace, of files that tools discover by path and that may export defaults, handled as `src.discovered` is.
-       * @default none
-       */
-      discovered?: (ListOption<string> | undefined)
-      [k: string]: unknown
-    }
-  } | undefined)
+  workspaces?: (WorkspacesInput | undefined)
   git?: (GitInput | undefined)
   github?: (GithubInput | undefined)
   agents?: (AgentsInput | undefined)

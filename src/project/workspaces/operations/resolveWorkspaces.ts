@@ -18,7 +18,7 @@ export async function resolveWorkspaces({
   root,
   names,
   filesystem,
-  options,
+  globs,
   typescriptFiles,
   entryGlob,
   expected,
@@ -26,17 +26,17 @@ export async function resolveWorkspaces({
   root: Directory;
   names: ReadonlyMap<Directory, PackageName>;
   filesystem: Filesystem;
-  options: OutputOf<typeof workspacesSchema>;
+  globs: OutputOf<typeof workspacesSchema>["globs"];
   typescriptFiles: Globs;
   entryGlob: Glob;
   expected: readonly ExpectedWorkspaces[];
 }): Promise<readonly ResolvedWorkspaceGroup[]> {
   const matched = map(expected, ({ glob, dirs, missing }) => {
-    const option = getOwn(options, glob);
+    const option = getOwn(globs, glob);
 
     if (option === undefined) {
       throw new Error(
-        `Discovery expected workspaces at ${glob}, which no workspaces option declares`,
+        `Discovery expected workspaces at ${glob}, which no workspaces.globs entry declares`,
       );
     }
 

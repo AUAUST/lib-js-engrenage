@@ -124,7 +124,7 @@ describe("shopify-app", () => {
     const project = createApp({
       config: `export default {
   preset: "shopify-app",
-  workspaces: {
+  workspaces: { globs: {
     "extensions/*": {
       environments: {
         "shopify-extensions": {
@@ -133,7 +133,7 @@ describe("shopify-app", () => {
         },
       },
     },
-  },
+  } },
   typescript: { tsconfig: { extends: false } },
 };
 `,
@@ -162,11 +162,11 @@ describe("shopify-app", () => {
     const project = createApp({
       config: `export default {
   preset: "shopify-app",
-  workspaces: {
+  workspaces: { globs: {
     "extensions/*": {
       name: "@scope/${placeholder}",
     },
-  },
+  } },
 };
 `,
     });

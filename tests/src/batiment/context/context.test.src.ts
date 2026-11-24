@@ -24,7 +24,9 @@ describe("context driver", () => {
       root,
       raw: withSourceRuntime({
         workspaces: {
-          "packages/*": { name: "@x/{dir}" },
+          globs: {
+            "packages/*": { name: "@x/{dir}" },
+          },
         },
       }),
       configFile: undefined,

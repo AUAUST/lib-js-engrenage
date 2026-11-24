@@ -19,10 +19,10 @@ const placeholder = "{dir}";
 
 const config = `export default {
   environments: { src: { execution: { globals: "node", syntax: 24 } } },
-  workspaces: {
+  workspaces: { globs: {
     "extensions/action-*": { name: "@scope/app-${placeholder}" },
     "extensions/functions-*": { name: "@scope/fn-${placeholder}" },
-  },
+  } },
 };
 `;
 
@@ -234,7 +234,7 @@ describe("workspaces", () => {
   test("accepts a literal name for a glob without wildcard", async () => {
     const project = createTemporaryProject({
       ...files,
-      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { "theme": { name: "@scope/theme" } } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { globs: { "theme": { name: "@scope/theme" } } } };\n`,
       "theme/.workspace.json": "{}",
       "theme/src/index.ts": "",
     });
@@ -255,13 +255,13 @@ describe("workspaces", () => {
   test("rejects a literal name for a wildcard glob", async () => {
     const project = createTemporaryProject({
       ...files,
-      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { "extensions/action-*": { name: "@scope/app" } } };\n`,
+      "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, workspaces: { globs: { "extensions/action-*": { name: "@scope/app" } } } };\n`,
     });
 
     await expect(
       (await loadConfig(project.root)).resolve("workspaces"),
     ).rejects.toThrow(
-      `workspaces.extensions/action-*.name must contain ${placeholder}`,
+      `workspaces.globs.extensions/action-*.name must contain ${placeholder}`,
     );
   });
 
@@ -339,7 +339,7 @@ describe("workspace modules", () => {
       "engrenage.config.ts": `export default {
         environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
-        workspaces: { "extensions/action-*": { name: "@scope/app-${placeholder}", environments: { src: { dirs: [] }, actions: { preset: "src", dirs: ["src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } } } },
+        workspaces: { globs: { "extensions/action-*": { name: "@scope/app-${placeholder}", environments: { src: { dirs: [] }, actions: { preset: "src", dirs: ["src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } } } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',
       "tsconfig.json": "{}",
@@ -383,7 +383,7 @@ describe("workspace tsconfigs", () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
         environments: { src: { execution: { globals: "node", syntax: 24 } } },
-        workspaces: { theme: { name: "@scope/theme" } },
+        workspaces: { globs: { theme: { name: "@scope/theme" } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',
       "tsconfig.json": "{}",

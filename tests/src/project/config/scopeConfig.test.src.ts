@@ -55,10 +55,14 @@ function loadProject({
       extensions: [installed, presetGated, presetInstalled],
       ...input,
       workspaces: {
-        theme: {
-          name: "theme",
-          ...(input.workspaces as Readonly<Record<string, object>> | undefined)
-            ?.theme,
+        globs: {
+          theme: {
+            name: "theme",
+            ...(
+              input.workspaces as
+                { readonly globs: Readonly<Record<string, object>> } | undefined
+            )?.globs.theme,
+          },
         },
       },
     },
@@ -87,8 +91,10 @@ describe("workspace child resolvers", () => {
     const config = loadProject({
       input: {
         workspaces: {
-          theme: {
-            traits: { enable: ["published"] },
+          globs: {
+            theme: {
+              traits: { enable: ["published"] },
+            },
           },
         },
       },
@@ -112,15 +118,17 @@ describe("workspace child resolvers", () => {
     const config = loadProject({
       input: {
         workspaces: {
-          theme: {
-            traits: { enable: ["unknown-trait"] },
+          globs: {
+            theme: {
+              traits: { enable: ["unknown-trait"] },
+            },
           },
         },
       },
     });
 
     await expect(config.context.scope("theme")).rejects.toThrow(
-      'set by workspaces "theme"',
+      'set by workspaces.globs "theme"',
     );
   });
 
@@ -140,8 +148,10 @@ describe("workspace child resolvers", () => {
     const config = loadProject({
       input: {
         workspaces: {
-          theme: {
-            vscode: {},
+          globs: {
+            theme: {
+              vscode: {},
+            },
           },
         },
       },

@@ -51,7 +51,7 @@ export const workspacesSection = declareSection({
         }),
       ),
       filesystem,
-      options,
+      globs: options.globs,
       // @debt a workspace's globs take every registered environment's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
       typescriptFiles: listLanguageFiles(modules),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
