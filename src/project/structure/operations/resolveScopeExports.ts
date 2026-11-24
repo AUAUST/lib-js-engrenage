@@ -36,6 +36,21 @@ function isPublicRole(
   );
 }
 
+function isExportedRole(
+  role: string,
+  node: StructureNode,
+  structure: NamespaceStructure,
+): boolean {
+  if (
+    node === structure.root &&
+    (role === indexRoleName || role === entryRoleName)
+  ) {
+    return false;
+  }
+
+  return isPublicRole(role, structure);
+}
+
 async function listPublicModules(
   node: StructureNode,
   structure: NamespaceStructure,
@@ -43,7 +58,7 @@ async function listPublicModules(
   extensions: readonly string[],
 ): Promise<File[]> {
   const own = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
-    return isPublicRole(role, structure) ? files : [];
+    return isExportedRole(role, node, structure) ? files : [];
   });
 
   const contained = node.kind === "role" && isPublicRole(node.role, structure)
@@ -84,8 +99,10 @@ function toSubpath(
 
 /**
  * The `exports` map of each unpublished scope a workspace declares as a
- * dependency, by scope directory: each public module of its top-level namespaces
- * whose kind is not sealed, at the subpath mirroring its `#…` alias.
+ * dependency, by scope directory: each public module of its top-level
+ * namespaces whose kind is not sealed, at the subpath mirroring its `#…`
+ * alias, but a namespace's root `index` and `entry` files, which only its
+ * `executable` may import.
  */
 export async function resolveScopeExports(
   config: ConfigResolver,

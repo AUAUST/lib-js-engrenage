@@ -147,3 +147,9 @@ entries:
       - src/project/config/types/ConfigSections.ts:3
     why: "Dropped from #745 as no prerequisite: child resolvers reuse the root's registry"
     want: "Registry collection apart from resolver creation, so project/config imports no #workflows/* (#731 › Groundwork steps 1-3)"
+  - id: 261124-3cd2
+    title: A workspace registration placed on a directory an inherited registration re-places, such as src, raises environment-placement-conflict unless the workspace unplaces the inherited one
+    sites:
+      - src/batiment/environments/utils/resolveRegisteredEnvironments.ts:56
+    why: Inherited registrations re-place relative to each workspace (#886), so shopify-theme or shopify-function registrations on src collide
+    want: A scope's own registration replacing an inherited one on the same directory, or a decided reason to keep the conflict

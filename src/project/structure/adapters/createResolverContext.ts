@@ -15,10 +15,12 @@ import { readEnvironmentRoles } from "#project/structure/operations/readEnvironm
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import type {
   ContextPort,
+  MatchedWorkspace,
   NamespaceDeclarations,
   NamespacePlacement,
   RootFacts,
   ScopeDeclarations,
+  ScopeRegistry,
   WorkspaceExpectation,
 } from "#batiment/context/index";
 import type { EnvironmentRegistration } from "#batiment/environments/index";
@@ -213,12 +215,32 @@ async function readNamespaceDeclarations(
   };
 }
 
+async function readScopeRegistry(
+  config: ConfigResolver,
+): Promise<ScopeRegistry> {
+  const [entries, claims] = await Promise.all([
+    listEnvironmentEntries(config),
+    config.resolve("environments.claims"),
+  ]);
+
+  return freeze({
+    namespaces: freeze(
+      await Promise.all(
+        entries.map((contributed) => readPlacement(config, contributed)),
+      ),
+    ),
+    environments: await readRegistrations(config, entries),
+    claims,
+  });
+}
+
 /**
- * Answers the context port from the config resolver: the root's facts from
- * the raw options keys, each with the option it comes from where a metafile
- * may override it, each scope's declarations from its config, the root's or a
- * workspace's child resolver, for its active top-level namespaces named after
- * an environment entry.
+ * Answers the context port from the config resolver: the root's facts from the
+ * raw options keys, each with the option it comes from where a metafile may
+ * override it, each workspace's registry from its child resolver, created from
+ * the workspace's facts, and each scope's declarations from its config, the
+ * root's or a workspace's child resolver, for its active top-level namespaces
+ * named after an environment entry.
  */
 export function createResolverContext(config: ConfigResolver): ContextPort {
   async function root(): Promise<RootFacts> {
@@ -226,31 +248,27 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
       repository,
       kinds,
       presets,
-      entries,
-      claims,
+      registry,
       workspaces,
     ] = await Promise.all([
       config.resolve("git"),
       config.resolve("namespaceKinds"),
       config.context.registry.contributions("environmentPresets", config),
-      listEnvironmentEntries(config),
-      config.resolve("environments.claims"),
+      readScopeRegistry(config),
       readWorkspaceExpectations(config),
     ]);
 
     return freeze({
+      ...registry,
       ignored: await repository.ignored,
       kinds,
       presets: freeze(presets.map(({ entry }) => entry)),
-      namespaces: freeze(
-        await Promise.all(
-          entries.map((contributed) => readPlacement(config, contributed)),
-        ),
-      ),
-      environments: await readRegistrations(config, entries),
-      claims,
       workspaces: freeze(workspaces),
     });
+  }
+
+  async function registry(workspace: MatchedWorkspace): Promise<ScopeRegistry> {
+    return readScopeRegistry(await config.context.workspace(workspace));
   }
 
   async function scope(dir: Directory): Promise<ScopeDeclarations> {
@@ -288,5 +306,9 @@ export function createResolverContext(config: ConfigResolver): ContextPort {
     });
   }
 
-  return { root, scope };
+  return {
+    root,
+    registry,
+    scope,
+  };
 }

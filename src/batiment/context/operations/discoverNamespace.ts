@@ -1,3 +1,6 @@
+import { posix } from "node:path";
+
+import { map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { hasUnignoredFile } from "#batiment/context/operations/hasUnignoredFile";
@@ -8,9 +11,16 @@ import {
 } from "#batiment/scopes/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
+import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 
+/**
+ * Resolves the directories and root files of the top-level namespace `name`
+ * placed in the scope at `scope`, relative to the project root, and whether they
+ * hold an unignored file.
+ */
 export async function discoverNamespace({
+  scope,
   name,
   dirs,
   files,
@@ -18,6 +28,7 @@ export async function discoverNamespace({
   ignored,
   filesystem,
 }: {
+  scope: Directory;
   name: string;
   dirs: Directories;
   files: Globs;
@@ -31,9 +42,13 @@ export async function discoverNamespace({
 }> {
   const reconciled = reconcileEnvironmentDirs(name, dirs, claims);
 
-  const walked = reconciled.filter((directory) => directory !== rootScope);
+  const kept = reconciled.filter((directory) => directory !== rootScope);
 
-  const rootFiles = walked.length === reconciled.length ? [] : files;
+  const walked = map(kept, (directory) => posix.join(scope, directory));
+
+  const rootFiles = kept.length === reconciled.length
+    ? []
+    : map(files, (glob) => posix.join(scope, glob));
 
   const active = await hasUnignoredFile({
     filesystem,
@@ -44,7 +59,7 @@ export async function discoverNamespace({
 
   return freeze({
     dirs: freeze(walked),
-    rootFiles: freeze([...rootFiles]),
+    rootFiles: freeze(rootFiles),
     active,
   });
 }

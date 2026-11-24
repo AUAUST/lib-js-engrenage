@@ -99,6 +99,10 @@ describe("workspaces", () => {
     ).toBe("@scope/fn-functions-c");
 
     expect(
+      JSON.parse(project.read("extensions/action-b/package.json")).exports,
+    ).toEqual({});
+
+    expect(
       existsSync(project.resolve("extensions/action-b/tsconfig.json")),
     ).toBe(false);
 
@@ -327,16 +331,21 @@ describe("workspace modules", () => {
 });
 
 describe("workspace tsconfigs", () => {
-  async function syncTheme(environments: string) {
+  async function syncTheme(environments: Record<string, unknown>) {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        environments: { src: { execution: { globals: "node", syntax: 24 } }, ${environments} },
+        environments: { src: { execution: { globals: "node", syntax: 24 } } },
         workspaces: { theme: { name: "@scope/theme" } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',
       "tsconfig.json": "{}",
       "src/index.ts": "",
-      "theme/.workspace.json": "{}",
+      "theme/.workspace.json": JSON.stringify({
+        environments: {
+          src: { dirs: [] },
+          ...environments,
+        },
+      }),
       "theme/src/index.ts": "",
       "theme/src/worker/index.ts": "",
     });
@@ -351,9 +360,17 @@ describe("workspace tsconfigs", () => {
   }
 
   test("gives a workspace instance its own tsconfig, referenced by the base one", async () => {
-    const project = await syncTheme(
-      'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" } }, worker: { preset: "bin", dirs: ["theme/src/worker"] }',
-    );
+    const project = await syncTheme({
+      web: {
+        preset: "src",
+        dirs: ["src"],
+        execution: { globals: "browser", syntax: "2026-10" },
+      },
+      worker: {
+        preset: "bin",
+        dirs: ["src/worker"],
+      },
+    });
 
     expect(JSON.parse(project.read("theme/tsconfig.web.json"))).toMatchObject({
       extends: "../tsconfig.json",
@@ -372,9 +389,20 @@ describe("workspace tsconfigs", () => {
   });
 
   test("writes a registration's tsconfig path inside the workspace", async () => {
-    const project = await syncTheme(
-      'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" }, tsconfig: { path: "tsconfig.json", compilerOptions: { jsx: "preserve" } } }',
-    );
+    const project = await syncTheme({
+      web: {
+        preset: "src",
+        dirs: ["src"],
+        execution: {
+          globals: "browser",
+          syntax: "2026-10",
+        },
+        tsconfig: {
+          path: "tsconfig.json",
+          compilerOptions: { jsx: "preserve" },
+        },
+      },
+    });
 
     expect(
       JSON.parse(project.read("theme/tsconfig.json")).compilerOptions.jsx,
@@ -383,9 +411,19 @@ describe("workspace tsconfigs", () => {
 
   test("rejects two tsconfigs resolving to one file", async () => {
     await expect(
-      syncTheme(
-        'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" }, tsconfig: { path: "tsconfig.app.json" } }, worker: { preset: "bin", dirs: ["theme/src/worker"], tsconfig: { path: "tsconfig.app.json" } }',
-      ),
+      syncTheme({
+        web: {
+          preset: "src",
+          dirs: ["src"],
+          execution: { globals: "browser", syntax: "2026-10" },
+          tsconfig: { path: "tsconfig.app.json" },
+        },
+        worker: {
+          preset: "bin",
+          dirs: ["src/worker"],
+          tsconfig: { path: "tsconfig.app.json" },
+        },
+      }),
     ).rejects.toThrow(
       "the web tsconfig in theme and the worker tsconfig in theme both resolve to theme/tsconfig.app.json",
     );

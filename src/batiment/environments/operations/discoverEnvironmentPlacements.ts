@@ -2,6 +2,7 @@ import { Minimatch } from "minimatch";
 
 import { freeze, record } from "@auaust/toolkit/object";
 
+import { createScopeFinder } from "#batiment/scopes/index";
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
 import type { DiscoveredEnvironment } from "#batiment/environments/types/DiscoveredEnvironment";
 import type { EnvironmentPlacements } from "#batiment/environments/types/EnvironmentPlacements";
@@ -60,15 +61,23 @@ function placeMetafiles({
   sources: ReadonlyMap<Directory, RegisteredEnvironment>;
   diagnostics: StructureDiagnostic[];
 }): void {
-  const names = new Set(registered.map(({ registration: { name } }) => name));
+  const findScope = createScopeFinder(registered.map(({ scope }) => scope));
 
   for (const { dir, file, environment } of metafiles) {
-    if (!names.has(environment)) {
+    const scope = findScope(dir);
+
+    const known = registered.some((candidate) => {
+      return (
+        candidate.scope === scope && candidate.registration.name === environment
+      );
+    });
+
+    if (!known) {
       diagnostics.push(
         freeze({
           severity: "error",
           code: "unknown-environment",
-          message: `${file} names the environment "${environment}", which no registration holds; ignoring it`,
+          message: `${file} names the environment "${environment}", which no registration of its scope holds; ignoring it`,
           path: dir,
           files: freeze([file]),
         }),
@@ -97,12 +106,12 @@ function placeMetafiles({
 }
 
 /**
- * Places each registered environment on its directories, a glob placing it on each
- * directory it matches, and on the root files its `files` globs match, keeping
+ * Places each registered environment on its directories, a glob placing it on
+ * each directory it matches, and on the files its `files` globs match, keeping
  * the first in registration order where two place one directory or file, each
  * such clash an error diagnostic; then on each directory an `.environment.json`
- * names it on, replacing the config's placement there, an error diagnostic when
- * the config input sets it.
+ * names it on, when the directory's scope registers that name, replacing the
+ * config's placement there, an error diagnostic when the config input sets it.
  */
 export async function discoverEnvironmentPlacements({
   registered,
@@ -123,7 +132,7 @@ export async function discoverEnvironmentPlacements({
   );
 
   const globbed = await Promise.all(
-    registered.map(async ({ registration: { files } }) => {
+    registered.map(async ({ files }) => {
       return files.length === 0
         ? []
         : filesystem.glob(files, { exclude: ignored });

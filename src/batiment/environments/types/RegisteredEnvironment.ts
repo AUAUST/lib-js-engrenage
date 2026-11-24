@@ -3,8 +3,14 @@ import type { EnvironmentPreset } from "#batiment/environments/ports/Environment
 import type { EnvironmentRegistration } from "#batiment/environments/types/EnvironmentRegistration";
 import type { LanguageSelection } from "#batiment/environments/types/LanguageSelection";
 import type { Directories } from "#types/Directories";
+import type { Directory } from "#types/Directory";
+import type { Globs } from "#types/Globs";
 
 export interface RegisteredEnvironment {
+  /**
+   * The directory of the scope registering the environment, `.` for the root.
+   */
+  readonly scope: Directory;
   readonly registration: EnvironmentRegistration;
   /**
    * The preset the registration names.
@@ -26,8 +32,12 @@ export interface RegisteredEnvironment {
    */
   readonly bundled?: boolean;
   /**
-   * The registration's directories but the scope root, which places
-   * only its `files`.
+   * The registration's directories but the scope root, which places only its
+   * `files`, relative to the project root.
    */
   readonly dirs: Directories;
+  /**
+   * The registration's file globs, relative to the project root.
+   */
+  readonly files: Globs;
 }

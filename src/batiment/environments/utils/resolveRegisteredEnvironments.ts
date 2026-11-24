@@ -1,3 +1,5 @@
+import { posix } from "node:path";
+
 import { isString } from "@auaust/toolkit";
 import { map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
@@ -6,16 +8,19 @@ import { rootScope } from "#batiment/scopes/constants";
 import type { EnvironmentPreset } from "#batiment/environments/ports/EnvironmentPreset";
 import type { EnvironmentRegistration } from "#batiment/environments/types/EnvironmentRegistration";
 import type { RegisteredEnvironment } from "#batiment/environments/types/RegisteredEnvironment";
+import type { Directory } from "#types/Directory";
 
 /**
- * Pairs each registration with the preset it names, its languages, execution
- * fields and bundler pass tuned.
+ * Pairs each registration of the scope at `scope` with the preset it names,
+ * its languages, execution fields and bundler pass tuned, its placements
+ * resolved against the scope.
  *
  * @throws When a registration names a preset absent from `presets`.
  */
 export function resolveRegisteredEnvironments(
   presets: readonly EnvironmentPreset[],
   registrations: readonly EnvironmentRegistration[],
+  scope: Directory,
 ): readonly RegisteredEnvironment[] {
   const byName = new Map(presets.map((preset) => [preset.name, preset]));
 
@@ -32,6 +37,7 @@ export function resolveRegisteredEnvironments(
       const bundled = registration.bundled ?? preset.bundled;
 
       return freeze({
+        scope,
         registration,
         preset,
         languages: freeze(
@@ -45,7 +51,12 @@ export function resolveRegisteredEnvironments(
         }),
         ...(bundled === undefined ? {} : { bundled }),
         dirs: freeze(
-          registration.dirs.filter((directory) => directory !== rootScope),
+          registration.dirs
+            .filter((directory) => directory !== rootScope)
+            .map((directory) => posix.join(scope, directory)),
+        ),
+        files: freeze(
+          map(registration.files, (glob) => posix.join(scope, glob)),
         ),
       });
     }),

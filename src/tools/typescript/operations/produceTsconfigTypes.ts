@@ -142,7 +142,10 @@ export async function produceTsconfigTypes(
     return [];
   }
 
-  const execution = await resolveTsconfigExecution(config, key);
+  const execution = await resolveTsconfigExecution(config, {
+    key,
+    scope: target.scope,
+  });
 
   const runtime = execution?.runtime;
 

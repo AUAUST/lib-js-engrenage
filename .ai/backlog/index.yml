@@ -128,6 +128,7 @@ configuration:
     - 261124-868c
     - 261124-06fb
     - 261124-f612
+    - 261124-3cd2
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:
@@ -321,6 +322,7 @@ structure:
     - 261122-69ef
     - 261123-213e
     - 261123-58d2
+    - 261124-1635
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:

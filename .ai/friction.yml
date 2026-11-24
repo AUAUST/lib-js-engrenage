@@ -843,3 +843,7 @@ entries:
     subject: zsh = word expansion
     tried: echo ====== as separator
     stopped: bash hook refused; quoted the separator
+  - id: 261124-9f5b
+    subject: worktree gate test timeout under load
+    tried: pnpm engrenage gate --worktree
+    stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed

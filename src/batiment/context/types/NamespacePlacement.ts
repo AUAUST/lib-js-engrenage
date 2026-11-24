@@ -14,6 +14,12 @@ export interface NamespacePlacement {
    * it comes from.
    */
   readonly kind: { readonly value: string; readonly config: OptionSource };
+  /**
+   * The directories of the namespace, relative to its scope.
+   */
   readonly dirs: Directories;
+  /**
+   * Globs, matched at its scope's root, of the namespace's root files.
+   */
   readonly files: Globs;
 }

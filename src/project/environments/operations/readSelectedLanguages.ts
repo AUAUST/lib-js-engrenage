@@ -6,8 +6,8 @@ import type { ConfigResolver } from "#project/config/index";
 import type { LanguageEntry } from "#project/environments/ports/LanguageEntry";
 
 /**
- * Reads each language a registered environment selects, its extensions those
- * of all its selections.
+ * Reads each language an environment registered in any scope selects, its
+ * extensions those of all its selections.
  */
 export async function readSelectedLanguages(
   config: ConfigResolver,
@@ -18,8 +18,11 @@ export async function readSelectedLanguages(
 
   const selections = flatMap(
     await Promise.all(
-      map(environments.registered, ({ registration }) => {
-        return readEnvironmentLanguages(config, registration.name);
+      map(environments.registered, async ({ scope, registration }) => {
+        return readEnvironmentLanguages(
+          await config.context.scope(scope),
+          registration.name,
+        );
       }),
     ),
     (languages) => languages,

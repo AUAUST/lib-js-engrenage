@@ -99,9 +99,7 @@ describe("workspace child resolvers", () => {
       },
     });
 
-    const child = await config.context.scope("theme");
-
-    await expect(child.resolve("traits")).rejects.toThrow(
+    await expect(config.context.scope("theme")).rejects.toThrow(
       'set by workspaces "theme"',
     );
   });

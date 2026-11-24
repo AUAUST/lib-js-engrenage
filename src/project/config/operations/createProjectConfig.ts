@@ -37,6 +37,7 @@ import { flattenInput } from "#project/config/utils/flattenInput";
 import { listInputScopes } from "#project/config/utils/listInputScopes";
 import { readConfigPath } from "#project/config/utils/readConfigPath";
 import { readGlobLayers } from "#project/config/utils/readGlobLayers";
+import type { MatchedWorkspace } from "#batiment/context/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { ConfigSections } from "#project/config/types/ConfigSections";
@@ -264,6 +265,7 @@ export function createProjectConfig({
         },
         // @debt a child resolver's `copy` returns a fresh root config, silently changing scope
         copy,
+        workspace,
         scope,
       },
       {
@@ -307,25 +309,15 @@ export function createProjectConfig({
     defaults: presetDefaults,
   });
 
-  async function createWorkspaceConfig(dir: Directory): Promise<LoadedConfig> {
+  async function createWorkspaceConfig({
+    dir,
+    file,
+    remainder,
+    glob,
+  }: MatchedWorkspace): Promise<LoadedConfig> {
     await project.resolve("workspaces.options");
 
-    const [{ workspaces }, context] = await Promise.all([
-      project.resolve("scopes.discovery"),
-      project.resolve("structure.context"),
-    ]);
-
-    const workspace = workspaces.find((discovered) => discovered.dir === dir);
-
-    if (workspace === undefined) {
-      throw new Error(`No workspace lies at ${dir}`);
-    }
-
-    checkScopeInputs(inputScopes, workspace.remainder, workspace.file);
-
-    const { expected } = await context.discover();
-
-    const glob = expected.find(({ dirs }) => dirs.includes(dir))?.glob;
+    checkScopeInputs(inputScopes, remainder, file);
 
     const { configured, inherited } = glob === undefined
       ? { configured: undefined, inherited: [] }
@@ -340,8 +332,8 @@ export function createProjectConfig({
     const child = createConfig({
       dir,
       view: createFilesystemView(filesystem, root, dir),
-      input: workspace.remainder,
-      origin: workspace.file,
+      input: remainder,
+      origin: file,
       parent: project,
       async defaults(name, reader): Promise<readonly InputLayer[]> {
         const scope = inputScopes.get(name);
@@ -371,28 +363,36 @@ export function createProjectConfig({
     return child;
   }
 
-  function scope(dir: Directory): Promise<LoadedConfig> {
-    if (dir === rootScope) {
-      return Promise.resolve(config);
-    }
-
-    const known = children.get(dir);
+  function workspace(matched: MatchedWorkspace): Promise<LoadedConfig> {
+    const known = children.get(matched.dir);
 
     if (known !== undefined) {
       return known;
     }
 
-    const pending = createWorkspaceConfig(dir);
+    const pending = createWorkspaceConfig(matched);
 
-    children.set(dir, pending);
-
-    pending.catch(() => {
-      if (children.get(dir) === pending) {
-        children.delete(dir);
-      }
-    });
+    children.set(matched.dir, pending);
 
     return pending;
+  }
+
+  async function scope(dir: Directory): Promise<LoadedConfig> {
+    if (dir === rootScope) {
+      return config;
+    }
+
+    const context = await project.resolve("structure.context");
+
+    await context.discover();
+
+    const known = children.get(dir);
+
+    if (known === undefined) {
+      throw new Error(`No workspace lies at ${dir}`);
+    }
+
+    return known;
   }
 
   const config: LoadedConfig = freeze({

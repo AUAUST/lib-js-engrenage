@@ -5,13 +5,18 @@ import type { TsconfigTarget } from "#project/tsconfig/index";
 
 export async function produceTsconfigModule(
   config: LoadedConfig,
-  { key }: TsconfigTarget,
+  target: TsconfigTarget,
 ): Promise<readonly JsonEdit[]> {
+  const { key } = target;
+
   if (key === "base") {
     return [];
   }
 
-  const execution = await resolveTsconfigExecution(config, key);
+  const execution = await resolveTsconfigExecution(config, {
+    key,
+    scope: target.scope,
+  });
 
   if (execution?.module === undefined) {
     return [];

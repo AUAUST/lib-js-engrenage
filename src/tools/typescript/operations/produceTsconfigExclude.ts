@@ -95,7 +95,7 @@ async function listNestedPlacements(
   }
 
   const languages = await readEnvironmentLanguages(
-    config,
+    await config.context.scope(instance.scope),
     instance.environment,
   );
 

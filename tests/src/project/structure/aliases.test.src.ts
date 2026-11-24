@@ -368,14 +368,16 @@ describe("scope aliases", () => {
 
   test("aliases a workspace's unwalked structured namespace by directory, relative to the workspace", async () => {
     const { scopes } = await resolveScopes({
-      "theme/tasks/.namespace.json": '{ "kind": "scripts" }',
+      "theme/.workspace.json": JSON.stringify({
+        scripts: { dirs: ["tasks"] },
+      }),
       "theme/tasks/a.ts": "",
     });
 
     expect(scopes.theme?.global).toContainEqual({
       key: "#tasks/*",
       target: "./tasks/*.ts",
-      source: "tasks environment",
+      source: "scripts environment",
       path: "theme/tasks",
     });
   });
@@ -395,11 +397,14 @@ describe("scope aliases", () => {
   test("fails on a workspace holding several namespaces of package entries", async () => {
     await expect(
       resolveScopes({
+        "theme/.workspace.json": JSON.stringify({
+          data: { dirs: ["lib"] },
+        }),
         "theme/lib/.namespace.json": '{ "kind": "src" }',
         "theme/lib/a.ts": "",
       }),
     ).rejects.toThrow(
-      /several namespaces of package entries, (src and lib|lib and src)/,
+      /several namespaces of package entries, (src and data|data and src)/,
     );
   });
 

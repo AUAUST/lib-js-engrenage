@@ -1,3 +1,4 @@
+import { map } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { getEnvironmentCoverage } from "#batiment/environments/utils/getEnvironmentCoverage";
@@ -29,7 +30,7 @@ function listNested(
 }
 
 /**
- * Forms one instance per registered environment and scope its placements
+ * Forms one instance per registered environment name and scope its placements
  * reach, in registration order, then in the order of `scopes`, the workspace
  * directories beside the root's: each placement belongs to the nearest scope at
  * or above it. An instance is active when it has a file placement or one of its
@@ -62,8 +63,14 @@ export function listEnvironmentInstances(
     }),
   ];
 
+  const names = new Set(
+    map(registered, ({ registration }) => {
+      return registration.name;
+    }),
+  );
+
   return freeze(
-    registered.flatMap(({ registration: { name } }) => {
+    [...names].flatMap((name) => {
       const own = placed
         .filter(({ environment }) => environment === name)
         .map((placement) => {

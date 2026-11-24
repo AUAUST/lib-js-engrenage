@@ -18,7 +18,10 @@ async function computeTsconfigLibrary(
     return false;
   }
 
-  const execution = await resolveTsconfigExecution(config, key);
+  const execution = await resolveTsconfigExecution(config, {
+    key,
+    scope: target.scope,
+  });
 
   const runtime = execution?.runtime;
 
@@ -46,7 +49,7 @@ export function resolveTsconfigLibrary(
 ): Promise<readonly string[] | false> {
   const libraries = librariesOf(config.context);
 
-  const known = libraries.get(target.key);
+  const known = libraries.get(target.file);
 
   if (known !== undefined) {
     return known;
@@ -54,7 +57,7 @@ export function resolveTsconfigLibrary(
 
   const pending = computeTsconfigLibrary(config, target);
 
-  libraries.set(target.key, pending);
+  libraries.set(target.file, pending);
 
   return pending;
 }

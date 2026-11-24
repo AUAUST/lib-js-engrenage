@@ -1,3 +1,4 @@
+import type { MatchedWorkspace } from "#batiment/context/index";
 import type { Registry } from "#foundation/extensions/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Reporter, ReportingContext } from "#foundation/reports/index";
@@ -23,11 +24,18 @@ export interface ConfigContext extends ReportingContext {
    */
   copy(options?: { reporter?: Reporter }): LoadedConfig;
   /**
-   * The config of the scope at `dir`, root-relative: the root's for `.`, else
-   * the workspace's child resolver, created once per load.
+   * The child resolver of the workspace discovery has found and matched, created
+   * from its facts once per load, so discovery can resolve it before it ends.
    *
-   * @throws When no workspace lies at `dir`, or its glob entry or
-   * `.workspace.json` sets a project-only or unknown key.
+   * @throws When its glob entry or `.workspace.json` sets a project-only
+   * or unknown key.
+   */
+  workspace(workspace: MatchedWorkspace): Promise<LoadedConfig>;
+  /**
+   * The config of the scope at `dir`, root-relative, after discovery: the root's
+   * for `.`, else the child resolver discovery created for the workspace.
+   *
+   * @throws When no workspace lies at `dir`, or discovery fails.
    */
   scope(dir: Directory): Promise<LoadedConfig>;
 }

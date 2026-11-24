@@ -62,8 +62,8 @@ async function listEnvironmentGlobs(
 
   const { environments } = await context.discover();
 
-  const registered = environments.registered.find(({ registration }) => {
-    return registration.name === name;
+  const registered = environments.registered.find((candidate) => {
+    return candidate.scope === scope && candidate.registration.name === name;
   });
 
   if (registered === undefined) {
@@ -72,10 +72,13 @@ async function listEnvironmentGlobs(
     );
   }
 
-  const languages = await readEnvironmentLanguages(config, name);
+  const languages = await readEnvironmentLanguages(
+    await config.context.scope(scope),
+    name,
+  );
 
   // @debt file placements enter a root tsconfig's `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig; a workspace tsconfig lists its matched files instead, as globs matched at the project root would reach outside its scope
-  const files = scope === rootScope ? registered.registration.files : matched;
+  const files = scope === rootScope ? registered.files : matched;
 
   return [...files, ...filesIn(dirs, listLanguageFiles(languages))];
 }

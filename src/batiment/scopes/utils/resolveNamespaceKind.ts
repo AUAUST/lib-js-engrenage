@@ -1,5 +1,3 @@
-import { posix } from "node:path";
-
 import { freeze } from "@auaust/toolkit/object";
 
 import { findMetafileField } from "#batiment/scopes/utils/findMetafileField";
@@ -13,16 +11,17 @@ interface NamespaceMetafile {
   readonly kind?: string;
 }
 
+interface DeclaredNamespaceKind {
+  readonly kind: NamespaceKind;
+  readonly config: OptionSource;
+}
+
 interface NamespaceKindSources {
   readonly dir: Directory;
   readonly kinds: ReadonlyMap<string, NamespaceKind>;
   readonly metafiles: readonly NamespaceMetafile[];
   readonly diagnostics: StructureDiagnostic[];
-}
-
-interface DeclaredNamespaceKind {
-  readonly kind: NamespaceKind;
-  readonly config: OptionSource;
+  readonly declared: DeclaredNamespaceKind;
 }
 
 function report(
@@ -34,58 +33,41 @@ function report(
 
 /**
  * Resolves the namespace kind a top-level namespace takes: the one its
- * `.namespace.json` names, else the one its config declares, else, in a workspace,
- * the one named like its directory; a metafile naming an unknown kind is reported
- * and ignored, leaving a workspace namespace without one.
+ * `.namespace.json` names, else the one its config declares; a metafile naming
+ * an unknown kind is reported and ignored.
  */
-export function resolveNamespaceKind(
-  sources: NamespaceKindSources & { readonly declared: DeclaredNamespaceKind },
-): NamespaceKind;
-export function resolveNamespaceKind(
-  sources: NamespaceKindSources & { readonly declared?: never },
-): NamespaceKind | undefined;
 export function resolveNamespaceKind({
   dir,
   kinds,
   metafiles,
   diagnostics,
   declared,
-}: NamespaceKindSources & {
-  readonly declared?: DeclaredNamespaceKind;
-}): NamespaceKind | undefined {
+}: NamespaceKindSources): NamespaceKind {
   const named = findMetafileField({
     metafiles,
     field: "kind",
     diagnostics,
   });
 
-  if (named === undefined && declared !== undefined) {
+  if (named === undefined) {
     return declared.kind;
   }
 
-  const name = named?.value ?? posix.basename(dir);
-  const kind = kinds.get(name);
-
-  const files = named === undefined
-    ? metafiles.map(({ file }) => {
-        return file;
-      })
-    : [named.file];
+  const kind = kinds.get(named.value);
 
   if (kind === undefined) {
     report(diagnostics, {
       code: "unknown-namespace-kind",
-      message: `${dir} takes the namespace kind "${name}" from ${files.join(", ")}, which no namespace kind declares; ignoring the kind`,
+      message: `${dir} takes the namespace kind "${named.value}" from ${named.file}, which no namespace kind declares; ignoring the kind`,
       path: dir,
-      files: freeze(files),
+      files: freeze([named.file]),
     });
 
-    return declared?.kind;
+    return declared.kind;
   }
 
   if (
-    named !== undefined &&
-    declared?.config.origin?.layer === "input" &&
+    declared.config.origin?.layer === "input" &&
     declared.kind.name !== named.value
   ) {
     report(diagnostics, {

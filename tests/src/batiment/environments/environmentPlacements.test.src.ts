@@ -41,7 +41,7 @@ async function place(
 ) {
   const { root } = createTemporaryProject(files);
 
-  const registered = resolveRegisteredEnvironments(presets, registrations);
+  const registered = resolveRegisteredEnvironments(presets, registrations, ".");
 
   const discovered = await discoverEnvironmentPlacements({
     registered,
@@ -263,16 +263,16 @@ describe("environment metafiles", () => {
       }),
       files: {
         "theme/.workspace.json": "{}",
-        "theme/src/.environment.json": '{ "environment": "vue" }',
-        "theme/src/a.ts": "",
+        "theme/lib/.environment.json": '{ "environment": "vue" }',
+        "theme/lib/a.ts": "",
       },
     });
 
     expect(diagnostics).toEqual([
-      { code: "unknown-environment", path: "theme/src" },
+      { code: "unknown-environment", path: "theme/lib" },
     ]);
 
-    expect(getDirectoryEnvironment(placements, "theme/src")).toBe("web");
+    expect(getDirectoryEnvironment(placements, "theme/lib")).toBe("web");
   });
 
   test.each([

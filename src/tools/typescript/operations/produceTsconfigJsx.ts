@@ -9,14 +9,14 @@ import type { TsconfigTarget } from "#project/tsconfig/index";
 
 export async function produceTsconfigJsx(
   config: LoadedConfig,
-  { key }: TsconfigTarget,
+  { key, scope }: TsconfigTarget,
 ): Promise<readonly JsonEdit[]> {
   if (key === "base") {
     return [];
   }
 
   const languages = await readEnvironmentLanguages(
-    config,
+    await config.context.scope(scope),
     toTsconfigEnvironment(key),
   );
 

@@ -15,13 +15,15 @@ async function findRegisteredEnvironment(
 
   const { environments } = await context.discover();
 
-  const registered = environments.registered.find(({ registration }) => {
-    return registration.name === environment;
+  const { scopeDir } = config.context;
+
+  const registered = environments.registered.find(({ scope, registration }) => {
+    return scope === scopeDir && registration.name === environment;
   });
 
   if (registered === undefined) {
     throw new Error(
-      `No environment named ${environment} is registered: add it to environments`,
+      `No environment named ${environment} is registered in the scope ${scopeDir}: add it to environments`,
     );
   }
 
@@ -42,8 +44,8 @@ async function createEnvironmentLanguages(
 }
 
 /**
- * Reads the languages a registered environment selects, from its registration's
- * tuning or its preset, once per config context.
+ * Reads the languages an environment registered in the scope `config` resolves
+ * selects, from its registration's tuning or its preset, once per config context.
  */
 export function readEnvironmentLanguages(
   config: ConfigResolver,

@@ -126,6 +126,7 @@ export const executionSection = declareSection({
     const registered = resolveRegisteredEnvironments(
       presets.map(({ entry }) => entry),
       registrations,
+      config.context.scopeDir,
     );
 
     // @debt `build.tool` is read structurally because `environments` sits below `build`; the bundling capability could live in a lower shared domain

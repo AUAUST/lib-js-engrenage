@@ -236,3 +236,9 @@ entries:
       - src/batiment/context/index.ts:1
     why: "16 modules: discovery and the walk with its resolvers landed together when #861 hid them"
     want: "Sub-domains or a split along discovery and walk, once #841 and #844 reshape the port"
+  - id: 261124-1635
+    title: A .namespace.json in a workspace directory no placement names is ignored without a diagnostic
+    sites:
+      - src/batiment/context/operations/discoverContext.ts:252
+    why: Workspace namespaces now come from registered placements only, so a stray metafile once creating a namespace now does nothing
+    want: A diagnostic naming the metafile and the placement it lacks

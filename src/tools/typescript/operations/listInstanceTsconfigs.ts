@@ -14,17 +14,23 @@ import {
 } from "#project/environments/index";
 import type { ConfigResolver } from "#project/config/index";
 
-async function holdsLanguageFile(
-  config: ConfigResolver,
-  placements: EnvironmentPlacements,
-  { environment, dirs, files }: EnvironmentInstance,
-): Promise<boolean> {
+async function holdsLanguageFile({
+  config,
+  scope,
+  placements,
+  instance: { environment, dirs, files },
+}: {
+  config: ConfigResolver;
+  scope: ConfigResolver;
+  placements: EnvironmentPlacements;
+  instance: EnvironmentInstance;
+}): Promise<boolean> {
   if (files.length > 0) {
     return true;
   }
 
   const [languages, git] = await Promise.all([
-    readEnvironmentLanguages(config, environment),
+    readEnvironmentLanguages(scope, environment),
     config.resolve("git"),
   ]);
 
@@ -45,37 +51,42 @@ async function holdsLanguageFile(
 /**
  * Lists the active instances, in every scope, of the environments whose preset
  * has a tsconfig, holding a file in their languages for the tsconfig to check,
- * each with its registration's tsconfig and the `file` sync writes for it: its
- * `path` resolved against the instance's scope.
+ * each with the tsconfig its scope's registration gives and the `file` sync
+ * writes for it: its `path` resolved against the instance's scope.
  */
 export async function listInstanceTsconfigs(config: ConfigResolver) {
-  const [registrations, context] = await Promise.all([
-    listTsconfigRegistrations(config),
-    config.resolve("structure.context"),
-  ]);
+  const context = await config.resolve("structure.context");
 
   const { environments } = await context.discover();
 
-  const names = new Set(registrations.map(({ name }) => name));
+  const scoped = await Promise.all(
+    environments.instances
+      .filter(({ active }) => active)
+      .map(async (instance) => {
+        const scope = await config.context.scope(instance.scope);
 
-  const candidates = environments.instances.filter(
-    ({ environment, active }) => {
-      return active && names.has(environment);
-    },
+        const registrations = await listTsconfigRegistrations(scope);
+
+        const checked = (
+          registrations.some(({ name }) => {
+            return name === instance.environment;
+          }) &&
+          (await holdsLanguageFile({
+            config,
+            scope,
+            placements: environments.placements,
+            instance,
+          }))
+        );
+
+        return checked ? [{ instance, scope }] : [];
+      }),
   );
-
-  const checked = await Promise.all(
-    candidates.map((instance) => {
-      return holdsLanguageFile(config, environments.placements, instance);
-    }),
-  );
-
-  const instances = candidates.filter((_, index) => checked[index]);
 
   return Promise.all(
-    instances.map(async (instance) => {
+    scoped.flat().map(async ({ instance, scope }) => {
       const tsconfig = await resolveEnvironmentTsconfig(
-        config,
+        scope,
         instance.environment,
       );
 

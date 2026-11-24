@@ -170,7 +170,6 @@ describe("discoverWorkspaces", () => {
     const { workspaces, diagnostics } = await discoverWorkspaces({
       filesystem: createFilesystem(project.root),
       ignored: [],
-      dirs: [],
     });
 
     expect(workspaces).toEqual([
@@ -221,18 +220,20 @@ describe("scopes", () => {
     ]);
   });
 
-  test("reports a workspace namespace of an unknown kind and adds none", async () => {
+  test("reports a workspace metafile naming an unknown kind, keeping its placement's kind", async () => {
     const { scopes, diagnostics } = await resolveScopes({
       "theme/.workspace.json": "{}",
-      "theme/assets/.namespace.json": "{}",
-      "theme/assets/a.png": "",
+      "theme/src/.namespace.json": JSON.stringify({ kind: "unknown" }),
+      "theme/src/a.ts": "",
     });
 
     expect(summarize(diagnostics)).toEqual([
-      { code: "unknown-namespace-kind", path: "theme/assets" },
+      { code: "unknown-namespace-kind", path: "theme/src" },
     ]);
 
-    expect(scopes.theme?.namespaces).toEqual([]);
+    expect(
+      scopes.theme?.namespaces.map(({ name, kind }) => [name, kind.name]),
+    ).toEqual([["src", "src"]]);
   });
 
   test("keeps an environment metafile beside a namespace metafile", async () => {
