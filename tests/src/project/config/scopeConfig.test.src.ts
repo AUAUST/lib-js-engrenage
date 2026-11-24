@@ -181,6 +181,78 @@ describe("workspace child resolvers", () => {
     });
   });
 
+  test("resolves each scope's Node instance at its own runtime.node", async () => {
+    const config = loadProject({
+      input: {
+        runtime: {
+          node: 22,
+        },
+        environments: {
+          src: {
+            execution: { globals: "node" },
+          },
+        },
+      },
+      metafile: {
+        runtime: { node: 24 },
+      },
+    });
+
+    const child = await config.context.scope("theme");
+
+    const [root, workspace] = await Promise.all([
+      config.resolve("environments.execution"),
+      child.resolve("environments.execution"),
+    ]);
+
+    expect(root.src?.runtime).toEqual({ kind: "node", major: 22 });
+    expect(workspace.src?.runtime).toEqual({ kind: "node", major: 24 });
+  });
+
+  test("discovers a workspace namespace its preset places, without a .namespace.json", async () => {
+    const config = loadProject({
+      input: {
+        extensions: [
+          {
+            name: "edge-fixture",
+            contributes: {
+              presets: [
+                {
+                  name: "edge",
+                  traits: [],
+                  load() {
+                    return Promise.resolve({
+                      "environments.src.dirs": [],
+                      "environments.edge.preset": "src",
+                      "environments.edge.dirs": ["src"],
+                    });
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      metafile: {
+        preset: "edge",
+      },
+    });
+
+    const context = await config.resolve("structure.context");
+
+    const { namespaces, environments } = await context.discover();
+
+    expect(namespaces.theme?.src?.dirs).toEqual(["theme/src"]);
+
+    expect(
+      environments.instances
+        .filter(({ dirs }) => dirs.includes("theme/src"))
+        .map(({ environment, scope }) => {
+          return { environment, scope };
+        }),
+    ).toEqual([{ environment: "edge", scope: "theme" }]);
+  });
+
   test("resolves project keys through the root", async () => {
     const config = loadProject({});
 
