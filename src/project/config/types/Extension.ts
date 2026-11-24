@@ -3,16 +3,14 @@ import type {
   SlotDeclaration,
 } from "#foundation/extensions/index";
 import type { DirectiveDeclaration } from "#project/config/types/DirectiveDeclaration";
+import type { ExtensionActivation } from "#project/config/types/ExtensionActivation";
 import type { FileResource } from "#project/config/types/FileResource";
 import type { KeyDeclaration } from "#project/config/types/KeyDeclaration";
-import type { PackageName } from "#types/PackageName";
 
 /**
  * An engrenage extension: the config keys, slots, file resources, file parts,
  * block directives and line markers it owns, and the entries it contributes to
- * slots. With `when.installed`, it is active only while the project depends on
- * that package; with `when.config`, a dotted config key path, only while that
- * key resolves to `true`.
+ * slots. With `when`, it is active only in the scopes its activation holds in.
  *
  * @stable
  */
@@ -28,7 +26,7 @@ export interface Extension extends ExtensionShape<
   {
     readonly [Slot in keyof Engrenage.Slots]?: readonly Engrenage.Slots[Slot][];
   },
-  { readonly installed: PackageName } | { readonly config: string }
+  ExtensionActivation
 > {
   /**
    * URL of the extension package's root directory, with a trailing slash: its

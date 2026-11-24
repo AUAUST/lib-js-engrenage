@@ -32,10 +32,11 @@ import { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
 import { checkScopeInputs } from "#project/config/utils/checkScopeInputs";
 import { describeRemovedKey } from "#project/config/utils/describeRemovedKey";
+import { explainInactive } from "#project/config/utils/explainInactive";
 import { flattenExtensions } from "#project/config/utils/flattenExtensions";
 import { flattenInput } from "#project/config/utils/flattenInput";
+import { isExtensionActive } from "#project/config/utils/isExtensionActive";
 import { listInputScopes } from "#project/config/utils/listInputScopes";
-import { readConfigPath } from "#project/config/utils/readConfigPath";
 import { readGlobLayers } from "#project/config/utils/readGlobLayers";
 import type { MatchedWorkspace } from "#batiment/context/index";
 import type { ConfigContext } from "#project/config/types/ConfigContext";
@@ -87,19 +88,7 @@ export function createProjectConfig({
     [...builtinExtensions, ...extensions],
     {
       slotKind: "slots",
-      async isActive({ when }, config): Promise<boolean> {
-        if (when === undefined) {
-          return true;
-        }
-
-        if ("config" in when) {
-          return (await readConfigPath(config, when.config)) === true;
-        }
-
-        const dependencies = await config.resolve("dependencies");
-
-        return dependencies.hasDependency(when.installed);
-      },
+      isActive: isExtensionActive,
       explainInactive,
       matches(read, produced): boolean {
         return produced === read || produced.startsWith(`${read}#`);
@@ -110,14 +99,6 @@ export function createProjectConfig({
   checkFileParts(registry);
 
   checkDirectiveNames(registry);
-
-  function explainInactive({ when }: Extension): string | undefined {
-    if (when !== undefined) {
-      return "config" in when
-        ? `set ${when.config} to true`
-        : `install ${when.installed}`;
-    }
-  }
 
   async function refuse(
     key: string,

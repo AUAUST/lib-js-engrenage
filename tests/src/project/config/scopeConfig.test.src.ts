@@ -9,6 +9,26 @@ const installed = {
   when: { installed: "theme-only" },
 };
 
+const presetGated = {
+  name: "preset-fixture",
+  when: {
+    preset: "library",
+  },
+  owns: {
+    slots: {
+      "test.entries": {},
+    },
+  },
+  contributes: {
+    "test.entries": [{ name: "preset-entry" }],
+  },
+};
+
+const presetInstalled = {
+  name: "preset-installed-fixture",
+  when: { preset: "library", installed: "theme-only" },
+};
+
 function loadProject({
   input = {},
   metafile = {},
@@ -32,7 +52,7 @@ function loadProject({
   return createProjectConfig({
     root: project.root,
     raw: {
-      extensions: [installed],
+      extensions: [installed, presetGated, presetInstalled],
       ...input,
       workspaces: {
         theme: {
@@ -261,5 +281,37 @@ describe("workspace child resolvers", () => {
     await expect(child.resolve("scopes")).resolves.toBe(
       await config.resolve("scopes"),
     );
+  });
+
+  test("activates a when.preset extension only in the scopes selecting its preset", async () => {
+    const config = loadProject({
+      metafile: { preset: "library" },
+    });
+
+    const child = await config.context.scope("theme");
+
+    const { registry } = config.context;
+
+    await expect(
+      registry.contributions("test.entries", config),
+    ).resolves.toEqual([]);
+
+    expect(
+      (await registry.contributions("test.entries", child)).map(({ entry }) => {
+        return entry.name;
+      }),
+    ).toEqual(["preset-entry"]);
+  });
+
+  test("keeps a when.preset extension inactive while its when.installed package is missing", async () => {
+    const config = loadProject({
+      metafile: { preset: "library" },
+    });
+
+    const child = await config.context.scope("theme");
+
+    await expect(
+      config.context.registry.isActive(presetInstalled.name, child),
+    ).resolves.toBe(false);
   });
 });

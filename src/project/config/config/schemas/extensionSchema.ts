@@ -12,6 +12,7 @@ import {
   pipe,
   record,
   string,
+  union,
   type GenericSchema,
 } from "valibot";
 
@@ -110,11 +111,17 @@ const contributesSchema = intersect([
   ),
 ]);
 
+const whenSchema = union([
+  looseObject({ config: string() }),
+  looseObject({ installed: string(), preset: exactOptional(string()) }),
+  looseObject({ preset: string() }),
+]);
+
 export const extensionSchema: GenericSchema<unknown, Extension> = looseObject({
   name: string(),
   title: exactOptional(string()),
   requires: exactOptional(array(string())),
-  when: exactOptional(looseObject({ installed: string() })),
+  when: exactOptional(whenSchema),
   root: exactOptional(instance(URL)),
   compatibility: exactOptional(looseObject({ engrenage: string() })),
   owns: exactOptional(ownsSchema),

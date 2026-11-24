@@ -107,7 +107,7 @@ describe("createProjectConfig", () => {
       name: "name-fixture",
       owns: {
         keys: {
-          name: {
+          packageName: {
             load() {
               return nameSection;
             },
@@ -122,14 +122,14 @@ describe("createProjectConfig", () => {
       configFile: undefined,
     });
 
-    expect(await config.resolve("name")).toBe("before");
+    expect(await config.resolve("packageName")).toBe("before");
 
     await config.context.filesystem.write(
       config.context.path("package.json"),
       '{ "name": "after", "type": "module" }',
     );
 
-    expect(await config.resolve("name")).toBe("after");
+    expect(await config.resolve("packageName")).toBe("after");
   });
 
   test("registers the built-ins ordered by name, whatever their module order", () => {
