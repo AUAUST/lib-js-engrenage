@@ -1,6 +1,7 @@
 export { findImportCycles } from "#project/structure/operations/findImportCycles";
 export { reportStructure } from "#project/structure/operations/reportStructure";
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
+export { resolveScopeExports } from "#project/structure/operations/resolveScopeExports";
 
 // @barrel types
 export type * from "#project/structure/types/AliasesOption";

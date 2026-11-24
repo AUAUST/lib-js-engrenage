@@ -4,6 +4,7 @@ import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
 import { directoryPlaceholder } from "#project/workspaces/constants";
@@ -15,9 +16,11 @@ import type { ResolvedWorkspaceGroup } from "#project/workspaces/types/ResolvedW
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
+import type { PackageName } from "#types/PackageName";
 
 export async function resolveWorkspaces({
   root,
+  rootName,
   filesystem,
   options,
   typescriptFiles,
@@ -25,6 +28,7 @@ export async function resolveWorkspaces({
   expected,
 }: {
   root: Directory;
+  rootName: PackageName | undefined;
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
@@ -48,7 +52,9 @@ export async function resolveWorkspaces({
     };
   });
 
-  const names = new Map<Directory, string>();
+  const names = new Map<Directory, string>(
+    rootName === undefined ? [] : [[rootScope, rootName]],
+  );
 
   for (const { option, dirs } of matched) {
     for (const dir of dirs) {

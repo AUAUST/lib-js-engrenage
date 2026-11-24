@@ -843,3 +843,7 @@ entries:
     subject: "`planning issue check` Provides lines"
     tried: "Provides naming plan #732 Model headings in an unclaimed-plan tree"
     stopped: check lists no Model headings without the plan draft; dropped Provides
+  - id: 261124-faab
+    subject: import-x no-extraneous skips unresolved imports
+    tried: lint an undeclared package import in a fixture
+    stopped: no report until a node_modules link resolved it; added the link

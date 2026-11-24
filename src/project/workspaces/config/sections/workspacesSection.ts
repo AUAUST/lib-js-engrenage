@@ -18,11 +18,18 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const [options, context, selected, languages] = await Promise.all([
+    const [
+      options,
+      context,
+      selected,
+      languages,
+      packageJson,
+    ] = await Promise.all([
       config.resolve("workspaces.options"),
       config.resolve("structure.context"),
       readSelectedLanguages(config),
       config.context.registry.contributions("languages", config),
+      config.resolve("packageJson"),
     ]);
 
     const extensions = flatMap(languages, ({ entry }) => {
@@ -33,6 +40,7 @@ export const workspacesSection = declareSection({
 
     return resolveWorkspaces({
       root,
+      rootName: packageJson.optional.name,
       filesystem,
       options,
       // @debt a workspace's globs take every registered environment's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)

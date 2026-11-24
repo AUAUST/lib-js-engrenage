@@ -57,5 +57,5 @@ export async function createProjectLinter(
     });
   }
 
-  return { lint };
+  return { lint, project };
 }

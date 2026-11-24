@@ -4,6 +4,7 @@ import { max } from "@auaust/toolkit/math";
 import { entries, getOwn } from "@auaust/toolkit/object";
 
 import { noRoles } from "#batiment/roles/constants";
+import { rootScope } from "#batiment/scopes/constants";
 import { packageJsonFile } from "#constants";
 import { syncFiles } from "#foundation/blocks/index";
 import { findDirectories } from "#foundation/filesystem/index";
@@ -14,6 +15,7 @@ import {
   createPackageJson,
   writePackageJsonValue,
 } from "#project/package/index";
+import { resolveScopeExports } from "#project/structure/index";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { JsonValue } from "#foundation/json/index";
@@ -116,8 +118,19 @@ async function createFields(
     },
   };
 
+  // @debt an unpublished root no workspace imports any more keeps the `exports` sync last wrote, then warned about as hand-set
   if (!traits.published) {
-    return [runtime, { location: ["private"], value: true }];
+    const scopeExports = await resolveScopeExports(config);
+
+    const exports = scopeExports.get(rootScope);
+
+    return [
+      runtime,
+      { location: ["private"], value: true },
+      ...(exports === undefined
+        ? []
+        : [{ location: ["exports"], value: exports } as const]),
+    ];
   }
 
   return [
@@ -160,8 +173,15 @@ export async function syncPackageJson(config: LoadedConfig) {
           }
 
           if (!traits.published) {
+            const written = new Set(
+              fields.map(({ location: [field] }) => field),
+            );
+
             for (const field of privateFields) {
-              if (packageJson.optional[field] !== undefined) {
+              if (
+                !written.has(field) &&
+                packageJson.optional[field] !== undefined
+              ) {
                 context.reporter.warn(
                   `package.json: ${field} is set, but the config resolves without the \`published\` trait, so sync treats the package as private; set a preset carrying that trait`,
                   { source: packageJsonFile },

@@ -9,6 +9,7 @@ import {
   type PackageJson,
   type PublishAccess,
 } from "#project/package/index";
+import { resolveScopeExports } from "#project/structure/index";
 import { toJsonValue } from "#project/tsconfig/index";
 import { typescript } from "#tools/typescript/constants";
 import { syncImports } from "#tools/typescript/operations/syncImports";
@@ -33,6 +34,7 @@ function createPackageFields(
   { name }: ResolvedWorkspace,
   access: PublishAccess | undefined,
   extensions: readonly string[],
+  exports: Readonly<Record<string, string>> | undefined,
 ): Field[] {
   const fields: Field[] = [
     { location: ["name"], value: name },
@@ -62,6 +64,10 @@ function createPackageFields(
     ),
   });
 
+  if (exports !== undefined) {
+    fields.push({ location: ["exports"], value: exports });
+  }
+
   return fields;
 }
 
@@ -75,6 +81,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     visibility,
     language,
     scopes,
+    scopeExports,
   ] = await Promise.all([
     config.resolve("workspaces"),
     config.context.filesystem,
@@ -84,6 +91,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     config.resolve("visibility"),
     readSelectedLanguage(config, typescript),
     config.resolve("aliases.scopes"),
+    resolveScopeExports(config),
   ]);
 
   const extensions = language?.extensions ?? [];
@@ -97,7 +105,13 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
 
       await filesystem.write(
         packageFile,
-        createPackageFields(packageJson, workspace, access, extensions).reduce(
+        createPackageFields(
+          packageJson,
+          workspace,
+          access,
+          extensions,
+          scopeExports.get(workspace.dir),
+        ).reduce(
           (current, { location, value }) => {
             return writePackageJsonValue(
               current,
