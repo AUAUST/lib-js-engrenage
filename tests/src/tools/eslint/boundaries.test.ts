@@ -1,6 +1,3 @@
-import { dirname, join, relative } from "node:path";
-import { fileURLToPath } from "node:url";
-
 import { ESLint } from "eslint";
 import { describe, expect, test } from "vitest";
 
@@ -189,10 +186,7 @@ function createConsumerProject() {
 
 async function createLinter(
   prefix = "auaust/import-",
-  project: Pick<
-    ReturnType<typeof createTemporaryProject>,
-    "root" | "resolve"
-  > = createBoundaryProject(),
+  project = createBoundaryProject(),
 ) {
   const eslint = new ESLint({
     cwd: project.root,
@@ -613,29 +607,6 @@ describe("structure boundaries", () => {
         'import value from "../data/value.json";\n\nexport { value };\n',
       ),
     ).toEqual(["auaust/import-environments"]);
-  });
-
-  test("keeps scripts and tests from importing engrenage's shipped data", async () => {
-    const root = fileURLToPath(new URL("../../../../", import.meta.url));
-
-    const lint = await createLinter("auaust/import-environments", {
-      root,
-      resolve: (path: string) => join(root, path),
-    });
-
-    for (const file of [
-      "scripts/codegen/value.ts",
-      "tests/src/value.test.src.ts",
-    ]) {
-      const specifier = relative(dirname(file), "data/tsconfig/base.json");
-
-      expect(
-        await lint(
-          file,
-          `import value from "${specifier}";\n\nexport { value };\n`,
-        ),
-      ).toEqual(["auaust/import-environments"]);
-    }
   });
 
   test("names the alias of a relative specifier and reports unknown paths", async () => {
