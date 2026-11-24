@@ -25,10 +25,9 @@ async function cyclesOf(
   const { verbatimModuleSyntax } = await config.resolve("typescript");
 
   return findImportCycles({
-    root: config.context.root,
     filesystem: config.context.filesystem,
     structure: await config.resolve("structure"),
-    scopes: await config.resolve("aliases.scopes"),
+    resolveImport: await config.resolve("importResolver"),
     verbatimModuleSyntax,
     languages: [
       ...map(

@@ -56,11 +56,7 @@ export function createImportResolver({
       const imports = getOwn(scopes, scope);
       const packageName = imports?.packageName;
 
-      const table = imports === undefined
-        ? []
-        : [...imports.aliases.global, ...imports.aliases.src];
-
-      for (const alias of table) {
+      for (const alias of imports?.aliases ?? []) {
         const expanded = expandAlias(alias, specifier);
 
         if (expanded !== undefined) {

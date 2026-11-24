@@ -1,28 +1,93 @@
 import { posix } from "node:path";
 
+import { isArray, isPlainObject, isString } from "@auaust/toolkit";
 import { entries, record } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
 import { packageJsonFile } from "#constants";
 import { declareSection } from "#foundation/options/index";
-import { createPackageJson } from "#project/package/index";
+import {
+  createPackageJson,
+  type PackageJson,
+  type SubpathImports,
+} from "#project/package/index";
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
+import type { Alias, ResolvedAliases } from "#batiment/structure/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { ScopeImports } from "#project/structure/types/ScopeImports";
-import type { PackageName } from "#types/PackageName";
 
-// @debt reads a workspace's package.json outside the live packageJson key, so a renamed workspace package keeps its old name in a long-lived resolver
-async function readWorkspacePackageName(
+const sourceConditions: ReadonlySet<string> = new Set([
+  "types",
+  "import",
+  "default",
+]);
+
+function selectTarget(target: unknown): string | undefined {
+  if (isString(target)) {
+    return target;
+  }
+
+  if (isArray(target)) {
+    for (const candidate of target) {
+      const selected = selectTarget(candidate);
+
+      if (selected !== undefined) {
+        return selected;
+      }
+    }
+
+    return;
+  }
+
+  if (isPlainObject(target)) {
+    for (const [condition, candidate] of entries(target)) {
+      const selected = sourceConditions.has(condition)
+        ? selectTarget(candidate)
+        : undefined;
+
+      if (selected !== undefined) {
+        return selected;
+      }
+    }
+  }
+}
+
+// @debt drops a key whose target is `null`, so a specifier Node blocks still resolves through a broader pattern, and the resolver takes the first matching key instead of Node's most specific one
+function listDeclaredAliases(
+  imports: SubpathImports | undefined,
+  generated: ResolvedAliases,
+): Alias[] {
+  const known = new Set(
+    [...generated.global, ...generated.src].map(({ key }) => key),
+  );
+
+  return entries(imports ?? {}).flatMap(([key, target]): Alias[] => {
+    const selected = known.has(key) ? undefined : selectTarget(target);
+
+    return selected === undefined
+      ? []
+      : [
+          {
+            key,
+            target: selected,
+            source: `${packageJsonFile} imports`,
+          },
+        ];
+  });
+}
+
+// @debt reads a workspace's package.json outside the live packageJson key, so a renamed workspace package keeps its old name and imports in a long-lived resolver
+async function readWorkspacePackageJson(
   config: ConfigResolver,
   dir: string,
-): Promise<PackageName | undefined> {
+): Promise<PackageJson> {
   const path = posix.join(dir, packageJsonFile);
 
   return createPackageJson({
     root: config.context.root,
     path,
     content: await config.context.filesystem.read(path),
-  }).optional.name;
+  });
 }
 
 export const importResolverSection = declareSection({
@@ -30,18 +95,30 @@ export const importResolverSection = declareSection({
     _input,
     config: ConfigResolver,
   ): Promise<ReturnType<typeof createImportResolver>> {
-    const [scopes, packageJson] = await Promise.all([
+    const [scopes, rootPackageJson] = await Promise.all([
       config.resolve("aliases.scopes"),
       config.resolve("packageJson"),
     ]);
 
     const imports = await Promise.all(
       entries(scopes).map(async ([dir, aliases]) => {
-        const packageName = dir === rootScope
-          ? packageJson.optional.name
-          : await readWorkspacePackageName(config, dir);
+        const packageJson = dir === rootScope
+          ? rootPackageJson
+          : await readWorkspacePackageJson(config, dir);
 
-        return [dir, { aliases, packageName } satisfies ScopeImports] as const;
+        const { name, imports: declared } = packageJson.optional;
+
+        return [
+          dir,
+          {
+            aliases: [
+              ...aliases.global,
+              ...aliases.src,
+              ...listDeclaredAliases(declared, aliases),
+            ],
+            packageName: name,
+          } satisfies ScopeImports,
+        ] as const;
       }),
     );
 

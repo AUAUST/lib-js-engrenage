@@ -12,17 +12,17 @@ import {
 
 import { iterable } from "@auaust/toolkit";
 import { flat, flatMap } from "@auaust/toolkit/array";
-import { mapValues, values } from "@auaust/toolkit/object";
+import { values } from "@auaust/toolkit/object";
 
-import { createImportResolver } from "#project/structure/utils/createImportResolver";
 import type {
   ImportCycle,
-  ResolvedAliases,
+  ResolvedSpecifier,
   ResolvedStructure,
 } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LanguageEntry } from "#project/environments/index";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 // @debt keeps its own skip list, apart from the structure walk's, so the cycle check skips neither git-ignored files nor the shared skip constants
 const ignoredDirectories = ["**/.*", "**/node_modules", "**/dist"];
@@ -223,17 +223,15 @@ function shortestCycle(
 
 // @debt without `verbatimModuleSyntax`, elision is decided per file as under `isolatedModules`, so a value-style re-export of a type-only module still counts as a runtime edge
 export async function findImportCycles({
-  root,
   filesystem,
   structure,
-  scopes,
+  resolveImport,
   verbatimModuleSyntax,
   languages,
 }: {
-  root: Directory;
   filesystem: Filesystem;
   structure: ResolvedStructure;
-  scopes: Readonly<Record<string, ResolvedAliases>>;
+  resolveImport(specifier: string, from: File): ResolvedSpecifier | undefined;
   verbatimModuleSyntax: boolean;
   languages: readonly LanguageEntry[];
 }): Promise<ImportCycle[]> {
@@ -254,13 +252,6 @@ export async function findImportCycles({
       ),
     ),
   );
-
-  const resolveImport = createImportResolver({
-    root,
-    scopes: mapValues(scopes, (aliases) => {
-      return { aliases };
-    }),
-  });
 
   function resolve(from: string, specifier: string): string | undefined {
     const resolved = resolveImport(specifier, from);

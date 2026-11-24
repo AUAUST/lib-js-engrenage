@@ -739,3 +739,11 @@ entries:
     subject: Vitest exclude filtered to test-like paths
     need: shorter git.ignored list for Vitest
     reason: unsound once a user config widens include; saves ~85 ms
+  - id: 261124-a8be
+    subject: minisearch
+    need: ranked fielded record search
+    reason: index and query model lack boundary literals, qualifiers in query strings, per-string matcher
+  - id: 261124-fe10
+    subject: fuse.js
+    need: ranked fielded record search
+    reason: fuzzy-only scoring, no query syntax or per-string matcher; corpus small

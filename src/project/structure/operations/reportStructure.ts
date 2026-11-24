@@ -20,10 +20,9 @@ export async function reportStructure(
   const scopes = await config.resolve("scopes");
 
   const cycles = await findImportCycles({
-    root: config.context.root,
     filesystem: config.context.filesystem,
     structure,
-    scopes: await config.resolve("aliases.scopes"),
+    resolveImport: await config.resolve("importResolver"),
     verbatimModuleSyntax,
     languages: await readSelectedLanguages(config),
   });

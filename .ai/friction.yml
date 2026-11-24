@@ -867,3 +867,11 @@ entries:
     subject: barrel loaded before sync
     tried: engrenage sync after adding a filesystem util export
     stopped: sync failed on the missing barrel export; added the line by hand, then sync
+  - id: 261124-3bd7
+    subject: "PreToolUse Bash hook: zsh `=word` expansion"
+    tried: echoed a ===== separator between two cats
+    stopped: hook rejects a word starting with =; read the files separately
+  - id: 261124-d062
+    subject: eslint suppressions shift error counts
+    tried: comparing reported import-specifiers counts before and after a fix
+    stopped: suppression counts absorbed 9 unchanged errors; counted suppressedMessages too
