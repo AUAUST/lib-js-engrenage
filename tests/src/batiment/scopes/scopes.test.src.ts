@@ -199,10 +199,9 @@ describe("scopes", () => {
     expect(keys(scopes).sort()).toEqual([".", "tools/c"]);
   });
 
-  test("takes a workspace's top-level namespace from its `.namespace.json`", async () => {
+  test("places a workspace's top-level namespace from the registration it inherits, without a `.namespace.json`", async () => {
     const { scopes, diagnostics } = await resolveScopes({
       "theme/.workspace.json": "{}",
-      "theme/src/.namespace.json": "{}",
       "theme/src/a.ts": "",
     });
 

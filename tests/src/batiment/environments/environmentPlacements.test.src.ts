@@ -297,6 +297,25 @@ describe("environment placements across workspaces", () => {
     );
   });
 
+  test("skip a directory glob's matches inside a nested workspace", async () => {
+    const { placements } = await discoverConfigured({
+      input: withSourceRuntime({
+        environments: {
+          web: { preset: "src", dirs: ["app/*", "theme/*"] },
+        },
+      }),
+      files: {
+        "app/ui/index.ts": "",
+        "theme/.workspace.json": "{}",
+        "theme/ui/index.ts": "",
+      },
+    });
+
+    expect(placements.dirs).toMatchObject({ "app/ui": "web" });
+
+    expect(placements.dirs).not.toHaveProperty(["theme/ui"]);
+  });
+
   test("give a workspace's file the workspace's instance of a root file glob", async () => {
     const { instances } = await discoverConfigured({
       input: withSourceRuntime({

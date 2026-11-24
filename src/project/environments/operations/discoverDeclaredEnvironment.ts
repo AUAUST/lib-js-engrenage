@@ -7,7 +7,7 @@ import type { ConfigResolver } from "#project/config/index";
 /**
  * Reads the directories, root files and activity discovery gives the environment
  * in the scope `config` resolves, from the `dirs` and `files` of its
- * `<name>.options` key at the root.
+ * `<name>.options` key in that scope.
  */
 export async function discoverDeclaredEnvironment(
   config: ConfigResolver,

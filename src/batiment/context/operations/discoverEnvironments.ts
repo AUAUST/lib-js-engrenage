@@ -1,3 +1,5 @@
+import { Minimatch } from "minimatch";
+
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze, keys } from "@auaust/toolkit/object";
 
@@ -30,6 +32,10 @@ function assertOwnPlacements(
 
   for (const { scope, registration, dirs } of registered) {
     for (const dir of dirs) {
+      if (new Minimatch(dir).hasMagic()) {
+        continue;
+      }
+
       const nested = workspaces.find((workspace) => {
         return workspace.dir === findScope(dir) && workspace.dir !== scope;
       });
@@ -44,8 +50,9 @@ function assertOwnPlacements(
 }
 
 /**
- * Discovers the environments every scope registers: their placements, each
- * scope's kept within it, and the instances they form.
+ * Discovers the environments every scope registers: their placements, each scope's
+ * kept within it, a `dirs` glob skipping its matches inside nested workspaces,
+ * and the instances they form.
  *
  * @throws When a scope places an environment on a directory inside a
  * nested workspace.
