@@ -1573,6 +1573,11 @@ export async function run(): Promise<unknown> {
       "src/nested/.gitignore": "/skipped.ts\n",
     });
 
+    execFileSync("git", ["init", "--quiet"], {
+      cwd: project.root,
+      stdio: "pipe",
+    });
+
     const eslint = new ESLint({
       cwd: project.root,
       overrideConfigFile: true,

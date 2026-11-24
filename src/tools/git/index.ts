@@ -24,6 +24,7 @@ export { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
 export { listIgnoreFiles } from "#tools/git/operations/listIgnoreFiles";
 export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
+export { listNestedIgnoreFiles } from "#tools/git/operations/listNestedIgnoreFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
 export { locateIgnoreFiles } from "#tools/git/operations/locateIgnoreFiles";
 export { readCommit } from "#tools/git/operations/readCommit";

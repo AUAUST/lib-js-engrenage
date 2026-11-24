@@ -1,26 +1,69 @@
 import { matchesGlob } from "node:path";
 
+import {
+  escapedBackslash,
+  globCharacters,
+} from "#foundation/filesystem/constants";
 import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
 
 const treeSuffix = "/**";
 
-// @debt minimatch implements magic-detection
-const magic = /[*?[\]{}()!+@\\]/u;
+const globSyntax = new RegExp(`[${RegExp.escape(globCharacters)}]`, "u");
 
-function isPlain(glob: Glob): boolean {
-  return (
-    glob !== "" &&
-    !magic.test(glob) &&
-    glob.split("/").every((segment, index, segments) => {
-      return (
-        (segment !== "" || index === 0 || index === segments.length - 1) &&
-        segment !== "." &&
-        segment !== ".."
-      );
-    })
-  );
+const nonNormalSegment = /\/\/|(?:^|\/)\.{1,2}(?:\/|$)/u;
+
+function isLiteralPath(path: File): boolean {
+  return path !== "" && !nonNormalSegment.test(path);
+}
+
+function readClass(glob: Glob, index: number): string | undefined {
+  if (glob.startsWith(escapedBackslash, index)) {
+    return "\\";
+  }
+
+  const character = glob[index + 1];
+
+  return character !== undefined &&
+    character !== "\\" &&
+    globCharacters.includes(character) &&
+    glob[index + 2] === "]"
+    ? character
+    : undefined;
+}
+
+/**
+ * The path `glob` names when its only glob syntax is the one-character classes
+ * `escapeGlob` writes, otherwise `undefined`.
+ */
+function readLiteral(glob: Glob): File | undefined {
+  if (!globSyntax.test(glob)) {
+    return isLiteralPath(glob) ? glob : undefined;
+  }
+
+  let path = "";
+
+  for (let index = 0; index < glob.length; index++) {
+    const character = glob[index] ?? "";
+
+    if (!globCharacters.includes(character)) {
+      path += character;
+    } else if (character === "[") {
+      const escaped = readClass(glob, index);
+
+      if (escaped === undefined) {
+        return;
+      }
+
+      path += escaped;
+      index += escaped === "\\" ? escapedBackslash.length - 1 : 2;
+    } else {
+      return;
+    }
+  }
+
+  return isLiteralPath(path) ? path : undefined;
 }
 
 function isTreeSegment(segment: string): boolean {
@@ -28,9 +71,10 @@ function isTreeSegment(segment: string): boolean {
 }
 
 /**
- * Compiles `globs` into a predicate answering, for a normalized relative path,
- * as `matchesGlob` with any of them would: a glob without glob syntax matches by
- * set lookup, and so does a `<directory>/**` one, without its `**` reaching dot
+ * Compiles `globs` into a predicate answering, for a normalized relative path, as
+ * `matchesGlob` with any of them would: a literal glob, one without glob syntax
+ * but the classes `escapeGlob` writes, matches the path it names by set lookup,
+ * and so does a literal `<directory>/**` one, without its `**` reaching dot
  * segments, as in `matchesGlob`; only the other globs are matched one by one.
  */
 export function createGlobMatcher(globs: Globs): (path: File) => boolean {
@@ -40,15 +84,17 @@ export function createGlobMatcher(globs: Globs): (path: File) => boolean {
 
   for (const glob of globs) {
     const tree = glob.endsWith(treeSuffix)
-      ? glob.slice(0, -treeSuffix.length)
+      ? readLiteral(glob.slice(0, -treeSuffix.length))
       : undefined;
 
-    if (tree !== undefined && isPlain(tree)) {
+    const literal = tree === undefined ? readLiteral(glob) : undefined;
+
+    if (tree !== undefined) {
       trees.add(tree);
-    } else if (isPlain(glob)) {
-      exact.add(glob);
-    } else {
+    } else if (literal === undefined) {
       patterns.push(glob);
+    } else {
+      exact.add(literal);
     }
   }
 

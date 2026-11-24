@@ -863,3 +863,7 @@ entries:
     subject: linked engrenage timing
     tried: profiling Interscript config resolution
     stopped: no timing hook; used inspector script from scratchpad
+  - id: 261124-927c
+    subject: barrel loaded before sync
+    tried: engrenage sync after adding a filesystem util export
+    stopped: sync failed on the missing barrel export; added the line by hand, then sync

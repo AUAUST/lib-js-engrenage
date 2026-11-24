@@ -7,8 +7,7 @@ import {
   stat,
   writeFile,
 } from "node:fs/promises";
-import { dirname, join, matchesGlob } from "node:path";
-import type { Dirent } from "node:fs";
+import { dirname, matchesGlob } from "node:path";
 
 import { toArray } from "@auaust/toolkit";
 import { flat, sort } from "@auaust/toolkit/array";
@@ -16,8 +15,10 @@ import { concat, map, unique } from "@auaust/toolkit/iterable";
 import { freeze } from "@auaust/toolkit/object";
 
 import { readTextFile } from "#foundation/filesystem/operations/readTextFile";
+import { createEntryLocator } from "#foundation/filesystem/utils/createEntryLocator";
 import { createGlobMatcher } from "#foundation/filesystem/utils/createGlobMatcher";
 import { isMissingError } from "#foundation/filesystem/utils/isMissingError";
+import { joinLocated } from "#foundation/filesystem/utils/joinLocated";
 import { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 import { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
 import type { Filesystem } from "#foundation/filesystem/apis/Filesystem";
@@ -95,10 +96,6 @@ async function readEntries(path: string) {
 
 function isBelow(directory: File, file: File): boolean {
   return directory === "" || file.startsWith(`${directory}/`);
-}
-
-function joinLocated(directory: File, name: string): File {
-  return directory === "" ? name : `${directory}/${name}`;
 }
 
 export function createFilesystem(root: Directory): Filesystem {
@@ -183,10 +180,6 @@ export function createFilesystem(root: Directory): Filesystem {
     return !contents.has(file) || contents.get(file) !== undefined;
   }
 
-  function locateEntry(entry: Dirent): File {
-    return relativeWithin(root, join(entry.parentPath, entry.name));
-  }
-
   // @debt `globFiles` also yields the directories `patterns` match, so `glob` returns them as files
   async function glob(
     patterns: Glob | Globs,
@@ -195,6 +188,8 @@ export function createFilesystem(root: Directory): Filesystem {
     const globs = toArray(patterns);
 
     const excluded = createGlobMatcher(options?.exclude ?? []);
+
+    const locateEntry = createEntryLocator(root);
 
     const found = map(
       await Array.fromAsync(

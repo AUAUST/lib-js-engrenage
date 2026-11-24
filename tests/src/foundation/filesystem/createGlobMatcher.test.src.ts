@@ -3,6 +3,7 @@ import { matchesGlob } from "node:path";
 import { expect, test } from "vitest";
 
 import { createGlobMatcher } from "#foundation/filesystem/utils/createGlobMatcher";
+import { escapeGlob } from "#foundation/filesystem/utils/escapeGlob";
 
 const globs = [
   "theme/assets/d-a.js",
@@ -45,4 +46,16 @@ test("answers as matchesGlob with any of the globs", () => {
 
 test("matches nothing without globs", () => {
   expect(createGlobMatcher([])("a")).toBe(false);
+});
+
+test("matches an escaped path as the literal path it names", () => {
+  const matches = createGlobMatcher([
+    escapeGlob("src/[id]/{a,b}!.ts"),
+    `${escapeGlob("a*\\b")}/**`,
+  ]);
+
+  expect(matches("src/[id]/{a,b}!.ts")).toBe(true);
+  expect(matches("src/i/a!.ts")).toBe(false);
+  expect(matches("a*\\b/c.js")).toBe(true);
+  expect(matches("axb/c.js")).toBe(false);
 });

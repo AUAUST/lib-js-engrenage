@@ -3,7 +3,7 @@ import { join, relative } from "node:path";
 import { filterMap, map } from "@auaust/toolkit/array";
 
 import {
-  isWithin,
+  escapeGlob,
   pathExists,
   toPosixPath,
 } from "#foundation/filesystem/index";
@@ -14,6 +14,11 @@ import type { Globs } from "#types/Globs";
 
 const ignoredStatus = "!! ";
 
+/**
+ * Lists, relative to `base`, the paths Git ignores within it, each escaped into
+ * a glob matching only itself, a directory as a `<directory>/**` glob; nothing
+ * outside a repository or for a base inside an ignored directory.
+ */
 export async function listIgnoredGlobs(
   repository: Directory,
   base: Directory,
@@ -21,6 +26,8 @@ export async function listIgnoredGlobs(
   if (!(await pathExists(join(repository, gitDirectory)))) {
     return [];
   }
+
+  const located = toPosixPath(relative(repository, base));
 
   const output = await runGit(repository, [
     "status",
@@ -30,8 +37,10 @@ export async function listIgnoredGlobs(
     "--ignored=matching",
     "--untracked-files=normal",
     "--",
-    toPosixPath(relative(repository, base)) || ".",
+    located || ".",
   ]);
+
+  const prefix = located === "" ? "" : `${located}/`;
 
   const ignored = filterMap(
     output.split("\0"),
@@ -39,14 +48,23 @@ export async function listIgnoredGlobs(
     (entry) => entry.slice(ignoredStatus.length),
   );
 
-  if (ignored.some((entry) => isWithin(join(repository, entry), base))) {
+  if (
+    ignored.some((entry) => {
+      return entry.endsWith("/") && prefix.startsWith(entry);
+    })
+  ) {
     return [];
   }
 
-  // @debt each path becomes a glob unescaped, so a path holding glob syntax matches more than itself
   return map(ignored, (entry) => {
-    const glob = toPosixPath(relative(base, join(repository, entry)));
+    if (!entry.startsWith(prefix)) {
+      throw new Error(
+        `Git lists \`${entry}\` as ignored outside \`${located}\`.`,
+      );
+    }
 
-    return entry.endsWith("/") ? `${glob}/**` : glob;
+    const glob = escapeGlob(entry.slice(prefix.length));
+
+    return entry.endsWith("/") ? `${glob}**` : glob;
   });
 }

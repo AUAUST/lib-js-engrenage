@@ -12,6 +12,7 @@ function createRepository() {
     "dist/index.js": "export {};\n",
     "src/new/node_modules/a.js": "\n",
     "debug.log": "\n",
+    "src/[id].log": "\n",
     "worktrees/copy/a.test.ts": "\n",
   });
 
@@ -32,9 +33,18 @@ describe("listIgnoredGlobs", () => {
     expect(await listIgnoredGlobs(project.root, project.root)).toEqual([
       "debug.log",
       "dist/**",
+      "src/[[]id[]].log",
       "src/new/node_modules/**",
       "worktrees/**",
     ]);
+  });
+
+  test("lists paths relative to a nested base, escaping their glob syntax", async () => {
+    const project = createRepository();
+
+    expect(
+      await listIgnoredGlobs(project.root, project.resolve("src")),
+    ).toEqual(["[[]id[]].log", "new/node_modules/**"]);
   });
 
   test("lists nothing outside a repository or for a base Git ignores whole", async () => {

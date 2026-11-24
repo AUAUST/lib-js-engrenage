@@ -731,3 +731,11 @@ entries:
     subject: gitignore patterns as ignore globs
     need: shorter git.ignored list
     reason: gitignore negation and anchoring semantics exceed the fix
+  - id: 261124-78c0
+    subject: ignore predicate passed to tools
+    need: cheaper git-ignored exclusion in Vitest
+    reason: Vitest exclude accepts globs only
+  - id: 261124-f561
+    subject: Vitest exclude filtered to test-like paths
+    need: shorter git.ignored list for Vitest
+    reason: unsound once a user config widens include; saves ~85 ms

@@ -1,8 +1,11 @@
 // @barrel utils
+export { createEntryLocator } from "#foundation/filesystem/utils/createEntryLocator";
 export { createGlobMatcher } from "#foundation/filesystem/utils/createGlobMatcher";
+export { escapeGlob } from "#foundation/filesystem/utils/escapeGlob";
 export { filesIn } from "#foundation/filesystem/utils/filesIn";
 export { isMissingError } from "#foundation/filesystem/utils/isMissingError";
 export { isWithin } from "#foundation/filesystem/utils/isWithin";
+export { joinLocated } from "#foundation/filesystem/utils/joinLocated";
 export { relativeWithin } from "#foundation/filesystem/utils/relativeWithin";
 export { resolve } from "#foundation/filesystem/utils/resolve";
 export { resolveWithin } from "#foundation/filesystem/utils/resolveWithin";
