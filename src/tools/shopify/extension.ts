@@ -1,6 +1,7 @@
 import {
   appConfigGlob,
   directoryPlaceholder,
+  extensionsEnvironmentKey,
   extensionsGlob,
   shopifyCli,
 } from "#tools/shopify/constants";
@@ -8,8 +9,9 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Active when `@shopify/cli` is installed; owns the app's TOML and extension
- * locale files when an app config exists, and contributes the `shopify-app`
- * preset configuring extension workspaces.
+ * locale files when an app config exists, and contributes the `shopify-app` preset
+ * configuring extension workspaces and registering the `shopify-extensions`
+ * environment on their sources.
  */
 export default {
   name: "tools/shopify",
@@ -55,6 +57,16 @@ export default {
               "generated/**",
               "schema.graphql",
             ],
+            [`${extensionsEnvironmentKey}.preset`]: "src",
+            [`${extensionsEnvironmentKey}.execution.globals`]: "browser",
+            [`${extensionsEnvironmentKey}.bundled`]: true,
+            [`${extensionsEnvironmentKey}.dirs`]: [`${extensionsGlob}/src`],
+            [`${extensionsEnvironmentKey}.tsconfig.path`]: "tsconfig.json",
+            [`${extensionsEnvironmentKey}.tsconfig.types`]: {
+              append: "@shopify/polaris-types",
+            },
+            [`${extensionsEnvironmentKey}.tsconfig.compilerOptions.jsx`]: "react-jsx",
+            [`${extensionsEnvironmentKey}.tsconfig.compilerOptions.jsxImportSource`]: "preact",
           });
         },
       },

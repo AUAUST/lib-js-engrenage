@@ -83,6 +83,40 @@ describe("shopify-app", () => {
     );
   });
 
+  test("writes each extension's tsconfig with Preact and Polaris types beside a config's options", async () => {
+    const project = createApp({
+      config: `export default {
+  preset: "shopify-app",
+  environments: {
+    "shopify-extensions": {
+      execution: { syntax: "2026-10" },
+      tsconfig: { compilerOptions: { strict: true } },
+    },
+  },
+  typescript: { tsconfig: { extends: false } },
+};
+`,
+    });
+
+    const config = await loadConfig(project.root);
+
+    await runSync(config, { names: ["tsconfig", "workspaces"] });
+
+    await config.context.filesystem.flush();
+
+    const tsconfig = JSON.parse(project.read("extensions/a/tsconfig.json"));
+
+    expect(tsconfig.compilerOptions).toMatchObject({
+      jsx: "react-jsx",
+      jsxImportSource: "preact",
+      strict: true,
+    });
+
+    expect(tsconfig.compilerOptions.types).toContain("@shopify/polaris-types");
+
+    expect(tsconfig.include).toContain("src/**/*.tsx");
+  });
+
   test("keeps the preset beside the paths a config sets", async () => {
     const project = createApp({
       config: `export default {

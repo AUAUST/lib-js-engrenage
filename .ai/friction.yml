@@ -787,3 +787,7 @@ entries:
     subject: codegen config test timeout
     tried: worktree gate
     stopped: 5s timeout under gate load; rerun passed
+  - id: 261124-b8cc
+    subject: tsconfig sync in temp project
+    tried: runCommand sync tsconfig
+    stopped: base.json unresolvable; set typescript.tsconfig.extends false
