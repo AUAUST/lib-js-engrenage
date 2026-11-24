@@ -4,8 +4,8 @@ import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { FileLocation } from "#project/config/types/FileLocation";
 
 /**
- * A file, directory or glob set an extension owns under `owns.files`, located
- * in each scope where its owner is active; two resources at the same path fail
+ * A file, directory or glob set an extension owns under `owns.files`,
+ * located while its owner is active; two resources at the same path fail
  * the `resources` key.
  *
  * @stable
@@ -17,6 +17,11 @@ export interface FileResource {
    * listings its flags match.
    */
   locate(config: ConfigResolver): MaybePromise<FileLocation | undefined>;
+  /**
+   * Where the resource is located, `project` by default: `project` resources
+   * once, through the root; `scoped` resources in each scope, through its config.
+   */
+  readonly scope?: "project" | "scoped";
   /**
    * Display name; defaults to the owner's title, then its name.
    */

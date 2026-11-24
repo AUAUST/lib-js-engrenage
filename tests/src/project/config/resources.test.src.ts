@@ -205,7 +205,7 @@ describe("file resources", () => {
     expect(() => resources.list({ generated: true })).not.toThrow();
   });
 
-  test("locates a resource in the workspace alone activating its owner", async () => {
+  test("locates a scoped resource in the workspace alone activating its owner, project resources at the root alone", async () => {
     const project = createTemporaryProject({
       "package.json": JSON.stringify({ name: "root", type: "module" }),
       "src/index.ts": "export {};\n",
@@ -227,6 +227,7 @@ describe("file resources", () => {
               files: {
                 "scoped.out": {
                   committed: false,
+                  scope: "scoped",
                   locate: () => {
                     return { file: "scoped.out" };
                   },
@@ -250,6 +251,13 @@ describe("file resources", () => {
         .filter(({ name }) => name === "scoped.out")
         .map(({ location }) => location),
     ).toEqual([{ file: "theme/scoped.out" }]);
+
+    expect(
+      resources
+        .list()
+        .filter(({ name }) => name === "package.json")
+        .map(({ location }) => location),
+    ).toEqual([{ file: "package.json" }]);
 
     expect(resources.get("scoped.out")).toBeUndefined();
   });

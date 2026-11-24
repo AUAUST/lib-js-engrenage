@@ -147,6 +147,10 @@ async function locateScope(
   for (const { key: name, declaration, owner } of config.context.registry.list(
     "files",
   )) {
+    if (dir !== rootScope && declaration.scope !== "scoped") {
+      continue;
+    }
+
     const location = await locate(config, projectRoot, {
       name,
       owner,

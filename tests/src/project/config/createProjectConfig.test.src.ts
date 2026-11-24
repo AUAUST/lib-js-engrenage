@@ -174,6 +174,19 @@ describe("createProjectConfig", () => {
     );
   });
 
+  test("rejects an extension activating on a preset no extension contributes", () => {
+    expect(() => {
+      return createConfig({
+        extensions: [
+          {
+            name: "typo-fixture",
+            when: { preset: "libary" },
+          },
+        ],
+      });
+    }).toThrow(/typo-fixture activates on preset "libary"/u);
+  });
+
   test("rejects a listed value that is not an extension, naming its index", () => {
     expect(() => createConfig({ extensions: [1] })).toThrow(
       /Invalid extensions config[\s\S]*at 0/u,

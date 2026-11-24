@@ -19,6 +19,7 @@ export default {
       "shopify.theme.vite": {
         title: "Vite",
         committed: false,
+        scope: "scoped",
         async locate(config): Promise<FileLocation | undefined> {
           const layouts = await config.context.filesystem.glob(themeLayoutGlob);
 

@@ -30,6 +30,7 @@ import { unpresettable } from "#project/config/constants";
 import { checkCompatibility } from "#project/config/utils/checkCompatibility";
 import { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 import { checkFileParts } from "#project/config/utils/checkFileParts";
+import { checkPresetActivations } from "#project/config/utils/checkPresetActivations";
 import { checkScopeInputs } from "#project/config/utils/checkScopeInputs";
 import { describeRemovedKey } from "#project/config/utils/describeRemovedKey";
 import { explainInactive } from "#project/config/utils/explainInactive";
@@ -99,6 +100,8 @@ export function createProjectConfig({
   checkFileParts(registry);
 
   checkDirectiveNames(registry);
+
+  checkPresetActivations(registry);
 
   async function refuse(
     key: string,

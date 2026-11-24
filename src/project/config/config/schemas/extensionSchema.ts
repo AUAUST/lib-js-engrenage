@@ -64,6 +64,7 @@ const ownsSchema: GenericSchema<unknown, Owned> = objectWithRest(
             isFunction,
             "Expected a locate function",
           ),
+          scope: exactOptional(picklist(["project", "scoped"])),
         }),
       ),
     ),

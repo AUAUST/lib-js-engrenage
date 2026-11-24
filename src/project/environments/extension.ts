@@ -268,6 +268,7 @@ export default {
       static: {
         title: "Static files",
         linted: false,
+        scope: "scoped",
         async locate(config): Promise<FileLocation | undefined> {
           const { active, dirs } = await config.resolve("static");
 

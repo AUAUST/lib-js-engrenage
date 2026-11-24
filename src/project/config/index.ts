@@ -48,6 +48,7 @@ export { assertSerializable } from "#project/config/utils/assertSerializable";
 export { checkCompatibility } from "#project/config/utils/checkCompatibility";
 export { checkDirectiveNames } from "#project/config/utils/checkDirectiveNames";
 export { checkFileParts } from "#project/config/utils/checkFileParts";
+export { checkPresetActivations } from "#project/config/utils/checkPresetActivations";
 export { checkScopeInputs } from "#project/config/utils/checkScopeInputs";
 export { createResourceIgnores } from "#project/config/utils/createResourceIgnores";
 export { describeRemovedKey } from "#project/config/utils/describeRemovedKey";
