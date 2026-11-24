@@ -827,3 +827,11 @@ entries:
     subject: worktree gate test timeout under load
     tried: pnpm engrenage gate --worktree
     stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
+  - id: 261124-3cb4
+    subject: barrel loaded before sync
+    tried: typecheck after adding a util export
+    stopped: barrel lacked the export; added the line by hand, then sync
+  - id: 261124-91de
+    subject: workspace barrel fixture
+    tried: role dirs in a workspace to get a generated barrel
+    stopped: no default role gives index barrels; tested stale removal instead

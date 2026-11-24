@@ -15,6 +15,7 @@ export { visibilitySchema } from "#project/package/config/schemas/visibilitySche
 
 // @barrel utils
 export { compareVersions } from "#project/package/utils/compareVersions";
+export { createScopeFields } from "#project/package/utils/createScopeFields";
 export { parseVersion } from "#project/package/utils/parseVersion";
 export { readDeclaredVersion } from "#project/package/utils/readDeclaredVersion";
 export { readProjectPnpmMajor } from "#project/package/utils/readProjectPnpmMajor";
@@ -25,6 +26,7 @@ export { resolveExportPaths } from "#project/package/utils/resolveExportPaths";
 
 // @barrel types
 export type * from "#project/package/types/DevEngine";
+export type * from "#project/package/types/PackageField";
 export type * from "#project/package/types/PackageJson";
 export type * from "#project/package/types/PackageType";
 export type * from "#project/package/types/Person";
@@ -36,7 +38,9 @@ export type * from "#project/package/types/Visibility";
 
 // @barrel config/sections
 export { dependenciesSection } from "#project/package/config/sections/dependenciesSection";
+export { licenseSection } from "#project/package/config/sections/licenseSection";
 export { packageJsonPathSection } from "#project/package/config/sections/packageJsonPathSection";
 export { packageJsonSection } from "#project/package/config/sections/packageJsonSection";
+export { versionSection } from "#project/package/config/sections/versionSection";
 export { visibilitySection } from "#project/package/config/sections/visibilitySection";
 // @end

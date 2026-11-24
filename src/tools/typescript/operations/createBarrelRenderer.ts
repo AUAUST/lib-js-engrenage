@@ -1,3 +1,5 @@
+import { getOwn } from "@auaust/toolkit/object";
+
 import { loadLazy } from "#foundation/modules/index";
 import { renderBarrel } from "#tools/typescript/operations/renderBarrel";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
@@ -11,7 +13,15 @@ import type { File } from "#types/File";
 async function resolveSubpathImports(
   config: LoadedConfig,
 ): Promise<SubpathImports> {
-  const { enabled, global, src } = await config.resolve("aliases");
+  const { scopeDir } = config.context;
+
+  const aliases = getOwn(await config.resolve("aliases.scopes"), scopeDir);
+
+  if (aliases === undefined) {
+    throw new Error(`The scope ${scopeDir} has no alias table`);
+  }
+
+  const { enabled, global, src } = aliases;
 
   if (enabled) {
     return listSubpathImports([...global, ...src]);

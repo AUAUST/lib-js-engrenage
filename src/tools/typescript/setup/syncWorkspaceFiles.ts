@@ -1,143 +1,115 @@
+import { posix } from "node:path";
+
 import { getOwn } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
+import { packageJsonFile } from "#constants";
 import { emptyObjectFile } from "#foundation/json/constants";
-import { readSelectedLanguage } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
-import { accessByVisibility } from "#project/package/constants";
 import {
+  createScopeFields,
   writePackageJsonValue,
-  type PackageJson,
-  type PublishAccess,
+  type PackageField,
 } from "#project/package/index";
 import { resolveScopeExports } from "#project/structure/index";
-import { toJsonValue } from "#project/tsconfig/index";
-import { typescript } from "#tools/typescript/constants";
+import { listScopeConfigs } from "#project/workspaces/index";
 import { syncImports } from "#tools/typescript/operations/syncImports";
-import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
-import type { JsonValue } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { ResolvedWorkspace } from "#project/workspaces/index";
 
-// @debt `#self/*` duplicates the workspace's generated alias table until #762 removes it
-const selfImportKey = "#self/*";
+async function createPackageFields(
+  scoped: LoadedConfig,
+): Promise<PackageField[]> {
+  const [
+    name,
+    version,
+    license,
+    { node },
+    { published },
+    visibility,
+  ] = await Promise.all([
+    scoped.resolve("name"),
+    scoped.resolve("version"),
+    scoped.resolve("license"),
+    scoped.resolve("runtime"),
+    scoped.resolve("traits"),
+    scoped.resolve("visibility"),
+  ]);
 
-const selfImportStem = "./src/*";
-
-interface Field {
-  location: readonly [string] | readonly [string, string];
-  value: JsonValue;
-}
-
-function createPackageFields(
-  { optional: { version, license } }: PackageJson,
-  { name }: ResolvedWorkspace,
-  access: PublishAccess | undefined,
-  extensions: readonly string[],
-  exports: Readonly<Record<string, string>> | undefined,
-): Field[] {
-  const fields: Field[] = [
-    { location: ["name"], value: name },
-    { location: ["private"], value: true },
+  return [
+    ...(name === undefined
+      ? []
+      : [{ location: ["name"], value: name } as const]),
+    ...(version === undefined
+      ? []
+      : [{ location: ["version"], value: version } as const]),
+    ...(license === undefined
+      ? []
+      : [{ location: ["license"], value: license } as const]),
+    ...createScopeFields({
+      node,
+      published,
+      visibility,
+    }),
   ];
-
-  if (access !== undefined) {
-    fields.push({
-      location: ["publishConfig", "access"],
-      value: access,
-    });
-  }
-
-  if (version !== undefined) {
-    fields.push({ location: ["version"], value: version });
-  }
-
-  if (license !== undefined) {
-    fields.push({ location: ["license"], value: license });
-  }
-
-  fields.push({
-    location: ["imports", selfImportKey],
-    value: toJsonValue(
-      createBundledImport(selfImportStem, extensions),
-      "the workspace self imports",
-    ),
-  });
-
-  if (exports !== undefined) {
-    fields.push({ location: ["exports"], value: exports });
-  }
-
-  return fields;
 }
 
 export async function syncWorkspaceFiles(config: LoadedConfig) {
-  const [
-    groups,
-    filesystem,
-    resolvePath,
-    packageJson,
-    traits,
-    visibility,
-    language,
-    scopes,
-    scopeExports,
-  ] = await Promise.all([
-    config.resolve("workspaces"),
-    config.context.filesystem,
-    config.context.path,
-    config.resolve("packageJson"),
-    config.resolve("traits"),
-    config.resolve("visibility"),
-    readSelectedLanguage(config, typescript),
+  const [configs, scopes, scopeExports] = await Promise.all([
+    listScopeConfigs(config),
     config.resolve("aliases.scopes"),
     resolveScopeExports(config),
   ]);
 
-  const extensions = language?.extensions ?? [];
+  const { filesystem, path } = config.context;
 
-  const access = traits.published ? accessByVisibility[visibility] : undefined;
+  for (const scoped of configs) {
+    const { scopeDir } = scoped.context;
 
-  for (const group of groups) {
-    for (const workspace of group.workspaces) {
-      const packageFile = workspace.packageJson;
-      const packagePath = resolvePath(packageFile);
+    if (scopeDir === rootScope) {
+      continue;
+    }
 
-      await filesystem.write(
+    const packageFile = posix.join(scopeDir, packageJsonFile);
+    const packagePath = path(packageFile);
+
+    const exports = scopeExports.get(scopeDir);
+
+    const fields = [
+      ...(await createPackageFields(scoped)),
+      ...(exports === undefined
+        ? []
+        : [{ location: ["exports"], value: exports } as const]),
+    ];
+
+    await filesystem.write(
+      packageFile,
+      fields.reduce(
+        (current, { location, value }) => {
+          return writePackageJsonValue(
+            current,
+            packagePath,
+            location,
+            value,
+            jsonIndentation,
+          );
+        },
+        (await filesystem.read(packageFile)) ?? emptyObjectFile,
+      ),
+    );
+
+    const aliases = getOwn(scopes, scopeDir);
+
+    if (aliases === undefined) {
+      throw new Error(`Workspace ${scopeDir} has no alias table`);
+    }
+
+    if (aliases.enabled) {
+      await syncImports(
+        config,
         packageFile,
-        createPackageFields(
-          packageJson,
-          workspace,
-          access,
-          extensions,
-          scopeExports.get(workspace.dir),
-        ).reduce(
-          (current, { location, value }) => {
-            return writePackageJsonValue(
-              current,
-              packagePath,
-              location,
-              value,
-              jsonIndentation,
-            );
-          },
-          (await filesystem.read(packageFile)) ?? emptyObjectFile,
-        ),
+        listSubpathImports([...aliases.global, ...aliases.src]),
       );
-
-      const aliases = getOwn(scopes, workspace.dir);
-
-      if (aliases === undefined) {
-        throw new Error(`Workspace ${workspace.dir} has no alias table`);
-      }
-
-      if (aliases.enabled) {
-        await syncImports(
-          config,
-          packageFile,
-          listSubpathImports([...aliases.global, ...aliases.src]),
-        );
-      }
     }
   }
 }

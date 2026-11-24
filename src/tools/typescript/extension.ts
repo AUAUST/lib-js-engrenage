@@ -78,10 +78,10 @@ export default {
         title: "TypeScript",
         async locate(config): Promise<FileLocation | undefined> {
           const {
-            planBarrels,
-          } = await import("#tools/typescript/operations/planBarrels");
+            planScopeBarrels,
+          } = await import("#tools/typescript/operations/planScopeBarrels");
 
-          const plans = await planBarrels(config);
+          const plans = await planScopeBarrels(config);
 
           return plans.length === 0
             ? undefined
@@ -106,7 +106,11 @@ export default {
             listBarrelCandidates,
           } = await import("#tools/typescript/operations/listBarrelCandidates");
 
-          return listBarrelCandidates(config);
+          // @debt `@barrel` blocks fill against the root's structure only, so a workspace's blocks go unfilled
+          return listBarrelCandidates(
+            config.context.filesystem,
+            await config.resolve("structure"),
+          );
         },
         async load() {
           const {

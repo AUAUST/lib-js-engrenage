@@ -1,13 +1,9 @@
-import { basename } from "node:path/posix";
-
 import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
-import { rootScope } from "#batiment/scopes/constants";
 import { filesIn, type Filesystem } from "#foundation/filesystem/index";
 import { createPackageJson } from "#project/package/index";
-import { directoryPlaceholder } from "#project/workspaces/constants";
 import type { ExpectedWorkspaces } from "#batiment/context/index";
 import type { OutputOf } from "#foundation/options/index";
 import type { workspacesSchema } from "#project/workspaces/config/schemas/workspacesSchema";
@@ -20,7 +16,7 @@ import type { PackageName } from "#types/PackageName";
 
 export async function resolveWorkspaces({
   root,
-  rootName,
+  names,
   filesystem,
   options,
   typescriptFiles,
@@ -28,7 +24,7 @@ export async function resolveWorkspaces({
   expected,
 }: {
   root: Directory;
-  rootName: PackageName | undefined;
+  names: ReadonlyMap<Directory, PackageName>;
   filesystem: Filesystem;
   options: OutputOf<typeof workspacesSchema>;
   typescriptFiles: Globs;
@@ -51,19 +47,6 @@ export async function resolveWorkspaces({
       missing,
     };
   });
-
-  const names = new Map<Directory, string>(
-    rootName === undefined ? [] : [[rootScope, rootName]],
-  );
-
-  for (const { option, dirs } of matched) {
-    for (const dir of dirs) {
-      names.set(
-        dir,
-        option.name.split(directoryPlaceholder).join(basename(dir)),
-      );
-    }
-  }
 
   async function describe(dir: Directory): Promise<ResolvedWorkspace> {
     const packageJson = `${dir}/package.json`;

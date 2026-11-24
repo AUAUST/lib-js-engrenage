@@ -6,6 +6,7 @@ import { values } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   type NamespaceStructure,
+  type ResolvedStructure,
 } from "#batiment/structure/index";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
@@ -14,7 +15,6 @@ import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels"
 import { isCollected } from "#tools/typescript/utils/isCollected";
 import { listRootReexports } from "#tools/typescript/utils/listRootReexports";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ConfigResolver } from "#project/config/index";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
 import type { File } from "#types/File";
 
@@ -116,14 +116,13 @@ async function planEnvironment(
 }
 
 export async function planBarrels(
-  config: ConfigResolver,
+  filesystem: Filesystem,
+  structure: ResolvedStructure,
 ): Promise<readonly BarrelPlan[]> {
-  const structure = await config.resolve("structure");
-
   const plans = await Promise.all(
     filterMap(values(structure), (environment) => {
       if (environment !== undefined) {
-        return planEnvironment(config.context.filesystem, environment);
+        return planEnvironment(filesystem, environment);
       }
     }),
   );

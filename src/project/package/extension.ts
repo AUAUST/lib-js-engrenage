@@ -2,8 +2,9 @@ import { packageJsonFile } from "#project/package/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 /**
- * Owns the `dependencies`, `packageJsonPath`, `packageJson` and `visibility`
- * config keys and the package manifest file, whose parts sync targets write.
+ * Owns the `dependencies`, `packageJsonPath`, `packageJson`, `version`,
+ * `license` and `visibility` config keys and the package manifest file, whose
+ * parts sync targets write.
  */
 export default {
   name: "project/package",
@@ -34,6 +35,26 @@ export default {
           } = await import("#project/package/config/sections/packageJsonSection");
 
           return packageJsonSection;
+        },
+      },
+      version: {
+        scope: "project",
+        async load() {
+          const {
+            versionSection,
+          } = await import("#project/package/config/sections/versionSection");
+
+          return versionSection;
+        },
+      },
+      license: {
+        scope: "project",
+        async load() {
+          const {
+            licenseSection,
+          } = await import("#project/package/config/sections/licenseSection");
+
+          return licenseSection;
         },
       },
       visibility: {

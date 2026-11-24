@@ -10,23 +10,18 @@ import { syncFiles } from "#foundation/blocks/index";
 import { findDirectories } from "#foundation/filesystem/index";
 import { listNamespaceEnvironments } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
-import { accessByVisibility } from "#project/package/constants";
 import {
   createPackageJson,
+  createScopeFields,
   writePackageJsonValue,
+  type PackageField,
 } from "#project/package/index";
 import { resolveScopeExports } from "#project/structure/index";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
-import type { JsonValue } from "#foundation/json/index";
 import type { Runtime } from "#project/baseline/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedTraits } from "#project/presets/index";
-
-interface Field {
-  location: readonly [string] | readonly [string, string];
-  value: JsonValue;
-}
 
 const privateFields = ["publishConfig", "exports"] as const;
 
@@ -34,7 +29,9 @@ function toNodeMajor(runtime: Runtime): number {
   return runtime.kind === "node" ? runtime.major : runtime.node;
 }
 
-async function createEnginesFields(config: LoadedConfig): Promise<Field[]> {
+async function createEnginesFields(
+  config: LoadedConfig,
+): Promise<PackageField[]> {
   const [names, execution] = await Promise.all([
     listNamespaceEnvironments(config, (kind) => kind.code === "published"),
     config.resolve("environments.execution"),
@@ -56,7 +53,9 @@ async function createEnginesFields(config: LoadedConfig): Promise<Field[]> {
       ];
 }
 
-async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
+async function createPublishedFields(
+  config: LoadedConfig,
+): Promise<PackageField[]> {
   const { resolve, context } = config;
 
   const { sourcemap } = await resolve("build");
@@ -91,7 +90,7 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
       },
       directory,
     ),
-  ).map(([command, file]): Field => {
+  ).map(([command, file]): PackageField => {
     return {
       location: ["bin", command],
       value: file,
@@ -104,19 +103,25 @@ async function createPublishedFields(config: LoadedConfig): Promise<Field[]> {
 async function createFields(
   config: LoadedConfig,
   traits: ResolvedTraits,
-): Promise<Field[]> {
+): Promise<PackageField[]> {
   const { resolve } = config;
 
-  const { node } = await resolve("runtime");
+  const [{ node }, name, visibility] = await Promise.all([
+    resolve("runtime"),
+    resolve("name"),
+    resolve("visibility"),
+  ]);
 
-  const runtime: Field = {
-    location: ["devEngines", "runtime"],
-    value: {
-      name: "node",
-      version: String(node),
-      onFail: "error",
-    },
-  };
+  const fields = [
+    ...(name === undefined
+      ? []
+      : [{ location: ["name"], value: name } as const]),
+    ...createScopeFields({
+      node,
+      published: traits.published,
+      visibility,
+    }),
+  ];
 
   // @debt an unpublished root no workspace imports any more keeps the `exports` sync last wrote, then warned about as hand-set
   if (!traits.published) {
@@ -125,8 +130,7 @@ async function createFields(
     const exports = scopeExports.get(rootScope);
 
     return [
-      runtime,
-      { location: ["private"], value: true },
+      ...fields,
       ...(exports === undefined
         ? []
         : [{ location: ["exports"], value: exports } as const]),
@@ -134,11 +138,7 @@ async function createFields(
   }
 
   return [
-    runtime,
-    {
-      location: ["publishConfig", "access"],
-      value: accessByVisibility[await resolve("visibility")],
-    },
+    ...fields,
     ...(await createEnginesFields(config)),
     ...(await createPublishedFields(config)),
   ];

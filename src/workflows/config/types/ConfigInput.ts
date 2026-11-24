@@ -254,6 +254,12 @@ export interface BuiltinConfigInput {
   aliases?: ((false | AliasesInput) | undefined)
   typescript?: (TypescriptInput | undefined)
   /**
+   * Package name of the scope, with `{dir}` standing for the name of its directory.
+   * Sync writes it as the `name` of the scope's `package.json`; a workspace's `.workspace.json` overrides its glob entry's.
+   * @default the `name` of `package.json`
+   */
+  name?: (string | undefined)
+  /**
    * Workspaces of the project, by the glob matching their directories (`extensions/*`).
    * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
    * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json`.

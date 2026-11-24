@@ -1,3 +1,4 @@
+import { listScopeConfigs } from "#project/workspaces/index";
 import { barrelHeader } from "#tools/typescript/constants";
 import { createBarrelRenderer } from "#tools/typescript/operations/createBarrelRenderer";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
@@ -12,24 +13,32 @@ import type { File } from "#types/File";
 export async function syncBarrelFiles(config: LoadedConfig) {
   const { filesystem } = config.context;
 
-  const [
-    plans,
-    render,
-  ] = await Promise.all([planBarrels(config), createBarrelRenderer(config)]);
-
   const rendered = new Map<File, readonly BarrelExport[]>();
 
-  for (const plan of plans) {
-    const { lines, exports } = await render(plan, rendered);
+  const candidates: File[] = [];
 
-    rendered.set(plan.file, exports);
+  for (const scoped of await listScopeConfigs(config)) {
+    const structure = await scoped.resolve("structure");
 
-    const body = lines.length === 0 ? "export {};" : lines.join("\n");
+    const [plans, render] = await Promise.all([
+      planBarrels(filesystem, structure),
+      createBarrelRenderer(scoped),
+    ]);
 
-    await filesystem.write(plan.file, `${barrelHeader}\n\n${body}\n`);
+    for (const plan of plans) {
+      const { lines, exports } = await render(plan, rendered);
+
+      rendered.set(plan.file, exports);
+
+      const body = lines.length === 0 ? "export {};" : lines.join("\n");
+
+      await filesystem.write(plan.file, `${barrelHeader}\n\n${body}\n`);
+    }
+
+    candidates.push(...(await listBarrelCandidates(filesystem, structure)));
   }
 
-  for (const file of await listBarrelCandidates(config)) {
+  for (const file of candidates) {
     if (rendered.has(file)) {
       continue;
     }

@@ -437,10 +437,12 @@ export type * from "#modules/guard/utils/isNull";
   test("lists engrenage's built-in extensions in its collecting entry under their domain names", async () => {
     const config = await loadValidatedConfig();
 
-    const [
-      plans,
-      render,
-    ] = await Promise.all([planBarrels(config), createBarrelRenderer(config)]);
+    const structure = await config.resolve("structure");
+
+    const [plans, render] = await Promise.all([
+      planBarrels(config.context.filesystem, structure),
+      createBarrelRenderer(config),
+    ]);
 
     const plan = plans.find(({ file }) => {
       return file === "src/workflows/builtins/entry.ts";

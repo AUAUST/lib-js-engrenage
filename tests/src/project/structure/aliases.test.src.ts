@@ -408,7 +408,7 @@ describe("scope aliases", () => {
     );
   });
 
-  test("syncs a workspace's table into its package.json imports, keeping #self/*", async () => {
+  test("syncs a workspace's table into its package.json imports", async () => {
     const { config } = await resolveScopes({
       "engrenage.config.ts": `export default { ${source}, workspaces: { theme: { name: "theme" } } };\n`,
     });
@@ -424,8 +424,9 @@ describe("scope aliases", () => {
     expect(imports).toMatchObject({
       "#package.json": "./package.json",
       "#a": "./src/a.ts",
-      "#self/*": expect.anything(),
     });
+
+    expect(imports).not.toHaveProperty(["#self/*"]);
 
     expect(await config.context.filesystem.read("package.json")).toBe(
       rootPackage,

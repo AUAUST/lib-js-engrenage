@@ -1,4 +1,4 @@
-import { basename, extname } from "node:path";
+import { basename, extname, posix } from "node:path";
 
 import {
   array,
@@ -266,7 +266,10 @@ export async function renderBarrel({
   const rendered = exports.map((exported) => {
     return {
       exported,
-      specifier: resolveImportSpecifier(imports, exported.file),
+      specifier: resolveImportSpecifier(
+        imports,
+        posix.relative(config.context.scopeDir, exported.file),
+      ),
     };
   });
 

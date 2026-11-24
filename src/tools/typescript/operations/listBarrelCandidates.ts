@@ -1,15 +1,14 @@
 import { flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
-import { filesIn } from "#foundation/filesystem/index";
-import type { LoadedConfig } from "#project/config/index";
+import { filesIn, type Filesystem } from "#foundation/filesystem/index";
+import type { ResolvedStructure } from "#batiment/structure/index";
 import type { File } from "#types/File";
 
 export async function listBarrelCandidates(
-  config: LoadedConfig,
+  filesystem: Filesystem,
+  structure: ResolvedStructure,
 ): Promise<File[]> {
-  const structure = await config.resolve("structure");
-
   const globs = flatMap(values(structure), (environment) => {
     if (environment === undefined) {
       return [];
@@ -24,7 +23,7 @@ export async function listBarrelCandidates(
   });
 
   return [
-    ...(await config.context.filesystem.glob(globs, {
+    ...(await filesystem.glob(globs, {
       exclude: ["**/node_modules"],
     })),
   ];

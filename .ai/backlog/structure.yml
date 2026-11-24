@@ -242,3 +242,9 @@ entries:
       - src/batiment/context/operations/discoverContext.ts:252
     why: Workspace namespaces now come from registered placements only, so a stray metafile once creating a namespace now does nothing
     want: A diagnostic naming the metafile and the placement it lacks
+  - id: 261124-0240
+    title: "A workspace's `@barrel` blocks go unfilled: the directive lists and fills candidates against the root's structure only"
+    sites:
+      - src/tools/typescript/extension.ts:109
+    why: "#762 moved barrel files per scope; directive blocks stay root-only, outside #881's scope, which removes Interscript stand-ins only"
+    want: "Each scope's @barrel blocks filled against its own walk, alias table and child resolver, as a #675 consumer"
