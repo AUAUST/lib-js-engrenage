@@ -1,5 +1,5 @@
 ---
-"@auaust/engrenage": patch
+"@auaust/engrenage": minor
 ---
 
 - Add execution (`globals`, `apis`, `syntax`, `module`) and bundler pass (`bundled`) to environment presets, tuned per registration under `environments.<name>`
