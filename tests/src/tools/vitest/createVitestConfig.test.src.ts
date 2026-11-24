@@ -161,6 +161,27 @@ describe("createVitestConfig", () => {
     );
   });
 
+  test("fails in build mode when another environment takes every tests file", async () => {
+    const config = await loadConfig(
+      createTemporaryProject({
+        "engrenage.config.ts": [
+          "export default {",
+          '  preset: "library",',
+          '  environments: { probes: { preset: "bin", dirs: ["tests/probes"] } },',
+          "};\n",
+        ].join("\n"),
+        "tests/probes/probe.ts": "",
+      }).root,
+    );
+
+    await expect(() => {
+      return createVitestConfig(config, {
+        command: "serve",
+        mode: "build",
+      });
+    }).rejects.toThrow("The tests environment is inactive at the project root");
+  });
+
   test("fails only when a package import resolves into the build output, even through a symlinked root", async () => {
     const project = createTemporaryProject();
 

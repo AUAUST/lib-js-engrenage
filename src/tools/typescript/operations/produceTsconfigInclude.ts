@@ -17,9 +17,9 @@ import {
 import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
 import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
 import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
+import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 async function listGlobalDeclarations(
@@ -56,8 +56,7 @@ async function listSourceDeclarations(
 
 async function listEnvironmentGlobs(
   config: LoadedConfig,
-  name: string,
-  scope: Directory,
+  { environment: name, scope, dirs, files: matched }: EnvironmentInstance,
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
@@ -75,27 +74,25 @@ async function listEnvironmentGlobs(
 
   const languages = await readEnvironmentLanguages(config, name);
 
-  const instance = environments.instances.find((candidate) => {
-    return candidate.environment === name && candidate.scope === scope;
-  });
-
-  const dirs = instance?.dirs ?? [];
-
   // @debt file placements enter a root tsconfig's `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig; a workspace tsconfig lists its matched files instead, as globs matched at the project root would reach outside its scope
-  const files = scope === rootScope
-    ? registered.registration.files
-    : (instance?.files ?? []);
+  const files = scope === rootScope ? registered.registration.files : matched;
 
   return [...files, ...filesIn(dirs, listLanguageFiles(languages))];
 }
 
 async function createDefaultInclude(
   config: LoadedConfig,
-  { key, scope, file }: TsconfigTarget,
+  { key, file, instance }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   const name = toTsconfigEnvironment(key);
 
-  const globs = await listEnvironmentGlobs(config, name, scope);
+  if (instance === undefined) {
+    throw new Error(
+      `The ${key} tsconfig includes its environment's placements, yet it checks no environment instance`,
+    );
+  }
+
+  const globs = await listEnvironmentGlobs(config, instance);
 
   const declarations = [
     ...(await listGlobalDeclarations(config)),
@@ -127,6 +124,7 @@ async function createDistTestsInclude(
       (glob) => `**/${glob}`,
     );
 
+    // @debt includes the tests namespace's dirs while the target exists for the root tests environment instance, whose placements an `.environment.json` can move elsewhere
     const globs = filesIn(tests.dirs, [
       ...plain,
       ...dist,

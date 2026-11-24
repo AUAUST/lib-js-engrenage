@@ -1,5 +1,7 @@
 import { describe, expect, test } from "vitest";
 
+import { record } from "@auaust/toolkit/object";
+
 import {
   createEnvironmentPreset,
   discoverEnvironmentPlacements,
@@ -190,6 +192,7 @@ async function discoverConfigured({
 
   return {
     placements: environments.placements,
+    instances: environments.instances,
     diagnostics: diagnostics.map(({ code, path }) => {
       return { code, path };
     }),
@@ -202,6 +205,53 @@ const appPlacement = {
     node: { preset: "bin" },
   },
 };
+
+describe("environment instance activity", () => {
+  test("counts no file another environment's nested placement takes", async () => {
+    const { instances } = await discoverConfigured({
+      input: withSourceRuntime({
+        environments: {
+          web: { preset: "src", dirs: ["app"] },
+          server: { preset: "bin", dirs: ["app/server"] },
+          tooling: { preset: "bin", files: ["app/*.config.ts"] },
+        },
+      }),
+      files: {
+        "app/server/index.ts": "",
+        "app/vite.config.ts": "",
+      },
+    });
+
+    const activity = record(
+      instances.map(({ environment, active }) => [environment, active]),
+    );
+
+    expect(activity).toMatchObject({
+      web: false,
+      server: true,
+      tooling: true,
+    });
+  });
+
+  test("counts a file of its own beside a nested placement", async () => {
+    const { instances } = await discoverConfigured({
+      input: withSourceRuntime({
+        environments: {
+          web: { preset: "src", dirs: ["app"] },
+          server: { preset: "bin", dirs: ["app/server"] },
+        },
+      }),
+      files: {
+        "app/server/index.ts": "",
+        "app/main.ts": "",
+      },
+    });
+
+    expect(
+      instances.find(({ environment }) => environment === "web")?.active,
+    ).toBe(true);
+  });
+});
 
 describe("environment metafiles", () => {
   test("report an unregistered name, the directory keeping the environment placed above it", async () => {

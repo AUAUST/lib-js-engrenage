@@ -13,6 +13,7 @@ import { toTsconfigGlobs, type TsconfigTarget } from "#project/tsconfig/index";
 import { isBelow } from "#tools/typescript/utils/isBelow";
 import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
 import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
+import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directories } from "#types/Directories";
@@ -87,22 +88,16 @@ function excludeAround(
 
 async function listNestedPlacements(
   config: LoadedConfig,
-  name: string,
-  scope: Directory,
+  instance: EnvironmentInstance | undefined,
 ): Promise<readonly Glob[]> {
-  const context = await config.resolve("structure.context");
-
-  const { environments } = await context.discover();
-
-  const instance = environments.instances.find((candidate) => {
-    return candidate.scope === scope && candidate.environment === name;
-  });
-
   if (instance === undefined) {
     return [];
   }
 
-  const languages = await readEnvironmentLanguages(config, name);
+  const languages = await readEnvironmentLanguages(
+    config,
+    instance.environment,
+  );
 
   const kept = [...instance.dirs, ...instance.files];
 
@@ -122,13 +117,13 @@ async function listNestedPlacements(
 
 async function createDefaultExclude(
   config: LoadedConfig,
-  { key, scope, file }: TsconfigTarget,
+  { key, file, instance }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   const name = toTsconfigEnvironment(key);
 
   const { fixtures } = await config.resolve("files");
 
-  const nested = await listNestedPlacements(config, name, scope);
+  const nested = await listNestedPlacements(config, instance);
 
   return () => {
     return toTsconfigGlobs(file, [

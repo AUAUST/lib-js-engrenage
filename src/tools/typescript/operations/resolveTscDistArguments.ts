@@ -1,42 +1,18 @@
+import { resolveDistTsconfig } from "#tools/typescript/operations/resolveDistTsconfig";
 import { resolveTscProjectArguments } from "#tools/typescript/operations/resolveTscProjectArguments";
 import type { LoadedConfig } from "#project/config/index";
-import type { File } from "#types/File";
-
-async function resolveDistProject(config: LoadedConfig): Promise<File> {
-  const tests = await config.resolve("tests");
-
-  const { file } = tests.dist.tsconfig;
-
-  const path = await tests.dist.tsconfig.path;
-
-  if (!tests.active) {
-    throw new Error(
-      "The tests environment is inactive, so it has no dist variant",
-    );
-  }
-
-  if (file === undefined) {
-    throw new Error(
-      "The dist tsconfig is disabled in the engrenage config (tests.dist.tsconfig: false)",
-    );
-  }
-
-  if (path === undefined) {
-    throw new Error(
-      `The dist tsconfig ${file} does not exist in ${config.context.root}, run \`engrenage sync\` to create it`,
-    );
-  }
-
-  return path;
-}
 
 export async function resolveTscDistArguments(
   config: LoadedConfig,
   args: readonly string[],
 ): Promise<string[]> {
-  return resolveTscProjectArguments(
-    config,
-    args,
-    await resolveDistProject(config),
-  );
+  const project = await resolveDistTsconfig(config);
+
+  if (project === undefined) {
+    throw new Error(
+      "The dist tsconfig is disabled in the engrenage config (tests.dist.tsconfig: false)",
+    );
+  }
+
+  return resolveTscProjectArguments(config, args, project);
 }

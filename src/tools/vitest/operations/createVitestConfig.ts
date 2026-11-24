@@ -12,6 +12,7 @@ import {
   composeTestsPatterns,
   resolveEnvironmentTsconfig,
 } from "#project/environments/index";
+import { resolveDistTsconfig } from "#tools/typescript/index";
 import { optionsSchema } from "#tools/vitest/config/schemas/optionsSchema";
 import {
   buildMode,
@@ -138,14 +139,8 @@ export async function createVitestConfig(
 
   const tests = await config.resolve("tests");
 
-  if (testsBuild && tests.active) {
-    const { file } = tests.dist.tsconfig;
-
-    if (file !== undefined && (await tests.dist.tsconfig.path) === undefined) {
-      throw new Error(
-        `The dist tsconfig ${file} does not exist in ${config.context.root}, run \`engrenage sync\` to create it`,
-      );
-    }
+  if (testsBuild) {
+    await resolveDistTsconfig(config);
   }
 
   const tsconfig = await (testsBuild

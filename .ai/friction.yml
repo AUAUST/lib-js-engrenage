@@ -803,3 +803,7 @@ entries:
     subject: extension-imports lint rule
     tried: dynamic import of a peer domain index in extension load
     stopped: rule allows own domain only; re-exported name via own constants
+  - id: 261124-cd05
+    subject: git stash push untracked path
+    tried: stash push -- untracked file, then stash pop
+    stopped: push failed, pop applied an unrelated stash; restore denied by auto mode

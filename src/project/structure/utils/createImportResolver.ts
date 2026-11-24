@@ -3,7 +3,7 @@ import { posix, relative } from "node:path";
 import { memoize } from "@auaust/toolkit/function";
 import { getOwn, keys } from "@auaust/toolkit/object";
 
-import { rootScope } from "#batiment/scopes/constants";
+import { createScopeFinder } from "#batiment/scopes/index";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { Alias, ResolvedSpecifier } from "#batiment/structure/index";
 import type { ScopeImports } from "#project/structure/types/ScopeImports";
@@ -42,14 +42,6 @@ function packageNameOf(specifier: string): string {
     : (segments[0] ?? specifier);
 }
 
-function findScope(scopes: readonly Directory[], file: string): Directory {
-  return (
-    scopes.find((scope) => {
-      return scope !== rootScope && file.startsWith(`${scope}/`);
-    }) ?? rootScope
-  );
-}
-
 export function createImportResolver({
   root,
   scopes,
@@ -57,7 +49,7 @@ export function createImportResolver({
   root: Directory;
   scopes: Readonly<Record<string, ScopeImports>>;
 }): (specifier: string, from: File) => ResolvedSpecifier | undefined {
-  const dirs = keys(scopes).sort((a, b) => b.length - a.length);
+  const findScope = createScopeFinder(keys(scopes));
 
   const classify = memoize(
     (scope: Directory, specifier: string) => {
@@ -119,6 +111,6 @@ export function createImportResolver({
 
     return specifier.startsWith(".")
       ? expandRelative(posix.dirname(file), specifier)
-      : classify(findScope(dirs, file), specifier);
+      : classify(findScope(file), specifier);
   };
 }

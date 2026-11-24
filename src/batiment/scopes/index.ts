@@ -40,6 +40,7 @@ export { workspaceMetadataSchema } from "#batiment/scopes/config/schemas/workspa
 
 // @barrel utils
 export { createNamespaceKindPreset } from "#batiment/scopes/utils/createNamespaceKindPreset";
+export { createScopeFinder } from "#batiment/scopes/utils/createScopeFinder";
 export { createScopeTree } from "#batiment/scopes/utils/createScopeTree";
 export { findMetafileField } from "#batiment/scopes/utils/findMetafileField";
 export { getNamespaceId } from "#batiment/scopes/utils/getNamespaceId";

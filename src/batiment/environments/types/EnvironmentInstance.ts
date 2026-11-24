@@ -30,7 +30,8 @@ export interface EnvironmentInstance {
    */
   readonly nested: readonly EnvironmentPlacement[];
   /**
-   * Whether its placements hold a file Git does not ignore.
+   * Whether its placements hold a file Git does not ignore that no other
+   * environment's placement nested in them takes.
    */
   readonly active: boolean;
 }

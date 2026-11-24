@@ -1,18 +1,19 @@
 import { rootScope } from "#batiment/scopes/constants";
 import { resolveEnvironmentTsconfig } from "#project/environments/index";
 import { listInstanceTsconfigs } from "#tools/typescript/operations/listInstanceTsconfigs";
+import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
+import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { ConfigResolver } from "#project/config/index";
 import type {
   ResolvedEnvironmentTsconfig,
   TsconfigKey,
   TsconfigTarget,
 } from "#project/tsconfig/index";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 function toTarget(
   key: TsconfigKey,
-  scope: Directory,
+  instance: EnvironmentInstance,
   file: File,
   {
     extends: extended,
@@ -26,8 +27,9 @@ function toTarget(
 ): TsconfigTarget {
   return {
     key,
-    scope,
+    scope: instance.scope,
     file,
+    instance,
     extends: extended,
     include,
     exclude,
@@ -43,26 +45,29 @@ async function listEnvironmentTargets(
 ): Promise<readonly TsconfigTarget[]> {
   const targets: TsconfigTarget[] = [];
 
-  for (const { instance, tsconfig, file } of await listInstanceTsconfigs(
-    config,
-  )) {
+  const instances = await listInstanceTsconfigs(config);
+
+  for (const { instance, tsconfig, file } of instances) {
     if (file !== undefined) {
-      targets.push(
-        toTarget(instance.environment, instance.scope, file, tsconfig),
-      );
+      targets.push(toTarget(instance.environment, instance, file, tsconfig));
     }
   }
 
-  const { active } = await config.resolve("tests");
+  const tests = instances.find(({ instance }) => {
+    return (
+      instance.environment === toTsconfigEnvironment("tests.dist") &&
+      instance.scope === rootScope
+    );
+  })?.instance;
 
-  if (!active) {
+  if (tests === undefined) {
     return targets;
   }
 
   const dist = await resolveEnvironmentTsconfig(config, "tests.dist");
 
   if (dist.file !== undefined) {
-    targets.push(toTarget("tests.dist", rootScope, dist.file, dist));
+    targets.push(toTarget("tests.dist", tests, dist.file, dist));
   }
 
   return targets;
@@ -104,6 +109,7 @@ export async function listTsconfigTargets(
       key: "base",
       scope: rootScope,
       file: tsconfig.file,
+      instance: undefined,
       extends: tsconfig.extends,
       include: undefined,
       exclude: undefined,

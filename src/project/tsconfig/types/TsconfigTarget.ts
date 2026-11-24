@@ -1,3 +1,4 @@
+import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { ManagedTsconfigFields } from "#project/tsconfig/types/ManagedTsconfigFields";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 import type { Directory } from "#types/Directory";
@@ -14,4 +15,10 @@ export interface TsconfigTarget extends ManagedTsconfigFields {
   readonly key: TsconfigKey | "base";
   readonly scope: Directory;
   readonly file: File;
+  // @debt optional whatever the key, so the include producer checks at runtime that an environment key carries one; a union discriminated by `key` would state it
+  /**
+   * The environment instance whose files the tsconfig checks, the root `tests`
+   * one for `tests.dist`; unset for the base tsconfig.
+   */
+  readonly instance: EnvironmentInstance | undefined;
 }

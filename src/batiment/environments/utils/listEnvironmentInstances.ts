@@ -1,22 +1,14 @@
-import { sort } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import { getEnvironmentCoverage } from "#batiment/environments/utils/getEnvironmentCoverage";
 import { rootScope } from "#batiment/scopes/constants";
+import { createScopeFinder } from "#batiment/scopes/index";
 import type { EnvironmentInstance } from "#batiment/environments/types/EnvironmentInstance";
 import type { EnvironmentPlacement } from "#batiment/environments/types/EnvironmentPlacement";
 import type { EnvironmentPlacements } from "#batiment/environments/types/EnvironmentPlacements";
 import type { RegisteredEnvironment } from "#batiment/environments/types/RegisteredEnvironment";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
-
-function findScope(nearestFirst: Directories, path: string): Directory {
-  return (
-    nearestFirst.find((scope) => {
-      return path === scope || path.startsWith(`${scope}/`);
-    }) ?? rootScope
-  );
-}
 
 function listNested(
   placements: EnvironmentPlacements,
@@ -49,10 +41,7 @@ export function listEnvironmentInstances(
   scopes: Directories,
   activeDirs: ReadonlySet<Directory>,
 ): readonly EnvironmentInstance[] {
-  const nearestFirst = sort(
-    scopes.filter((scope) => scope !== rootScope),
-    (left, right) => right.length - left.length,
-  );
+  const findScope = createScopeFinder(scopes);
 
   const order = [rootScope, ...scopes.filter((scope) => scope !== rootScope)];
 
@@ -80,7 +69,7 @@ export function listEnvironmentInstances(
         .map((placement) => {
           return {
             ...placement,
-            scope: findScope(nearestFirst, placement.path),
+            scope: findScope(placement.path),
           };
         });
 

@@ -227,6 +227,46 @@ describe("syncTsconfigFiles", () => {
     ]);
   });
 
+  test("writes no tsconfig for an environment holding no file in its languages", async () => {
+    const { project, config } = await createProject(
+      {},
+      {
+        "src/index.ts": "",
+        "scripts/README.md": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
+
+    expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
+      { path: "./tsconfig.src.json" },
+    ]);
+  });
+
+  test("writes the tsconfig of an environment whose files lie only in its own nested placement", async () => {
+    const { project, config } = await createProject(
+      {
+        environments: {
+          probes: { preset: "bin", dirs: ["probes", "probes/inner"] },
+        },
+      },
+      {
+        "src/index.ts": "",
+        "probes/inner/probe.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(JSON.parse(project.read("tsconfig.probes.json")).include).toEqual(
+      expect.arrayContaining(["probes/inner/**/*.ts"]),
+    );
+  });
+
   test("creates the tooling tsconfig without the scripts one when only tooling is active", async () => {
     const { project, config } = await createProject(
       {},
@@ -249,6 +289,32 @@ describe("syncTsconfigFiles", () => {
       { path: "./tsconfig.src.json" },
       { path: "./tsconfig.tooling.json" },
     ]);
+  });
+
+  test("writes neither tests tsconfig when another environment's placement takes every tests file", async () => {
+    const { project, config } = await createProject(
+      {
+        preset: "library",
+        environments: {
+          probes: { preset: "bin", dirs: ["tests/probes"] },
+        },
+      },
+      {
+        "src/index.ts": "",
+        "tests/probes/probe.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");
+
+    expect(() => project.read("tsconfig.tests.dist.json")).toThrow("ENOENT");
+
+    expect(JSON.parse(project.read("tsconfig.probes.json")).include).toEqual(
+      expect.arrayContaining(["tests/probes/**/*.ts"]),
+    );
   });
 
   test("creates a missing base tsconfig", async () => {

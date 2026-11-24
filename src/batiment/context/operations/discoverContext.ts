@@ -10,6 +10,7 @@ import { resolveNamespaceImports } from "#batiment/context/operations/resolveNam
 import {
   discoverEnvironmentPlacements,
   listEnvironmentInstances,
+  listForeignPlacementGlobs,
   resolveRegisteredEnvironments,
   type DiscoveredEnvironment,
 } from "#batiment/environments/index";
@@ -187,7 +188,7 @@ async function discoverEnvironments(
     keys(placements.dirs).map(async (dir) => {
       const active = await hasUnignoredFile({
         filesystem,
-        ignored,
+        ignored: [...ignored, ...listForeignPlacementGlobs(placements, dir)],
         dirs: [dir],
         files: [],
       });
