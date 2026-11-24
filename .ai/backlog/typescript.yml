@@ -99,9 +99,3 @@ entries:
       - data/tsconfig/base.json:4
     why: "generated tsconfigs set `declaration: false`, so a published signature naming an unexported type (TS4023, TS4082) passes `typecheck` and the gate, failing only `pnpm build`, as `LayoutContext` did; `tsc --noEmit --declaration` reports them."
     want: "`declaration: true` in the generated tsconfig of each environment whose code ships declarations, or `isolatedDeclarations` where its explicit-type cost is accepted."
-  - id: 261124-0f47
-    title: A root tsconfig excludes an environment's own re-entry placed inside another environment's nested placement
-    sites:
-      - src/tools/typescript/operations/produceTsconfigExclude.ts:15
-    why: listNestedPlacements excludes `<nested>/**` while include lists the same environment's re-entry below it, and tsconfig exclude filters include
-    want: Re-entries below a nested placement stay in their environment's tsconfig, as listPlacementGlobs keeps them

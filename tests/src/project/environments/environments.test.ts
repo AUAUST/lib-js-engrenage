@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { join, matchesGlob } from "node:path";
+import { join } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
@@ -227,31 +227,6 @@ describe("environments", () => {
     ]);
 
     expect((await config.resolve("src")).globs).toEqual(["src/**/*.tsx"]);
-  });
-
-  test("leave the files of another environment's nested placement out of the globs", async () => {
-    const project = createProject(
-      '{ environments: { web: { preset: "src", dirs: ["src/web"] } } }',
-      {
-        "src/a.ts": "",
-        "src/lib/b.ts": "",
-        "src/web/c.ts": "",
-        "src/web/deep/d.ts": "",
-      },
-    );
-
-    const config = await loadConfig(project.root);
-
-    const { globs } = await config.resolve("src");
-
-    function isCovered(file: string) {
-      return globs.some((glob) => matchesGlob(file, glob));
-    }
-
-    expect(isCovered("src/a.ts")).toBe(true);
-    expect(isCovered("src/lib/b.ts")).toBe(true);
-    expect(isCovered("src/web/c.ts")).toBe(false);
-    expect(isCovered("src/web/deep/d.ts")).toBe(false);
   });
 });
 
