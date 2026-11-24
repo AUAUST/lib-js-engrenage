@@ -1,4 +1,5 @@
 import type { EnvironmentExecution } from "#batiment/environments/ports/EnvironmentExecution";
+import type { LanguageChoice } from "#batiment/environments/types/LanguageChoice";
 
 export interface EnvironmentPreset {
   /**
@@ -6,12 +7,11 @@ export interface EnvironmentPreset {
    * as its `preset`.
    */
   readonly name: string;
-  // @debt the JSDoc below still lets an `.environment.json` name languages, which it no longer holds
   /**
-   * The languages the preset's environments select unless their registration or
-   * `.environment.json` name others.
+   * The languages the preset's environments select unless their registration
+   * names others.
    */
-  readonly languages?: readonly string[];
+  readonly languages?: readonly LanguageChoice[];
   /**
    * How the preset's environments execute, each field kept unless their
    * registration tunes it.

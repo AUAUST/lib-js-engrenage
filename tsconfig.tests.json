@@ -4,7 +4,6 @@
     "tests/**/*.ts",
     "tests/**/*.mts",
     "tests/**/*.cts",
-    "tests/**/*.tsx",
     "global.d.ts"
   ],
   "exclude": ["tests/**/fixtures/**"],

@@ -1,11 +1,10 @@
-import { freeze } from "@auaust/toolkit/object";
-
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
+import { selectLanguages } from "#project/environments/operations/selectLanguages";
 import type { RegisteredEnvironment } from "#batiment/environments/index";
-import type { LanguageEntry } from "#project/environments/ports/LanguageEntry";
+import type { EnvironmentLanguage } from "#project/environments/types/EnvironmentLanguage";
 
 const readsFor = memoizeByContext(() => {
-  return new Map<string, Promise<readonly LanguageEntry[]>>();
+  return new Map<string, Promise<readonly EnvironmentLanguage[]>>();
 });
 
 async function findRegisteredEnvironment(
@@ -32,26 +31,13 @@ async function findRegisteredEnvironment(
 async function createEnvironmentLanguages(
   config: ConfigResolver,
   environment: string,
-): Promise<readonly LanguageEntry[]> {
-  const [registered, contributions] = await Promise.all([
-    findRegisteredEnvironment(config, environment),
-    config.context.registry.contributions("languages", config),
-  ]);
+): Promise<readonly EnvironmentLanguage[]> {
+  const registered = await findRegisteredEnvironment(config, environment);
 
-  const byName = new Map(contributions.map(({ entry }) => [entry.name, entry]));
-
-  return freeze(
-    registered.languages.map((name) => {
-      const language = byName.get(name);
-
-      if (language === undefined) {
-        throw new Error(
-          `The ${environment} environment selects the language ${name}, which no active extension contributes`,
-        );
-      }
-
-      return language;
-    }),
+  return selectLanguages(
+    config,
+    registered.languages,
+    `The ${environment} environment`,
   );
 }
 
@@ -62,7 +48,7 @@ async function createEnvironmentLanguages(
 export function readEnvironmentLanguages(
   config: ConfigResolver,
   environment: string,
-): Promise<readonly LanguageEntry[]> {
+): Promise<readonly EnvironmentLanguage[]> {
   const reads = readsFor(config.context);
 
   let read = reads.get(environment);

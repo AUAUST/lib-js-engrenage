@@ -2,6 +2,7 @@ import { compose } from "@auaust/toolkit/composer";
 import { freeze } from "@auaust/toolkit/object";
 
 import { declareSection } from "#foundation/options/index";
+import { readTestsExtension } from "#project/environments/operations/readTestsExtension";
 import { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 import { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
 import { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
@@ -12,7 +13,10 @@ export const testsSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedTests> {
     const option = await config.resolve("tests.options");
 
-    const patterns = composeTestsPatterns(option);
+    const patterns = composeTestsPatterns(
+      option,
+      await readTestsExtension(config),
+    );
 
     return freeze(
       compose(

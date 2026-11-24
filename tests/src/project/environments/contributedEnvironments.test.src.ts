@@ -235,6 +235,7 @@ describe("environment languages", () => {
       },
       {
         "src/index.ts": "",
+        "src/a.tsx": "",
       },
     );
 
@@ -245,7 +246,11 @@ describe("environment languages", () => {
 
     expect(source.globs).toEqual(["src/**/*{.ts,.mts,.cts}"]);
 
-    expect(resolveScope(scopes, ["files.code"])).not.toContain("src/**/*.tsx");
+    expect(
+      resolveScope(scopes, ["files.code"]).filter((glob) => {
+        return glob.includes("tsx");
+      }),
+    ).toEqual([]);
   });
 
   test("fail on an option naming a language no extension contributes", async () => {
@@ -463,7 +468,7 @@ describe("contributed environments", () => {
       }),
     ).toMatchObject({
       preset: { name: "src" },
-      languages: ["typescript", "tsx"],
+      languages: [{ name: "typescript" }],
       dirs: ["web"],
     });
 

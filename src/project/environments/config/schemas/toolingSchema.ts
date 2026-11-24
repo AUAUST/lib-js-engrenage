@@ -16,7 +16,7 @@ export const toolingSchema = declareObject(
   {
     ...declareStructureOptions(),
     languages: declareLanguages(
-      "Names of the registered languages the environment holds; defaults to its kind's `languages`.",
+      'Registered languages the environment holds, each a name or a selection with options such as `typescript({ tsx: "solid" })`; defaults to its kind\'s `languages`.',
     ),
     dirs: declareList(directorySchema, {
       description: "Directories of the tooling environment: all their files of the languages it selects (`languages`) are included and walked like `src`. `.` contributes only the files matched by `files`.",

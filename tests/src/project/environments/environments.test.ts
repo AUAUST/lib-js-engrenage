@@ -31,7 +31,7 @@ describe("environments", () => {
       dirs: ["src"],
       generated: [],
       discovered: [],
-      globs: ["src/**/*{.ts,.mts,.cts}", "src/**/*.tsx"],
+      globs: ["src/**/*{.ts,.mts,.cts}"],
     });
 
     expect(await config.resolve("tests")).toMatchObject({
@@ -39,11 +39,11 @@ describe("environments", () => {
       dirs: ["tests"],
       generated: [],
       discovered: [],
-      globs: ["tests/**/*{.ts,.mts,.cts}", "tests/**/*.tsx"],
+      globs: ["tests/**/*{.ts,.mts,.cts}"],
       files: [
-        "**/*.test.{ts,tsx}",
-        "**/*.test.src.{ts,tsx}",
-        "**/*.test.dist.{ts,tsx}",
+        "**/*.test{.ts,.mts,.cts}",
+        "**/*.test.src{.ts,.mts,.cts}",
+        "**/*.test.dist{.ts,.mts,.cts}",
       ],
       fixtures: ["**/fixtures/**"],
       coverageDir: "coverage",
@@ -72,13 +72,11 @@ describe("environments", () => {
 
     expect((await config.resolve("files")).published).toEqual([
       "src/**/*{.ts,.mts,.cts}",
-      "src/**/*.tsx",
       "bin/**/*{.ts,.mts,.cts}",
     ]);
 
     expect((await config.resolve("files")).private).toEqual([
       "tests/**/*{.ts,.mts,.cts}",
-      "tests/**/*.tsx",
       "scripts/**/*{.ts,.mts,.cts}",
     ]);
   });
@@ -118,7 +116,6 @@ describe("environments", () => {
 
     expect((await config.resolve("files")).published).toEqual([
       "src/**/*{.ts,.mts,.cts}",
-      "src/**/*.tsx",
     ]);
   });
 
@@ -215,7 +212,7 @@ describe("environments", () => {
 
   test("adjust a default list and the selected languages", async () => {
     const project = createProject(`{
-      src: { languages: ["tsx"] },
+      src: { languages: [{ name: "typescript", options: { tsx: "preact" } }] },
       tooling: { files: { prepend: "a.ts", exclude: ".*.ts" } },
     }`);
 
@@ -226,7 +223,9 @@ describe("environments", () => {
       "*.config.ts",
     ]);
 
-    expect((await config.resolve("src")).globs).toEqual(["src/**/*.tsx"]);
+    expect((await config.resolve("src")).globs).toEqual([
+      "src/**/*{.ts,.mts,.cts,.tsx}",
+    ]);
   });
 });
 

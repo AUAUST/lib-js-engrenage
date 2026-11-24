@@ -14,6 +14,8 @@ export type * from "#batiment/environments/types/EnvironmentInstance";
 export type * from "#batiment/environments/types/EnvironmentPlacement";
 export type * from "#batiment/environments/types/EnvironmentPlacements";
 export type * from "#batiment/environments/types/EnvironmentRegistration";
+export type * from "#batiment/environments/types/LanguageChoice";
+export type * from "#batiment/environments/types/LanguageSelection";
 export type * from "#batiment/environments/types/RegisteredEnvironment";
 // @end
 

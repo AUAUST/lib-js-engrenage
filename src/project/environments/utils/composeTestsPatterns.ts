@@ -9,7 +9,7 @@ import type { Glob } from "#types/Glob";
 
 export function composeTestsPatterns(
   option: OutputOf<typeof testsSchema>,
-  extension?: Glob,
+  extension: Glob,
 ): ResolvedTestsPatterns {
   const patterns = composeVariantPatterns(option, testVariants, extension);
 

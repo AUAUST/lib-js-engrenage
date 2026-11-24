@@ -13,6 +13,7 @@ export { readInputDirs } from "#project/environments/utils/readInputDirs";
 // @barrel ports
 export type * from "#project/environments/ports/EnvironmentEntry";
 export type * from "#project/environments/ports/EnvironmentPresetEntry";
+export type * from "#project/environments/ports/LanguageConfigurer";
 export type * from "#project/environments/ports/LanguageEntry";
 export type * from "#project/environments/ports/NamespaceKindEntry";
 export type * from "#project/environments/ports/ResolvedEnvironment";
@@ -26,6 +27,7 @@ export type * from "#project/environments/types/ContributedEnvironmentEntry";
 export type * from "#project/environments/types/DataInput";
 export type * from "#project/environments/types/DefineContext";
 export type * from "#project/environments/types/DefineInput";
+export type * from "#project/environments/types/EnvironmentLanguage";
 export type * from "#project/environments/types/Execution";
 export type * from "#project/environments/types/ExecutionGlobals";
 export type * from "#project/environments/types/GlobalsFactory";
@@ -80,9 +82,13 @@ export { readEnvironmentLanguages } from "#project/environments/operations/readE
 export { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
+export { readSelectedLanguage } from "#project/environments/operations/readSelectedLanguage";
+export { readSelectedLanguages } from "#project/environments/operations/readSelectedLanguages";
+export { readTestsExtension } from "#project/environments/operations/readTestsExtension";
 export { resolveEntriesRuntime } from "#project/environments/operations/resolveEntriesRuntime";
 export { resolveEnvironment } from "#project/environments/operations/resolveEnvironment";
 export { resolveEnvironmentTsconfig } from "#project/environments/operations/resolveEnvironmentTsconfig";
+export { selectLanguages } from "#project/environments/operations/selectLanguages";
 // @end
 
 // @barrel config/sections

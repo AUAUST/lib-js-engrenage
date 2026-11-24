@@ -1,8 +1,11 @@
-import { flatMap, toDeduplicated } from "@auaust/toolkit/array";
+import { flatMap } from "@auaust/toolkit/array";
 
 import { withExtensions } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
-import { listLanguageFiles } from "#project/environments/index";
+import {
+  listLanguageFiles,
+  readSelectedLanguages,
+} from "#project/environments/index";
 import { workspaceEntryStem } from "#project/workspaces/constants";
 import { resolveWorkspaces } from "#project/workspaces/operations/resolveWorkspaces";
 import type { ConfigResolver } from "#project/config/index";
@@ -15,24 +18,12 @@ export const workspacesSection = declareSection({
   ): Promise<readonly ResolvedWorkspaceGroup[]> {
     const { root, filesystem } = config.context;
 
-    const [options, context, presets, languages] = await Promise.all([
+    const [options, context, selected, languages] = await Promise.all([
       config.resolve("workspaces.options"),
       config.resolve("structure.context"),
-      config.context.registry.contributions("environmentPresets", config),
+      readSelectedLanguages(config),
       config.context.registry.contributions("languages", config),
     ]);
-
-    const byName = new Map(languages.map(({ entry }) => [entry.name, entry]));
-
-    const selected = toDeduplicated(
-      flatMap(presets, ({ entry }) => {
-        return entry.languages ?? [];
-      }),
-    ).flatMap((name) => {
-      const language = byName.get(name);
-
-      return language === undefined ? [] : [language];
-    });
 
     const extensions = flatMap(languages, ({ entry }) => {
       return entry.modules === true ? entry.extensions : [];
@@ -44,7 +35,7 @@ export const workspacesSection = declareSection({
       root,
       filesystem,
       options,
-      // @debt a workspace's globs take every preset's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
+      // @debt a workspace's globs take every registered environment's languages, not its own environments' selections, until its environments resolve in its child resolver (#745)
       typescriptFiles: listLanguageFiles(selected),
       entryGlob: withExtensions(workspaceEntryStem, extensions),
       expected,

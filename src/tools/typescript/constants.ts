@@ -12,7 +12,10 @@ export const typescriptExtensions = freeze([".ts", ".mts", ".cts"] as const);
 
 export const tsxExtensions = freeze([".tsx"] as const);
 
-export const tsx = "tsx";
+export const jsxFlavours = freeze({
+  solid: freeze({ jsx: "preserve", jsxImportSource: "solid-js" } as const),
+  preact: freeze({ jsx: "react-jsx", jsxImportSource: "preact" } as const),
+} as const);
 
 export const barrelsTarget = "barrels";
 

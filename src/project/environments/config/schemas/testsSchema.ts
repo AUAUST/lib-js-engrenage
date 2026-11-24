@@ -12,7 +12,6 @@ import { declareCodeEnvironment } from "#project/environments/config/declarers/d
 import {
   defaultTestsCoverageDirectory,
   defaultTestsDirectories,
-  defaultTestsExtension,
   defaultTestsFixtures,
   defaultTestsLocation,
   defaultTestsSuffix,
@@ -47,10 +46,10 @@ export const testsSchema = declareObject(
     }),
     extension: declare(globSchema, {
       description: [
-        "Glob of the extensions of test files, the last part of the test file patterns.",
+        "Glob of the extensions of test files, the last part of the test file patterns; defaults to the extensions of the languages the tests environment selects.",
         "Location, suffix and extension combine into the pattern of plain test files (`x.test.ts`), run by Vitest in every mode, and into those of the `.src` and `.dist` variants, run in source and dist mode only; all three are linted with the test rules.",
       ],
-      optional: { value: defaultTestsExtension },
+      optional: { value: undefined },
     }),
     fixtures: declareList(globSchema, {
       description: "Globs of fixture files inside the tests directories, excluded from Vitest, from the tests tsconfig and from the test rules of ESLint.",

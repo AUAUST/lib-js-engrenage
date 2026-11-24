@@ -1,4 +1,5 @@
 import { emptyObjectFile } from "#foundation/json/constants";
+import { readSelectedLanguage } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { accessByVisibility } from "#project/package/constants";
 import {
@@ -7,7 +8,7 @@ import {
   type PublishAccess,
 } from "#project/package/index";
 import { toJsonValue } from "#project/tsconfig/index";
-import { readTypescriptExtensions } from "#tools/typescript/operations/readTypescriptExtensions";
+import { typescript } from "#tools/typescript/constants";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import type { JsonValue } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -67,7 +68,7 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     packageJson,
     traits,
     visibility,
-    extensions,
+    language,
   ] = await Promise.all([
     config.resolve("workspaces"),
     config.context.filesystem,
@@ -75,8 +76,10 @@ export async function syncWorkspaceFiles(config: LoadedConfig) {
     config.resolve("packageJson"),
     config.resolve("traits"),
     config.resolve("visibility"),
-    readTypescriptExtensions(config),
+    readSelectedLanguage(config, typescript),
   ]);
+
+  const extensions = language?.extensions ?? [];
 
   const access = traits.published ? accessByVisibility[visibility] : undefined;
 

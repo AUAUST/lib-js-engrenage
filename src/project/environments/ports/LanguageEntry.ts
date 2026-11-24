@@ -1,4 +1,5 @@
 import type { EntryShape } from "#foundation/extensions/index";
+import type { LanguageConfigurer } from "#project/environments/ports/LanguageConfigurer";
 
 export interface LanguageEntry extends EntryShape {
   /**
@@ -20,6 +21,11 @@ export interface LanguageEntry extends EntryShape {
    * cycle check leave out.
    */
   readonly declarations?: string;
+  /**
+   * Loads the function giving the extensions an environment's selection options
+   * add to `extensions`; unset, the language takes no options.
+   */
+  configure?(): Promise<LanguageConfigurer>;
 }
 
 declare global {

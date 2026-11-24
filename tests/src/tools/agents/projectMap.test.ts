@@ -277,7 +277,7 @@ describe("project map", () => {
       expect(overview).toContain("| source |");
       expect(overview).toContain("| dist |");
 
-      const never = cells("| `**/*.test.{ts,tsx}` |")?.at(-2);
+      const never = cells("| `**/*.test{.ts,.mts,.cts}` |")?.at(-2);
 
       expect(never).toContain("`scripts`");
       expect(never).toContain("`tooling`");

@@ -20,7 +20,7 @@ export const environmentsSchema = declareRecord(
         optional: { value: undefined },
       }),
       languages: declareLanguages(
-        "Names of the registered languages the environment holds instead of its preset's; a built-in environment defaults to its options' `languages`.",
+        "Registered languages the environment holds instead of its preset's, each a name or a selection with options such as `typescript({ tsx: \"solid\" })`; a built-in environment defaults to its options' `languages`.",
       ),
       execution: executionSchema,
       bundled: declare(boolean(), {

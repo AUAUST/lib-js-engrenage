@@ -90,7 +90,7 @@ describe("createVitestConfig", () => {
 
     expect(include).toEqual(
       expect.arrayContaining([
-        "**/*.test.{ts,tsx}",
+        "**/*.test{.ts,.mts,.cts}",
         "**/*.test.?(c|m)[jt]s?(x)",
         "**/*.test.src.?(c|m)[jt]s?(x)",
       ]),

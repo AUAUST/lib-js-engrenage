@@ -31,10 +31,15 @@ export interface TestsInput {
    */
   strictness?: (("strict" | "loose") | undefined)
   /**
-   * Names of the registered languages the environment holds; defaults to its kind's `languages`.
+   * Registered languages the environment holds, each a name or a selection with options such as `typescript({ tsx: "solid" })`; defaults to its kind's `languages`.
    * @default none
    */
-  languages?: (string[] | undefined)
+  languages?: ((string | {
+    name: string
+    options?: {
+      [k: string]: unknown
+    }
+  })[] | undefined)
   /**
    * Directories of the tests environment: its files of the languages it selects (`languages`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
    * The environment is inactive when none holds a file Git does not ignore.
@@ -80,9 +85,9 @@ export interface TestsInput {
    */
   suffix?: (string | undefined)
   /**
-   * Glob of the extensions of test files, the last part of the test file patterns.
+   * Glob of the extensions of test files, the last part of the test file patterns; defaults to the extensions of the languages the tests environment selects.
    * Location, suffix and extension combine into the pattern of plain test files (`x.test.ts`), run by Vitest in every mode, and into those of the `.src` and `.dist` variants, run in source and dist mode only; all three are linted with the test rules.
-   * @default `.{ts,tsx}`
+   * @default none
    */
   extension?: (string | undefined)
   /**

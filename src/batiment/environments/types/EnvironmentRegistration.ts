@@ -1,4 +1,5 @@
 import type { EnvironmentExecution } from "#batiment/environments/ports/EnvironmentExecution";
+import type { LanguageChoice } from "#batiment/environments/types/LanguageChoice";
 import type { OptionSource } from "#batiment/report/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
@@ -12,7 +13,7 @@ export interface EnvironmentRegistration {
   /**
    * The languages the environment selects instead of its preset's.
    */
-  readonly languages?: readonly string[];
+  readonly languages?: readonly LanguageChoice[];
   /**
    * The execution fields the environment sets instead of its preset's.
    */

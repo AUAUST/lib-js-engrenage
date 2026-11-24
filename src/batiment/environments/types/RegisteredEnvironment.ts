@@ -1,6 +1,7 @@
 import type { EnvironmentExecution } from "#batiment/environments/ports/EnvironmentExecution";
 import type { EnvironmentPreset } from "#batiment/environments/ports/EnvironmentPreset";
 import type { EnvironmentRegistration } from "#batiment/environments/types/EnvironmentRegistration";
+import type { LanguageSelection } from "#batiment/environments/types/LanguageSelection";
 import type { Directories } from "#types/Directories";
 
 export interface RegisteredEnvironment {
@@ -10,9 +11,10 @@ export interface RegisteredEnvironment {
    */
   readonly preset: EnvironmentPreset;
   /**
-   * The languages the environment selects: its registration's, else its preset's.
+   * The languages the environment selects: its registration's, else its
+   * preset's, each a selection.
    */
-  readonly languages: readonly string[];
+  readonly languages: readonly LanguageSelection[];
   /**
    * How the environment executes: each of its registration's execution fields,
    * else its preset's.

@@ -14,8 +14,6 @@ export const anyFile = "**" satisfies Glob;
 
 export const typescriptLanguage = "typescript";
 
-export const tsxLanguage = "tsx";
-
 export const pluginName = "auaust";
 
 export const rolesPluginName = "roles";

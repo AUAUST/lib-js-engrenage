@@ -799,3 +799,7 @@ entries:
     subject: sync barrel export missing
     tried: engrenage sync after adding util and type
     stopped: lint refused the missing export; added barrel lines by hand
+  - id: 261124-246c
+    subject: extension-imports lint rule
+    tried: dynamic import of a peer domain index in extension load
+    stopped: rule allows own domain only; re-exported name via own constants

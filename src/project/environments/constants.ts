@@ -1,6 +1,7 @@
 import {
   array,
   boolean,
+  function_,
   looseObject,
   minLength,
   optional,
@@ -57,8 +58,6 @@ export const defaultToolingFiles = freeze([
 export const defaultTestsLocation = "**/*" satisfies Glob;
 
 export const defaultTestsSuffix = ".test" satisfies Glob;
-
-export const defaultTestsExtension = ".{ts,tsx}" satisfies Glob;
 
 export const defaultTestsFixtures = freeze([
   "**/fixtures/**",
@@ -123,13 +122,13 @@ export const builtinEnvironmentPresets = freeze([
   freeze({
     name: "src",
     tsconfig: true,
-    languages: ["typescript", "tsx"],
+    languages: ["typescript"],
     execution: freeze({ globals: "isomorphic", module: "esm" }),
   } as const),
   freeze({
     name: "tests",
     tsconfig: true,
-    languages: ["typescript", "tsx"],
+    languages: ["typescript"],
     execution: freeze({ globals: "node" }),
   } as const),
   freeze({
@@ -178,4 +177,5 @@ export const languageEntry: StandardSchemaV1 = looseObject({
   extensions: pipe(array(string()), minLength(1)),
   modules: optional(boolean()),
   declarations: optional(string()),
+  configure: optional(function_()),
 });

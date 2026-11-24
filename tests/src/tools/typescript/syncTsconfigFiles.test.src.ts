@@ -54,7 +54,7 @@ describe("syncTsconfigFiles", () => {
 
     expect(JSON.parse(project.read("tsconfig.src.json"))).toEqual({
       extends: "./tsconfig.json",
-      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts", "src/**/*.tsx"],
+      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts"],
       exclude: ["dist"],
       compilerOptions: {
         target: "ESNext",
@@ -99,7 +99,6 @@ describe("syncTsconfigFiles", () => {
       "web/**/*.ts",
       "web/**/*.mts",
       "web/**/*.cts",
-      "web/**/*.tsx",
     ]);
 
     expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
@@ -195,7 +194,6 @@ describe("syncTsconfigFiles", () => {
       "src/**/*.ts",
       "src/**/*.mts",
       "src/**/*.cts",
-      "src/**/*.tsx",
     ]);
 
     expect(() => project.read("tsconfig.tests.json")).toThrow("ENOENT");

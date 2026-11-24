@@ -31,10 +31,15 @@ export interface BinInput {
    */
   strictness?: (("strict" | "loose") | undefined)
   /**
-   * Names of the registered languages the environment holds; defaults to its kind's `languages`.
+   * Registered languages the environment holds, each a name or a selection with options such as `typescript({ tsx: "solid" })`; defaults to its kind's `languages`.
    * @default none
    */
-  languages?: (string[] | undefined)
+  languages?: ((string | {
+    name: string
+    options?: {
+      [k: string]: unknown
+    }
+  })[] | undefined)
   /**
    * Directories of the bin environment: its files of the languages it selects (`languages`) are included in its tsconfig, linted with its rules and, for `src` and `bin`, published.
    * The environment is inactive when none holds a file Git does not ignore.

@@ -6,6 +6,7 @@ import {
   renderImportCycle,
   type StructureReport,
 } from "#batiment/structure/index";
+import { readSelectedLanguages } from "#project/environments/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -24,10 +25,7 @@ export async function reportStructure(
     structure,
     aliases: await config.resolve("aliases"),
     verbatimModuleSyntax,
-    languages: map(
-      await config.context.registry.contributions("languages", config),
-      ({ entry }) => entry,
-    ),
+    languages: await readSelectedLanguages(config),
   });
 
   return {

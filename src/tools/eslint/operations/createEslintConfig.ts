@@ -14,11 +14,11 @@ import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 import { withExtensions } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
+import { readSelectedLanguage } from "#project/environments/index";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
 import {
   pluginName,
   rolesPluginName,
-  tsxLanguage,
   typescriptLanguage,
 } from "#tools/eslint/constants";
 import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
@@ -39,28 +39,14 @@ import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
 import type { Glob } from "#types/Glob";
 
-async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
-  const languages = await config.context.registry.contributions(
-    "languages",
-    config,
-  );
+async function readTypescriptFiles(
+  config: LoadedConfig,
+): Promise<Glob | undefined> {
+  const language = await readSelectedLanguage(config, typescriptLanguage);
 
-  const typescript = languages.find(({ entry }) => {
-    return entry.name === typescriptLanguage;
-  });
-
-  if (typescript === undefined) {
-    throw new Error(
-      `ESLint targets the ${typescriptLanguage} language, which no active extension contributes`,
-    );
-  }
-
-  const tsx = languages.find(({ entry }) => entry.name === tsxLanguage);
-
-  return withExtensions("**/*", [
-    ...typescript.entry.extensions,
-    ...(tsx?.entry.extensions ?? []),
-  ]);
+  return language === undefined
+    ? undefined
+    : withExtensions("**/*", language.extensions);
 }
 
 /**
@@ -69,7 +55,7 @@ async function readTypescriptFiles(config: LoadedConfig): Promise<Glob> {
  * conventions and role rules, each group switched off by its option.
  *
  * @throws {Error} An option is invalid, a convention category or name is unknown,
- * or no active extension contributes the TypeScript language.
+ * or no extension contributes a language an environment selects.
  */
 export async function createEslintConfig(
   config: LoadedConfig,

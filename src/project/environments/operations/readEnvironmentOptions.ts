@@ -1,11 +1,12 @@
 import { array, is, looseObject, optional, string } from "valibot";
 
+import { environmentPresetFields } from "#batiment/environments/constants";
 import type { Resolver } from "#foundation/options/index";
 import type { ConfigContext } from "#project/config/index";
 
 const environmentOptions = looseObject({
   kind: optional(string()),
-  languages: optional(array(string())),
+  languages: environmentPresetFields.languages,
   dirs: array(string()),
   files: optional(array(string())),
 });

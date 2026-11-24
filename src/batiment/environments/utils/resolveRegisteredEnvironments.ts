@@ -1,3 +1,5 @@
+import { isString } from "@auaust/toolkit";
+import { map } from "@auaust/toolkit/array";
 import { freeze } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
@@ -32,7 +34,11 @@ export function resolveRegisteredEnvironments(
       return freeze({
         registration,
         preset,
-        languages: registration.languages ?? preset.languages ?? [],
+        languages: freeze(
+          map(registration.languages ?? preset.languages ?? [], (choice) => {
+            return isString(choice) ? freeze({ name: choice }) : choice;
+          }),
+        ),
         execution: freeze({
           ...preset.execution,
           ...registration.execution,

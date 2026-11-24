@@ -2,7 +2,6 @@ import {
   barrelDirective,
   barrelExportsEntry,
   barrelsTarget,
-  tsx,
   tsxExtensions,
   typescript,
   typescriptBlocks,
@@ -141,11 +140,13 @@ export default {
         extensions: typescriptExtensions,
         modules: true,
         declarations: ".d.ts",
-      },
-      {
-        name: tsx,
-        extensions: tsxExtensions,
-        modules: true,
+        async configure() {
+          const {
+            listTypescriptExtensions,
+          } = await import("#tools/typescript/utils/listTypescriptExtensions");
+
+          return listTypescriptExtensions;
+        },
       },
     ],
     "blocks.syntaxes": [

@@ -3,6 +3,7 @@ export {
   resolveImportSpecifier,
   resolvePathAliases,
   syncEnvFile,
+  typescript,
 } from "#tools/typescript/index";
 export type {
   ApiGroup,
@@ -13,4 +14,5 @@ export type {
   Tsconfig,
   TsconfigProducer,
   TsconfigTarget,
+  TypescriptOptions,
 } from "#tools/typescript/index";

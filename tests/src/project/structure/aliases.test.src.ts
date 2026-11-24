@@ -109,7 +109,7 @@ describe("aliases", () => {
 
   test("gives a bundled app's src aliases both TypeScript extensions, and only bundler aliases to the tsconfig paths", async () => {
     const { read } = await sync(
-      `{ environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
+      `{ environments: { src: { languages: [{ name: "typescript", options: { tsx: "solid" } }], execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shopify/*": "./shopify/*.ts" } } } }`,
       { "data/a.json": "{}" },
     );
 
@@ -278,18 +278,32 @@ describe("aliases", () => {
     expect(
       JSON.parse(project.read("package.json")).imports["#config/*"],
     ).toEqual({
-      types: [
-        "./src/config/*.ts",
-        "./src/config/*.mts",
-        "./src/config/*.cts",
-        "./src/config/*.tsx",
-      ],
+      types: ["./src/config/*.ts", "./src/config/*.mts", "./src/config/*.cts"],
       default: "./src/config/*",
     });
 
     expect(
       JSON.parse(project.read(".engrenage/sync.json"))["package.json#imports"],
     ).toContain("#config/*");
+  });
+
+  test("gives a flavourless src's bundled aliases no .tsx target while another environment selects a flavour", async () => {
+    const project = createUnrecordedBundledProject("./src/config/*.ts");
+
+    project.write(
+      "engrenage.config.ts",
+      `export default { environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true }, tests: { languages: [{ name: "typescript", options: { tsx: "preact" } }] } } };\n`,
+    );
+
+    await syncOnDisk(project.root);
+
+    expect(
+      JSON.parse(project.read("package.json")).imports["#config/*"].types,
+    ).toEqual([
+      "./src/config/*.ts",
+      "./src/config/*.mts",
+      "./src/config/*.cts",
+    ]);
   });
 
   test("fails on an unrecorded string import outside the generated types", async () => {
@@ -301,7 +315,7 @@ describe("aliases", () => {
   test("resolves a bundled app's .tsx module, type-checked and built through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        environments: { src: { execution: { syntax: "2026-10" }, bundled: true } },
+        environments: { src: { languages: [{ name: "typescript", options: { tsx: "solid" } }], execution: { syntax: "2026-10" }, bundled: true } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", jsx: "preserve", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',

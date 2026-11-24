@@ -13,7 +13,7 @@ export function createImportPresets({
   tsconfig,
 }: {
   codeFiles: Globs;
-  typescriptFiles: Glob;
+  typescriptFiles: Glob | undefined;
   tsconfig: File | undefined;
 }): Config[] {
   return defineConfig([
@@ -48,13 +48,15 @@ export function createImportPresets({
         "import-x/no-unresolved": "off",
       },
     },
-    {
-      files: codeFiles.map((glob) => {
-        return [glob, typescriptFiles];
-      }),
-      rules: {
-        "import-x/namespace": "off",
-      },
-    },
+    typescriptFiles === undefined
+      ? []
+      : {
+          files: codeFiles.map((glob) => {
+            return [glob, typescriptFiles];
+          }),
+          rules: {
+            "import-x/namespace": "off",
+          },
+        },
   ]);
 }

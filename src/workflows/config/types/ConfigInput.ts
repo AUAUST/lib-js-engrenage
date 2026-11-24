@@ -70,10 +70,15 @@ export interface BuiltinConfigInput {
        */
       preset?: (string | undefined)
       /**
-       * Names of the registered languages the environment holds instead of its preset's; a built-in environment defaults to its options' `languages`.
+       * Registered languages the environment holds instead of its preset's, each a name or a selection with options such as `typescript({ tsx: "solid" })`; a built-in environment defaults to its options' `languages`.
        * @default none
        */
-      languages?: (string[] | undefined)
+      languages?: ((string | {
+        name: string
+        options?: {
+          [k: string]: unknown
+        }
+      })[] | undefined)
       /**
        * How the environment's code executes, each field set instead of its preset's.
        */

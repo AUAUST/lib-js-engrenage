@@ -1,5 +1,8 @@
 import { listNamespaces } from "#batiment/scopes/index";
-import { composeVariantPatterns } from "#project/environments/index";
+import {
+  composeVariantPatterns,
+  readTestsExtension,
+} from "#project/environments/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Globs } from "#types/Globs";
 
@@ -10,9 +13,10 @@ import type { Globs } from "#types/Globs";
 export async function resolveTestPatterns(
   config: ConfigResolver,
 ): Promise<Readonly<Partial<Record<string, Globs>>>> {
-  const [option, tree] = await Promise.all([
+  const [option, tree, extension] = await Promise.all([
     config.resolve("tests.options"),
     config.resolve("scopes"),
+    readTestsExtension(config),
   ]);
 
   // @debt every kind's variants take their location from the tests environment's options, so a variant kind placed outside `tests.options.location` matches no file
@@ -20,5 +24,5 @@ export async function resolveTestPatterns(
     return kind.variants ?? [];
   });
 
-  return composeVariantPatterns(option, variants);
+  return composeVariantPatterns(option, variants, extension);
 }

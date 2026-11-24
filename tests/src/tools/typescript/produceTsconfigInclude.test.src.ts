@@ -102,7 +102,6 @@ describe("produceTsconfigInclude", () => {
       "src/**/*.ts",
       "src/**/*.mts",
       "src/**/*.cts",
-      "src/**/*.tsx",
     ]);
 
     expect(read("tsconfig.bin.json").include).toEqual([
@@ -127,20 +126,17 @@ describe("produceTsconfigInclude", () => {
       },
     );
 
-    const expected = [
-      "spec/**/*.ts",
-      "spec/**/*.mts",
-      "spec/**/*.cts",
-      "spec/**/*.tsx",
-    ];
+    const expected = ["spec/**/*.ts", "spec/**/*.mts", "spec/**/*.cts"];
 
     expect(read("tsconfig.tests.json").include).toEqual(expected);
 
     expect(read("tsconfig.tests.dist.json").include).toEqual([
       "spec/**/*.test.ts",
-      "spec/**/*.test.tsx",
+      "spec/**/*.test.mts",
+      "spec/**/*.test.cts",
       "spec/**/*.test.dist.ts",
-      "spec/**/*.test.dist.tsx",
+      "spec/**/*.test.dist.mts",
+      "spec/**/*.test.dist.cts",
       "spec/setup.ts",
       "spec/**/*.d.ts",
     ]);
@@ -195,7 +191,6 @@ describe("produceTsconfigInclude", () => {
       "tests/**/*.ts",
       "tests/**/*.mts",
       "tests/**/*.cts",
-      "tests/**/*.tsx",
       "src/env.d.ts",
     ]);
 
@@ -224,7 +219,6 @@ describe("produceTsconfigInclude", () => {
       "tests/**/*.ts",
       "tests/**/*.mts",
       "tests/**/*.cts",
-      "tests/**/*.tsx",
     ]);
 
     expect(read("tsconfig.bin.json").include).toEqual([
@@ -235,9 +229,11 @@ describe("produceTsconfigInclude", () => {
 
     expect(read("tsconfig.tests.dist.json").include).toEqual([
       "tests/**/*.test.ts",
-      "tests/**/*.test.tsx",
+      "tests/**/*.test.mts",
+      "tests/**/*.test.cts",
       "tests/**/*.test.dist.ts",
-      "tests/**/*.test.dist.tsx",
+      "tests/**/*.test.dist.mts",
+      "tests/**/*.test.dist.cts",
       "tests/setup.ts",
       "tests/**/*.d.ts",
     ]);
@@ -351,12 +347,87 @@ describe("produceTsconfigInclude", () => {
     }
   });
 
+  test("leaves out a .tsx file of an environment selecting TypeScript without a JSX flavour", async () => {
+    const listProgramFiles = await syncPlacedProject(
+      {},
+      { "src/web/a.tsx": "" },
+    );
+
+    expect(listProgramFiles("tsconfig.web.json")).toEqual([
+      "src/web/app.ts",
+      "src/web/pages/home.ts",
+    ]);
+  });
+
+  test("includes the .tsx files of a JSX flavour and sets its JSX keys", async () => {
+    const read = await syncProject(
+      {
+        environments: {
+          src: {
+            languages: [
+              {
+                name: "typescript",
+                options: { tsx: "solid" },
+              },
+            ],
+          },
+        },
+      },
+      {
+        "src/a.tsx": "",
+      },
+    );
+
+    const tsconfig = read("tsconfig.src.json");
+
+    expect(tsconfig.include).toContain("src/**/*.tsx");
+
+    expect(tsconfig.compilerOptions).toMatchObject({
+      jsx: "preserve",
+      jsxImportSource: "solid-js",
+    });
+
+    expect(read("tsconfig.tests.json").compilerOptions.jsx).toBeUndefined();
+  });
+
+  test("removes the JSX keys of a dropped flavour", async () => {
+    const read = await syncProject(
+      {},
+      {
+        "tsconfig.src.json": '{ "compilerOptions": { "jsx": "preserve", "jsxImportSource": "solid-js" } }',
+      },
+    );
+
+    expect(read("tsconfig.src.json").compilerOptions).not.toHaveProperty("jsx");
+
+    expect(read("tsconfig.src.json").compilerOptions).not.toHaveProperty(
+      "jsxImportSource",
+    );
+  });
+
+  test("fails on a TSX option naming no JSX flavour", async () => {
+    await expect(
+      syncProject({
+        environments: {
+          src: {
+            languages: [
+              {
+                name: "typescript",
+                options: { tsx: true },
+              },
+            ],
+          },
+        },
+      }),
+    ).rejects.toThrow(/"solid" \| "preact"/);
+  });
+
   test("removes an excluded glob", async () => {
     const read = await syncProject({
       environments: {
         src: {
           tsconfig: {
-            include: { exclude: ["src/**/*.tsx"] },
+            include: { exclude: ["src/**/*.cts"] },
           },
         },
       },
@@ -365,7 +436,6 @@ describe("produceTsconfigInclude", () => {
     expect(read("tsconfig.src.json").include).toEqual([
       "src/**/*.ts",
       "src/**/*.mts",
-      "src/**/*.cts",
     ]);
   });
 
@@ -467,7 +537,6 @@ describe("produceTsconfigInclude", () => {
       "../src/**/*.ts",
       "../src/**/*.mts",
       "../src/**/*.cts",
-      "../src/**/*.tsx",
     ]);
   });
 });

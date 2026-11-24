@@ -14,7 +14,7 @@ export function declareCodeEnvironment(
   return {
     ...declareStructureOptions(),
     languages: declareLanguages(
-      "Names of the registered languages the environment holds; defaults to its kind's `languages`.",
+      'Registered languages the environment holds, each a name or a selection with options such as `typescript({ tsx: "solid" })`; defaults to its kind\'s `languages`.',
     ),
     dirs: declareList(directorySchema, {
       description: [

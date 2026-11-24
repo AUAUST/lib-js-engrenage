@@ -88,7 +88,7 @@ describe("environment placements", () => {
       registered.find(({ registration }) => {
         return registration.name === environment;
       })?.languages,
-    ).toEqual(["typescript"]);
+    ).toEqual([{ name: "typescript" }]);
   });
 
   test("reports two file placements on one file, keeping the first", async () => {

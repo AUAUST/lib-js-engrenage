@@ -24,6 +24,7 @@ import {
   type JsonValue,
 } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
+import { readEnvironmentLanguages } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { writePackageJsonValue } from "#project/package/index";
 import { readGeneratedKeys, writeGeneratedKeys } from "#project/sync/index";
@@ -31,8 +32,7 @@ import {
   readTsconfigPaths,
   toTsconfigSpecifier,
 } from "#project/tsconfig/index";
-import { importPrefix } from "#tools/typescript/constants";
-import { readTypescriptExtensions } from "#tools/typescript/operations/readTypescriptExtensions";
+import { importPrefix, typescript } from "#tools/typescript/constants";
 import { createBundledImport } from "#tools/typescript/utils/createBundledImport";
 import { listSubpathImports } from "#tools/typescript/utils/listSubpathImports";
 import type { Alias } from "#batiment/structure/index";
@@ -212,6 +212,19 @@ function toBundledImport(
   return createBundledImport(target.slice(0, -extension.length), extensions);
 }
 
+async function readSourceExtensions(
+  config: LoadedConfig,
+  needed: boolean,
+): Promise<readonly string[]> {
+  if (!needed) {
+    return [];
+  }
+
+  const languages = await readEnvironmentLanguages(config, "src");
+
+  return languages.find(({ name }) => name === typescript)?.extensions ?? [];
+}
+
 export async function syncAliases(config: LoadedConfig) {
   const { enabled, global, src } = await config.resolve("aliases");
 
@@ -232,7 +245,7 @@ export async function syncAliases(config: LoadedConfig) {
       })
     : [];
 
-  const extensions = await readTypescriptExtensions(config);
+  const extensions = await readSourceExtensions(config, generated.length > 0);
 
   const imports = {
     ...listSubpathImports([...global, ...src]),

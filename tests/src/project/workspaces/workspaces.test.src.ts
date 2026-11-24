@@ -81,7 +81,7 @@ describe("workspaces", () => {
       license: "MIT",
       imports: {
         "#self/*": {
-          types: ["./src/*.ts", "./src/*.mts", "./src/*.cts", "./src/*.tsx"],
+          types: ["./src/*.ts", "./src/*.mts", "./src/*.cts"],
           default: "./src/*",
         },
       },
@@ -203,11 +203,8 @@ describe("workspaces", () => {
 
     expect(resolveScope(scopes, ["files.workspaces"])).toEqual([
       "extensions/action-a/**/*{.ts,.mts,.cts}",
-      "extensions/action-a/**/*.tsx",
       "extensions/action-b/**/*{.ts,.mts,.cts}",
-      "extensions/action-b/**/*.tsx",
       "extensions/functions-c/**/*{.ts,.mts,.cts}",
-      "extensions/functions-c/**/*.tsx",
     ]);
 
     expect(resolveScope(scopes, ["files.code"])).toEqual(
@@ -359,7 +356,7 @@ describe("workspace tsconfigs", () => {
 
     expect(JSON.parse(project.read("theme/tsconfig.web.json"))).toMatchObject({
       extends: "../tsconfig.json",
-      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts", "src/**/*.tsx"],
+      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts"],
       exclude: ["src/worker/**"],
     });
 

@@ -4,8 +4,10 @@ import {
   number,
   object,
   optional,
+  record,
   string,
   union,
+  unknown,
 } from "valibot";
 
 import { freeze } from "@auaust/toolkit/object";
@@ -14,7 +16,17 @@ import { freeze } from "@auaust/toolkit/object";
 // eslint-disable-next-line auaust/readonly-constants -- the only mutable members are type-only, absent at runtime
 export const environmentPresetFields = freeze({
   name: string(),
-  languages: optional(array(string())),
+  languages: optional(
+    array(
+      union([
+        string(),
+        object({
+          name: string(),
+          options: optional(record(string(), unknown())),
+        }),
+      ]),
+    ),
+  ),
   execution: optional(
     object({
       globals: optional(string()),

@@ -17,6 +17,7 @@ export { resolveTscArguments } from "#tools/typescript/operations/resolveTscArgu
 export { resolveTscDistArguments } from "#tools/typescript/operations/resolveTscDistArguments";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
+export { typescript } from "#tools/typescript/utils/typescript";
 
 // @barrel ports
 export type * from "#tools/typescript/ports/BarrelExportsEntry";
@@ -27,6 +28,7 @@ export type * from "#tools/typescript/ports/BarrelExportsResolver";
 export type * from "#tools/typescript/types/BarrelExport";
 export type * from "#tools/typescript/types/BarrelModule";
 export type * from "#tools/typescript/types/BarrelPlan";
+export type * from "#tools/typescript/types/TypescriptOptions";
 // @end
 export type { ApiGroup } from "#project/baseline/index";
 export type { SubpathImports } from "#project/package/index";
