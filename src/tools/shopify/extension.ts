@@ -4,6 +4,7 @@ import {
   extensionsEnvironmentKey,
   extensionsGlob,
   extensionsWorkspaceKey,
+  extensionTypesFile,
   shopifyCli,
   typescript,
 } from "#tools/shopify/constants";
@@ -59,6 +60,7 @@ export default {
               "dist/**",
               "generated/**",
               "schema.graphql",
+              extensionTypesFile,
             ],
             [`${extensionsEnvironmentKey}.preset`]: "src",
             // @debt the selection repeats `typescript({ tsx: "preact" })` as untyped data, since an extension cannot import the factory, so a wrong option fails only at sync
@@ -75,6 +77,9 @@ export default {
             [`${extensionsEnvironmentKey}.tsconfig.path`]: "tsconfig.json",
             [`${extensionsEnvironmentKey}.tsconfig.types`]: {
               append: "@shopify/polaris-types",
+            },
+            [`${extensionsEnvironmentKey}.tsconfig.include`]: {
+              append: extensionTypesFile,
             },
           });
         },

@@ -120,7 +120,7 @@ describe("shopify-app", () => {
     ]);
   });
 
-  test("writes each extension's tsconfig with Preact and Polaris types beside a config's options and appended types", async () => {
+  test("writes each extension's tsconfig with Preact, Polaris and Shopify CLI types beside a config's options and appended types", async () => {
     const project = createApp({
       config: `export default {
   preset: "shopify-app",
@@ -132,6 +132,7 @@ describe("shopify-app", () => {
           tsconfig: {
             compilerOptions: { strict: true },
             types: { append: "vite/client" },
+            include: { append: "../../src/env.d.ts" },
           },
         },
       },
@@ -161,7 +162,13 @@ describe("shopify-app", () => {
       "vite/client",
     ]);
 
-    expect(tsconfig.include).toContain("src/**/*.tsx");
+    expect(tsconfig.include).toEqual(
+      expect.arrayContaining([
+        "src/**/*.tsx",
+        "shopify.d.ts",
+        "../../src/env.d.ts",
+      ]),
+    );
   });
 
   test("keeps the preset beside the paths a config sets", async () => {

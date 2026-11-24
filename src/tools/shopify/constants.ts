@@ -1,3 +1,4 @@
+import type { File } from "#types/File";
 import type { Glob } from "#types/Glob";
 
 export { shopifyCli } from "#constants";
@@ -8,6 +9,8 @@ export const extensionsGlob = "extensions/*" satisfies Glob;
 export const extensionsWorkspaceKey = `workspaces.globs.${extensionsGlob}`;
 
 export const extensionsEnvironmentKey = `${extensionsWorkspaceKey}.environments.shopify-extensions`;
+
+export const extensionTypesFile = "shopify.d.ts" satisfies File;
 
 export const appConfigGlob = "shopify.app*.toml" satisfies Glob;
 

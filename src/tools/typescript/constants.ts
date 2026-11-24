@@ -4,14 +4,12 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { freeze } from "@auaust/toolkit/object";
 
 import type { BlockSyntax } from "#types/BlockSyntax";
-import type { Glob } from "#types/Glob";
-
-export const barrelFiles = "**/{index,entry}.ts" satisfies Glob;
 
 export const typescriptExtensions = freeze([".ts", ".mts", ".cts"] as const);
 
 export const tsxExtensions = freeze([".tsx"] as const);
 
+// @debt jsx flavours should be contributed by a typescript tsx extension that consumers can extend, not hard-coded
 export const jsxFlavours = freeze({
   solid: freeze({ jsx: "preserve", jsxImportSource: "solid-js" } as const),
   preact: freeze({ jsx: "react-jsx", jsxImportSource: "preact" } as const),
