@@ -1,4 +1,4 @@
-import { relative } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 
 import { map } from "@auaust/toolkit/array";
 
@@ -41,8 +41,13 @@ function createProjectGroup(
 }
 
 export default defineConvention({
-  sections: { tsconfigPath: "tsconfigPath" },
-  delegates({ tsconfigPath }, { root }) {
+  sections: {
+    tsconfigPath: "tsconfigPath",
+    typescript: "typescript.options",
+  },
+  delegates({ tsconfigPath, typescript }) {
+    const { file } = typescript.tsconfig.path;
+
     return [
       delegateRule("perfectionist/sort-imports", [
         {
@@ -100,10 +105,14 @@ export default defineConvention({
           ],
           newlinesBetween: 1,
           partitionByComment: true,
+          // @debt perfectionist caches the tsconfig found for a directory whatever filename looked it up, so the lookup stops at the scope's root, keeping each scope's lookups apart, and still takes the closest file named `file` rather than `tsconfigPath` itself
           ...(tsconfigPath !== undefined && {
             tsconfig: {
-              rootDir: root,
-              filename: relative(root, tsconfigPath),
+              rootDir: resolve(
+                dirname(tsconfigPath),
+                relative(dirname(file), "."),
+              ),
+              filename: file,
             },
           }),
         },

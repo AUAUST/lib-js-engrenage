@@ -96,6 +96,7 @@ function isBelow(directory: File, file: File): boolean {
   return directory === "" || file.startsWith(`${directory}/`);
 }
 
+// @debt recompiles every skip glob for each path it checks, so large ignore lists cost millions of matches
 function isSkipped(path: File, skip: Globs): boolean {
   return skip.some((pattern) => matchesGlob(path, pattern));
 }

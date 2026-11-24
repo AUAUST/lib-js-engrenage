@@ -130,6 +130,7 @@ configuration:
     - 261124-06fb
     - 261124-f612
     - 261124-3cd2
+    - 261124-9491
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:
@@ -152,10 +153,15 @@ eslint-conventions:
     - 261123-6d7b
     - 261124-a7ae
     - 261124-803d
+    - 261124-31f9
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:
     - 261122-4b5a
+eslint-plugin-perfectionist:
+  purpose: Upstream eslint-plugin-perfectionist sorting rules and their tsconfig handling.
+  entries:
+    - 261124-15aa
 eslint:
   purpose: Upstream ESLint API limitations.
   entries:

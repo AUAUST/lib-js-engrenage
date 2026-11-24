@@ -855,3 +855,11 @@ entries:
     subject: zsh unmatched grep include
     tried: grep -r --include=*.ts in Interscript
     stopped: zsh aborted on the unquoted glob; listed directories instead
+  - id: 261124-4ebc
+    subject: zsh equals expansion hook
+    tried: echo === as a separator
+    stopped: hook refused the = word; quoted the separator
+  - id: 261124-b045
+    subject: linked engrenage timing
+    tried: profiling Interscript config resolution
+    stopped: no timing hook; used inspector script from scratchpad

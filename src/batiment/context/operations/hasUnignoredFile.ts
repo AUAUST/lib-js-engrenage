@@ -4,6 +4,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directories } from "#types/Directories";
 import type { Globs } from "#types/Globs";
 
+// @debt doubles the ignored-path list into skip globs without collapsing or deduplicating it
 export async function hasUnignoredFile({
   filesystem,
   ignored,

@@ -153,3 +153,9 @@ entries:
       - src/batiment/environments/operations/discoverEnvironmentPlacements.ts:36
     why: Inherited and built-in placements re-place relative to each workspace (#886); presets unplace built-in names themselves (#887 for shopify-app), but no workspace config or preset can know the root's own registration names
     want: A scope's own registration replacing an inherited or default one on the same directory or file, or a decided reason to keep the conflict
+  - id: 261124-9491
+    title: "A workspace's option diagnostics name the root option path: an unset syntax in a workspace glob's tests reports environments.tests.execution.syntax"
+    sites:
+      - src/project/environments/config/sections/executionSection.ts:93
+    why: Interscript's theme glob warned as if the root tests environment lacked syntax, though the root sets none and needs none
+    want: Diagnostics from a workspace scope name the option where that scope states it, such as workspaces.globs.theme.environments.tests or its .workspace.json

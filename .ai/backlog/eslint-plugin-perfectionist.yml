@@ -1,0 +1,8 @@
+purpose: Upstream eslint-plugin-perfectionist sorting rules and their tsconfig handling.
+entries:
+  - id: 261124-15aa
+    title: sort-imports caches the tsconfig found per directory whatever tsconfig filename looked it up
+    sites:
+      - src/tools/eslint/conventions/imports/importOrder.ts:104
+    why: scopes passing different tsconfig.filename share one module-global directory cache, still in 5.14.0
+    want: fixed upstream, then drop the scope-root rootDir workaround

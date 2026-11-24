@@ -115,3 +115,9 @@ entries:
       - src/tools/eslint/operations/createEslintConfig.ts:51
     why: "#754 activates extensions per scope by when.preset; none of its contributions is a lint convention, so #881 needs no fix"
     want: Each scope's conventions loaded from its own child resolver's active extensions
+  - id: 261124-31f9
+    title: "Workspace files importing root #… aliases are reported as not in the structure map"
+    sites:
+      - src/project/structure/utils/createImportResolver.ts:59
+    why: extensions/* import root aliases the root tsconfig paths resolve, but the resolver reads only the file's own scope aliases
+    want: gate --all and a direct eslint run classify each import identically
