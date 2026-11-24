@@ -62,7 +62,7 @@ export interface RoleInput {
    */
   index?: ((boolean | "root") | undefined)
   /**
-   * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`.
+   * Whether its modules are importable one by one from other domains of the project, without going through `index.ts`: a non-public role's modules are reached outside their domain only through its barrels, in apps as in published projects.
    * Package exports come only from the domain's visibility.
    * @default false
    */
@@ -83,8 +83,8 @@ export interface RoleInput {
    */
   collected?: (boolean | undefined)
   /**
-   * How other domains reach the role's modules: `barrel` through the domain's index, `modules` directly, each module public and listed by no index.
-   * Unset, `modules` in a project without the `published` trait for a role without `file` or `index`, `barrel` otherwise.
+   * How other domains reach the public role's modules: `barrel` through the domain's index, `modules` directly, each module listed by no index. Only a public role takes it.
+   * Unset, `modules` for a public role without `file` or `index` in a project without the `published` trait, `barrel` otherwise.
    * @default none
    */
   surface?: (("barrel" | "modules") | undefined)

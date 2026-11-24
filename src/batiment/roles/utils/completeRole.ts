@@ -52,21 +52,19 @@ export function completeRole(
     );
   }
 
-  const surface = (
-    definition.surface ??
-    (published || definition.file !== undefined || index !== false
-      ? "barrel"
-      : "modules")
-  );
+  const visible = definition.public ?? roleContractDefaults.public;
 
-  if (surface === "modules" && definition.public === false) {
+  if (definition.surface !== undefined && !visible) {
     throw new Error(
-      `The role ${name} sets \`surface\` "modules" but \`public\` false: its modules are its domain's surface`,
+      `The role ${name} sets \`surface\` but resolves \`public\` false: only a public role's modules are reached outside their domain, so only a public role takes a surface`,
     );
   }
 
-  const visible = (
-    definition.public ?? (surface === "modules" || roleContractDefaults.public)
+  const surface = (
+    definition.surface ??
+    (visible && !published && definition.file === undefined && index === false
+      ? "modules"
+      : "barrel")
   );
 
   const subpath = definition.subpath ?? roleContractDefaults.subpath;

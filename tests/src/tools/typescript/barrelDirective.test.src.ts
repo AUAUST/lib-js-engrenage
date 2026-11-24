@@ -108,7 +108,7 @@ export type * from "#modules/object/types/Entry";
       runSync(
         createKit({
           files,
-          roles: [utils()],
+          roles: [utils({ public: true })],
           published: false,
         }).config,
       ),

@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import { createEslintConfig } from "@auaust/engrenage/eslint";
 import { loadConfig } from "@auaust/engrenage/extensions";
-import { createRolePreset, entry, operations } from "@auaust/engrenage/roles";
+import { createRolePreset, entry } from "@auaust/engrenage/roles";
 import { assign } from "@auaust/toolkit/object";
 
 import { createBoundaryProject } from "#tests/utils/createBoundaryProject";
@@ -250,29 +250,41 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
-  test("lets peers import a sub-domain's modules role directly in an app", async () => {
+  test("keeps an app's non-public roles private to their domain", async () => {
     const lint = await createLinter(
       "auaust/import-",
       createBoundaryProject({
         preset: "app",
-        roles: [operations({ surface: "barrel" })],
-        files: { "src/project/feature/inner/operations/run.ts": exported },
+        files: {
+          "src/project/a/index.ts": exported,
+          "src/project/a/operations/run.ts": exported,
+          "src/project/a/errors/failure.ts": exported,
+          "src/project/b/index.ts": exported,
+          "src/project/feature/inner/errors/failure.ts": exported,
+        },
       }),
     );
 
+    const [message] = await lint.messages(
+      "src/project/b/index.ts",
+      'export { value } from "#project/a/operations/run";\n',
+    );
+
+    expect(message).toContain("private to");
+
     expect(
       await lint(
-        "src/project/other/index.ts",
-        'export { value } from "#project/feature/inner/utils/deep";\n',
+        "src/project/b/index.ts",
+        'export { value } from "#project/a/errors/failure";\n',
       ),
     ).toEqual([]);
 
     expect(
       await lint(
-        "src/project/other/index.ts",
-        'export { value } from "#project/feature/inner/operations/run";\n',
+        "src/project/b/index.ts",
+        'export { value } from "#project/feature/inner/errors/failure";\n',
       ),
-    ).toEqual(["auaust/import-surfaces"]);
+    ).toEqual([]);
   });
 
   test("reaches a collected role inside a sub-domain past its parent's surface", async () => {

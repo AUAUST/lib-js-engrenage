@@ -38,28 +38,49 @@ function resolve({
 }
 
 describe("resolveRoles", () => {
-  test("defaults a role's surface from the published trait", () => {
-    const app = resolve({ roles: [index(), utils()], published: false });
-
-    expect(app.roles.utils).toMatchObject({ surface: "modules", public: true });
-    expect(app.roles.index).toMatchObject({ surface: "barrel" });
-
-    expect(resolve({ roles: [utils()] }).roles.utils).toMatchObject({
-      surface: "barrel",
-      public: false,
+  test("defaults a public role's surface from the published trait", () => {
+    const app = resolve({
+      roles: [index(), utils(), utils({ name: "shared", public: true })],
+      published: false,
     });
 
+    expect(app.roles.utils).toMatchObject({ surface: "barrel", public: false });
+
+    expect(app.roles.shared).toMatchObject({
+      surface: "modules",
+      public: true,
+    });
+
+    expect(app.roles.index).toMatchObject({ surface: "barrel" });
+
     expect(
-      resolve({ roles: [utils({ surface: "modules" })] }).roles.utils,
+      resolve({ roles: [utils({ public: true })] }).roles.utils,
+    ).toMatchObject({ surface: "barrel", public: true });
+
+    expect(
+      resolve({ roles: [utils({ surface: "modules", public: true })] }).roles
+        .utils,
     ).toMatchObject({ surface: "modules" });
 
     expect(() => {
-      return resolve({ roles: [utils({ surface: "modules", index: true })] });
+      return resolve({
+        roles: [
+          utils({
+            surface: "modules",
+            public: true,
+            index: true,
+          }),
+        ],
+      });
     }).toThrow("`surface`");
+  });
 
-    expect(() => {
-      return resolve({ roles: [utils({ surface: "modules", public: false })] });
-    }).toThrow("`surface`");
+  test("refuses a surface on a role resolving non-public", () => {
+    for (const published of [true, false]) {
+      expect(() => {
+        return resolve({ roles: [utils({ surface: "modules" })], published });
+      }).toThrow(/`surface`.*`public`/);
+    }
   });
 
   test("resolves only the listed roles, in their order", () => {
