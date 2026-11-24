@@ -112,16 +112,12 @@ async function createFields(
     resolve("visibility"),
   ]);
 
-  const fields = [
-    ...(name === undefined
-      ? []
-      : [{ location: ["name"], value: name } as const]),
-    ...createScopeFields({
-      node,
-      published: traits.published,
-      visibility,
-    }),
-  ];
+  const fields = createScopeFields({
+    name,
+    node,
+    published: traits.published,
+    visibility,
+  });
 
   // @debt an unpublished root no workspace imports any more keeps the `exports` sync last wrote, then warned about as hand-set
   if (!traits.published) {

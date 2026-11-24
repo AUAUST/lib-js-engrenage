@@ -20,3 +20,9 @@ entries:
       - src/workflows/sync/setup/syncPackageJson.ts:86
     why: "sync writes a `bin` field per command directory but never removes one whose directory is gone; #820 deleting `bin/engrenage-hook` left its entry pointing at a file the build no longer emits."
     want: sync removing `bin` entries no command directory produces.
+  - id: 261124-6881
+    title: "Sync keeps a stale `private: true` in a scope that gains the `published` trait, and a stale `publishConfig` in one that loses it"
+    sites:
+      - src/project/package/utils/createScopeFields.ts:11
+    why: "Every workspace got `private: true` before #762, so a workspace enabling `published` cannot publish until edited by hand"
+    want: Sync removes the field the other branch of the published trait writes, needing a removal primitive beside writePackageJsonValue

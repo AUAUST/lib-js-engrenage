@@ -37,9 +37,6 @@ async function createPackageFields(
   ]);
 
   return [
-    ...(name === undefined
-      ? []
-      : [{ location: ["name"], value: name } as const]),
     ...(version === undefined
       ? []
       : [{ location: ["version"], value: version } as const]),
@@ -47,6 +44,7 @@ async function createPackageFields(
       ? []
       : [{ location: ["license"], value: license } as const]),
     ...createScopeFields({
+      name,
       node,
       published,
       visibility,

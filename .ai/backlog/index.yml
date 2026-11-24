@@ -245,6 +245,7 @@ package-json:
     - 261122-5753
     - 261122-8cc6
     - 261122-1e2a
+    - 261124-6881
 pnpm:
   purpose: pnpm integration and package-manager scripts.
   entries:
