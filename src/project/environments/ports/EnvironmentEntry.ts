@@ -3,13 +3,18 @@ import type { Directories } from "#types/Directories";
 
 export interface EnvironmentEntry extends EntryShape {
   /**
-   * Names the environment, its import category and the config key that resolves
-   * it to a `ResolvedEnvironment`; its options are read from the `<name>.options`
-   * key, whose `dirs` list, and `files` globs when set, place it for discovery,
-   * which decides its directories and activity, and give its default environment
-   * registration, naming the preset of the same name.
+   * Names the environment, its import category and the config key that
+   * resolves it to a `ResolvedEnvironment`; its options are read from the
+   * `<name>.options` key, whose `dirs` list, and `files` globs when set, place
+   * it for discovery, which decides its directories and activity, and give its
+   * default environment registration.
    */
   readonly name: string;
+  /**
+   * Names the environment preset the default registration uses, the preset named
+   * after the environment when unset.
+   */
+  readonly preset?: string;
   /**
    * Describes the environment's files as an import category in the project map.
    */

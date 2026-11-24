@@ -19,7 +19,7 @@ async function listDefaultRegistrations(
   ]);
 
   return Promise.all(
-    entries.map(async ({ entry: { name } }) => {
+    entries.map(async ({ entry: { name, preset = name } }) => {
       const { option } = await readEnvironmentOptions(config, name);
 
       const dirs = reconcileEnvironmentDirs(name, option.dirs, claims);
@@ -28,7 +28,7 @@ async function listDefaultRegistrations(
 
       return freeze({
         name,
-        preset: name,
+        preset,
         // @debt `<name>.languages` tunes the built-in registration beside `environments.<name>.languages`, two options for one fact, kept since dropping it changes a user surface no issue states
         ...(option.languages === undefined
           ? {}

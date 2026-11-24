@@ -174,6 +174,7 @@ export const namespaceKindEntry: StandardSchemaV1 = looseObject(
 export const environmentEntry: StandardSchemaV1 = looseObject({
   name: string(),
   title: string(),
+  preset: optional(string()),
   owns: optional(array(string())),
 });
 
