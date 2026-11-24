@@ -1,8 +1,4 @@
 entries:
-  - id: 261123-847a
-    subject: git stash -u
-    tried: stashing a tree with `git add -N` entries to test HEAD
-    stopped: stash refused, chained pop then half-applied an older stash's untracked files; removed them after cmp against stash^3, used a temporary worktree instead
   - id: 261123-9c0f
     subject: npm in the repository
     tried: queried the registry for the package
@@ -627,14 +623,6 @@ entries:
     subject: walking parallel dispatch
     tried: "ran a writer and a second worker beside the #814 worker at K=1"
     stopped: shared checkout broke config load and hooks for all, all three hit the rate limit together; user restored K=1
-  - id: 261123-843b
-    subject: commit gate sync --check
-    tried: "splitting the #813 ID change from #814 edits in the same backlog files"
-    stopped: "gate reads staged data but on-disk code, so either order failed; stashed #814 and staged ID-only file versions"
-  - id: 261123-600a
-    subject: pnpm remove confbox
-    tried: removed it from node_modules too
-    stopped: stashed HEAD code then failed to import it at the gate; reinstalled offline from the lockfile before and after the stash
   - id: 261123-6341
     subject: commit gate vitest
     tried: ENOTEMPTY rmdir node_modules/.vitest-cache right after `pnpm install --offline`, twice
@@ -791,10 +779,6 @@ entries:
     subject: extension-imports lint rule
     tried: dynamic import of a peer domain index in extension load
     stopped: rule allows own domain only; re-exported name via own constants
-  - id: 261124-cd05
-    subject: git stash push untracked path
-    tried: stash push -- untracked file, then stash pop
-    stopped: push failed, pop applied an unrelated stash; restore denied by auto mode
   - id: 261124-31ac
     subject: Interscript source not checked out
     tried: local search under Developer
@@ -843,7 +827,3 @@ entries:
     subject: worktree gate test timeout under load
     tried: pnpm engrenage gate --worktree
     stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
-  - id: 261124-82a5
-    subject: git stash in shared checkout
-    tried: stash to test base
-    stopped: index write failed beside a concurrent commit; reasoned from code instead
