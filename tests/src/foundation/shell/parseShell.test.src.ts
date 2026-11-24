@@ -103,6 +103,34 @@ describe("parseShell", () => {
     );
   });
 
+  test("reads brace expansions and tildes as expansions, ANSI-C quotes as their text", () => {
+    expect(
+      parseShell(
+        String.raw`gh {770,731} {1..3} a{"x",y} \{a,b} "{a,b}" {} ~/x a~ $'a\n\'b\x41\u00e9\cA\q'`,
+      )[0]?.words,
+    ).toEqual([
+      { kind: "literal", text: "gh" },
+      { kind: "expansion", source: "{770,731}" },
+      { kind: "expansion", source: "{1..3}" },
+      { kind: "expansion", source: 'a{"x",y}' },
+      { kind: "literal", text: "{a,b}" },
+      { kind: "literal", text: "{a,b}" },
+      { kind: "literal", text: "{}" },
+      { kind: "expansion", source: "~/x" },
+      { kind: "literal", text: "a~" },
+      { kind: "literal", text: "a\n'bA\u00e9\u0001\\q" },
+    ]);
+
+    expect(parseShell("for n in {1,2}; do gh $n; done")).toContainEqual(
+      expect.objectContaining({
+        words: [
+          { kind: "literal", text: "gh" },
+          expect.objectContaining({ kind: "expansion" }),
+        ],
+      }),
+    );
+  });
+
   test("keeps a loop variable an expansion when the source may rebind it", () => {
     for (const source of [
       "for n in 1; do read n; gh $n; done",

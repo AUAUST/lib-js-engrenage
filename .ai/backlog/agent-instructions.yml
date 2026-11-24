@@ -188,3 +188,8 @@ entries:
     title: Agents reach for git stash in the shared checkout and lose or misapply work
     why: "friction subject git stash recurs (6 entries): refused stashes, pops applying unrelated stashes, index writes beside concurrent commits"
     want: Instructions or a tool give a stash-free way to test a base or set work aside, such as a temporary worktree
+  - id: 261124-8868
+    title: Agents have no instruction on what to do with the similar entries a commit or add lists
+    why: "Once #900 lands, the commit-msg gate step lists possibly related backlog entries as a factual message, and nothing tells agents who acts on them"
+    want: A subagent forwards the listed IDs to its dispatcher in its final report, except after a checkpoint commit; a main-session agent weighs and handles them itself
+    done: "Written with the #888 end-of-plan instruction changes that explain the record commands and remove record file references"

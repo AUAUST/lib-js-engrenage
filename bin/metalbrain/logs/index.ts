@@ -16,9 +16,14 @@ const purposes: Readonly<Record<string, string>> = {
 
 export default defineGroup({
   configure(command) {
-    return command.description(
-      `Add, find, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
-    );
+    return command
+      .description(
+        `Add, find, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
+      )
+      .addHelpText(
+        "afterAll",
+        "\nPass text arguments in single quotes, writing '\\'' for a single quote inside: within double quotes, the shell runs backticks and `$(…)` and expands variables before metalbrain reads them.",
+      );
   },
   commands: {
     add,

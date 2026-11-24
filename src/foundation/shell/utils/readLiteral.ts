@@ -1,6 +1,7 @@
 import type { ParamExp, WordPart } from "sh-syntax";
 
 import { readPlainParameter } from "#foundation/shell/utils/readPlainParameter";
+import { unescapeAnsiC } from "#foundation/shell/utils/unescapeAnsiC";
 import { unescapeShell } from "#foundation/shell/utils/unescapeShell";
 
 const unquotedExpansions = /[\s*?[]/;
@@ -30,8 +31,8 @@ export function readLiteral(
   for (const part of parts) {
     if (part.type === "Lit") {
       text += unescapeShell(part.value, quoted ? "quoted" : "unquoted");
-    } else if (part.type === "SglQuoted" && !part.dollar && !quoted) {
-      text += part.value;
+    } else if (part.type === "SglQuoted" && !quoted) {
+      text += part.dollar ? unescapeAnsiC(part.value) : part.value;
     } else if (part.type === "DblQuoted" && !part.dollar && !quoted) {
       const inner = readLiteral(part.parts, true, bindings);
 

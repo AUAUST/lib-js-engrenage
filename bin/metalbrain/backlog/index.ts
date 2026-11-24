@@ -10,11 +10,17 @@ import search from "#bin/metalbrain/backlog/search";
 import show from "#bin/metalbrain/backlog/show";
 import update from "#bin/metalbrain/backlog/update";
 
+// @debt the single-quote help note restates the one in `bin/metalbrain/logs/index.ts`, since bin modules are commands and share no constants
 export default defineGroup({
   configure(command) {
-    return command.description(
-      "Create, find, update, move and close the backlog's categories and entries in .ai/backlog/, checked against the backlog file schema; every write regenerates .ai/backlog/index.yml.",
-    );
+    return command
+      .description(
+        "Create, find, update, move and close the backlog's categories and entries in .ai/backlog/, checked against the backlog file schema; every write regenerates .ai/backlog/index.yml.",
+      )
+      .addHelpText(
+        "afterAll",
+        "\nPass text arguments in single quotes, writing '\\'' for a single quote inside: within double quotes, the shell runs backticks and `$(…)` and expands variables before metalbrain reads them.",
+      );
   },
   commands: {
     categories,

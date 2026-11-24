@@ -5,7 +5,21 @@ import {
   type ShellWord,
 } from "#foundation/shell/index";
 
-const engrenageRunners = new Set(["exec", "run"]);
+const pnpmRunners = new Set(["exec", "run"]);
+
+// @debt pnpm's options taking a separate value are listed by hand, so one missing here reads its value as the binary
+const pnpmValueOptions = new Set([
+  "-C",
+  "--dir",
+  "-F",
+  "--filter",
+  "--filter-prod",
+  "--loglevel",
+  "--reporter",
+  "--workspace-concurrency",
+  "--test-pattern",
+  "--changed-files-ignore-pattern",
+]);
 
 function readText(word: ShellWord | undefined) {
   return word?.kind === "literal" ? word.text : undefined;
@@ -39,16 +53,46 @@ function findSedTrap(args: readonly ShellWord[]) {
   }
 }
 
-function isEslintFix(args: readonly ShellWord[]) {
-  const start = engrenageRunners.has(readText(args[0]) ?? "") ? 1 : 0;
+function skipPnpmOptions(args: readonly ShellWord[], start: number) {
+  let index = start;
+  let text = readText(args[index]);
+
+  while (text?.startsWith("-") === true) {
+    index += pnpmValueOptions.has(text) ? 2 : 1;
+    text = readText(args[index]);
+  }
+
+  return index;
+}
+
+function readPnpmBinary(args: readonly ShellWord[]) {
+  const first = skipPnpmOptions(args, 0);
+
+  const start = pnpmRunners.has(readText(args[first]) ?? "")
+    ? skipPnpmOptions(args, first + 1)
+    : first;
+
+  return { name: readText(args[start]), args: args.slice(start + 1) };
+}
+
+function isEslintFix({ name, args }: ReturnType<typeof readPnpmBinary>) {
+  const [command, ...files] = args;
 
   return (
-    readText(args[start]) === "engrenage" &&
-    readText(args[start + 1]) === "eslint:fix" &&
-    args.slice(start + 2).every((arg) => {
+    name === "engrenage" &&
+    readText(command) === "eslint:fix" &&
+    files.every((arg) => {
       return readText(arg)?.startsWith("-");
     })
   );
+}
+
+function findMetalbrainTrap(args: readonly ShellWord[]) {
+  for (const arg of args) {
+    if (arg.kind !== "literal") {
+      return `the shell expands \`${arg.source}\` before metalbrain reads it, running any command it holds: pass metalbrain text arguments in single quotes, writing \`'\\''\` for a single quote inside`;
+    }
+  }
 }
 
 function findCommandTrap({ words }: ShellCommand) {
@@ -71,14 +115,29 @@ function findCommandTrap({ words }: ShellCommand) {
     return findSedTrap(args);
   }
 
-  if (program === "pnpm" && isEslintFix(args)) {
+  if (program === "metalbrain") {
+    return findMetalbrainTrap(args);
+  }
+
+  if (program !== "pnpm") {
+    return;
+  }
+
+  const binary = readPnpmBinary(args);
+
+  if (binary.name === "metalbrain") {
+    return findMetalbrainTrap(binary.args);
+  }
+
+  if (isEslintFix(binary)) {
     return "`pnpm engrenage eslint:fix` without files lints the whole project: name the files to lint";
   }
 }
 
 /**
  * Finds the first shell trap the Bash `command` falls into under zsh on macOS,
- * returning its fix, or `undefined` when it falls into none or is no valid Bash.
+ * a `metalbrain` argument the shell expands included, returning its fix, or
+ * `undefined` when it falls into none or is no valid Bash.
  */
 export function findShellTrap(command: string) {
   let commands;

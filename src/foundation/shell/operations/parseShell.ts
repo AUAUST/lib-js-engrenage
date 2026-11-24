@@ -23,6 +23,8 @@ import type {
 
 import { isArray } from "@auaust/toolkit";
 
+import { hasBraceExpansion } from "#foundation/shell/utils/hasBraceExpansion";
+import { hasTilde } from "#foundation/shell/utils/hasTilde";
 import { isNode } from "#foundation/shell/utils/isNode";
 import { isRebound } from "#foundation/shell/utils/isRebound";
 import { readDialectError } from "#foundation/shell/utils/readDialectError";
@@ -180,7 +182,9 @@ function createReader(
   }
 
   function readWord(word: Word, sink: ShellCommand[]): ShellWord {
-    const text = readLiteral(word.parts, false, bindings);
+    const text = hasTilde(word.parts)
+      ? undefined
+      : readLiteral(word.parts, false, bindings);
 
     return text === undefined
       ? readExpansion(word, sink)
@@ -215,7 +219,7 @@ function createReader(
       return { kind: "pattern", source: slice(word.start, word.end) };
     }
 
-    return isCommandPath(word.parts)
+    return isCommandPath(word.parts) || hasBraceExpansion(word.parts)
       ? readExpansion(word, sink)
       : readWord(word, sink);
   }
@@ -334,7 +338,11 @@ function createReader(
     const values = [];
 
     for (const item of loop.items) {
-      const value = isPattern(item.parts)
+      const value = (
+        isPattern(item.parts) ||
+        hasBraceExpansion(item.parts) ||
+        hasTilde(item.parts)
+      )
         ? undefined
         : readLiteral(item.parts, false, bindings);
 
@@ -408,11 +416,13 @@ function createReader(
 }
 
 /**
- * Lists every simple command the Bash `source` runs, in source order, each command
- * nested in a substitution following the command holding it. A `for` loop over
- * literal words lists its body once per word, the loop variable read as that word.
- * A command word holding an unquoted glob reads as a pattern; one starting with
- * an unquoted `=`, which zsh replaces with a command's path, as an expansion.
+ * Lists every simple command the Bash `source` runs, in source order, each
+ * command nested in a substitution following the command holding it. A `for`
+ * loop over literal words lists its body once per word, the loop variable read
+ * as that word. A command word holding an unquoted glob reads as a pattern; one
+ * holding an unquoted brace expansion, or starting with an unquoted `~` or with
+ * an unquoted `=`, which zsh replaces with a command's path, as an expansion. An
+ * ANSI-C quoted `$'…'` part reads as the text it decodes to.
  *
  * @throws {ShellSyntaxError} `source` is no valid Bash, asking for POSIX sh when
  * it uses another shell's feature.

@@ -37,6 +37,7 @@ agent-instructions:
     - 261123-c6dc
     - 261124-1896
     - 261124-a8be
+    - 261124-8868
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:
@@ -411,7 +412,6 @@ utils:
     - 261122-c9ed
     - 261122-1348
     - 261122-0f29
-    - 261122-bc3e
 vitest:
   purpose: Generated Vitest configuration.
   entries:

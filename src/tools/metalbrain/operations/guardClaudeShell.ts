@@ -13,8 +13,8 @@ const payloadSchema = object({
 });
 
 /**
- * PreToolUse on Bash: denies a command falling into a zsh or macOS shell
- * trap, giving its fix.
+ * PreToolUse on Bash: denies a command falling into a zsh or macOS shell trap,
+ * or passing `metalbrain` an argument the shell expands, giving its fix.
  */
 export function guardClaudeShell(payload: unknown): HookVerdict | undefined {
   const {

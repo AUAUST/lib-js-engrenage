@@ -14,6 +14,31 @@ describe("findShellTrap", () => {
       "pnpm exec engrenage eslint:fix --cache",
       "whole project",
     ],
+    [
+      "backticks in a metalbrain argument",
+      "metalbrain friction add --subject \"`git ls-files`\" --tried 'x' --stopped 'y'",
+      "single quotes",
+    ],
+    [
+      "a parameter in a metalbrain argument",
+      'metalbrain backlog search "$VAR"',
+      "single quotes",
+    ],
+    [
+      "a brace expansion in a metalbrain argument",
+      "pnpm exec metalbrain backlog show {a,b}",
+      "single quotes",
+    ],
+    [
+      "a substitution after a pnpm option",
+      'pnpm -s metalbrain friction add --subject "$(x)"',
+      "single quotes",
+    ],
+    [
+      "a substitution after pnpm options around exec",
+      'pnpm --silent -C . exec --shell-mode metalbrain backlog search "$(x)"',
+      "single quotes",
+    ],
   ])("refuses %s", (_case, command, fix) => {
     expect(findShellTrap(command)).toContain(fix);
   });
@@ -28,6 +53,19 @@ describe("findShellTrap", () => {
     ["= inside a word", "git log --format=%H"],
     ["eslint:fix with files", "pnpm engrenage eslint:fix src/a.ts"],
     ["zsh-only syntax", "echo ${(f)x}"],
+    [
+      "a single-quoted metalbrain argument",
+      "metalbrain friction search '$(rm -rf x)'",
+    ],
+    [
+      "an ANSI-C quoted metalbrain argument",
+      "pnpm metalbrain friction search $'it\\'s `x`'",
+    ],
+    [
+      "a loop word in a metalbrain argument",
+      'for n in a b; do pnpm metalbrain backlog show "$n"; done',
+    ],
+    ["an expansion outside metalbrain", 'gh issue view "$n"'],
   ])("passes %s", (_case, command) => {
     expect(findShellTrap(command)).toBeUndefined();
   });
