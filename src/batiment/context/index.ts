@@ -8,6 +8,7 @@ export type * from "#batiment/context/ports/ContextPort";
 
 // @barrel types
 export type * from "#batiment/context/types/ContextDiscovery";
+export type * from "#batiment/context/types/DiscoveredScope";
 export type * from "#batiment/context/types/EnvironmentDiscovery";
 export type * from "#batiment/context/types/ExpectedWorkspaces";
 export type * from "#batiment/context/types/MatchedWorkspace";

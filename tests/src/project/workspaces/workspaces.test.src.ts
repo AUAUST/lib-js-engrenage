@@ -289,9 +289,9 @@ describe("workspace modules", () => {
   test("import their own #self modules and a src alias, type-check and build through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true }, actions: { preset: "src", dirs: ["extensions/*/src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
+        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
-        workspaces: { "extensions/action-*": { name: "@scope/app-${placeholder}" } },
+        workspaces: { "extensions/action-*": { name: "@scope/app-${placeholder}", environments: { src: { dirs: [] }, actions: { preset: "src", dirs: ["src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',
       "tsconfig.json": "{}",

@@ -1,19 +1,11 @@
 import { flatMap, map } from "@auaust/toolkit/array";
-import { freeze, keys, record } from "@auaust/toolkit/object";
+import { freeze, record } from "@auaust/toolkit/object";
 
+import { discoverEnvironments } from "#batiment/context/operations/discoverEnvironments";
 import { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 import { discoverNamespaceMetafiles } from "#batiment/context/operations/discoverNamespaceMetafiles";
 import { discoverWorkspaces } from "#batiment/context/operations/discoverWorkspaces";
-import { hasUnignoredFile } from "#batiment/context/operations/hasUnignoredFile";
 import { resolveNamespaceImports } from "#batiment/context/operations/resolveNamespaceImports";
-import {
-  discoverEnvironmentPlacements,
-  listEnvironmentInstances,
-  listForeignPlacementGlobs,
-  resolveRegisteredEnvironments,
-  type DiscoveredEnvironment,
-  type EnvironmentPreset,
-} from "#batiment/environments/index";
 import { rootScope } from "#batiment/scopes/constants";
 import {
   createScopeTree,
@@ -25,20 +17,14 @@ import {
 import { findDirectories, type Filesystem } from "#foundation/filesystem/index";
 import type { ContextPort } from "#batiment/context/ports/ContextPort";
 import type { ContextDiscovery } from "#batiment/context/types/ContextDiscovery";
-import type { EnvironmentDiscovery } from "#batiment/context/types/EnvironmentDiscovery";
+import type { DiscoveredScope } from "#batiment/context/types/DiscoveredScope";
 import type { ExpectedWorkspaces } from "#batiment/context/types/ExpectedWorkspaces";
 import type { NamespacePlacement } from "#batiment/context/types/NamespacePlacement";
 import type { RootFacts } from "#batiment/context/types/RootFacts";
-import type { ScopeRegistry } from "#batiment/context/types/ScopeRegistry";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { Directory } from "#types/Directory";
 import type { Glob } from "#types/Glob";
 import type { Globs } from "#types/Globs";
-
-interface DiscoveredScope {
-  readonly dir: Directory;
-  readonly registry: ScopeRegistry;
-}
 
 async function matchWorkspaces(
   filesystem: Filesystem,
@@ -96,63 +82,6 @@ function resolveConfiguredKind(
   return resolved;
 }
 
-async function discoverEnvironments({
-  presets,
-  ignored,
-  scopes,
-  metafiles,
-  filesystem,
-}: {
-  presets: readonly EnvironmentPreset[];
-  ignored: Globs;
-  scopes: readonly DiscoveredScope[];
-  metafiles: readonly DiscoveredEnvironment[];
-  filesystem: Filesystem;
-}): Promise<{
-  readonly discovery: EnvironmentDiscovery;
-  readonly diagnostics: readonly StructureDiagnostic[];
-}> {
-  const registered = flatMap(scopes, ({ dir, registry }) => {
-    return resolveRegisteredEnvironments(presets, registry.environments, dir);
-  });
-
-  const { placements, diagnostics } = await discoverEnvironmentPlacements({
-    registered,
-    metafiles,
-    ignored,
-    filesystem,
-  });
-
-  const placed = await Promise.all(
-    keys(placements.dirs).map(async (dir) => {
-      const active = await hasUnignoredFile({
-        filesystem,
-        ignored: [...ignored, ...listForeignPlacementGlobs(placements, dir)],
-        dirs: [dir],
-        files: [],
-      });
-
-      return active ? [dir] : [];
-    }),
-  );
-
-  const instances = listEnvironmentInstances(
-    registered,
-    placements,
-    scopes.map(({ dir }) => dir).filter((dir) => dir !== rootScope),
-    new Set(placed.flat()),
-  );
-
-  return {
-    discovery: freeze({
-      registered: freeze(registered),
-      placements,
-      instances,
-    }),
-    diagnostics,
-  };
-}
-
 async function placeNamespaces({
   scope: { dir, registry },
   kinds,
@@ -191,6 +120,9 @@ async function placeNamespaces({
  * Discovers the scopes and their top-level namespaces and environments: the
  * root's from `port.root()`, each workspace's from `port.registry()`, asked once
  * the workspace is found and matched.
+ *
+ * @throws When a scope places an environment on a directory inside a
+ * nested workspace.
  */
 export async function discoverContext(
   port: ContextPort,
@@ -261,6 +193,7 @@ export async function discoverContext(
     presets: root.presets,
     ignored,
     scopes,
+    workspaces: discovered.workspaces,
     metafiles: discovered.environments,
     filesystem,
   });

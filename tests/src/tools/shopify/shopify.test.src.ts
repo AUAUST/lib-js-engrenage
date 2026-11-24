@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { getDirectoryEnvironment } from "#batiment/environments/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -83,14 +84,54 @@ describe("shopify-app", () => {
     );
   });
 
+  test("places each extension's src with its own shopify-extensions instance", async () => {
+    const project = createApp();
+
+    const config = await loadConfig(project.root);
+
+    const context = await config.resolve("structure.context");
+
+    const { environments, diagnostics } = await context.discover();
+
+    expect(diagnostics).not.toContainEqual(
+      expect.objectContaining({ code: "environment-placement-conflict" }),
+    );
+
+    expect(
+      getDirectoryEnvironment(environments.placements, "extensions/a/src"),
+    ).toBe("shopify-extensions");
+
+    expect(
+      environments.instances
+        .filter(({ dirs }) => dirs.includes("extensions/a/src"))
+        .map(({ environment, scope, active }) => {
+          return {
+            environment,
+            scope,
+            active,
+          };
+        }),
+    ).toEqual([
+      {
+        environment: "shopify-extensions",
+        scope: "extensions/a",
+        active: true,
+      },
+    ]);
+  });
+
   test("writes each extension's tsconfig with Preact and Polaris types beside a config's options", async () => {
     const project = createApp({
       config: `export default {
   preset: "shopify-app",
-  environments: {
-    "shopify-extensions": {
-      execution: { syntax: "2026-10" },
-      tsconfig: { compilerOptions: { strict: true } },
+  workspaces: {
+    "extensions/*": {
+      environments: {
+        "shopify-extensions": {
+          execution: { syntax: "2026-10" },
+          tsconfig: { compilerOptions: { strict: true } },
+        },
+      },
     },
   },
   typescript: { tsconfig: { extends: false } },

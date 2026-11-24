@@ -10,9 +10,10 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Active when `@shopify/cli` is installed; owns the app's TOML and extension
- * locale files when an app config exists, and contributes the `shopify-app` preset
- * configuring extension workspaces and registering the `shopify-extensions`
- * environment on their sources.
+ * locale files when an app config exists, and contributes the `shopify-app`
+ * preset configuring extension workspaces and registering in each the
+ * `shopify-extensions` environment on its sources, in place of the built-in
+ * `src` environment.
  */
 export default {
   name: "tools/shopify",
@@ -68,7 +69,8 @@ export default {
             ],
             [`${extensionsEnvironmentKey}.execution.globals`]: "browser",
             [`${extensionsEnvironmentKey}.bundled`]: true,
-            [`${extensionsEnvironmentKey}.dirs`]: [`${extensionsGlob}/src`],
+            [`workspaces.${extensionsGlob}.environments.src.dirs`]: [],
+            [`${extensionsEnvironmentKey}.dirs`]: ["src"],
             [`${extensionsEnvironmentKey}.tsconfig.path`]: "tsconfig.json",
             [`${extensionsEnvironmentKey}.tsconfig.types`]: {
               append: "@shopify/polaris-types",

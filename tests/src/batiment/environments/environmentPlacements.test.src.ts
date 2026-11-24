@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { record } from "@auaust/toolkit/object";
+import { entries, keys, record } from "@auaust/toolkit/object";
 
 import {
   createEnvironmentPreset,
@@ -38,13 +38,20 @@ function register(
 async function place(
   files: Record<string, string>,
   registrations: readonly EnvironmentRegistration[],
+  workspaces: Readonly<Record<string, readonly EnvironmentRegistration[]>> = {},
 ) {
   const { root } = createTemporaryProject(files);
 
-  const registered = resolveRegisteredEnvironments(presets, registrations, ".");
+  const registered = [
+    ...resolveRegisteredEnvironments(presets, registrations, "."),
+    ...entries(workspaces).flatMap(([scope, scoped]) => {
+      return resolveRegisteredEnvironments(presets, scoped, scope);
+    }),
+  ];
 
   const discovered = await discoverEnvironmentPlacements({
     registered,
+    scopes: keys(workspaces),
     metafiles: [],
     ignored: [],
     filesystem: createFilesystem(root),
@@ -111,7 +118,21 @@ describe("environment placements", () => {
     ]);
   });
 
-  test("forms one instance per scope a globbed placement reaches, listing the placements nested in it", async () => {
+  test("keeps a scope's globs from matching a nested workspace's files", async () => {
+    const { placements } = await place(
+      { "vite.config.ts": "", "theme/vite.config.ts": "" },
+      [register("tooling", "node", { files: ["**/*.config.ts"] })],
+      { theme: [register("bundle", "web", { files: ["*.config.ts"] })] },
+    );
+
+    expect(getFileEnvironment(placements, "vite.config.ts")).toBe("tooling");
+
+    expect(getFileEnvironment(placements, "theme/vite.config.ts")).toBe(
+      "bundle",
+    );
+  });
+
+  test("forms one instance per scope registering an environment, listing the placements nested in it", async () => {
     const { placements, registered } = await place(
       {
         "extensions/home/src/index.ts": "",
@@ -119,9 +140,13 @@ describe("environment placements", () => {
         "app/server/index.ts": "",
       },
       [
-        register("frontend", "web", { dirs: ["app", "extensions/*/src"] }),
+        register("frontend", "web", { dirs: ["app", "*/*/src"] }),
         register("server", "node", { dirs: ["app/server"] }),
       ],
+      {
+        "extensions/cart": [register("frontend", "web", { dirs: ["src"] })],
+        "extensions/home": [register("frontend", "web", { dirs: ["src"] })],
+      },
     );
 
     const instances = listEnvironmentInstances(
@@ -253,26 +278,71 @@ describe("environment instance activity", () => {
   });
 });
 
+describe("environment placements across workspaces", () => {
+  test("reject a placement inside a nested workspace, naming its metafile", async () => {
+    await expect(
+      discoverConfigured({
+        input: withSourceRuntime({
+          environments: {
+            web: { preset: "src", dirs: ["theme/src"] },
+          },
+        }),
+        files: {
+          "theme/.workspace.json": "{}",
+          "theme/src/index.ts": "",
+        },
+      }),
+    ).rejects.toThrow(
+      "The environment web of the root is placed on theme/src by environments.web.dirs, inside the workspace theme: register it in theme/.workspace.json",
+    );
+  });
+
+  test("give a workspace's file the workspace's instance of a root file glob", async () => {
+    const { instances } = await discoverConfigured({
+      input: withSourceRuntime({
+        environments: {
+          tooling: { preset: "bin", files: ["**/*.config.ts"] },
+        },
+      }),
+      files: {
+        "vite.config.ts": "",
+        "theme/.workspace.json": "{}",
+        "theme/vite.config.ts": "",
+      },
+    });
+
+    expect(
+      instances
+        .filter(({ environment }) => environment === "tooling")
+        .map(({ scope, files }) => {
+          return { scope, files };
+        }),
+    ).toEqual([
+      { scope: ".", files: ["vite.config.ts"] },
+      { scope: "theme", files: ["theme/vite.config.ts"] },
+    ]);
+  });
+});
+
 describe("environment metafiles", () => {
   test("report an unregistered name, the directory keeping the environment placed above it", async () => {
     const { placements, diagnostics } = await discoverConfigured({
       input: withSourceRuntime({
         environments: {
-          web: { preset: "src", dirs: ["theme"] },
+          web: { preset: "src", dirs: ["app"] },
         },
       }),
       files: {
-        "theme/.workspace.json": "{}",
-        "theme/lib/.environment.json": '{ "environment": "vue" }',
-        "theme/lib/a.ts": "",
+        "app/lib/.environment.json": '{ "environment": "vue" }',
+        "app/lib/a.ts": "",
       },
     });
 
     expect(diagnostics).toEqual([
-      { code: "unknown-environment", path: "theme/lib" },
+      { code: "unknown-environment", path: "app/lib" },
     ]);
 
-    expect(getDirectoryEnvironment(placements, "theme/lib")).toBe("web");
+    expect(getDirectoryEnvironment(placements, "app/lib")).toBe("web");
   });
 
   test.each([

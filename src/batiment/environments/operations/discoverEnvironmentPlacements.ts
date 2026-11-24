@@ -51,18 +51,18 @@ function createConflict(
 function placeMetafiles({
   metafiles,
   registered,
+  findScope,
   dirs,
   sources,
   diagnostics,
 }: {
   metafiles: readonly DiscoveredEnvironment[];
   registered: readonly RegisteredEnvironment[];
+  findScope(path: string): Directory;
   dirs: Map<Directory, string>;
   sources: ReadonlyMap<Directory, RegisteredEnvironment>;
   diagnostics: StructureDiagnostic[];
 }): void {
-  const findScope = createScopeFinder(registered.map(({ scope }) => scope));
-
   for (const { dir, file, environment } of metafiles) {
     const scope = findScope(dir);
 
@@ -107,19 +107,23 @@ function placeMetafiles({
 
 /**
  * Places each registered environment on its directories, a glob placing it on
- * each directory it matches, and on the files its `files` globs match, keeping
- * the first in registration order where two place one directory or file, each
- * such clash an error diagnostic; then on each directory an `.environment.json`
- * names it on, when the directory's scope registers that name, replacing the
- * config's placement there, an error diagnostic when the config input sets it.
+ * each directory it matches, and on the files its `files` globs match, each
+ * placement kept only within its scope, `scopes` the workspace directories, nested
+ * ones excluded; keeping the first in registration order where two place one
+ * directory or file, each such clash an error diagnostic; then on each directory
+ * an `.environment.json` names it on, when the directory's scope registers
+ * that name, replacing the config's placement there, an error diagnostic when
+ * the config input sets it.
  */
 export async function discoverEnvironmentPlacements({
   registered,
+  scopes,
   metafiles,
   ignored,
   filesystem,
 }: {
   registered: readonly RegisteredEnvironment[];
+  scopes: Directories;
   metafiles: readonly DiscoveredEnvironment[];
   ignored: Globs;
   filesystem: Filesystem;
@@ -127,15 +131,23 @@ export async function discoverEnvironmentPlacements({
   readonly placements: EnvironmentPlacements;
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
+  const findScope = createScopeFinder(scopes);
+
   const expanded = await Promise.all(
-    registered.map(({ dirs }) => expandDirectories(dirs, ignored, filesystem)),
+    registered.map(async ({ scope, dirs }) => {
+      const matched = await expandDirectories(dirs, ignored, filesystem);
+
+      return matched.filter((dir) => findScope(dir) === scope);
+    }),
   );
 
   const globbed = await Promise.all(
-    registered.map(async ({ files }) => {
-      return files.length === 0
+    registered.map(async ({ scope, files }) => {
+      const matched = files.length === 0
         ? []
-        : filesystem.glob(files, { exclude: ignored });
+        : await filesystem.glob(files, { exclude: ignored });
+
+      return matched.filter((file) => findScope(file) === scope);
     }),
   );
 
@@ -173,6 +185,7 @@ export async function discoverEnvironmentPlacements({
   placeMetafiles({
     metafiles,
     registered,
+    findScope,
     dirs,
     sources,
     diagnostics,

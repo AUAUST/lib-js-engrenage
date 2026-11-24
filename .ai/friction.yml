@@ -843,3 +843,7 @@ entries:
     subject: worktree gate test timeout under load
     tried: pnpm engrenage gate --worktree
     stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
+  - id: 261124-82a5
+    subject: git stash in shared checkout
+    tried: stash to test base
+    stopped: index write failed beside a concurrent commit; reasoned from code instead
