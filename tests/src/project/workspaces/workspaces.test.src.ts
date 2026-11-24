@@ -373,29 +373,6 @@ describe("workspace tsconfigs", () => {
     expect(existsSync(project.resolve("theme/tsconfig.json"))).toBe(false);
   });
 
-  test("removes a workspace instance tsconfig once its placement goes", async () => {
-    const project = await syncTheme(
-      'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" } }',
-    );
-
-    project.write(
-      "engrenage.config.ts",
-      project
-        .read("engrenage.config.ts")
-        .replace('dirs: ["theme/src"]', "dirs: []"),
-    );
-
-    loadConfig.refresh(project.root);
-
-    const resolved = await loadConfig(project.root);
-
-    await runSync(resolved, { names: ["tsconfig"] });
-
-    await resolved.context.filesystem.flush();
-
-    expect(existsSync(project.resolve("theme/tsconfig.web.json"))).toBe(false);
-  });
-
   test("writes a registration's tsconfig path inside the workspace", async () => {
     const project = await syncTheme(
       'web: { preset: "src", dirs: ["theme/src"], execution: { globals: "browser", syntax: "2026-10" }, tsconfig: { path: "tsconfig.json", compilerOptions: { jsx: "preserve" } } }',

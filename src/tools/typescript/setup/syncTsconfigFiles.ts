@@ -1,8 +1,6 @@
-import { posix } from "node:path";
-
 import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
-import { entries, values } from "@auaust/toolkit/object";
+import { entries } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
@@ -125,27 +123,16 @@ async function createEdits(
 async function listDeclaredTsconfigFiles(
   config: LoadedConfig,
 ): Promise<readonly File[]> {
-  const [registrations, { scopes }] = await Promise.all([
-    listTsconfigRegistrations(config),
-    config.resolve("scopes"),
-  ]);
+  const registrations = await listTsconfigRegistrations(config);
 
   const files: File[] = [];
 
-  for (const { name } of registrations) {
-    const { file } = await resolveEnvironmentTsconfig(config, name);
+  for (const key of [...registrations.map(({ name }) => name), "tests.dist"]) {
+    const { file } = await resolveEnvironmentTsconfig(config, key);
 
     if (file !== undefined) {
-      files.push(
-        ...iterable.map(values(scopes), ({ dir }) => posix.join(dir, file)),
-      );
+      files.push(file);
     }
-  }
-
-  const dist = await resolveEnvironmentTsconfig(config, "tests.dist");
-
-  if (dist.file !== undefined) {
-    files.push(dist.file);
   }
 
   return files;
