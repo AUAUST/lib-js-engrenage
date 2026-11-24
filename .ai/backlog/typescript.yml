@@ -99,9 +99,3 @@ entries:
       - data/tsconfig/base.json:4
     why: "generated tsconfigs set `declaration: false`, so a published signature naming an unexported type (TS4023, TS4082) passes `typecheck` and the gate, failing only `pnpm build`, as `LayoutContext` did; `tsc --noEmit --declaration` reports them."
     want: "`declaration: true` in the generated tsconfig of each environment whose code ships declarations, or `isolatedDeclarations` where its explicit-type cost is accepted."
-  - id: 261124-3ee8
-    title: Sync never removes a workspace-scope instance tsconfig once its instance or path goes
-    sites:
-      - src/tools/typescript/setup/syncTsconfigFiles.ts:123
-    why: listDeclaredTsconfigFiles resolves each registration's path at the root only, so a workspace's tsconfig.<name>.json stays, stale and unreferenced, after its placement or path changes
-    want: Remove the files of every scope where a registration's tsconfig is no longer synced
