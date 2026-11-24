@@ -58,6 +58,7 @@ export { environmentsSchema } from "#project/environments/config/schemas/environ
 export { environmentTsconfigSchema } from "#project/environments/config/schemas/environmentTsconfigSchema";
 export { executionSchema } from "#project/environments/config/schemas/executionSchema";
 export { globalsSchema } from "#project/environments/config/schemas/globalsSchema";
+export { namespaceKindsSchema } from "#project/environments/config/schemas/namespaceKindsSchema";
 export { runtimeSchema } from "#project/environments/config/schemas/runtimeSchema";
 export { scriptsSchema } from "#project/environments/config/schemas/scriptsSchema";
 export { sourceSchema } from "#project/environments/config/schemas/sourceSchema";
@@ -94,6 +95,7 @@ export { environmentClaimsSection } from "#project/environments/config/sections/
 export { environmentsSection } from "#project/environments/config/sections/environmentsSection";
 export { environmentTsconfigsSection } from "#project/environments/config/sections/environmentTsconfigsSection";
 export { executionSection } from "#project/environments/config/sections/executionSection";
+export { namespaceKindsSection } from "#project/environments/config/sections/namespaceKindsSection";
 export { runtimeSection } from "#project/environments/config/sections/runtimeSection";
 export { scriptsOptionsSection } from "#project/environments/config/sections/scriptsOptionsSection";
 export { scriptsSection } from "#project/environments/config/sections/scriptsSection";

@@ -10,12 +10,13 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Owns the `namespaceKinds`, `environmentPresets`, `environments` and
- * `languages` slots, the config keys of each built-in environment and its
- * options, `environments`, `environments.claims`, `environments.execution`,
- * `environments.tsconfig`, `define` and `runtime`, the uncommitted coverage
- * directory and the unlinted static directories. Contributes the `src`, `tests`,
- * `bin`, `scripts`, `tooling`, `data` and `static` namespace kinds and environment
- * presets, one environment of each, named after it, and the `javascript` language.
+ * `languages` slots, the config keys of each built-in environment and
+ * its options, `namespaceKinds`, `environments`, `environments.claims`,
+ * `environments.execution`, `environments.tsconfig`, `define` and `runtime`, the
+ * uncommitted coverage directory and the unlinted static directories. Contributes
+ * the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
+ * kinds and environment presets, one environment of each, named after it, and
+ * the `javascript` language.
  */
 export default {
   name: "project/environments",
@@ -27,6 +28,16 @@ export default {
       languages: { entry: languageEntry },
     },
     keys: {
+      "namespaceKinds": {
+        input: "namespaceKinds",
+        async load() {
+          const {
+            namespaceKindsSection,
+          } = await import("#project/environments/config/sections/namespaceKindsSection");
+
+          return namespaceKindsSection;
+        },
+      },
       "environments": {
         input: "environments",
         async load() {
