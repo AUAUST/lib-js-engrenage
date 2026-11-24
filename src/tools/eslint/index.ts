@@ -13,6 +13,7 @@ export { createConventionRules } from "#tools/eslint/operations/createConvention
 export { createEslintConfig } from "#tools/eslint/operations/createEslintConfig";
 export { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
 export { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+export { createScopeRules } from "#tools/eslint/operations/createScopeRules";
 export { deriveInfoRules } from "#tools/eslint/operations/deriveInfoRules";
 export { fixWithEslint } from "#tools/eslint/operations/fixWithEslint";
 export { listDebtMarkers } from "#tools/eslint/operations/listDebtMarkers";

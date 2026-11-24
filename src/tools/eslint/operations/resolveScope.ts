@@ -13,10 +13,6 @@ import type { Globs } from "#types/Globs";
 const filesPrefix = "files.";
 const dirPrefix = "dir.";
 
-function workspaceGlobs({ workspaces }: ScopeSources): Globs {
-  return flatMap(workspaces, ({ globs }) => globs);
-}
-
 function listEnvironments({
   environments,
 }: ScopeSources): ContributedEnvironment[] {
@@ -61,14 +57,14 @@ function resolveScopeReference(
 
   switch (reference) {
     case "files.code": {
-      return [
-        ...flatMap(listEnvironments(sources), ({ namespace, environment }) => {
+      return flatMap(
+        listEnvironments(sources),
+        ({ namespace, environment }) => {
           return namespace.level === "enforced"
             ? (environment.globs ?? [])
             : [];
-        }),
-        ...workspaceGlobs(sources),
-      ];
+        },
+      );
     }
 
     case "files.discovered": {
@@ -89,10 +85,6 @@ function resolveScopeReference(
 
     case "files.test.src": {
       return tests.patterns.source;
-    }
-
-    case "files.workspaces": {
-      return workspaceGlobs(sources);
     }
 
     case "files.code.published": {

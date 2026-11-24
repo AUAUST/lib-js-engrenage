@@ -10,7 +10,6 @@ export type ScopeReference =
   | "files.test"
   | "files.test.public"
   | "files.test.src"
-  | "files.workspaces"
   | "files.code.published"
   | "files.code.private"
   | "dir.published"

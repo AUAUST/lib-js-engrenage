@@ -4,55 +4,31 @@ import sonarjs from "eslint-plugin-sonarjs";
 import unicorn from "eslint-plugin-unicorn";
 import unusedImports from "eslint-plugin-unused-imports";
 import { defineConfig } from "eslint/config";
-import { configs as typescriptConfigs } from "typescript-eslint";
 
-import { map } from "@auaust/toolkit/array";
+import { filter, map } from "@auaust/toolkit/array";
 import { flatMap } from "@auaust/toolkit/iterable";
-import { entries, getOwn, record } from "@auaust/toolkit/object";
+import { entries, getOwn, record, values } from "@auaust/toolkit/object";
 import type { Maybe, MaybeArray } from "@auaust/toolkit/types";
 
-import { withExtensions } from "#foundation/filesystem/index";
+import { rootScope } from "#batiment/scopes/constants";
 import { validate } from "#foundation/options/index";
 import { listLocationGlobs, type LoadedConfig } from "#project/config/index";
-import { readSelectedLanguage } from "#project/environments/index";
+import { listScopeConfigs } from "#project/workspaces/index";
 import { optionsSchema } from "#tools/eslint/config/schemas/optionsSchema";
-import {
-  pluginName,
-  rolesPluginName,
-  typescriptLanguage,
-} from "#tools/eslint/constants";
-import { createConventionRules } from "#tools/eslint/operations/createConventionRules";
+import { pluginName } from "#tools/eslint/constants";
 import { createPackageJsonRules } from "#tools/eslint/operations/createPackageJsonRules";
-import { createRecommendedRules } from "#tools/eslint/operations/createRecommendedRules";
+import { createScopeRules } from "#tools/eslint/operations/createScopeRules";
 import { loadConventionCategories } from "#tools/eslint/operations/loadConventionCategories";
-import { resolveConventionSections } from "#tools/eslint/operations/resolveConventionSections";
-import { resolveScope } from "#tools/eslint/operations/resolveScope";
-import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
-import { selectConventions } from "#tools/eslint/operations/selectConventions";
 import { roleRuleLoaders } from "#tools/eslint/roles/index";
 import { createIgnoreRules } from "#tools/eslint/utils/createIgnoreRules";
-import { createImportPresets } from "#tools/eslint/utils/createImportPresets";
-import { createPlugin } from "#tools/eslint/utils/createPlugin";
-import { createRoleRules } from "#tools/eslint/utils/createRoleRules";
-import { resolveInfoRules } from "#tools/eslint/utils/resolveInfoRules";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Options } from "#tools/eslint/types/Options";
-import type { Glob } from "#types/Glob";
-
-async function readTypescriptFiles(
-  config: LoadedConfig,
-): Promise<Glob | undefined> {
-  const language = await readSelectedLanguage(config, typescriptLanguage);
-
-  return language === undefined
-    ? undefined
-    : withExtensions("**/*", language.extensions);
-}
 
 /**
- * Builds engrenage's ESLint config objects for a loaded config: ignores,
- * recommended rules, `package.json` rules, import presets, the selected
- * conventions and role rules, each group switched off by its option.
+ * Builds engrenage's ESLint config objects for a loaded config: ignores and
+ * `package.json` rules, then each scope's recommended rules, import presets,
+ * selected conventions and role rules from its own config, confined to its files;
+ * each group is switched off by its option.
  *
  * @throws {Error} An option is invalid, a convention category or name is unknown,
  * or no extension contributes a language an environment selects.
@@ -72,37 +48,50 @@ export async function createEslintConfig(
     ...categories
   } = validate(optionsSchema, options ?? {}, "ESLint options");
 
+  // @debt convention categories load from the root config only, so a contribution active in one workspace alone reaches no scope until activation is scoped (#754)
   const [
-    scopes,
-    traits,
-    dependencies,
+    files,
+    { scopes },
+    scopeConfigs,
     conventionCategories,
   ] = await Promise.all([
-    resolveScopeSources(config),
-    config.resolve("traits"),
-    config.resolve("dependencies"),
+    config.resolve("files"),
+    config.resolve("scopes"),
+    listScopeConfigs(config),
     loadConventionCategories(config),
   ]);
 
-  const selected = selectConventions({
-    categories: conventionCategories,
-    settings: categories,
-    typeAware,
-    traits,
-    dependencies,
-  });
+  const loaders = {
+    ...roleRuleLoaders,
+    ...record(
+      entries(roleRuleOptions).map(([role, roleLoaders]) => {
+        return [
+          role,
+          { ...getOwn(roleRuleLoaders, role), ...roleLoaders },
+        ] as const;
+      }),
+    ),
+  };
 
-  const sections = await resolveConventionSections(
-    config,
-    map(selected, ({ convention }) => convention),
+  const scopeRules = await Promise.all(
+    scopeConfigs.map((scoped) => {
+      const { scopeDir } = scoped.context;
+
+      return createScopeRules({
+        config: scopeDir === rootScope ? config : scoped,
+        nested: map(
+          filter(values(scopes), ({ parent }) => parent === scopeDir),
+          ({ dir }) => dir,
+        ),
+        context,
+        categories: conventionCategories,
+        settings: categories,
+        typeAware,
+        recommended,
+        roleRuleLoaders: loaders,
+      });
+    }),
   );
-
-  const conventionRules = createConventionRules({
-    selected,
-    sections,
-    scopes,
-    context,
-  });
 
   const configs: MaybeArray<Config>[] = [];
 
@@ -124,19 +113,9 @@ export async function createEslintConfig(
           ...flatMap(resources.list({ linted: false }), ({ location }) => {
             return listLocationGlobs(location);
           }),
-          ...scopes.files.generated,
-          ...scopes.files.fixtures,
+          ...files.generated,
+          ...files.fixtures,
         ],
-      }),
-    );
-  }
-
-  if (recommended) {
-    configs.push(
-      createRecommendedRules({
-        root: context.root,
-        scopes,
-        typeAware,
       }),
     );
   }
@@ -145,41 +124,10 @@ export async function createEslintConfig(
     configs.push(createPackageJsonRules());
   }
 
-  if (categories.imports !== false) {
-    configs.push(
-      createImportPresets({
-        codeFiles: resolveScope(scopes, ["files.code"]),
-        typescriptFiles: await readTypescriptFiles(config),
-        tsconfig: await config.resolve("tsconfigPath"),
-      }),
-    );
-  }
-
-  const [structure, entities] = await Promise.all([
-    config.resolve("structure"),
-    config.resolve("entities"),
-  ]);
-
-  const roleRules = await createRoleRules(structure, entities, {
-    ...roleRuleLoaders,
-    ...record(
-      entries(roleRuleOptions).map(([role, loaders]) => {
-        return [
-          role,
-          { ...getOwn(roleRuleLoaders, role), ...loaders },
-        ] as const;
-      }),
-    ),
-  });
-
   return defineConfig(
     {
       name: `${pluginName}/plugins`,
       plugins: {
-        [pluginName]: createPlugin(conventionCategories, sections, context),
-        ...(roleRules.configs.length === 0
-          ? {}
-          : { [rolesPluginName]: roleRules.plugin }),
         "package-json": packageJson,
         perfectionist,
         sonarjs,
@@ -187,12 +135,7 @@ export async function createEslintConfig(
         "unused-imports": unusedImports,
       },
     },
-    {
-      files: resolveScope(scopes, ["files.code"]),
-      extends: [typescriptConfigs.base],
-    },
     ...configs,
-    resolveInfoRules(conventionRules),
-    ...roleRules.configs,
+    ...scopeRules,
   );
 }

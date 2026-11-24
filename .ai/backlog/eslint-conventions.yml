@@ -103,3 +103,15 @@ entries:
       - src/tools/eslint/config/schemas/optionsSchema.ts:50
     why: "#862 moved role rule loaders to defineEslintConfig's roleRules option, which only the user's ESLint config sets"
     want: an eslint.roleRules extension slot, shaped like eslint.conventions
+  - id: 261124-a7ae
+    title: "Type-aware recommended rules and other `files.*` references reach no workspace file: the project-only `files` key lists the root scope's published, private and discovered files only"
+    sites:
+      - src/tools/eslint/operations/createScopeRules.ts:142
+    why: "Left by #764, which lints each scope from its child resolver; workspace files never had these rules, and #881 only removes Interscript stand-ins"
+    want: "Each scope's published, private and discovered files resolved per scope, so its block's references cover its own files (a #675 consumer)"
+  - id: 261124-803d
+    title: "A lint convention contributed by an extension active in one workspace alone reaches no scope: convention categories load from the root config only"
+    sites:
+      - src/tools/eslint/operations/createEslintConfig.ts:51
+    why: "#754 activates extensions per scope by when.preset; none of its contributions is a lint convention, so #881 needs no fix"
+    want: Each scope's conventions loaded from its own child resolver's active extensions

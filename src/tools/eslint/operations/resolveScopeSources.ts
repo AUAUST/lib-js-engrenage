@@ -7,11 +7,10 @@ import type { ScopeSources } from "#tools/eslint/types/ScopeSources";
 export async function resolveScopeSources(
   config: LoadedConfig,
 ): Promise<ScopeSources> {
-  const [environments, tests, files, workspaces] = await Promise.all([
+  const [environments, tests, files] = await Promise.all([
     readEnvironments(config),
     config.resolve("tests"),
     config.resolve("files"),
-    config.resolve("workspaces"),
   ]);
 
   return {
@@ -22,6 +21,5 @@ export async function resolveScopeSources(
     ),
     tests,
     files,
-    workspaces,
   };
 }

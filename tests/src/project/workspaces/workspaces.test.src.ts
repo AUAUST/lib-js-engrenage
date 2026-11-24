@@ -12,8 +12,6 @@ import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
-import { resolveScope } from "#tools/eslint/operations/resolveScope";
-import { resolveScopeSources } from "#tools/eslint/operations/resolveScopeSources";
 
 import sync from "#bin/engrenage/sync";
 
@@ -264,24 +262,6 @@ describe("workspaces", () => {
       (await loadConfig(project.root)).resolve("workspaces"),
     ).rejects.toThrow(
       `workspaces.extensions/action-*.name must contain ${placeholder}`,
-    );
-  });
-
-  test("derives the lint scope from the declaration", async () => {
-    const project = createProject();
-
-    const resolved = await loadConfig(project.root);
-
-    const scopes = await resolveScopeSources(resolved);
-
-    expect(resolveScope(scopes, ["files.workspaces"])).toEqual([
-      "extensions/action-a/**/*{.ts,.mts,.cts}",
-      "extensions/action-b/**/*{.ts,.mts,.cts}",
-      "extensions/functions-c/**/*{.ts,.mts,.cts}",
-    ]);
-
-    expect(resolveScope(scopes, ["files.code"])).toEqual(
-      expect.arrayContaining(resolveScope(scopes, ["files.workspaces"])),
     );
   });
 
