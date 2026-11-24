@@ -150,6 +150,6 @@ entries:
   - id: 261124-3cd2
     title: A workspace registration placed on a directory an inherited registration re-places, such as src, raises environment-placement-conflict unless the workspace unplaces the inherited one
     sites:
-      - src/batiment/environments/utils/resolveRegisteredEnvironments.ts:56
-    why: Inherited registrations re-place relative to each workspace (#886), so shopify-theme or shopify-function registrations on src collide
-    want: A scope's own registration replacing an inherited one on the same directory, or a decided reason to keep the conflict
+      - src/batiment/environments/operations/discoverEnvironmentPlacements.ts:36
+    why: Inherited and built-in placements re-place relative to each workspace (#886); presets unplace built-in names themselves (#887 for shopify-app), but no workspace config or preset can know the root's own registration names
+    want: A scope's own registration replacing an inherited or default one on the same directory or file, or a decided reason to keep the conflict
