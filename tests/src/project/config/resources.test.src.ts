@@ -6,6 +6,7 @@ import { stateDirectory } from "#project/config/constants";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { fillBlocks } from "#tests/utils/fillBlocks";
+import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 
 function createConfig(extensions: readonly unknown[]) {
   return createProjectConfig({
@@ -202,6 +203,55 @@ describe("file resources", () => {
 
     expect(() => resources.get("gitignore")).not.toThrow();
     expect(() => resources.list({ generated: true })).not.toThrow();
+  });
+
+  test("locates a resource in the workspace alone activating its owner", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ name: "root", type: "module" }),
+      "src/index.ts": "export {};\n",
+      "theme/package.json": JSON.stringify({ name: "theme", type: "module" }),
+      "theme/.workspace.json": JSON.stringify({ preset: "library" }),
+      "theme/src/index.ts": "export {};\n",
+    });
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: withSourceRuntime({
+        extensions: [
+          {
+            name: "scoped-fixture",
+            when: {
+              preset: "library",
+            },
+            owns: {
+              files: {
+                "scoped.out": {
+                  committed: false,
+                  locate: () => {
+                    return { file: "scoped.out" };
+                  },
+                },
+              },
+            },
+          },
+        ],
+        workspaces: {
+          theme: { name: "theme" },
+        },
+      }),
+      configFile: undefined,
+    });
+
+    const resources = await config.resolve("resources");
+
+    expect(
+      resources
+        .list({ committed: false })
+        .filter(({ name }) => name === "scoped.out")
+        .map(({ location }) => location),
+    ).toEqual([{ file: "theme/scoped.out" }]);
+
+    expect(resources.get("scoped.out")).toBeUndefined();
   });
 
   test("fails on a part of a file closed to parts", () => {

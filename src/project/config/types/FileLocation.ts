@@ -3,8 +3,9 @@ import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
 /**
- * Where a file resource lives: one file, one directory or a glob set. A file or
- * directory path must lie within the project root and is kept relative to it.
+ * Where a file resource lives: one file, one directory or a glob set, relative
+ * to the scope locating it. A file or directory path must lie within the project
+ * root and is kept relative to it.
  *
  * @stable
  */

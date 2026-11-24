@@ -5,16 +5,16 @@ import type { FileLocation } from "#project/config/types/FileLocation";
 
 /**
  * A file, directory or glob set an extension owns under `owns.files`, located
- * only while its owner is active; two resources at the same path fail the
- * `resources` key.
+ * in each scope where its owner is active; two resources at the same path fail
+ * the `resources` key.
  *
  * @stable
  */
 export interface FileResource {
   /**
-   * Locates the resource in the project, `undefined` when the project has
-   * none. A rejection fails only the reads of this resource and the listings
-   * its flags match.
+   * Locates the resource in the scope `config` resolves, `undefined` when the
+   * scope has none. A rejection fails only the reads of this resource and the
+   * listings its flags match.
    */
   locate(config: ConfigResolver): MaybePromise<FileLocation | undefined>;
   /**
