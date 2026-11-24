@@ -1,5 +1,6 @@
 import { restoreLinksCommand, unlinkCommand } from "#tools/pnpm/constants";
 import {
+  findLinksRoot,
   linkCheckout,
   listLinks,
   restoreLinks,
@@ -68,9 +69,21 @@ export default async function (
 ): Promise<void> {
   const { reporter } = getRunContext();
 
-  const config = await loadValidatedConfig(process.cwd(), { reporter });
+  const cwd = process.cwd();
 
-  const { root } = config.context;
+  if (repository !== undefined) {
+    if (directory === undefined) {
+      throw new Error(
+        "Expected `engrenage link <repository> <directory>`, `--remove <repository>` or `--restore`",
+      );
+    }
+
+    const config = await loadValidatedConfig(cwd, { reporter });
+
+    return link(config, repository, directory);
+  }
+
+  const root = (await findLinksRoot(cwd)) ?? cwd;
 
   if (remove !== undefined) {
     await unlinkCheckout(root, remove);
@@ -88,15 +101,5 @@ export default async function (
     );
   }
 
-  if (repository === undefined) {
-    return list(root);
-  }
-
-  if (directory === undefined) {
-    throw new Error(
-      "Expected `engrenage link <repository> <directory>`, `--remove <repository>` or `--restore`",
-    );
-  }
-
-  await link(config, repository, directory);
+  return list(root);
 }

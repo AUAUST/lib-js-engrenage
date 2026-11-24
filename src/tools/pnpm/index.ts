@@ -9,6 +9,7 @@ export { resolvePnpmRangeStatus } from "#tools/pnpm/utils/resolvePnpmRangeStatus
 // @end
 
 // @barrel operations
+export { findLinksRoot } from "#tools/pnpm/operations/findLinksRoot";
 export { inspectLink } from "#tools/pnpm/operations/inspectLink";
 export { installDependencies } from "#tools/pnpm/operations/installDependencies";
 export { linkCheckout } from "#tools/pnpm/operations/linkCheckout";

@@ -16,11 +16,15 @@ import { runSync } from "#project/sync/index";
 import { createCheckout } from "#tests/utils/createCheckout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
+import { mockCwd } from "#tests/utils/mockCwd";
 import { linkCheckout } from "#tools/pnpm/operations/linkCheckout";
 import { listLinks } from "#tools/pnpm/operations/listLinks";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
 import { restoreLinks } from "#tools/pnpm/operations/restoreLinks";
 import { unlinkCheckout } from "#tools/pnpm/operations/unlinkCheckout";
+import { runContext } from "#workflows/cli/operations/runContext";
+
+import link from "#bin/engrenage/actions/link";
 
 const name = "@auaust/engrenage";
 const installed = "../.pnpm/engrenage/node_modules/@auaust/engrenage";
@@ -233,5 +237,32 @@ describe("links", () => {
     expect(readlinkSync(consumer.resolve(linkPath))).toBe(installed);
 
     expect(await checkLinks(consumer.root)).toBeUndefined();
+  });
+
+  test("restores links from a workspace without loading a config that needs the checkout", async () => {
+    const { consumer, checkout } = await linkEngrenage();
+
+    writeFileSync(
+      consumer.resolve("engrenage.config.ts"),
+      'throw new Error("needs the checkout");\n',
+    );
+
+    mkdirSync(consumer.resolve("theme"));
+
+    rmSync(consumer.resolve(linkPath));
+
+    symlinkSync(installed, consumer.resolve(linkPath));
+
+    mockCwd(consumer.resolve("theme"));
+
+    await runContext.run(
+      {
+        signal: new AbortController().signal,
+        reporter: createTestReporter(),
+      },
+      () => link(undefined, undefined, { restore: true }),
+    );
+
+    expect(readTarget(consumer.root)).toBe(checkout.root);
   });
 });
