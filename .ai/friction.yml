@@ -843,3 +843,11 @@ entries:
     subject: linked package executables
     tried: pnpm engrenage sync in a linked consumer
     stopped: bin shims ran the installed copy; fixed link
+  - id: 261124-51e5
+    subject: engrenage link --restore
+    tried: restore link after offline install
+    stopped: config import needed linked checkout; fixed action
+  - id: 261124-b6a5
+    subject: pnpm verifyDepsBeforeRun
+    tried: sync after lockfile-only install
+    stopped: deps check refused; ran offline install
