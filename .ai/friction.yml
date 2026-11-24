@@ -763,10 +763,6 @@ entries:
     subject: codegen config on moved generated file
     tried: pnpm support codegen config after moving NamespaceInput.ts
     stopped: formatted it until sync rewrote .prettierignore; synced, restored, regenerated
-  - id: 261123-a9ba
-    subject: sync barrel export missing
-    tried: engrenage sync after adding declarer
-    stopped: barrel lacked export; added lines by hand, reran
   - id: 261123-d56f
     subject: BSD sed -E word boundary
     tried: renamed identifiers with sed -E and \b
@@ -795,10 +791,6 @@ entries:
     subject: gh issue view hook
     tried: gh issue view of a sibling issue
     stopped: hook points to the .ai/issues copy; read it instead
-  - id: 261124-7033
-    subject: sync barrel export missing
-    tried: engrenage sync after adding util and type
-    stopped: lint refused the missing export; added barrel lines by hand
   - id: 261124-246c
     subject: extension-imports lint rule
     tried: dynamic import of a peer domain index in extension load
@@ -851,7 +843,3 @@ entries:
     subject: zsh = word expansion
     tried: echo ====== as separator
     stopped: bash hook refused; quoted the separator
-  - id: 261124-664b
-    subject: sync barrel export missing
-    tried: engrenage sync after adding operation
-    stopped: barrel loaded before regen; added line by hand
