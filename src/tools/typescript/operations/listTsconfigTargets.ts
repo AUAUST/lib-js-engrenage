@@ -1,4 +1,4 @@
-import { listTsconfigOwners } from "#tools/typescript/operations/listTsconfigOwners";
+import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { ConfigResolver } from "#project/config/index";
 import type {
@@ -35,7 +35,7 @@ function toTarget(
       };
 }
 
-// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, resolveTsconfigEnvironments and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
+// @debt "tests.dist" does not fit the config shape, so it is special-cased here and in createResolvedConfig, toTsconfigEnvironment and the extends, include, paths and skipLibCheck producers; a single lookup from tsconfig key to its environment would remove the branches
 async function findTsconfig(config: ConfigResolver, key: TsconfigKey) {
   if (key === "tests.dist") {
     const { dist } = await config.resolve("tests");
@@ -51,11 +51,11 @@ async function findTsconfig(config: ConfigResolver, key: TsconfigKey) {
 async function listVariantKeys(
   config: ConfigResolver,
 ): Promise<readonly TsconfigKey[]> {
-  const owners = await listTsconfigOwners(config);
+  const names = await listTsconfigEnvironments(config);
 
   const { active } = await resolveTsconfigEnvironment(config, "tests");
 
-  return active ? [...owners, "tests.dist"] : owners;
+  return active ? [...names, "tests.dist"] : names;
 }
 
 export async function listTsconfigTargets(
@@ -78,13 +78,7 @@ export async function listTsconfigTargets(
   ];
 
   for (const key of await listVariantKeys(config)) {
-    const resolved = await findTsconfig(config, key);
-
-    if (resolved.owner !== key) {
-      continue;
-    }
-
-    const target = toTarget(key, resolved);
+    const target = toTarget(key, await findTsconfig(config, key));
 
     if (target !== undefined) {
       targets.push(target);

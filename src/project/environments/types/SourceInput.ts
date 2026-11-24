@@ -62,14 +62,9 @@ export interface SourceInput {
   tsconfig?: ((false | {
     /**
      * File of this tsconfig.
-     * @default `tsconfig.<environment>.json`, named after the environment that owns it
+     * @default `tsconfig.<environment>.json`, named after its environment
      */
     path?: (string | undefined)
-    /**
-     * Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.
-     * @default none, except `scripts` for `tooling`
-     */
-    inherits?: (keyof Engrenage.Environments | undefined)
     /**
      * Value of `extends`.
      * `false` leaves the field to the file.
@@ -79,13 +74,13 @@ export interface SourceInput {
     /**
      * Value of `include`.
      * `false` leaves the field to the file.
-     * @default the TypeScript files of the environments that share this tsconfig, from their placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
+     * @default the TypeScript files of the environment, from its placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists
      */
     include?: (ManagedListOption<string> | undefined)
     /**
      * Value of `exclude`.
      * `false` leaves the field to the file.
-     * @default the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the directories of the environments sharing this tsconfig
+     * @default the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the environment's directories
      */
     exclude?: (ManagedListOption<string> | undefined)
     /**

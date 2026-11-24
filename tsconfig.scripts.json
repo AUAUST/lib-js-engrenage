@@ -4,11 +4,6 @@
     "scripts/**/*.ts",
     "scripts/**/*.mts",
     "scripts/**/*.cts",
-    "*.config.ts",
-    ".*.ts",
-    "tooling/**/*.ts",
-    "tooling/**/*.mts",
-    "tooling/**/*.cts",
     "global.d.ts"
   ],
   "compilerOptions": {

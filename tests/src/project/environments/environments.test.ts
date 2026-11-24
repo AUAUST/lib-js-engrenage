@@ -231,30 +231,21 @@ describe("environments", () => {
 });
 
 describe("environment tsconfigs", () => {
-  test("resolve owner and default path, following inherits", async () => {
-    const project = createProject(
-      '{ preset: "library", scripts: { tsconfig: { inherits: "bin" } } }',
-    );
+  test("resolve each default path after its environment", async () => {
+    const project = createProject('{ preset: "library" }');
 
     const config = await loadConfig(project.root);
 
     expect((await config.resolve("src")).tsconfig).toMatchObject({
-      owner: "src",
       file: "tsconfig.src.json",
       check: true,
     });
 
-    expect((await config.resolve("scripts")).tsconfig).toMatchObject({
-      owner: "bin",
-      file: "tsconfig.bin.json",
-    });
-
     expect((await config.resolve("tooling")).tsconfig).toMatchObject({
-      owner: "bin",
+      file: "tsconfig.tooling.json",
     });
 
     expect((await config.resolve("tests")).dist.tsconfig).toMatchObject({
-      owner: "tests.dist",
       file: "tsconfig.tests.dist.json",
       check: false,
     });
@@ -265,33 +256,11 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("bin")).tsconfig.owner).toBeUndefined();
+    expect((await config.resolve("bin")).tsconfig.file).toBeUndefined();
 
     await expect(
       (await config.resolve("bin")).tsconfig.path,
     ).resolves.toBeUndefined();
-  });
-
-  test("fail on a cycle and on an inheriting environment with other options", async () => {
-    const cycle = await loadConfig(
-      createProject(
-        '{ bin: { tsconfig: { inherits: "scripts" } }, scripts: { tsconfig: { inherits: "bin" } } }',
-      ).root,
-    );
-
-    await expect(cycle.resolve("bin")).rejects.toThrow(
-      "inherits in a cycle: bin → scripts → bin",
-    );
-
-    const conflict = await loadConfig(
-      createProject(
-        '{ scripts: { tsconfig: { inherits: "bin", lib: ["es2024"] } } }',
-      ).root,
-    );
-
-    await expect(conflict.resolve("scripts")).rejects.toThrow(
-      "scripts.tsconfig inherits bin and cannot also set lib",
-    );
   });
 
   test("warn when the base tsconfig is not named tsconfig.json", async () => {

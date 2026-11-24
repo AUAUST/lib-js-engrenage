@@ -16,7 +16,7 @@ import {
   type TsconfigTarget,
 } from "#project/tsconfig/index";
 import { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
-import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
+import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
@@ -31,14 +31,14 @@ async function listGlobalDeclarations(
 
 async function listSourceDeclarations(
   config: LoadedConfig,
-  owner: string,
+  name: string,
 ): Promise<readonly File[]> {
   const { namespaces } = await config.resolve("importGrants");
 
-  const forbidden = namespaces[owner];
+  const forbidden = namespaces[name];
 
   if (
-    owner === "src" ||
+    name === "src" ||
     forbidden === undefined ||
     forbidden.includes("internal-aliases")
   ) {
@@ -55,41 +55,35 @@ async function listSourceDeclarations(
 
 async function listEnvironmentGlobs(
   config: LoadedConfig,
-  names: readonly string[],
+  name: string,
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
   const { environments } = await context.discover();
 
-  const globs = await Promise.all(
-    names.map(async (name) => {
-      const registered = environments.registered.find(({ registration }) => {
-        return registration.name === name;
-      });
+  const registered = environments.registered.find(({ registration }) => {
+    return registration.name === name;
+  });
 
-      if (registered === undefined) {
-        throw new Error(
-          `The tsconfig of the ${name} environment includes its placements, yet no environment named ${name} is registered`,
-        );
-      }
+  if (registered === undefined) {
+    throw new Error(
+      `The tsconfig of the ${name} environment includes its placements, yet no environment named ${name} is registered`,
+    );
+  }
 
-      const languages = await readEnvironmentLanguages(config, name);
+  const languages = await readEnvironmentLanguages(config, name);
 
-      const instance = environments.instances.find(({ environment, scope }) => {
-        return environment === name && scope === rootScope;
-      });
+  const instance = environments.instances.find(({ environment, scope }) => {
+    return environment === name && scope === rootScope;
+  });
 
-      const dirs = instance?.dirs ?? [];
+  const dirs = instance?.dirs ?? [];
 
-      // @debt file placements enter `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig
-      return [
-        ...registered.registration.files,
-        ...filesIn(dirs, listLanguageFiles(languages)),
-      ];
-    }),
-  );
-
-  return globs.flat();
+  // @debt file placements enter `include` as their registration's globs, a file another environment's placement keeps included too, since listing the matched files would rewrite every generated tsconfig
+  return [
+    ...registered.registration.files,
+    ...filesIn(dirs, listLanguageFiles(languages)),
+  ];
 }
 
 async function createDefaultInclude(
@@ -97,16 +91,13 @@ async function createDefaultInclude(
   key: TsconfigKey,
   file: File,
 ): Promise<() => readonly string[]> {
-  const {
-    owner,
-    environments,
-  } = await resolveTsconfigEnvironments(config, key);
+  const name = toTsconfigEnvironment(key);
 
-  const globs = await listEnvironmentGlobs(config, environments);
+  const globs = await listEnvironmentGlobs(config, name);
 
   const declarations = [
     ...(await listGlobalDeclarations(config)),
-    ...(await listSourceDeclarations(config, owner)),
+    ...(await listSourceDeclarations(config, name)),
   ];
 
   return () => toTsconfigGlobs(file, [...globs, ...declarations]);

@@ -50,7 +50,7 @@ async function inheritsTestsTsconfig(
 
   return (
     target.key === "tests.dist" &&
-    tests.tsconfig.owner === "tests" &&
+    tests.tsconfig.file !== undefined &&
     isDefaultOption(target.extends)
   );
 }
@@ -128,17 +128,14 @@ async function listDeclaredTsconfigFiles(
   for (const { name } of registrations) {
     const { tsconfig } = await resolveTsconfigEnvironment(config, name);
 
-    if (tsconfig.owner === name && tsconfig.file !== undefined) {
+    if (tsconfig.file !== undefined) {
       files.push(tsconfig.file);
     }
   }
 
   const { dist } = await config.resolve("tests");
 
-  if (
-    dist.tsconfig.owner === "tests.dist" &&
-    dist.tsconfig.file !== undefined
-  ) {
+  if (dist.tsconfig.file !== undefined) {
     files.push(dist.tsconfig.file);
   }
 

@@ -194,7 +194,7 @@ describe("syncTsconfigFiles", () => {
     ]);
   });
 
-  test("creates a shared tsconfig whose owner is inactive but an inheritor is active", async () => {
+  test("creates the tooling tsconfig without the scripts one when only tooling is active", async () => {
     const { project, config } = await createProject(
       {},
       {
@@ -206,13 +206,15 @@ describe("syncTsconfigFiles", () => {
 
     await config.context.filesystem.flush();
 
-    expect(JSON.parse(project.read("tsconfig.scripts.json")).include).toEqual(
+    expect(JSON.parse(project.read("tsconfig.tooling.json")).include).toEqual(
       expect.arrayContaining(["*.config.ts"]),
     );
 
+    expect(() => project.read("tsconfig.scripts.json")).toThrow("ENOENT");
+
     expect(JSON.parse(project.read("tsconfig.json")).references).toEqual([
       { path: "./tsconfig.src.json" },
-      { path: "./tsconfig.scripts.json" },
+      { path: "./tsconfig.tooling.json" },
     ]);
   });
 

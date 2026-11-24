@@ -5,7 +5,7 @@ import type { File } from "#types/File";
 async function resolveDistProject(config: LoadedConfig): Promise<File> {
   const tests = await config.resolve("tests");
 
-  const { owner, file } = tests.dist.tsconfig;
+  const { file } = tests.dist.tsconfig;
 
   const path = await tests.dist.tsconfig.path;
 
@@ -15,7 +15,7 @@ async function resolveDistProject(config: LoadedConfig): Promise<File> {
     );
   }
 
-  if (owner === undefined || file === undefined) {
+  if (file === undefined) {
     throw new Error(
       "The dist tsconfig is disabled in the engrenage config (tests.dist.tsconfig: false)",
     );

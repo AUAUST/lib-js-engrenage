@@ -1,18 +1,13 @@
 import { boolean, record, string, unknown } from "valibot";
 
-import { entries, getOwn } from "@auaust/toolkit/object";
-
 import {
   declare,
   declareList,
   declareLocation,
   declareManagedList,
   declareObject,
-  unset,
   type Description,
 } from "#foundation/options/index";
-import { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";
-import { defaultTsconfigInherits } from "#project/tsconfig/constants";
 import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
 
 export function declareEnvironmentTsconfig<Context = unknown>(
@@ -24,8 +19,6 @@ export function declareEnvironmentTsconfig<Context = unknown>(
     checked?: boolean;
   },
 ) {
-  const inherits = getOwn(defaultTsconfigInherits, key);
-
   const { checked = true } = options;
 
   return declareObject(
@@ -34,12 +27,8 @@ export function declareEnvironmentTsconfig<Context = unknown>(
         description: "File of this tsconfig.",
         optional: {
           value: `tsconfig.${key}.json`,
-          explain: "`tsconfig.<environment>.json`, named after the environment that owns it",
+          explain: "`tsconfig.<environment>.json`, named after its environment",
         },
-      }),
-      inherits: declare(inheritsSchema, {
-        description: "Environment whose tsconfig this one shares instead of having its own: its files and options apply here, so no other tsconfig option can be set alongside.",
-        optional: unset("none, except `scripts` for `tooling`"),
       }),
       extends: declareManagedList(string(), {
         description: [
@@ -53,14 +42,14 @@ export function declareEnvironmentTsconfig<Context = unknown>(
           "Value of `include`.",
           "`false` leaves the field to the file.",
         ],
-        explain: "the TypeScript files of the environments that share this tsconfig, from their placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists",
+        explain: "the TypeScript files of the environment, from its placements in the root scope, plus `src`'s `env.d.ts` for `tests` and the environments importing `src`; for `tests.dist`, only the plain and `.dist` test files, the setup file and the declarations at any depth, so no `.src` test brings source into the dist check; every tsconfig adds the root `global.d.ts` when it exists",
       }),
       exclude: declareManagedList(string(), {
         description: [
           "Value of `exclude`.",
           "`false` leaves the field to the file.",
         ],
-        explain: "the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the directories of the environments sharing this tsconfig",
+        explain: "the test fixtures for a tsconfig that includes tests, and the directories other environments are placed on below the environment's directories",
       }),
       lib: declareManagedList(string(), {
         description: [
@@ -105,28 +94,11 @@ export function declareEnvironmentTsconfig<Context = unknown>(
             return false;
           }
 
-          return inherits === undefined ? {} : { inherits };
+          return {};
         },
       },
       disable: {
         value: {},
-      },
-      assert(input, path) {
-        const { inherits: shared, ...others } = input;
-
-        if (shared === undefined) {
-          return;
-        }
-
-        const conflicting = entries(others)
-          .filter(([, value]) => value !== undefined)
-          .map(([option]) => option);
-
-        if (conflicting.length > 0) {
-          throw new Error(
-            `${path} inherits ${shared} and cannot also set ${conflicting.join(", ")}`,
-          );
-        }
       },
     },
   );

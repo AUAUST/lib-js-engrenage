@@ -5,7 +5,7 @@ import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { listTsconfigOwners } from "#tools/typescript/operations/listTsconfigOwners";
+import { listTsconfigEnvironments } from "#tools/typescript/operations/listTsconfigEnvironments";
 import { resolveTsconfigEnvironment } from "#tools/typescript/operations/resolveTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
@@ -16,8 +16,8 @@ async function listReferencedFiles(
 ): Promise<readonly File[]> {
   const files: File[] = [];
 
-  for (const owner of await listTsconfigOwners(config)) {
-    const { tsconfig } = await resolveTsconfigEnvironment(config, owner);
+  for (const name of await listTsconfigEnvironments(config)) {
+    const { tsconfig } = await resolveTsconfigEnvironment(config, name);
 
     const { file, check } = tsconfig;
 

@@ -37,7 +37,7 @@ export const toolingSchema = declareObject(
         "Options of the tsconfig that sync writes for the tooling files.",
         "`false` manages none.",
       ],
-      explain: "it shares the scripts tsconfig",
+      explain: "`tsconfig.tooling.json` with derived options",
     }),
   },
   {

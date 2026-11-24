@@ -7,14 +7,14 @@ import {
   type TsconfigKey,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { resolveTsconfigEnvironments } from "#tools/typescript/operations/resolveTsconfigEnvironments";
+import { toTsconfigEnvironment } from "#tools/typescript/utils/toTsconfigEnvironment";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
 async function listNestedPlacements(
   config: LoadedConfig,
-  names: readonly string[],
+  name: string,
 ): Promise<readonly string[]> {
   const context = await config.resolve("structure.context");
 
@@ -22,10 +22,10 @@ async function listNestedPlacements(
 
   return environments.instances
     .filter(({ environment, scope }) => {
-      return scope === rootScope && names.includes(environment);
+      return scope === rootScope && environment === name;
     })
     .flatMap(({ nested }) => nested)
-    .filter(({ environment }) => !names.includes(environment))
+    .filter(({ environment }) => environment !== name)
     .map(({ dir }) => `${dir}/**`);
 }
 
@@ -34,17 +34,15 @@ async function createDefaultExclude(
   key: TsconfigKey,
   file: File,
 ): Promise<() => readonly string[]> {
-  const { environments } = await resolveTsconfigEnvironments(config, key);
-
-  const includesTests = environments.includes("tests");
+  const name = toTsconfigEnvironment(key);
 
   const { fixtures } = await config.resolve("files");
 
-  const nested = await listNestedPlacements(config, environments);
+  const nested = await listNestedPlacements(config, name);
 
   return () => {
     return toTsconfigGlobs(file, [
-      ...(includesTests ? fixtures : []),
+      ...(name === "tests" ? fixtures : []),
       ...nested,
     ]);
   };

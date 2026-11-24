@@ -4,6 +4,5 @@ import type { ManagedTsconfigFields } from "#project/tsconfig/types/ManagedTscon
 export interface ManagedEnvironmentTsconfig extends ManagedTsconfigFields {
   readonly enabled: true;
   readonly path: ResolvedLocation;
-  readonly inherits: string | undefined;
   readonly check: boolean;
 }

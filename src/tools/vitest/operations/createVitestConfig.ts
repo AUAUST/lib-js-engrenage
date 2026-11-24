@@ -136,13 +136,9 @@ export async function createVitestConfig(
   const tests = await config.resolve("tests");
 
   if (testsBuild && tests.active) {
-    const { owner, file } = tests.dist.tsconfig;
+    const { file } = tests.dist.tsconfig;
 
-    if (
-      owner !== undefined &&
-      file !== undefined &&
-      (await tests.dist.tsconfig.path) === undefined
-    ) {
+    if (file !== undefined && (await tests.dist.tsconfig.path) === undefined) {
       throw new Error(
         `The dist tsconfig ${file} does not exist in ${config.context.root}, run \`engrenage sync\` to create it`,
       );

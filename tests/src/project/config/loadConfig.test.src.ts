@@ -432,13 +432,13 @@ describe("traits", () => {
       published: true,
     });
 
-    expect((await library.resolve("tests")).dist.tsconfig.owner).toBe(
-      "tests.dist",
+    expect((await library.resolve("tests")).dist.tsconfig.file).toBe(
+      "tsconfig.tests.dist.json",
     );
 
     expect(await app.resolve("traits")).toEqual({ published: false });
 
-    expect((await app.resolve("tests")).dist.tsconfig.owner).toBeUndefined();
+    expect((await app.resolve("tests")).dist.tsconfig.file).toBeUndefined();
   });
 
   test("lets traits adjust the preset, enabling winning over disabling", async () => {
@@ -453,7 +453,7 @@ describe("traits", () => {
     });
 
     expect(
-      (await disabled.resolve("tests")).dist.tsconfig.owner,
+      (await disabled.resolve("tests")).dist.tsconfig.file,
     ).toBeUndefined();
 
     expect(await enabled.resolve("traits")).toEqual({
@@ -466,6 +466,6 @@ describe("traits", () => {
       'preset: "library", tests: { dist: { tsconfig: false } }',
     );
 
-    expect((await config.resolve("tests")).dist.tsconfig.owner).toBeUndefined();
+    expect((await config.resolve("tests")).dist.tsconfig.file).toBeUndefined();
   });
 });

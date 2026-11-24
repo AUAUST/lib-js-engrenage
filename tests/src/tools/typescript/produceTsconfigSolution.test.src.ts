@@ -60,19 +60,17 @@ describe("solution tsconfig", () => {
     ]);
   });
 
-  test("skips an environment with check false and an inheriting one", async () => {
+  test("skips an environment with check false", async () => {
     const { read } = await syncProject({
       tests: {
         tsconfig: { check: false },
-      },
-      scripts: {
-        tsconfig: { inherits: "bin" },
       },
     });
 
     expect(read("tsconfig.json").references).toEqual([
       { path: "./tsconfig.src.json" },
       { path: "./tsconfig.bin.json" },
+      { path: "./tsconfig.scripts.json" },
     ]);
   });
 

@@ -9,7 +9,6 @@ export { readTsconfigPaths } from "#project/tsconfig/utils/readTsconfigPaths";
 export { readTsconfigValue } from "#project/tsconfig/utils/readTsconfigValue";
 export { relativeToTsconfig } from "#project/tsconfig/utils/relativeToTsconfig";
 export { resolveTsconfig } from "#project/tsconfig/utils/resolveTsconfig";
-export { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";
 export { toJsonValue } from "#project/tsconfig/utils/toJsonValue";
 export { toTsconfigGlobs } from "#project/tsconfig/utils/toTsconfigGlobs";
 export { toTsconfigSpecifier } from "#project/tsconfig/utils/toTsconfigSpecifier";
@@ -27,9 +26,7 @@ export type * from "#project/tsconfig/types/ResolvedEnvironmentTsconfig";
 export type * from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
 export type * from "#project/tsconfig/types/ResolvedTypescript";
 export type * from "#project/tsconfig/types/Tsconfig";
-export type * from "#project/tsconfig/types/TsconfigGroups";
 export type * from "#project/tsconfig/types/TsconfigKey";
-export type * from "#project/tsconfig/types/TsconfigOwner";
 export type * from "#project/tsconfig/types/TsconfigProducer";
 export type * from "#project/tsconfig/types/TsconfigTarget";
 export type * from "#project/tsconfig/types/TypescriptInput";
@@ -43,7 +40,6 @@ export {
 } from "#project/tsconfig/constants";
 
 // @barrel config/schemas
-export { inheritsSchema } from "#project/tsconfig/config/schemas/inheritsSchema";
 export { typescriptSchema } from "#project/tsconfig/config/schemas/typescriptSchema";
 // @end
 

@@ -1,15 +1,10 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import { resolveTsconfigOwner } from "#project/tsconfig/utils/resolveTsconfigOwner";
-import type { TsconfigGroups } from "#project/tsconfig/types/TsconfigGroups";
-import type { TsconfigKey } from "#project/tsconfig/types/TsconfigKey";
+import type { ResolvedEnvironmentTsconfigOption } from "#project/tsconfig/types/ResolvedEnvironmentTsconfigOption";
 
-export function resolveTsconfig(key: TsconfigKey, groups: TsconfigGroups) {
-  const owner = resolveTsconfigOwner(key, groups);
-
-  if (owner === undefined) {
+export function resolveTsconfig(option: ResolvedEnvironmentTsconfigOption) {
+  if (!option.enabled) {
     return freeze({
-      owner: undefined,
       file: undefined,
       location: undefined,
       extends: undefined,
@@ -23,19 +18,16 @@ export function resolveTsconfig(key: TsconfigKey, groups: TsconfigGroups) {
     });
   }
 
-  const { group } = owner;
-
   return freeze({
-    owner: owner.key,
-    file: group.path.file,
-    location: group.path,
-    extends: group.extends,
-    include: group.include,
-    exclude: group.exclude,
-    lib: group.lib,
-    types: group.types,
-    compilerOptions: group.compilerOptions,
-    unmanaged: group.unmanaged,
-    check: group.check,
+    file: option.path.file,
+    location: option.path,
+    extends: option.extends,
+    include: option.include,
+    exclude: option.exclude,
+    lib: option.lib,
+    types: option.types,
+    compilerOptions: option.compilerOptions,
+    unmanaged: option.unmanaged,
+    check: option.check,
   });
 }

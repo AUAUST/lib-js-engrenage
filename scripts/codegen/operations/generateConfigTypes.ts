@@ -26,7 +26,6 @@ import {
 import { tagDeclarationSchema } from "#project/docs/index";
 import { formatterNameSchema } from "#project/format/index";
 import { presetNameSchema } from "#project/presets/index";
-import { inheritsSchema } from "#project/tsconfig/index";
 import { collectConfigInputs } from "#scripts/codegen/operations/collectConfigInputs";
 import { composeInputSchemas } from "#scripts/codegen/operations/composeInputSchemas";
 import { findConfigTypeImports } from "#scripts/codegen/utils/findConfigTypeImports";
@@ -117,7 +116,6 @@ const namedTypes = new Map<unknown, string>([
   [buildToolNameSchema, "keyof Engrenage.BuildTools"],
   [formatterNameSchema, "keyof Engrenage.Formatters"],
   [presetNameSchema, "keyof Engrenage.Presets"],
-  [inheritsSchema, "keyof Engrenage.Environments"],
   [preferredSchema, "(keyof Engrenage.AgentRuntimes)[]"],
   [roleGlobsSchema, "Glob | Globs"],
   [roleRulesSchema, "RoleRules"],

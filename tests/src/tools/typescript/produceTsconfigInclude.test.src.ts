@@ -89,25 +89,17 @@ describe("produceTsconfigInclude", () => {
     ]);
   });
 
-  test("adds the globs of an inheriting environment", async () => {
+  test("gives the tooling files their own tsconfig, apart from scripts", async () => {
     const read = await syncProject(
-      {
-        scripts: {
-          tsconfig: { inherits: "bin" },
-        },
-      },
+      {},
       {
         "vite.config.ts": "",
+        "scripts/a.ts": "",
+        "tooling/b.ts": "",
       },
     );
 
-    expect(read("tsconfig.bin.json").include).toEqual([
-      "bin/**/*.ts",
-      "bin/**/*.mts",
-      "bin/**/*.cts",
-      "scripts/**/*.ts",
-      "scripts/**/*.mts",
-      "scripts/**/*.cts",
+    expect(read("tsconfig.tooling.json").include).toEqual([
       "*.config.ts",
       ".*.ts",
       "tooling/**/*.ts",
@@ -115,7 +107,11 @@ describe("produceTsconfigInclude", () => {
       "tooling/**/*.cts",
     ]);
 
-    expect(() => read("tsconfig.scripts.json")).toThrow("ENOENT");
+    expect(read("tsconfig.scripts.json").include).toEqual([
+      "scripts/**/*.ts",
+      "scripts/**/*.mts",
+      "scripts/**/*.cts",
+    ]);
   });
 
   test("includes the declarations of src in the tests and consumers, never in tests.dist", async () => {

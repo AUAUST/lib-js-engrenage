@@ -250,7 +250,7 @@ describe("engrenage init", () => {
     expect(JSON.parse(project.read("tsconfig.json"))).toEqual({
       extends: "@auaust/engrenage/tsconfig/base.json",
       files: [],
-      references: [{ path: "./tsconfig.scripts.json" }],
+      references: [{ path: "./tsconfig.tooling.json" }],
     });
 
     expect(packageJson).toHaveProperty(
@@ -582,7 +582,7 @@ describe("engrenage init", () => {
         files: [],
         references: [
           { path: "./tsconfig.src.json" },
-          { path: "./tsconfig.scripts.json" },
+          { path: "./tsconfig.tooling.json" },
         ],
       });
 

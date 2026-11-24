@@ -119,6 +119,9 @@
     },
     {
       "path": "./tsconfig.scripts.json"
+    },
+    {
+      "path": "./tsconfig.tooling.json"
     }
   ]
 }

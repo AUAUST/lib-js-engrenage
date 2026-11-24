@@ -775,3 +775,15 @@ entries:
     subject: dispatch brief Issue line format
     tried: "Issue: #n, then slug plus title"
     stopped: hook wants bare owner/repo#n line
+  - id: 261124-a813
+    subject: "`pnpm metalbrain planning issue publish`: sub-issues under a leaf at GitHub's 7-layer depth"
+    tried: "split #873 into two sub-issues"
+    stopped: GitHub refused the link after publish created and edited issues; re-claimed, made them siblings, closed one as duplicate
+  - id: 261124-70ba
+    subject: "`pnpm metalbrain planning issue publish`: republish after a partial publish"
+    tried: publishing the reshaped drafts
+    stopped: refused as body changed on GitHub since claim by the partial write; moved drafts aside, released, re-claimed, restored
+  - id: 261124-e9b6
+    subject: codegen config test timeout
+    tried: worktree gate
+    stopped: 5s timeout under gate load; rerun passed

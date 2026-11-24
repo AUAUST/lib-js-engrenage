@@ -1,21 +1,19 @@
 import { boolean, custom, is, object } from "valibot";
 
 import { compose } from "@auaust/toolkit/composer";
-import { freeze, record } from "@auaust/toolkit/object";
+import { freeze } from "@auaust/toolkit/object";
 
 import {
   locateFile,
   type ConfigContext,
   type ConfigResolver,
 } from "#project/config/index";
-import { listTsconfigRegistrations } from "#project/environments/operations/listTsconfigRegistrations";
 import {
   resolveTsconfig,
   type ResolvedEnvironmentTsconfig,
   type ResolvedEnvironmentTsconfigOption,
   type TsconfigKey,
 } from "#project/tsconfig/index";
-import type { EnvironmentRegistration } from "#batiment/environments/index";
 import type { Resolver } from "#foundation/options/index";
 import type { File } from "#types/File";
 
@@ -26,10 +24,10 @@ const tsconfigOption = object({
   }),
 });
 
-async function readTsconfigOption(
+async function readEnvironmentTsconfigOption(
   config: Resolver<ConfigContext>,
-  { name }: EnvironmentRegistration,
-): Promise<readonly [string, ResolvedEnvironmentTsconfigOption]> {
+  name: string,
+): Promise<ResolvedEnvironmentTsconfigOption> {
   const key = `${name}.options`;
 
   const option = await config.resolve(key);
@@ -40,28 +38,30 @@ async function readTsconfigOption(
     );
   }
 
-  return [name, option.tsconfig];
+  return option.tsconfig;
+}
+
+async function readTsconfigOption(
+  config: ConfigResolver,
+  key: TsconfigKey,
+): Promise<ResolvedEnvironmentTsconfigOption> {
+  if (key !== "tests.dist") {
+    return readEnvironmentTsconfigOption(config, key);
+  }
+
+  const tests = await config.resolve("tests.options");
+
+  return tests.dist.tsconfig;
 }
 
 export async function resolveEnvironmentTsconfig(
   config: ConfigResolver,
   key: TsconfigKey,
 ): Promise<ResolvedEnvironmentTsconfig> {
-  const registrations = await listTsconfigRegistrations(config);
-
-  const [groups, tests] = await Promise.all([
-    Promise.all(
-      registrations.map((registration) => {
-        return readTsconfigOption(config, registration);
-      }),
-    ),
-    config.resolve("tests.options"),
-  ]);
-
-  const { location, ...resolved } = resolveTsconfig(
-    key,
-    record([...groups, ["tests.dist", tests.dist.tsconfig]]),
-  );
+  const {
+    location,
+    ...resolved
+  } = resolveTsconfig(await readTsconfigOption(config, key));
 
   function path(): Promise<File | undefined> {
     return location === undefined
