@@ -39,10 +39,6 @@ entries:
     title: Flaky gate failures and the walker's resume count have no rule
     why: load timeouts fail the stop gate transiently, and walking's resume limit counts any gate failure (friction ×3).
     want: rerun the gate once before reporting; failures outside the leaf's change are no resume cause.
-  - id: 261122-a3cf
-    title: Concurrent worktree agents' backlog entries collide when applied
-    why: Backlog has editing agents record out-of-task bugs at once; two leaves numbering a new entry in one category conflict on cherry-pick or apply, and `worktree-dispatch.md` › Committing work keeps only the agent logs apart.
-    want: a rule or merge step for backlog appends, like the agent logs'.
   - id: 261122-8863
     title: Instruction sync keeps or drops rules silently
     sites:
@@ -109,11 +105,6 @@ entries:
     why: about 110 markers (@shared, @file, @extension, @skill-file, @agent-limits) compose 33k words; agents and skills share one source; fillers take LoadedConfig instead of facts; command usage in prose drifts from registration
     want: "the 2026-11-22 atomic-design review's stages #811 leaves out: a brief command over source adapters, commands owning their usage fragment; no own Document AST, no class inheritance of content. Record core, facts and the instruction registry: #823, #826, #827."
     done: a planner settles these stages once #823 lands, or the user drops them
-  - id: 261122-24d8
-    title: Record instructions name file paths while metalbrain commands cannot yet read or edit every record
-    why: Decided 2026-11-22 — commands over files once they cover every operation, since grep over YAML returns lines without their entry and category and dense command output costs fewer tokens
-    want: Instructions name only the record commands, dropping the file paths, for each kind whose list, search, update, move and remove commands exist
-    done: No instruction sends agents to a record file for an operation a command covers
   - id: 261122-ed27
     title: No check warns on instruction sentences whose condition or scope hangs on a participle or absolute phrase
     sites:

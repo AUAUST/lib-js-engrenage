@@ -11,7 +11,6 @@ agent-instructions:
     - 261122-efd5
     - 261122-a02c
     - 261122-c820
-    - 261122-a3cf
     - 261122-8863
     - 261122-477b
     - 261122-9857
@@ -23,7 +22,6 @@ agent-instructions:
     - 261122-7506
     - 261122-5911
     - 261122-8b3b
-    - 261122-24d8
     - 261122-ed27
     - 261122-67be
     - 261122-c156
@@ -198,7 +196,6 @@ git:
   entries:
     - 261122-4774
     - 261122-a06c
-    - 261123-e71e
 github:
   purpose: Generated GitHub workflows and templates.
   entries:

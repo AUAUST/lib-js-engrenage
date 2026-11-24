@@ -659,10 +659,6 @@ entries:
     subject: auto mode classifier
     tried: "`gh issue comment` posting scratchpad notes the user did not name"
     stopped: denied; relied on git history instead
-  - id: 261123-42fe
-    subject: metalbrain backlog sites
-    tried: moving a file a backlog site names
-    stopped: no record command follows the move and sync fails; rewrote the site paths in the YAML with sed
   - id: 261123-3e56
     subject: "`pnpm engrenage typecheck` after renaming entries"
     tried: ran it before `pnpm build`
