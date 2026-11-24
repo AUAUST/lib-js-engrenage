@@ -36,6 +36,8 @@ export const linksFile = `${stateDirectory}/links.json` satisfies File;
 
 export const modulesDirectory = "node_modules" satisfies Directory;
 
+export const executablesDirectory = `${modulesDirectory}/.bin` satisfies Directory;
+
 export const linkedOutput = "dist" satisfies Directory;
 
 export const linkedExecutables = `${linkedOutput}/bin` satisfies Directory;

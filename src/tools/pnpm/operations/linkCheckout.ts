@@ -15,9 +15,10 @@ import {
   readOriginRepository,
 } from "#tools/github/index";
 import { linkedExecutables } from "#tools/pnpm/constants";
-import { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
-import { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
+import { pointPackageExecutables } from "#tools/pnpm/operations/pointPackageExecutables";
+import { pointSymlink } from "#tools/pnpm/operations/pointSymlink";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
+import { readPackageManifest } from "#tools/pnpm/operations/readPackageManifest";
 import { readPackageSymlink } from "#tools/pnpm/operations/readPackageSymlink";
 import { writeLinks } from "#tools/pnpm/operations/writeLinks";
 import type { Directory } from "#types/Directory";
@@ -41,8 +42,9 @@ async function isDependency(root: Directory, name: string) {
 }
 
 /**
- * Repoints the installed package of the registered repository `short` at its
- * checkout in `directory` and records the link with the symlink's previous target.
+ * Repoints the installed package of the registered repository `short` and its
+ * executables at its checkout in `directory` and records the link with the
+ * symlink's previous target.
  *
  * @throws {Error} When `short` is unregistered, the checkout's `origin` is
  * another repository, its package is no dependency of `root`, it has no built
@@ -71,7 +73,9 @@ export async function linkCheckout(
     );
   }
 
-  const { name } = await readCheckoutManifest(checkout);
+  const manifest = await readPackageManifest(checkout);
+
+  const { name } = manifest;
 
   if (!(await isDependency(root, name))) {
     throw new Error(
@@ -97,7 +101,9 @@ export async function linkCheckout(
 
   const installed = links[short]?.installed ?? symlink.target;
 
-  await pointPackageLink(symlink.path, checkout);
+  await pointSymlink(symlink.path, checkout, "dir");
+
+  await pointPackageExecutables(root, manifest);
 
   await writeLinks(root, {
     ...links,

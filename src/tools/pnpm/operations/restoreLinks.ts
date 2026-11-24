@@ -2,12 +2,15 @@ import { entries } from "@auaust/toolkit/object";
 
 import { unlinkCommand } from "#tools/pnpm/constants";
 import { inspectLink } from "#tools/pnpm/operations/inspectLink";
-import { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
+import { pointPackageExecutables } from "#tools/pnpm/operations/pointPackageExecutables";
+import { pointSymlink } from "#tools/pnpm/operations/pointSymlink";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
+import { readPackageManifest } from "#tools/pnpm/operations/readPackageManifest";
 import type { Directory } from "#types/Directory";
 
 /**
- * Repoints every recorded package at its checkout, as after an install.
+ * Repoints every recorded package and its executables at its checkout, as
+ * after an install.
  *
  * @returns The short names of the restored links.
  * @throws {Error} When a recorded checkout no longer exists.
@@ -28,7 +31,12 @@ export async function restoreLinks(root: Directory): Promise<string[]> {
       continue;
     }
 
-    await pointPackageLink(path, link.directory);
+    await pointSymlink(path, link.directory, "dir");
+
+    await pointPackageExecutables(
+      root,
+      await readPackageManifest(link.directory),
+    );
 
     restored.push(short);
   }

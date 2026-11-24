@@ -6,8 +6,8 @@ import { readLinks } from "#tools/pnpm/operations/readLinks";
 import type { LoadedConfig } from "#project/config/index";
 
 /**
- * Fails when a recorded checkout is gone or an install repointed its
- * link away from it.
+ * Fails when a recorded checkout is gone or an install repointed its link or
+ * executables away from it.
  */
 export async function checkLinks({ context }: LoadedConfig): Promise<void> {
   const broken: string[] = [];
@@ -17,16 +17,20 @@ export async function checkLinks({ context }: LoadedConfig): Promise<void> {
       path,
       resolved = "nothing",
       present,
-      holds,
+      executablesHold,
     } = await inspectLink(context.root, link);
 
     if (!present) {
       broken.push(
         `- ${short}: the checkout ${link.directory} is missing: run \`${unlinkCommand} ${short}\``,
       );
-    } else if (!holds) {
+    } else if (resolved !== link.directory) {
       broken.push(
         `- ${short}: ${path} points at ${resolved}, not ${link.directory}: run \`${restoreLinksCommand}\``,
+      );
+    } else if (!executablesHold) {
+      broken.push(
+        `- ${short}: the executables of ${link.package} run another copy than ${link.directory}: run \`${restoreLinksCommand}\``,
       );
     }
   }

@@ -1,9 +1,11 @@
 import {
+  existsSync,
   mkdirSync,
   readlinkSync,
   realpathSync,
   rmSync,
   symlinkSync,
+  writeFileSync,
 } from "node:fs";
 import { dirname } from "node:path";
 
@@ -23,6 +25,8 @@ import { unlinkCheckout } from "#tools/pnpm/operations/unlinkCheckout";
 const name = "@auaust/engrenage";
 const installed = "../.pnpm/engrenage/node_modules/@auaust/engrenage";
 const linkPath = `node_modules/${name}`;
+const installedStore = "node_modules/.pnpm/engrenage/node_modules/@auaust/engrenage";
+const shim = "#!/bin/sh\nexec node ../.pnpm/engrenage/node_modules/@auaust/engrenage/dist/bin/engrenage.mjs\n";
 
 function repositories() {
   return Promise.resolve(new Map([["engrenage", "AUAUST/engrenage"]]));
@@ -35,9 +39,13 @@ function createConsumer(dependencies: Record<string, string>) {
       type: "module",
       devDependencies: dependencies,
     }),
-    "node_modules/.pnpm/engrenage/node_modules/@auaust/engrenage/package.json": JSON.stringify(
-      { name, version: "1.0.0" },
-    ),
+    [`${installedStore}/package.json`]: JSON.stringify({
+      name,
+      version: "1.0.0",
+      bin: { engrenage: "./dist/bin/engrenage.mjs" },
+    }),
+    [`${installedStore}/dist/bin/engrenage.mjs`]: "export {};\n",
+    "node_modules/.bin/engrenage": shim,
   });
 
   mkdirSync(dirname(consumer.resolve(linkPath)), { recursive: true });
@@ -49,8 +57,16 @@ function createConsumer(dependencies: Record<string, string>) {
 
 function createEngrenageCheckout(origin = "AUAUST/engrenage") {
   return createCheckout(origin, {
-    "package.json": JSON.stringify({ name, version: "1.1.0" }),
+    "package.json": JSON.stringify({
+      name,
+      version: "1.1.0",
+      bin: {
+        engrenage: "./dist/bin/engrenage.mjs",
+        metalbrain: "./dist/bin/metalbrain.mjs",
+      },
+    }),
     "dist/bin/engrenage.mjs": "export {};\n",
+    "dist/bin/metalbrain.mjs": "export {};\n",
   });
 }
 
@@ -67,8 +83,8 @@ async function linkEngrenage() {
   return { consumer, checkout };
 }
 
-function readTarget(root: string) {
-  return realpathSync(`${root}/${linkPath}`);
+function readTarget(root: string, path = linkPath) {
+  return realpathSync(`${root}/${path}`);
 }
 
 async function checkLinks(root: string) {
@@ -97,6 +113,14 @@ describe("links", () => {
 
     expect(readTarget(consumer.root)).toBe(checkout.root);
 
+    expect(readTarget(consumer.root, "node_modules/.bin/engrenage")).toBe(
+      realpathSync(checkout.resolve("dist/bin/engrenage.mjs")),
+    );
+
+    expect(readTarget(consumer.root, "node_modules/.bin/metalbrain")).toBe(
+      realpathSync(checkout.resolve("dist/bin/metalbrain.mjs")),
+    );
+
     expect(await listLinks(consumer.root)).toEqual([
       expect.objectContaining({ short: "engrenage", holds: true }),
     ]);
@@ -105,7 +129,41 @@ describe("links", () => {
 
     expect(readlinkSync(consumer.resolve(linkPath))).toBe(installed);
 
+    expect(readTarget(consumer.root, "node_modules/.bin/engrenage")).toBe(
+      realpathSync(
+        consumer.resolve(`${installedStore}/dist/bin/engrenage.mjs`),
+      ),
+    );
+
+    expect(existsSync(consumer.resolve("node_modules/.bin/metalbrain"))).toBe(
+      false,
+    );
+
     expect(await readLinks(consumer.root)).toEqual({});
+  });
+
+  test("fails the sync check once an install rewrites an executable's shim, until restored", async () => {
+    const { consumer, checkout } = await linkEngrenage();
+
+    rmSync(consumer.resolve("node_modules/.bin/engrenage"));
+
+    writeFileSync(consumer.resolve("node_modules/.bin/engrenage"), shim);
+
+    expect(await checkLinks(consumer.root)).toEqual(
+      expect.objectContaining({
+        message: expect.stringContaining(
+          `the executables of ${name} run another copy`,
+        ),
+      }),
+    );
+
+    expect(await restoreLinks(consumer.root)).toEqual(["engrenage"]);
+
+    expect(readTarget(consumer.root, "node_modules/.bin/engrenage")).toBe(
+      realpathSync(checkout.resolve("dist/bin/engrenage.mjs")),
+    );
+
+    expect(await checkLinks(consumer.root)).toBeUndefined();
   });
 
   test("fails the sync check once an install repoints the symlink, until restored", async () => {

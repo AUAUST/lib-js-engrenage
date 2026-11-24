@@ -11,8 +11,8 @@ import { validate } from "#foundation/options/index";
 import { runGit } from "#tools/git/index";
 import { linkedOutput, modulesDirectory } from "#tools/pnpm/constants";
 import { inspectLink } from "#tools/pnpm/operations/inspectLink";
-import { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
+import { readPackageManifest } from "#tools/pnpm/operations/readPackageManifest";
 import type { LinkState } from "#tools/pnpm/types/LinkState";
 import type { Directory } from "#types/Directory";
 
@@ -93,9 +93,9 @@ async function listPeerMismatches(
 
 /**
  * The state of every link `root` records: whether its checkout still exists,
- * whether its symlink still points at it, whether the checkout's build predates
- * its `HEAD` commit, and the peer dependencies `root` installs at another
- * version than the checkout.
+ * whether its symlink and executables still point at it, whether the checkout's
+ * build predates its `HEAD` commit, and the peer dependencies `root` installs at
+ * another version than the checkout.
  */
 export async function listLinks(root: Directory): Promise<LinkState[]> {
   return Promise.all(
@@ -115,7 +115,7 @@ export async function listLinks(root: Directory): Promise<LinkState[]> {
         };
       }
 
-      const manifest = await readCheckoutManifest(directory);
+      const manifest = await readPackageManifest(directory);
 
       const [stale, peers] = await Promise.all([
         isStale(directory),

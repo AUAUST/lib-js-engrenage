@@ -835,3 +835,11 @@ entries:
     subject: workspace barrel fixture
     tried: role dirs in a workspace to get a generated barrel
     stopped: no default role gives index barrels; tested stale removal instead
+  - id: 261124-59eb
+    subject: cd into linked checkout
+    tried: ran sync in Interscript via cd
+    stopped: session primary dir moved, Interscript hooks fired on stale config; cd back
+  - id: 261124-f6ef
+    subject: linked package executables
+    tried: pnpm engrenage sync in a linked consumer
+    stopped: bin shims ran the installed copy; fixed link

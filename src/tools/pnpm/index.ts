@@ -1,6 +1,7 @@
 // @barrel utils
 export { addWorkspaceSettings } from "#tools/pnpm/utils/addWorkspaceSettings";
 export { createPnpmInvocation } from "#tools/pnpm/utils/createPnpmInvocation";
+export { listExecutableLinks } from "#tools/pnpm/utils/listExecutableLinks";
 export { listPnpmWarnings } from "#tools/pnpm/utils/listPnpmWarnings";
 export { parseWorkspaceDocument } from "#tools/pnpm/utils/parseWorkspaceDocument";
 export { removePnpmRunEnvironment } from "#tools/pnpm/utils/removePnpmRunEnvironment";
@@ -12,11 +13,13 @@ export { inspectLink } from "#tools/pnpm/operations/inspectLink";
 export { installDependencies } from "#tools/pnpm/operations/installDependencies";
 export { linkCheckout } from "#tools/pnpm/operations/linkCheckout";
 export { listLinks } from "#tools/pnpm/operations/listLinks";
-export { pointPackageLink } from "#tools/pnpm/operations/pointPackageLink";
-export { readCheckoutManifest } from "#tools/pnpm/operations/readCheckoutManifest";
+export { pointPackageExecutables } from "#tools/pnpm/operations/pointPackageExecutables";
+export { pointSymlink } from "#tools/pnpm/operations/pointSymlink";
 export { readLinkedCheckouts } from "#tools/pnpm/operations/readLinkedCheckouts";
 export { readLinks } from "#tools/pnpm/operations/readLinks";
+export { readPackageManifest } from "#tools/pnpm/operations/readPackageManifest";
 export { readPackageSymlink } from "#tools/pnpm/operations/readPackageSymlink";
+export { readSymlinkTarget } from "#tools/pnpm/operations/readSymlinkTarget";
 export { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 export { restoreLinks } from "#tools/pnpm/operations/restoreLinks";
 export { unlinkCheckout } from "#tools/pnpm/operations/unlinkCheckout";
@@ -37,6 +40,7 @@ export type * from "#tools/pnpm/types/Link";
 export type * from "#tools/pnpm/types/LinkInspection";
 export type * from "#tools/pnpm/types/Links";
 export type * from "#tools/pnpm/types/LinkState";
+export type * from "#tools/pnpm/types/PackageManifest";
 export type * from "#tools/pnpm/types/VerifyDependenciesBeforeRun";
 export type * from "#tools/pnpm/types/WorkspaceSettings";
 // @end
