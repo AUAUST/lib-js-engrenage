@@ -99,3 +99,9 @@ entries:
       - data/tsconfig/base.json:4
     why: "generated tsconfigs set `declaration: false`, so a published signature naming an unexported type (TS4023, TS4082) passes `typecheck` and the gate, failing only `pnpm build`, as `LayoutContext` did; `tsc --noEmit --declaration` reports them."
     want: "`declaration: true` in the generated tsconfig of each environment whose code ships declarations, or `isolatedDeclarations` where its explicit-type cost is accepted."
+  - id: 261124-6ffc
+    title: Sync leaves the old instance tsconfig in every scope when a registration's tsconfig path changes
+    sites:
+      - src/tools/typescript/setup/syncTsconfigFiles.ts:126
+    why: Sync keeps no record of the paths it wrote, so only current paths are checked for removal
+    want: Each tsconfig file sync wrote and no longer writes is removed, without deleting hand-written ones
