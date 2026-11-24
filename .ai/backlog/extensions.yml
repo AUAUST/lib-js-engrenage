@@ -38,10 +38,3 @@ entries:
       - engrenage.config.ts:36
     why: "a config load would otherwise import `tools/eslint`. Related: #616."
     done: "#331 injects the tools a run needs; then drop the loader."
-  - id: 261123-e53e
-    title: "User extensions cannot declare `when.config`: the extension schema accepts only `when.installed`"
-    sites:
-      - src/project/config/config/schemas/extensionSchema.ts:116
-      - src/project/config/types/Extension.ts:31
-    why: "`Extension` types `when` as `{ installed } | { config }` and `createProjectConfig` evaluates both, but `extensionSchema` validates `extensions` entries with `looseObject({ installed: string() })`"
-    want: The schema accepts every activation form the `Extension` type declares, `when.preset` (#754) included
