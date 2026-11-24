@@ -177,3 +177,7 @@ entries:
       - bin/metalbrain/executable.ts:29
     why: engrenage-hook appended 'regenerate the hooks with pnpm install, then pnpm engrenage sync' to usage errors; metalbrain hook opens with the bare Commander error, so a consumer whose settings name a removed event is not told to sync.
     want: metalbrain hook usage errors name the install-and-sync fix, as engrenage-hook's did.
+  - id: 261124-8712
+    title: "`agents stats` fails reading a thoroughness state file: limit must be a number"
+    why: "seen at the #881 walk's end, 2026-11-24: the command aborts, so walk reports lose their agent-run table"
+    want: agents stats tolerates or reports per file a thoroughness state lacking a numeric limit
