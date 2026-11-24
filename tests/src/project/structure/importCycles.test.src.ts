@@ -28,7 +28,7 @@ async function cyclesOf(
     root: config.context.root,
     filesystem: config.context.filesystem,
     structure: await config.resolve("structure"),
-    aliases: await config.resolve("aliases"),
+    scopes: await config.resolve("aliases.scopes"),
     verbatimModuleSyntax,
     languages: [
       ...map(

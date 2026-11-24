@@ -23,7 +23,7 @@ export async function reportStructure(
     root: config.context.root,
     filesystem: config.context.filesystem,
     structure,
-    aliases: await config.resolve("aliases"),
+    scopes: await config.resolve("aliases.scopes"),
     verbatimModuleSyntax,
     languages: await readSelectedLanguages(config),
   });

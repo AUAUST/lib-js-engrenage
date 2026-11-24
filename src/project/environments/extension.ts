@@ -1,5 +1,6 @@
 import {
   builtinEnvironmentPresets,
+  dataNamespaceKind,
   environmentEntry,
   environmentPresetEntry,
   languageEntry,
@@ -296,11 +297,7 @@ export default {
         imports: { src: "surface" },
         inward: "open",
       },
-      {
-        name: "data",
-        level: "enforced",
-        inward: "open",
-      },
+      dataNamespaceKind,
       {
         name: "static",
         level: "enforced",

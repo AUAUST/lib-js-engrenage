@@ -1,13 +1,12 @@
 import { posix, relative } from "node:path";
 
 import { memoize } from "@auaust/toolkit/function";
+import { getOwn, keys } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
-import type {
-  Alias,
-  ResolvedAliases,
-  ResolvedSpecifier,
-} from "#batiment/structure/index";
+import type { Alias, ResolvedSpecifier } from "#batiment/structure/index";
+import type { ScopeImports } from "#project/structure/types/ScopeImports";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -43,64 +42,83 @@ function packageNameOf(specifier: string): string {
     : (segments[0] ?? specifier);
 }
 
+function findScope(scopes: readonly Directory[], file: string): Directory {
+  return (
+    scopes.find((scope) => {
+      return scope !== rootScope && file.startsWith(`${scope}/`);
+    }) ?? rootScope
+  );
+}
+
 export function createImportResolver({
   root,
-  aliases,
-  packageName,
+  scopes,
 }: {
   root: Directory;
-  aliases: ResolvedAliases;
-  packageName?: string | undefined;
+  scopes: Readonly<Record<string, ScopeImports>>;
 }): (specifier: string, from: File) => ResolvedSpecifier | undefined {
-  const table = [...aliases.global, ...aliases.src];
+  const dirs = keys(scopes).sort((a, b) => b.length - a.length);
 
-  const classify = memoize((specifier: string) => {
-    for (const alias of table) {
-      const expanded = expandAlias(alias, specifier);
+  const classify = memoize(
+    (scope: Directory, specifier: string) => {
+      const imports = getOwn(scopes, scope);
+      const packageName = imports?.packageName;
 
-      if (expanded !== undefined) {
+      const table = imports === undefined
+        ? []
+        : [...imports.aliases.global, ...imports.aliases.src];
+
+      for (const alias of table) {
+        const expanded = expandAlias(alias, specifier);
+
+        if (expanded !== undefined) {
+          return {
+            kind: "alias",
+            path: posix.join(scope, expanded),
+            alias,
+          } satisfies ResolvedSpecifier;
+        }
+      }
+
+      if (specifier.startsWith(aliasPrefix)) {
+        return;
+      }
+
+      if (
+        packageName !== undefined &&
+        packageNameOf(specifier) === packageName
+      ) {
         return {
-          kind: "alias",
-          path: posix.normalize(expanded),
-          alias,
+          kind: "self",
+          subpath: `${selfSubpath}${specifier.slice(packageName.length)}`,
         } satisfies ResolvedSpecifier;
       }
-    }
 
-    if (specifier.startsWith(aliasPrefix)) {
-      return;
-    }
-
-    if (packageName !== undefined && packageNameOf(specifier) === packageName) {
       return {
-        kind: "self",
-        subpath: `${selfSubpath}${specifier.slice(packageName.length)}`,
+        kind: "package",
+        name: specifier.startsWith("node:")
+          ? specifier
+          : packageNameOf(specifier),
       } satisfies ResolvedSpecifier;
-    }
-
-    return {
-      kind: "package",
-      name: specifier.startsWith("node:")
-        ? specifier
-        : packageNameOf(specifier),
-    } satisfies ResolvedSpecifier;
-  });
+    },
+    (scope, specifier) => `${scope}\0${specifier}`,
+  );
 
   const expandRelative = memoize(
     (directory: string, specifier: string): ResolvedSpecifier => {
-      const base = toPosixPath(relative(root, resolve(root, directory)));
-
       return {
         kind: "relative",
-        path: posix.join(base, specifier),
+        path: posix.join(directory, specifier),
       };
     },
     (directory, specifier) => `${directory}\0${specifier}`,
   );
 
   return function resolveImport(specifier, from) {
+    const file = toPosixPath(relative(root, resolve(root, from)));
+
     return specifier.startsWith(".")
-      ? expandRelative(posix.dirname(toPosixPath(from)), specifier)
-      : classify(specifier);
+      ? expandRelative(posix.dirname(file), specifier)
+      : classify(findScope(dirs, file), specifier);
   };
 }

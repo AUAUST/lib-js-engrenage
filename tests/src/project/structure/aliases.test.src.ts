@@ -5,10 +5,12 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { entrypoint } from "#project/roles/index";
+import { resolveAliases } from "#project/structure/operations/resolveAliases";
 import { runSync } from "#project/sync/index";
 import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { syncAliases } from "#tools/typescript/setup/syncAliases";
+import type { StructureNode } from "#batiment/structure/index";
 
 async function sync(config: string, files: Record<string, string> = {}) {
   const project = createTemporaryProject({
@@ -344,5 +346,132 @@ describe("aliases", () => {
     const code = await buildLibraryCode(project.root, "src/main.ts");
 
     expect(code).toContain("routed");
+  });
+});
+
+describe("scope aliases", () => {
+  async function resolveScopes(files: Record<string, string>) {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "tsconfig.json": "{}",
+      "engrenage.config.ts": `export default { ${source} };\n`,
+      "src/index.ts": "",
+      "tests/a.test.ts": "",
+      "theme/.workspace.json": "{}",
+      "theme/src/.namespace.json": "{}",
+      "theme/src/a.ts": "",
+      ...files,
+    });
+
+    const config = await loadConfig(project.root);
+
+    return { config, scopes: await config.resolve("aliases.scopes") };
+  }
+
+  test("aliases a workspace's unwalked structured namespace by directory, relative to the workspace", async () => {
+    const { scopes } = await resolveScopes({});
+
+    expect(scopes.theme?.global).toContainEqual({
+      key: "#src/*",
+      target: "./src/*.ts",
+      source: "src environment",
+      path: "theme/src",
+    });
+  });
+
+  test("aliases the children of a workspace's source structure relative to the workspace", async () => {
+    const { config } = await resolveScopes({ "theme/src/ui/index.ts": "" });
+
+    const languages = await config.context.registry.contributions(
+      "languages",
+      config,
+    );
+
+    const typescript = languages.find(({ entry }) => {
+      return entry.name === "typescript";
+    });
+
+    if (typescript === undefined) {
+      throw new Error("No typescript language is contributed");
+    }
+
+    const root: StructureNode = {
+      path: "theme/src",
+      name: "src",
+      kind: "namespace",
+      source: "inferred",
+      children: [
+        {
+          path: "theme/src/ui",
+          name: "ui",
+          kind: "domain",
+          source: "inferred",
+          children: [],
+        },
+      ],
+    };
+
+    const { global, src } = await resolveAliases({
+      filesystem: config.context.filesystem,
+      scope: "theme",
+      options: {
+        global: {
+          enabled: true,
+          generated: true,
+          define: {},
+        },
+        src: {
+          enabled: true,
+          generated: true,
+          define: {},
+        },
+      },
+      bundled: false,
+      namespaces: {
+        src: ["theme/src"],
+      },
+      data: [],
+      outDir: undefined,
+      source: {
+        name: "src",
+        structure: {
+          name: "src",
+          dirs: ["theme/src"],
+          strictness: "strict",
+          root,
+          unclassified: [],
+          roles: {},
+          unreached: [],
+          entries: {},
+          diagnostics: [],
+          indexFile: "index.ts",
+          entryFile: undefined,
+        },
+      },
+      language: typescript.entry,
+    });
+
+    expect(global.map(({ key }) => key)).toEqual(["#package.json"]);
+
+    expect(src).toContainEqual(
+      expect.objectContaining({
+        key: "#ui",
+        target: "./src/ui/index.ts",
+        path: "theme/src/ui",
+      }),
+    );
+  });
+
+  test("lets a workspace's table repeat a key of the root's", async () => {
+    const { scopes } = await resolveScopes({
+      "theme/tests/.namespace.json": "{}",
+      "theme/tests/a.test.ts": "",
+    });
+
+    for (const scope of [".", "theme"]) {
+      expect(scopes[scope]?.global.map(({ key }) => key)).toEqual(
+        expect.arrayContaining(["#package.json", "#tests/*"]),
+      );
+    }
   });
 });

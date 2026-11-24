@@ -1,49 +1,14 @@
 import { getOwn, record } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { declareSection } from "#foundation/options/index";
-import {
-  aliasesSchema,
-  readEnvironments,
-  type LanguageEntry,
-} from "#project/environments/index";
+import { aliasesSchema, readEnvironments } from "#project/environments/index";
+import { readAliasedLanguage } from "#project/structure/operations/readAliasedLanguage";
+import { readOutDir } from "#project/structure/operations/readOutDir";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
+import { isAliasedNamespaceKind } from "#project/structure/utils/isAliasedNamespaceKind";
 import type { ResolvedAliases } from "#batiment/structure/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { Directory } from "#types/Directory";
-
-const aliasedLanguage = "typescript";
-
-async function readOutDir(
-  config: ConfigResolver,
-): Promise<Directory | undefined> {
-  try {
-    return await config.resolve("build.outDir");
-  } catch {
-    // @debt an unreadable tsconfig hides the output directory, so its alias is generated instead of skipped; the output directory should resolve without parsing the tsconfig
-  }
-}
-
-// @debt aliases target the language named typescript, so a project without that language, or written in another one, gets no alias
-async function readAliasedLanguage(
-  config: ConfigResolver,
-): Promise<LanguageEntry> {
-  const contributions = await config.context.registry.contributions(
-    "languages",
-    config,
-  );
-
-  const language = contributions.find(({ entry }) => {
-    return entry.name === aliasedLanguage;
-  });
-
-  if (language === undefined) {
-    throw new Error(
-      `Aliases target the ${aliasedLanguage} language, which no active extension contributes`,
-    );
-  }
-
-  return language.entry;
-}
 
 export const aliasesSection = declareSection({
   declaration: aliasesSchema,
@@ -62,23 +27,21 @@ export const aliasesSection = declareSection({
 
     return resolveAliases({
       filesystem: config.context.filesystem,
+      scope: rootScope,
       options: { global, src: option.aliases },
       bundled: getOwn(execution, "src")?.bundled ?? false,
-      environments: record(
+      namespaces: record(
         environments
           .filter(({ namespace, environment }) => {
-            return (
-              environment.active &&
-              namespace.level === "enforced" &&
-              namespace.structure !== undefined
-            );
+            return environment.active && isAliasedNamespaceKind(namespace);
           })
           .map(({ entry, environment }) => [entry.name, environment.dirs]),
       ),
-      data: data.active ? data.dirs : [],
-      published: traits.published,
+      data: data.active && !traits.published ? data.dirs : [],
       outDir: await readOutDir(config),
-      structure: trees.src,
+      source: trees.src === undefined
+        ? undefined
+        : { name: "src", structure: trees.src },
       language: await readAliasedLanguage(config),
     });
   },

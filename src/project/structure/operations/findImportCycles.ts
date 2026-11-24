@@ -12,7 +12,7 @@ import {
 
 import { iterable } from "@auaust/toolkit";
 import { flat, flatMap } from "@auaust/toolkit/array";
-import { values } from "@auaust/toolkit/object";
+import { mapValues, values } from "@auaust/toolkit/object";
 
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
 import type {
@@ -226,14 +226,14 @@ export async function findImportCycles({
   root,
   filesystem,
   structure,
-  aliases,
+  scopes,
   verbatimModuleSyntax,
   languages,
 }: {
   root: Directory;
   filesystem: Filesystem;
   structure: ResolvedStructure;
-  aliases: ResolvedAliases;
+  scopes: Readonly<Record<string, ResolvedAliases>>;
   verbatimModuleSyntax: boolean;
   languages: readonly LanguageEntry[];
 }): Promise<ImportCycle[]> {
@@ -255,7 +255,12 @@ export async function findImportCycles({
     ),
   );
 
-  const resolveImport = createImportResolver({ root, aliases });
+  const resolveImport = createImportResolver({
+    root,
+    scopes: mapValues(scopes, (aliases) => {
+      return { aliases };
+    }),
+  });
 
   function resolve(from: string, specifier: string): string | undefined {
     const resolved = resolveImport(specifier, from);

@@ -5,6 +5,7 @@ export { resolveAliases } from "#project/structure/operations/resolveAliases";
 // @barrel types
 export type * from "#project/structure/types/AliasesOption";
 export type * from "#project/structure/types/ResolvedFiles";
+export type * from "#project/structure/types/ScopeImports";
 export type * from "#project/structure/types/StructureInput";
 // @end
 
@@ -14,10 +15,12 @@ export { structureSchema } from "#project/structure/config/schemas/structureSche
 
 // @barrel utils
 export { createImportResolver } from "#project/structure/utils/createImportResolver";
+export { isAliasedNamespaceKind } from "#project/structure/utils/isAliasedNamespaceKind";
 // @end
 
 // @barrel config/sections
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
+export { aliasScopesSection } from "#project/structure/config/sections/aliasScopesSection";
 export { contextSection } from "#project/structure/config/sections/contextSection";
 export { effectModulesSection } from "#project/structure/config/sections/effectModulesSection";
 export { entitiesSection } from "#project/structure/config/sections/entitiesSection";

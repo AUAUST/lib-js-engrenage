@@ -116,6 +116,12 @@ export const testsNamespaceKind = freeze({
   variants: testVariants,
 } as const) satisfies NamespaceKind;
 
+export const dataNamespaceKind = freeze({
+  name: "data",
+  level: "enforced",
+  inward: "open",
+} as const) satisfies NamespaceKind;
+
 // @debt built as frozen data rather than with `createEnvironmentPreset`, since an extension imports statically only its constants, which import no confined util
 // @debt the Node presets state no module format, so their tsconfigs keep the base tsconfig's `module` and `moduleResolution` rather than Node's
 export const builtinEnvironmentPresets = freeze([
