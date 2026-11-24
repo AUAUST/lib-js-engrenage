@@ -2,6 +2,8 @@ import { map } from "@auaust/toolkit/array";
 
 import { listStaticFileGlobs } from "#batiment/roles/index";
 import { rootScope } from "#batiment/scopes/constants";
+import { getNamespaceId } from "#batiment/scopes/index";
+import { getNamespaceCategory } from "#batiment/structure/index";
 import { filesIn } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
 import {
@@ -20,6 +22,7 @@ import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPa
 import type { EnvironmentInstance } from "#batiment/environments/index";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 async function listGlobalDeclarations(
@@ -33,20 +36,21 @@ async function listGlobalDeclarations(
 async function listSourceDeclarations(
   config: LoadedConfig,
   name: string,
+  scope: Directory,
 ): Promise<readonly File[]> {
-  const { namespaces } = await config.resolve("importGrants");
+  const { namespaces, entries } = await config.resolve("importGrants");
 
-  const forbidden = namespaces[name];
+  const forbidden = namespaces[getNamespaceId(scope, name)];
 
-  if (
-    name === "src" ||
-    forbidden === undefined ||
-    forbidden.includes("internal-aliases")
-  ) {
+  const source = getNamespaceCategory(getNamespaceId(scope, "src"), entries);
+
+  if (name === "src" || forbidden === undefined || forbidden.includes(source)) {
     return [];
   }
 
-  const declarations = await resolveSourceDeclarationsFile(config);
+  const declarations = await resolveSourceDeclarationsFile(
+    await config.context.scope(scope),
+  );
 
   return declarations !== undefined &&
     (await config.context.filesystem.exists(declarations))
@@ -85,7 +89,7 @@ async function listEnvironmentGlobs(
 
 async function createDefaultInclude(
   config: LoadedConfig,
-  { key, file, instance }: TsconfigTarget,
+  { key, file, scope, instance }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   const name = toTsconfigEnvironment(key);
 
@@ -99,7 +103,7 @@ async function createDefaultInclude(
 
   const declarations = [
     ...(await listGlobalDeclarations(config)),
-    ...(await listSourceDeclarations(config, name)),
+    ...(await listSourceDeclarations(config, name, scope)),
   ];
 
   return () => toTsconfigGlobs(file, [...globs, ...declarations]);

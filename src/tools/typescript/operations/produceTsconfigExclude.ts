@@ -3,7 +3,7 @@ import { posix } from "node:path";
 import { iterable } from "@auaust/toolkit";
 import { isNonEmptyArray, toArray } from "@auaust/toolkit/array";
 
-import { withExtensions } from "#foundation/filesystem/index";
+import { filesIn, withExtensions } from "#foundation/filesystem/index";
 import { resolveListOption } from "#foundation/options/index";
 import {
   readEnvironmentLanguages,
@@ -115,22 +115,30 @@ async function listNestedPlacements(
   return toArray(iterable.unique(iterable.flat(excluded)));
 }
 
+async function listScopeFixtures(
+  config: LoadedConfig,
+  scope: Directory,
+): Promise<readonly Glob[]> {
+  const scoped = await config.context.scope(scope);
+
+  const tests = await scoped.resolve("tests");
+
+  return filesIn(tests.dirs, tests.fixtures);
+}
+
 async function createDefaultExclude(
   config: LoadedConfig,
-  { key, file, instance }: TsconfigTarget,
+  { key, file, scope, instance }: TsconfigTarget,
 ): Promise<() => readonly string[]> {
   const name = toTsconfigEnvironment(key);
 
-  const { fixtures } = await config.resolve("files");
+  const fixtures = name === "tests"
+    ? await listScopeFixtures(config, scope)
+    : [];
 
   const nested = await listNestedPlacements(config, instance);
 
-  return () => {
-    return toTsconfigGlobs(file, [
-      ...(name === "tests" ? fixtures : []),
-      ...nested,
-    ]);
-  };
+  return () => toTsconfigGlobs(file, [...fixtures, ...nested]);
 }
 
 export async function produceTsconfigExclude(

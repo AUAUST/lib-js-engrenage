@@ -33,3 +33,7 @@ entries:
     title: Sync omits a barrel export only `bin` imports
     why: "in #769, `reportStructure`, imported by `bin` through `#project/structure/index`, never got its export line; typecheck failed until it was added by hand."
     want: barrel blocks counting imports from every environment.
+  - id: 261124-8c12
+    title: Sync takes about 3 minutes in Interscript
+    why: each try-and-resync loop in a consumer costs 3 minutes
+    want: profile a consumer sync and cut its dominant step

@@ -10,6 +10,7 @@ import {
   readEnvironments,
   type ContributedEnvironment,
 } from "#project/environments/index";
+import { listScopeConfigs } from "#project/workspaces/index";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 import type { Globs } from "#types/Globs";
 
@@ -22,11 +23,23 @@ function shippedGlobs(
   });
 }
 
+async function listFixtures(scopes: readonly ConfigResolver[]): Promise<Globs> {
+  const fixtures = await Promise.all(
+    scopes.map(async (scope) => {
+      const tests = await scope.resolve("tests");
+
+      return filesIn(tests.dirs, tests.fixtures);
+    }),
+  );
+
+  return fixtures.flat();
+}
+
 export const filesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
-    const [environments, tests, groups, roles, resources] = await Promise.all([
+    const [environments, scopes, groups, roles, resources] = await Promise.all([
       readEnvironments(config),
-      config.resolve("tests"),
+      listScopeConfigs(config),
       config.resolve("workspaces"),
       config.resolve("environmentRoles"),
       config.resolve("resources"),
@@ -57,7 +70,7 @@ export const filesSection = declareSection({
           return filesIn(dirs, discovered);
         }),
       ],
-      fixtures: filesIn(tests.dirs, tests.fixtures),
+      fixtures: await listFixtures(scopes),
       published: shippedGlobs(environments, "published"),
       private: [
         ...shippedGlobs(environments, "private"),

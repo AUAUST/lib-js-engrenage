@@ -111,3 +111,9 @@ entries:
       - src/tools/typescript/operations/resolveTscProjectArguments.ts:41
     why: "Observed in #846 after a signature change (friction 261124-12aa); suspect `--build` with incremental tsbuildinfo skipping the tests project"
     done: Reproduced and fixed, or shown to be a stale-cache one-off
+  - id: 261124-7ac6
+    title: Environments importing src's .tsx modules get no JSX options, so projects set them root-wide and every workspace inherits them
+    sites:
+      - src/tools/typescript/operations/produceTsconfigJsx.ts:10
+    why: Interscript's root tests and scripts import src .tsx modules; its root typescript.tsconfig jsx block reaches the Vue theme too
+    want: A tsconfig whose environment may import src carries src's JSX options, with no root-wide compilerOptions

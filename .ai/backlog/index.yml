@@ -336,6 +336,7 @@ sync:
     - 261122-c525
     - 261122-407c
     - 261122-abb6
+    - 261124-8c12
 tests:
   purpose: Test infrastructure and coverage gaps.
   entries:
@@ -395,6 +396,7 @@ typescript:
     - 261122-e356
     - 261124-6ffc
     - 261124-9d52
+    - 261124-7ac6
 utils:
   purpose: Shared helpers and their placement.
   entries:

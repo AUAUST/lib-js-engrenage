@@ -317,6 +317,45 @@ describe("syncTsconfigFiles", () => {
     );
   });
 
+  test("excludes a workspace's own fixtures and includes its own source declarations", async () => {
+    const { project, config } = await createProject(
+      {
+        workspaces: {
+          globs: {
+            theme: { name: "theme" },
+          },
+        },
+      },
+      {
+        "src/index.ts": "",
+        "src/env.d.ts": "",
+        "tests/a.test.ts": "",
+        "theme/package.json": JSON.stringify({ name: "theme", type: "module" }),
+        "theme/.workspace.json": "{}",
+        "theme/src/index.ts": "",
+        "theme/src/env.d.ts": "",
+        "theme/tests/a.test.ts": "",
+        "theme/tests/fixtures/b.ts": "",
+        "tsconfig.json": "{}",
+      },
+    );
+
+    await config.context.filesystem.flush();
+
+    const tests = JSON.parse(project.read("theme/tsconfig.tests.json"));
+
+    expect(tests.exclude).toEqual(["tests/**/fixtures/**"]);
+
+    expect(tests.include).toContain("src/env.d.ts");
+
+    expect(tests.include).not.toContain("../src/env.d.ts");
+
+    expect((await config.resolve("files")).fixtures).toEqual([
+      "tests/**/fixtures/**",
+      "theme/tests/**/fixtures/**",
+    ]);
+  });
+
   test("creates a missing base tsconfig", async () => {
     const { project, config } = await createProject({}, { "src/index.ts": "" });
 

@@ -851,3 +851,7 @@ entries:
     subject: pnpm verifyDepsBeforeRun
     tried: sync after lockfile-only install
     stopped: deps check refused; ran offline install
+  - id: 261124-ce4e
+    subject: zsh unmatched grep include
+    tried: grep -r --include=*.ts in Interscript
+    stopped: zsh aborted on the unquoted glob; listed directories instead
