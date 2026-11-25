@@ -83,6 +83,42 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
     expect(command).toBe(`  pnpm metalbrain friction merge ${id} FR-0a0a0a`);
   });
 
+  test("add widens its similar entries with keywords it never writes", async () => {
+    const project = createProject();
+
+    const { messages } = await runCommand(
+      "friction",
+      logs,
+      "add",
+      "--subject",
+      "shell refused the command",
+      "--tried",
+      "listed the changed files",
+      "--stopped",
+      "wrote each path by hand",
+      "--keywords",
+      "zsh unmatched glob",
+    );
+
+    const texts = messages.map(({ text }) => text);
+
+    const id = texts.find((text) => /^FR-[\da-f]{6}$/u.test(text));
+
+    expect(texts).toContain(`  pnpm metalbrain friction merge ${id} FR-0c0c0c`);
+
+    const { entries } = parse(project.read(".ai/friction.yml")) as {
+      entries: Record<string, unknown>[];
+    };
+
+    expect(entries.find((entry) => entry.id === id)).toEqual({
+      id,
+      subject: "shell refused the command",
+      tried: "listed the changed files",
+      stopped: "wrote each path by hand",
+      created: expect.any(String),
+    });
+  });
+
   test("merge removes the new entry and taps the kept one with its taps and subject", async () => {
     const project = createProject();
 

@@ -13,6 +13,7 @@ export default async function (
   invocations: readonly [
     name: string,
     options: Readonly<Record<string, unknown>>,
+    keywords: readonly string[],
   ][],
 ): Promise<void> {
   const { reporter } = getRunContext();
@@ -23,28 +24,35 @@ export default async function (
 
   const agents = await config.resolve("agents");
 
-  const added = await runInvocations(invocations, async (name, options) => {
-    const logKind = findLogKind(name);
+  const added = await runInvocations(
+    invocations,
+    async (name, options, keywords) => {
+      const logKind = findLogKind(name);
 
-    const kind: RecordKind = logKind;
+      const kind: RecordKind = logKind;
 
-    const id = await addRecord(
-      filesystem,
-      kind,
-      kind.name,
-      pickRecordValues(kind, options),
-      { wordCap: agents.wordCaps[logKind.wordCap] },
-    );
+      const id = await addRecord(
+        filesystem,
+        kind,
+        kind.name,
+        pickRecordValues(kind, options),
+        { wordCap: agents.wordCaps[logKind.wordCap] },
+      );
 
-    return { kind, id };
-  });
+      return {
+        kind,
+        id,
+        keywords,
+      };
+    },
+  );
 
   await settleChanges(config, { check: false });
 
-  for (const { kind, id } of added) {
+  for (const { kind, id, keywords } of added) {
     reporter.log(id);
 
-    const hints = await listMergeHints(filesystem, kind, id);
+    const hints = await listMergeHints(filesystem, kind, id, { keywords });
 
     for (const line of hints) {
       reporter.log(line);

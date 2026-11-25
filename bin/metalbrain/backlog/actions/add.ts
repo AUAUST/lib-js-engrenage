@@ -14,6 +14,7 @@ export default async function (
       why?: string[] | undefined;
       want?: string[] | undefined;
       done?: string[] | undefined;
+      keywords?: string[] | undefined;
     },
   ][],
 ): Promise<void> {
@@ -25,27 +26,32 @@ export default async function (
 
   const agents = await config.resolve("agents");
 
-  const ids = await runInvocations(invocations, (category, title, options) => {
-    return addRecord(
-      filesystem,
-      backlog,
-      category,
-      {
-        title,
-        ...options,
-      },
-      {
-        wordCap: agents.wordCaps[backlog.wordCap],
-      },
-    );
-  });
+  const added = await runInvocations(
+    invocations,
+    async (category, title, { keywords = [], ...values }) => {
+      const id = await addRecord(
+        filesystem,
+        backlog,
+        category,
+        {
+          title,
+          ...values,
+        },
+        {
+          wordCap: agents.wordCaps[backlog.wordCap],
+        },
+      );
+
+      return { id, keywords };
+    },
+  );
 
   await settleChanges(config, { check: false });
 
-  for (const id of ids) {
+  for (const { id, keywords } of added) {
     reporter.log(id);
 
-    const hints = await listMergeHints(filesystem, backlog, id);
+    const hints = await listMergeHints(filesystem, backlog, id, { keywords });
 
     for (const line of hints) {
       reporter.log(line);

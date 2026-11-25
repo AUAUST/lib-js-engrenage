@@ -20,6 +20,7 @@ export async function listMergeHints(
   filesystem: Filesystem,
   kind: RecordKind,
   id: string,
+  { keywords = [] }: { keywords?: readonly string[] } = {},
 ): Promise<string[]> {
   const { entry } = await findRecord(filesystem, kind, id);
 
@@ -36,7 +37,7 @@ export async function listMergeHints(
     .join("\n");
 
   const similar = await findSimilarRecords(filesystem, [kind], {
-    texts: [text],
+    texts: keywords.length > 0 ? [text, keywords.join("\n")] : [text],
     exclude: [id],
   });
 

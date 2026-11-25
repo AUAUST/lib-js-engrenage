@@ -28,6 +28,11 @@ export default defineChainedCommand({
         "--done <text>",
         "completion or obsolescence condition; repeat for a list",
         collectArgument,
+      )
+      .option(
+        "--keywords <keywords>",
+        "terms widening the similar-entry search, never written to the entry; comma-separated or repeated",
+        collectListArgument,
       );
   },
   action() {
