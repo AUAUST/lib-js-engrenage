@@ -127,6 +127,6 @@ export const textQueryFrequencyLimit = 0.5;
 
 export const textQueryLeafLimit = 12;
 
-export const similarityThreshold = 0.35;
+export const similarityThreshold = 0.2;
 
 export const similarLimit = 3;

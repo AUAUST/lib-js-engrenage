@@ -13,3 +13,6 @@ export const gateStepEntry: StandardSchemaV1 = looseObject({
   load: function_(),
   check: optional(looseObject({ load: function_() })),
 });
+
+// @debt a commit subject makes a text query of two or three leaves, whose similarities run higher than a whole entry's, so commit hints keep their own threshold instead of a similarity normalized by query length
+export const commitSimilarityThreshold = 0.4;

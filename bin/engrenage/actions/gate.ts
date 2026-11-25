@@ -24,7 +24,11 @@ async function checkMessage(
 
   const { attribution } = await config.resolve("agents");
 
-  return runMessageGate(message, { audience, attribution });
+  return runMessageGate(message, {
+    audience,
+    attribution,
+    config,
+  });
 }
 
 export default async function ({

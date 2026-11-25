@@ -28,6 +28,11 @@ export interface RecordKind<WordCap extends string = string> {
    */
   readonly groupBy?: string;
   /**
+   * The text field naming an entry in a few words, which a merge's tap
+   * note defaults to.
+   */
+  readonly title?: string;
+  /**
    * The fields searches rank entries on; a kind without it is not searchable.
    */
   readonly search?: RecordSearch;

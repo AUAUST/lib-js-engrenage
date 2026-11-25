@@ -954,3 +954,8 @@ entries:
     need: union merge never collapsing identical closing lines of two appended entries
     reason: rewrites every record file and the format agents read; created written last instead
     created: 2026-11-25T02:44:57Z
+  - id: DS-2fa997
+    subject: debt statement parser in eslint utils
+    need: commit hints read added debt statements
+    reason: eslint utils barrel would export every eslint util
+    created: 2026-11-25T03:01:37Z

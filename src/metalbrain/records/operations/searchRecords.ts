@@ -1,87 +1,15 @@
-import { isArray, isString } from "@auaust/toolkit";
-
 import {
   createTextQuery,
   parseQuery,
-  prepareDocuments,
   rankDocuments,
-  type DocumentField,
   type QueryNode,
 } from "#foundation/matching/index";
-import { listRecords } from "#metalbrain/records/operations/listRecords";
+import { prepareRecordSearch } from "#metalbrain/records/operations/prepareRecordSearch";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { ListedRecord } from "#metalbrain/records/types/ListedRecord";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 import type { RecordQuery } from "#metalbrain/records/types/RecordQuery";
 
-interface SearchedEntry extends ListedRecord {
-  readonly kind: RecordKind;
-}
-
 const explicitAnd = /(?:^|[\s(])AND(?=[\s)]|$)/u;
-
-function readText(value: unknown): string {
-  if (isArray(value)) {
-    return value.filter(isString).join("\n");
-  }
-
-  return isString(value) ? value : "";
-}
-
-function readField(
-  { kind, group, entry }: SearchedEntry,
-  name: string,
-): string {
-  const { search } = kind;
-
-  if (search?.weights[name] === undefined) {
-    return "";
-  }
-
-  return name === search.group ? group : readText(entry[name]);
-}
-
-function createFields(
-  kinds: readonly RecordKind[],
-): DocumentField<SearchedEntry>[] {
-  const weights = new Map<string, number>();
-
-  for (const { name, search, fields } of kinds) {
-    if (search === undefined) {
-      throw new Error(
-        `The ${name} records declare no searchable field: a kind declares them under \`search\``,
-      );
-    }
-
-    for (const [field, weight] of Object.entries(search.weights)) {
-      if (field !== "id" && field !== search.group && !(field in fields)) {
-        throw new Error(
-          `The ${name} records weigh "${field}" for search, which is neither \`id\`, its group nor one of its fields`,
-        );
-      }
-
-      const known = weights.get(field);
-
-      if (known !== undefined && known !== weight) {
-        throw new Error(
-          `Record kinds searched together weigh "${field}" ${known} and ${weight}: every kind declaring a field must give it one weight`,
-        );
-      }
-
-      weights.set(field, weight);
-    }
-  }
-
-  return Array.from(weights, ([name, weight]) => {
-    return {
-      name,
-      weight,
-      read(document) {
-        return readField(document, name);
-      },
-    };
-  });
-}
 
 function relaxImplicitAnd(
   tree: QueryNode,
@@ -130,23 +58,7 @@ export async function searchRecords(
   kinds: readonly RecordKind[],
   query: RecordQuery,
 ) {
-  const fields = createFields(kinds);
-
-  const listed = await Promise.all(
-    kinds.map(async (kind) => {
-      const entries = await listRecords(filesystem, kind);
-
-      return entries.map((entry) => {
-        return { ...entry, kind };
-      });
-    }),
-  );
-
-  const newestFirst = listed.flat().toSorted((first, second) => {
-    return (second.created ?? "").localeCompare(first.created ?? "");
-  });
-
-  const prepared = prepareDocuments(newestFirst, fields);
+  const prepared = await prepareRecordSearch(filesystem, kinds);
 
   if (query.kind === "text") {
     return {
@@ -157,7 +69,7 @@ export async function searchRecords(
 
   const tree = parseQuery(
     query.query,
-    fields.map(({ name }) => name),
+    prepared.fields.map(({ name }) => name),
   );
 
   if (tree.kind === "all" && tree.children.length === 0) {

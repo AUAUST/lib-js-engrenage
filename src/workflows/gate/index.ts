@@ -1,6 +1,7 @@
 // @barrel operations
 export { checkAgentStop } from "#workflows/gate/operations/checkAgentStop";
 export { gateClaudeStop } from "#workflows/gate/operations/gateClaudeStop";
+export { listRelatedRecords } from "#workflows/gate/operations/listRelatedRecords";
 export { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 export { runGate } from "#workflows/gate/operations/runGate";
 export { runMessageGate } from "#workflows/gate/operations/runMessageGate";

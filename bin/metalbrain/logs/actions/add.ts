@@ -1,3 +1,4 @@
+import { listMergeHints } from "#metalbrain/kinds/index";
 import { findLogKind } from "#metalbrain/logs/index";
 import {
   addRecord,
@@ -35,4 +36,10 @@ export default async function (
   await settleChanges(config, { check: false });
 
   reporter.log(id);
+
+  const hints = await listMergeHints(config.context.filesystem, kind, id);
+
+  for (const line of hints) {
+    reporter.log(line);
+  }
 }

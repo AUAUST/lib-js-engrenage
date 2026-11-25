@@ -1,13 +1,18 @@
 import { readTextFile } from "#foundation/filesystem/index";
 import { commitSubjectLimit, commitTypes } from "#tools/git/constants";
 import { readCommitMessage, type CommitMessage } from "#tools/git/index";
+import { listRelatedRecords } from "#workflows/gate/operations/listRelatedRecords";
 import type { ResolvedAgents } from "#metalbrain/runtimes/index";
+import type { LoadedConfig } from "#project/config/index";
 import type { GateStepEntry } from "#project/gate/index";
 import type { File } from "#types/File";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateReport } from "#workflows/gate/types/GateReport";
+import type { GateWarning } from "#workflows/gate/types/GateWarning";
 
 const step = "commit message";
+
+const relatedStep = "related records";
 
 const types: ReadonlySet<string> = new Set(commitTypes);
 
@@ -112,6 +117,35 @@ interface MessageGateOptions {
    * value accepts them.
    */
   readonly attribution?: ResolvedAgents["attribution"];
+  /**
+   * The loaded config, to warn about the backlog entries the commit may relate
+   * to; no warning without it.
+   */
+  readonly config?: LoadedConfig;
+}
+
+async function listWarnings(
+  message: CommitMessage,
+  config: LoadedConfig | undefined,
+): Promise<GateWarning[]> {
+  if (config === undefined) {
+    return [];
+  }
+
+  try {
+    const lines = await listRelatedRecords(config, message);
+
+    return lines.length === 0
+      ? []
+      : [{ step: relatedStep, output: lines.join("\n") }];
+  } catch (error) {
+    return [
+      {
+        step: relatedStep,
+        output: `Cannot list the related records: ${error instanceof Error ? error.message : String(error)}`,
+      },
+    ];
+  }
 }
 
 export async function runMessageGate(
@@ -127,12 +161,12 @@ export async function runMessageGate(
     };
   }
 
+  const commit = readCommitMessage(message);
+
   return {
-    failures: listFailures(readCommitMessage(message), options).map(
-      (output): GateFailure => {
-        return { step, output };
-      },
-    ),
-    warnings: [],
+    failures: listFailures(commit, options).map((output): GateFailure => {
+      return { step, output };
+    }),
+    warnings: await listWarnings(commit, options.config),
   };
 }

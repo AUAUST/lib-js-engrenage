@@ -33,6 +33,7 @@ export const backlog = freeze({
   }),
   detailLimit: 3,
   wordCap: "backlogEntry",
+  title: "title",
   search: freeze({
     weights: freeze({
       id: 4,

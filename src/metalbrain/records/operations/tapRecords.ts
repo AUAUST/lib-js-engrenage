@@ -1,24 +1,12 @@
 import { isNumber } from "@auaust/toolkit";
 
-import { countWords } from "#foundation/markdown/index";
 import { findRecords } from "#metalbrain/records/operations/findRecords";
 import { tapRecord } from "#metalbrain/records/operations/tapRecord";
+import { checkTapNote } from "#metalbrain/records/utils/checkTapNote";
 import { formatRecordTime } from "#metalbrain/records/utils/formatRecordTime";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { LocatedRecord } from "#metalbrain/records/types/LocatedRecord";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
-
-function checkNote(note: string, cap: number): void {
-  if (note.trim() === "" || /[\n\r]/u.test(note)) {
-    throw new Error("A tap note is one line of text");
-  }
-
-  const words = countWords(note);
-
-  if (words > cap) {
-    throw new Error(`The tap note holds ${words} words, over ${cap}`);
-  }
-}
 
 /**
  * Stages one tap at the current time, with `note` when given, on every entry
@@ -44,7 +32,7 @@ export async function tapRecords(
   },
 ): Promise<readonly LocatedRecord[]> {
   if (note !== undefined) {
-    checkNote(note, noteCap);
+    checkTapNote(note, noteCap);
   }
 
   const located = await findRecords(

@@ -1,4 +1,5 @@
 import { backlog } from "#metalbrain/backlog/constants";
+import { listMergeHints } from "#metalbrain/kinds/index";
 import { addRecord } from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -36,4 +37,10 @@ export default async function (
   await settleChanges(config, { check: false });
 
   reporter.log(id);
+
+  const hints = await listMergeHints(config.context.filesystem, backlog, id);
+
+  for (const line of hints) {
+    reporter.log(line);
+  }
 }

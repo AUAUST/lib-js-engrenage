@@ -227,5 +227,5 @@ entries:
     title: Agents have no instruction on what to do with the similar entries a commit or add lists
     why: "Once #900 lands, the commit-msg gate step lists possibly related backlog entries as a factual message, and nothing tells agents who acts on them"
     want: A subagent forwards the listed IDs to its dispatcher in its final report, except after a checkpoint commit; a main-session agent weighs and handles them itself
-    done: "Written with the #888 end-of-plan instruction changes, including the three `missing` ones: agent-records asks for it apart from friction and debt; the git rule counts `.ai/missing.yml`; curation reads its stats"
+    done: "With #888's end-of-plan instruction changes: agent-records asks for `missing` entries; the git rule counts `.ai/missing.yml`; curation reads its stats; agents learn when to `tap`, what to do with `add`'s merge hints, and `<kind> merge`"
     created: 2026-11-24T00:00:00Z

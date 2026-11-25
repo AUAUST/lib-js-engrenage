@@ -16,6 +16,8 @@ export const typescriptLanguage = "typescript";
 
 export const pluginName = "auaust";
 
+export const debtMarker = "@debt";
+
 export const rolesPluginName = "roles";
 
 export const boundaryMessages = freeze({

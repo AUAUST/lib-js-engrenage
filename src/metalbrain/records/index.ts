@@ -9,9 +9,12 @@ export { findRecord } from "#metalbrain/records/operations/findRecord";
 export { findRecordEntryViolations } from "#metalbrain/records/operations/findRecordEntryViolations";
 export { findRecords } from "#metalbrain/records/operations/findRecords";
 export { findRecordViolations } from "#metalbrain/records/operations/findRecordViolations";
+export { findSimilarRecords } from "#metalbrain/records/operations/findSimilarRecords";
 export { listRecordIds } from "#metalbrain/records/operations/listRecordIds";
 export { listRecords } from "#metalbrain/records/operations/listRecords";
+export { mergeRecord } from "#metalbrain/records/operations/mergeRecord";
 export { moveRecord } from "#metalbrain/records/operations/moveRecord";
+export { prepareRecordSearch } from "#metalbrain/records/operations/prepareRecordSearch";
 export { readRecordDocument } from "#metalbrain/records/operations/readRecordDocument";
 export { readRecordGroup } from "#metalbrain/records/operations/readRecordGroup";
 export { readRecordGroups } from "#metalbrain/records/operations/readRecordGroups";
@@ -46,12 +49,15 @@ export type * from "#metalbrain/records/types/RecordSearch";
 export type * from "#metalbrain/records/types/RecordSiteRelocation";
 export type * from "#metalbrain/records/types/RecordTap";
 export type * from "#metalbrain/records/types/RecordValues";
+export type * from "#metalbrain/records/types/SearchedRecord";
+export type * from "#metalbrain/records/types/SimilarRecord";
 export type * from "#metalbrain/records/types/WordCapFinding";
 // @end
 
 // @barrel utils
 export { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
 export { appendRecordTaps } from "#metalbrain/records/utils/appendRecordTaps";
+export { checkTapNote } from "#metalbrain/records/utils/checkTapNote";
 export { findNamespaceViolations } from "#metalbrain/records/utils/findNamespaceViolations";
 export { formatRecordDocument } from "#metalbrain/records/utils/formatRecordDocument";
 export { formatRecordRename } from "#metalbrain/records/utils/formatRecordRename";

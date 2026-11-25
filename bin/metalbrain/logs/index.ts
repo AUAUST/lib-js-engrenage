@@ -6,6 +6,7 @@ import list from "#bin/metalbrain/logs/list";
 import show from "#bin/metalbrain/logs/show";
 import stats from "#bin/metalbrain/logs/stats";
 import update from "#bin/metalbrain/logs/update";
+import merge from "#bin/metalbrain/merge";
 import search from "#bin/metalbrain/search";
 import tap from "#bin/metalbrain/tap";
 
@@ -17,12 +18,12 @@ const purposes: Readonly<Record<string, string>> = {
   missing: "the capabilities agents built or worked around because the codebase or a dependency lacked them, in .ai/missing.yml",
 };
 
-// @debt every log kind lists `tap`, the pending log too, which takes no taps and fails, since the group serves every log kind with one command set
+// @debt every log kind lists `tap` and `merge`, the pending log too, which takes no taps and fails on both, since the group serves every log kind with one command set
 export default defineGroup({
   configure(command) {
     return command
       .description(
-        `Add, find, update, tap, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
+        `Add, find, update, tap, merge, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
       )
       .addHelpText(
         "afterAll",
@@ -35,6 +36,7 @@ export default defineGroup({
     search,
     show,
     tap,
+    merge,
     update,
     close,
     stats,

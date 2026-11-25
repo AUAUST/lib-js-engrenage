@@ -22,6 +22,7 @@ export const friction = freeze({
   }),
   detailLimit: 0,
   wordCap: "logEntry",
+  title: "subject",
   groupBy: "subject",
   search: freeze({
     weights: freeze({
@@ -45,6 +46,7 @@ export const discarded = freeze({
   }),
   detailLimit: 0,
   wordCap: "logEntry",
+  title: "subject",
   groupBy: "subject",
   search: freeze({
     weights: freeze({
@@ -68,6 +70,7 @@ export const pending = freeze({
   }),
   detailLimit: 0,
   wordCap: "logEntry",
+  title: "subject",
   groupBy: "subject",
   search: freeze({
     weights: freeze({
@@ -96,6 +99,7 @@ export const missing = freeze({
   }),
   detailLimit: 0,
   wordCap: "logEntry",
+  title: "subject",
   groupBy: "subject",
   search: freeze({
     weights: freeze({

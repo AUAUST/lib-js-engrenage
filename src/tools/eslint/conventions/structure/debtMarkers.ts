@@ -1,6 +1,5 @@
+import { debtMarker } from "#tools/eslint/constants";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
-
-const debtMarker = "@debt";
 
 const message = `Write debt markers as \`${debtMarker} <statement>\` at the start of their own comment.`;
 
