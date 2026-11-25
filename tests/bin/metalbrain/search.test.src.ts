@@ -45,14 +45,17 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
       runCommand("backlog", backlog, "search", "cli"),
     );
 
-    expect(lines.slice(0, 2).toSorted()).toEqual([
-      "BL-0c1100 cli: Output to a closed pipe crashes",
-      "BL-0c1200 cli: Program wiring copies internals",
+    expect(lines.slice(0, 2)).toEqual(["backlog:", "├ cli:"]);
+
+    expect(lines.slice(2, 4).toSorted()).toEqual([
+      "│ BL-0c1100 Output to a closed pipe crashes",
+      "│ BL-0c1200 Program wiring copies internals",
     ]);
 
-    expect(lines[2]).toBe(
-      "BL-4ead00 readme: The README lacks the CLI reference",
-    );
+    expect(lines.slice(4)).toEqual([
+      "└ readme:",
+      "  BL-4ead00 The README lacks the CLI reference",
+    ]);
   });
 
   test("friction search of a quoted phrase ranks the entry whose subject quotes it first", async () => {
@@ -62,11 +65,11 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
       runCommand("friction", logs, "search", '"git ls-files"'),
     );
 
-    expect(lines[0]).toBe(
-      "FR-000002 `git ls-files --others`: listed ignored paths — skipped directories",
-    );
-
-    expect(lines).toHaveLength(2);
+    expect(lines).toEqual([
+      "friction:",
+      "├ FR-000002 `git ls-files --others`: listed ignored paths — skipped directories",
+      expect.stringMatching(/^└ FR-/u),
+    ]);
   });
 
   test("paints every kind together as a kind and category tree, and ends a truncated page with its rerun", async () => {
@@ -99,7 +102,8 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
 
     expect(lines).toEqual([
       "No entry matches every term; entries matching any of them:",
-      "FR-000003 git add: ran it — reran",
+      "friction:",
+      "└ FR-000003 git add: ran it — reran",
     ]);
   });
 
@@ -116,6 +120,6 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
       ),
     );
 
-    expect(lines[0]?.startsWith("FR-000002 ")).toBe(true);
+    expect(lines[1]).toMatch(/^[├└] FR-000002 /u);
   });
 });

@@ -3,7 +3,7 @@ import { defineLazyCommand } from "#workflows/cli/index";
 export default defineLazyCommand({
   configure(command) {
     return command.description(
-      "List the entries, one line each: ID, then `<subject>: <…> — <…>`.",
+      "List the entries as a thin tree under the log's name, one line each: ID, then `<subject>: <…> — <…>`.",
     );
   },
   action() {

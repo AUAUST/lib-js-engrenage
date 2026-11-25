@@ -4,7 +4,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "List the backlog entries, one line each: ID, category and title.",
+        "List the backlog entries as a thin tree of categories under `backlog`, one line each: ID and title.",
       )
       .argument("[category]", "list only this category's entries");
   },

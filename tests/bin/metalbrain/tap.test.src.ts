@@ -73,14 +73,19 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
     const { messages: listed } = await runCommand("friction", logs, "list");
 
     expect(listed.map(({ text }) => text)).toEqual([
-      "FR-0a0a0a git add: ran it — it failed (2 taps)",
+      "friction:",
+      "└ FR-0a0a0a git add: ran it — it failed (2 taps)",
     ]);
 
     const {
       messages: shown,
     } = await runCommand("friction", logs, "show", "FR-0a0a0a");
 
-    expect(shown[0]?.text).toMatch(/\ntaps:\n {2}- \S+Z again\n {2}- \S+Z$/u);
+    expect(shown.slice(-3).map(({ text }) => text)).toEqual([
+      "  taps:",
+      expect.stringMatching(/^ {2}├ \S+Z again$/u),
+      expect.stringMatching(/^ {2}└ \S+Z$/u),
+    ]);
 
     const { messages: counted } = await runCommand("friction", logs, "stats");
 

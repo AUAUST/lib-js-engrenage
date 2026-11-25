@@ -1,5 +1,5 @@
 import { backlog } from "#metalbrain/backlog/constants";
-import { formatRecordLine } from "#metalbrain/kinds/index";
+import { formatRecordTree } from "#metalbrain/kinds/index";
 import { listRecords } from "#metalbrain/records/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -15,7 +15,11 @@ export default async function (category: string | undefined): Promise<void> {
     category,
   );
 
-  for (const entry of entries) {
-    reporter.log(formatRecordLine(backlog, entry));
+  const records = entries.map((entry) => {
+    return { ...entry, kind: backlog };
+  });
+
+  for (const line of formatRecordTree(records)) {
+    reporter.log(line);
   }
 }

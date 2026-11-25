@@ -139,8 +139,10 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     const { messages } = await runCommand("backlog", backlog, "list", "docs");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "BL-0b1c2d docs: Document the gate",
-      "BL-3fa9c1 docs: A claim",
+      "backlog:",
+      "└ docs:",
+      "  BL-0b1c2d Document the gate",
+      "  BL-3fa9c1 A claim",
     ]);
   });
 
@@ -215,7 +217,9 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     } = await runCommand("backlog", backlog, "search", "REASON");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "BL-3fa9c1 tools: A claim",
+      "backlog:",
+      "└ tools:",
+      "  BL-3fa9c1 A claim",
     ]);
   });
 

@@ -31,7 +31,9 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
 
     expect(messages.map(({ text }) => text)).toEqual([
       "261122-8ede is now BL-3fa9c1",
-      "backlog:\n  group: tools\n  id: BL-3fa9c1\n  title: A claim",
+      "backlog:",
+      "└ tools:",
+      "  BL-3fa9c1 A claim",
     ]);
   });
 
@@ -43,8 +45,13 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
     } = await runCommand("show", show, "BL-3fa9c1", "FR-08d2e7");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "backlog:\n  group: tools\n  id: BL-3fa9c1\n  title: A claim",
-      "friction:\n  id: FR-08d2e7\n  subject: git add\n  tried: ran it\n  stopped: reran",
+      "backlog:",
+      "└ tools:",
+      "  BL-3fa9c1 A claim",
+      "friction:",
+      "└ FR-08d2e7 git add",
+      "  tried: ran it",
+      "  stopped: reran",
     ]);
   });
 });

@@ -117,12 +117,11 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     const { messages: shown } = await runCommand("friction", logs, "show", id);
 
     expect(shown.map(({ text }) => text)).toEqual([
-      expect.stringMatching(
-        new RegExp(
-          `^id: ${id}\nsubject: git add\ntried: ran it\nstopped: c\ncreated: \\S+$`,
-          "u",
-        ),
-      ),
+      "friction:",
+      `└ ${id} git add`,
+      "  tried: ran it",
+      "  stopped: c",
+      expect.stringMatching(/^ {2}created: \S+$/u),
     ]);
   });
 
@@ -134,7 +133,8 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     const { messages } = await runCommand("pending", logs, "list");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "PD-0a0a0a docs: write them — out of scope",
+      "pending:",
+      "└ PD-0a0a0a docs: write them — out of scope",
     ]);
 
     await runCommand("pending", logs, "close", "PD-0a0a0a");

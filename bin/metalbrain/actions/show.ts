@@ -1,6 +1,9 @@
-import { stringify } from "yaml";
+import { isString } from "@auaust/toolkit";
 
-import { createRecordKindResolver } from "#metalbrain/kinds/index";
+import {
+  createRecordKindResolver,
+  formatRecordDetailTree,
+} from "#metalbrain/kinds/index";
 import {
   findRecords,
   formatRecordRename,
@@ -27,35 +30,27 @@ export default async function (
     "No entry was printed:",
   );
 
-  for (const { given, kind, found } of located) {
+  for (const { given, found } of located) {
     const rename = formatRecordRename(given, found.id);
 
     if (rename !== undefined) {
       reporter.warn(rename);
     }
+  }
 
-    const taps = listRecordTaps(found, found.id);
+  const records = located.map(({ kind, found }) => {
+    const { created, ...entry } = found.entry;
 
-    const entry = {
-      ...orderRecordEntry(kind, found.entry),
-      ...(taps.length > 0 && {
-        taps: taps.map(({ at, note }) => {
-          return note === undefined ? at : `${at} ${note}`;
-        }),
-      }),
+    return {
+      kind,
+      group: found.group,
+      created: isString(created) ? created : undefined,
+      taps: listRecordTaps(found, found.id),
+      entry: orderRecordEntry(kind, entry),
     };
+  });
 
-    // @debt a grouped kind's group prints as `category` under its kind's own command and `group` under `metalbrain show`, since a kind declares no name for its groups
-    const printed = kindName === undefined
-      ? {
-          [kind.name]: "directory" in kind.location
-            ? { group: found.group, ...entry }
-            : entry,
-        }
-      : "directory" in kind.location
-        ? { category: found.group, ...entry }
-        : entry;
-
-    reporter.log(stringify(printed, { lineWidth: 0 }).trimEnd());
+  for (const line of formatRecordDetailTree(records)) {
+    reporter.log(line);
   }
 }
