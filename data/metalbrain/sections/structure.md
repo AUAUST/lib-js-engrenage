@@ -6,7 +6,7 @@ description: Place code in the domains, layers and roles of the project structur
 ## Project structure
 
 ```
-environment          src, bin, scripts, tests, data, tooling: own directories and import rights
+environment          own directories and import rights
 └─ namespace         groups domains in layers (layered architecture)
    └─ domain         one concern: `index` surface, plus an `entry` package entry when public
       ├─ role        directory or file with a fixed contract and effect level
@@ -14,9 +14,8 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 ```
 
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
-- Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 
-A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too; no code enforces them, and none names a directory, so a project names its foundations as it likes:
+A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too, which no code enforces and no directory name fixes:
 
 - **Foundations.** Primitives every namespace builds on; they build on no namespace.
 - **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level. A helper holding business logic belongs to the domain owning that logic.
@@ -31,5 +30,5 @@ Place:
 - **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
-- **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.

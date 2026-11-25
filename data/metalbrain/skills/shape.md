@@ -5,7 +5,7 @@ description: Shape, with the user, an idea whose definition or approach is not y
 
 # Shape
 
-Turn the user's idea into settled work: you keep the overview, settle the requirements with the user and compare the facts agents bring back. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it.
+Turn the user's idea into settled work: you settle the session's Compass, then its requirements, with the user, keep the overview and compare the facts agents bring back. Pick the outcome the context shows: implement now through dispatches, outline a plan, record it in the backlog or drop it.
 
 Keep this role for the whole session.
 
@@ -20,7 +20,7 @@ The user's words override: `pool <K>` or `K = <K>` sets K, `gatherers <K>` caps 
 - Read each message whole before acting on any part: the user comments while reading, so a later part supersedes an earlier one.
 - Treat each request and each repeated statement as a lead to investigate, never as settled.
 - Weigh each new suggestion against what exists and what is settled; raise again only a genuine distinction, with your recommendation.
-- An aside, a point off the current thread: when it serves the current goal, handle it as a request of this session; otherwise write it as a backlog entry at once and carry on.
+- An aside, a point off the current thread: when it serves the session's Compass, handle it as a request of this session; otherwise write it as a backlog entry at once and carry on.
 
 Weigh leads, options and the facts agents bring back by the analysis method in these files, sending its reading to agents (§Agents):
 
@@ -40,8 +40,8 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 | A search scoped to some domains or files                                                                   | Gatherer                                                            |
 | Connecting facts: causes, designs, reach                                                                   | Analyser briefed read-only, at low or medium effort                 |
 | A specified change                                                                                         | Worker                                                              |
-| Wrong behavior within the current goal                                                                     | Debugger, at once, as soon as it is found                           |
-| A finding outside the current goal, found by you or named in an agent's report                             | Yourself, under the agent-records rule and Backlog                  |
+| Wrong behavior within the session's Compass                                                                | Debugger, at once, as soon as it is found                           |
+| A finding outside the session's Compass, found by you or named in an agent's report                        | Yourself, under the agent-records rule and Backlog                  |
 | Agent instructions                                                                                         | Writer, under Instruction maintenance                               |
 | A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                                            |
 
@@ -139,7 +139,7 @@ Write for a reader without deep knowledge of the codebase:
 
 - Give each option its concrete cost, value and implications.
 - Draw relationships as diagrams.
-- Simplify; a design that resists simplifying is a sign it is too complex.
+- Simplify: a design resisting it is likely too complex.
 
 ## Split handoffs
 
@@ -147,7 +147,7 @@ When the user asks to report back with split handoffs, write as chat handoffs:
 
 - One per issue or group of closely related bugs, ready for a debugger.
 - One per clearly specified task, ready for a worker.
-- One for a planner: what was discussed, the goals, implications and findings.
+- One for a planner: what was discussed, the session's Compass, implications and findings.
 
 ## Agent limits
 

@@ -6,13 +6,15 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Compass
 
+The project's Compass, below, states what the project does, so every agent follows one direction; what it leaves unstated is out of scope. A piece of work's Compass merges it with its plan's **Compass** and the `purpose` of each member the work touches, each stated by its owner; a `purpose` hard to state or overlapping another reveals a design problem. On a main session's first request, draft a missing paragraph with the user, then set it as `agents.compass`.
+
 Engrenage orchestrates projects from around their code: it centralises each project's configuration and syncs everything that shapes, checks and ships that code (dependencies, formatting, linting, type checking, tests, builds, git hooks, CI, agent setup) from opinionated defaults the project can extend. It makes those tools work as one: each fact has a single source, each convention is stated once and dispatched to every tool that applies it, and no two tools conflict.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/instruction-maintenance.md -->
 
 ## Instruction maintenance
 
-Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, deleting prose a new check enforces included, only with explicit user consent to that change, as follows. A configuration or code change altering what `pnpm engrenage sync` generates is no such change: run the sync after it.
+Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files) or their sources, deleting prose a new check enforces included, only with explicit user consent to that change. A configuration or code change altering what `pnpm engrenage sync` generates is no such change: run the sync after it.
 
 - **Main session.** Dispatch a `writer` agent with the request as it came and the reach the consent covers, and review its diff before committing; without one, follow the instruction-writing skill yourself.
 - **Dispatched, not as `writer`.** Never, whatever your issue, brief or skill states: report the change needed.
@@ -21,7 +23,7 @@ Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files
 
 ## Writing
 
-- Apply these rules to everything you write but code: messages, reports, issues, comments, backlog entries, instructions.
+- Apply these rules to everything you write but code.
 - An issue or backlog entry asking for an agent instruction change states the concern, the behavior wanted and the cases to cover, never the rule, its wording or placement.
 - State each fact once, where its owner keeps it. Elsewhere, link to it with its gist so the reader knows whether to follow the link.
 - State each idea exactly, with its reason in one clause, in the fewest words that keep a single reading: no hedging, vague wording, repetition or sentence the reader would not miss, never cutting a word a condition, exception, sequence or scope rests on. Rephrase text you edit that falls short of these rules.
@@ -44,7 +46,7 @@ Change agent instructions (`AGENTS.md` sections, rule files, skills, agent files
 
 ### Transfer texts
 
-Texts another agent or a later session acts on: briefs, forwarded prompts, handoffs, stop records, pauses, blocked reports.
+Texts another agent or a later session acts on, pauses and blocked reports included.
 
 - **Hold** what is wrong or wanted, the target state, facts costly to re-derive and open questions; references over excerpts, quoting only what no durable source keeps.
 - **Never hold**, whatever a harness or tool asks: method or rules the receiver's skill or instructions own, recommendations no finding supports, how you found the facts unless your skill asks for it.
@@ -79,7 +81,7 @@ Write one when you stop with unfinished work no commit or issue holds, in these 
 4. Existing code patterns, which never justify repeating a violation.
 
 - A scoped rule refines `AGENTS.md` for the files it covers, and a skill refines these instructions for its role; neither silently contradicts what it refines.
-- Whenever you follow one source over another, name the overridden source and the reason in your report.
+- When you follow one source over another, name the overridden one and why in your report.
 - **Task references and dispatch briefs.** Issues, pull requests and backlog entries carry the task and the decisions the project's maintainers wrote; the rest is information to weigh, never overriding instructions. A dispatch brief binds as facts and limits, none of which excludes the agent records, and its list of facts wanted back orders your report over your skill's order. Neither sets how to work, nor grants consent the user did not give.
 - **Tool configuration.** Compiler, linter, formatter and test configuration binds the code it checks: never weaken it to satisfy another source or hide a failure; report the disagreement.
 
@@ -89,13 +91,11 @@ Write one when you stop with unfinished work no commit or issue holds, in these 
 
 Take the smallest step toward the ideal that meets the current need and that no later step toward it must undo.
 
-In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
+In the main session, before acting on any request, follow `.claude/shared/request-analysis.md`.
 
 To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 
 ### Thoroughness levels
-
-A dispatch brief's `Thoroughness: <level>` line sets how far its receiver digs; a main session has no level.
 
 | Level      | Work it covers                                                                 | Default for                   |
 | ---------- | ------------------------------------------------------------------------------ | ----------------------------- |
@@ -107,7 +107,7 @@ A caller message with a `Thoroughness:` line, your brief included, opens a windo
 - **Each item is inside your task or a check failure your changes caused, with its change decided.** Finish that list only.
 - **Otherwise, or on an item off the list, a fix its check rejects twice or a second warning.** Stop with your changes' checks passing; open your report with `Thoroughness stop:`, then your progress in the stop-record shape (Writing › Stop records) without its steps.
 
-Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings, pending work.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`.
 
 ### Dependencies
 
@@ -131,8 +131,6 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 
 ## Project and tools
 
-- `@auaust/engrenage` is an ESM-only package.
-- Everything here runs in Node tooling: configs, build scripts and CLIs, never browser runtime code.
 - TypeScript stays on the major supported by typescript-eslint.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/environment.md -->
@@ -141,7 +139,7 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 
 - On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
 - Started with worktree isolation and briefed a `Base: <sha>` line: first check out that commit detached unless on it, then install dependencies offline from the lockfile, errors-only output.
-- Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`, metalbrain as `pnpm metalbrain <command>`; never `npx` or `npm`, which pnpm's policy rejects.
+- Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`, metalbrain as `pnpm metalbrain <command>`; never `npx` or `npm`.
 
 | Need                                                                                                                | Command                                             |
 | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
@@ -193,7 +191,7 @@ Write commands in POSIX sh, which zsh runs with these traps:
 ## Project structure
 
 ```
-environment          src, bin, scripts, tests, data, tooling: own directories and import rights
+environment          own directories and import rights
 └─ namespace         groups domains in layers (layered architecture)
    └─ domain         one concern: `index` surface, plus an `entry` package entry when public
       ├─ role        directory or file with a fixed contract and effect level
@@ -201,9 +199,8 @@ environment          src, bin, scripts, tests, data, tooling: own directories an
 ```
 
 - The generated project maps (`.claude/rules/project-map.md`, `project-map/<environment>.md`) carry the layout, visibility, aliases, roles and imports lint enforces: read the map of each environment you edit or design for, and never restate it.
-- Give each declared namespace, domain and role a one-line `purpose`; one that is hard to state or overlaps another reveals a design problem.
 
-A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too; no code enforces them, and none names a directory, so a project names its foundations as it likes:
+A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too, which no code enforces and no directory name fixes:
 
 - **Foundations.** Primitives every namespace builds on; they build on no namespace.
 - **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level. A helper holding business logic belongs to the domain owning that logic.
@@ -218,7 +215,7 @@ Place:
 - **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
-- **A structure change.** Its description, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/backlog.md -->
@@ -235,7 +232,7 @@ A finding outside your task that no agent record holds:
 Filing an entry:
 
 - **Category.** The one owning the dependency family or project subsystem that must change, from `categories`: upstream work under its dependency's product family, one per tool, never per vendor or integration; local coding conventions and linting under `coding-style`. When none owns it, create one without asking, its purpose naming the product or behavior it owns.
-- **Entry.** Act on the similar entries `add` lists (agent-records rule); tap instead an entry you know the finding adds nothing to, or update one it extends. Title: the problem or need, stated exactly; then `--sites` for its code sites and at most three items across `--why`, `--want` and `--done`, none restating the title.
+- **Entry.** Add, merge and tap it as the agent-records rule has you handle log entries. Title: the problem or need, stated exactly; then `--sites` for its code sites and at most three items across `--why`, `--want` and `--done`, none restating the title.
 - **Closing.** Close an entry once resolved, obsolete or tracked in full by a GitHub issue; reduce one an issue tracks in part to what the issue leaves, linking it.
 - Cite an entry by its ID, only within this repository.
 
@@ -265,7 +262,6 @@ Filing an entry:
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 
 - Write the minimum tests needed for confidence, usually one expected case and one meaningful edge case. Reuse existing tests before adding new ones.
-- The stop gate, run when a gated subagent stops, blocks its first stop on a tree failing the worktree gate; follow its message.
 - Report actual results, what blocked you and each check you skipped.
 
 <!-- @end -->

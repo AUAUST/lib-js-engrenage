@@ -18,7 +18,7 @@ Handle each request of the user by its kind:
 
 Lay the groundwork in breadth: the plan, the tree, and each item's context, valid enough for a planner or the walk's consultant to deepen the item alone.
 
-1. **Compass.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the compass is clear.
+1. **Compass.** Settle the plan's **Compass** with the user (`request-analysis.md` › Compass), then state what done means for the whole plan. Create the plan issue as soon as the user confirms the **Compass**.
 2. **Load.** Load the open-issue index (issue-drafts rule › Filing). Read the project maps the compass needs (issue-drafts rule › Owners), the backlog categories and the agent records covering what the compass touches.
 3. **Implications.** Find everything the compass touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
 4. **Design.** Write into the plan its **Done when**, the Model sections and the **Decisions** several items share (issue-drafts rule › Bodies). A fact two items would each decide belongs here.

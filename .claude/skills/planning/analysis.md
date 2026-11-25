@@ -25,7 +25,7 @@ Before calling anything a conflict:
 | Cost and dependencies | Per change or option: effort, risk, reversibility, maintenance, the debt it adds or removes; what it depends on and what depends on it                        |
 
 - Compare options by the same criteria against the need they serve now, and by what each leaves open toward the ideal.
-- Take `request-analysis.md`, beside this file: all its steps on a change or options for one, only Concern and Reach on other material, as the question asked of it and what each finding affects.
+- Take `request-analysis.md`, beside this file: all its steps on a change or options for one, only Compass, Concern and Reach on other material, the last two as the question asked of it and what each finding affects.
 
 ## Findings
 

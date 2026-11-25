@@ -7,7 +7,7 @@ description: Thoroughness levels, dependency choices and the main session's anal
 
 Take the smallest step toward the ideal that meets the current need and that no later step toward it must undo.
 
-In the main session, before acting on a request, suggestion or described fix, follow `.claude/shared/request-analysis.md`.
+In the main session, before acting on any request, follow `.claude/shared/request-analysis.md`.
 
 <!-- @file .claude/skills/analysis/analysis.md -->
 
@@ -16,8 +16,6 @@ To weigh options or examine material: `.claude/skills/analysis/analysis.md`.
 <!-- @end -->
 
 ### Thoroughness levels
-
-A dispatch brief's `Thoroughness: <level>` line sets how far its receiver digs; a main session has no level.
 
 | Level      | Work it covers                                                                 | Default for                   |
 | ---------- | ------------------------------------------------------------------------------ | ----------------------------- |
@@ -31,7 +29,7 @@ A caller message with a `Thoroughness:` line, your brief included, opens a windo
 
 <!-- @file .claude/skills/shape/dispatching.md -->
 
-Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings, pending work.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`.
 
 <!-- @end -->
 

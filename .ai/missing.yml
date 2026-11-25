@@ -11,3 +11,8 @@ entries:
     need: parse several invocations of one command per call
     instead: parseOptions override and twin commands in src/workflows/cli/operations/createCommandDefinition.ts
     created: 2026-11-25T09:45:47Z
+  - id: MI-0180ff
+    subject: per-role word counts printout
+    need: report each role measured words before and after an instruction change
+    instead: node script in session scratchpad mirroring checkWordCaps measureRoles
+    created: 2026-11-25T12:58:38Z
