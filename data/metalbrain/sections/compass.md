@@ -1,6 +1,6 @@
 ---
 title: Compass
-description: State what the project does.
+description: What the project does, from `agents.compass`.
 ---
 
 ## Compass

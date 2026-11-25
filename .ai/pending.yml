@@ -1,0 +1,7 @@
+entries:
+  - id: PD-46710f
+    subject: word caps raised for the Compass
+    what: cut 65 always-loaded words per role and restore the caps of da830de49 (main 4800, each agent and skill cap 65 lower)
+    why: the instruction pass finds the prose the Compass replaces
+    owner: "#921"
+    created: 2026-11-25T11:55:04Z

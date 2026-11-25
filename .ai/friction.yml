@@ -3,6 +3,7 @@ taps:
   - {id: FR-dc82e8, at: 2026-11-25T03:09:28Z, note: probing similarity scores; wrote to a scratch file}
   - {id: FR-434fc2, at: 2026-11-25T08:51:16Z, note: gh run view --log-failed empty}
   - {id: FR-26dc34, at: 2026-11-25T09:57:18Z, note: "agents check test timed out again in #912 gate"}
+  - {id: FR-b8ed4d, at: 2026-11-25T11:52:49Z, note: "recurred for the Compass section, +65 words per role (#917)"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

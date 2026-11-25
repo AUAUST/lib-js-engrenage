@@ -2,6 +2,12 @@
 
 Apply throughout the repository. Follow these rules in changed code; preserve unrelated work.
 
+<!-- @reference @auaust/engrenage/metalbrain/sections/compass.md -->
+
+## Compass
+
+Engrenage orchestrates projects from around their code: it centralises each project's configuration and syncs everything that shapes, checks and ships that code (dependencies, formatting, linting, type checking, tests, builds, git hooks, CI, agent setup) from opinionated defaults the project can extend. It makes those tools work as one: each fact has a single source, each convention is stated once and dispatched to every tool that applies it, and no two tools conflict.
+
 <!-- @reference @auaust/engrenage/metalbrain/sections/instruction-maintenance.md -->
 
 ## Instruction maintenance
@@ -125,7 +131,7 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 
 ## Project and tools
 
-- `@auaust/engrenage` is an ESM-only package of shared tooling configuration (ESLint, Prettier, TypeScript, Vite, agent instructions) for AUAUST projects.
+- `@auaust/engrenage` is an ESM-only package.
 - Everything here runs in Node tooling: configs, build scripts and CLIs, never browser runtime code.
 - TypeScript stays on the major supported by typescript-eslint.
 
