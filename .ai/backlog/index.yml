@@ -339,6 +339,8 @@ structure:
     - BL-3c7795
     - BL-ed6d62
     - BL-600a9b
+    - BL-f9a67b
+    - BL-40d8e5
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:
@@ -388,6 +390,7 @@ tsdown:
     - BL-dc14f1
     - BL-e3cb01
     - BL-461b06
+    - BL-fc9ce7
 typescript:
   purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
   entries:

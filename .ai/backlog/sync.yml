@@ -1,4 +1,6 @@
 purpose: "`project/sync` target ordering and sync products."
+taps:
+  - {id: BL-545a6d, at: 2026-11-25T13:28:22Z, note: "Recurred in the #916 walk on a moved module; friction FR-ff01d4 had three entries"}
 entries:
   - id: BL-b3b18e
     title: Built-in `generate` targets run before extension ones, so one sync does not settle extension-generated domains

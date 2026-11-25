@@ -1,7 +1,7 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, symlinkSync } from "node:fs";
 import { dirname } from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
   ModuleKind,
@@ -11,10 +11,12 @@ import {
 } from "typescript";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { checkWorkspaces } from "#batiment/structure/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { linkPackage } from "#tests/utils/linkPackage";
 
 import packageJson from "#package.json" with { type: "json" };
 
@@ -24,24 +26,18 @@ const importer = "extensions/home/src/index.ts";
 
 const placeholder = "{dir}";
 
-function createConfig(roles = "[]", languages = "") {
-  return `export default {
-  environments: { src: { ${languages}execution: { globals: "node", syntax: 24 } } },
-  src: { roles: ${roles} },
+const rolesImport = 'import { entry } from "@auaust/engrenage/roles";\n\n';
+
+const config = `${rolesImport}export default {
+  environments: { src: { execution: { globals: "node", syntax: 24 } } },
+  src: { roles: [entry()] },
   workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
 };
 `;
-}
 
-const config = createConfig();
-
-function createFiles(
-  dependencies: Readonly<Record<string, string>>,
-  roles?: string,
-  languages?: string,
-) {
+function createFiles(dependencies: Readonly<Record<string, string>>) {
   return {
-    "engrenage.config.ts": createConfig(roles, languages),
+    "engrenage.config.ts": config,
     "package.json": JSON.stringify({
       name: rootName,
       type: "module",
@@ -49,6 +45,7 @@ function createFiles(
     }),
     "tsconfig.json": "{}",
     "src/ui/index.ts": "export const ui: string = 'ui';\n",
+    "src/ui/entry.ts": "export { ui } from './index.ts';\n",
     "src/ui/constants.ts": "export const label = 'ui';\n",
     "src/ui/operations/render.ts": "export function render() {}\n",
     "extensions/home/.workspace.json": "{}",
@@ -57,7 +54,7 @@ function createFiles(
       type: "module",
       dependencies,
     }),
-    [importer]: `import { ui } from "${rootName}/ui/index";\n\nexport const home: string = ui;\n`,
+    [importer]: `import { ui } from "${rootName}/ui";\n\nexport const home: string = ui;\n`,
   };
 }
 
@@ -71,18 +68,10 @@ function linkRoot(project: ReturnType<typeof createTemporaryProject>) {
 
 async function createLinkedProject(
   dependencies: Readonly<Record<string, string>>,
-  {
-    roles,
-    languages,
-    files = {},
-  }: {
-    roles?: string;
-    languages?: string;
-    files?: Readonly<Record<string, string>>;
-  } = {},
+  files: Readonly<Record<string, string>> = {},
 ) {
   const project = createTemporaryProject({
-    ...createFiles(dependencies, roles, languages),
+    ...createFiles(dependencies),
     ...files,
   });
 
@@ -90,7 +79,9 @@ async function createLinkedProject(
 
   const resolved = await loadConfig(project.root);
 
-  await runSync(resolved, { names: ["aliases", "package", "workspaces"] });
+  await runSync(resolved, {
+    names: ["tsconfig", "aliases", "package", "workspaces"],
+  });
 
   await resolved.context.filesystem.flush();
 
@@ -102,126 +93,14 @@ afterEach(() => {
 });
 
 describe("workspace imports by package name", () => {
-  test("sync exports the root's public modules to a workspace depending on it", async () => {
+  test("sync exports the root's designed entries to a workspace depending on it", async () => {
     const project = await createLinkedProject({ [rootName]: "workspace:*" });
 
     expect(JSON.parse(project.read("package.json")).exports).toEqual({
+      "./ui": "./src/ui/entry.ts",
       "./ui/constants": "./src/ui/constants.ts",
-      "./ui/index": "./src/ui/index.ts",
     });
   });
-
-  test("sync exports each module of a public role at every depth its nesting allows", async () => {
-    const project = await createLinkedProject(
-      {
-        [rootName]: "workspace:*",
-      },
-      {
-        roles: '[{ name: "definitions", public: true, nesting: 1 }]',
-        files: {
-          "src/a/index.ts": "export const a = 'a';\n",
-          "src/a/definitions/kind/module.ts": "export const module = 'm';\n",
-        },
-      },
-    );
-
-    expect(JSON.parse(project.read("package.json")).exports).toMatchObject({
-      "./a/definitions/kind/module": "./src/a/definitions/kind/module.ts",
-    });
-  });
-
-  test("sync exports the modules of a role a domain lists in its publicRoles, in its subtree only", async () => {
-    const project = await createLinkedProject(
-      {
-        [rootName]: "workspace:*",
-      },
-      {
-        files: {
-          "src/ui/.domain.json": '{ "publicRoles": ["utils"] }',
-          "src/ui/utils/x.ts": "export function x() {}\n",
-          "src/b/index.ts": "export const b = 'b';\n",
-          "src/b/utils/y.ts": "export function y() {}\n",
-        },
-      },
-    );
-
-    const { exports } = JSON.parse(project.read("package.json"));
-
-    expect(exports).toMatchObject({ "./ui/utils/x": "./src/ui/utils/x.ts" });
-
-    expect(exports).not.toHaveProperty("./b/utils/y");
-  });
-
-  test.each([
-    [
-      "exports",
-      'languages: [{ name: "typescript", options: { tsx: "preact" } }], ',
-      true,
-    ],
-    ["leaves out", "", false],
-  ] as const)(
-    "sync %s a public .tsx module as the environment's TypeScript options do or do not add .tsx",
-    async (_name, languages, exported) => {
-      const project = await createLinkedProject(
-        {
-          [rootName]: "workspace:*",
-        },
-        {
-          roles: '[{ name: "components", accepts: ["*.tsx"] }]',
-          languages,
-          files: {
-            "src/ui/.domain.json": '{ "publicRoles": ["components"] }',
-            "src/ui/components/FileRouter.tsx": "export const FileRouter = 'router';\n",
-          },
-        },
-      );
-
-      const { exports } = JSON.parse(project.read("package.json"));
-
-      expect(exports).toMatchObject({ "./ui/index": "./src/ui/index.ts" });
-
-      expect(exports["./ui/components/FileRouter"]).toBe(
-        exported ? "./src/ui/components/FileRouter.tsx" : undefined,
-      );
-    },
-  );
-
-  test.each([
-    [
-      "exports only the .mts module",
-      'languages: [{ name: "typescript", options: { moduleExtensions: [".mts"] } }], ',
-      true,
-    ],
-    ["exports neither module", "", false],
-  ] as const)(
-    "sync %s of public .mts and .cts modules as the environment's moduleExtensions list .mts or nothing",
-    async (_name, languages, exported) => {
-      const project = await createLinkedProject(
-        {
-          [rootName]: "workspace:*",
-        },
-        {
-          roles: '[{ name: "formats", accepts: ["*.mts", "*.cts"] }]',
-          languages,
-          files: {
-            "src/ui/.domain.json": '{ "publicRoles": ["formats"] }',
-            "src/ui/formats/esm.mts": "export const esm = 'esm';\n",
-            "src/ui/formats/cjs.cts": "export const cjs = 'cjs';\n",
-          },
-        },
-      );
-
-      const { exports } = JSON.parse(project.read("package.json"));
-
-      expect(exports).toMatchObject({ "./ui/index": "./src/ui/index.ts" });
-
-      expect(exports["./ui/formats/esm"]).toBe(
-        exported ? "./src/ui/formats/esm.mts" : undefined,
-      );
-
-      expect(exports).not.toHaveProperty("./ui/formats/cjs");
-    },
-  );
 
   test("sync exports nothing from a root no workspace depends on", async () => {
     const project = await createLinkedProject({});
@@ -236,7 +115,7 @@ describe("workspace imports by package name", () => {
         "package.json": JSON.stringify({
           name: rootName,
           type: "module",
-          exports: { "./ui/index": "./src/ui/index.ts" },
+          exports: { "./ui": "./src/ui/entry.ts" },
         }),
       });
 
@@ -276,11 +155,11 @@ describe("workspace imports by package name", () => {
         ).resolvedModule?.resolvedFileName;
       }
 
-      expect(resolveModule(`${rootName}/ui/index`)).toBe(
-        project.resolve("src/ui/index.ts"),
+      expect(resolveModule(`${rootName}/ui`)).toBe(
+        project.resolve("src/ui/entry.ts"),
       );
 
-      expect(resolveModule(`${rootName}/ui/operations/render`)).toBeUndefined();
+      expect(resolveModule(`${rootName}/ui/index`)).toBeUndefined();
     },
   );
 
@@ -303,12 +182,139 @@ describe("workspace imports by package name", () => {
       ).trim();
     }
 
-    expect(resolveModule(`${rootName}/ui/index`)).toBe(
-      pathToFileURL(project.resolve("src/ui/index.ts")).href,
+    expect(resolveModule(`${rootName}/ui`)).toBe(
+      pathToFileURL(project.resolve("src/ui/entry.ts")).href,
     );
 
-    expect(() => resolveModule(`${rootName}/ui/operations/render`)).toThrow(
+    expect(() => resolveModule(`${rootName}/ui/index`)).toThrow(
       "ERR_PACKAGE_PATH_NOT_EXPORTED",
     );
+  });
+});
+
+describe("root environments per runtime in one src namespace", () => {
+  const runtimes = {
+    "engrenage.config.ts": `${rolesImport}export default {
+  environments: {
+    src: { dirs: ["src"], execution: { globals: "node", syntax: 24 } },
+    admin: { preset: "src", dirs: ["admin"], languages: [{ name: "typescript", options: { tsx: "preact" } }], execution: { globals: "browser", syntax: "2026-10" } },
+    storefront: { preset: "src", dirs: ["storefront"], execution: { globals: "browser", syntax: "2026-10" } },
+  },
+  src: {
+    dirs: ["src", "admin", "storefront"],
+    roles: [entry(), { name: "widget", file: ["widget.tsx"], public: true, subpath: true }],
+  },
+  typescript: { tsconfig: { extends: false, compilerOptions: { strict: true, noEmit: true, skipLibCheck: true, allowImportingTsExtensions: true } } },
+  workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
+};
+`,
+    "node_modules/preact/package.json": JSON.stringify({
+      name: "preact",
+      type: "module",
+      exports: {
+        "./jsx-runtime": { types: "./jsx-runtime.d.ts" },
+      },
+    }),
+    "node_modules/preact/jsx-runtime.d.ts": "export namespace JSX {\n  type Element = object;\n  interface IntrinsicElements { div: object }\n}\n\nexport function jsx(): JSX.Element;\n",
+    "src/ui/index.ts": "export const ui: string = process.cwd();\n",
+    "admin/panel/index.ts": "export const panel = 'panel';\n",
+    "admin/panel/entry.ts": "export { panel } from './index.ts';\n",
+    "admin/panel/widget.tsx": "export function Widget() {\n  return <div />;\n}\n",
+    "storefront/cart/index.ts": "export const cart: string = document.title;\n",
+    "storefront/cart/entry.ts": "export { cart } from './index.ts';\n",
+  };
+
+  test("sync exports each designed entry, .tsx ones included, and no other module", async () => {
+    const project = await createLinkedProject(
+      { [rootName]: "workspace:*" },
+      runtimes,
+    );
+
+    expect(JSON.parse(project.read("package.json")).exports).toEqual({
+      "./cart": "./storefront/cart/entry.ts",
+      "./panel": "./admin/panel/entry.ts",
+      "./panel/widget": "./admin/panel/widget.tsx",
+      "./ui": "./src/ui/entry.ts",
+      "./ui/constants": "./src/ui/constants.ts",
+    });
+  });
+
+  test("type-checks each directory under its own environment's settings", async () => {
+    const project = await createLinkedProject(
+      { [rootName]: "workspace:*" },
+      runtimes,
+    );
+
+    linkPackage("@types/node", project.resolve("node_modules/@types/node"));
+
+    for (const environment of ["src", "admin", "storefront"]) {
+      execFileSync(
+        process.execPath,
+        [
+          fileURLToPath(import.meta.resolve("typescript/bin/tsc")),
+          "-p",
+          `tsconfig.${environment}.json`,
+        ],
+        { cwd: project.root, stdio: "pipe" },
+      );
+    }
+  });
+
+  test("the workspace boundary check passes an import of an entry and fails one of another module", async () => {
+    const project = await createLinkedProject(
+      { [rootName]: "workspace:*" },
+      runtimes,
+    );
+
+    const synced = await loadConfig(project.root);
+
+    const [resolveImport, grants, entities] = await Promise.all([
+      synced.resolve("importResolver"),
+      synced.resolve("importGrants"),
+      synced.resolve("entities"),
+    ]);
+
+    function check(specifier: string, targetFile: string) {
+      return checkWorkspaces(
+        {
+          file: importer,
+          importer: entities.entityOf(project.resolve(importer)),
+          specifier,
+          resolved: resolveImport(specifier, importer),
+          targetFile,
+          target: entities.entityOf(project.resolve(targetFile)),
+          kind: "runtime",
+        },
+        grants,
+      );
+    }
+
+    expect(
+      check(`${rootName}/panel/widget`, "admin/panel/widget.tsx"),
+    ).toBeUndefined();
+
+    expect(
+      check(`${rootName}/panel/index`, "admin/panel/index.ts")?.cause,
+    ).toBe("unexportedSubpath");
+  });
+
+  test("two directories exposing one subpath fail with both files named", async () => {
+    const project = createTemporaryProject({
+      ...createFiles({}),
+      ...runtimes,
+      "admin/cart/index.ts": "export const cart = 'cart';\n",
+      "admin/cart/entry.ts": "export { cart } from './index.ts';\n",
+    });
+
+    const { src } = await (await loadConfig(project.root)).resolve("structure");
+
+    expect(
+      src?.diagnostics.filter(({ code }) => code === "shared-specifier"),
+    ).toMatchObject([
+      {
+        blocking: true,
+        files: ["admin/cart/entry.ts", "storefront/cart/entry.ts"],
+      },
+    ]);
   });
 });

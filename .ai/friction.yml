@@ -5,7 +5,7 @@ taps:
   - {id: FR-26dc34, at: 2026-11-25T09:57:18Z, note: "agents check test timed out again in #912 gate"}
   - {id: FR-b8ed4d, at: 2026-11-25T11:52:49Z, note: "recurred for the Compass section, +65 words per role (#917)"}
   - {id: FR-dc82e8, at: 2026-11-25T12:47:35Z, note: scratchpad file write also works}
-  - {id: FR-ff01d4, at: 2026-11-25T13:26:22Z, note: "also on a moved module: stale barrel lists the old path"}
+  - {id: FR-dc82e8, at: 2026-11-25T18:01:51Z, note: "probe under pnpm engrenage vitest: wrote output to a scratchpad file"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1086,11 +1086,6 @@ entries:
     subject: linked engrenage timing
     tried: profiling Interscript config resolution
     stopped: no timing hook; used inspector script from scratchpad
-    created: 2026-11-24T00:00:00Z
-  - id: FR-ff01d4
-    subject: barrel loaded before sync
-    tried: engrenage sync after adding a filesystem util export
-    stopped: sync failed on the missing barrel export; added the line by hand, then sync
     created: 2026-11-24T00:00:00Z
   - id: FR-d833fa
     subject: "PreToolUse Bash hook: zsh `=word` expansion"

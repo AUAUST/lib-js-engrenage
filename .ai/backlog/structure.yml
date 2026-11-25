@@ -296,3 +296,17 @@ entries:
     want: a project/structure slot through which extensions contribute member fields, schemas and published JSON schemas built from it
     done: debt moves to tools/metalbrain, once a second contributed field appears (#916 Decisions)
     created: 2026-11-25T12:27:07Z
+  - id: BL-f9a67b
+    title: Root namespaces per runtime cannot be declared, only directories of src
+    sites:
+      - src/project/structure/adapters/createResolverContext.ts:32
+    why: Runtimes in one src namespace share one project-map row and grants (#926 chose that shape)
+    want: User-declared top-level namespaces with entries, per-namespace aliases and a cross-namespace collision check
+    created: 2026-11-25T17:51:53Z
+  - id: BL-40d8e5
+    title: Unpublished root imported by workspaces has no entrypoint role by default
+    sites:
+      - src/project/roles/extension.ts:171
+    why: the entrypoint role comes only with the published trait, so such a root exports only role subpaths until its src.roles adds entry()
+    want: decide whether a root a workspace imports gets the entrypoint role
+    created: 2026-11-25T18:02:03Z

@@ -1,4 +1,6 @@
 purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
+taps:
+  - {id: BL-d3e19c, at: 2026-11-25T17:51:42Z, note: Also workspaces importing an environment .tsx by package name (#926 admin)}
 entries:
   - id: BL-540ba1
     title: Generate the `src.apis` declarations at build time instead of committing them.
