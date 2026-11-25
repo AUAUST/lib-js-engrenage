@@ -33,5 +33,11 @@ export interface NamespaceInstance {
    * purpose is its structure root's.
    */
   readonly purpose?: string;
+  /**
+   * Why the namespace does not fit the project's Compass, from its
+   * `.namespace.json`, for a namespace whose kind has no `structure`; a structured
+   * namespace's debt is its structure root's.
+   */
+  readonly debt?: string;
   readonly dirs: Directories;
 }

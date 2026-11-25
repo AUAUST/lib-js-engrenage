@@ -68,6 +68,12 @@ function declareChildren() {
   };
 }
 
+// @debt role contracts are declared in `batiment/roles`, below `scopes`, so a role `debt` cannot reuse this kind-neutral declaration from here
+const debtField = declare(string(), {
+  description: "Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.",
+  optional: { value: undefined },
+});
+
 const namespaceFields = freeze({
   layers: declare(array(string()), {
     description: "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.",
@@ -85,6 +91,7 @@ const namespaceFields = freeze({
     description: "One line stating what the namespace groups.",
     optional: { value: undefined },
   }),
+  debt: debtField,
 });
 
 // @debt `specifier`, `reexport`, `public`, `collects` and `publicRoles` are JavaScript package fields, split out with the language port (#740)
@@ -97,6 +104,7 @@ const domainFields = freeze({
     description: "One line stating the domain's concern.",
     optional: { value: undefined },
   }),
+  debt: debtField,
   internals: declare(boolean(), {
     description: "Overrides `structure.internals` for this domain.",
     optional: { value: undefined },

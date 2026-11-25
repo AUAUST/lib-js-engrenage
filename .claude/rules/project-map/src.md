@@ -7,7 +7,7 @@ paths:
 
 ```
 src/  foundation < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
-├─ batiment/  #batiment/…  report < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
+├─ batiment/  #batiment/…  report < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.  [debt: An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ context  The context port a host answers with root and scope facts, and the driver running discovery and each scope's walk over its answers.
 │  ├─ environments  Declare environment presets, their registrations and placements, and resolve the environment of each file they cover.
 │  ├─ report  The structure report's diagnostics and their codes, shared by every batiment domain.
@@ -28,7 +28,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  The publ
 │  ├─ processes  Run external processes.
 │  ├─ reports  Report typed messages to the handler the running context chooses.
 │  └─ shell  Parse shell commands into the simple commands they run, and quote words for them.
-├─ metalbrain/  #metalbrain/…  facts < records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: the facts instructions render from, agent records and their kinds, instruction files and runtime hooks.
+├─ metalbrain/  #metalbrain/…  facts < records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: the facts instructions render from, agent records and their kinds, instruction files and runtime hooks.  [debt: An agent layer of its own, beyond the agent setup engrenage syncs, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ backlog*  The backlog record kind: its declaration, its categories, how its entries list, and the migration of legacy Markdown categories.
 │  ├─ facts*  The manifest instructions render from: the config values agents need, word caps and output limit, and the sources of instruction fragments.
 │  ├─ instructions*{builtins}  The instruction registry of sections, rules and skills built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter.
@@ -71,7 +71,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  The publ
 │  │     └─ planning  Activate GitHub planning: the snapshot, the planning sheet and the skills gated on it.
 │  ├─ jscpd  Detect duplicate code.
 │  ├─ lefthook  Configure local Git hooks.
-│  ├─ metalbrain*{claude*}  Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call.
+│  ├─ metalbrain*{claude*}  Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call.  [debt: Wraps metalbrain beyond the agent setup engrenage syncs, such as the host checks agent hooks call, only because metalbrain lives here by an earlier decision outside engrenage's Compass.]
 │  │  └─ claude*  Engrenage's Claude glue: Claude's init steps, settings sync and word-cap check.
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*{preset*}  Configure code formatting.

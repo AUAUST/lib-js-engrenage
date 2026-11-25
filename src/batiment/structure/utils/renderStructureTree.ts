@@ -48,11 +48,11 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
   }
 
   return node.children
-    .filter(({ kind, purpose }) => {
+    .filter(({ kind, purpose, debt }) => {
       return (
         kind === "namespace" ||
         kind === "mirror" ||
-        (kind === "domain" && purpose !== undefined)
+        (kind === "domain" && (purpose !== undefined || debt !== undefined))
       );
     })
     .map((child) => {

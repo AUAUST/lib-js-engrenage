@@ -45,6 +45,7 @@ function createNamespaceMetadata(
   path: Directory,
   {
     purpose,
+    debt,
     layers,
     relation,
     children,
@@ -56,6 +57,7 @@ function createNamespaceMetadata(
     kind: "namespace",
     fields: {
       purpose: locate(purpose, file),
+      debt: locate(debt, file),
       layers: locate(layers, file),
       relation: locate(relation, file),
       children: locate(children, file),
@@ -89,6 +91,7 @@ function parseFileMetadata(
 
   const {
     purpose,
+    debt,
     specifier,
     internals,
     reexport,
@@ -102,6 +105,7 @@ function parseFileMetadata(
     kind: "domain",
     fields: {
       purpose: locate(purpose, file),
+      debt: locate(debt, file),
       layers: undefined,
       relation: undefined,
       children: undefined,
@@ -179,6 +183,7 @@ function mergeAtPath(
     ...merged,
     fields: {
       purpose: fields.purpose ?? next.fields.purpose,
+      debt: fields.debt ?? next.fields.debt,
       layers: fields.layers ?? next.fields.layers,
       relation: fields.relation ?? next.fields.relation,
       children: fields.children ?? next.fields.children,

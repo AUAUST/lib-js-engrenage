@@ -29,6 +29,7 @@ interface ScopeTreeNamespace {
   readonly kind: NamespaceKind;
   readonly imports?: NamespaceImports;
   readonly purpose?: string;
+  readonly debt?: string;
   readonly dirs: Directories;
 }
 
@@ -66,7 +67,7 @@ function createNamespaces(
   namespaces: readonly (ScopeTreeNamespace & { readonly title?: string })[],
 ): readonly NamespaceInstance[] {
   return freeze(
-    namespaces.map(({ name, title, kind, imports, purpose, dirs }) => {
+    namespaces.map(({ name, title, kind, imports, purpose, debt, dirs }) => {
       const id = getNamespaceId(scope, name);
 
       return freeze({
@@ -77,6 +78,7 @@ function createNamespaces(
         kind,
         ...(imports === undefined ? {} : { imports }),
         ...(purpose === undefined ? {} : { purpose }),
+        ...(debt === undefined ? {} : { debt }),
         dirs,
       });
     }),

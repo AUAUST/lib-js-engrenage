@@ -14,6 +14,7 @@ export interface StructureOptions {
         readonly relation: StructureRelation;
         readonly children: "domains" | undefined;
         readonly purpose: string | undefined;
+        readonly debt: string | undefined;
         readonly roles: { readonly enable: readonly string[] };
         readonly source: StructureSource;
       }
@@ -26,6 +27,7 @@ export interface StructureOptions {
       {
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
+        readonly debt: string | undefined;
         readonly internals: boolean | undefined;
         readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
         readonly collects: readonly string[] | undefined;

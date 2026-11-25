@@ -312,6 +312,35 @@ describe("project map", () => {
     expect(project.read(sourceFile)).toContain("src/  feature  The code.");
   });
 
+  test("renders each namespace's and domain's debt beside its purpose", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        src: { structure: { purpose: "The code.", debt: "Hosts a tool." } },
+      };`,
+      "src/feature/index.ts": "",
+      "src/feature/.domain.json": '{ "debt": "Belongs elsewhere." }',
+      "data/.namespace.json": '{ "purpose": "Shipped files.", "debt": "Too broad." }',
+      "data/a.json": "{}",
+    });
+
+    await syncProject(project);
+
+    const overview = project.read(overviewFile);
+    const source = project.read(sourceFile);
+
+    expect(overview).toContain("| `src` | The code.  [debt: Hosts a tool.] |");
+
+    expect(overview).toContain(
+      "| `data` | Shipped files.  [debt: Too broad.] |",
+    );
+
+    expect(source).toContain("src/  The code.  [debt: Hosts a tool.]");
+    expect(source).toContain("└─ feature  [debt: Belongs elsewhere.]");
+  });
+
   test("omits the test files section without a test namespace", async () => {
     const project = createProject();
 

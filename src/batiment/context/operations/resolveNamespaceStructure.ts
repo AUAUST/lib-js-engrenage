@@ -218,6 +218,9 @@ export async function resolveNamespaceStructure({
     ...(rootDeclaration?.purpose === undefined
       ? {}
       : { purpose: rootDeclaration.purpose }),
+    ...(rootDeclaration?.debt === undefined
+      ? {}
+      : { debt: rootDeclaration.debt }),
     ...(keys(rootRoleFiles).length === 0 ? {} : { roleFiles: rootRoleFiles }),
     children,
   });

@@ -9,6 +9,7 @@ import {
   importCategories,
   importRelations,
 } from "#batiment/structure/constants";
+import { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
@@ -151,7 +152,7 @@ export function renderProjectMap({
     "",
     "## Notation",
     "",
-    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other, `[domains]` every child directory is a domain, `[collects: …]` entry re-exporting those roles from every domain, `[public: …]` roles public in that domain's subtree.",
+    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other, `[domains]` every child directory is a domain, `[collects: …]` entry re-exporting those roles from every domain, `[public: …]` roles public in that domain's subtree, `[debt: …]` why that member does not fit the project's Compass, beside its purpose.",
     "",
     "| Relation | A domain may import |",
     "| --- | --- |",
@@ -163,9 +164,16 @@ export function renderProjectMap({
     "",
     "| Namespace | Purpose |",
     "| --- | --- |",
-    // @debt a structured namespace's purpose comes from its walk's root and an unstructured one's from discovery, so one fact has two resolution paths
-    ...namespaces.map(({ id, purpose }) => {
-      return `| ${code(id)} | ${getOwn(structure, id)?.root.purpose ?? purpose ?? ""} |`;
+    // @debt a structured namespace's purpose and debt come from its walk's root and an unstructured one's from discovery, so one fact has two resolution paths
+    ...namespaces.map(({ id, purpose, debt }) => {
+      const root = getOwn(structure, id)?.root;
+
+      const described = [
+        root?.purpose ?? purpose,
+        renderDebtNote(root?.debt ?? debt),
+      ].filter((part) => part !== undefined);
+
+      return `| ${code(id)} | ${described.join("  ")} |`;
     }),
     "",
     `The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),

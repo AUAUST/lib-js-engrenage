@@ -13,6 +13,10 @@
       "type": "string",
       "description": "One line stating the domain's concern.\n@default none"
     },
+    "debt": {
+      "type": "string",
+      "description": "Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.\n@default none"
+    },
     "internals": {
       "type": "boolean",
       "description": "Overrides `structure.internals` for this domain.\n@default none"

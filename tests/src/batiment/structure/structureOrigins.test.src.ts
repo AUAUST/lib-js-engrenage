@@ -213,6 +213,7 @@ describe("structure origins", () => {
       root: "src.structure",
       structure: {
         purpose: undefined,
+        debt: undefined,
         layers: undefined,
         relation: undefined,
         children: "domains",
@@ -224,6 +225,7 @@ describe("structure origins", () => {
           feature: {
             specifier: undefined,
             purpose: "Feature.",
+            debt: undefined,
             internals: undefined,
             reexport: undefined,
             collects: undefined,

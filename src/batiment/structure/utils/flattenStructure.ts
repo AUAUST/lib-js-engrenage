@@ -118,6 +118,7 @@ export function flattenStructure({
       domains[child] = freeze({
         specifier: domain.specifier,
         purpose: domain.purpose,
+        debt: domain.debt,
         internals: domain.internals,
         reexport: domain.reexport,
         collects: domain.collects,
@@ -149,6 +150,7 @@ export function flattenStructure({
       relation: namespace.relation,
       children: namespace.children,
       purpose: namespace.purpose,
+      debt: namespace.debt,
       roles: freeze({ enable: freeze(enable) }),
     });
 

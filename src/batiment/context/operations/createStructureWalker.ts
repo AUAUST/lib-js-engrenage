@@ -164,6 +164,7 @@ export function createStructureWalker({
           ...(namespace.purpose === undefined
             ? {}
             : { purpose: namespace.purpose }),
+          ...(namespace.debt === undefined ? {} : { debt: namespace.debt }),
         },
         {
           scopes: [...parent.scopes, ...namespace.roles.enable],

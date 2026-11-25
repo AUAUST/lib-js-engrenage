@@ -252,13 +252,18 @@ export async function discoverContext(
     return namespaces
       .filter(({ discovery }) => discovery.active)
       .map(({ placement, discovery, metafiles }) => {
-        const purpose = discovery.kind.structure === undefined
-          ? findMetafileField({
-              metafiles,
-              field: "purpose",
-              diagnostics,
-            })
-          : undefined;
+        function describe(field: "purpose" | "debt") {
+          return discovery.kind.structure === undefined
+            ? findMetafileField({
+                metafiles,
+                field,
+                diagnostics,
+              })?.value
+            : undefined;
+        }
+
+        const purpose = describe("purpose");
+        const debt = describe("debt");
 
         return {
           placement,
@@ -271,7 +276,8 @@ export async function discoverContext(
               scope,
               diagnostics,
             }),
-            ...(purpose === undefined ? {} : { purpose: purpose.value }),
+            ...(purpose === undefined ? {} : { purpose }),
+            ...(debt === undefined ? {} : { debt }),
           },
         };
       });

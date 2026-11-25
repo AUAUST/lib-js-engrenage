@@ -14,6 +14,11 @@ export interface DomainInput {
    */
   purpose?: (string | undefined)
   /**
+   * Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.
+   * @default none
+   */
+  debt?: (string | undefined)
+  /**
    * Overrides `structure.internals` for this domain.
    * @default none
    */

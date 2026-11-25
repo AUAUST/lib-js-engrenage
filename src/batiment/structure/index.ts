@@ -90,6 +90,7 @@ export { matchFileRole } from "#batiment/structure/utils/matchFileRole";
 export { mergeStructureMetadata } from "#batiment/structure/utils/mergeStructureMetadata";
 export { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
 export { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
+export { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
 export { renderImportCycle } from "#batiment/structure/utils/renderImportCycle";
 export { renderImportCycles } from "#batiment/structure/utils/renderImportCycles";
 export { renderNamespaceMap } from "#batiment/structure/utils/renderNamespaceMap";

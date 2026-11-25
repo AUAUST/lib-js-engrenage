@@ -199,6 +199,7 @@ export function mergeStructureMetadata({
         relation: pick("relation", existing?.relation, fields.relation),
         children: pick("children", existing?.children, fields.children),
         purpose: pick("purpose", existing?.purpose, fields.purpose),
+        debt: pick("debt", existing?.debt, fields.debt),
         roles: existing?.roles ?? freeze({ enable: freeze([]) }),
         source: existing?.source ?? "metadata",
       });
@@ -211,6 +212,7 @@ export function mergeStructureMetadata({
     domains.set(path, {
       specifier: pick("specifier", existing?.specifier, fields.specifier),
       purpose: pick("purpose", existing?.purpose, fields.purpose),
+      debt: pick("debt", existing?.debt, fields.debt),
       internals: pick("internals", existing?.internals, fields.internals),
       reexport: pick("reexport", existing?.reexport, fields.reexport),
       collects: pick("collects", existing?.collects, fields.collects),

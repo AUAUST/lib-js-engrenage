@@ -7,6 +7,7 @@ export interface NamespaceDeclaration {
   readonly relation: "peers" | "isolated" | undefined;
   readonly children: "domains" | undefined;
   readonly purpose: string | undefined;
+  readonly debt: string | undefined;
   readonly roles: { readonly enable: readonly (string | Role)[] };
   readonly namespaces: Readonly<Record<string, NamespaceDeclaration>>;
   readonly domains: Readonly<Record<string, DomainDeclaration>>;

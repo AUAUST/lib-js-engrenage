@@ -1,3 +1,4 @@
+import { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 
 function members(node: StructureNode): StructureNode[] {
@@ -7,7 +8,11 @@ function members(node: StructureNode): StructureNode[] {
 }
 
 function isPlain(node: StructureNode): boolean {
-  return node.kind === "domain" && node.purpose === undefined;
+  return (
+    node.kind === "domain" &&
+    node.purpose === undefined &&
+    node.debt === undefined
+  );
 }
 
 function renderName(node: StructureNode): string {
@@ -85,6 +90,7 @@ export function renderStructureLabel({
     describeKind(node, detailed, groupLabel),
     detailed ? `[${node.source}]` : undefined,
     node.purpose,
+    renderDebtNote(node.debt),
     ...extras,
   ]
     .filter((part) => part !== undefined)

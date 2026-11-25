@@ -35,6 +35,7 @@ export interface StructureNode {
   readonly collects?: readonly string[];
   readonly publicRoles?: readonly string[];
   readonly purpose?: string;
+  readonly debt?: string;
   readonly effects?: string;
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;

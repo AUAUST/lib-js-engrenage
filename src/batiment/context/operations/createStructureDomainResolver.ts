@@ -83,6 +83,7 @@ export function createStructureDomainResolver({
             ...(declared.purpose === undefined
               ? {}
               : { purpose: declared.purpose }),
+            ...(declared.debt === undefined ? {} : { debt: declared.debt }),
             ...(declared.internals === undefined
               ? {}
               : { internals: declared.internals }),
@@ -217,6 +218,7 @@ export function createStructureDomainResolver({
         : { collects: metadata.collects }),
       ...(publicRoles.length === 0 ? {} : { publicRoles }),
       ...(metadata.purpose === undefined ? {} : { purpose: metadata.purpose }),
+      ...(metadata.debt === undefined ? {} : { debt: metadata.debt }),
     };
   }
 

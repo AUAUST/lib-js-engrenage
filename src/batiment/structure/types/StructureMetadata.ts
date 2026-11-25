@@ -9,6 +9,7 @@ export interface StructureMetadata {
   readonly kind: "namespace" | "domain";
   readonly fields: {
     readonly purpose: MetadataField<string> | undefined;
+    readonly debt: MetadataField<string> | undefined;
     readonly layers: MetadataField<readonly string[]> | undefined;
     readonly relation: MetadataField<StructureRelation> | undefined;
     readonly children: MetadataField<"domains"> | undefined;

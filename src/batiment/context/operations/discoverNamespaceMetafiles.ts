@@ -24,7 +24,7 @@ async function readNamespace(
     return read.diagnostic;
   }
 
-  const { kind, imports, purpose } = read.metadata;
+  const { kind, imports, purpose, debt } = read.metadata;
 
   return freeze({
     dir: posix.dirname(file),
@@ -32,6 +32,7 @@ async function readNamespace(
     ...(kind === undefined ? {} : { kind }),
     ...(imports === undefined ? {} : { imports: freeze(imports) }),
     ...(purpose === undefined ? {} : { purpose }),
+    ...(debt === undefined ? {} : { debt }),
   });
 }
 

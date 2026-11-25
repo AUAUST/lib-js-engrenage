@@ -1,4 +1,5 @@
 {
   "purpose": "The agent layer the `metalbrain` commands serve: the facts instructions render from, agent records and their kinds, instruction files and runtime hooks.",
+  "debt": "An agent layer of its own, beyond the agent setup engrenage syncs, hosted here by an earlier decision outside engrenage's Compass.",
   "layers": ["facts", "records", "*", "instructions", "runtimes"]
 }

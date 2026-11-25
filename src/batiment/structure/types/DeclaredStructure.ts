@@ -11,6 +11,7 @@ export interface DeclaredStructure {
         readonly relation: StructureRelation | undefined;
         readonly children: "domains" | undefined;
         readonly purpose: string | undefined;
+        readonly debt: string | undefined;
         readonly roles: { readonly enable: readonly string[] };
       }
     >
@@ -21,6 +22,7 @@ export interface DeclaredStructure {
       {
         readonly specifier: string | undefined;
         readonly purpose: string | undefined;
+        readonly debt: string | undefined;
         readonly internals: boolean | undefined;
         readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
         readonly collects: readonly string[] | undefined;

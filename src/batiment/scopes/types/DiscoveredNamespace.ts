@@ -4,7 +4,7 @@ import type { File } from "#types/File";
 
 /**
  * The `.namespace.json` of a top-level namespace, with the kind it names, the
- * namespaces of its scope it opts in to import and its purpose.
+ * namespaces of its scope it opts in to import, its purpose and its debt.
  */
 export interface DiscoveredNamespace {
   readonly dir: Directory;
@@ -12,4 +12,5 @@ export interface DiscoveredNamespace {
   readonly kind?: string;
   readonly imports?: NamespaceImports;
   readonly purpose?: string;
+  readonly debt?: string;
 }
