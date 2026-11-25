@@ -4,7 +4,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description("Print an entry as YAML.")
-      .argument("<id>", "the entry's ID, as `YYMMDD-xxxx`");
+      .argument("<id>", "the entry's ID, as `<namespace>-xxxxxx`");
   },
   action() {
     return import("#bin/metalbrain/logs/actions/show");

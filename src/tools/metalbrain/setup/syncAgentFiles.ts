@@ -31,6 +31,7 @@ import {
   type GeneratedFrontmatter,
   type InstructionRegistry,
 } from "#metalbrain/instructions/index";
+import { renameLegacyRecordIds } from "#metalbrain/kinds/index";
 import { migrateAgentLogs } from "#metalbrain/logs/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
 import { skillFileName } from "#metalbrain/runtimes/constants";
@@ -214,10 +215,10 @@ async function installMainSharedFiles(config: {
 }
 
 /**
- * Syncs agent files when an agent is preferred: migrations, the backlog index,
- * attribution rules, the main session's shared files, generated skill and rule
- * files, removing the Codex files of former releases. The `blocks` target fills
- * their `@reference` blocks.
+ * Syncs agent files when an agent is preferred: migrations, former record IDs
+ * renamed, the backlog index, attribution rules, the main session's shared files,
+ * generated skill and rule files, removing the Codex files of former releases.
+ * The `blocks` target fills their `@reference` blocks.
  */
 export async function syncAgentFiles(loaded: LoadedConfig) {
   const { context } = loaded;
@@ -250,14 +251,14 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
 
   await migrateBacklogCategories(
     config.filesystem,
-    new Date(),
     config.agents.instructionFiles,
   );
 
   // @debt a log stays Markdown, silently, while an instruction file names it, read before this sync fills the instructions: the sync stopping their mention leaves the migration to the next one, and a project whose own rule names a log never learns why it stays
-  await migrateAgentLogs(
+  await migrateAgentLogs(config.filesystem, config.agents.instructionFiles);
+
+  await renameLegacyRecordIds(
     config.filesystem,
-    new Date(),
     config.agents.instructionFiles,
   );
 

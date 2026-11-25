@@ -6,7 +6,7 @@ export default defineLazyCommand({
       .description(
         "Move a backlog entry, its ID kept, to the end of another category, so references to it stay valid; moving a category's last entry deletes that category.",
       )
-      .argument("<id>", "the entry's ID, as `YYMMDD-xxxx`")
+      .argument("<id>", "the entry's ID, as `BL-xxxxxx`")
       .argument("<category>", "an existing category's name");
   },
   action() {

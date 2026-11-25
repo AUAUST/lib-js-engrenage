@@ -13,6 +13,7 @@ export const backlogDirectory = ".ai/backlog" satisfies Directory;
 
 export const backlog = freeze({
   name: "backlog",
+  namespace: "BL",
   location: freeze({ directory: backlogDirectory }),
   fields: freeze({
     title: freeze({

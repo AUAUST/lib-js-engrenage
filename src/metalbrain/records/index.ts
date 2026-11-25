@@ -14,7 +14,9 @@ export { readRecordDocument } from "#metalbrain/records/operations/readRecordDoc
 export { readRecordGroup } from "#metalbrain/records/operations/readRecordGroup";
 export { readRecordGroups } from "#metalbrain/records/operations/readRecordGroups";
 export { readRecordIndex } from "#metalbrain/records/operations/readRecordIndex";
+export { readRenamedRecordIds } from "#metalbrain/records/operations/readRenamedRecordIds";
 export { removeRecordEntry } from "#metalbrain/records/operations/removeRecordEntry";
+export { resolveRecordId } from "#metalbrain/records/operations/resolveRecordId";
 export { searchRecords } from "#metalbrain/records/operations/searchRecords";
 export { updateRecord } from "#metalbrain/records/operations/updateRecord";
 export { writeRecordDocument } from "#metalbrain/records/operations/writeRecordDocument";
@@ -39,12 +41,16 @@ export type * from "#metalbrain/records/types/WordCapFinding";
 
 // @barrel utils
 export { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
+export { findNamespaceViolations } from "#metalbrain/records/utils/findNamespaceViolations";
 export { formatRecordDocument } from "#metalbrain/records/utils/formatRecordDocument";
+export { formatRecordRename } from "#metalbrain/records/utils/formatRecordRename";
 export { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues";
 export { formatWordCapFinding } from "#metalbrain/records/utils/formatWordCapFinding";
+export { isLegacyRecordId } from "#metalbrain/records/utils/isLegacyRecordId";
 export { isRecordId } from "#metalbrain/records/utils/isRecordId";
 export { orderRecordEntry } from "#metalbrain/records/utils/orderRecordEntry";
 export { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
+export { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 export { resolveRecordFile } from "#metalbrain/records/utils/resolveRecordFile";
 export { sortRecordEntryNode } from "#metalbrain/records/utils/sortRecordEntryNode";
 export { throwViolations } from "#metalbrain/records/utils/throwViolations";

@@ -4,8 +4,8 @@ export {
 } from "#tools/metalbrain/claude/index";
 
 // @barrel setup
-export { checkBacklog } from "#tools/metalbrain/setup/checkBacklog";
 export { checkFragmentFiles } from "#tools/metalbrain/setup/checkFragmentFiles";
+export { checkRecords } from "#tools/metalbrain/setup/checkRecords";
 export { checkTableCells } from "#tools/metalbrain/setup/checkTableCells";
 export { createAgentRulesStep } from "#tools/metalbrain/setup/createAgentRulesStep";
 export { createAgentsStep } from "#tools/metalbrain/setup/createAgentsStep";

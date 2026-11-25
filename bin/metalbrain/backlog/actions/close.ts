@@ -1,15 +1,21 @@
 import { backlog } from "#metalbrain/backlog/constants";
-import { closeRecord } from "#metalbrain/records/index";
+import { closeRecord, formatRecordRename } from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function (id: string): Promise<void> {
-  const config = await loadValidatedConfig(process.cwd(), {
-    reporter: getRunContext().reporter,
-  });
+export default async function (given: string): Promise<void> {
+  const { reporter } = getRunContext();
 
-  await closeRecord(config.context.filesystem, backlog, id);
+  const config = await loadValidatedConfig(process.cwd(), { reporter });
+
+  const { id } = await closeRecord(config.context.filesystem, backlog, given);
+
+  const rename = formatRecordRename(given, id);
+
+  if (rename !== undefined) {
+    reporter.warn(rename);
+  }
 
   await settleChanges(config, { check: false });
 }

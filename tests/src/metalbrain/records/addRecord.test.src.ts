@@ -11,6 +11,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
 const notes = {
   name: "notes",
+  namespace: "NT",
   location: {
     directory: ".ai/notes",
   },
@@ -35,8 +36,10 @@ describe("record core", () => {
       notes,
       "tools",
       { subject: "A note", tried: ["one"] },
-      { day: new Date("2026-11-22"), wordCap: 50 },
+      { wordCap: 50 },
     );
+
+    expect(id).toMatch(/^NT-[\da-f]{6}$/u);
 
     const [group] = await readRecordGroups(filesystem, notes);
 

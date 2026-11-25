@@ -35,10 +35,7 @@ export default async function (
     kind,
     kind.name,
     values,
-    {
-      day: new Date(),
-      wordCap: agents.wordCaps[logKind.wordCap],
-    },
+    { wordCap: agents.wordCaps[logKind.wordCap] },
   );
 
   await settleChanges(config, { check: false });

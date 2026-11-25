@@ -1,11 +1,11 @@
 import { backlog } from "#metalbrain/backlog/constants";
-import { updateRecord } from "#metalbrain/records/index";
+import { formatRecordRename, updateRecord } from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
-  id: string,
+  given: string,
   {
     unset,
     ...values
@@ -18,19 +18,25 @@ export default async function (
     unset: string[];
   },
 ): Promise<void> {
-  const config = await loadValidatedConfig(process.cwd(), {
-    reporter: getRunContext().reporter,
-  });
+  const { reporter } = getRunContext();
+
+  const config = await loadValidatedConfig(process.cwd(), { reporter });
 
   const agents = await config.resolve("agents");
 
-  await updateRecord(
+  const id = await updateRecord(
     config.context.filesystem,
     backlog,
-    id,
+    given,
     { values, unset },
     { wordCap: agents.wordCaps[backlog.wordCap] },
   );
+
+  const rename = formatRecordRename(given, id);
+
+  if (rename !== undefined) {
+    reporter.warn(rename);
+  }
 
   await settleChanges(config, { check: false });
 }

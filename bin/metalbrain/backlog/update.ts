@@ -11,7 +11,7 @@ export default defineLazyCommand({
       .description(
         "Replace or remove fields of a backlog entry, keeping its ID and other fields; writes nothing when the entry would break the backlog file schema: at most 3 items across --why, --want and --done, each site naming an existing file, within the backlog entry word cap.",
       )
-      .argument("<id>", "the entry's ID, as `YYMMDD-xxxx`")
+      .argument("<id>", "the entry's ID, as `BL-xxxxxx`")
       .option(
         "--title <title>",
         "the claim: the problem or need, stated exactly",

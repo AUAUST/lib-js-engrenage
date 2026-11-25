@@ -10,6 +10,7 @@ const subject = freeze({
 
 export const friction = freeze({
   name: "friction",
+  namespace: "FR",
   location: freeze({ file: ".ai/friction.yml" }),
   fields: freeze({
     subject,
@@ -26,6 +27,7 @@ export const friction = freeze({
 
 export const discarded = freeze({
   name: "discarded",
+  namespace: "DS",
   location: freeze({ file: ".ai/discarded.yml" }),
   fields: freeze({
     subject,
@@ -39,6 +41,7 @@ export const discarded = freeze({
 
 export const pending = freeze({
   name: "pending",
+  namespace: "PD",
   location: freeze({ file: ".ai/pending.yml" }),
   fields: freeze({
     subject,

@@ -6,7 +6,7 @@ export default defineLazyCommand({
       .description(
         "Remove an entry once a backlog entry, an issue or a change takes it up, or once it no longer holds; closing the last entry deletes the file.",
       )
-      .argument("<id>", "the entry's ID, as `YYMMDD-xxxx`");
+      .argument("<id>", "the entry's ID, as `<namespace>-xxxxxx`");
   },
   action() {
     return import("#bin/metalbrain/logs/actions/close");

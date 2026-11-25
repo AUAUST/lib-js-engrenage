@@ -29,7 +29,6 @@ export default async function (
       ...options,
     },
     {
-      day: new Date(),
       wordCap: agents.wordCaps[backlog.wordCap],
     },
   );

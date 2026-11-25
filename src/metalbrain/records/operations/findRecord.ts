@@ -3,7 +3,8 @@ import { isMap } from "yaml";
 
 import { readRecordDocument } from "#metalbrain/records/operations/readRecordDocument";
 import { readRecordIndex } from "#metalbrain/records/operations/readRecordIndex";
-import { isRecordId } from "#metalbrain/records/utils/isRecordId";
+import { resolveRecordId } from "#metalbrain/records/operations/resolveRecordId";
+import { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
@@ -30,21 +31,24 @@ async function findGroup(
 }
 
 /**
- * The `kind` entry `id`, found through the kind's index, or in its one file:
- * its group file as an editable document, the entry's position in its `entries`
- * list, its node, and the entry as the file holds it.
+ * The `kind` entry `given` names, a former ID resolved in the kind's namespace
+ * as `resolveRecordId` resolves it, found through the kind's index, or in its
+ * one file: its current ID, its group file as an editable document, the entry's
+ * position in its `entries` list, its node, and the entry as the file holds it.
  *
- * @throws {Error} When `id` has no entry ID's form, the index or the kind's one
- * file lists no entry `id`, or its group file lacks it.
+ * @throws {Error} When the resolved ID is not one of `kind`'s, the index or the
+ * kind's one file lists no such entry, or its group file lacks it.
  */
 export async function findRecord(
   filesystem: Filesystem,
   kind: RecordKind,
-  id: string,
+  given: string,
 ) {
-  if (!isRecordId(id)) {
+  const id = await resolveRecordId(filesystem, given, kind.namespace);
+
+  if (parseRecordId(id)?.namespace !== kind.namespace) {
     throw new Error(
-      `"${id}": expected a ${kind.name} entry ID as YYMMDD-xxxx, 4 hex characters`,
+      `"${id}": expected a ${kind.name} entry ID as ${kind.namespace}-xxxxxx, 6 hex characters`,
     );
   }
 
@@ -74,6 +78,7 @@ export async function findRecord(
 
   return {
     ...document,
+    id,
     position,
     node,
     entry: parse(entrySchema, node.toJSON()),

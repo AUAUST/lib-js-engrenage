@@ -6,7 +6,7 @@ export default defineLazyCommand({
       .description(
         "Print a backlog entry as YAML, with its category, found through `.ai/backlog/index.yml`.",
       )
-      .argument("<id>", "the entry's ID, as `YYMMDD-xxxx`");
+      .argument("<id>", "the entry's ID, as `BL-xxxxxx`");
   },
   action() {
     return import("#bin/metalbrain/backlog/actions/show");

@@ -12,9 +12,9 @@ import { runCommand } from "#tests/utils/runCommand";
 
 import backlog from "#bin/metalbrain/backlog/index";
 
-const tools = "purpose: Tools.\nentries:\n  - id: 261122-3fa9\n    title: A claim\n    sites: [src/a.ts:3]\n    want: [one, two]\n";
+const tools = "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    title: A claim\n    sites: [src/a.ts:3]\n    want: [one, two]\n";
 
-const docs = "purpose: Docs.\nentries:\n  - id: 261122-0b1c\n    title: Document the gate\n    why: [first, second]\n";
+const docs = "purpose: Docs.\nentries:\n  - id: BL-0b1c2d\n    title: Document the gate\n    why: [first, second]\n";
 
 function createProject() {
   const project = createTemporaryProject({
@@ -25,7 +25,7 @@ function createProject() {
     ".ai/backlog/index.md": "# Backlog\n",
     ".ai/backlog/tools.yml": tools,
     ".ai/backlog/docs.yml": docs,
-    ".ai/backlog/index.yml": "tools:\n  purpose: Tools.\n  entries: [261122-3fa9]\ndocs:\n  purpose: Docs.\n  entries: [261122-0b1c]\n",
+    ".ai/backlog/index.yml": "tools:\n  purpose: Tools.\n  entries: [BL-3fa9c1]\ndocs:\n  purpose: Docs.\n  entries: [BL-0b1c2d]\n",
   });
 
   mockCwd(project.root);
@@ -45,8 +45,8 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
       cli: { purpose: "Command handling.", entries: [] },
-      docs: { purpose: "Docs.", entries: ["261122-0b1c"] },
-      tools: { purpose: "Tools.", entries: ["261122-3fa9"] },
+      docs: { purpose: "Docs.", entries: ["BL-0b1c2d"] },
+      tools: { purpose: "Tools.", entries: ["BL-3fa9c1"] },
     });
 
     await expect(
@@ -75,15 +75,15 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
 
     const id = messages.at(-1)?.text ?? "";
 
-    expect(id).toMatch(/^\d{6}-[\da-f]{4}$/u);
+    expect(id).toMatch(/^BL-[\da-f]{6}$/u);
 
     expect(project.read(".ai/backlog/tools.yml")).toBe(
       `${tools}  - id: ${id}\n    title: Another claim\n    sites:\n      - src/a.ts:1\n      - src/index.ts:1\n    why: reason\n    want:\n      - first\n      - second\n`,
     );
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
-      docs: { purpose: "Docs.", entries: ["261122-0b1c"] },
-      tools: { purpose: "Tools.", entries: ["261122-3fa9", id] },
+      docs: { purpose: "Docs.", entries: ["BL-0b1c2d"] },
+      tools: { purpose: "Tools.", entries: ["BL-3fa9c1", id] },
     });
   });
 
@@ -108,18 +108,18 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
   test("move keeps the ID in the new category and drops it from the old one", async () => {
     const project = createProject();
 
-    await runCommand("backlog", backlog, "move", "261122-3fa9", "docs");
+    await runCommand("backlog", backlog, "move", "BL-3fa9c1", "docs");
 
     expect(parse(project.read(".ai/backlog/docs.yml"))).toEqual({
       purpose: "Docs.",
       entries: [
         {
-          id: "261122-0b1c",
+          id: "BL-0b1c2d",
           title: "Document the gate",
           why: ["first", "second"],
         },
         {
-          id: "261122-3fa9",
+          id: "BL-3fa9c1",
           title: "A claim",
           sites: ["src/a.ts:3"],
           want: ["one", "two"],
@@ -132,20 +132,20 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     const { messages } = await runCommand("backlog", backlog, "list", "docs");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "261122-0b1c docs: Document the gate",
-      "261122-3fa9 docs: A claim",
+      "BL-0b1c2d docs: Document the gate",
+      "BL-3fa9c1 docs: A claim",
     ]);
   });
 
   test("close of a category's last entry deletes the category and its index entry", async () => {
     const project = createProject();
 
-    await runCommand("backlog", backlog, "close", "261122-0b1c");
+    await runCommand("backlog", backlog, "close", "BL-0b1c2d");
 
     expect(existsSync(project.resolve(".ai/backlog/docs.yml"))).toBe(false);
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
-      tools: { purpose: "Tools.", entries: ["261122-3fa9"] },
+      tools: { purpose: "Tools.", entries: ["BL-3fa9c1"] },
     });
 
     const { messages } = await runCommand("backlog", backlog, "categories");
@@ -160,7 +160,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
       "backlog",
       backlog,
       "update",
-      "261122-3fa9",
+      "BL-3fa9c1",
       "--why",
       "a reason",
       "--unset",
@@ -168,7 +168,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     );
 
     expect(project.read(".ai/backlog/tools.yml")).toBe(
-      "purpose: Tools.\nentries:\n  - id: 261122-3fa9\n    title: A claim\n    why: a reason\n    want: [one, two]\n",
+      "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    title: A claim\n    why: a reason\n    want: [one, two]\n",
     );
 
     const {
@@ -176,7 +176,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     } = await runCommand("backlog", backlog, "search", "REASON");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "261122-3fa9 tools: A claim",
+      "BL-3fa9c1 tools: A claim",
     ]);
   });
 

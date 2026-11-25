@@ -9,7 +9,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Append an entry to `.ai/backlog/<category>.yml` with a new ID, `YYMMDD-xxxx` from the creation day, and print the ID; writes nothing when the entry would break the backlog file schema: at most 3 items across --why, --want and --done, each site naming an existing file, within the backlog entry word cap.",
+        "Append an entry to `.ai/backlog/<category>.yml` with a new ID, `BL-xxxxxx`, and print the ID; writes nothing when the entry would break the backlog file schema: at most 3 items across --why, --want and --done, each site naming an existing file, within the backlog entry word cap.",
       )
       .argument("<category>", "an existing category's name")
       .argument("<title>", "the claim: the problem or need, stated exactly")

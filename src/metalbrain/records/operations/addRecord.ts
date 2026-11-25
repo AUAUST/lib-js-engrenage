@@ -12,8 +12,8 @@ import type { RecordValues } from "#metalbrain/records/types/RecordValues";
 /**
  * Stages a new entry at the end of the `kind` group file `<group>.yml`, leaving
  * its other entries as they are, then regenerates the kind's index: an ID of
- * `day` no entry holds, then each field in the kind's order, a detail of one
- * item written as text.
+ * the kind no entry holds, then each field in the kind's order, a detail of
+ * one item written as text.
  *
  * @returns The new entry's ID.
  * @throws {Error} When the group is missing or unparsable, or the entry or its
@@ -24,11 +24,11 @@ export async function addRecord<Kind extends RecordKind>(
   kind: Kind,
   group: string,
   values: RecordValues<Kind["fields"]>,
-  { day, wordCap }: { day: Date; wordCap: number },
+  { wordCap }: { wordCap: number },
 ): Promise<string> {
   const record = await readRecordDocument(filesystem, kind, group);
 
-  const id = createRecordId(await listRecordIds(filesystem, kind), day);
+  const id = createRecordId(kind, await listRecordIds(filesystem, kind));
 
   const fields: Readonly<
     Record<string, string | readonly string[] | undefined>

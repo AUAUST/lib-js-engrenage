@@ -1,9 +1,8 @@
-const recordIdPattern = /^\d{6}-[\da-f]{4}$/u;
+import { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 
 /**
- * Whether `value` has a record entry ID's form: the creation day as `YYMMDD`, a
- * dash, then 4 lowercase hex characters.
+ * Whether `value` has a record entry ID's form, as `parseRecordId` reads it.
  */
 export function isRecordId(value: string): boolean {
-  return recordIdPattern.test(value);
+  return parseRecordId(value) !== undefined;
 }

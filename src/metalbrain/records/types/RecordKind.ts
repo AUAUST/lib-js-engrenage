@@ -11,6 +11,10 @@ export interface RecordKind<WordCap extends string = string> {
    * The kind's command group, as in `pnpm metalbrain <name> …`.
    */
   readonly name: string;
+  /**
+   * The uppercase letters opening each entry ID, unique across kinds.
+   */
+  readonly namespace: string;
   readonly location: RecordLocation;
   readonly fields: RecordFields;
   /**

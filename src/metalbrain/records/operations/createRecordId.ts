@@ -1,27 +1,30 @@
 import { randomInt } from "node:crypto";
 
-const suffixes = 0x1_00_00;
+import type { RecordKind } from "#metalbrain/records/types/RecordKind";
+
+const suffixes = 0x1_00_00_00;
 
 /**
- * A new record entry ID for `day`, missing from `taken`: the day as `YYMMDD`,
- * then 4 hex characters starting from a random value.
+ * A new entry ID of `kind`, missing from `taken`: the kind's namespace, a dash,
+ * then 6 hex characters starting from a random value.
  *
- * @throws {Error} When `taken` holds every ID of `day`.
+ * @throws {Error} When `taken` holds every ID of the namespace.
  */
-export function createRecordId(taken: ReadonlySet<string>, day: Date): string {
-  const prefix = day.toISOString().slice(2, 10).replaceAll("-", "");
-
+export function createRecordId(
+  { namespace }: Pick<RecordKind, "namespace">,
+  taken: ReadonlySet<string>,
+): string {
   const start = randomInt(suffixes);
 
   for (let offset = 0; offset < suffixes; offset++) {
-    const suffix = ((start + offset) % suffixes).toString(16).padStart(4, "0");
+    const suffix = ((start + offset) % suffixes).toString(16).padStart(6, "0");
 
-    const id = `${prefix}-${suffix}`;
+    const id = `${namespace}-${suffix}`;
 
     if (!taken.has(id)) {
       return id;
     }
   }
 
-  throw new Error(`Every record entry ID of ${prefix} is taken`);
+  throw new Error(`Every record entry ID of ${namespace} is taken`);
 }

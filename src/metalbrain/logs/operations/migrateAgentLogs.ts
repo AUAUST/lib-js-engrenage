@@ -70,10 +70,10 @@ async function listMentions(
 }
 
 /**
- * Moves each legacy Markdown log line, `- <subject>: <…> — <…>`, to the end
- * of its log kind's YAML file as an entry with an ID of `day`, keeping its
- * text, then deletes the Markdown log; skipped while an instruction file of
- * `instructionFiles` names a legacy log, which agents would then still append.
+ * Moves each legacy Markdown log line, `- <subject>: <…> — <…>`, to the end of its
+ * log kind's YAML file as an entry with a new ID, keeping its text, then deletes
+ * the Markdown log; skipped while an instruction file of `instructionFiles` names
+ * a legacy log, which agents would then still append.
  *
  * @returns The instruction files naming a legacy log, when a log is left
  * unmigrated because of them.
@@ -82,7 +82,6 @@ async function listMentions(
  */
 export async function migrateAgentLogs(
   filesystem: Filesystem,
-  day: Date,
   instructionFiles: Globs,
 ): Promise<File[]> {
   const logs: { log: LegacyLog; content: string }[] = [];
@@ -124,7 +123,7 @@ export async function migrateAgentLogs(
     const taken = await listRecordIds(filesystem, log.kind);
 
     for (const entry of entries) {
-      const id = createRecordId(taken, day);
+      const id = createRecordId(log.kind, taken);
 
       taken.add(id);
 

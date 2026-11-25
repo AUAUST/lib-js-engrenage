@@ -45,6 +45,8 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     const id = messages.at(-1)?.text ?? "";
 
+    expect(id).toMatch(/^FR-[\da-f]{6}$/u);
+
     expect(parse(project.read(".ai/friction.yml"))).toEqual({
       entries: [
         {
@@ -78,16 +80,16 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
   test("close removes the entry, deleting the file with its last one", async () => {
     const project = createProject({
-      ".ai/pending.yml": "entries:\n  - id: 261122-0a0a\n    subject: docs\n    what: write them\n    why: out of scope\n",
+      ".ai/pending.yml": "entries:\n  - id: PD-0a0a0a\n    subject: docs\n    what: write them\n    why: out of scope\n",
     });
 
     const { messages } = await runCommand("pending", logs, "list");
 
     expect(messages.map(({ text }) => text)).toEqual([
-      "261122-0a0a docs: write them — out of scope",
+      "PD-0a0a0a docs: write them — out of scope",
     ]);
 
-    await runCommand("pending", logs, "close", "261122-0a0a");
+    await runCommand("pending", logs, "close", "PD-0a0a0a");
 
     expect(existsSync(project.resolve(".ai/pending.yml"))).toBe(false);
   });

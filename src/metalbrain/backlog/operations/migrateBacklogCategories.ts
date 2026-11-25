@@ -215,15 +215,14 @@ async function rewriteReferences(
 
 /**
  * Converts each legacy `.ai/backlog/<category>.md` into its `.yml` category,
- * giving each entry an ID of `day` and taking the purpose from the index's link
- * when the file states none, then rewrites the `<category>.<n>` references of
- * the agent records and `instructionFiles` to these IDs.
+ * giving each entry a new ID and taking the purpose from the index's link when
+ * the file states none, then rewrites the `<category>.<n>` references of the
+ * agent records and `instructionFiles` to these IDs.
  *
  * @throws {Error} When a legacy category's `.yml` file already exists.
  */
 export async function migrateBacklogCategories(
   filesystem: Filesystem,
-  day: Date,
   instructionFiles: Globs,
 ): Promise<void> {
   const legacy = await filesystem.glob(
@@ -262,7 +261,7 @@ export async function migrateBacklogCategories(
     const { purpose, entries } = parseLegacyCategory(content);
 
     const migrated = entries.map(({ number, title, fields }) => {
-      const id = createRecordId(taken, day);
+      const id = createRecordId(backlog, taken);
 
       taken.add(id);
 

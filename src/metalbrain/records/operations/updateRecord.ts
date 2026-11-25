@@ -13,6 +13,7 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
  * fields kept as written, its keys in the kind's order, then regenerates
  * the kind's index.
  *
+ * @returns The entry's current ID.
  * @throws {Error} When the update changes nothing, `unset` names a field the
  * kind lacks, a required one or one `values` gives, `findRecord` finds no entry
  * `id`, or the entry would break the kind's schema, staging nothing.
@@ -29,7 +30,7 @@ export async function updateRecord<Kind extends RecordKind>(
     unset: readonly string[];
   },
   { wordCap }: { wordCap: number },
-): Promise<void> {
+): Promise<string> {
   const fields: Readonly<
     Record<string, string | readonly string[] | undefined>
   > = values;
@@ -80,7 +81,9 @@ export async function updateRecord<Kind extends RecordKind>(
 
   sortRecordEntryNode(kind, node);
 
-  await writeRecordDocument(filesystem, kind, found, { id, wordCap });
+  await writeRecordDocument(filesystem, kind, found, { id: found.id, wordCap });
 
   await writeRecordIndex(filesystem, kind);
+
+  return found.id;
 }

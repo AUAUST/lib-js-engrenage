@@ -1,4 +1,5 @@
-import { isRecordId } from "#metalbrain/records/index";
+import { backlog } from "#metalbrain/backlog/constants";
+import { parseRecordId } from "#metalbrain/records/index";
 import { mainAgent, reportMarkers } from "#metalbrain/runtimes/constants";
 import type { IssueFinder } from "#metalbrain/runtimes/ports/IssueFinder";
 import type { AgentOutcome } from "#metalbrain/runtimes/types/AgentOutcome";
@@ -51,19 +52,21 @@ export function summarizeAgentTask(
     })
     .find((path) => path !== undefined);
 
-  const backlog = headers
+  const entries = headers
     .map((line) => {
       return backlogPattern.exec(line)?.[1];
     })
     .filter((entry) => entry !== undefined)
-    .filter(isRecordId);
+    .filter((entry) => {
+      return parseRecordId(entry)?.namespace === backlog.namespace;
+    });
 
   return {
     ...(issue === undefined
       ? {}
       : { issue: `${issue.repository}#${issue.number}` }),
     ...(draft === undefined ? {} : { draft }),
-    ...(backlog.length === 0 ? {} : { backlog }),
+    ...(entries.length === 0 ? {} : { backlog: entries }),
     ...(agent === mainAgent ? {} : { outcome: findOutcome(report) }),
   };
 }

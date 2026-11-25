@@ -151,14 +151,14 @@ export default {
         },
       },
       {
-        name: "backlog",
+        name: "records",
         stage: "check",
         async load() {
           const {
-            checkBacklog,
-          } = await import("#tools/metalbrain/setup/checkBacklog");
+            checkRecords,
+          } = await import("#tools/metalbrain/setup/checkRecords");
 
-          return checkBacklog;
+          return checkRecords;
         },
       },
       {

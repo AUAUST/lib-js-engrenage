@@ -20,7 +20,7 @@ import {
 } from "valibot";
 import { parse as parseYaml } from "yaml";
 
-import { isRecordId } from "#metalbrain/records/utils/isRecordId";
+import { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 import type { RecordFieldType } from "#metalbrain/records/types/RecordFieldType";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
@@ -78,7 +78,7 @@ const looseGroupSchema = fallback(
   { entries: [] },
 );
 
-function createEntrySchemas({ fields }: RecordKind) {
+function createEntrySchemas({ namespace, fields }: RecordKind) {
   const declared = Object.entries(fields);
 
   const entry: GenericSchema<
@@ -88,7 +88,10 @@ function createEntrySchemas({ fields }: RecordKind) {
     {
       id: pipe(
         string(),
-        check(isRecordId, "expected an ID as YYMMDD-xxxx, 4 hex characters"),
+        check(
+          (id) => parseRecordId(id)?.namespace === namespace,
+          `expected an ID as ${namespace}-xxxxxx, 6 hex characters`,
+        ),
       ),
       ...Object.fromEntries(
         declared.map(([key, { type }]) => [key, fieldSchemas[type]]),
