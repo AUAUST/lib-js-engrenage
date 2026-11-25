@@ -10,6 +10,7 @@ taps:
   - {id: FR-990e2d, at: 2026-11-25T21:25:43Z, note: barrel export before sync}
   - {id: FR-990e2d, at: 2026-11-25T19:05:11Z, note: sync loads stale barrel}
   - {id: FR-990e2d, at: 2026-11-25T21:27:43Z, note: "same: sync loads stale barrel"}
+  - {id: FR-990e2d, at: 2026-11-25T21:45:30Z, note: "again in #943: environments barrel"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

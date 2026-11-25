@@ -11,3 +11,9 @@ entries:
     why: "map shape for directories is #939 work"
     owner: "#939"
     created: 2026-11-25T21:27:44Z
+  - id: PD-99fc38
+    subject: nested directory node names
+    what: map and test mirrors meet names like src/web/legacy
+    why: "map shape for directories is #939 work"
+    owner: "#939"
+    created: 2026-11-25T21:45:31Z

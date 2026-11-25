@@ -318,7 +318,7 @@ entries:
     sites:
       - src/batiment/structure/utils/getStructureLayer.ts:1
       - src/batiment/structure/utils/mergeStructureMetadata.ts:198
-    why: A stale layers entry is silently ignored
+    why: "a stale layers entry in a .namespace.json or domain is silently ignored; #942 validates only config root layers (unknown-directory-layer)"
     want: A diagnostic naming each entry matching no child
     created: 2026-11-25T20:26:54Z
   - id: BL-7b3433
@@ -326,6 +326,6 @@ entries:
     sites:
       - src/batiment/structure/utils/resolveDomainEntries.ts:130
       - src/batiment/structure/utils/checkNamespaces.ts:14
-    why: "since #936 only the first directory's entry.ts is the root entry; another directory's is silently unexported"
-    want: a diagnostic naming it, and no root-entry import grant for it
+    why: "since #936 only the first directory entry.ts is the root entry; #942 stopped it reaching higher directories, but it stays silently unexported"
+    want: a diagnostic naming it; its root-entry grant toward lower directories dropped
     created: 2026-11-25T20:29:09Z
