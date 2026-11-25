@@ -5,7 +5,7 @@ import { entries } from "@auaust/toolkit/object";
 import { readTextFile, relativeWithin } from "#foundation/filesystem/index";
 import { parseJson } from "#foundation/json/index";
 import { validate } from "#foundation/options/index";
-import { readCommittedFile } from "#tools/git/index";
+import { readCommittedFile, readRenamedFiles } from "#tools/git/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateResult } from "#project/gate/index";
 import type { File } from "#types/File";
@@ -24,7 +24,7 @@ function readSuppressions(content: string | undefined, file: File) {
 
 /**
  * Fails when the changed suppressions file suppresses more violations of a rule
- * in a file than the `HEAD` commit does.
+ * in a file than the `HEAD` commit does, under the path `HEAD` holds the file at.
  */
 export async function checkSuppressions(
   config: LoadedConfig,
@@ -46,11 +46,15 @@ export async function checkSuppressions(
 
   const committed = readSuppressions(await readCommittedFile(root, file), file);
 
+  const renamed = await readRenamedFiles(root);
+
   const added: string[] = [];
 
   for (const [source, rules] of entries(current)) {
     for (const [rule, { count }] of entries(rules)) {
-      const previous = committed[source]?.[rule]?.count ?? 0;
+      const previous = (
+        committed[renamed.get(source) ?? source]?.[rule]?.count ?? 0
+      );
 
       if (count > previous) {
         added.push(`${source} ${rule}: ${previous} → ${count}`);
