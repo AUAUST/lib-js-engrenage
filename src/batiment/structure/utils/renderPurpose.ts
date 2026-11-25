@@ -9,5 +9,6 @@ export function renderPurpose({
 }): string {
   return [purpose, renderDebtNote(debt)]
     .filter((part) => part !== undefined)
-    .join("  ");
+    .join("  ")
+    .replaceAll("|", String.raw`\|`);
 }

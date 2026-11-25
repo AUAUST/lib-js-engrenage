@@ -116,7 +116,7 @@ export function renderProjectMapRoles(
         .filter((value) => value !== undefined)
         .join(", ");
 
-      const purpose = renderPurpose(contract).replaceAll("|", String.raw`\|`);
+      const purpose = renderPurpose(contract);
 
       return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${namespaces.map(code).join(", ")} |`;
     }),

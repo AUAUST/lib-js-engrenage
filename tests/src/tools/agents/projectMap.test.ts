@@ -296,7 +296,7 @@ describe("project map", () => {
         src: { structure: { purpose: "The code." } },
       };`,
       "src/feature/index.ts": "",
-      "data/.namespace.json": '{ "purpose": "Shipped files." }',
+      "data/.namespace.json": '{ "purpose": "Shipped JSON | YAML files." }',
       "data/a.json": "{}",
       "extensions/a/package.json": '{ "name": "@x/a", "type": "module" }',
       "extensions/a/.workspace.json": '{ "purpose": "The extension." }',
@@ -307,7 +307,7 @@ describe("project map", () => {
     const overview = project.read(overviewFile);
 
     expect(overview).toContain("| `src` | The code. |");
-    expect(overview).toContain("| `data` | Shipped files. |");
+    expect(overview).toContain("| `data` | Shipped JSON \\| YAML files. |");
     expect(overview).toContain("| `extensions/a` | The extension. | none |");
     expect(project.read(sourceFile)).toContain("src/  feature  The code.");
   });
