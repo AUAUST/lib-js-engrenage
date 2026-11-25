@@ -54,4 +54,22 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
       "  stopped: reran",
     ]);
   });
+
+  test("splits comma-separated IDs, keeping their order", async () => {
+    createProject();
+
+    const {
+      messages,
+    } = await runCommand("show", show, "FR-08d2e7,", " BL-3fa9c1");
+
+    expect(messages.map(({ text }) => text)).toEqual([
+      "friction:",
+      "└ FR-08d2e7 git add",
+      "  tried: ran it",
+      "  stopped: reran",
+      "backlog:",
+      "└ tools:",
+      "  BL-3fa9c1 A claim",
+    ]);
+  });
 });

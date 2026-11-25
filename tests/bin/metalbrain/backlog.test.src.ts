@@ -162,6 +162,16 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     expect(messages.map(({ text }) => text)).toEqual(["tools (1): Tools."]);
   });
 
+  test("close of a comma-separated ID closes that entry only", async () => {
+    const project = createProject();
+
+    await runCommand("backlog", backlog, "close", "BL-0b1c2d,,");
+
+    expect(existsSync(project.resolve(".ai/backlog/docs.yml"))).toBe(false);
+
+    expect(project.read(".ai/backlog/tools.yml")).toBe(tools);
+  });
+
   test("close of a live and an unknown ID closes nothing, naming the unknown one", async () => {
     const project = createProject();
 

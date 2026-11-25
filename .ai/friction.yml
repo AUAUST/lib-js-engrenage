@@ -1154,3 +1154,8 @@ entries:
     tried: derive log groups from logKinds in bin root
     stopped: executable test rejected the import; restated taps per group with a test
     created: 2026-11-25T10:06:28Z
+  - id: FR-042415
+    subject: runCommand usage errors exit
+    tried: asserted a Commander usage error through runCommand
+    stopped: process.exit fired; tested via exitOverride program instead
+    created: 2026-11-25T10:13:03Z

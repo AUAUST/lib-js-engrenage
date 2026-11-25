@@ -1,10 +1,14 @@
-import { defineLazyCommand } from "#workflows/cli/index";
+import { collectListArgument, defineLazyCommand } from "#workflows/cli/index";
 
 export default defineLazyCommand({
   configure(command) {
     return command
       .description("Print entries of any record kind in full.")
-      .argument("<ids...>", "the entries' IDs, of any kinds");
+      .argument(
+        "<ids...>",
+        "the entries' IDs of any kinds, comma- or space-separated",
+        collectListArgument,
+      );
   },
   action() {
     return import("#bin/metalbrain/actions/show");

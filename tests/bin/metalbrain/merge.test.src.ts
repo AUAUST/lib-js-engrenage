@@ -160,4 +160,22 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
       },
     ]);
   });
+
+  test("merge rejects a comma-separated ID, merging nothing", async () => {
+    const project = createProject();
+
+    const before = project.read(".ai/friction.yml");
+
+    await expect(
+      runCommand(
+        "friction",
+        defineLogGroup({ taps: true }),
+        "merge",
+        "FR-0b0b0b,FR-0c0c0c",
+        "FR-0a0a0a",
+      ),
+    ).rejects.toThrow('"FR-0b0b0b,FR-0c0c0c": expected a friction entry ID');
+
+    expect(project.read(".ai/friction.yml")).toBe(before);
+  });
 });

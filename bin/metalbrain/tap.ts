@@ -1,6 +1,6 @@
 import { Option } from "@commander-js/extra-typings";
 
-import { defineLazyCommand } from "#workflows/cli/index";
+import { collectListArgument, defineLazyCommand } from "#workflows/cli/index";
 
 export default defineLazyCommand({
   configure(command) {
@@ -8,7 +8,11 @@ export default defineLazyCommand({
       .description(
         "Record that entries mattered again, none when an ID is unknown.",
       )
-      .argument("<ids...>", "the entries' IDs")
+      .argument(
+        "<ids...>",
+        "the entries' IDs, comma- or space-separated",
+        collectListArgument,
+      )
       .addOption(
         new Option("--note <text>", "context the entries lack, on one line"),
       );

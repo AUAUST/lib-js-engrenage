@@ -4,7 +4,7 @@ import {
   type CommandUnknownOpts,
 } from "@commander-js/extra-typings";
 
-import { isFunction } from "@auaust/toolkit";
+import { isArray, isFunction } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
@@ -110,6 +110,24 @@ function createTwin(command: Command): Command {
   return twin;
 }
 
+// @debt repeats Commander's missing-argument message and code, since Commander checks a required variadic argument before its parser can empty it and exposes no public missingArgument
+function rejectEmptyVariadics(command: Command): void {
+  for (const [index, argument] of command.registeredArguments.entries()) {
+    const value: unknown = command.processedArgs[index];
+
+    if (
+      argument.required &&
+      argument.variadic &&
+      isArray(value) &&
+      value.length === 0
+    ) {
+      command.error(`error: missing required argument '${argument.name()}'`, {
+        code: "commander.missingArgument",
+      });
+    }
+  }
+}
+
 function mountParameters(
   command: Command,
   {
@@ -130,6 +148,8 @@ function mountParameters(
   const bare = countDeclarations(command) === declared;
 
   command.action((...parameters) => {
+    rejectEmptyVariadics(command);
+
     if (parse !== undefined) {
       return receive(parse(...parameters));
     }
