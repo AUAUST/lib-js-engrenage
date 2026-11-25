@@ -1,0 +1,6 @@
+entries:
+  - id: MI-e263e1
+    subject: text tree painter
+    need: record search tree output
+    instead: private branch drawing in src/metalbrain/kinds/utils/formatRecordTree.ts
+    created: 2026-11-25T03:14:04Z

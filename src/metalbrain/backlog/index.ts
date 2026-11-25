@@ -6,4 +6,5 @@ export { removeLegacyBacklogIndex } from "#metalbrain/backlog/operations/removeL
 
 // @barrel utils
 export { formatBacklogEntryLine } from "#metalbrain/backlog/utils/formatBacklogEntryLine";
+export { formatBacklogEntryTitle } from "#metalbrain/backlog/utils/formatBacklogEntryTitle";
 // @end

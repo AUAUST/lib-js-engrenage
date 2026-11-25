@@ -1,5 +1,5 @@
 import { backlog } from "#metalbrain/backlog/constants";
-import { formatRecordLine } from "#metalbrain/kinds/index";
+import { formatRecordTree } from "#metalbrain/kinds/index";
 import { findSimilarRecords } from "#metalbrain/records/index";
 import { debtMarker } from "#tools/eslint/constants";
 import { readStagedChanges, type CommitMessage } from "#tools/git/index";
@@ -14,10 +14,10 @@ const debtComment = new RegExp(
 );
 
 /**
- * The lines listing the backlog entries a commit may relate to, as
- * `findSimilarRecords` finds them at `commitSimilarityThreshold` from `message`'s
- * subject and each debt marker statement the staged changes add, or from the
- * files they touch; none when no entry relates.
+ * The lines painting, as `formatRecordTree` does, the backlog entries a commit may
+ * relate to, as `findSimilarRecords` finds them at `commitSimilarityThreshold`
+ * from `message`'s subject and each debt marker statement the staged changes
+ * add, or from the files they touch; none when no entry relates.
  *
  * @throws {Error} When git fails, or as `findSimilarRecords` throws.
  */
@@ -45,8 +45,10 @@ export async function listRelatedRecords(
 
   return [
     "Matching entries that might be related:",
-    ...related.map(({ record }) => {
-      return formatRecordLine(backlog, record);
-    }),
+    ...formatRecordTree(
+      related.map(({ record }) => {
+        return record;
+      }),
+    ),
   ];
 }

@@ -67,7 +67,7 @@ describe("runMessageGate related records", { timeout: binaryTimeout }, () => {
       {
         step: "related records",
         output: expect.stringMatching(
-          /^Matching entries that might be related:\nBL-0a0a0a /u,
+          /^Matching entries that might be related:\nbacklog:\n└ tools:\n {2}BL-0a0a0a Loader cache /u,
         ),
       },
     ]);

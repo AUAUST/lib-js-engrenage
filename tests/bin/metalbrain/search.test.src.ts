@@ -69,24 +69,25 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     expect(lines).toHaveLength(2);
   });
 
-  test("ranks every kind together, prefixing each line with its kind, and ends a truncated page with its rerun", async () => {
+  test("paints every kind together as a kind and category tree, and ends a truncated page with its rerun", async () => {
     createProject();
 
     const lines = await readLines(
-      runCommand("search", search, "git", "OR", "cli", "--limit", "2"),
+      runCommand("search", search, "git", "OR", "cli", "--limit", "5"),
     );
 
-    expect(lines).toHaveLength(3);
-
-    expect(
-      lines.slice(0, 2).every((line) => {
-        return /^(?:backlog|friction) /u.test(line);
-      }),
-    ).toBe(true);
-
-    expect(lines[2]).toBe(
-      "4 more: pnpm metalbrain search git OR cli --limit 2 --offset 2",
-    );
+    expect(lines).toEqual([
+      "backlog:",
+      "├ cli:",
+      "│ BL-0c1100 Output to a closed pipe crashes",
+      "│ BL-0c1200 Program wiring copies internals",
+      "└ readme:",
+      "  BL-4ead00 The README lacks the CLI reference",
+      "friction:",
+      "├ FR-000001 git status listing: ran git ls-files on files — slow",
+      "└ FR-000002 `git ls-files --others`: listed ignored paths — skipped directories",
+      "1 more: pnpm metalbrain search git OR cli --limit 5 --offset 5",
+    ]);
   });
 
   test("an implicit AND nothing matches ranks entries matching any term, saying so first", async () => {

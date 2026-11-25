@@ -4,7 +4,7 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Rank the entries of the record kind whose group runs it, or, run at the top level, of every searchable kind together, each line prefixed with its kind, against a query in GitHub code search syntax, one line each as its kind's `list` prints it, weighing each field as its kind declares; when no entry matches every term of an implicit-`AND` query, rank those matching any term, saying so on the first line.",
+        "Rank the entries of the record kind whose group runs it, or, run at the top level, of every searchable kind together, painted as a tree of kinds, then categories, against a query in GitHub code search syntax, one line each as its kind's `list` prints it, without the category a tree shows above it, weighing each field as its kind declares; when no entry matches every term of an implicit-`AND` query, rank those matching any term, saying so on the first line.",
       )
       .argument(
         "[query...]",

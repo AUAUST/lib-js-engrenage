@@ -2,7 +2,11 @@ import { isNumber, isString } from "@auaust/toolkit";
 
 import { quoteShellWord } from "#foundation/shell/index";
 import { recordKinds } from "#metalbrain/kinds/constants";
-import { findNamedRecordKind, formatRecordLine } from "#metalbrain/kinds/index";
+import {
+  findNamedRecordKind,
+  formatRecordLine,
+  formatRecordTree,
+} from "#metalbrain/kinds/index";
 import { searchRecords, type RecordQuery } from "#metalbrain/records/index";
 import { CommandUsageError, getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -80,12 +84,18 @@ export default async function (
 
   const end = offset + limit;
 
-  for (const { document } of entries.slice(offset, end)) {
-    const line = formatRecordLine(document.kind, document);
+  const page = entries.slice(offset, end).map(({ document }) => {
+    return document;
+  });
 
-    reporter.log(
-      kindName === undefined ? `${document.kind.name} ${line}` : line,
-    );
+  const lines = kindName === undefined
+    ? formatRecordTree(page)
+    : page.map((document) => {
+        return formatRecordLine(document.kind, document);
+      });
+
+  for (const line of lines) {
+    reporter.log(line);
   }
 
   if (end < entries.length) {

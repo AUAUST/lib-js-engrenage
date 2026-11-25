@@ -10,4 +10,5 @@ export { resolveRecordKind } from "#metalbrain/kinds/operations/resolveRecordKin
 export { findNamedRecordKind } from "#metalbrain/kinds/utils/findNamedRecordKind";
 export { findRecordKind } from "#metalbrain/kinds/utils/findRecordKind";
 export { formatRecordLine } from "#metalbrain/kinds/utils/formatRecordLine";
+export { formatRecordTree } from "#metalbrain/kinds/utils/formatRecordTree";
 // @end
