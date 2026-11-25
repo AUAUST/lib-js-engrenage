@@ -1179,3 +1179,8 @@ entries:
     tried: pnpm metalbrain backlog show on briefed closed IDs
     stopped: reports no entry, not closed; read the issue context instead
     created: 2026-11-25T13:09:57Z
+  - id: FR-88a82f
+    subject: src environment claims every src namespace dir
+    tried: fixture with admin environment on admin dir
+    stopped: admin placed as src until src env got dirs [src]
+    created: 2026-11-25T19:12:58Z

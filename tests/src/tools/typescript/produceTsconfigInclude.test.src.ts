@@ -353,7 +353,9 @@ describe("produceTsconfigInclude", () => {
       jsxImportSource: "solid-js",
     });
 
-    expect(read("tsconfig.tests.json").compilerOptions.jsx).toBeUndefined();
+    expect(read("tsconfig.tests.json").include).not.toContain("tests/**/*.tsx");
+
+    expect(read("tsconfig.tests.json").compilerOptions.jsx).toBe("preserve");
   });
 
   test("removes the JSX keys of a dropped flavour", async () => {

@@ -1,4 +1,5 @@
 export { findImportCycles } from "#project/structure/operations/findImportCycles";
+export { listImportableEnvironments } from "#project/structure/operations/listImportableEnvironments";
 export { reportStructure } from "#project/structure/operations/reportStructure";
 export { resolveAliases } from "#project/structure/operations/resolveAliases";
 export { resolveScopeExports } from "#project/structure/operations/resolveScopeExports";
