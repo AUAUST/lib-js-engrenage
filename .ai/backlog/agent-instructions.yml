@@ -1,45 +1,45 @@
 purpose: Shared agent instructions, skills and the backlog conventions.
 entries:
-  - id: 261122-378b
+  - id: BL-46f0f0
     title: Attribution rule conflicts go unreported
     sites:
       - src/tools/metalbrain/setup/syncAgentFiles.ts:42
     why: a rule file at the wanted path without its reference silently drops the rule.
     want: sync reports the conflict.
-  - id: 261122-c3cc
+  - id: BL-c9f520
     title: Walked agents read whole plan issues for the sections their header names
     why: over 20 walks, `gh issue view` was 14% of worker tool output, mostly whole plans re-read by each leaf.
     want: a `planning issue` command printing an issue with only the ancestor sections its header names, for workers and debuggers.
-  - id: 261122-1d61
+  - id: BL-189820
     title: "`walk check` reprints the whole tree after every commit"
     why: the walker runs it after each commit; closed subtrees and their `Closes` lines grow with the walk and stay in its context.
     want: an option collapsing closed subtrees to one line, used by the walking skill once trees reach dozens of issues.
-  - id: 261122-b57e
+  - id: BL-fd105a
     title: "`planning issue check` passes underspecified items"
     why: it checks section presence and order only.
     want: a finding per **Steps** item naming no path or identifier in code spans, and per **Tests** case without an expected outcome.
     done: "obsolete once #809's spec leaves land; then a finding per leaf without **Done when** or a contract line per dependent."
-  - id: 261122-041c
+  - id: BL-221aeb
     title: Skills have no rank against the project's own rules
     why: "`precedence.md` says a skill refines these instructions, but skills are shared text (rank 3) acting on project rules (rank 2)."
     want: "user decision; proposed: a skill refines shared rules for its role; project rules still win."
-  - id: 261122-889f
+  - id: BL-2b2967
     title: Always-loaded context carries rules only some edits need
     why: the TypeScript section and structure design rows (~110 words each) load for every agent; cold starts are a third of worker and planner cost (#654); a `paths` rule misses files written without a matching Read.
     want: accept that leak or move them to `code-style.md` and a project-map rule.
-  - id: 261122-efd5
+  - id: BL-2ca55f
     title: A restarted walk holds completed leaf work instead of integrating it
     why: walking › Stops and restarts holds every leaf branch it finds; a completed leaf waits on the user, its agent gone.
     want: route completed held work to §Integration or §Review with a new agent; its `snap` commit never lands as a checkpoint.
-  - id: 261122-a02c
+  - id: BL-c953ef
     title: The walker has no rule for colliding log appends or silent agents
     why: parallel leaves' `.ai/friction.md` appends conflict when applied; nothing follows 3 unanswered progress requests.
     want: keep both sides of log conflicts; hold the leaf after 3 more silent timeouts.
-  - id: 261122-c820
+  - id: BL-d0ac5e
     title: Flaky gate failures and the walker's resume count have no rule
     why: load timeouts fail the stop gate transiently, and walking's resume limit counts any gate failure (friction ×3).
     want: rerun the gate once before reporting; failures outside the leaf's change are no resume cause.
-  - id: 261122-8863
+  - id: BL-9cfec8
     title: Instruction sync keeps or drops rules silently
     sites:
       - src/tools/metalbrain/setup/syncAgentFiles.ts:81
@@ -48,18 +48,18 @@ entries:
       - src/metalbrain/instructions/operations/migrateInstructionLocations.ts:35
     why: removed extensions leave rules installed; merged former rules lose project lines; upgrades confuse deleted and new default rules; external former markers stay unresolved.
     want: "sync reports or fails each. Related: #699."
-  - id: 261122-477b
+  - id: BL-2130b9
     title: Instruction markers have no single definition
     sites:
       - src/metalbrain/instructions/utils/listReferences.ts:4
       - src/metalbrain/instructions/utils/filterConditionalBlocks.ts:8
     why: "`listReferences` counts markers inside code, unlike `listInstructionMarkers`, while `syncBlocks` fills both; the filter guesses blank lines around markers without parsing Markdown."
     want: one Markdown-aware marker reader.
-  - id: 261122-9857
+  - id: BL-e17dbc
     title: Scratch scripts cannot import the project's packages
     why: "friction ×3: ESM resolves bare specifiers from the script's directory, so `prettier` or `eslint` imported from a scratchpad `.mjs` fails; agents use absolute `node_modules` paths or `node --input-type=module -e` from the root."
     want: the Environment table naming the working form.
-  - id: 261122-79c0
+  - id: BL-a13caf
     title: AGENTS.md cannot name a shared file's path for every runtime
     sites:
       - data/metalbrain/sections/analysis.md:21
@@ -67,129 +67,129 @@ entries:
       - data/metalbrain/sections/analysis.md:44
     why: "`@shared-file` renders only in a skill, so section pointers name one skill's copy in `@file` blocks: the analysis method's Claude-only, `dispatching.md`'s lost without the shape skill."
     want: a section-level filler rendering the installed path of a shared file for the reading runtime.
-  - id: 261122-542b
+  - id: BL-9797a9
     title: Dropping an agent's work in the main checkout loses its pending debt markers
     sites:
       - data/metalbrain/shared/worktree-dispatch.md:39
     why: "reported by a writer: the reset discards the agent's files, markers included; only the friction and discarded logs carry over."
     want: their markers carried over as backlog entries, or a stated reason to drop them.
-  - id: 261122-bae5
+  - id: BL-593340
     title: No hook reminds a main session of records due at turn end
     why: "proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only."
     want: a decision on that hook.
-  - id: 261122-8e75
+  - id: BL-d80841
     title: Handoffs and carry-overs travel as text an orchestrator rereads and repeats
     why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
     want: handoffs and carry-overs written to files, the orchestrator receiving and forwarding only their paths.
     done: "measured first: fewer tokens than inline handoffs, counting the rereads skipped each turn; dropped otherwise, since saving tokens is its only purpose."
-  - id: 261122-94ad
+  - id: BL-54d505
     title: "The commit-type table diverges from #218's decisions"
     sites:
       - data/metalbrain/rules/git.md:31
       - src/tools/git/constants.ts:98
     why: '#218 › Decisions merge `files` into `cq`, split `ci` from `meta` and gate `css` and `content` by project traits; the table does none of it and adds `snap`, `config` and `debug`, which no decision names. #213 cannot write "today''s table, amended by #218" until one wins.'
     want: "the user settles the authoritative vocabulary on #218."
-  - id: 261122-7506
+  - id: BL-914217
     title: Hard rules stay prose where a check could enforce them
     why: "#809 D.9; S.38 keeps prose beside a check only for rules agents' default behaviour often breaks. The message gate, `git push` deny, local-files, suppressions and shell-trap checks took the rest of their prose (S.39)."
     want:
       - eslint-comments description, `consistent-type-definitions` undecided
       - "mutable-list aliases; allowed comment kinds: custom lint rules"
-  - id: 261122-5911
+  - id: BL-b8b1d3
     title: Instruction changes a plan needs are written one by one, or not at all
     why: only a writer edits instructions (87328dd4); a walk whose leaves need instruction edits sets them aside or stalls on each, and separate writer passes over one subject drift
     want: workers append each needed instruction change as a pending record (#825); at a boundary (segment end, walk end) the orchestrator dispatches one writer over the lot
     done: walking and shape define the flush boundary and the writer brief it sends
-  - id: 261122-8b3b
+  - id: BL-296afd
     title: Instruction composition lives in Markdown markers and fillers reading the whole config
     why: about 110 markers (@shared, @file, @extension, @skill-file, @agent-limits) compose 33k words; agents and skills share one source; fillers take LoadedConfig instead of facts; command usage in prose drifts from registration
     want: "the 2026-11-22 atomic-design review's stages #811 leaves out: a brief command over source adapters, commands owning their usage fragment; no own Document AST, no class inheritance of content. Record core, facts and the instruction registry: #823, #826, #827."
     done: a planner settles these stages once #823 lands, or the user drops them
-  - id: 261122-ed27
+  - id: BL-77e41f
     title: No check warns on instruction sentences whose condition or scope hangs on a participle or absolute phrase
     sites:
       - data/metalbrain/sections/writing.md:14
     why: Over-compressed rules hide conditions and scope; a heuristic sync warning would catch them before review
     want: Decide whether a warning-only sync check is worth its false positives
-  - id: 261122-67be
+  - id: BL-214def
     title: instruction-writing lets a change end with more start-loaded words than it began with
     sites:
       - data/metalbrain/skills/instruction-writing.md:62
     why: Step 7 ends by raising caps; three commits grew every role by up to 355 words
     want: Finishing requires each role's start-loaded words at or below their count before the change, unless the user decided the growth
-  - id: 261122-c156
+  - id: BL-f2991b
     title: Sync and the writer can raise word caps without a user decision
     sites:
       - data/metalbrain/skills/instruction-writing.md:62
       - src/tools/metalbrain/claude/setup/checkWordCaps.ts:170
     want: Only a step the user takes raises a cap; sync only lowers caps
-  - id: 261122-0407
+  - id: BL-0ac63b
     title: instruction-writing's Draft step does not count rewordings, so a rule reworded longer passes as unchanged
     sites:
       - data/metalbrain/skills/instruction-writing.md:61
     want: Each changed passage counted before and after, any growth naming the failure it prevents
-  - id: 261122-52fa
+  - id: BL-bcad4c
     title: instruction-writing's catches miss enumerations standing in for a rule, implied reasons, restatements of loaded rules and rules split into case lists
     sites:
       - data/metalbrain/skills/instruction-writing.md:65
     want: The cold read must clear those four catches, restatements searched beyond the subject inventory
-  - id: 261122-d604
+  - id: BL-359cd9
     title: No warning flags illustrative markers in changed instruction lines
     sites:
       - data/metalbrain/skills/instruction-writing.md:63
     want: A mechanical warning on changed instruction lines holding parenthesized lists or illustrative markers, catching what the cold read misses
-  - id: 261122-4aa1
+  - id: BL-cf9582
     title: AGENTS.md Writing asks a reason for each idea while instruction-writing asks one only when it changes how the rule applies
     sites:
       - data/metalbrain/sections/writing.md:14
       - data/metalbrain/skills/instruction-writing.md:113
     want: One source decides whether an instruction rule carries its reason
-  - id: 261122-1290
+  - id: BL-5b35ff
     title: instruction-writing's request step can be read as writing the cases a request names into the rule
     sites:
       - data/metalbrain/skills/instruction-writing.md:43
     want: Named cases, site lists included, are tests the general rule must pass without naming them
-  - id: 261122-84c3
+  - id: BL-345c48
     title: A style rule that rewrites existing text toward longer forms can be adopted without a user decision
     sites:
       - data/metalbrain/skills/instruction-writing.md:61
     want: Such a rule needs the user's decision first, with its estimated word effect
-  - id: 261122-0a07
+  - id: BL-6b22ea
     title: The model fact to name specific behaviors justifies lists of cases
     sites:
       - data/metalbrain/skills/instruction-writing.md:137
     want: Model facts define when naming a behavior is the rule itself and when it only illustrates one
-  - id: 261122-6536
+  - id: BL-0f17e0
     title: instruction-writing's Write report treats raised caps as a normal result
     sites:
       - data/metalbrain/skills/instruction-writing.md:144
     want: The report gives net words per role and the reason for any growth
-  - id: 261122-8421
+  - id: BL-9d6bf2
     title: Agents keep echoing = runs as separators, which the shell-trap hook refuses as zsh =word expansion
     sites:
       - data/metalbrain/sections/shell.md:1
     why: Seven friction lines across walkers, writers and workers
     want: Agents stop writing separators the hook refuses, through the Shell traps table or a hook message naming the alternative
-  - id: 261123-c6dc
+  - id: BL-51b89a
     title: no instruction says when agents write a pending log entry
     sites:
       - src/metalbrain/logs/constants.ts:1
     why: "#825 added the pending kind for follow-up work left outside a pass; the #811 instruction switch introduced the friction and discarded commands only, user deferring the pending log's use"
     want: agents know when a follow-up becomes a pending entry rather than a backlog entry or issue
     done: an instruction names when to add pending entries, or the kind is dropped
-  - id: 261124-1896
+  - id: BL-7016b6
     title: Walks dispatch an integration merger per leaf, whose single-leaf findings cost more than they find
     sites:
       - .claude/skills/walking/SKILL.md:1
     why: "User decision (#881 walk): fewer tiny agents, one thorough review across several steps"
     want: Commit a worker's completion directly after sending only genuine deviations or discoveries to the consultant; mergers run only at segment, nested-plan, task-tree-top or walk-end boundaries, or after a few large leaves, fix their findings themselves and send only plan or contract deviations to the consultant
     done: walking and autonomous skills updated, per-leaf §Integration/§Review removed
-  - id: 261124-a8be
+  - id: BL-d0f942
     title: Agents reach for git stash in the shared checkout and lose or misapply work
     why: "friction subject git stash recurs (6 entries): refused stashes, pops applying unrelated stashes, index writes beside concurrent commits"
     want: Instructions or a tool give a stash-free way to test a base or set work aside, such as a temporary worktree
-  - id: 261124-8868
+  - id: BL-e3d01e
     title: Agents have no instruction on what to do with the similar entries a commit or add lists
     why: "Once #900 lands, the commit-msg gate step lists possibly related backlog entries as a factual message, and nothing tells agents who acts on them"
     want: A subagent forwards the listed IDs to its dispatcher in its final report, except after a checkpoint commit; a main-session agent weighs and handles them itself
-    done: "Written with the #888 end-of-plan instruction changes that explain the record commands and remove record file references"
+    done: "Written with the #888 end-of-plan instruction changes, including the three `missing` ones: agent-records asks for it apart from friction and debt; the git rule counts `.ai/missing.yml`; curation reads its stats"

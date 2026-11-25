@@ -2,424 +2,429 @@
 agent-instructions:
   purpose: Shared agent instructions, skills and the backlog conventions.
   entries:
-    - 261122-378b
-    - 261122-c3cc
-    - 261122-1d61
-    - 261122-b57e
-    - 261122-041c
-    - 261122-889f
-    - 261122-efd5
-    - 261122-a02c
-    - 261122-c820
-    - 261122-8863
-    - 261122-477b
-    - 261122-9857
-    - 261122-79c0
-    - 261122-542b
-    - 261122-bae5
-    - 261122-8e75
-    - 261122-94ad
-    - 261122-7506
-    - 261122-5911
-    - 261122-8b3b
-    - 261122-ed27
-    - 261122-67be
-    - 261122-c156
-    - 261122-0407
-    - 261122-52fa
-    - 261122-d604
-    - 261122-4aa1
-    - 261122-1290
-    - 261122-84c3
-    - 261122-0a07
-    - 261122-6536
-    - 261122-8421
-    - 261123-c6dc
-    - 261124-1896
-    - 261124-a8be
-    - 261124-8868
+    - BL-46f0f0
+    - BL-c9f520
+    - BL-189820
+    - BL-fd105a
+    - BL-221aeb
+    - BL-2b2967
+    - BL-2ca55f
+    - BL-c953ef
+    - BL-d0ac5e
+    - BL-9cfec8
+    - BL-2130b9
+    - BL-e17dbc
+    - BL-a13caf
+    - BL-9797a9
+    - BL-593340
+    - BL-d80841
+    - BL-54d505
+    - BL-914217
+    - BL-b8b1d3
+    - BL-296afd
+    - BL-77e41f
+    - BL-214def
+    - BL-f2991b
+    - BL-0ac63b
+    - BL-bcad4c
+    - BL-359cd9
+    - BL-cf9582
+    - BL-5b35ff
+    - BL-345c48
+    - BL-6b22ea
+    - BL-0f17e0
+    - BL-9d6bf2
+    - BL-51b89a
+    - BL-7016b6
+    - BL-d0f942
+    - BL-e3d01e
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:
-    - 261122-c7fb
-    - 261122-a9f2
-    - 261122-cdec
-    - 261122-f689
-    - 261122-7dae
-    - 261122-b60f
-    - 261122-0326
-    - 261122-8564
-    - 261122-8233
-    - 261122-3c97
-    - 261122-fc25
-    - 261122-5d59
-    - 261122-0713
-    - 261122-f158
-    - 261122-5512
-    - 261122-bb26
-    - 261122-a80b
-    - 261122-9e37
-    - 261122-7e32
-    - 261122-2dff
-    - 261122-a4c5
-    - 261122-6802
-    - 261122-1570
-    - 261122-ccbe
-    - 261122-fc96
-    - 261122-52a0
-    - 261122-c95f
-    - 261122-69f8
-    - 261122-db71
-    - 261122-e4e9
-    - 261122-861f
-    - 261122-49d9
-    - 261124-8712
+    - BL-14f06a
+    - BL-203f27
+    - BL-dc36ed
+    - BL-03242c
+    - BL-9cfc6b
+    - BL-995865
+    - BL-d4fcea
+    - BL-c36fbb
+    - BL-f4dee6
+    - BL-8b47db
+    - BL-cb6b12
+    - BL-19804d
+    - BL-f067b2
+    - BL-35c39a
+    - BL-efd122
+    - BL-8511c0
+    - BL-93956a
+    - BL-4684f6
+    - BL-821cd3
+    - BL-a03e39
+    - BL-ad6729
+    - BL-ad5beb
+    - BL-3e5c2a
+    - BL-e3a05c
+    - BL-5882b5
+    - BL-9ed8dd
+    - BL-a2857c
+    - BL-4d7278
+    - BL-22f523
+    - BL-e6bd3b
+    - BL-aab2db
+    - BL-559e80
+    - BL-71865f
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:
-    - 261122-8ebe
-    - 261122-8495
+    - BL-cf88c3
+    - BL-8adabe
 changesets:
   purpose: Changesets configuration and presets.
   entries:
-    - 261122-d908
+    - BL-cc5ca7
 claude-code:
   purpose: Upstream Claude Code harness behavior.
   entries:
-    - 261122-02cf
-    - 261122-6d86
+    - BL-4583ea
+    - BL-9cf930
 cli:
   purpose: Command definitions, registration and program runs.
   entries:
-    - 261122-8ede
-    - 261122-fb9f
-    - 261122-1bdf
-    - 261122-cfb9
-    - 261122-1e77
-    - 261122-9c8d
-    - 261122-b9b9
+    - BL-62e56b
+    - BL-39182b
+    - BL-97905e
+    - BL-9c8fb3
+    - BL-dc8e50
+    - BL-e63aac
+    - BL-a3ff44
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
-    - 261122-912f
-    - 261122-3447
-    - 261122-88f8
-    - 261122-2052
-    - 261122-c62e
+    - BL-dccf11
+    - BL-a86f38
+    - BL-0804d2
+    - BL-4f1e5d
+    - BL-68c559
 configuration:
   purpose: "Project configuration contract: loading, environments, option shapes and list options."
   entries:
-    - 261122-1044
-    - 261122-7820
-    - 261122-1de7
-    - 261122-f5c2
-    - 261122-9f2b
-    - 261122-9c5f
-    - 261122-21c3
-    - 261122-7288
-    - 261122-c1c7
-    - 261122-10c3
-    - 261122-bbb3
-    - 261122-1668
-    - 261122-315d
-    - 261122-b065
-    - 261122-e8ed
-    - 261122-a009
-    - 261122-9387
-    - 261122-ccf8
-    - 261124-868c
-    - 261124-06fb
-    - 261124-f612
-    - 261124-3cd2
-    - 261124-9491
+    - BL-c4dc2a
+    - BL-3a5826
+    - BL-5748d2
+    - BL-38066b
+    - BL-20f117
+    - BL-73c8d3
+    - BL-099e43
+    - BL-c3460d
+    - BL-c489b9
+    - BL-ce9742
+    - BL-14d1f7
+    - BL-ca1f85
+    - BL-f6f088
+    - BL-d57350
+    - BL-758327
+    - BL-089d92
+    - BL-182a63
+    - BL-9419ba
+    - BL-1cd010
+    - BL-40603c
+    - BL-bf98f4
+    - BL-9d892e
+    - BL-c84fe4
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:
-    - 261122-c358
-    - 261122-7b83
+    - BL-aba8dc
+    - BL-75bbcd
 eslint-conventions:
   purpose: ESLint rules and conventions engrenage ships.
   entries:
-    - 261122-1b95
-    - 261122-0605
-    - 261122-8580
-    - 261122-d381
-    - 261122-aff5
-    - 261122-b35b
-    - 261122-08d4
-    - 261122-efcc
-    - 261122-9d32
-    - 261122-f52a
-    - 261122-732e
-    - 261123-6d7b
-    - 261124-a7ae
-    - 261124-803d
-    - 261124-cc2e
+    - BL-577bde
+    - BL-b2fa2e
+    - BL-7f85d8
+    - BL-6ce2fc
+    - BL-2e0823
+    - BL-ea6108
+    - BL-dae876
+    - BL-761252
+    - BL-8d4cf7
+    - BL-1eadd2
+    - BL-27bff0
+    - BL-9702f1
+    - BL-119303
+    - BL-58f13f
+    - BL-e557f3
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:
-    - 261122-4b5a
+    - BL-362590
 eslint-plugin-perfectionist:
   purpose: Upstream eslint-plugin-perfectionist sorting rules and their tsconfig handling.
   entries:
-    - 261124-15aa
+    - BL-e80a6b
 eslint:
   purpose: Upstream ESLint API limitations.
   entries:
-    - 261122-e94b
+    - BL-21a8d8
 extensions:
   purpose: The extension registry and extension declarations.
   entries:
-    - 261122-52a1
-    - 261122-30f7
-    - 261122-8f7a
-    - 261122-35d0
-    - 261122-071c
-    - 261122-f10c
+    - BL-abc925
+    - BL-e60bb8
+    - BL-9ac5d6
+    - BL-910442
+    - BL-e81759
+    - BL-58a0bd
 file-editing:
   purpose: In-memory editing of JSON and YAML files in the codegen tooling.
   entries:
-    - 261122-3811
+    - BL-315ef9
 filesystem:
   purpose: The filesystem abstraction, globbing and glob anchoring.
   entries:
-    - 261122-5799
-    - 261122-cdb5
+    - BL-07f164
+    - BL-0dbb36
 format:
   purpose: The `format` section, formatter selection and formatting vocabulary.
   entries:
-    - 261122-836f
-    - 261122-f0cf
+    - BL-243e77
+    - BL-e6fbf7
 gate:
   purpose: The commit gate and its process locks.
   entries:
-    - 261122-b591
-    - 261122-cc0a
-    - 261122-c5fa
-    - 261122-69c1
-    - 261122-f860
-    - 261122-7188
-    - 261122-67f6
-    - 261122-c28e
-    - 261122-bfc2
-    - 261124-0112
+    - BL-a5cebb
+    - BL-0dfc57
+    - BL-b5eba9
+    - BL-9b78aa
+    - BL-79f585
+    - BL-4d0247
+    - BL-06830b
+    - BL-b1f577
+    - BL-467bf7
+    - BL-33f7c7
 git:
   purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
   entries:
-    - 261122-4774
-    - 261122-a06c
-    - 261124-a168
+    - BL-157177
+    - BL-b5153e
+    - BL-3f3917
 github:
   purpose: Generated GitHub workflows and templates.
   entries:
-    - 261122-a6ef
-    - 261122-af90
-    - 261122-d761
+    - BL-6b9297
+    - BL-059932
+    - BL-9d535a
 init:
   purpose: Init steps and their step context.
   entries:
-    - 261122-d0ff
+    - BL-0185e8
 issues:
   purpose: GitHub issue drafts, checks and planning commands.
   entries:
-    - 261122-7b20
-    - 261122-75fc
-    - 261122-866e
-    - 261122-26cb
-    - 261122-dc09
-    - 261122-b7a1
-    - 261122-46aa
-    - 261122-fb74
-    - 261122-6bef
-    - 261122-58b1
-    - 261122-966f
-    - 261122-9d66
-    - 261122-de36
-    - 261122-b2f4
-    - 261122-9d91
-    - 261122-d2aa
-    - 261122-4a72
-    - 261122-4a74
-    - 261122-2f4f
-    - 261122-16de
-    - 261122-2cb6
+    - BL-756b4f
+    - BL-cef515
+    - BL-b74b6f
+    - BL-b02d39
+    - BL-e25ae9
+    - BL-978eec
+    - BL-fc8caf
+    - BL-6bd2b4
+    - BL-a20920
+    - BL-050e8b
+    - BL-4e0b2d
+    - BL-0c220f
+    - BL-2a4732
+    - BL-5a9bcc
+    - BL-c72639
+    - BL-4e53c9
+    - BL-f760c2
+    - BL-3f11df
+    - BL-073588
+    - BL-088353
+    - BL-f4306f
+    - BL-1ae1ff
 lefthook:
   purpose: Lefthook integration.
   entries:
-    - 261122-f043
-    - 261122-9d4f
+    - BL-1548ee
+    - BL-2c0fdf
 package-json:
   purpose: Published package contents and the `package.json` fields derived by the sync `package` target.
   entries:
-    - 261122-5753
-    - 261122-8cc6
-    - 261122-1e2a
-    - 261124-6881
+    - BL-048819
+    - BL-18817c
+    - BL-8bc97b
+    - BL-4aefd0
 pnpm:
   purpose: pnpm integration and package-manager scripts.
   entries:
-    - 261122-b86f
-    - 261122-21a0
+    - BL-fa8a97
+    - BL-6f4769
 prettier:
   purpose: "The Prettier tool domain: layout plugin, layout conventions and formatting runs."
   entries:
-    - 261122-8a97
-    - 261122-5b36
-    - 261122-c1bc
-    - 261122-8d1e
-    - 261122-a1d6
-    - 261122-ad23
-    - 261122-e646
-    - 261122-70a9
-    - 261122-bc49
+    - BL-cee430
+    - BL-284047
+    - BL-5b7c4e
+    - BL-ee4529
+    - BL-44f27a
+    - BL-4cc1e2
+    - BL-ee8db6
+    - BL-941f37
+    - BL-48dd80
 processes:
   purpose: Spawned processes, binary and module resolution.
   entries:
-    - 261122-f6ad
-    - 261122-1e32
+    - BL-41f6f8
+    - BL-77fd05
 readme:
   purpose: Project README content, deferred until the API stops breaking at every release.
   entries:
-    - 261122-9092
-    - 261122-e9a1
-    - 261122-ef61
+    - BL-21091f
+    - BL-b7926a
+    - BL-25c0b4
+records:
+  purpose: "Metalbrain agent records: the record kinds, their IDs and their commands."
+  entries:
+    - BL-fa8f87
 spec-migration:
   purpose: "Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume."
   entries:
-    - 261122-92d4
-    - 261122-b731
-    - 261122-a2b9
-    - 261122-d7a3
-    - 261122-ec75
-    - 261122-30a3
-    - 261122-e401
-    - 261122-737b
+    - BL-e2bb8f
+    - BL-b9d256
+    - BL-04b05f
+    - BL-cb9451
+    - BL-d5ce38
+    - BL-563ab9
+    - BL-5bf535
+    - BL-9300ba
 structure:
   purpose: Project structure description, its report and the tooling generated from it.
   entries:
-    - 261122-7515
-    - 261122-b4c1
-    - 261122-c72a
-    - 261122-1c87
-    - 261122-c0e1
-    - 261122-e121
-    - 261122-7228
-    - 261122-e977
-    - 261122-c7e1
-    - 261122-cb64
-    - 261122-3ad2
-    - 261122-4d7b
-    - 261122-5213
-    - 261122-6d05
-    - 261122-c2a6
-    - 261122-3d2e
-    - 261122-b2eb
-    - 261122-d263
-    - 261122-ee03
-    - 261122-a24d
-    - 261122-bae0
-    - 261122-5857
-    - 261122-93f4
-    - 261122-cede
-    - 261122-5c00
-    - 261122-7335
-    - 261122-2172
-    - 261122-f83d
-    - 261122-9839
-    - 261122-a51c
-    - 261122-e535
-    - 261122-5bc7
-    - 261122-4551
-    - 261122-69ef
-    - 261123-213e
-    - 261123-58d2
-    - 261124-1635
-    - 261124-0240
+    - BL-8a4f63
+    - BL-621764
+    - BL-fdac3a
+    - BL-b9b869
+    - BL-b43bba
+    - BL-a4b87d
+    - BL-16bac4
+    - BL-ea3b49
+    - BL-bb0739
+    - BL-e613b7
+    - BL-825eaa
+    - BL-d605f2
+    - BL-987297
+    - BL-c24c01
+    - BL-9acea6
+    - BL-eebc78
+    - BL-2d95c9
+    - BL-16127b
+    - BL-7871c6
+    - BL-0ff128
+    - BL-340c68
+    - BL-c638bd
+    - BL-c41c51
+    - BL-dfc6ad
+    - BL-ac4484
+    - BL-c405f1
+    - BL-0cbe9c
+    - BL-86932d
+    - BL-e432f0
+    - BL-185690
+    - BL-6d0e91
+    - BL-fbce03
+    - BL-0c171a
+    - BL-5687d8
+    - BL-d012fb
+    - BL-6937f5
+    - BL-3000a5
+    - BL-3c7795
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:
-    - 261122-9d89
-    - 261122-6055
-    - 261122-c98e
-    - 261122-b8a0
-    - 261122-c525
-    - 261122-407c
-    - 261122-abb6
+    - BL-b3b18e
+    - BL-660c2c
+    - BL-d67712
+    - BL-1de2fe
+    - BL-5ad68f
+    - BL-545a6d
+    - BL-472b1f
 tests:
   purpose: Test infrastructure and coverage gaps.
   entries:
-    - 261122-0cfa
-    - 261122-5f69
-    - 261122-70e9
-    - 261122-f3bc
-    - 261122-aab0
-    - 261122-9d5a
-    - 261122-4b22
-    - 261123-da4f
-    - 261124-5103
+    - BL-9a6dd1
+    - BL-bb583a
+    - BL-adfd1d
+    - BL-518105
+    - BL-a8de8a
+    - BL-b3c1c5
+    - BL-456d16
+    - BL-a279d0
+    - BL-0f2376
 toolkit:
   purpose: Upstream @auaust/toolkit decisions that may affect engrenage.
   entries:
-    - 261122-cd9e
-    - 261122-5b51
-    - 261122-8161
-    - 261122-0c9e
-    - 261122-ed94
-    - 261122-e13f
-    - 261122-8a49
-    - 261122-996d
-    - 261122-0bc7
-    - 261122-4b40
-    - 261122-20f7
-    - 261122-09ed
-    - 261122-c8c0
-    - 261122-f129
+    - BL-102287
+    - BL-d98d8b
+    - BL-93ded8
+    - BL-8ba8a9
+    - BL-f91446
+    - BL-719310
+    - BL-535832
+    - BL-72ebe8
+    - BL-747462
+    - BL-c95e67
+    - BL-ed9073
+    - BL-2ff152
+    - BL-b09e80
+    - BL-2fdd18
 tsdown:
   purpose: "Generated tsdown build configuration: entries, outputs and declaration files."
   entries:
-    - 261122-5d86
-    - 261122-e326
-    - 261122-0c4b
-    - 261122-6807
-    - 261122-c92a
-    - 261122-1142
-    - 261122-9e89
+    - BL-067b52
+    - BL-0df503
+    - BL-7b117f
+    - BL-9b6e76
+    - BL-349345
+    - BL-dc14f1
+    - BL-e3cb01
 typescript:
   purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
   entries:
-    - 261122-6458
-    - 261122-8617
-    - 261122-b752
-    - 261122-93b7
-    - 261122-f493
-    - 261122-7e84
-    - 261122-65f5
-    - 261122-dfaf
-    - 261122-5075
-    - 261122-e63c
-    - 261122-1558
-    - 261122-c397
-    - 261122-d984
-    - 261122-8d38
-    - 261122-e356
-    - 261124-6ffc
-    - 261124-9d52
-    - 261124-7ac6
+    - BL-540ba1
+    - BL-2ce632
+    - BL-c506f7
+    - BL-2b3df8
+    - BL-88f275
+    - BL-de026a
+    - BL-38356a
+    - BL-6624c0
+    - BL-3467fd
+    - BL-2d2623
+    - BL-efcb4f
+    - BL-10730b
+    - BL-b0c31d
+    - BL-5b3268
+    - BL-537ace
+    - BL-e32b84
+    - BL-a66057
+    - BL-d3e19c
 utils:
   purpose: Shared helpers and their placement.
   entries:
-    - 261122-6a3c
-    - 261122-c9ed
-    - 261122-1348
-    - 261122-0f29
+    - BL-35fd7d
+    - BL-7a7336
+    - BL-2692c9
+    - BL-0c1548
 vitest:
   purpose: Generated Vitest configuration.
   entries:
-    - 261122-dfbe
-    - 261122-c555
-    - 261122-25c2
-    - 261122-96e9
+    - BL-8fd0d8
+    - BL-86f952
+    - BL-e9c8c8
+    - BL-657743
 vscode:
   purpose: Synced VS Code files.
   entries:
-    - 261122-9f14
+    - BL-cc89ef

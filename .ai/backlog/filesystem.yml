@@ -1,12 +1,12 @@
 purpose: The filesystem abstraction, globbing and glob anchoring.
 entries:
-  - id: 261122-5799
+  - id: BL-07f164
     title: Literal paths are globbed as patterns
     sites:
       - src/tools/typescript/extension.ts:74
     why: each barrel path becomes a glob unescaped, so a path such as `[id]` matches other files or none; `escapeGlob` in foundation/filesystem now escapes the git-ignored list
     want: literal paths escaped before globbing.
-  - id: 261122-cdb5
+  - id: BL-0dbb36
     title: Glob helpers return or render more than asked
     sites:
       - src/foundation/filesystem/operations/createFilesystem.ts:185

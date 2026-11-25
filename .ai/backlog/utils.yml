@@ -1,22 +1,22 @@
 purpose: Shared helpers and their placement.
 entries:
-  - id: 261122-6a3c
+  - id: BL-35fd7d
     title: No helper re-throws an error with a better message and its cause.
     why: "`parseJson`, `writeJsonValue`, `resolveBinary`, `parseInstruction`, `syncChangesetConfig` and others repeat `throw new Error(message, { cause: error })` in a catch. Candidates: (1) `wrap(fn, errorFactory)`, returning the callback's result or throwing `errorFactory(error)`; (2) `wrap(error, message, ErrorClass?)` inside the catch, whether it returns or throws open. Open: whether a helper beats the explicit pattern at all; then engrenage or upstream in `@auaust/toolkit`."
     want: a decision on need and placement, then the helper if justified, with call sites migrated.
     done: the helper exists and replaces the repeated pattern, or the decision not to add one is recorded and the entry removed.
-  - id: 261122-c9ed
+  - id: BL-7a7336
     title: Tag and role presets each define the same preset factory.
     why: "`createTagPreset` (`src/project/docs/utils/createTagPreset.ts`) and `createRolePreset` (`src/batiment/roles/utils/createRolePreset.ts`) are one generic `(defaults: T) => (options?: Partial<T>) => T` that freezes the merge; a third preset family would copy it again."
     want: one generic preset factory in the lowest domain both import, the two public names kept as typed aliases or replaced, decided with their `@experimental`/public status.
     done: one implementation remains, or keeping two is recorded as intended.
-  - id: 261122-1348
+  - id: BL-2692c9
     title: Markdown utilities each repeat the parser options
     sites:
       - src/foundation/markdown/utils/listCodeRanges.ts:9
     why: a shared `parseMarkdown` would join the public barrel, and a `constants.ts` value must be deeply readonly, which the parser's option types reject.
     want: one parser setup the four utilities share.
-  - id: 261122-0f29
+  - id: BL-0c1548
     title: Shell parser types are trusted or flattened
     sites:
       - src/foundation/shell/operations/parseShell.ts:45

@@ -1,6 +1,6 @@
 purpose: Upstream eslint-plugin-perfectionist sorting rules and their tsconfig handling.
 entries:
-  - id: 261124-15aa
+  - id: BL-e80a6b
     title: sort-imports caches the tsconfig found per directory whatever tsconfig filename looked it up
     sites:
       - src/tools/eslint/conventions/imports/importOrder.ts:104

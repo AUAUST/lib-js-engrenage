@@ -1,12 +1,12 @@
 purpose: pnpm integration and package-manager scripts.
 entries:
-  - id: 261122-b86f
+  - id: BL-fa8a97
     title: Build policies of installed packages are hand-listed in the pnpm domain
     sites:
       - src/tools/pnpm/constants.ts:14
     why: an init step adding a package with an unlisted build script fails the install with `ERR_PNPM_IGNORED_BUILDS`; lefthook did.
     want: "the step or extension adding a package declares its build policy and the pnpm workspace settings collect them (planning: new contract)."
-  - id: 261122-21a0
+  - id: BL-6f4769
     title: Variables pnpm sets for binaries are observed, not documented
     sites:
       - src/tools/pnpm/constants.ts:28

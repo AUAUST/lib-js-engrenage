@@ -1,60 +1,60 @@
 purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
 entries:
-  - id: 261122-c7fb
+  - id: BL-14f06a
     title: Agent runtime names are checked only by type narrowing
     sites:
       - src/tools/metalbrain/utils/filterAgents.ts:5
     why: "narrowing a contributed name to `Agent` holds only while every `agents.runtimes` contribution augments `Engrenage.AgentRuntimes`. Hook matching and the duplicated github action: #598."
     want: runtime names checked against the augmentation at load.
-  - id: 261122-a9f2
+  - id: BL-203f27
     title: Nothing bounds a main session's context in a long run
     why: "#654: walker context 65k→214k, ~75% of cost re-reading; main sessions are 43% of cost, starting at 65k, mostly harness (#809)."
     want:
       - "walks: `autoCompactWindow` (≥100k), PreCompact stdout keeping segment gists and pending handoffs."
       - "interactive (#809 Q.9): one short `/compact` offer per threshold crossing; a smaller harness start per project (plugins, MCP servers); a fresh session per task; the 1-hour cache only where gaps need it."
-  - id: 261122-cdec
+  - id: BL-dc36ed
     title: Sync accepts a skill naming its supporting file by bare name
     sites:
       - src/metalbrain/instructions/utils/createSkillFileFiller.ts:5
     why: a bare `consultant.md` outside a `<!-- @skill-file -->` block escapes the path sync renders and validates; `data/metalbrain/skills/planning.md` Modes table still does.
     want: sync fails on a supporting file's name outside a `@skill-file` block of its skill.
-  - id: 261122-f689
+  - id: BL-03242c
     title: Nothing flags a bare `§Name` in a supporting file pointing to its main skill
     why: supporting files name the main skill's sections as `<skill> §Name`; a bare one reads as a missing section of the file.
     want: a check flags a bare `§Name` in a supporting file that names no section of that file.
-  - id: 261122-7dae
+  - id: BL-9cfc6b
     title: Nothing checks that fragments name existing skills
     why: renaming `issue-implementation` to `implement` left references in `walking.md` and `planning.md` that only a grep caught.
     want: sync fails on a fragment naming a skill that does not exist or appears only in a `formerly` list.
-  - id: 261122-b60f
+  - id: BL-995865
     title: Nothing checks references between shared skill files
     why: "`linked-checkouts.md` relies on `worktree-dispatch.md`, and `.claude/rules/agent-fragments.md` asks every skill referencing the first to reference the second; `<file>.md › <Section>` references are unchecked too."
     want: sync fails on a shared file naming one its referencing skill lacks, and on a section reference to a missing section.
-  - id: 261122-0326
+  - id: BL-d4fcea
     title: The resume hook names the walking skill
     sites:
       - src/metalbrain/runtimes/operations/checkAgentResume.ts:60
     why: the refusal says "briefed as walking §Resumed agents states"; right while only the walker resumes agents with a freshness limit.
     want: a message naming the dispatching skill generically once another skill resumes such agents.
-  - id: 261122-8564
+  - id: BL-c36fbb
     title: Nothing catches a subagent stopping with unlogged friction
     why: of 8 subagents meeting refusals and retries in one session, one logged friction.
     want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.
-  - id: 261122-8233
+  - id: BL-f4dee6
     title: Hook routers duplicate payload handling and output writing
     sites:
       - bin/metalbrain/hook/claude/actions/thoroughness.ts:28
       - src/metalbrain/runtimes/operations/checkAgentHooks.ts:15
     why: the thoroughness hook writes its own stdout JSON beside the host-check runner's verdict rendering; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
     want: one hook-output writer and shared hook schemas.
-  - id: 261122-3c97
+  - id: BL-8b47db
     title: The hook directory is resolved twice, in shell and in Node
     sites:
       - src/metalbrain/runtimes/utils/createHookCommand.ts:5
       - src/metalbrain/runtimes/utils/resolveHookDirectory.ts:5
     why: the shell walk restates `findRepositoryRoot` and bounds the root by markers; both cut at `node_modules` by hand.
     want: the config lookup skipping dependencies, read by both.
-  - id: 261122-fc25
+  - id: BL-cb6b12
     title: Runtime behaviour branches on runtime names
     sites:
       - src/metalbrain/runtimes/operations/checkAgents.ts:26
@@ -65,119 +65,119 @@ entries:
       - src/metalbrain/runtimes/config/schemas/skillSchema.ts:36
     why: directories, frontmatter keys, agent file format, session variables and tool names are hand-coded for Claude, so a contributed runtime gets a bare name-and-description shape and leaks variables.
     want: the `agents.runtimes` contribution declares each; per-runtime renderings in separate fields.
-  - id: 261122-5d59
+  - id: BL-19804d
     title: Agent usage records rest on undocumented Claude transcripts
     sites:
       - src/metalbrain/runtimes/operations/readClaudeTranscript.ts:64
       - src/tools/metalbrain/operations/recordClaudeStop.ts:34
     why: a format change silently zeroes the counters; `SubagentStop` fires for agents without a transcript, so a missing one is skipped unidentified.
     want: "format drift detected and reported. Related: #319."
-  - id: 261122-0713
+  - id: BL-f067b2
     title: Dispatch and resume checks read the wrong names
     sites:
       - src/tools/metalbrain/operations/dispatchAgent.ts:40
       - src/metalbrain/runtimes/operations/checkAgentResume.ts:30
     why: briefs are checked against the caller's contract names, not the target checkout's; a recipient that is no agent id resolves by role name, so other names escape the resume limit.
     want: the target's contract names; recipients resolved to agent ids.
-  - id: 261122-f158
+  - id: BL-35c39a
     title: The Claude settings prompt lists raw hook matchers
     sites:
       - src/tools/metalbrain/claude/setup/createClaudeSettingsStep.ts:11
     want: the prompt names what each hook checks.
-  - id: 261122-5512
+  - id: BL-efd122
     title: The worker dispatch hook misreads cross-repository ancestors and stale fields
     why: a bare `#676` in a client repository's ancestor resolved against that repository; `Open questions` Blockers stayed after `gh issue edit` removed **Planning**, until claim and publish.
     want: ancestors resolved against the issue's own repository; the Blockers check reading the body too.
-  - id: 261122-bb26
+  - id: BL-8511c0
     title: One init or sync run rebuilds the same agent templates and skill definitions many times
     sites:
       - src/tools/metalbrain/operations/loadFragmentRenderer.ts:6
     why: an init with two runtimes called `getInstructionTemplates` 48 times; the frontmatter memo removes only reparsing, not rereading, validation or rendering.
     want: computed once per run and shared; a run lifecycle contract to decide first.
-  - id: 261122-a80b
+  - id: BL-93956a
     title: An indented `@shared-file` marker is silently left unrendered
     why: block markers match at column 0 only, so an indented one in an agent fragment renders nothing and sync passes.
     want: sync rejecting marker-like indented lines in agent fragments.
-  - id: 261122-9e37
+  - id: BL-4684f6
     title: The dispatch hook may let a `Draft:` brief holding **Housekeeping** through
     why: the hook denies Housekeeping issues read from `Issue:` lines; a shape dispatch from a draft may rely only on the worker-side stop in the implement skill.
     want: the hook reading `Draft:` paths too, or a test showing it does.
-  - id: 261122-7e32
+  - id: BL-821cd3
     title: The tool call log misses failed calls and some start times
     sites:
       - bin/metalbrain/hook/claude/index.ts:11
     why: failed calls arrive as `PostToolUseFailure`, which is not hooked; async hooks let a fast call's PostToolUse read before PreToolUse writes, leaving no duration and a stale start file.
     want: failures logged; start times never lost or left behind.
-  - id: 261122-2dff
+  - id: BL-a03e39
     title: "Open questions on token spend from #771"
     why: "#771 closed with these open; desktop base context is ~43k tokens against the CLI's 22k (#791)."
     want: 'a decision on each: a hook flagging `gh issue view` on drafted issues and long outputs, or wording; a "batch independent calls" rule for every agent; which base-context parts to disable; mergers on Sonnet (#809 H9).'
-  - id: 261122-a4c5
+  - id: BL-ad6729
     title: "`agents stats --all` costs disagree between role and model views"
     why: "at the #785 review, gatherers showed $0.48 but Haiku $0.18 over the same 10 runs; cause unchecked: per-model pricing, runs without a model, or a role/model join."
     want: both views summing to the same cost for the same runs, or the difference named in the output.
-  - id: 261122-6802
+  - id: BL-ad5beb
     title: Forked sessions count their shared opening twice in run records
     why: 6 session pairs in `.ai/stats/` share their opening transcript; about $21.6, 2% of main cost, counted twice by `agents stats`.
     want: a forked session's record counting only what follows the fork.
-  - id: 261122-1570
+  - id: BL-3e5c2a
     title: Consultant freshness forces fresh consultants mid-walk
     sites:
       - data/metalbrain/skills/planning.md:15
       - src/metalbrain/runtimes/operations/checkAgentResume.ts:8
     why: "`freshness: 2` refused resumes in walk df67d597, which spent 47% on 8 fresh consultants; raising it re-writes the whole context per resume on the 5-minute cache (#809)."
     want: an absolute context ceiling, a small consultant agent file, the walker batching contacts.
-  - id: 261122-ccbe
+  - id: BL-e3a05c
     title: The thoroughness hook's stop path is unproven on a worker
     why: "landed 2026-11-20 (`6331641f3`); its one firing, the #813 worker, stopped near done with a tree the commit gate refused; the finish-or-stop rule now replaces that stop, untested live."
     want: a fixture or replay run proving a worker past the threshold thoroughness-stops with a passing tree.
-  - id: 261122-fc96
+  - id: BL-5882b5
     title: Self-hosted hooks go off while an agent refactors the checkout
     sites:
       - .claude/settings.json:33
     why: 'the hook command falls back to `bin/metalbrain/executable.ts` on the working `src`; during #809 pass 1, a removed `findIssueAudience.ts` still imported elsewhere turned every PostToolUse hook into "did not run, so its checks are off" for all sessions on the checkout: dispatch, budget, resume and stop gates included.'
     want: hooks in this repository run from a stable build or a pinned commit, not the tree under edit; or refactors dispatched only with worktree isolation.
-  - id: 261122-52a0
+  - id: BL-9ed8dd
     title: Walk tuning awaits the first spec walks
     why: "#809 S.26 moved its Q.6 and D.2 out so it can close; each needs live spec-walk evidence (Q.5)."
     want: from the first walks' measurements, decide the leaf floor, worker continuity across leaves (H10), whether one central walker with sequential chains in one agent holds (G1, G2), and when parallel leaves (K > 1) earn their cost over the default of one writing agent, user, 2026-11-22.
     done: each decided, or dropped as unneeded by the walk data.
-  - id: 261122-c95f
+  - id: BL-a2857c
     title: The push deny misses `git -C <path> push`
     sites:
       - src/metalbrain/runtimes/constants.ts:161
     why: "`Bash(git push*)` matches the command prefix only; `git -C <path> push` and wrappers pass, and the git rule no longer forbids pushing in prose."
     want: the PreToolUse git check refuses any parsed `git … push`.
-  - id: 261122-69f8
+  - id: BL-4d7278
     title: Run records hold no review findings or rework
     sites:
       - src/metalbrain/runtimes/utils/summarizeAgentTask.ts:61
     why: "#809 A.5: outcomes are recorded (81b4e618), but no record counts a merger's findings or the resumes a leaf took to pass review, so rework cost stays unmeasured."
     want: per walked leaf, the merger findings by kind and the worker resumes they caused, in its run records.
-  - id: 261122-db71
+  - id: BL-22f523
     title: The thoroughness hook opens a window on every caller message
     sites:
       - src/metalbrain/runtimes/hooks/operations/checkThoroughness.ts:81
     why: "#809 S.40: only a caller message holding a new `Thoroughness:` line opens a window, at that level; the instructions state it, the hook still opens one per message."
     want: the hook following S.40, and `.changeset/budget-per-contact.md` reworded.
-  - id: 261122-e4e9
+  - id: BL-e6bd3b
     title: No check keeps instruction edits to the writer
     why: "#815's worker edited `data/metalbrain/` citing its issue's Done when, through Instruction maintenance's no-writer row; that section now bars every dispatched agent but `writer`, in prose only."
     want: the stop gate failing a gated subagent other than `writer` whose diff from its `Base:` changes an instruction source (`data/metalbrain/`, project rule, skill or agent files outside `@reference` blocks), sync output exempt.
     done: "user, 2026-11-22: not enforced while it stays the one case the fixed no-writer row caused; build the check if a non-writer edits instructions again, otherwise drop the entry."
-  - id: 261122-861f
+  - id: BL-aab2db
     title: The word-cap check still treats caps as hard and raises none
     sites:
       - src/tools/metalbrain/claude/setup/checkWordCaps.ts:164
     why: "user, 2026-11-22: growth a request needs is expected; instruction-writing step 7 now has the writer split into supporting files, cut what the request does not need, then raise the cap. The check's overrun message still says to raise a cap only on the user's decision, and raising means editing `.engrenage/word-caps.json` by hand."
     want: the overrun message asking for that weighing, and a command raising a role's cap to its measured count.
-  - id: 261122-49d9
+  - id: BL-559e80
     title: A stale hook entry fails open without naming the fix
     sites:
       - bin/metalbrain/executable.ts:29
     why: engrenage-hook appended 'regenerate the hooks with pnpm install, then pnpm engrenage sync' to usage errors; metalbrain hook opens with the bare Commander error, so a consumer whose settings name a removed event is not told to sync.
     want: metalbrain hook usage errors name the install-and-sync fix, as engrenage-hook's did.
-  - id: 261124-8712
+  - id: BL-71865f
     title: "`agents stats` fails reading a thoroughness state file: limit must be a number"
     why: "seen at the #881 walk's end, 2026-11-24: the command aborts, so walk reports lose their agent-run table"
     want: agents stats tolerates or reports per file a thoroughness state lacking a numeric limit

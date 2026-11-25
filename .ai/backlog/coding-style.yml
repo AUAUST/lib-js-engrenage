@@ -1,14 +1,14 @@
 purpose: Local coding conventions and linting.
 entries:
-  - id: 261122-912f
+  - id: BL-dccf11
     title: Type casts remain in source.
     sites:
       - scripts/codegen/operations/generateEditions.ts:60
       - scripts/codegen/operations/generateEditions.ts:85
       - src/foundation/options/utils/createAccessors.ts:41
-    why: "`as Record<string, string | undefined>` in `generateEditions`, `as unknown as Accessors<Fields>` in `createAccessors`; ESLint rule casts: `261122-1b95`."
+    why: "`as Record<string, string | undefined>` in `generateEditions`, `as unknown as Accessors<Fields>` in `createAccessors`; ESLint rule casts: `BL-577bde`."
     want: each site typed without the cast or marked with `@debt` stating its invariant.
-  - id: 261122-3447
+  - id: BL-a86f38
     title: Complexity limits sit above their targets
     sites:
       - eslint.config.ts:5
@@ -17,18 +17,18 @@ entries:
       - src/project/format/constants.ts:20
     why: "`functionLines` and `cognitiveComplexity` are disabled for the stylistic rules; the format limits are 20 and 125 against targets of 15 and 100."
     want: functions refactored under the targets, then limits lowered (planning for the refactor scope).
-  - id: 261122-88f8
+  - id: BL-0804d2
     title: Repeated types and converters
     sites:
       - src/batiment/roles/types/Role.ts:1
       - src/project/tsconfig/utils/toJsonValue.ts:3
     why: "`Role` duplicates the generated `RoleInput`; the JSON-value round trip repeats `serialize` in `defineSchema`."
     want: "`RoleInput` used directly; one shared JSON-value converter."
-  - id: 261122-2052
+  - id: BL-4f1e5d
     title: No convention picks `@throws` or summary prose for a contract's failures
     why: '#541''s pass split: `foundation` ports and apis use `@throws` (9 sites), every other layer states "Throws…"/"Rejects…" in the summary (~50 sites).'
     want: one form in the documentation rule, then the other sites rewritten.
-  - id: 261122-c62e
+  - id: BL-68c559
     title: "Oxlint switch losses #557 and #558 do not count"
     sites:
       - src/tools/eslint/conventions/promises/returnAwait.ts:9

@@ -1,35 +1,35 @@
 purpose: "`project/sync` target ordering and sync products."
 entries:
-  - id: 261122-9d89
+  - id: BL-b3b18e
     title: Built-in `generate` targets run before extension ones, so one sync does not settle extension-generated domains
     why: "`project/sync` orders built-ins first, so the `barrels` target (#446, `@debt` in `syncBarrelFiles.ts`) misses an extension-generated public domain or root entry until the next sync, breaking #436's one-sync promise."
     want: 'order `generate` targets by `reads`/`produces` edges, dropping resolved config keys between a source-tree producer and a structure reader; needs a `project/sync` ordering contract naming a source-tree product (`.ai/discarded.md` "source-tree sync products"). Rejected: hardcoding `barrels` last.'
-  - id: 261122-6055
+  - id: BL-660c2c
     title: "`pnpm build`, not sync, writes `package.json` exports, so sync and `sync --check` miss their drift"
     sites:
       - src/tools/tsdown/operations/createTsdownConfig.ts:83
     why: "#473: a sync before the build removes skills whose export is new; 6331641f hand-added an export missing from `data.exports`, which only the CI publish build caught."
     want: sync writes the exports from `data.exports`, so `sync --check` gates their drift.
-  - id: 261122-c98e
+  - id: BL-d67712
     title: The first sync after adding a built-in extension renders generated files from the old built-ins list
     why: "#473; the generated built-ins list is read before sync regenerates it, so a second sync is needed."
-    want: one sync settles a new built-in extension; related to 261122-9d89.
-  - id: 261122-b8a0
+    want: one sync settles a new built-in extension; related to BL-b3b18e.
+  - id: BL-1de2fe
     title: Sync cannot run while its executable imports a stale or missing barrel export
-    why: "friction ×4: sync loads through `bin/engrenage/executable.ts`, so a new barrel member imported before syncing or a deleted module a barrel still exports fails the run; a newly declared domain gets no `index.ts`. Agents edit barrels by hand. Related: `261122-8495`."
+    why: "friction ×4: sync loads through `bin/engrenage/executable.ts`, so a new barrel member imported before syncing or a deleted module a barrel still exports fails the run; a newly declared domain gets no `index.ts`. Agents edit barrels by hand. Related: `BL-8adabe`."
     want: barrel regeneration that loads no barrel it regenerates, and creates the index of a new domain.
-  - id: 261122-c525
+  - id: BL-5ad68f
     title: Sync deletes every generated skill and agent when the synced package's data export is stale
     sites:
       - src/foundation/data/operations/listDataFiles.ts:44
       - src/foundation/data/operations/listDataFiles.ts:68
     why: a missing export subpath returns `[]`, read as no templates; seen after moving `data.exports` unbuilt.
     want: fail when the synced package's own data export resolves to nothing; packages without one still pass (contract decision).
-  - id: 261122-407c
+  - id: BL-545a6d
     title: Sync fails on a stale barrel it would regenerate
-    why: config loading imports the domain barrels before sync rewrites them, so a module added, moved or deleted makes sync refuse until the barrel is edited by hand (friction ×4); related 261122-8495.
+    why: config loading imports the domain barrels before sync rewrites them, so a module added, moved or deleted makes sync refuse until the barrel is edited by hand (friction ×4); related BL-8adabe.
     want: sync regenerating barrels before loading the config, or loading it without them.
-  - id: 261122-abb6
+  - id: BL-472b1f
     title: Sync omits a barrel export only `bin` imports
     why: "in #769, `reportStructure`, imported by `bin` through `#project/structure/index`, never got its export line; typecheck failed until it was added by hand."
     want: barrel blocks counting imports from every environment.

@@ -1,6 +1,6 @@
 purpose: Synced VS Code files.
 entries:
-  - id: 261122-9f14
+  - id: BL-cc89ef
     title: "`addRecommendations` repeats `mergeSetting`'s array insertion"
     sites:
       - src/tools/vscode/setup/syncVscodeFiles.ts:41

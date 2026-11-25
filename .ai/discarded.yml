@@ -1,753 +1,761 @@
 entries:
-  - id: 261123-376a
+  - id: DS-ced0b7
     subject: init step for `.ai/discarded.md`
     need: create the log with the project
     reason: agents create it on first entry, no tooling needed
-  - id: 261123-76e1
+  - id: DS-70d780
     subject: structure nested walker
     need: walker reading the nested declaration child by child (#322)
     reason: rewrites the walker and resolvers for no behavior change; flattening at the boundary keeps them
-  - id: 261123-f7f8
+  - id: DS-be8651
     subject: structure flat declarations
     need: keeping `namespaces` and `domains` beside `structure` (#322)
     reason: two shapes for one concept and a merge check between them
-  - id: 261123-1cf9
+  - id: DS-7ac13a
     subject: lazy declaration declarer
     need: recursive option declarations in `foundation/options` (#322)
     reason: one consumer; kept private in `declareStructureNodes`
-  - id: 261123-fef2
+  - id: DS-5f31ef
     subject: optional structure wrapper
     need: "`structure` optional without child records accepting `undefined` (#322)"
     reason: no declarer wraps an object declaration with its own optionality; debt marker instead
-  - id: 261123-0801
+  - id: DS-78c402
     subject: layout plugin text edits
     need: assignments kept beside `=` (#418)
     reason: joining `=⏎` cannot break the `rhs` again; printer override instead
-  - id: 261123-4dbb
+  - id: DS-537b97
     subject: "`operator-linebreak`"
     need: assignments kept beside `=` (#418)
     reason: no working fix, fights Prettier
-  - id: 261123-17e2
+  - id: DS-14e87b
     subject: "`dprint-plugin-typescript`"
     need: assignments kept beside `=` (#418)
     reason: formatter swap, no assignment option found
-  - id: 261123-0bfb
+  - id: DS-97a076
     subject: Prettier fork
     need: assignments kept beside `=` (#418)
     reason: maintenance cost; printer override instead
-  - id: 261123-55a3
+  - id: DS-ae92d4
     subject: no-unnecessary-type-parameters
     need: skip reports on functions without a return annotation
     reason: silences single-use parameters the inferred return never uses; the rule now reads the checker's return type instead
-  - id: 261123-b05f
+  - id: DS-a6b9e9
     subject: declareSection `Config` removal
     need: silence its single-use report
     reason: "a `config: Resolver` parameter makes `ConfigResolver` annotations circular and loses the default for unannotated sections"
-  - id: 261123-94b8
+  - id: DS-87d204
     subject: reusable checks workflow
     need: share the jobs between ci.yml and publish.yml
     reason: sync only updates existing workflow files, so consumers would never receive a new one
-  - id: 261123-d57f
+  - id: DS-502054
     subject: build.outDir artifact path
     need: pass only the build output to the release job
     reason: unreadable before engrenage is installed, which breaks init; the whole built tree is uploaded instead
-  - id: 261123-738e
+  - id: DS-edfdbe
     subject: tests sharding as the fix for slow tests
     need: CI under 2 minutes
     reason: hides the engrenage test suite's own slowness, which toolkit's 2k tests in under 1 minute show; sharding kept only as a config option
-  - id: 261123-63b3
+  - id: DS-6bf7bd
     subject: side-effect import of sub-domain extensions
     need: keep their `declare global` in dist declarations
     reason: duplicates the value import, fails `auaust/no-duplicates`, and every parent must remember it
-  - id: 261123-6318
+  - id: DS-e50729
     subject: named-match-values export style
     need: helper types beside helpers (#433)
     reason: type axis could not be constrained anywhere
-  - id: 261123-f551
+  - id: DS-34aa82
     subject: "`@barrel <glob> <mode>` as built-in directive"
     need: barrels in marker blocks
     reason: restates role files and export contracts the structure holds
-  - id: 261123-eebf
+  - id: DS-8464b5
     subject: per-consumer barrel generators (#435 only)
     need: barrels
     reason: every project re-implements rendering and export modes
-  - id: 261123-7898
+  - id: DS-07ac05
     subject: automd
     need: directive blocks with custom generators
     reason: Markdown only, no structure context
-  - id: 261123-0278
+  - id: DS-73cde6
     subject: markdown-magic
     need: comment-block transforms
     reason: Markdown-centred, own option parser; engrenage's parser is 74 lines
-  - id: 261123-91f6
+  - id: DS-7dc8fd
     subject: barrelsby
     need: barrel generation
     reason: derives from globs, duplicating the resolved structure
-  - id: 261123-1852
+  - id: DS-1a40c4
     subject: ctix
     need: barrel generation
     reason: derives from the tsconfig, duplicating the resolved structure
-  - id: 261123-4ca7
+  - id: DS-714902
     subject: source-tree sync products
     need: one-pass sync with generated sources (#436)
     reason: every config key would declare its file dependencies; generate stage instead
-  - id: 261123-2d42
+  - id: DS-35e17c
     subject: classify role-holding directories as domains
     need: entry-only domains (#430)
     reason: a misplaced role directory silently becomes a domain; namespace option instead
-  - id: 261123-6a3f
+  - id: DS-2c703c
     subject: config key reset registry
     need: hide `forget` from every LoadedConfig holder but project/sync
     reason: needs module-level state shared by createProjectConfig and a second export, beyond the issue
-  - id: 261123-8c7a
+  - id: DS-c0abbc
     subject: eslint cache
     need: speed up repo-wide lint with `--cache`
     reason: type-aware and cross-file structure rules make cached results stale; dropped for good
-  - id: 261123-b0f3
+  - id: DS-ccbb8e
     subject: fixed fragment layout `<root>/data/metalbrain/<kind>`
     need: list an extension's agent fragments
     reason: its references must resolve through the package's exports, so the `./metalbrain/<kind>/*.md` export is the authoritative location
-  - id: 261123-dab2
+  - id: DS-a028c3
     subject: hand-rolled semver range matching
     need: extension `compatibility` check
     reason: "`semver` is already installed through typescript-eslint"
-  - id: 261123-0e23
+  - id: DS-13d74b
     subject: "`gh-issue-sync`"
     need: local issue drafts published with placeholder ids (#323)
     reason: Go binary, one repository, no issue types, org fields or sub-issues, creates missing labels
-  - id: 261123-79dd
+  - id: DS-8c40b4
     subject: "`git-bug`"
     need: offline issue drafting with a GitHub bridge (#323)
     reason: issues in git objects, no Markdown files, types or fields
-  - id: 261123-6937
+  - id: DS-facbe3
     subject: "`gh-md`, `kup`, `issync`"
     need: Markdown issue sync (#323)
     reason: title, body and labels only; no types, org fields or sub-issues
-  - id: 261123-4bc9
+  - id: DS-bc7bc3
     subject: spawning `gh` from the publisher
     need: publish drafts (#323)
     reason: "keeps the shell quoting behind the hook friction; Octokit decided in #316"
-  - id: 261123-7542
+  - id: DS-832572
     subject: denying agents direct issue writes
     need: steer agents to the publisher (#323)
     reason: the user keeps GitHub open to agents
-  - id: 261123-b4c4
+  - id: DS-e41e67
     subject: per-repository GitHub snapshot files
     need: cross-repository metadata (#323)
     reason: org types and fields repeated in each file
-  - id: 261123-df29
+  - id: DS-2f36aa
     subject: hand-kept AUAUST repository list or whole-org listing
     need: repository registry (#323)
     reason: a list to maintain, or short names guessed from naming conventions
-  - id: 261123-f062
+  - id: DS-25ce1e
     subject: "`structure --check` reporting role companions"
     need: missing companion files (#455)
     reason: reads no file contents, would report lint's finding twice; lint preferred by the user
-  - id: 261123-547c
+  - id: DS-797630
     subject: "`// @barrel guards` block in toolkit's `guard` entry"
     need: one entry collecting a role from every domain (#454)
     reason: an entry-only domain's entry is a whole generated file, blocks cannot sit in it
-  - id: 261123-76d0
+  - id: DS-dd5dfd
     subject: toolkit `barrels.exports` contribution for the `guard` entry
     need: one entry collecting a role from every domain (#454)
     reason: re-derives the structure in toolkit, and lands after toolkit#203, whose names would drop meanwhile
-  - id: 261123-81ea
+  - id: DS-2e54f1
     subject: ids in the planning sheet
     need: direct GitHub calls without reading the snapshot (#207)
     reason: every agent would load them; the snapshot holds them
-  - id: 261123-926c
+  - id: DS-bded3a
     subject: publish re-rendering an unclaimed Plan's Roadmap
     need: segment members expanded when only the segment changes (#207)
     reason: writes an issue without its claim; the set must include the Plan instead
-  - id: 261123-5a7d
+  - id: DS-c344b7
     subject: walk check
     need: computing the issue-walking handling-table row (#452)
     reason: restates the skill's table in code; findings carry their rule instead
-  - id: 261123-3e84
+  - id: DS-b8a191
     subject: "`parent` and `after` on child drafts"
     need: sub-issue order (#323)
     reason: "order scattered across children; parents' `subIssues` decided in #207"
-  - id: 261123-4be0
+  - id: DS-bfd559
     subject: "`tools/github/drafts` sub-domain only"
     need: placement of the planner code (#207)
     reason: leaves the mixed domain to a later split; layered `tools/github/issues` namespace chosen
-  - id: 261123-edc5
+  - id: DS-746225
     subject: "@octokit/plugin-paginate-graphql"
     need: paginate issue-tree connections (#452)
     reason: new bundled dependency for one cursor loop; local loop as in the snapshot fetch
-  - id: 261123-de95
+  - id: DS-ac6fac
     subject: lazy git imports in issue operations
     need: keep config loading free of git setup
     reason: the schema moved to its owner instead, removing the barrel edge
-  - id: 261123-b284
+  - id: DS-2416a4
     subject: PostToolUse format hook
     need: agent-written files formatted on write (#472)
     reason: Bash writes give no paths, and the stop and commit gates already format every changed file
-  - id: 261123-b3e4
+  - id: DS-42a556
     subject: Prettier on staged blobs
     need: format partially staged files in the gate (#472)
     reason: refusing them matches the agent gate; checking the index content needs a stdin pipeline per file
-  - id: 261123-9263
+  - id: DS-47e18e
     subject: "`github-label-sync`"
     need: label sync with rename aliases (#320)
     reason: "#320 derives labels from the structure and Octokit is already bundled; reuse its alias model"
-  - id: 261123-024c
+  - id: DS-5f77bd
     subject: structure tree row builders
     need: separate node-to-row builder per output over a shared drawing helper
     reason: labels would stay in two places
-  - id: 261123-1a3c
+  - id: DS-5ea753
     subject: namespace role shadow
     need: "`subpath` at the environment root only (#483)"
     reason: re-declares every option of the global role and drifts once it changes
-  - id: 261123-3adb
+  - id: DS-17b66b
     subject: namespace role shadow
     need: toolkit's modules without a types barrel
     reason: re-declares the global role and drifts (#483); index "root" instead (#493)
-  - id: 261123-c8cc
+  - id: DS-fe75d3
     subject: unused role barrel in toolkit protocol
     need: drop the types shadow as is
     reason: "contradicts toolkit #186, a module's entry is its only barrel"
-  - id: 261123-536b
+  - id: DS-2522f4
     subject: calling a role callback on a placeholder module for its map description
     need: "`companions` shown in maps"
     reason: callbacks compute on real names (`name.slice(2)`), a placeholder yields garbage
-  - id: 261123-8f9f
+  - id: DS-8c6663
     subject: bare callback or `{ resolve, description }` union for `file` and `companions`
     need: lighter declaration
     reason: "a bare callback leaves its map cell empty, the gap #485 fixed"
-  - id: 261123-766a
+  - id: DS-9ded8e
     subject: gate skipping `.ai/issues/` formatting
     need: stop false body conflicts at publish (#500)
     reason: editors and hooks still format drafts; normalizing the merge covers every formatter
-  - id: 261123-6718
+  - id: DS-b8e550
     subject: context-share freshness threshold (#516)
     need: consultant replacement
     reason: a window share means different sizes per model; twice the starting context instead
-  - id: 261123-9c05
+  - id: DS-0dad8b
     subject: widened walker review (#516)
     need: cross-leaf review
     reason: fills the context the consultant keeps small
-  - id: 261123-123b
+  - id: DS-0c1234
     subject: code-review skill as merger (#516)
     need: cross-leaf review reuse
     reason: no view of sibling leaves, no rebase, no Codex equivalent
-  - id: 261123-9b08
+  - id: DS-500ff3
     subject: one consultant-merger agent (#516)
     need: fewer agents
     reason: one judges against the plan, the other against the code
-  - id: 261123-3bfb
+  - id: DS-98bae3
     subject: shared draft manifest field reader (#511)
     need: "`checkDrafts` `readBlockers` and `listPublishedFieldValues` `readFieldValue` both read manifest field values"
     reason: one Blockers read, outside the leaf's scope
-  - id: 261123-05e0
+  - id: DS-129f0f
     subject: Blockers-only issue fetch (#512)
     need: "`releaseIssues` needs one field but `fetchIssue` sends five requests"
     reason: a second fetcher for one command run by hand, outside the leaf's scope
-  - id: 261123-3bc0
+  - id: DS-656216
     subject: option on `engrenage jscpd` (#518)
     need: new clones of a range by name
     reason: the command forwards every argument to jscpd, so an engrenage option collides with its flags
-  - id: 261123-0a82
+  - id: DS-76a1a5
     subject: gate range scope (#518)
     need: new clones of a range by name
     reason: reaches every gate step for one jscpd use
-  - id: 261123-7902
+  - id: DS-3e8e40
     subject: jscpd --ignore-identifiers (#518)
     need: twin helpers across concurrent leaves
     reason: "no new clone on #499 and #500's range at project thresholds, import-line noise below them"
-  - id: 261123-e19f
+  - id: DS-8fef6c
     subject: jscpd --dead-code (#516)
     need: exports a range leaves unused, for the merger
     reason: resolves no `#` alias, so lists every aliased module as unused
-  - id: 261123-5563
+  - id: DS-b04403
     subject: concurrency as a split reason (#505)
     need: more segment members
     reason: each leaf adds a dispatch, merger and review round small items never repay
-  - id: 261123-dca6
+  - id: DS-c8838c
     subject: blockedBy between segment members
     need: finer concurrency than segment order
     reason: the walker stops on any open blocked-by; reshaping or sequencing covers it
-  - id: 261123-99c9
+  - id: DS-8a2774
     subject: boundary-only merger at K > 1 (#522)
     need: fewer agents per leaf
     reason: leaves rebases and conflicts to the walker or the workers
-  - id: 261123-c858
+  - id: DS-4cbb78
     subject: merger fixing every finding (#522)
     need: no worker resume
     reason: it would review its own non-mechanical fixes; the review run still sees mechanical ones
-  - id: 261123-89b4
+  - id: DS-576dda
     subject: prettier-plugin-jsdoc
     need: canonical JSDoc layout without deciding tag order
     reason: sorts tags and rewrites content beyond this pass; targeted eslint-plugin-jsdoc rules instead.
-  - id: 261123-dc6b
+  - id: DS-4c5fad
     subject: prettier-plugin-jsdoc
     need: balanced JSDoc wrapping
     reason: its "balance" style only keeps existing breaks, and it rewrites descriptions as Markdown
-  - id: 261123-80ec
+  - id: DS-071515
     subject: hint lint level beside info
     need: advisory messages for agents only
     reason: differs from info by audience alone; info messages reach agents instead (#526)
-  - id: 261123-5d54
+  - id: DS-f1ecb8
     subject: comment scanner in foundation/jsdoc
     need: locating JSDoc blocks in source
     reason: every consumer already runs a parser listing comments
-  - id: 261123-251a
+  - id: DS-01dfb2
     subject: extension-owned doc tags (`owns.tags`)
     need: declaring JSDoc tags
     reason: presets in one adjustable list let projects override, extend and order them
-  - id: 261123-2b24
+  - id: DS-882c2c
     subject: "`@throws {@link Type}`"
     need: canonical throws form
     reason: TypeScript 6.0.3 does not rename through it, only through `@throws {Type}`
-  - id: 261123-9063
+  - id: DS-db82d6
     subject: jsdoc/informative-docs
     need: comments restating their name
     reason: leaves with eslint-plugin-jsdoc; judging added value stays with review
-  - id: 261123-827c
+  - id: DS-4df0d3
     subject: inlining readDocumentedSignature/readOverload into docTags
     need: single-consumer helpers
     reason: "exceeds the file-line limit, and #368 needs the block lookup"
-  - id: 261123-cc4e
+  - id: DS-8bc844
     subject: balanced JSDoc wrapping
     need: no orphan last line
     reason: equal-length lines narrow long paragraphs far below the width
-  - id: 261123-9820
+  - id: DS-f0fcb2
     subject: hybrid JSDoc wrapping
     need: balance two-line paragraphs, pretty beyond
     reason: arbitrary line-count threshold
-  - id: 261123-0429
+  - id: DS-8f5a63
     subject: planning sheet skill
     need: load the sheet only for issue-writing agents
     reason: skill invocation is model-driven and can be skipped; a `paths`-scoped rule on drafts loads deterministically
-  - id: 261123-512a
+  - id: DS-b1feba
     subject: "`TagDeclaration` documents flag"
     need: override whether a tag counts for `auaust/documented`
     reason: the body kind already decides it; no project needs another answer yet
-  - id: 261123-1fe2
+  - id: DS-c71d08
     subject: lint rule optimisation, merging or removal
     need: faster lint
     reason: rule logic is ≤ 15% of a full lint and < 20 ms per file; config load, program builds and the checker dominate
-  - id: 261123-8435
+  - id: DS-440160
     subject: prettier import sorting plugin
     need: move `auaust/sort-imports` load off ESLint
     reason: saves ~5 ms per file, adds a Prettier parse
-  - id: 261123-cae5
+  - id: DS-027f7b
     subject: reimplementing delegated rules
     need: delegation overhead
     reason: "`resolveDelegate` adds none at runtime"
-  - id: 261123-3de6
+  - id: DS-ad6807
     subject: "`@biomejs/biome`"
     need: validation stack switch
     reason: own CST rule API without JS fixes, far fewer type-aware rules, no formatter plugins; every convention rewritten
-  - id: 261123-2abe
+  - id: DS-a17e40
     subject: "`rslint`"
     need: validation stack switch
     reason: younger 0.x fork of the tsgolint engine Oxlint maintains
-  - id: 261123-7d78
+  - id: DS-841b64
     subject: "`tsslint`"
     need: cache-friendly type-aware lint
     reason: runs as a language service plugin, which TypeScript 7 lacks
-  - id: 261123-c010
+  - id: DS-e74054
     subject: Oxlint beside ESLint
     need: faster lint keeping conventions in ESLint
     reason: two hosts, and ESLint keeps its program builds while any convention reads types
-  - id: 261123-a924
+  - id: DS-c442b7
     subject: typescript-eslint on TypeScript 7.1
     need: faster type-aware lint
     reason: maintainers expect no speed-up from its first IPC client
-  - id: 261123-85a5
+  - id: DS-56672f
     subject: rolldown `entriesAware` chunk groups
     need: fewer small library chunks
     reason: merge threshold folds ESLint into CLI registration
-  - id: 261123-a133
+  - id: DS-4e3f55
     subject: rolldown priority `cli` chunk group
     need: keep CLI registration out of merged chunks
     reason: build fails on an ineffective dynamic import
-  - id: 261123-305a
+  - id: DS-3d0036
     subject: rolldown `experimentalInlineCommonChunks`
     need: inline tiny shared chunks
     reason: "requires `preserveEntrySignatures: false`, which empties library entry exports"
-  - id: 261123-8346
+  - id: DS-46ec96
     subject: rolldown `codeSplitting.groups` merging shared chunks
     need: fewer files per library import
     reason: default splitting already loads ~14 files per entry; merges add bytes, leak packages and no measurable speed-up
-  - id: 261123-8959
+  - id: DS-f0faed
     subject: declareObject async entries
     need: await async entry defaults inside the object resolve (src.bundled)
     reason: changes the synchronous Declaration.resolve contract across foundation/options
-  - id: 261123-ac14
+  - id: DS-39eaa0
     subject: tsdown declaration helper-stripping plugin
     need: keep `output.keepNames` with declarations
     reason: rewrites rolldown-plugin-dts output and shifts declaration maps
-  - id: 261123-aeee
+  - id: DS-bd63bb
     subject: rolldown-plugin-dts pnpm patch
     need: drop `__name` from declaration chunks
     reason: fixes only this repository, not consumers of createTsdownConfig
-  - id: 261123-707e
+  - id: DS-95e034
     subject: eslint `--concurrency`
     need: faster full lint (#558)
     reason: 34 → 25 s at 2.5–3× memory, each thread rebuilds the same TS programs
-  - id: 261123-867b
+  - id: DS-e52170
     subject: "`oxfmt`"
     need: faster JS and TS formatting (#558)
     reason: "no printer plugins, loses #418 layouts; fixed Prettier is ~1–2 s"
-  - id: 261123-0516
+  - id: DS-015719
     subject: tsgolint fork
     need: native-speed typed conventions (#558)
     reason: permanent fork upkeep of a Go rule engine
-  - id: 261123-405a
+  - id: DS-36e643
     subject: "`flint`"
     need: hybrid linter with TS rules on a native core (#558)
     reason: experimental
-  - id: 261123-ea59
+  - id: DS-c8e168
     subject: typescript-eslint `EXPERIMENTAL_backend
     need: "'tsgo'`: ESLint typed rules on TS 7.1 (#558)"
     reason: 1.0–1.7× slower than TS 6 until TS ships bulk APIs
-  - id: 261123-9b5c
+  - id: DS-832389
     subject: ESLint `calculateConfigForFile` as info-rules source
     need: one native config load in the lint hook
     reason: returns merged settings, losing which config object last set each rule to `info`
-  - id: 261123-5613
+  - id: DS-18c2f3
     subject: "@auaust/codegen"
     need: barrels and block writers outside engrenage
     reason: never published, repository idle since 2026-09 (#51 closed)
-  - id: 261123-12d3
+  - id: DS-3f1d2e
     subject: SessionStart identity hook
     need: wrong-location check (#462)
     reason: agents already know their directory; another hook able to lock agents out (#598)
-  - id: 261123-7018
+  - id: DS-aaad1d
     subject: Bash hook shell-trap warnings
     need: zsh friction (#597)
     reason: a hook on every Bash call; hooks lock agents out (#598)
-  - id: 261123-595a
+  - id: DS-0ae5d7
     subject: walk state file
     need: walker state surviving compaction
     reason: "`walk check` and the walk's commits already hold it"
-  - id: 261123-8a39
+  - id: DS-454586
     subject: integration merger at K = 1 in interactive walks
     need: walker context
     reason: a merger run per leaf while the user can steer; autonomous only
-  - id: 261123-6e36
+  - id: DS-8537a3
     subject: dispatch during a segment's review run
     need: concurrency at segment boundaries
     reason: the review fix may change what later work builds on
-  - id: 261123-704e
+  - id: DS-2545a9
     subject: picomatch
     need: dot-aware block syntax matching
     reason: needs separate `@types/picomatch`; `minimatch`, the engine behind `node:path` `matchesGlob`, ships types and keeps its semantics
-  - id: 261123-26b9
+  - id: DS-39331c
     subject: environment role list config key
     need: one load of default role presets
     reason: a new config key contract; a context-memoized `readEnvironmentRoles` operation suffices
-  - id: 261123-5c17
+  - id: DS-a7551f
     subject: sync include filler
     need: inline the issues rule into each drafting skill
     reason: "sync code beyond the writer's role; skills Read the `paths` rule explicitly until #277"
-  - id: 261123-350d
+  - id: DS-b9b418
     subject: issue-drafting skill
     need: one filing and drafts source for four skills
     reason: no skill-to-skill install dependency, invocation model-driven; a default `paths` rule instead
-  - id: 261123-9ddd
+  - id: DS-abb187
     subject: dispatch stop gate via `claude --settings`
     need: headless gated agent stop gate
     reason: caller's engrenage writes a hook the target's engrenage version may not accept; a target `Stop` settings hook instead
-  - id: 261123-3cae
+  - id: DS-119492
     subject: runtime-name map of dispatchers in `agents`
     need: picking a runtime's headless client
     reason: runtimes are contributed data; an optional `dispatcher` on `AgentRuntime` instead
-  - id: 261123-4f51
+  - id: DS-1783ff
     subject: cross-repository walk rule as generated rule
     need: keep foreign-leaf text out of every walk
     reason: only `paths:` or always-loaded, needs a never-matching glob; skill supporting file instead (#683)
-  - id: 261123-3af2
+  - id: DS-0dfb1a
     subject: cross-repository walk rule as shipped extension rule
     need: same need
     reason: init skips extension rules and sync never installs them, pointer could dangle
-  - id: 261123-7834
+  - id: DS-4e7cbc
     subject: pkg.pr.new previews
     need: unreleased upstream in downstream PR CI (package split report)
     reason: public registry and GitHub App, republishes a restricted package
-  - id: 261123-d5a6
+  - id: DS-7a46ff
     subject: linked sibling checkouts in CI
     need: unreleased upstream in downstream PR CI (package split report)
     reason: lockfile stops describing what CI tested
-  - id: 261123-1cc1
+  - id: DS-3b2194
     subject: in-process adapters as the only metalbrain protocol
     need: engrenage integration (package split report)
     reason: peer within one 0.x minor, excludes non-JS stacks
-  - id: 261123-7eb8
+  - id: DS-8a0735
     subject: GraphQL engine in @auaust/codegen
     need: Interscript GraphQL generation (package split report)
     reason: "@graphql-codegen/cli and gql.tada provide it; schemas are client data"
-  - id: 261123-8d75
+  - id: DS-3fdf66
     subject: rulesync, @intellectronica/ruler, agentsmesh
     need: instruction distribution (package split report)
     reason: copy one source to runtimes, no packs, providers, hooks, gates or planning contract
-  - id: 261123-796b
+  - id: DS-ef689b
     subject: Claude subagent `skills:` preload
     need: reach supporting files from agent files
     reason: Claude-only; skills with disable-model-invocation cannot be preloaded
-  - id: 261123-e062
+  - id: DS-9b4c33
     subject: "`./metalbrain/shared/*.md` export before any shared file"
     need: let skills share supporting files
     reason: publint fails on an export matching no files; ship it with the first file
-  - id: 261123-3ff0
+  - id: DS-80eaed
     subject: rolldown 1.3.3 upgrade
     need: drop the leaked internal export from lazily loaded chunks
     reason: its fix (#11737) covers only exports another chunk imports; the dead `t` export stays
-  - id: 261123-b637
+  - id: DS-4d7e2f
     subject: rolldown `preserveEntrySignatures
     need: '"strict"`: keep dynamic entry chunk signatures'
     reason: applies to static entries only, no effect on the syncPackageJson chunk
-  - id: 261123-63b0
+  - id: DS-e56c2b
     subject: static `#tools/pnpm/index` import in enableLinkedSource
     need: remove the dynamic barrel entry that leaks `listPnpmWarnings`
     reason: loads built modules before the run defers to linked sources
-  - id: 261123-5ed2
+  - id: DS-a6ec3e
     subject: "`pickExport(import(…), name)` loader helper"
     need: name the export a lazy loader loads
     reason: "`extension-imports` forbids its static import in `extension.ts`"
-  - id: 261123-0a70
+  - id: DS-b8335e
     subject: "`[import(…), name]` loader tuple"
     need: name the export without a helper
     reason: no TypeScript type ties the name to the module; even valid loaders fail to check
-  - id: 261123-72a2
+  - id: DS-d81152
     subject: "`import(…).then(({ name }) => name)` loaders"
     need: select the export by name
     reason: config section types inferred from the loaders turn `unknown` (1264 errors)
-  - id: 261123-2b3c
+  - id: DS-4ebcf4
     subject: tsconfig project references to `src` (#702)
     need: give compiling environments `src`'s ambient files
     reason: "imports resolve to declaration output, which never carries `.d.ts` inputs; needs composite emit against #68's noEmit references"
-  - id: 261123-3819
+  - id: DS-a8eaf1
     subject: shared ambient tsconfig extended by environments (#702)
     need: one list of `src`'s ambient files
     reason: "`include` never merges through `extends`; inherited `files` drops silently under any own `files`; a generated file more"
-  - id: 261123-44fb
+  - id: DS-21cc33
     subject: ambient detection by missing imports and exports (#702)
     need: identify `src`'s ambient files
     reason: misses `declare global` augmentations, which import; the `declarations` role already names them
-  - id: 261123-c642
+  - id: DS-6c4c3a
     subject: hook command workspace root
     need: shell repeating the config lookup's `pnpm-workspace.yaml` globs
     reason: "duplicates #713's lookup in sh; the shell finds the nearest installed engrenage-hook within the repository or workspace, the actions resolve the root from the payload `cwd`"
-  - id: 261123-f638
+  - id: DS-877e6c
     subject: delete `syncPaths` (#711)
     need: no generated `src` alias needs tsconfig `paths`
     reason: non-`#` bundler aliases (`$shopify/*`) resolve only through `paths`, which `imports` cannot hold
-  - id: 261123-035c
+  - id: DS-f09412
     subject: instructions rule removal
     need: retire the rule once the skill holds its rules
     reason: needs sync, init and test changes beyond the writer's role; kept as a pointer stub (agent-instructions backlog)
-  - id: 261123-14cd
+  - id: DS-624d3a
     subject: ResolvedEnvironment move to batiment
     need: "structural part split out in #734"
     reason: "no batiment consumer before #735's walk takes data; moving now would split a config-key contract twice."
-  - id: 261123-cd11
+  - id: DS-f1b1c2
     subject: Structure diagnostics in lint
     need: walk diagnostics reported per file by ESLint
     reason: gate and `batiment map --check` already fail on them; lint would re-report metafile findings it cannot locate in code.
-  - id: 261123-4cba
+  - id: DS-063b15
     subject: Sync refusing every error diagnostic
     need: blocking sync on the structure report
     reason: an unclassified directory or cycle would block the sync that fixes it; only kept-value diagnostics block.
-  - id: 261123-fed4
+  - id: DS-399a9d
     subject: Structure node kind as a field
     need: one path-keyed node record with `kind`, so layering and origins treat kind like any field
     reason: "reshapes every structure config and metafile schema; #770 reads the node path's origin instead."
-  - id: 261123-2ecd
+  - id: DS-af3c7a
     subject: Kind conflicts blocking whatever the origin
     need: preset or default kind against a metafile
     reason: leaves no way to override an inherited kind; yields silently instead (#732 › Decisions).
-  - id: 261123-52fc
+  - id: DS-d7d594
     subject: Warning for inherited kind overrides
     need: non-blocking diagnostic when a metafile overrides a preset kind
     reason: inconsistent with silent field overrides, unsilenceable noise for a legitimate override.
-  - id: 261123-967d
+  - id: DS-eaa2b4
     subject: shell loop values on the word
     need: an expansion `ShellWord` carrying the literal values a loop variable takes
     reason: every consumer would fan out views and writes itself; `parseShell` unrolls the loop body instead
-  - id: 261123-fe10
+  - id: DS-de8995
     subject: "`while read` loop resolution"
     need: binding the variable from a literal here-string, heredoc or `printf` pipe
     reason: needs `read` field splitting, `-r` escapes and `printf` formats; left an expansion
-  - id: 261123-3ce2
+  - id: DS-661081
     subject: incremental transcript reading
     need: per-tool-call overrun check (subagent context cap)
     reason: a full parse of a 2 MB subagent transcript takes ~12 ms, under node startup; an offset state file would add a race for nothing
-  - id: 261123-957c
+  - id: DS-39386a
     subject: PostToolBatch `decision
     need: '"block"` or `continue: false` as the overrun lockout: end an overrunning subagent'
     reason: ends the loop before any final report; PreToolUse deny all but the report tool instead
-  - id: 261123-74f7
+  - id: DS-b9990d
     subject: elapsed time or tool-call count as lockout signal
     need: cap tunnelling subagents
     reason: a 23k→187k analyser took 12 minutes and 55 calls, under any 30-minute cap; context multiple measures the cost freshness already bounds
-  - id: 261123-4ddf
+  - id: DS-5759a1
     subject: dispatch budget defaults
     need: per-role default level for omitted `Budget:` lines
     reason: kept as an AGENTS.md table; an `agent:` frontmatter `budget` field the hook could read needs schema and renderer code beyond an instruction change
-  - id: 261123-f653
+  - id: DS-305a5e
     subject: budget handover in the stopped agent's worktree
     need: fresh agent continuing uncommitted work
     reason: "`agents dispatch` runs headless, denying every prompt; a handover commit towards the task reuses walk check's checkpoint commits"
-  - id: 261123-d314
+  - id: DS-34c3aa
     subject: budget handover via snap hold branch as successor `Base:`
     need: carry uncommitted work to a fresh worktree
     reason: the snap commit would be cherry-picked onto the working branch
-  - id: 261123-1d72
+  - id: DS-5b6e1d
     subject: "`#workflows/cli` (commander) for the metalbrain CLI"
     need: route `metalbrain hook claude <event>` (#370)
     reason: the command layer roughly doubles a no-op hook call; a lookup table of hook actions instead
-  - id: 261123-a542
+  - id: DS-13bd47
     subject: "`valibot` and `@auaust/toolkit` guards in the metalbrain hook"
     need: validate model facts and payloads (#370)
     reason: the hook loads only Node builtins; hand-written guards marked as debt instead
-  - id: 261123-3e17
+  - id: DS-d5ece2
     subject: scaffold-first workers
     need: surface placement early, reviewable partial diffs (#790)
     reason: Steps already fix order and placement; stubs are debt and break Size; Size and budget stops cover both
-  - id: 261123-2512
+  - id: DS-662612
     subject: per-scope alias tables in batiment
     need: "#741 alias ownership"
     reason: "`#…` aliases are language-bound and stay in `project/structure` until the language port (#732 › Batiment)"
-  - id: 261123-7862
+  - id: DS-2f5565
     subject: package-name edges in the cycle check
     need: cross-workspace file cycles (#744)
     reason: "needs a package `exports` resolver over the filesystem port; #743's `scope-cycle` and direction rule already fail on every such cycle"
-  - id: 261123-c96f
+  - id: DS-1a95d4
     subject: per-scope cycle graphs
     need: cycles inside and across scopes (#744)
     reason: one graph resolving each importer from its scope finds both in one pass
-  - id: 261123-c7ec
+  - id: DS-786496
     subject: tighter Steps readiness checks
-    need: catch underspecified items (`261122-b57e`)
+    need: catch underspecified items (`BL-fd105a`)
     reason: Steps fix procedure; spec leaves with required Done when replace them
-  - id: 261123-33fd
+  - id: DS-e282e2
     subject: flat ExecPlan per goal
     need: executor-written living plan
     reason: no validated compass before the walk; poor fit with the issue tree and worker pool
-  - id: 261123-a8a6
+  - id: DS-0c6497
     subject: pure decompose-on-failure without upfront plan
     need: lowest planning cost
     reason: leaves no plan to validate first; kept only as split-on-stop
-  - id: 261123-3471
+  - id: DS-b82fc9
     subject: raising consultant `freshness`
     need: keep one consultant per walk
     reason: each resume re-writes the whole context on the 5-minute cache; absolute ceiling and small agent file instead
-  - id: 261123-3efc
+  - id: DS-0def56
     subject: convert-on-touch migration of Steps issues
     need: spread conversion cost
     reason: dual-format checks, routing and worker rules for 57 issues cost more than one triaged sweep
-  - id: 261123-5aa6
+  - id: DS-e30839
     subject: section pointer to a shared file
     need: a dedicated dispatching skill as install host
     reason: adding a skill needs user approval; shape's copy hosts it
-  - id: 261123-ea6b
-    subject: tighter Steps checks (261122-b57e)
+  - id: DS-b8bd87
+    subject: tighter Steps checks (BL-fd105a)
     need: keep Steps-era issues
     reason: checks on procedure leave the leaf outcome "Steps done"; required Done when instead (#809)
-  - id: 261123-3b71
+  - id: DS-05dceb
     subject: pure ADaPT, no upfront planning
     need: split only on failure
     reason: no validated compass before the walk; outer planning plus split on a stop instead (#809)
-  - id: 261123-cc6b
+  - id: DS-05b44a
     subject: planner provider check (#809 S.29)
     need: existing helper or provider per capability at planning
     reason: needs code reading the worker repeats (G.5); owners stop at domain and role
-  - id: 261123-ec0d
+  - id: DS-96ecd2
     subject: analysis steps in method file
     need: steps merged into `shared/analysis.md`
     reason: main session would read ~540 words per request instead of ~150
-  - id: 261123-1202
+  - id: DS-2098bc
     subject: main-session-only context hook
     need: SessionStart hook injecting main-session rules
     reason: "new hook mechanism, past #809 M.12.1 reach"
-  - id: 261123-e315
+  - id: DS-cf5a1e
     subject: word cap baseline from git HEAD
     need: cap each role at its committed words
     reason: needs git inside sync; a ratchet file lowered by sync keeps it reproducible
-  - id: 261123-0a76
+  - id: DS-413fbf
     subject: word cap for a new role, auto-recorded
     need: seed its cap on first measure
     reason: makes new roles free; a new role is a user decision, so the check fails until recorded
-  - id: 261123-ca98
+  - id: DS-1f3ac2
     subject: failure clause in every rule's text (#809 L.12)
     need: name the prevented failure inline
     reason: adds words to every role against S.24; the writer names it in its report instead
-  - id: 261123-78f8
+  - id: DS-bc81c6
     subject: budget hook contact detection
     need: find the latest caller message by tail scan
     reason: re-reads up to 4 MB per call once a contact outgrows the 64 KB tail; an incremental byte offset in the budget state reads only appended lines
-  - id: 261123-0857
+  - id: DS-55eae7
     subject: hook settings code in `metalbrain/runtimes` (#830)
     need: move `syncHooks`, `checkAgentHooks`, `removeCodexFiles`, `summarizeAgentTask` there
     reason: "runtimes index loads in every hook, the hook load test forbids their valibot, jsonc and records imports until #831 splits the cheap core"
-  - id: 261123-0d7d
+  - id: DS-d196df
     subject: non-cheap sub-domain of `metalbrain/runtimes` (#830)
     need: house the hook settings code
     reason: "inverts #831's planned split, which #831 would undo"
-  - id: 261123-fe2d
+  - id: DS-13d5a9
     subject: fragment renderer loading facts
     need: renderer reading the manifest through loadMetalbrainFacts
     reason: tools/agents importing tools/metalbrain closes an import cycle batiment map rejects; callers pass the facts instead
-  - id: 261123-dde8
+  - id: DS-35938d
     subject: agent vocabularies in instructions
     need: type `SkillAgent` effort and thoroughness as literals (#838)
     reason: thoroughness levels belong to the cheap hook core in runtimes, which instructions sits below
-  - id: 261123-fc02
+  - id: DS-67e44f
     subject: agent check in `instructionEntry`
     need: validate contributed agents at the slot (#838)
     reason: the extension would load the runtimes barrel at collection; `getSkillDefinitions` validates them, naming the skill
-  - id: 261123-8c6b
+  - id: DS-ff6d77
     subject: engrenage driving batiment's sequence
     need: batiment interop (#851)
     reason: "two drivers of one sequence; contradicts #853"
-  - id: 261123-8dca
+  - id: DS-9892cb
     subject: per-scope engrenage --json calls from batiment CLI
     need: batiment standalone context (#851)
     reason: one process and config load per workspace
-  - id: 261123-2d11
+  - id: DS-6d9af0
     subject: nexus namespace now
     need: batiment interop layer (#851)
     reason: no second protocol consumer; layer before consumer
-  - id: 261123-72a4
+  - id: DS-c49378
     subject: shopify.extension.toml type detector
     need: per-type extension workspace defaults
     reason: preset in .workspace.json states it, no TOML parser
-  - id: 261123-a76e
+  - id: DS-c73023
     subject: matched files in tsconfig include
     need: file placements in tsconfig include
     reason: rewrites every generated tsconfig
-  - id: 261124-57fe
+  - id: DS-233797
     subject: re-entry files in tsconfig files
     need: keep re-entries in root tsconfig (#878)
     reason: rewrites the tsconfig on every new file
-  - id: 261124-6d1a
+  - id: DS-243352
     subject: aliases target reading workspaces output
     need: workspace imports after package.json exists
     reason: edge cycles through tsconfig#paths
-  - id: 261124-fe25
+  - id: DS-8991b0
     subject: gitignore patterns as ignore globs
     need: shorter git.ignored list
     reason: gitignore negation and anchoring semantics exceed the fix
-  - id: 261124-78c0
+  - id: DS-7edbc8
     subject: ignore predicate passed to tools
     need: cheaper git-ignored exclusion in Vitest
     reason: Vitest exclude accepts globs only
-  - id: 261124-f561
+  - id: DS-7db7b3
     subject: Vitest exclude filtered to test-like paths
     need: shorter git.ignored list for Vitest
     reason: unsound once a user config widens include; saves ~85 ms
-  - id: 261124-a8be
+  - id: DS-6ceb75
     subject: minisearch
     need: ranked fielded record search
     reason: index and query model lack boundary literals, qualifiers in query strings, per-string matcher
-  - id: 261124-fe10
+  - id: DS-5e563d
     subject: fuse.js
     need: ranked fielded record search
     reason: fuzzy-only scoring, no query syntax or per-string matcher; corpus small
-  - id: 261125-bbf9
+  - id: DS-7778a8
     subject: "@auaust/toolkit unaccent"
     need: text normalization for matching
     reason: NFD not NFKD, per-character spread too slow for the ranking budget
+  - id: DS-51c5d1
+    subject: metalbrain debt in commit hint
+    need: debt markers a commit adds
+    reason: loads every ESLint plugin, over 50 ms
+  - id: DS-a567e5
+    subject: "codebase symbol index in #888"
+    need: missing entries matching existing code
+    reason: contradicts no-persisted-index, design unsettled
