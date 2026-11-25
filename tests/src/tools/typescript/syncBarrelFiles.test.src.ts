@@ -96,35 +96,41 @@ export * as object from "#modules/object/entry";
     await expectSettledSync(config);
   });
 
-  test("writes one root entry in the first directory re-exporting the public domains of every directory, which sync --check then accepts", async () => {
+  test("writes the root entry in the first directory re-exporting only that directory's public domains, which sync --check then accepts", async () => {
     const { project, config, sync } = createSplitKit({
-      "src/entry.ts": `${header}export * as object from "#modules/object/entry";\n`,
+      "src/entry.ts": `${header}export * as object from "#modules/object/entry";
+export * as guard from "#panels/guard/entry";
+`,
       "admin/entry.ts": `${header}export * as guard from "#panels/guard/entry";\n`,
     });
 
     await sync();
 
     expect(project.read("src/entry.ts")).toBe(
-      `${header}export * as object from "#modules/object/entry";
-export * as guard from "#panels/guard/entry";
-`,
+      `${header}export * as object from "#modules/object/entry";\n`,
     );
 
     expect(existsSync(project.resolve("admin/entry.ts"))).toBe(false);
+
+    expect(project.read("admin/panels/guard/entry.ts")).toContain(
+      "#panels/guard/utils/isString",
+    );
 
     expect(await runSyncCheck(config.context.copy())).toMatchObject({
       ok: true,
     });
   });
 
-  test("writes no root entry while any directory of the namespace holds a hand-written one", async () => {
+  test("writes the root entry beside a hand-written `entry.ts` at the root of another directory, keeping it", async () => {
     const entry = 'export * from "#panels/guard/entry";\n';
 
     const { project, sync } = createSplitKit({ "admin/entry.ts": entry });
 
     await sync();
 
-    expect(existsSync(project.resolve("src/entry.ts"))).toBe(false);
+    expect(project.read("src/entry.ts")).toBe(
+      `${header}export * as object from "#modules/object/entry";\n`,
+    );
 
     expect(project.read("admin/entry.ts")).toBe(entry);
   });

@@ -35,7 +35,17 @@ const config = `${rolesImport}export default {
 };
 `;
 
-function createFiles(dependencies: Readonly<Record<string, string>>) {
+const uiSources = {
+  "src/ui/index.ts": "export const ui: string = 'ui';\n",
+  "src/ui/entry.ts": "export { ui } from './index.ts';\n",
+  "src/ui/constants.ts": "export const label = 'ui';\n",
+  "src/ui/operations/render.ts": "export function render() {}\n",
+};
+
+function createFiles(
+  dependencies: Readonly<Record<string, string>>,
+  sources: Readonly<Record<string, string>> = uiSources,
+) {
   return {
     "engrenage.config.ts": config,
     "package.json": JSON.stringify({
@@ -44,10 +54,7 @@ function createFiles(dependencies: Readonly<Record<string, string>>) {
       devEngines: packageJson.devEngines,
     }),
     "tsconfig.json": "{}",
-    "src/ui/index.ts": "export const ui: string = 'ui';\n",
-    "src/ui/entry.ts": "export { ui } from './index.ts';\n",
-    "src/ui/constants.ts": "export const label = 'ui';\n",
-    "src/ui/operations/render.ts": "export function render() {}\n",
+    ...sources,
     "extensions/home/.workspace.json": "{}",
     "extensions/home/package.json": JSON.stringify({
       name: "@project/home",
@@ -69,9 +76,16 @@ function linkRoot(project: ReturnType<typeof createTemporaryProject>) {
 async function createLinkedProject(
   dependencies: Readonly<Record<string, string>>,
   files: Readonly<Record<string, string>> = {},
+  {
+    sources,
+    targets = [],
+  }: {
+    sources?: Readonly<Record<string, string>>;
+    targets?: readonly string[];
+  } = {},
 ) {
   const project = createTemporaryProject({
-    ...createFiles(dependencies),
+    ...createFiles(dependencies, sources),
     ...files,
   });
 
@@ -80,7 +94,7 @@ async function createLinkedProject(
   const resolved = await loadConfig(project.root);
 
   await runSync(resolved, {
-    names: ["tsconfig", "aliases", "package", "workspaces"],
+    names: ["tsconfig", "aliases", ...targets, "package", "workspaces"],
   });
 
   await resolved.context.filesystem.flush();
@@ -316,5 +330,55 @@ describe("root environments per runtime in one src namespace", () => {
         files: ["admin/cart/entry.ts", "storefront/cart/entry.ts"],
       },
     ]);
+  });
+});
+
+describe("the root entry of a namespace spanning several directories", () => {
+  test("re-exports only the first directory's public domains, while a workspace still resolves another directory's at its subpath", async () => {
+    const project = await createLinkedProject(
+      {
+        [rootName]: "workspace:*",
+      },
+      {
+        "engrenage.config.ts": `${rolesImport}export default {
+  environments: {
+    src: { dirs: ["src"], execution: { globals: "node", syntax: 24 } },
+    admin: { preset: "src", dirs: ["admin"], languages: [{ name: "typescript", options: { tsx: "preact" } }], execution: { globals: "browser", syntax: "2026-10" } },
+  },
+  src: { dirs: ["src", "admin"], roles: [entry()] },
+  workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
+};
+`,
+      },
+      {
+        sources: {
+          "src/core/index.ts": "export const core = 'core';\n",
+          "src/core/entry.ts": "export { core } from './index.ts';\n",
+          "admin/ui/index.ts": "export const ui: string = 'ui';\n",
+          "admin/ui/entry.ts": "export { ui } from './index.ts';\n",
+        },
+        targets: ["barrels"],
+      },
+    );
+
+    expect(project.read("src/entry.ts")).not.toContain("#ui/");
+
+    expect(JSON.parse(project.read("package.json")).exports).toMatchObject({
+      ".": "./src/entry.ts",
+      "./ui": "./admin/ui/entry.ts",
+    });
+
+    expect(
+      resolveModuleName(
+        `${rootName}/ui`,
+        project.resolve(importer),
+        {
+          module: ModuleKind.ESNext,
+          moduleResolution: ModuleResolutionKind.Bundler,
+          noEmit: true,
+        },
+        sys,
+      ).resolvedModule?.resolvedFileName,
+    ).toBe(project.resolve("admin/ui/entry.ts"));
   });
 });

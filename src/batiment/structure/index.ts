@@ -69,6 +69,7 @@ export { getImportCategory } from "#batiment/structure/utils/getImportCategory";
 export { getLocalRoleName } from "#batiment/structure/utils/getLocalRoleName";
 export { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
 export { getNamespaceRootRole } from "#batiment/structure/utils/getNamespaceRootRole";
+export { getRootEntryFile } from "#batiment/structure/utils/getRootEntryFile";
 export { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
 export { getTargetScope } from "#batiment/structure/utils/getTargetScope";

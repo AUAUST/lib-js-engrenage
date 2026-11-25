@@ -313,3 +313,19 @@ entries:
     why: the entrypoint role comes only with the published trait, so such a root exports only role subpaths until its src.roles adds entry()
     want: decide whether a root a workspace imports gets the entrypoint role
     created: 2026-11-25T18:02:03Z
+  - id: BL-a14162
+    title: Layers lists are not validated against their node children
+    sites:
+      - src/batiment/structure/utils/getStructureLayer.ts:1
+      - src/batiment/structure/utils/mergeStructureMetadata.ts:198
+    why: A stale layers entry is silently ignored
+    want: A diagnostic naming each entry matching no child
+    created: 2026-11-25T20:26:54Z
+  - id: BL-7b3433
+    title: An entry.ts at the root of a namespace's later directory maps to no subpath yet counts as a root file
+    sites:
+      - src/batiment/structure/utils/resolveDomainEntries.ts:130
+      - src/batiment/structure/utils/checkNamespaces.ts:14
+    why: "since #936 only the first directory's entry.ts is the root entry; another directory's is silently unexported"
+    want: a diagnostic naming it, and no root-entry import grant for it
+    created: 2026-11-25T20:29:09Z

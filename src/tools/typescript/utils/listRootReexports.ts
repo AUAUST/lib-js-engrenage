@@ -5,8 +5,10 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  getRootEntryFile,
   type NamespaceStructure,
 } from "#batiment/structure/index";
+import { isBelow } from "#tools/typescript/utils/isBelow";
 import type { ReexportMode } from "#batiment/roles/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
@@ -40,6 +42,14 @@ export function listRootReexports(
 ): BarrelExport[] {
   const { root, roles, indexFile } = environment;
 
+  const rootEntry = getRootEntryFile(environment);
+
+  if (rootEntry === undefined) {
+    return [];
+  }
+
+  const directory = posix.dirname(rootEntry);
+
   const subpaths = new Map(
     entries(environment.entries).map(([subpath, file]) => {
       return [file, subpath] as const;
@@ -50,7 +60,11 @@ export function listRootReexports(
 
   const domainExports = collectStructureNodes(root)
     .filter((node) => {
-      return node.kind === "domain" && node.public === true;
+      return (
+        node.kind === "domain" &&
+        node.public === true &&
+        isBelow(directory, node.path)
+      );
     })
     .flatMap((domain) => {
       const entry = posix.join(domain.path, entryFile);
@@ -75,7 +89,13 @@ export function listRootReexports(
 
     const barrel = posix.join(node.path, indexFile);
 
-    return contract?.reexport !== undefined && barrels.has(barrel)
+    const isReexported = (
+      contract?.reexport !== undefined &&
+      barrels.has(barrel) &&
+      isBelow(directory, node.path)
+    );
+
+    return isReexported
       ? reexportAs(
           barrel,
           contract.reexport,

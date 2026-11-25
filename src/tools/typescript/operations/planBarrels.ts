@@ -5,6 +5,7 @@ import { values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  getRootEntryFile,
   type NamespaceStructure,
   type ResolvedStructure,
 } from "#batiment/structure/index";
@@ -37,19 +38,9 @@ async function planRootEntry(
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],
 ): Promise<BarrelPlan[]> {
-  const [directory] = environment.dirs;
+  const file = getRootEntryFile(environment);
 
-  if (directory === undefined) {
-    return [];
-  }
-
-  const claimed = await Promise.all(
-    environment.dirs.map((dir) => {
-      return isHandWritten(filesystem, posix.join(dir, entryFile));
-    }),
-  );
-
-  if (claimed.includes(true)) {
+  if (file === undefined || (await isHandWritten(filesystem, file))) {
     return [];
   }
 
@@ -59,7 +50,7 @@ async function planRootEntry(
     ? []
     : [
         {
-          file: posix.join(directory, entryFile),
+          file,
           node: environment.root,
           modules: [],
           reexports,

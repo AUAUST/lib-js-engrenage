@@ -3,6 +3,7 @@ import { basename, extname } from "node:path";
 import { entries, freeze, getOwn, record } from "@auaust/toolkit/object";
 
 import { entryRoleName } from "#batiment/roles/constants";
+import { getRootEntryFile } from "#batiment/structure/utils/getRootEntryFile";
 import { isPlaced } from "#batiment/structure/utils/isPlaced";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { NamespaceFileNames } from "#batiment/structure/types/NamespaceFileNames";
@@ -126,10 +127,14 @@ export function resolveDomainEntries(
 
   const { root, roles } = structure;
 
+  const rootEntry = getRootEntryFile(structure);
+
+  const rootEntries = getOwn(root.roleFiles ?? {}, entryRoleName) ?? [];
+
   for (const [subpath, file] of [
-    ...(getOwn(root.roleFiles ?? {}, entryRoleName) ?? []).map((file) => {
-      return [".", file] as const;
-    }),
+    ...rootEntries
+      .filter((file) => file === rootEntry)
+      .map((file) => [".", file] as const),
     ...collectRoleSubpaths(".", root, roles),
     ...collectRoleBarrels(".", root, structure, roles),
     ...collectEntries(root, [], structure, roles),

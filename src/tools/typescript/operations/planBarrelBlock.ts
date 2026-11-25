@@ -4,6 +4,7 @@ import { getOwn, keys, values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  getRootEntryFile,
   type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
@@ -29,16 +30,18 @@ async function planDomainsBlock(
   file: File,
   isModule: ModuleMatcher,
 ): Promise<BarrelPlan> {
-  const { dirs, entryFile, root } = environment;
-  const directory = dirname(file);
+  const { entryFile, root } = environment;
+  const rootEntry = getRootEntryFile(environment);
 
-  if (
-    entryFile === undefined ||
-    basename(file) !== entryFile ||
-    !dirs.includes(directory)
-  ) {
+  if (entryFile === undefined || rootEntry === undefined) {
     throw new Error(
-      `The barrel marker "${domainsBlock}" of ${file} fills only an environment root entry`,
+      `The barrel marker "${domainsBlock}" of ${file} fills only an environment root entry, which its environment lacks`,
+    );
+  }
+
+  if (file !== rootEntry) {
+    throw new Error(
+      `The barrel marker "${domainsBlock}" of ${file} fills only the environment root entry, ${rootEntry}`,
     );
   }
 

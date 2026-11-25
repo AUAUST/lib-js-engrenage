@@ -1189,3 +1189,8 @@ entries:
     tried: tsc over synced tsconfig.tests.json
     stopped: missing @auaust/engrenage base, @types/node and preact; linked packages and stubbed preact
     created: 2026-11-25T19:24:03Z
+  - id: FR-a840f2
+    subject: "dispatch gate: plan Planning blocks ready child"
+    tried: "dispatch #936 with #933 Planning open"
+    stopped: "moved duplicated points to #937, cleared Blockers via claim/publish"
+    created: 2026-11-25T20:23:00Z
