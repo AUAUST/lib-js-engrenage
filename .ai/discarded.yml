@@ -984,3 +984,8 @@ entries:
     need: missing Compass placeholder
     reason: filler fallback to a data template is simpler
     created: 2026-11-25T13:17:27Z
+  - id: DS-530dee
+    subject: one root lineage member per namespace
+    need: cross-directory boundary checks
+    reason: member path feeds message rendering and root-file checks per directory
+    created: 2026-11-25T19:19:46Z

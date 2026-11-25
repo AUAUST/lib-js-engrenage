@@ -101,12 +101,11 @@ entries:
   - id: BL-c24c01
     title: Structure boundary and layer rules miss cases
     sites:
-      - src/batiment/structure/utils/checkBoundary.ts:47
-      - src/batiment/structure/utils/checkBoundary.ts:111
-      - src/batiment/structure/utils/checkBoundary.ts:201
+      - src/batiment/structure/utils/checkBoundary.ts:48
+      - src/batiment/structure/utils/checkBoundary.ts:118
       - src/batiment/structure/utils/checkLayers.ts:7
       - src/batiment/structure/utils/checkSurfaces.ts:8
-    why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind; the lineage condition never decides.
+    why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry are never checked; layer and surface rules split by target kind.
     want: index specifier read directly; every environment file checked; rules split by broken relation.
     created: 2026-11-22T00:00:00Z
   - id: BL-9acea6

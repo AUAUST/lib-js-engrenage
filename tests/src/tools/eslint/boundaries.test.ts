@@ -162,6 +162,34 @@ function createCollectingEntryProject() {
   });
 }
 
+function createSpanningProject() {
+  const guards = createRolePreset({
+    name: "guards",
+    public: true,
+    collected: true,
+  });
+
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: {
+        "#core/*": "./src/core/*.ts",
+        "#guard/*": "./admin/guard/*.ts",
+        "#ui/*": "./admin/ui/*.ts",
+      },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { dirs: ["src", "admin"], roles: ${renderCodeRoles(entry(), guards())}, structure: { domains: { guard: { collects: ["guards"] } } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/core/index.ts": exported,
+    "src/core/utils/own.ts": exported,
+    "src/core/guards/isCore.ts": exported,
+    "admin/guard/entry.ts": exported,
+    "admin/ui/index.ts": exported,
+    "admin/ui/utils/priv.ts": exported,
+  });
+}
+
 function createConsumerProject() {
   const operations = createRolePreset({ name: "operations" });
 
@@ -409,6 +437,42 @@ describe("structure boundaries", () => {
 
     expect(messages).toHaveLength(1);
     expect(messages[0]).toContain("foundation < project < tools");
+  });
+
+  test("checks imports between the directories of one namespace as within one directory", async () => {
+    const lint = await createLinter("auaust/import-", createSpanningProject());
+
+    expect(
+      await lint(
+        "src/core/index.ts",
+        'export { value } from "#ui/utils/priv";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+
+    expect(
+      await lint(
+        "admin/ui/index.ts",
+        'export { value } from "#core/utils/own";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+
+    expect(
+      await lint("src/core/index.ts", 'export { value } from "#ui/index";\n'),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "admin/guard/entry.ts",
+        'export * from "#core/guards/isCore";\n',
+      ),
+    ).toEqual([]);
+
+    const [message] = await lint.messages(
+      "admin/guard/entry.ts",
+      'export * from "#core/utils/own";\n',
+    );
+
+    expect(message).toContain("is a package entry");
   });
 
   test("lets a peer import the constants of a domain", async () => {

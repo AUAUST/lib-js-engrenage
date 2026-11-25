@@ -17,13 +17,14 @@ function isOnSurface({ public: exposed, role }: Entity): boolean {
   return exposed && role !== entryRoleName;
 }
 
-function divergence(
+// @debt the entity index builds one root member per directory of a namespace, so lineage identity holds only below the root and callers must first match the namespaces
+function divergenceBelowRoot(
   importer: readonly LineageMember[],
   target: readonly LineageMember[],
 ): number {
   const shared = min(importer.length, target.length);
 
-  for (let index = 0; index < shared; index++) {
+  for (let index = 1; index < shared; index++) {
     if (importer[index] !== target[index]) {
       return index;
     }
@@ -114,12 +115,12 @@ export function checkBoundary(
   const atRoot = importerLineage.length === 1;
   const global = targetLineage.length === 1;
 
-  // @debt a file at an environment root outside the global roles and the root entry is never checked, and neither is an import between two directories of one environment
+  // @debt a file at an environment root outside the global roles and the root entry is never checked
   if (
     !elements.includes(namespace) ||
+    target.namespace !== namespace ||
     owner === undefined ||
     targetOwner === undefined ||
-    importerLineage[0] !== targetLineage[0] ||
     (global ? isIndexOrEntry(target) : targetOwner.kind !== "domain") ||
     (atRoot
       ? importer.kind !== "role" && !isIndexOrEntry(importer)
@@ -189,14 +190,14 @@ export function checkBoundary(
         }
 
         return kind === "type"
-          ? reachSurface(divergence(importerLineage, targetLineage))
+          ? reachSurface(divergenceBelowRoot(importerLineage, targetLineage))
           : violation("globalRole");
       }
 
       return global || target.public ? undefined : privateTo(targetDomain);
     }
 
-    const split = divergence(importerLineage, targetLineage);
+    const split = divergenceBelowRoot(importerLineage, targetLineage);
     const within = split === targetLineage.length;
 
     if (importer.kind === "domain" && importer.role === entryRoleName) {
@@ -204,12 +205,10 @@ export function checkBoundary(
         return isOnSurface(target) ? undefined : privateTo(domain);
       }
 
-      // @debt the lineage condition never decides: lineages from different environment directories already returned earlier
       if (
         target.role !== undefined &&
         importer.collects.includes(target.role) &&
-        target.public &&
-        targetLineage[0] === importerLineage[0]
+        target.public
       ) {
         return;
       }
