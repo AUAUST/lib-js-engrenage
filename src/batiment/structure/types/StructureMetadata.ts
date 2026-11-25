@@ -5,6 +5,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 export interface StructureMetadata {
+  readonly directory: Directory;
   readonly path: Directory;
   readonly kind: "namespace" | "domain";
   readonly fields: {

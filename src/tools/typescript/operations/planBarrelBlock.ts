@@ -4,7 +4,9 @@ import { getOwn, keys, values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  getRootDirectory,
   getRootEntryFile,
+  listNamespaceDirectories,
   type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
@@ -30,10 +32,15 @@ async function planDomainsBlock(
   file: File,
   isModule: ModuleMatcher,
 ): Promise<BarrelPlan> {
-  const { entryFile, root } = environment;
+  const { entryFile } = environment;
   const rootEntry = getRootEntryFile(environment);
+  const owner = getRootDirectory(environment)?.node;
 
-  if (entryFile === undefined || rootEntry === undefined) {
+  if (
+    entryFile === undefined ||
+    rootEntry === undefined ||
+    owner === undefined
+  ) {
     throw new Error(
       `The barrel marker "${domainsBlock}" of ${file} fills only an environment root entry, which its environment lacks`,
     );
@@ -49,7 +56,7 @@ async function planDomainsBlock(
 
   return {
     file,
-    node: root,
+    node: owner,
     modules: [],
     reexports: listRootReexports(environment, entryFile, roleBarrels),
   };
@@ -121,11 +128,14 @@ export async function planBarrelBlock(
 
   const directory = dirname(file);
 
-  const owner = environment.dirs.includes(directory)
-    ? environment.root
-    : collectStructureNodes(environment.root).find((node) => {
-        return node.path === directory;
-      });
+  const owner = (
+    listNamespaceDirectories(environment).find((top) => {
+      return top.directory === directory;
+    })?.node ??
+    collectStructureNodes(environment.root).find((node) => {
+      return node.path === directory;
+    })
+  );
 
   if (owner === undefined) {
     throw new Error(`${file} sits in no domain of the structure`);

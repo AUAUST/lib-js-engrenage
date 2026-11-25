@@ -8,6 +8,7 @@ import { getOwn } from "@auaust/toolkit/object";
 import {
   collectStructureNodes,
   isPlaced,
+  listNamespaceDirectories,
   type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
@@ -90,6 +91,8 @@ export async function planIndexBarrels(
 ): Promise<BarrelPlan[]> {
   const { root, roles, indexFile } = environment;
 
+  const directories = listNamespaceDirectories(environment);
+
   const owners = collectStructureNodes(root).filter((node) => {
     return node.kind !== "role";
   });
@@ -101,7 +104,7 @@ export async function planIndexBarrels(
       return {
         node,
         domain,
-        atRoot: owner === root,
+        atRoot: directories.some(({ node: top }) => top === owner),
       };
     });
   });

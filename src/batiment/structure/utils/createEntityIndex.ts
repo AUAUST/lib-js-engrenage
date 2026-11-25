@@ -27,6 +27,7 @@ import { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
 import { inheritPublicRoles } from "#batiment/structure/utils/inheritPublicRoles";
 import { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
+import { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { EntityIndex } from "#batiment/structure/apis/EntityIndex";
@@ -247,12 +248,12 @@ export function createEntityIndex({
 
     const { root: tree, name } = namespace;
 
-    for (const directory of namespace.dirs) {
+    for (const { directory, node } of listNamespaceDirectories(namespace)) {
       const entity: Entity = freeze({
         ...createStructureEntity(name, directory, rootScope),
-        kind: tree.kind,
+        kind: node.kind,
         group: tree.group === true,
-        lineage: extendEntityLineage(noLineage, tree, directory),
+        lineage: extendEntityLineage(noLineage, node, directory),
         location: extendRoleLocation(
           createStructureEntity(name, directory, rootScope).location,
           {
@@ -270,7 +271,7 @@ export function createEntityIndex({
         covers: false,
       });
 
-      for (const child of tree.children) {
+      for (const child of node.children) {
         if (child.path.startsWith(`${directory}/`)) {
           visit(child, entity, namespace, directory);
         }

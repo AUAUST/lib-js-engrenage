@@ -1,8 +1,10 @@
+import { unique } from "@auaust/toolkit/iterable";
 import { entries } from "@auaust/toolkit/object";
 import { capitalize } from "@auaust/toolkit/string";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
+import { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 import { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
 import type { Alias } from "#batiment/structure/types/Alias";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
@@ -31,9 +33,13 @@ export function renderNamespaceMap({
 
   // @debt "global roles" mixes role directories present at the root with file roles allowed there
   const globalRoles = [
-    ...root.children
-      .filter((child) => child.kind === "role")
-      .map(({ name: role }) => role),
+    ...unique(
+      listNamespaceDirectories(namespace).flatMap(({ node }) => {
+        return node.children
+          .filter((child) => child.kind === "role")
+          .map(({ name: role }) => role);
+      }),
+    ),
     ...entries(roles?.roles ?? {}).flatMap(([role, contract]) => {
       return role === indexRoleName || role === entryRoleName || contract.optIn
         ? []

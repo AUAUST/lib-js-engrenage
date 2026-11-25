@@ -9,13 +9,18 @@ export function extendEntityLineage(
   node: StructureNode,
   path: Directory,
 ): readonly LineageMember[] {
-  if (node.kind !== "namespace" && node.kind !== "domain") {
+  if (
+    node.kind !== "namespace" &&
+    node.kind !== "directory" &&
+    node.kind !== "domain"
+  ) {
     return lineage;
   }
 
+  // @debt a directory node joins the lineage as a namespace, standing in for its namespace's root, since a lineage starts at one root per directory
   const member: LineageMember = freeze({
     path,
-    kind: node.kind,
+    kind: node.kind === "domain" ? "domain" : "namespace",
     layer: node.layer,
     layers: node.layers,
     isolated: node.relation === "isolated",

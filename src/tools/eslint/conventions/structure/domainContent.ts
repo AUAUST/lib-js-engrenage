@@ -16,11 +16,16 @@ export default defineConvention({
         return {
           Program(program) {
             if (
-              (kind === "domain" || kind === "namespace") &&
+              (kind === "domain" ||
+                kind === "namespace" ||
+                kind === "directory") &&
               !group &&
               fileRole === undefined
             ) {
-              context.report({ node: program, messageId: kind });
+              context.report({
+                node: program,
+                messageId: kind === "domain" ? "domain" : "namespace",
+              });
             }
           },
         };

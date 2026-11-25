@@ -5,10 +5,9 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
-  getRootEntryFile,
+  getRootDirectory,
   type NamespaceStructure,
 } from "#batiment/structure/index";
-import { isBelow } from "#tools/typescript/utils/isBelow";
 import type { ReexportMode } from "#batiment/roles/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
@@ -40,15 +39,13 @@ export function listRootReexports(
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],
 ): BarrelExport[] {
-  const { root, roles, indexFile } = environment;
+  const { roles, indexFile } = environment;
 
-  const rootEntry = getRootEntryFile(environment);
+  const owner = getRootDirectory(environment)?.node;
 
-  if (rootEntry === undefined) {
+  if (owner === undefined) {
     return [];
   }
-
-  const directory = posix.dirname(rootEntry);
 
   const subpaths = new Map(
     entries(environment.entries).map(([subpath, file]) => {
@@ -58,13 +55,9 @@ export function listRootReexports(
 
   const barrels = new Set(roleBarrels.map(({ file }) => file));
 
-  const domainExports = collectStructureNodes(root)
+  const domainExports = collectStructureNodes(owner)
     .filter((node) => {
-      return (
-        node.kind === "domain" &&
-        node.public === true &&
-        isBelow(directory, node.path)
-      );
+      return node.kind === "domain" && node.public === true;
     })
     .flatMap((domain) => {
       const entry = posix.join(domain.path, entryFile);
@@ -82,20 +75,14 @@ export function listRootReexports(
       );
     });
 
-  const roleExports = root.children.flatMap((node) => {
+  const roleExports = owner.children.flatMap((node) => {
     const contract = node.kind === "role" && node.role !== undefined
       ? getOwn(roles, node.role)?.contract
       : undefined;
 
     const barrel = posix.join(node.path, indexFile);
 
-    const isReexported = (
-      contract?.reexport !== undefined &&
-      barrels.has(barrel) &&
-      isBelow(directory, node.path)
-    );
-
-    return isReexported
+    return contract?.reexport !== undefined && barrels.has(barrel)
       ? reexportAs(
           barrel,
           contract.reexport,

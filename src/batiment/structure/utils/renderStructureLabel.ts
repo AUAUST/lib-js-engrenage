@@ -24,7 +24,11 @@ function renderName(node: StructureNode): string {
     ? ""
     : `[public: ${node.publicRoles.join(" ")}]`;
 
-  const directory = node.kind === "namespace" || node.kind === "mirror";
+  const directory = (
+    node.kind === "namespace" ||
+    node.kind === "directory" ||
+    node.kind === "mirror"
+  );
 
   return `${node.name}${directory ? "/" : ""}${node.public === true ? "*" : ""}${collects}${publicRoles}`;
 }
@@ -46,6 +50,7 @@ function describeKind(
 
   const kinds = {
     namespace: undefined,
+    directory: undefined,
     domain: node.group === true && groupLabel !== undefined
       ? groupLabel
       : "domain",

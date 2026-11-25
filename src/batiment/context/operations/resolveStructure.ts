@@ -1,11 +1,11 @@
-import { matchesGlob, posix } from "node:path";
-
-import { freeze, hasOwn, keys, record, values } from "@auaust/toolkit/object";
+import { freeze, record, values } from "@auaust/toolkit/object";
 
 import { resolveNamespaceStructure } from "#batiment/context/operations/resolveNamespaceStructure";
+import { namespaceMetadataFile } from "#batiment/scopes/constants";
 import {
-  collectStructureNodes,
+  listNamespaceDirectories,
   listStructureDiagnostics,
+  listUnreachedDeclarations,
   mergeStructureMetadata,
   resolveDomainEntries,
   type DeclaredNamespace,
@@ -17,72 +17,22 @@ import {
   type StructureOptions,
   type TestsContext,
 } from "#batiment/structure/index";
+import type { StructureDiagnostic } from "#batiment/report/index";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { Directory } from "#types/Directory";
 
-function listUnreached({
-  structure,
-  declared,
-  merged,
-  metadata,
-}: {
-  structure: Omit<NamespaceStructure, "unreached" | "diagnostics" | "entries">;
-  declared: DeclaredStructure;
-  merged: Pick<StructureOptions, "namespaces" | "domains">;
-  metadata: readonly StructureMetadata[];
-}): NamespaceStructure["unreached"] {
-  const walked = structure.dirs.filter((directory) => directory !== ".");
-
-  const subpaths = collectStructureNodes(structure.root).flatMap((node) => {
-    return walked
-      .map((directory) => posix.relative(directory, node.path))
-      .filter((subpath) => {
-        return subpath !== ".." && !subpath.startsWith("../");
-      })
-      .map((subpath) => {
-        return { subpath: subpath === "" ? "." : subpath, kind: node.kind };
-      });
-  });
-
-  const reached = new Set([".", ...subpaths.map(({ subpath }) => subpath)]);
-
-  const domainSubpaths = subpaths
-    .filter(({ kind }) => kind === "domain")
-    .map(({ subpath }) => subpath);
-
-  function entry(path: string, kind: "namespace" | "domain") {
-    return {
-      path,
-      kind,
-      config: hasOwn(
-        kind === "namespace" ? declared.namespaces : declared.domains,
-        path,
-      ),
-      files: metadata.find((located) => located.path === path)?.files ?? [],
-    };
-  }
-
-  return [
-    ...keys(merged.namespaces)
-      .filter((path) => !reached.has(path))
-      .map((path) => entry(path, "namespace")),
-    ...keys(merged.domains)
-      .filter((path) => {
-        return (
-          !reached.has(path) &&
-          !domainSubpaths.some((subpath) => matchesGlob(subpath, path))
-        );
-      })
-      .map((path) => entry(path, "domain")),
-  ].sort((left, right) => left.path.localeCompare(right.path));
-}
+const namespaceRoot = ".";
+const projectRoot = ".";
 
 async function resolveNamespace({
   filesystem,
+  scope,
   internals,
   namespace,
   tests,
 }: {
   filesystem: Filesystem;
+  scope: Directory;
   internals: boolean;
   namespace: DeclaredNamespace;
   tests?: TestsContext;
@@ -101,6 +51,7 @@ async function resolveNamespace({
 
   const { defined, optionPaths, ...declared } = namespace.declared;
   const { read } = namespace;
+  const { optOut, strictness } = option;
 
   const mirrored = tests === undefined
     ? []
@@ -116,28 +67,102 @@ async function resolveNamespace({
       });
 
   const metadata = tests === undefined ? read.metadata : [];
+  const directories = dirs.filter((directory) => directory !== projectRoot);
+  const { [namespaceRoot]: rootDeclaration, ...below } = declared.namespaces;
+  const diagnostics: StructureDiagnostic[] = [];
 
-  const merged = mergeStructureMetadata({
-    namespaceName: name,
-    key,
-    declared,
-    metadata,
-    optionPaths,
-    origins,
+  function merge(
+    declarations: DeclaredStructure,
+    located: readonly StructureMetadata[],
+  ) {
+    const merged = mergeStructureMetadata({
+      namespaceName: name,
+      key,
+      declared: declarations,
+      metadata: located,
+      optionPaths,
+      origins,
+    });
+
+    diagnostics.push(...merged.diagnostics);
+
+    return merged;
+  }
+
+  function toOptions({
+    namespaces,
+    domains,
+  }: Pick<StructureOptions, "namespaces" | "domains">): StructureOptions {
+    return {
+      namespaces,
+      domains,
+      optOut,
+      strictness,
+    };
+  }
+
+  const spansDirectories = directories.length > 1;
+
+  if (spansDirectories && rootDeclaration?.children !== undefined) {
+    const path = `${optionPaths[namespaceRoot] ?? namespaceRoot}.children`;
+    const origin = origins.get(path);
+
+    diagnostics.push(
+      freeze({
+        severity: "error",
+        code: "directories-root-children",
+        message: `${name} spans the directories ${directories.join(", ")}, so its root holds directories and takes no children; set children in each directory's ${namespaceMetadataFile}`,
+        blocking: true,
+        namespace: name,
+        files: freeze([]),
+        config: freeze({
+          key,
+          path,
+          ...(origin === undefined ? {} : { origin }),
+        }),
+      }),
+    );
+  }
+
+  const single = spansDirectories ? undefined : merge(declared, metadata);
+
+  const perDirectory = directories.map((directory) => {
+    return {
+      directory,
+      merged: (
+        single ??
+        merge(
+          { namespaces: below, domains: declared.domains },
+          metadata.filter((located) => located.directory === directory),
+        )
+      ),
+    };
   });
 
-  const { namespaces, domains } = merged;
+  const rootMerged = (
+    single ??
+    merge(
+      {
+        namespaces: rootDeclaration === undefined
+          ? {}
+          : {
+              [namespaceRoot]: { ...rootDeclaration, children: undefined },
+            },
+        domains: {},
+      },
+      [],
+    )
+  );
 
   const walked = await resolveNamespaceStructure({
     name,
     filesystem,
+    scope,
     dirs,
-    options: {
-      namespaces,
-      domains,
-      optOut: option.optOut,
-      strictness: option.strictness,
-    },
+    options: toOptions(rootMerged),
+    directories: perDirectory.map(({ directory, merged }) => {
+      return { directory, options: toOptions(merged) };
+    }),
     roles,
     defined,
     internals,
@@ -153,12 +178,37 @@ async function resolveNamespace({
   const structure = {
     ...walked.structure,
     entries: domainEntries,
-    unreached: listUnreached({
-      structure: walked.structure,
-      declared,
-      merged,
-      metadata,
-    }),
+    unreached: listUnreachedDeclarations(
+      single === undefined
+        ? perDirectory.map(({ directory, merged }) => {
+            const node = listNamespaceDirectories(walked.structure).find(
+              (each) => each.directory === directory,
+            )?.node;
+
+            if (node === undefined) {
+              throw new Error(`${name} walked ${directory} into no node`);
+            }
+
+            return {
+              directory,
+              node,
+              declared,
+              merged,
+              metadata: metadata.filter((located) => {
+                return located.directory === directory;
+              }),
+            };
+          })
+        : [
+            {
+              directory: directories[0] ?? projectRoot,
+              node: walked.structure.root,
+              declared,
+              merged: single,
+              metadata,
+            },
+          ],
+    ),
   };
 
   return {
@@ -166,7 +216,7 @@ async function resolveNamespace({
     diagnostics: [
       ...read.diagnostics,
       ...mirrored,
-      ...merged.diagnostics,
+      ...diagnostics,
       ...walked.diagnostics,
       ...entryDiagnostics,
       ...listStructureDiagnostics(structure),
@@ -264,10 +314,12 @@ function mirrorOf({ option, layout }: DeclaredNamespace): boolean | undefined {
 
 export async function resolveStructure({
   filesystem,
+  scope,
   internals,
   namespaces,
 }: {
   filesystem: Filesystem;
+  scope: Directory;
   internals: boolean;
   namespaces: readonly DeclaredNamespace[];
 }): Promise<ResolvedStructure> {
@@ -282,6 +334,7 @@ export async function resolveStructure({
       namespace.name,
       await resolveNamespace({
         filesystem,
+        scope,
         internals,
         namespace,
       }),
@@ -302,6 +355,7 @@ export async function resolveStructure({
         namespace.name,
         await resolveNamespace({
           filesystem,
+          scope,
           internals,
           namespace,
           tests: { mirror, namespaces: tests },

@@ -4,6 +4,7 @@ import { entries, getOwn } from "@auaust/toolkit/object";
 
 import {
   isPlaced,
+  listNamespaceDirectories,
   type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
@@ -42,6 +43,10 @@ export async function listDomainModules(
   const { roles, indexFile } = environment;
   const location = locateDomain(environment, domain);
 
+  const atRoot = listNamespaceDirectories(environment).some(({ node }) => {
+    return node === domain;
+  });
+
   function toModule(file: File, role: string | undefined): BarrelModule[] {
     const contract = role === undefined
       ? undefined
@@ -54,10 +59,7 @@ export async function listDomainModules(
     const isListed = (
       accepts(role, contract) &&
       isModule(file) &&
-      !(
-        isPlaced(contract.index, domain === environment.root) &&
-        basename(file) === indexFile
-      )
+      !(isPlaced(contract.index, atRoot) && basename(file) === indexFile)
     );
 
     return isListed

@@ -59,6 +59,7 @@ export async function walkScope({
 
   return resolveStructure({
     filesystem,
+    scope: dir,
     internals: declarations.internals,
     namespaces,
   });

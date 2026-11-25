@@ -5,6 +5,7 @@ import { values } from "@auaust/toolkit/object";
 
 import {
   collectStructureNodes,
+  getRootDirectory,
   getRootEntryFile,
   type NamespaceStructure,
   type ResolvedStructure,
@@ -39,8 +40,13 @@ async function planRootEntry(
   roleBarrels: readonly BarrelPlan[],
 ): Promise<BarrelPlan[]> {
   const file = getRootEntryFile(environment);
+  const owner = getRootDirectory(environment)?.node;
 
-  if (file === undefined || (await isHandWritten(filesystem, file))) {
+  if (
+    file === undefined ||
+    owner === undefined ||
+    (await isHandWritten(filesystem, file))
+  ) {
     return [];
   }
 
@@ -51,7 +57,7 @@ async function planRootEntry(
     : [
         {
           file,
-          node: environment.root,
+          node: owner,
           modules: [],
           reexports,
         },

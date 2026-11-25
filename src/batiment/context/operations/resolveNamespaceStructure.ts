@@ -1,4 +1,4 @@
-import { basename } from "node:path";
+import { basename, posix } from "node:path";
 
 import { flat, sort } from "@auaust/toolkit/array";
 import { entries, freeze, getOwn, keys } from "@auaust/toolkit/object";
@@ -32,7 +32,6 @@ import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
 const namespaceRoot = ".";
-const projectRoot = ".";
 
 function dropCollects(
   node: StructureNode,
@@ -49,11 +48,33 @@ function dropCollects(
   });
 }
 
+type NamespaceDeclaration = StructureOptions["namespaces"][string];
+
+function describeNamespace(
+  declaration: NamespaceDeclaration | undefined,
+): Partial<StructureNode> {
+  return {
+    ...(declaration?.layers === undefined
+      ? {}
+      : { layers: declaration.layers }),
+    ...(declaration === undefined ? {} : { relation: declaration.relation }),
+    ...(declaration?.children === undefined
+      ? {}
+      : { childKind: declaration.children }),
+    ...(declaration?.purpose === undefined
+      ? {}
+      : { purpose: declaration.purpose }),
+    ...(declaration?.debt === undefined ? {} : { debt: declaration.debt }),
+  };
+}
+
 export async function resolveNamespaceStructure({
   name,
   filesystem,
+  scope,
   dirs,
   options,
+  directories,
   roles,
   defined,
   tests,
@@ -62,8 +83,13 @@ export async function resolveNamespaceStructure({
 }: {
   name: string;
   filesystem: Filesystem;
+  scope: Directory;
   dirs: Directories;
   options: StructureOptions;
+  directories: readonly {
+    readonly directory: Directory;
+    readonly options: StructureOptions;
+  }[];
   internals?: boolean;
   roles?: NamespaceRoles | undefined;
   defined?: RoleRegistry;
@@ -96,65 +122,81 @@ export async function resolveNamespaceStructure({
   const indexFile = getIndexFile(rolesFor([]));
   const entryFile = getEntryFile(rolesFor([]));
 
-  const domainResolver = createStructureDomainResolver({
-    name,
-    filesystem,
-    options,
-    group,
-    indexFile,
-    entryFile,
-    internals,
-    rolesFor,
-    report,
-  });
-
-  const walk = createStructureWalker({
-    filesystem,
-    options,
-    group,
-    layoutEntries: layout?.nature === "static" ? layout.entries : undefined,
-    indexFile,
-    rolesIn,
-    roleResolver,
-    domainResolver,
-    classifyMirror: tests === undefined
-      ? undefined
-      : createMirrorClassifier(tests),
-  });
+  const classifyMirror = tests === undefined
+    ? undefined
+    : createMirrorClassifier(tests);
 
   const rootDeclaration = namespaces[namespaceRoot];
   const rootScopes = rootDeclaration?.roles.enable ?? [];
+  const rootRoles = rolesFor(rootScopes);
+  const spansDirectories = directories.length > 1;
 
-  const walked = dirs.filter((directory) => directory !== projectRoot);
+  const walked = await Promise.all(
+    directories.map(async ({ directory, options: directoryOptions }) => {
+      const domainResolver = createStructureDomainResolver({
+        name,
+        filesystem,
+        options: directoryOptions,
+        group,
+        indexFile,
+        entryFile,
+        internals,
+        rolesFor,
+        report,
+      });
 
-  const children = flat(
-    await Promise.all(
-      walked.map((directory) => {
-        return walk(directory, namespaceRoot, {
-          kind: "root",
-          layers: rootDeclaration?.layers,
-          ...(rootDeclaration?.children === undefined
-            ? {}
-            : { childKind: rootDeclaration.children }),
-          scopes: rootScopes,
-          owned: rootScopes,
-          structured: false,
-          source: rootDeclaration?.source ?? "inferred",
-          location: freeze({
-            namespace: name,
-            lineage: freeze([
-              freeze({
-                name: basename(directory),
-                path: directory,
-                kind: "namespace" as const,
-              }),
-            ]),
-            roles: freeze([]),
-          }),
-        });
-      }),
-    ),
+      const walk = createStructureWalker({
+        filesystem,
+        options: directoryOptions,
+        group,
+        layoutEntries: layout?.nature === "static" ? layout.entries : undefined,
+        indexFile,
+        rolesIn,
+        roleResolver,
+        domainResolver,
+        classifyMirror,
+      });
+
+      const declaration = directoryOptions.namespaces[namespaceRoot];
+
+      const children = await walk(directory, namespaceRoot, {
+        kind: "root",
+        layers: declaration?.layers,
+        ...(declaration?.children === undefined
+          ? {}
+          : { childKind: declaration.children }),
+        scopes: rootScopes,
+        owned: rootScopes,
+        structured: false,
+        source: declaration?.source ?? "inferred",
+        location: freeze({
+          namespace: name,
+          lineage: freeze([
+            freeze({
+              name: basename(directory),
+              path: directory,
+              kind: "namespace" as const,
+            }),
+          ]),
+          roles: freeze([]),
+        }),
+      });
+
+      const roleFiles = groupRoleFiles(
+        await assignRoleFiles(filesystem, directory, rootRoles),
+      );
+
+      return {
+        directory,
+        declaration,
+        domainResolver,
+        children,
+        roleFiles,
+      };
+    }),
   );
+
+  const children = flat(walked.map((each) => each.children));
 
   if (layout?.nature === "static") {
     const present = new Set(children.map((child) => child.name));
@@ -190,15 +232,7 @@ export async function resolveNamespaceStructure({
     }
   }
 
-  const rootRoleFiles = groupRoleFiles(
-    flat(
-      await Promise.all(
-        walked.map((directory) => {
-          return assignRoleFiles(filesystem, directory, rolesFor(rootScopes));
-        }),
-      ),
-    ),
-  );
+  const rootRoleFiles = spansDirectories ? {} : (walked[0]?.roleFiles ?? {});
 
   const resolvedRoot: StructureNode = freeze({
     path: namespaceRoot,
@@ -206,29 +240,29 @@ export async function resolveNamespaceStructure({
     kind: "namespace",
     source: rootDeclaration?.source ?? "inferred",
     ...(group ? { group: true as const } : {}),
-    ...(rootDeclaration?.layers === undefined
-      ? {}
-      : { layers: rootDeclaration.layers }),
-    ...(rootDeclaration === undefined
-      ? {}
-      : { relation: rootDeclaration.relation }),
-    ...(rootDeclaration?.children === undefined
-      ? {}
-      : { childKind: rootDeclaration.children }),
-    ...(rootDeclaration?.purpose === undefined
-      ? {}
-      : { purpose: rootDeclaration.purpose }),
-    ...(rootDeclaration?.debt === undefined
-      ? {}
-      : { debt: rootDeclaration.debt }),
+    ...describeNamespace(rootDeclaration),
     ...(keys(rootRoleFiles).length === 0 ? {} : { roleFiles: rootRoleFiles }),
-    children,
+    children: spansDirectories
+      ? walked.map((each): StructureNode => {
+          return freeze({
+            path: each.directory,
+            name: posix.relative(scope, each.directory),
+            kind: "directory",
+            source: each.declaration?.source ?? "inferred",
+            ...describeNamespace(each.declaration),
+            ...(keys(each.roleFiles).length === 0
+              ? {}
+              : { roleFiles: each.roleFiles }),
+            children: each.children,
+          });
+        })
+      : children,
   });
 
   const structureRoles = listStructureRoles(
     resolvedRoot,
-    walked.map((directory) => {
-      return { directory, roles: rolesFor(rootScopes) };
+    walked.map(({ directory }) => {
+      return { directory, roles: rootRoles };
     }),
     rolesIn,
   );
@@ -246,7 +280,9 @@ export async function resolveNamespaceStructure({
       dropped.set(path, new Set(invalid));
     }
 
-    const source = domainResolver.collectsSourceOf(path);
+    const source = walked
+      .map(({ domainResolver }) => domainResolver.collectsSourceOf(path))
+      .find((found) => found !== undefined);
 
     for (const role of invalid) {
       report(

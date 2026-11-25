@@ -51,6 +51,7 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
     .filter(({ kind, purpose, debt }) => {
       return (
         kind === "namespace" ||
+        kind === "directory" ||
         kind === "mirror" ||
         (kind === "domain" && (purpose !== undefined || debt !== undefined))
       );

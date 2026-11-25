@@ -4,15 +4,16 @@ import { flat, map } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
 import {
+  listNamespaceDirectories,
+  type Alias,
+  type NamespaceStructure,
+  type ResolvedAliases,
+} from "#batiment/structure/index";
+import {
   findFileExtension,
   type LanguageEntry,
   type LanguageExtensions,
 } from "#project/environments/index";
-import type {
-  Alias,
-  NamespaceStructure,
-  ResolvedAliases,
-} from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
 import type { Directories } from "#types/Directories";
@@ -80,13 +81,19 @@ async function createDirectoryAliases(
 async function createSourceAliases(
   filesystem: Filesystem,
   scope: Directory,
-  { dirs, root: tree, indexFile, entryFile }: NamespaceStructure,
+  structure: NamespaceStructure,
   { extension, declarations }: AliasedFiles,
   extensionsOf: LanguageExtensions,
 ): Promise<Alias[]> {
+  const { dirs, indexFile, entryFile } = structure;
+
+  const children = listNamespaceDirectories(structure).flatMap(({ node }) => {
+    return node.children;
+  });
+
   const directories = flat(
     await Promise.all(
-      tree.children.map((child) => {
+      children.map((child) => {
         return createDirectoryAliases(
           filesystem,
           scope,

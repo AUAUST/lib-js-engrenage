@@ -5,6 +5,7 @@ import { entries, freeze, getOwn, record } from "@auaust/toolkit/object";
 import { entryRoleName } from "#batiment/roles/constants";
 import { getRootEntryFile } from "#batiment/structure/utils/getRootEntryFile";
 import { isPlaced } from "#batiment/structure/utils/isPlaced";
+import { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { NamespaceFileNames } from "#batiment/structure/types/NamespaceFileNames";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
@@ -84,7 +85,7 @@ function collectEntries(
   roles: Roles,
 ): (readonly [string, File])[] {
   return node.children.flatMap((child) => {
-    if (child.kind === "namespace") {
+    if (child.kind === "namespace" || child.kind === "directory") {
       return collectEntries(child, segments, files, roles);
     }
 
@@ -129,14 +130,22 @@ export function resolveDomainEntries(
 
   const rootEntry = getRootEntryFile(structure);
 
-  const rootEntries = getOwn(root.roleFiles ?? {}, entryRoleName) ?? [];
+  const directories = listNamespaceDirectories(structure);
+
+  const rootEntries = directories.flatMap(({ node }) => {
+    return getOwn(node.roleFiles ?? {}, entryRoleName) ?? [];
+  });
 
   for (const [subpath, file] of [
     ...rootEntries
       .filter((file) => file === rootEntry)
       .map((file) => [".", file] as const),
-    ...collectRoleSubpaths(".", root, roles),
-    ...collectRoleBarrels(".", root, structure, roles),
+    ...directories.flatMap(({ node }) => {
+      return [
+        ...collectRoleSubpaths(".", node, roles),
+        ...collectRoleBarrels(".", node, structure, roles),
+      ];
+    }),
     ...collectEntries(root, [], structure, roles),
   ]) {
     const previous = found.get(subpath);

@@ -1079,3 +1079,102 @@ describe("layouts", () => {
     );
   });
 });
+
+describe("namespaces spanning several directories", () => {
+  function createInterscriptProject(structure: string) {
+    return createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default { preset: "library", src: { dirs: ["src", "admin", "storefront"], roles: ${sourceRoles}, structure: ${structure} } };\n`,
+      "src/.namespace.json": '{ "layers": ["shopify", "*"] }',
+      "src/shopify/index.ts": "",
+      "src/core/index.ts": "",
+      "admin/.namespace.json": '{ "purpose": "The App Home UI.", "layers": ["*", "ui"] }',
+      "admin/entry.ts": "",
+      "admin/ui/index.ts": "",
+      "admin/ui/entry.ts": "",
+      "storefront/cart/index.ts": "",
+    });
+  }
+
+  test("hold one directory node per directory, each described by its own metafile, under config keys applying in every directory", async () => {
+    const project = createInterscriptProject(
+      '{ purpose: "The app.", domains: { ui: { purpose: "The UI." }, shopify: { purpose: "Shopify." } } }',
+    );
+
+    const { src } = await loadStructure(project.root);
+
+    expect(src!.root).toMatchObject({
+      kind: "namespace",
+      purpose: "The app.",
+    });
+
+    expect(src!.root.children).toMatchObject([
+      {
+        path: "src",
+        name: "src",
+        kind: "directory",
+        source: "metadata",
+        layers: ["shopify", "*"],
+        children: [{ path: "src/core" }, { path: "src/shopify" }],
+      },
+      {
+        path: "admin",
+        name: "admin",
+        kind: "directory",
+        purpose: "The App Home UI.",
+        layers: ["*", "ui"],
+        roleFiles: {
+          entrypoint: ["admin/entry.ts"],
+        },
+        children: [
+          {
+            path: "admin/ui",
+            public: true,
+            purpose: "The UI.",
+          },
+        ],
+      },
+      {
+        path: "storefront",
+        name: "storefront",
+        kind: "directory",
+        source: "inferred",
+        children: [{ path: "storefront/cart" }],
+      },
+    ]);
+
+    const [sourceDirectory] = src!.root.children;
+
+    expect(sourceDirectory?.children[1]).toMatchObject({
+      purpose: "Shopify.",
+      layer: 0,
+    });
+
+    expect(src!.root.roleFiles).toBeUndefined();
+
+    expect(src!.unreached).toEqual([]);
+
+    expect(
+      src!.diagnostics.filter(({ code }) => code.startsWith("metafile-")),
+    ).toEqual([]);
+  });
+
+  test("fail on `children` set on the namespace root", async () => {
+    const project = createInterscriptProject('{ children: "domains" }');
+
+    const { src } = await loadStructure(project.root);
+
+    expect(
+      src!.diagnostics.filter(({ code }) => {
+        return code === "directories-root-children";
+      }),
+    ).toMatchObject([
+      {
+        blocking: true,
+        config: { path: "src.structure.children" },
+      },
+    ]);
+
+    expect(src!.root.childKind).toBeUndefined();
+  });
+});

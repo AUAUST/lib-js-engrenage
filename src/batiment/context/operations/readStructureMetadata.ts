@@ -3,7 +3,7 @@ import { posix } from "node:path";
 import type { InferOutput } from "valibot";
 
 import { sort } from "@auaust/toolkit/array";
-import { entries, freeze } from "@auaust/toolkit/object";
+import { freeze } from "@auaust/toolkit/object";
 
 import {
   domainMetadataFile,
@@ -42,6 +42,7 @@ function locate<Value>(
 }
 
 function createNamespaceMetadata(
+  directory: Directory,
   path: Directory,
   {
     purpose,
@@ -53,6 +54,7 @@ function createNamespaceMetadata(
   file: File,
 ): StructureMetadata {
   return {
+    directory,
     path,
     kind: "namespace",
     fields: {
@@ -83,6 +85,7 @@ function parseFileMetadata(
 
   if (posix.basename(match) === namespaceMetadataFile) {
     return createNamespaceMetadata(
+      directory,
       path,
       validate(namespaceMetadataSchema, content, file),
       file,
@@ -101,6 +104,7 @@ function parseFileMetadata(
   } = validate(domainMetadataSchema, content, file);
 
   return {
+    directory,
     path,
     kind: "domain",
     fields: {
@@ -150,54 +154,6 @@ async function readFileMetadata(
   }
 }
 
-function mergeAtPath(
-  merged: StructureMetadata,
-  next: StructureMetadata,
-  report: (diagnostic: Finding) => void,
-): StructureMetadata {
-  if (merged.kind !== next.kind) {
-    report({
-      code: "metafile-kind-conflict",
-      message: `${merged.path} is declared as a ${merged.kind} by ${merged.files.join(", ")} and as a ${next.kind} by ${next.files.join(", ")}; keeping the ${merged.kind}`,
-      files: [...merged.files, ...next.files],
-    });
-
-    return merged;
-  }
-
-  for (const [field, located] of entries(next.fields)) {
-    const existing = merged.fields[field];
-
-    if (existing !== undefined && located !== undefined) {
-      report({
-        code: "metafile-field-conflict",
-        message: `${merged.path} sets ${field} in both ${existing.file} and ${located.file}; keeping the value of ${existing.file}`,
-        files: [existing.file, located.file],
-      });
-    }
-  }
-
-  const { fields } = merged;
-
-  return {
-    ...merged,
-    fields: {
-      purpose: fields.purpose ?? next.fields.purpose,
-      debt: fields.debt ?? next.fields.debt,
-      layers: fields.layers ?? next.fields.layers,
-      relation: fields.relation ?? next.fields.relation,
-      children: fields.children ?? next.fields.children,
-      specifier: fields.specifier ?? next.fields.specifier,
-      internals: fields.internals ?? next.fields.internals,
-      reexport: fields.reexport ?? next.fields.reexport,
-      collects: fields.collects ?? next.fields.collects,
-      publicRoles: fields.publicRoles ?? next.fields.publicRoles,
-      public: fields.public ?? next.fields.public,
-    },
-    files: [...merged.files, ...next.files],
-  };
-}
-
 function groupByDirectory(
   read: readonly StructureMetadata[],
   report: (diagnostic: Finding) => void,
@@ -239,7 +195,7 @@ export async function readStructureMetadata({
   readonly metadata: readonly StructureMetadata[];
   readonly diagnostics: readonly StructureDiagnostic[];
 }> {
-  const byPath = new Map<Directory, StructureMetadata>();
+  const metadata: StructureMetadata[] = [];
   const diagnostics: StructureDiagnostic[] = [];
 
   function report(finding: Finding) {
@@ -281,28 +237,26 @@ export async function readStructureMetadata({
 
     const grouped = groupByDirectory(parsed, report);
 
-    for (const metadata of grouped) {
-      if (metadata.kind === "domain" && metadata.path === namespaceRoot) {
+    for (const located of grouped) {
+      if (located.kind === "domain" && located.path === namespaceRoot) {
         report({
           code: "domain-metafile-at-root",
-          message: `${metadata.files.join(", ")} describes an environment root, which is a namespace; ignoring it`,
-          files: metadata.files,
+          message: `${located.files.join(", ")} describes an environment root, which is a namespace; ignoring it`,
+          files: located.files,
         });
 
         continue;
       }
 
-      const merged = byPath.get(metadata.path);
-
-      byPath.set(
-        metadata.path,
-        merged === undefined ? metadata : mergeAtPath(merged, metadata, report),
-      );
+      metadata.push(located);
     }
   }
 
-  const resolved = sort([...byPath.values()], (left, right) => {
-    return left.path.localeCompare(right.path);
+  const resolved = sort(metadata, (left, right) => {
+    return (
+      left.directory.localeCompare(right.directory) ||
+      left.path.localeCompare(right.path)
+    );
   });
 
   return freeze({
