@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < batiment < metalbrain < project < tools < workflows  (global roles: types constants.ts *.d.ts extension.ts)
+src/  foundation < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
 ├─ batiment/  #batiment/…  report < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.
 │  ├─ context  The context port a host answers with root and scope facts, and the driver running discovery and each scope's walk over its answers.
 │  ├─ environments  Declare environment presets, their registrations and placements, and resolve the environment of each file they cover.

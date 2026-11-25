@@ -1,7 +1,11 @@
-import { map } from "@auaust/toolkit/array";
-import { freeze } from "@auaust/toolkit/object";
+import { flatMap, map } from "@auaust/toolkit/array";
+import { freeze, values } from "@auaust/toolkit/object";
 
-import { rootScope, workspaceMetadataFile } from "#batiment/scopes/constants";
+import {
+  namespaceMetadataFile,
+  rootScope,
+  workspaceMetadataFile,
+} from "#batiment/scopes/constants";
 import { getNamespaceId } from "#batiment/scopes/utils/getNamespaceId";
 import type {
   OptionSource,
@@ -24,6 +28,7 @@ interface ScopeTreeNamespace {
   readonly name: string;
   readonly kind: NamespaceKind;
   readonly imports?: NamespaceImports;
+  readonly purpose?: string;
   readonly dirs: Directories;
 }
 
@@ -61,7 +66,7 @@ function createNamespaces(
   namespaces: readonly (ScopeTreeNamespace & { readonly title?: string })[],
 ): readonly NamespaceInstance[] {
   return freeze(
-    namespaces.map(({ name, title, kind, imports, dirs }) => {
+    namespaces.map(({ name, title, kind, imports, purpose, dirs }) => {
       const id = getNamespaceId(scope, name);
 
       return freeze({
@@ -71,6 +76,7 @@ function createNamespaces(
         title: title ?? `the ${id} namespace's files`,
         kind,
         ...(imports === undefined ? {} : { imports }),
+        ...(purpose === undefined ? {} : { purpose }),
         dirs,
       });
     }),
@@ -208,8 +214,27 @@ export function createScopeTree({
     });
   }
 
+  const unstated = flatMap(values(scopes), (scope) => {
+    return (scope?.namespaces ?? []).filter(({ kind, purpose }) => {
+      return kind.structure === undefined && purpose === undefined;
+    });
+  });
+
   return freeze({
     scopes: freeze(scopes),
-    diagnostics: freeze(diagnostics),
+    diagnostics: freeze([
+      ...diagnostics,
+      ...map(unstated, ({ id, dirs }) => {
+        return freeze({
+          ...createDiagnostic(
+            "missing-purpose",
+            dirs[0] ?? id,
+            `has no purpose: set one in its ${namespaceMetadataFile}.`,
+          ),
+          severity: "warning" as const,
+          namespace: id,
+        });
+      }),
+    ]),
   });
 }

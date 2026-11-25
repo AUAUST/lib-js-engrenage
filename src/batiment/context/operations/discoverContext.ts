@@ -9,6 +9,7 @@ import { resolveNamespaceImports } from "#batiment/context/operations/resolveNam
 import { rootScope } from "#batiment/scopes/constants";
 import {
   createScopeTree,
+  findMetafileField,
   getNamespaceId,
   resolveNamespaceKind,
   type DiscoveredWorkspace,
@@ -251,6 +252,14 @@ export async function discoverContext(
     return namespaces
       .filter(({ discovery }) => discovery.active)
       .map(({ placement, discovery, metafiles }) => {
+        const purpose = discovery.kind.structure === undefined
+          ? findMetafileField({
+              metafiles,
+              field: "purpose",
+              diagnostics,
+            })
+          : undefined;
+
         return {
           placement,
           namespace: {
@@ -262,6 +271,7 @@ export async function discoverContext(
               scope,
               diagnostics,
             }),
+            ...(purpose === undefined ? {} : { purpose: purpose.value }),
           },
         };
       });

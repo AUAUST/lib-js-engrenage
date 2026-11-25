@@ -27,5 +27,11 @@ export interface NamespaceInstance {
    * namespace whose kind is not sealed.
    */
   readonly imports?: NamespaceImports;
+  /**
+   * The runtime and constraints the namespace maps to, from its `.namespace.json`,
+   * for a namespace whose kind has no `structure`; a structured namespace's
+   * purpose is its structure root's.
+   */
+  readonly purpose?: string;
   readonly dirs: Directories;
 }

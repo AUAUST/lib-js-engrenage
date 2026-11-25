@@ -8,6 +8,6 @@ paths:
 # Project map: tooling
 
 ```
-tooling/  (global roles: constants.ts *.d.ts)
+tooling/  Code only this repository's tools load, such as its own ESLint rules: never published.  (global roles: constants.ts *.d.ts)
 └─ eslint  Repository-specific ESLint rules.
 ```

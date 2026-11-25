@@ -29,6 +29,15 @@ Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[
 
 ## Namespaces
 
+| Namespace | Purpose |
+| --- | --- |
+| `src` | The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code. |
+| `tests` | Vitest suites run in Node against the source and the built package, mirroring the environments they test. |
+| `bin` | The `engrenage` and `metalbrain` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains. |
+| `scripts` | The repository's own maintenance CLI, `pnpm support`: Node programs run only in this repository, never published. |
+| `tooling` | Code only this repository's tools load, such as its own ESLint rules: never published. |
+| `data` | Static files published with the package for its code and the user's tools to read: JSON, Markdown, YAML and type declarations, no executable code. |
+
 The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root `executable.ts` may import a root index or entry file of `src`, `scripts`, `tooling`. `bin`, `scripts`, `tooling` import `src` only through a domain's `index.ts`, `entry.ts` and public roles.
 
 | Category | Meaning |

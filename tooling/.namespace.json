@@ -1,0 +1,3 @@
+{
+  "purpose": "Code only this repository's tools load, such as its own ESLint rules: never published."
+}

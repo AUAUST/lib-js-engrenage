@@ -74,7 +74,11 @@ describe("getNamespaceId", () => {
 
 describe("createScopeTree", () => {
   test("reports workspaces inside an environment or another workspace", () => {
-    const kind = { name: "code", level: "enforced" } as const;
+    const kind = {
+      name: "code",
+      level: "enforced",
+      structure: "domains",
+    } as const;
 
     const { scopes, diagnostics } = createScopeTree({
       namespaces: [
@@ -283,7 +287,10 @@ describe("scopes", () => {
       },
       preset: {},
       files: {
-        "data/.namespace.json": JSON.stringify({ kind: "static" }),
+        "data/.namespace.json": JSON.stringify({
+          kind: "static",
+          purpose: "Static files.",
+        }),
         "data/a.json": "{}",
       },
     });
@@ -295,6 +302,29 @@ describe("scopes", () => {
     expect(
       scopes["."]?.namespaces.find(({ name }) => name === "data")?.kind.name,
     ).toBe("static");
+  });
+
+  test("keeps an unstructured namespace's metafile purpose and warns on one without", async () => {
+    const { scopes, diagnostics } = await resolveScopes({
+      "data/.namespace.json": JSON.stringify({ purpose: "Shipped files." }),
+      "data/a.json": "{}",
+      "public/a.png": "",
+    });
+
+    const namespaces = scopes["."]?.namespaces ?? [];
+
+    expect(namespaces.find(({ name }) => name === "data")?.purpose).toBe(
+      "Shipped files.",
+    );
+
+    expect(diagnostics).toEqual([
+      expect.objectContaining({
+        severity: "warning",
+        code: "missing-purpose",
+        namespace: "static",
+        path: "public",
+      }),
+    ]);
   });
 
   test("reports a workspace inside another", async () => {
@@ -411,6 +441,7 @@ describe("scopes", () => {
       }),
       "src/a.ts": "",
       "public/a.png": "",
+      "public/.namespace.json": JSON.stringify({ purpose: "Static assets." }),
     });
 
     expect(diagnostics).toEqual([

@@ -132,6 +132,9 @@ export default defineConfig({
   tests: {
     mirror: true,
     roles: [config, plugins, conventions],
+    structure: {
+      purpose: "Vitest suites run in Node against the source and the built package, mirroring the environments they test.",
+    },
   },
   build: {
     sourceExports: true,

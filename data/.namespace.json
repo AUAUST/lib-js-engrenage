@@ -1,3 +1,4 @@
 {
+  "purpose": "Static files published with the package for its code and the user's tools to read: JSON, Markdown, YAML and type declarations, no executable code.",
   "kind": "shipped"
 }

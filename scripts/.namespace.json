@@ -1,0 +1,3 @@
+{
+  "purpose": "The repository's own maintenance CLI, `pnpm support`: Node programs run only in this repository, never published."
+}

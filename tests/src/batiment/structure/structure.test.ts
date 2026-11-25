@@ -502,7 +502,7 @@ describe("structure", () => {
     },
   );
 
-  test("warns on a domain without purpose", async () => {
+  test("warns on an environment root and a domain without purpose", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "name": "project", "type": "module" }',
       "src/index.ts": "",
@@ -513,6 +513,14 @@ describe("structure", () => {
     const { src } = await loadStructure(project.root);
 
     expect(src?.diagnostics).toEqual([
+      {
+        severity: "warning",
+        code: "missing-purpose",
+        message: "has no purpose: set one on its environment's `structure`.",
+        namespace: "src",
+        path: "src",
+        files: [],
+      },
       {
         severity: "warning",
         code: "missing-purpose",
@@ -613,7 +621,7 @@ describe("structure", () => {
         "src/a/index.ts": "",
         "tests/src/a/x.test.ts": "",
         "tests/src/a/.domain.json": '{ "purpose": "Tests of a." }',
-        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles} } };\n`,
+        "engrenage.config.ts": `export default { src: { roles: ${sourceRoles} }, tests: { mirror: true, roles: ${testsRoles}, structure: { purpose: "Tests." } } };\n`,
       });
 
       const structure = await loadStructure(project.root);

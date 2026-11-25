@@ -1,4 +1,3 @@
-import { listNamespaces } from "#batiment/scopes/index";
 import { renderProjectMap } from "#batiment/structure/index";
 import { listMappedEnvironments } from "#project/structure/operations/listMappedEnvironments";
 import { resolveTestPatterns } from "#project/structure/operations/resolveTestPatterns";
@@ -25,7 +24,7 @@ export async function fillProjectMap(
 
   return renderProjectMap({
     structure,
-    namespaces: listNamespaces(tree),
+    tree,
     grants,
     roles,
     patterns,

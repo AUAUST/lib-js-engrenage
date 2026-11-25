@@ -24,13 +24,14 @@ async function readNamespace(
     return read.diagnostic;
   }
 
-  const { kind, imports } = read.metadata;
+  const { kind, imports, purpose } = read.metadata;
 
   return freeze({
     dir: posix.dirname(file),
     file,
     ...(kind === undefined ? {} : { kind }),
     ...(imports === undefined ? {} : { imports: freeze(imports) }),
+    ...(purpose === undefined ? {} : { purpose }),
   });
 }
 

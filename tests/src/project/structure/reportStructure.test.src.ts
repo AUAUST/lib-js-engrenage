@@ -10,7 +10,7 @@ async function loadProject() {
     "package.json": '{ "name": "project", "type": "module" }',
     "src/index.ts": "",
     "src/feature/index.ts": "",
-    "engrenage.config.ts": 'export default { src: { strictness: "loose" } };\n',
+    "engrenage.config.ts": 'export default { src: { strictness: "loose", structure: { purpose: "The code." } }, tooling: { structure: { purpose: "The config." } } };\n',
   });
 
   return loadConfig(project.root);

@@ -75,15 +75,22 @@ export function listStructureDiagnostics(
     }),
     ...nodes
       .filter((node) => {
-        return node.kind === "domain" && node.purpose === undefined;
+        return (
+          (node.kind === "domain" || node === namespace.root) &&
+          node.purpose === undefined
+        );
       })
       .map((node) => {
+        const root = node === namespace.root;
+
         return {
           severity: "warning" as const,
           code: "missing-purpose" as const,
-          message: "has no purpose: set one on its `domains` entry.",
+          message: root
+            ? "has no purpose: set one on its environment's `structure`."
+            : "has no purpose: set one on its `domains` entry.",
           namespace: namespace.name,
-          path: node.path,
+          path: root ? (namespace.dirs[0] ?? namespace.name) : node.path,
           files: [],
         };
       }),

@@ -1,4 +1,5 @@
 {
+  "purpose": "The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.",
   "layers": [
     "foundation",
     "batiment",

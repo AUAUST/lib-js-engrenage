@@ -101,7 +101,7 @@ describe("engrenage batiment map", () => {
 
   test("does not warn on a domain with a purpose", async () => {
     createProject(
-      '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } } }',
+      '{ src: { strictness: "loose", structure: { purpose: "The code.", domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } }, tooling: { structure: { purpose: "The config." } } }',
     );
 
     const { warnings } = await runDefinition(map, "--check");

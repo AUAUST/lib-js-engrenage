@@ -6,7 +6,7 @@ paths:
 # Project map: bin
 
 ```
-bin/  (global roles: executable.ts *.ts)
+bin/  The `engrenage` and `metalbrain` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains.  (global roles: executable.ts *.ts)
 ├─ engrenage{batiment pnpm}  Project tooling commands.
 │  ├─ batiment  Walk the project structure and report how batiment classifies it.
 │  └─ pnpm  Package manager maintenance commands.

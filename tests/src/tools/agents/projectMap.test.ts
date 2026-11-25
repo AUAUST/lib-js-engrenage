@@ -16,6 +16,8 @@ const handlers = createRolePreset({
   purpose: "Request handlers.",
 });
 
+const workspacePlaceholder = "{dir}";
+
 const overviewFile = ".claude/rules/project-map.md";
 const sourceFile = ".claude/rules/project-map/src.md";
 
@@ -252,7 +254,7 @@ describe("project map", () => {
 
       function cells(prefix: string) {
         return lines
-          .find((line) => line.startsWith(prefix))
+          .findLast((line) => line.startsWith(prefix))
           ?.split("|")
           .map((cell) => cell.trim());
       }
@@ -283,6 +285,32 @@ describe("project map", () => {
       expect(never).toContain("`tooling`");
     },
   );
+
+  test("renders each environment's and workspace's purpose", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        workspaces: { globs: { "extensions/*": { name: "@x/${workspacePlaceholder}" } } },
+        src: { structure: { purpose: "The code." } },
+      };`,
+      "src/feature/index.ts": "",
+      "data/.namespace.json": '{ "purpose": "Shipped files." }',
+      "data/a.json": "{}",
+      "extensions/a/package.json": '{ "name": "@x/a", "type": "module" }',
+      "extensions/a/.workspace.json": '{ "purpose": "The extension." }',
+    });
+
+    await syncProject(project);
+
+    const overview = project.read(overviewFile);
+
+    expect(overview).toContain("| `src` | The code. |");
+    expect(overview).toContain("| `data` | Shipped files. |");
+    expect(overview).toContain("| `extensions/a` | The extension. | none |");
+    expect(project.read(sourceFile)).toContain("src/  feature  The code.");
+  });
 
   test("omits the test files section without a test namespace", async () => {
     const project = createProject();

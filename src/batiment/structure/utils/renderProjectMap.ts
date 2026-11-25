@@ -1,12 +1,16 @@
 import { entries, getOwn, values } from "@auaust/toolkit/object";
 
 import {
+  listNamespaces,
+  type NamespaceInstance,
+  type ScopeTree,
+} from "#batiment/scopes/index";
+import {
   importCategories,
   importRelations,
 } from "#batiment/structure/constants";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
 import type { ResolvedRoles } from "#batiment/roles/index";
-import type { NamespaceInstance } from "#batiment/scopes/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
@@ -82,19 +86,21 @@ function listCategories(
 
 export function renderProjectMap({
   structure,
-  namespaces,
+  tree,
   grants,
   patterns,
   roles,
   directory,
 }: {
   structure: ResolvedStructure;
-  namespaces: readonly NamespaceInstance[];
+  tree: ScopeTree;
   grants: ImportGrants;
   patterns: Readonly<Partial<Record<string, Globs>>>;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
   directory: Directory;
 }): string {
+  const namespaces = listNamespaces(tree);
+
   const mapped = entries(structure)
     .filter(([, namespace]) => namespace !== undefined)
     .map(([name]) => name);
@@ -155,6 +161,13 @@ export function renderProjectMap({
     "",
     "## Namespaces",
     "",
+    "| Namespace | Purpose |",
+    "| --- | --- |",
+    // @debt a structured namespace's purpose comes from its walk's root and an unstructured one's from discovery, so one fact has two resolution paths
+    ...namespaces.map(({ id, purpose }) => {
+      return `| ${code(id)} | ${getOwn(structure, id)?.root.purpose ?? purpose ?? ""} |`;
+    }),
+    "",
     `The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),
     "",
     "| Category | Meaning |",
@@ -191,8 +204,10 @@ export function renderProjectMap({
           importRelations.scope,
           `Root ${grants.entries.join(", ")} never imports another scope.`,
           "",
+          "| Workspace | Purpose | Scope dependencies |",
+          "| --- | --- | --- |",
           ...[...grants.scopes].map(([scope, dependencies]) => {
-            return `- ${code(scope)}: ${dependencies.length === 0 ? "no scope dependencies" : list(dependencies)}`;
+            return `| ${code(scope)} | ${getOwn(tree.scopes, scope)?.purpose ?? ""} | ${dependencies.length === 0 ? "none" : list(dependencies)} |`;
           }),
         ]),
     ...renderProjectMapRoles(structure, roles),
