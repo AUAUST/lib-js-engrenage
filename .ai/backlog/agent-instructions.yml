@@ -87,11 +87,6 @@ entries:
     why: "reported by a writer: the reset discards the agent's files, markers included; only the friction and discarded logs carry over."
     want: their markers carried over as backlog entries, or a stated reason to drop them.
     created: 2026-11-22T00:00:00Z
-  - id: BL-593340
-    title: No hook reminds a main session of records due at turn end
-    why: "proposed by the writer: a Stop hook injecting a records reminder when the turn's tool calls hold refused hooks or permissions; findings told only in chat stay prose-only."
-    want: a decision on that hook.
-    created: 2026-11-22T00:00:00Z
   - id: BL-d80841
     title: Handoffs and carry-overs travel as text an orchestrator rereads and repeats
     why: a walker reads each worker, planner and merger report and restates the parts it forwards, and the carried text stays in its context every turn.
