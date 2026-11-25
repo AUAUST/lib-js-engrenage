@@ -153,6 +153,38 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     expect(messages.map(({ text }) => text)).toEqual(["tools (1): Tools."]);
   });
 
+  test("close of a live and an unknown ID closes nothing, naming the unknown one", async () => {
+    const project = createProject();
+
+    await expect(
+      runCommand("backlog", backlog, "close", "BL-0b1c2d", "BL-ffffff"),
+    ).rejects.toThrow("No entry was closed:\n- No backlog entry BL-ffffff");
+
+    expect(project.read(".ai/backlog/docs.yml")).toBe(docs);
+  });
+
+  test("relocate rewrites the sites under a moved directory, keeping their lines", async () => {
+    const project = createProject();
+
+    project.write("lib/a.ts", "");
+
+    const {
+      messages,
+    } = await runCommand("backlog", backlog, "relocate", "src/", "lib");
+
+    expect(messages.map(({ text }) => text)).toContain(
+      "BL-3fa9c1 src/a.ts:3 → lib/a.ts:3",
+    );
+
+    expect(project.read(".ai/backlog/tools.yml")).toBe(
+      tools.replace("src/a.ts:3", "lib/a.ts:3"),
+    );
+
+    await expect(
+      runCommand("backlog", backlog, "relocate", "lib/a.ts", "lib/b.ts"),
+    ).rejects.toThrow("site `lib/b.ts` names no file");
+  });
+
   test("update replaces and unsets fields, and search finds the entry by any field", async () => {
     const project = createProject();
 

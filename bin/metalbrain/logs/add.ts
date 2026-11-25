@@ -7,7 +7,7 @@ export default defineLazyCommand({
     );
   },
   extend() {
-    return import("#bin/metalbrain/logs/actions/addOptions");
+    return import("#bin/metalbrain/logs/actions/fieldOptions");
   },
   action() {
     return import("#bin/metalbrain/logs/actions/add");

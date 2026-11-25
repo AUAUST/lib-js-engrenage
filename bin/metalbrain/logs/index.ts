@@ -6,6 +6,7 @@ import list from "#bin/metalbrain/logs/list";
 import search from "#bin/metalbrain/logs/search";
 import show from "#bin/metalbrain/logs/show";
 import stats from "#bin/metalbrain/logs/stats";
+import update from "#bin/metalbrain/logs/update";
 
 // @debt each log kind's purpose and file restate its declaration in `metalbrain/logs`, since command definitions load with the hook graph and cannot import it
 const purposes: Readonly<Record<string, string>> = {
@@ -19,7 +20,7 @@ export default defineGroup({
   configure(command) {
     return command
       .description(
-        `Add, find, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
+        `Add, find, update, close and count ${purposes[command.name()] ?? `the ${command.name()} entries`}; every write checks the entry against the ${command.name()} file schema.`,
       )
       .addHelpText(
         "afterAll",
@@ -31,6 +32,7 @@ export default defineGroup({
     list,
     search,
     show,
+    update,
     close,
     stats,
   },

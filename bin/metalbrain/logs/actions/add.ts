@@ -1,7 +1,9 @@
-import { isArray, isString } from "@auaust/toolkit";
-
 import { findLogKind } from "#metalbrain/logs/index";
-import { addRecord, type RecordKind } from "#metalbrain/records/index";
+import {
+  addRecord,
+  pickRecordValues,
+  type RecordKind,
+} from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -16,15 +18,7 @@ export default async function (
 
   const kind: RecordKind = logKind;
 
-  const values = Object.fromEntries(
-    Object.keys(kind.fields).flatMap((key) => {
-      const value = options[key];
-
-      return isString(value) || (isArray(value) && value.every(isString))
-        ? [[key, value]]
-        : [];
-    }),
-  );
+  const values = pickRecordValues(kind, options);
 
   const config = await loadValidatedConfig(process.cwd(), { reporter });
 

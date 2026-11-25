@@ -83,7 +83,7 @@ export async function findRecordEntryViolations(
 
       if (!(await filesystem.exists(path))) {
         violations.push(
-          `${subject}: site \`${path}\` names no file: write its path from the project root, or follow the file it moved to`,
+          `${subject}: site \`${path}\` names no file: write its path from the project root, or rewrite the sites naming a moved file or directory with \`pnpm metalbrain ${kind.name} relocate <old> <new>\``,
         );
       }
     }

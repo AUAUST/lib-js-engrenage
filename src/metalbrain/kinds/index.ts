@@ -1,8 +1,10 @@
 // @barrel operations
-export { locateRecord } from "#metalbrain/kinds/operations/locateRecord";
+export { createRecordKindResolver } from "#metalbrain/kinds/operations/createRecordKindResolver";
 export { renameLegacyRecordIds } from "#metalbrain/kinds/operations/renameLegacyRecordIds";
+export { resolveRecordKind } from "#metalbrain/kinds/operations/resolveRecordKind";
 // @end
 
 // @barrel utils
+export { findNamedRecordKind } from "#metalbrain/kinds/utils/findNamedRecordKind";
 export { findRecordKind } from "#metalbrain/kinds/utils/findRecordKind";
 // @end

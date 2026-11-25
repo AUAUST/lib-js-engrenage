@@ -78,6 +78,33 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     ]);
   });
 
+  test("update replaces only the given field, the entry still valid", async () => {
+    const project = createProject();
+
+    const { messages } = await addFriction("git add");
+
+    const id = messages.at(-1)?.text ?? "";
+
+    await runCommand("friction", logs, "update", id, "--stopped", "c");
+
+    expect(parse(project.read(".ai/friction.yml"))).toEqual({
+      entries: [
+        {
+          id,
+          subject: "git add",
+          tried: "ran it",
+          stopped: "c",
+        },
+      ],
+    });
+
+    const { messages: shown } = await runCommand("friction", logs, "show", id);
+
+    expect(shown.map(({ text }) => text)).toEqual([
+      `id: ${id}\nsubject: git add\ntried: ran it\nstopped: c`,
+    ]);
+  });
+
   test("close removes the entry, deleting the file with its last one", async () => {
     const project = createProject({
       ".ai/pending.yml": "entries:\n  - id: PD-0a0a0a\n    subject: docs\n    what: write them\n    why: out of scope\n",

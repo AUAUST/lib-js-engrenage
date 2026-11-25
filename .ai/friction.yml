@@ -887,3 +887,7 @@ entries:
     subject: flaky worktree gate test
     tried: ran gate --worktree
     stopped: one test failed once; rerun passed
+  - id: FR-26dc34
+    subject: flaky worktree gate test
+    tried: ran gate --worktree twice
+    stopped: agents check/rules tests time out at 5s under load; pass alone

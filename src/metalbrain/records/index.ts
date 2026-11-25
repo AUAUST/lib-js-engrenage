@@ -1,11 +1,13 @@
 // @barrel operations
 export { addRecord } from "#metalbrain/records/operations/addRecord";
 export { closeRecord } from "#metalbrain/records/operations/closeRecord";
+export { closeRecords } from "#metalbrain/records/operations/closeRecords";
 export { countRecords } from "#metalbrain/records/operations/countRecords";
 export { createRecordGroup } from "#metalbrain/records/operations/createRecordGroup";
 export { createRecordId } from "#metalbrain/records/operations/createRecordId";
 export { findRecord } from "#metalbrain/records/operations/findRecord";
 export { findRecordEntryViolations } from "#metalbrain/records/operations/findRecordEntryViolations";
+export { findRecords } from "#metalbrain/records/operations/findRecords";
 export { findRecordViolations } from "#metalbrain/records/operations/findRecordViolations";
 export { listRecordIds } from "#metalbrain/records/operations/listRecordIds";
 export { listRecords } from "#metalbrain/records/operations/listRecords";
@@ -15,6 +17,7 @@ export { readRecordGroup } from "#metalbrain/records/operations/readRecordGroup"
 export { readRecordGroups } from "#metalbrain/records/operations/readRecordGroups";
 export { readRecordIndex } from "#metalbrain/records/operations/readRecordIndex";
 export { readRenamedRecordIds } from "#metalbrain/records/operations/readRenamedRecordIds";
+export { relocateRecordSites } from "#metalbrain/records/operations/relocateRecordSites";
 export { removeRecordEntry } from "#metalbrain/records/operations/removeRecordEntry";
 export { resolveRecordId } from "#metalbrain/records/operations/resolveRecordId";
 export { searchRecords } from "#metalbrain/records/operations/searchRecords";
@@ -27,6 +30,7 @@ export { writeRecordIndex } from "#metalbrain/records/operations/writeRecordInde
 export type * from "#metalbrain/records/types/FoundRecord";
 export type * from "#metalbrain/records/types/GroupedRecordKind";
 export type * from "#metalbrain/records/types/ListedRecord";
+export type * from "#metalbrain/records/types/LocatedRecord";
 export type * from "#metalbrain/records/types/RecordChanges";
 export type * from "#metalbrain/records/types/RecordDocument";
 export type * from "#metalbrain/records/types/RecordField";
@@ -35,6 +39,7 @@ export type * from "#metalbrain/records/types/RecordFieldType";
 export type * from "#metalbrain/records/types/RecordGroup";
 export type * from "#metalbrain/records/types/RecordKind";
 export type * from "#metalbrain/records/types/RecordLocation";
+export type * from "#metalbrain/records/types/RecordSiteRelocation";
 export type * from "#metalbrain/records/types/RecordValues";
 export type * from "#metalbrain/records/types/WordCapFinding";
 // @end
@@ -51,6 +56,7 @@ export { isRecordId } from "#metalbrain/records/utils/isRecordId";
 export { orderRecordEntry } from "#metalbrain/records/utils/orderRecordEntry";
 export { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
 export { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
+export { pickRecordValues } from "#metalbrain/records/utils/pickRecordValues";
 export { resolveRecordFile } from "#metalbrain/records/utils/resolveRecordFile";
 export { sortRecordEntryNode } from "#metalbrain/records/utils/sortRecordEntryNode";
 export { throwViolations } from "#metalbrain/records/utils/throwViolations";
