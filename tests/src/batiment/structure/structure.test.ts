@@ -1272,4 +1272,106 @@ describe("namespaces spanning several directories", () => {
       },
     ]);
   });
+
+  describe("tests mirror", () => {
+    async function describeTests(
+      config: string,
+      files: Record<string, string>,
+    ) {
+      const project = createTemporaryProject({
+        ...files,
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default { preset: "library", ${config}, tests: { mirror: true, roles: ${testsRoles} } };\n`,
+      });
+
+      const structure = await loadStructure(project.root);
+
+      return {
+        tests: structure.tests!,
+        nodes: new Map(
+          flatten(structure.tests!.root).map((node) => [node.path, node]),
+        ),
+      };
+    }
+
+    test("mirror each directory under its own name as root key", async () => {
+      const { tests, nodes } = await describeTests(
+        `src: { dirs: ["src", "admin", "storefront"], roles: ${sourceRoles}, structure: { layers: ["src", "*"], domains: { ui: { public: true } } } }`,
+        {
+          "src/core/index.ts": "",
+          "admin/ui/index.ts": "",
+          "storefront/cart/index.ts": "",
+          "tests/src/core/a.test.ts": "",
+          "tests/src/ui/b.test.ts": "",
+          "tests/admin/ui/c.test.ts": "",
+          "tests/storefront/cart/d.test.ts": "",
+        },
+      );
+
+      expect(nodes.get("tests/admin/ui")).toMatchObject({
+        kind: "mirror",
+        mirror: { namespace: "src", path: "admin/ui" },
+      });
+
+      expect(nodes.get("tests/storefront")).toMatchObject({
+        kind: "mirror",
+        mirror: { namespace: "src", path: "storefront" },
+      });
+
+      expect(nodes.get("tests/src/core")).toMatchObject({
+        kind: "mirror",
+        mirror: { namespace: "src", path: "src/core" },
+      });
+
+      expect(
+        tests.unclassified.map(({ path, reason }) => [path, reason]),
+      ).toEqual([["tests/src/ui", "missing counterpart"]]);
+    });
+
+    test("mirror a nested directory under its full name, the longest matching name winning", async () => {
+      const { tests, nodes } = await describeTests(
+        `environments: { web: { preset: "src", dirs: ["src/web"] } }, src: { dirs: ["src", "src/web/legacy"], roles: ${sourceRoles} }`,
+        {
+          "src/core/index.ts": "",
+          "src/web/app.ts": "",
+          "src/web/legacy/old/index.ts": "",
+          "tests/src/core/a.test.ts": "",
+          "tests/src/web/legacy/old/b.test.ts": "",
+        },
+      );
+
+      expect(nodes.get("tests/src/web/legacy/old")).toMatchObject({
+        kind: "mirror",
+        mirror: { namespace: "src", path: "src/web/legacy/old" },
+      });
+
+      expect(tests.unclassified).toEqual([]);
+    });
+
+    test("fail on a directory named like another namespace, naming both", async () => {
+      const { tests } = await describeTests(
+        `src: { dirs: ["src", "scripts"], roles: ${sourceRoles} }, scripts: { dirs: ["maintenance"] }`,
+        {
+          "src/core/index.ts": "",
+          "scripts/ui/index.ts": "",
+          "maintenance/feature/index.ts": "",
+          "tests/scripts/ui/a.test.ts": "",
+        },
+      );
+
+      expect(
+        tests.diagnostics.filter(({ code }) => {
+          return code === "shared-tests-root-key";
+        }),
+      ).toMatchObject([
+        {
+          blocking: true,
+          message: expect.stringContaining(
+            "names the scripts directory of the src namespace and the scripts namespace",
+          ),
+          files: ["scripts", "maintenance"],
+        },
+      ]);
+    });
+  });
 });

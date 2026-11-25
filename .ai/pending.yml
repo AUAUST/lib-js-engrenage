@@ -1,19 +1,7 @@
 entries:
-  - id: PD-779602
-    subject: project map lists directory names twice
-    what: root label lists dirs plus one row per directory node
-    why: "map shape for directories is #939 work"
-    owner: "#939"
-    created: 2026-11-25T21:09:21Z
-  - id: PD-fa3f83
-    subject: project map lacks directory order
-    what: show directory layer in map; root-entry relation text in importRelations
-    why: "map shape for directories is #939 work"
-    owner: "#939"
-    created: 2026-11-25T21:27:44Z
-  - id: PD-99fc38
-    subject: nested directory node names
-    what: map and test mirrors meet names like src/web/legacy
-    why: "map shape for directories is #939 work"
-    owner: "#939"
-    created: 2026-11-25T21:45:31Z
+  - id: PD-353691
+    subject: Interscript admin/storefront isolation
+    what: "adoption note: root relation isolated if admin and storefront differ in JSX flavour"
+    why: "adoption note waits on #940 decision"
+    owner: AUAUST/clients-intscr-shopify#23
+    created: 2026-11-25T21:55:57Z

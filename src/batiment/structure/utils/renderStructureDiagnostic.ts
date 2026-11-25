@@ -30,6 +30,7 @@ const separators = {
   "collected-role-not-public": "  ",
   "unknown-public-role": "  ",
   "shared-specifier": "  ",
+  "shared-tests-root-key": "  ",
   "unlisted-layout-entry": "  ",
   "missing-layout-entry": "  ",
   "workspace-in-namespace": "  ",

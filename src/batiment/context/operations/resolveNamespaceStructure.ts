@@ -24,6 +24,7 @@ import {
   getStructureLayer,
   groupRoleFiles,
   listStructureRoles,
+  listTestsRootDiagnostics,
   loosenStructureNode,
   type Layout,
   type NamespaceStructure,
@@ -132,6 +133,10 @@ export async function resolveNamespaceStructure({
   const classifyMirror = tests === undefined
     ? undefined
     : createMirrorClassifier(tests);
+
+  if (tests !== undefined) {
+    diagnostics.push(...listTestsRootDiagnostics(name, tests));
+  }
 
   const rootDeclaration = namespaces[namespaceRoot];
   const rootScopes = rootDeclaration?.roles.enable ?? [];

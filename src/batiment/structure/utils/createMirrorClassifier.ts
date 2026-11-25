@@ -1,9 +1,9 @@
-import { join } from "node:path";
+import { join, posix } from "node:path";
 
 import { memoize } from "@auaust/toolkit/function";
-import { entries } from "@auaust/toolkit/object";
 
 import { collectStructureNodes } from "#batiment/structure/utils/collectStructureNodes";
+import { listMirrorRoots } from "#batiment/structure/utils/listMirrorRoots";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
 import type { StructureMirror } from "#batiment/structure/types/StructureMirror";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
@@ -34,54 +34,78 @@ export function createMirrorClassifier(tests: TestsContext) {
     },
   );
 
+  const roots = Map.groupBy(listMirrorRoots(tests), ({ key }) => key);
+  const rootKeys = [...roots.keys()];
+
+  // @debt a directory between a root key and a nested directory name mirrors its path without a counterpart, accepting tests placed in it, and a root key naming no directory never reaches a nested directory name below it (`lib` and `src/web/legacy` leave `tests/src` unknown)
+  function isAboveRoot(key: string): boolean {
+    return rootKeys.some((rootKey) => rootKey.startsWith(`${key}/`));
+  }
+
   return function classify(directory: string, parent: StructureParent): Mirror {
     const unknown = {
       kind: "unclassified",
       reason: "unknown root key",
     } as const;
 
-    if (parent.kind === "root") {
-      const root = entries(tests.namespaces).find(([key]) => key === directory);
+    const { mirrored } = parent;
 
-      return root?.[1] === undefined
-        ? unknown
-        : {
-            kind: "mirror",
-            mirror: {
-              namespace: root[0],
-              path: root[1].dirs[0] ?? root[0],
-            },
-            mirrored: {
-              namespace: root[0],
-              subpath: "",
-            },
-          };
+    const key = parent.kind === "root"
+      ? directory
+      : mirrored === undefined
+        ? undefined
+        : posix.join(mirrored.key, directory);
+
+    const [root] = key === undefined ? [] : (roots.get(key) ?? []);
+
+    if (root !== undefined) {
+      return {
+        kind: "mirror",
+        mirror: {
+          namespace: root.namespace,
+          path: root.dirs[0] ?? root.namespace,
+        },
+        mirrored: {
+          ...root,
+          subpath: "",
+        },
+      };
     }
 
-    if (parent.mirrored === undefined) {
+    if (key === undefined || mirrored === undefined) {
       return unknown;
     }
 
-    const { namespace } = parent.mirrored;
-    const subpath = join(parent.mirrored.subpath, directory);
-    const dirs = tests.namespaces[namespace]?.dirs ?? [];
+    const { namespace, dirs } = mirrored;
+    const subpath = join(mirrored.subpath, directory);
+    const fallback = join(dirs[0] ?? namespace, subpath);
 
-    const path = tests.mirror
+    const found = tests.mirror
       ? dirs
           .map((dir) => join(dir, subpath))
           .find((candidate) => counterparts(namespace).has(candidate))
-      : join(dirs[0] ?? namespace, subpath);
+      : fallback;
 
-    const counterpart = path === undefined
+    const path = found ?? (isAboveRoot(key) ? fallback : undefined);
+
+    const counterpart = found === undefined
       ? undefined
-      : counterparts(namespace).get(path);
+      : counterparts(namespace).get(found);
 
     return path === undefined
       ? { kind: "unclassified", reason: "missing counterpart" }
       : {
           kind: "mirror",
-          mirror: { namespace, path },
-          mirrored: { namespace, subpath },
+          mirror: {
+            namespace,
+            path,
+          },
+          mirrored: {
+            namespace,
+            key,
+            dirs,
+            subpath,
+          },
           ...(counterpart === undefined ? {} : { counterpart }),
         };
   };

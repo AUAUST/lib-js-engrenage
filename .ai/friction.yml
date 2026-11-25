@@ -12,6 +12,7 @@ taps:
   - {id: FR-990e2d, at: 2026-11-25T21:27:43Z, note: "same: sync loads stale barrel"}
   - {id: FR-990e2d, at: 2026-11-25T21:45:30Z, note: "again in #943: environments barrel"}
   - {id: FR-990e2d, at: 2026-11-25T21:54:59Z, note: barrel export before sync}
+  - {id: FR-990e2d, at: 2026-11-25T22:08:01Z, note: "Again for listMirrorRoots, listTestsRootDiagnostics and MirrorRoot in batiment/structure"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1193,3 +1194,8 @@ entries:
     tried: "dispatch #936 with #933 Planning open"
     stopped: "moved duplicated points to #937, cleared Blockers via claim/publish"
     created: 2026-11-25T20:23:00Z
+  - id: FR-f36cb1
+    subject: Blockers field stale after body edit
+    tried: gh issue edit body, then dispatch
+    stopped: dispatch refused Open questions; gh lacks project scope; claim, edit, publish
+    created: 2026-11-25T22:00:21Z

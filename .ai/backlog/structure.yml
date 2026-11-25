@@ -329,3 +329,14 @@ entries:
     why: "since #936 only the first directory entry.ts is the root entry; #942 stopped it reaching higher directories, but it stays silently unexported"
     want: a diagnostic naming it; its root-entry grant toward lower directories dropped
     created: 2026-11-25T20:29:09Z
+  - id: BL-484321
+    title: Project map shows no order between a namespace directories
+    sites:
+      - src/batiment/structure/constants.ts:1
+    want: map shows each directory layer; root-entry relation text in importRelations states it follows directory order
+    created: 2026-11-25T21:58:59Z
+  - id: BL-8fcd05
+    title: A directory of a namespace takes its roles only from its own metafile, never from config
+    why: "deferred from #939 for Interscript critical path"
+    want: a config key shape setting a directory roles
+    created: 2026-11-25T21:58:59Z
