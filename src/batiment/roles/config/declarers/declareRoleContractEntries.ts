@@ -36,6 +36,12 @@ export function declareRoleContractEntries<Nested>(
       description: "One line stating what the role holds.",
       optional: { value: undefined },
     }),
+    // @debt `debt` is a `tools/metalbrain` concept declared here because batiment's role schema is closed to contributed fields
+    // @debt the declaration repeats `batiment/scopes`' `debtSchema`, which sits above roles
+    debt: declare(string(), {
+      description: "Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.",
+      optional: { value: undefined },
+    }),
     file: declare(roleGlobsSchema, {
       description: "Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root. `<domain>` stands for the name of the nearest enclosing namespace or domain, `<Domain>` for it in PascalCase, which only a nested role takes.",
       optional: { value: undefined },

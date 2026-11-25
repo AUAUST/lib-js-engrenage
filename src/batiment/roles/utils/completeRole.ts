@@ -106,6 +106,7 @@ export function completeRole(
     categories: definition.categories,
     exports: freeze(resolved),
     purpose: definition.purpose,
+    debt: definition.debt,
     effects: definition.effects,
     rules: definition.rules,
     nesting: definition.nesting ?? roleContractDefaults.nesting,

@@ -73,12 +73,11 @@ export function createStructureRoleResolver({
   }
 
   function metadataOf(role: string, scopes: readonly string[]) {
-    const purpose = rolesFor(scopes).roles[role]?.purpose;
-
-    const effects = rolesFor(scopes).roles[role]?.effects;
+    const { purpose, debt, effects } = rolesFor(scopes).roles[role] ?? {};
 
     return {
       ...(purpose === undefined ? {} : { purpose }),
+      ...(debt === undefined ? {} : { debt }),
       ...(effects === undefined ? {} : { effects }),
     };
   }

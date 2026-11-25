@@ -96,6 +96,7 @@ export { renderImportCycles } from "#batiment/structure/utils/renderImportCycles
 export { renderNamespaceMap } from "#batiment/structure/utils/renderNamespaceMap";
 export { renderProjectMap } from "#batiment/structure/utils/renderProjectMap";
 export { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
+export { renderPurpose } from "#batiment/structure/utils/renderPurpose";
 export { renderStructure } from "#batiment/structure/utils/renderStructure";
 export { renderStructureDiagnostic } from "#batiment/structure/utils/renderStructureDiagnostic";
 export { renderStructureLabel } from "#batiment/structure/utils/renderStructureLabel";

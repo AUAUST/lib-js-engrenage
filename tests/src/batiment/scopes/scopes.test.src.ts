@@ -392,6 +392,31 @@ describe("scopes", () => {
     expect(scopes["extensions/a"]?.purpose).toBe("theme");
   });
 
+  test("merges a workspace's debt as its purpose", async () => {
+    const { scopes, diagnostics } = await resolvePresetScopes({
+      input: {
+        workspaces: {
+          globs: {
+            "extensions/*": { name: `@x/${placeholder}`, debt: "config" },
+          },
+        },
+      },
+      preset: {},
+      files: {
+        "extensions/a/.workspace.json": JSON.stringify({ debt: "theme" }),
+        "extensions/b/.workspace.json": "{}",
+      },
+    });
+
+    expect(summarize(diagnostics)).toEqual([
+      { code: "config-metafile-conflict", path: "extensions/a" },
+    ]);
+
+    expect(scopes["extensions/a"]?.debt).toBe("theme");
+
+    expect(scopes["extensions/b"]?.debt).toBe("config");
+  });
+
   test("overrides a preset's purpose without a diagnostic", async () => {
     const { scopes, diagnostics } = await resolvePresetScopes({
       input: {},

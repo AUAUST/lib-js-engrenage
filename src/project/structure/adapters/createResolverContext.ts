@@ -116,24 +116,38 @@ async function readWorkspaceExpectations(
 
   return Promise.all(
     entries(globs).map(
-      async ([glob, { purpose }]): Promise<WorkspaceExpectation> => {
-        if (purpose === undefined) {
-          return freeze({ glob });
-        }
+      async ([glob, option]): Promise<WorkspaceExpectation> => {
+        async function declare(
+          field: "purpose" | "debt",
+        ): Promise<WorkspaceExpectation[typeof field]> {
+          const value = option[field];
 
-        const path = `workspaces.globs.${glob}.purpose`;
+          if (value === undefined) {
+            return;
+          }
 
-        return freeze({
-          glob,
-          purpose: freeze({
-            value: purpose,
+          const path = `workspaces.globs.${glob}.${field}`;
+
+          return freeze({
+            value,
             config: freeze({
               key: "workspaces.options",
               path,
               // @debt the origin path splits on dots, so a glob holding one resolves another path's origin
               origin: await config.origin("workspaces.options", path),
             }),
-          }),
+          });
+        }
+
+        const [
+          purpose,
+          debt,
+        ] = await Promise.all([declare("purpose"), declare("debt")]);
+
+        return freeze({
+          glob,
+          ...(purpose === undefined ? {} : { purpose }),
+          ...(debt === undefined ? {} : { debt }),
         });
       },
     ),

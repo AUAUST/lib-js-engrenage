@@ -6,5 +6,6 @@ export interface Scope {
   readonly dir: Directory;
   readonly parent: string | undefined;
   readonly purpose?: string;
+  readonly debt?: string;
   readonly namespaces: readonly NamespaceInstance[];
 }

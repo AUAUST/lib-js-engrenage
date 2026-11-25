@@ -7,6 +7,7 @@ import {
   defaultEffectLevels,
   effectLevelPurposes,
 } from "#batiment/roles/constants";
+import { renderPurpose } from "#batiment/structure/utils/renderPurpose";
 import type {
   ResolvedRoleContract,
   ResolvedRoles,
@@ -115,7 +116,7 @@ export function renderProjectMapRoles(
         .filter((value) => value !== undefined)
         .join(", ");
 
-      const purpose = (contract.purpose ?? "").replaceAll("|", String.raw`\|`);
+      const purpose = renderPurpose(contract).replaceAll("|", String.raw`\|`);
 
       return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${namespaces.map(code).join(", ")} |`;
     }),

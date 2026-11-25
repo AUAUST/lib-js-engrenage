@@ -40,6 +40,14 @@ export interface WorkspacesInput {
            */
           purpose?: string | undefined;
           /**
+           * Why the member does not fit the project's Compass, such as the earlier
+           * decision it stands on: agents decouple it at each opportunity and
+           * never take it as precedent.
+           *
+           * @default none
+           */
+          debt?: string | undefined;
+          /**
            * Globs, inside each workspace, of files produced by tools, handled
            * as `src.generated` is.
            *

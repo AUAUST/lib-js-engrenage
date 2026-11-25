@@ -341,6 +341,41 @@ describe("project map", () => {
     expect(source).toContain("└─ feature  [debt: Belongs elsewhere.]");
   });
 
+  test("renders each role's and workspace's debt beside its purpose", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        workspaces: {
+          globs: {
+            "extensions/*": { name: "@x/${workspacePlaceholder}", debt: "Hosted here." },
+          },
+        },
+        src: {
+          roles: ${renderCodeRoles(handlers({ debt: "Too generic." }))},
+          structure: { purpose: "The code." },
+        },
+      };`,
+      "src/feature/index.ts": "",
+      "src/feature/handlers/run.ts": "",
+      "extensions/a/package.json": '{ "name": "@x/a", "type": "module" }',
+      "extensions/a/.workspace.json": '{ "purpose": "The extension." }',
+    });
+
+    await syncProject(project);
+
+    const overview = project.read(overviewFile);
+
+    expect(overview).toContain(
+      "| `handlers` | Request handlers.  [debt: Too generic.] |",
+    );
+
+    expect(overview).toContain(
+      "| `extensions/a` | The extension.  [debt: Hosted here.] | none |",
+    );
+  });
+
   test("omits the test files section without a test namespace", async () => {
     const project = createProject();
 

@@ -9,8 +9,8 @@ import {
   importCategories,
   importRelations,
 } from "#batiment/structure/constants";
-import { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
+import { renderPurpose } from "#batiment/structure/utils/renderPurpose";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
@@ -168,12 +168,12 @@ export function renderProjectMap({
     ...namespaces.map(({ id, purpose, debt }) => {
       const root = getOwn(structure, id)?.root;
 
-      const described = [
-        root?.purpose ?? purpose,
-        renderDebtNote(root?.debt ?? debt),
-      ].filter((part) => part !== undefined);
+      const described = renderPurpose({
+        purpose: root?.purpose ?? purpose,
+        debt: root?.debt ?? debt,
+      });
 
-      return `| ${code(id)} | ${described.join("  ")} |`;
+      return `| ${code(id)} | ${described} |`;
     }),
     "",
     `The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),
@@ -215,7 +215,9 @@ export function renderProjectMap({
           "| Workspace | Purpose | Scope dependencies |",
           "| --- | --- | --- |",
           ...[...grants.scopes].map(([scope, dependencies]) => {
-            return `| ${code(scope)} | ${getOwn(tree.scopes, scope)?.purpose ?? ""} | ${dependencies.length === 0 ? "none" : list(dependencies)} |`;
+            const { purpose, debt } = getOwn(tree.scopes, scope) ?? {};
+
+            return `| ${code(scope)} | ${renderPurpose({ purpose, debt })} | ${dependencies.length === 0 ? "none" : list(dependencies)} |`;
           }),
         ]),
     ...renderProjectMapRoles(structure, roles),

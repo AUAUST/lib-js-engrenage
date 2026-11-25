@@ -30,6 +30,7 @@ function contract(
     unique: false,
     required: false,
     purpose: undefined,
+    debt: undefined,
     effects: undefined,
     rules: undefined,
     ...overrides,

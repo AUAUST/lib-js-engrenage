@@ -1170,3 +1170,8 @@ entries:
     tried: filling @auaust/engrenage section references in a createTemporaryProject test
     stopped: blocks left untouched with a warning; fixed by linkSourcePackage into node_modules
     created: 2026-11-25T11:50:04Z
+  - id: FR-990e2d
+    subject: barrel export for new schema
+    tried: engrenage sync after importing a new module through a barrel
+    stopped: sync loads the stale barrel first; added the export line by hand
+    created: 2026-11-25T12:32:38Z

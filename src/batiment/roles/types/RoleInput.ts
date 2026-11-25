@@ -18,6 +18,11 @@ export interface RoleInput {
    */
   purpose?: (string | undefined)
   /**
+   * Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.
+   * @default none
+   */
+  debt?: (string | undefined)
+  /**
    * Makes the role a file role, matched by these names or globs; a nested role's also match files at its owner's root. `<domain>` stands for the name of the nearest enclosing namespace or domain, `<Domain>` for it in PascalCase, which only a nested role takes.
    * @default none
    */

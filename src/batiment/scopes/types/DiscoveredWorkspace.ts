@@ -5,5 +5,6 @@ export interface DiscoveredWorkspace {
   readonly dir: Directory;
   readonly file: File;
   readonly purpose?: string;
+  readonly debt?: string;
   readonly remainder: Readonly<Record<string, unknown>>;
 }

@@ -29,6 +29,7 @@ export type * from "#batiment/scopes/types/TestVariant";
 // @end
 
 // @barrel config/schemas
+export { debtSchema } from "#batiment/scopes/config/schemas/debtSchema";
 export { domainMetadataSchema } from "#batiment/scopes/config/schemas/domainMetadataSchema";
 export { domainSchema } from "#batiment/scopes/config/schemas/domainSchema";
 export { namespaceMetadataSchema } from "#batiment/scopes/config/schemas/namespaceMetadataSchema";

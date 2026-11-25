@@ -37,11 +37,20 @@ interface ScopeTreeRootNamespace extends ScopeTreeNamespace {
   readonly title: string;
 }
 
+type WorkspaceStatement = "purpose" | "debt";
+
 interface ScopeTreeWorkspace {
   readonly dir: Directory;
   readonly namespaces: readonly ScopeTreeNamespace[];
-  readonly purpose?: { readonly value: string; readonly file: File };
-  readonly declared?: { readonly value: string; readonly config: OptionSource };
+  readonly metafile?: {
+    readonly file: File;
+  } & Partial<Record<WorkspaceStatement, string>>;
+  readonly declared?: Partial<
+    Record<
+      WorkspaceStatement,
+      { readonly value: string; readonly config: OptionSource }
+    >
+  >;
 }
 
 function isInside(dir: Directory, base: Directory): boolean {
@@ -85,28 +94,32 @@ function createNamespaces(
   );
 }
 
-function resolvePurpose(
-  { dir, purpose, declared }: ScopeTreeWorkspace,
+function resolveStatement(
+  field: WorkspaceStatement,
+  { dir, metafile, declared }: ScopeTreeWorkspace,
   diagnostics: StructureDiagnostic[],
 ): string | undefined {
-  if (purpose === undefined) {
-    return declared?.value;
+  const stated = metafile?.[field];
+  const config = declared?.[field];
+
+  if (metafile === undefined || stated === undefined) {
+    return config?.value;
   }
 
-  if (declared?.config.origin?.layer === "input") {
+  if (config?.config.origin?.layer === "input") {
     diagnostics.push(
       freeze({
         severity: "error",
         code: "config-metafile-conflict",
-        message: `${dir} sets purpose in both ${declared.config.path} and ${purpose.file}; keeping the value of ${purpose.file}`,
+        message: `${dir} sets ${field} in both ${config.config.path} and ${metafile.file}; keeping the value of ${metafile.file}`,
         path: dir,
-        files: freeze([purpose.file]),
-        config: declared.config,
+        files: freeze([metafile.file]),
+        config: config.config,
       }),
     );
   }
 
-  return purpose.value;
+  return stated;
 }
 
 export function createScopeTree({
@@ -205,13 +218,15 @@ export function createScopeTree({
       }
     }
 
-    const purpose = resolvePurpose(workspace, diagnostics);
+    const purpose = resolveStatement("purpose", workspace, diagnostics);
+    const debt = resolveStatement("debt", workspace, diagnostics);
 
     scopes[dir] = freeze({
       key: dir,
       dir,
       parent: rootScope,
       ...(purpose === undefined ? {} : { purpose }),
+      ...(debt === undefined ? {} : { debt }),
       namespaces: createNamespaces(dir, workspace.namespaces),
     });
   }

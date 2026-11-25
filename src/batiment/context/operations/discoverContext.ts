@@ -290,10 +290,10 @@ export async function discoverContext(
       return { ...namespace, title: placement.title };
     }),
     workspaces: workspaces.map(
-      ({ workspace: { dir, file, purpose }, glob }, index) => {
+      ({ workspace: { dir, file, purpose, debt }, glob }, index) => {
         const declared = root.workspaces.find((workspace) => {
           return workspace.glob === glob;
-        })?.purpose;
+        });
 
         return {
           dir,
@@ -301,11 +301,11 @@ export async function discoverContext(
             workspaceNamespaces[index] ?? [],
             ({ namespace }) => namespace,
           ),
-          ...(purpose === undefined
-            ? {}
-            : {
-                purpose: { value: purpose, file },
-              }),
+          metafile: {
+            file,
+            ...(purpose === undefined ? {} : { purpose }),
+            ...(debt === undefined ? {} : { debt }),
+          },
           ...(declared === undefined ? {} : { declared }),
         };
       },

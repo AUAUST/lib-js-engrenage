@@ -4,4 +4,5 @@ import type { Glob } from "#types/Glob";
 export interface WorkspaceExpectation {
   readonly glob: Glob;
   readonly purpose?: { readonly value: string; readonly config: OptionSource };
+  readonly debt?: { readonly value: string; readonly config: OptionSource };
 }

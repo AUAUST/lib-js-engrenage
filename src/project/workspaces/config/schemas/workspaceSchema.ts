@@ -1,5 +1,6 @@
 import { string } from "valibot";
 
+import { debtSchema } from "#batiment/scopes/index";
 import {
   declare,
   declareList,
@@ -21,6 +22,7 @@ export const workspaceSchema = declareObject(
       description: "Purpose of every workspace the glob matches, unless its `.workspace.json` sets one.",
       optional: { value: undefined },
     }),
+    debt: debtSchema,
     generated: declareList(globSchema, {
       description: "Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.",
       optional: { value: [] },

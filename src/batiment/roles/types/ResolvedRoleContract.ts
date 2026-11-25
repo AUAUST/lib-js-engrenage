@@ -33,5 +33,6 @@ export interface ResolvedRoleContract {
   readonly required: boolean;
   readonly effects: string | undefined;
   readonly purpose: string | undefined;
+  readonly debt: string | undefined;
   readonly rules: RoleRules | undefined;
 }

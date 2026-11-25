@@ -969,3 +969,13 @@ entries:
     need: positional usage errors for invocation 1
     reason: parent operands and mandatory options still checked natively
     created: 2026-11-25T09:45:49Z
+  - id: DS-a80101
+    subject: debtField moved into batiment/roles
+    need: role debt reusing the kind-neutral field
+    reason: "roles purpose covers role contracts only: placement debt"
+    created: 2026-11-25T12:16:25Z
+  - id: DS-524674
+    subject: debt description as src global constant
+    need: role and workspace debt sharing one declaration
+    reason: global constants would hold project-model knowledge
+    created: 2026-11-25T12:16:25Z

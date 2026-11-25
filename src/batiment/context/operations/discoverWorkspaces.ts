@@ -42,6 +42,7 @@ async function readWorkspace(
     dir: posix.dirname(file),
     file,
     ...(metadata.purpose === undefined ? {} : { purpose: metadata.purpose }),
+    ...(metadata.debt === undefined ? {} : { debt: metadata.debt }),
     remainder: freeze(omit(metadata, ...keys(fields))),
   });
 }
