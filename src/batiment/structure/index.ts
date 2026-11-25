@@ -52,6 +52,7 @@ export type * from "#batiment/structure/ports/StaticLayout";
 export { checkBoundary } from "#batiment/structure/utils/checkBoundary";
 export { checkLayers } from "#batiment/structure/utils/checkLayers";
 export { checkNamespaces } from "#batiment/structure/utils/checkNamespaces";
+export { checkPeerOrder } from "#batiment/structure/utils/checkPeerOrder";
 export { checkSurfaces } from "#batiment/structure/utils/checkSurfaces";
 export { checkTests } from "#batiment/structure/utils/checkTests";
 export { checkWorkspaces } from "#batiment/structure/utils/checkWorkspaces";
@@ -86,6 +87,7 @@ export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingD
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";
 export { listDirectoriesRootDiagnostics } from "#batiment/structure/utils/listDirectoriesRootDiagnostics";
 export { listDirectoryLineages } from "#batiment/structure/utils/listDirectoryLineages";
+export { listImportableDirectories } from "#batiment/structure/utils/listImportableDirectories";
 export { listKindConflictPaths } from "#batiment/structure/utils/listKindConflictPaths";
 export { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 export { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";

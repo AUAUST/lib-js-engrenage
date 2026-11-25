@@ -2,6 +2,7 @@ import { min } from "@auaust/toolkit/math";
 import { freeze } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
+import { checkPeerOrder } from "#batiment/structure/utils/checkPeerOrder";
 import { getLineageDirectory } from "#batiment/structure/utils/getLineageDirectory";
 import type { BoundaryCause } from "#batiment/structure/types/BoundaryCause";
 import type { BoundaryViolation } from "#batiment/structure/types/BoundaryViolation";
@@ -168,21 +169,9 @@ export function checkBoundary(
       return;
     }
 
-    if (container.layers !== undefined) {
-      if (
-        from.layer === undefined ||
-        to.layer === undefined ||
-        to.layer > from.layer
-      ) {
-        return violation("higherLayer", container);
-      }
+    const cause = checkPeerOrder(container, from, to);
 
-      if (to.layer < from.layer) {
-        return reach();
-      }
-    }
-
-    return container.isolated ? violation("isolatedPeer", container) : reach();
+    return cause === undefined ? reach() : violation(cause, container);
   }
 
   function acrossDirectories(

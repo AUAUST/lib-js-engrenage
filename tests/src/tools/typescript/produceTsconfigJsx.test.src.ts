@@ -28,6 +28,7 @@ function preact() {
 async function syncProject(
   environments: Record<string, unknown>,
   files: Record<string, string> = {},
+  structure: Record<string, unknown> = {},
 ) {
   const project = createTemporaryProject({
     "package.json": "{}",
@@ -55,6 +56,7 @@ async function syncProject(
       },
       src: {
         dirs: ["src", "admin"],
+        structure,
       },
     }),
     configFile: undefined,
@@ -104,6 +106,35 @@ describe("produceTsconfigJsx", () => {
     });
 
     expect(listDiagnosticCodes("tsconfig.tests.json")).not.toContain(jsxNotSet);
+  });
+
+  test("gives an environment no JSX settings from a directory above its own in the namespace's root layers", async () => {
+    const { read } = await syncProject(
+      {},
+      {},
+      {
+        layers: ["src", "*"],
+        domains: {
+          ui: { public: true },
+        },
+      },
+    );
+
+    expect(read("tsconfig.src.json").compilerOptions).not.toHaveProperty("jsx");
+
+    expect(read("tsconfig.src.json").compilerOptions).not.toHaveProperty(
+      "jsxImportSource",
+    );
+
+    expect(read("tsconfig.admin.json").compilerOptions).toMatchObject({
+      jsx: "react-jsx",
+      jsxImportSource: "preact",
+    });
+
+    expect(read("tsconfig.tests.json").compilerOptions).toMatchObject({
+      jsx: "react-jsx",
+      jsxImportSource: "preact",
+    });
   });
 
   test("fails when the environments an environment may import set different JSX flavours", async () => {
