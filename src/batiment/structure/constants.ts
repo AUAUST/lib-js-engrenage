@@ -6,6 +6,8 @@ import type { ImportRelation } from "#batiment/structure/types/ImportRelation";
 
 export const defaultReexport = "namespace" satisfies ReexportMode;
 
+export const fallbackLayer = "*";
+
 export const importRelations = freeze({
   "own-roles": "its own roles and files, excluding its index and entry",
   "global-roles": "the global roles of the top-level namespace root",

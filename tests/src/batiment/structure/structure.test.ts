@@ -1177,4 +1177,30 @@ describe("namespaces spanning several directories", () => {
 
     expect(src!.root.childKind).toBeUndefined();
   });
+
+  test("order directories by root `layers`, failing on an entry naming no directory", async () => {
+    const project = createInterscriptProject(
+      '{ layers: ["src", "*", "shop"] }',
+    );
+
+    const { src } = await loadStructure(project.root);
+
+    expect(src!.root.children).toMatchObject([
+      { path: "src", layer: 0 },
+      { path: "admin", layer: 1 },
+      { path: "storefront", layer: 1 },
+    ]);
+
+    expect(
+      src!.diagnostics.filter(({ code }) => {
+        return code === "unknown-directory-layer";
+      }),
+    ).toMatchObject([
+      {
+        blocking: true,
+        message: expect.stringContaining("naming shop,"),
+        config: { path: "src.structure.layers" },
+      },
+    ]);
+  });
 });

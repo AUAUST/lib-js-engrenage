@@ -23,6 +23,7 @@ const separators = {
   "domain-glob-namespace": "  ",
   "children-domains-namespace": "  ",
   "directories-root-children": "  ",
+  "unknown-directory-layer": "  ",
   "private-domain-entry": "  ",
   "collected-role-not-public": "  ",
   "unknown-public-role": "  ",

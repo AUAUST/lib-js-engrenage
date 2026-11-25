@@ -8,6 +8,7 @@ taps:
   - {id: FR-dc82e8, at: 2026-11-25T18:01:51Z, note: "probe under pnpm engrenage vitest: wrote output to a scratchpad file"}
   - {id: FR-990e2d, at: 2026-11-25T18:56:04Z, note: barrel export missing before sync}
   - {id: FR-6bf8ff, at: 2026-11-25T19:05:11Z, note: sync loads stale barrel}
+  - {id: FR-990e2d, at: 2026-11-25T21:25:43Z, note: barrel export before sync}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

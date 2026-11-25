@@ -2,6 +2,7 @@ import { min } from "@auaust/toolkit/math";
 import { freeze } from "@auaust/toolkit/object";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
+import { getLineageDirectory } from "#batiment/structure/utils/getLineageDirectory";
 import type { BoundaryCause } from "#batiment/structure/types/BoundaryCause";
 import type { BoundaryViolation } from "#batiment/structure/types/BoundaryViolation";
 import type { Entity } from "#batiment/structure/types/Entity";
@@ -17,14 +18,19 @@ function isOnSurface({ public: exposed, role }: Entity): boolean {
   return exposed && role !== entryRoleName;
 }
 
-// @debt the entity index builds one root member per directory of a namespace, so lineage identity holds only below the root and callers must first match the namespaces
-function divergenceBelowRoot(
+function isAtDirectoryRoot({ lineage }: Entity): boolean {
+  const directory = getLineageDirectory(lineage);
+
+  return directory !== undefined && lineage.at(-1) === directory;
+}
+
+function divergence(
   importer: readonly LineageMember[],
   target: readonly LineageMember[],
 ): number {
   const shared = min(importer.length, target.length);
 
-  for (let index = 1; index < shared; index++) {
+  for (let index = 0; index < shared; index++) {
     if (importer[index] !== target[index]) {
       return index;
     }
@@ -72,17 +78,16 @@ function checkConsumerReach(
   kind: ImportKind,
 ): BoundaryViolation | undefined {
   const targetOwner = target.lineage.at(-1);
+  const global = isAtDirectoryRoot(target);
 
   if (
     targetOwner === undefined ||
-    (target.lineage.length === 1
-      ? isIndexOrEntry(target)
-      : targetOwner.kind !== "domain")
+    (global ? isIndexOrEntry(target) : targetOwner.kind !== "domain")
   ) {
     return;
   }
 
-  if (target.lineage.length > 1 && !target.public) {
+  if (!global && !target.public) {
     return privateRole(targetOwner, target);
   }
 
@@ -112,8 +117,8 @@ export function checkBoundary(
   const targetLineage = target.lineage;
   const owner = importerLineage.at(-1);
   const targetOwner = targetLineage.at(-1);
-  const atRoot = importerLineage.length === 1;
-  const global = targetLineage.length === 1;
+  const atRoot = isAtDirectoryRoot(importer);
+  const global = isAtDirectoryRoot(target);
 
   // @debt a file at an environment root outside the global roles and the root entry is never checked
   if (
@@ -151,7 +156,10 @@ export function checkBoundary(
     return privateTo(exposer);
   }
 
-  function reachPeer(split: number): BoundaryViolation | undefined {
+  function reachPeer(
+    split: number,
+    reach = () => reachSurface(split),
+  ): BoundaryViolation | undefined {
     const container = importerLineage[split - 1];
     const from = importerLineage[split];
     const to = targetLineage[split];
@@ -170,13 +178,21 @@ export function checkBoundary(
       }
 
       if (to.layer < from.layer) {
-        return reachSurface(split);
+        return reach();
       }
     }
 
-    return container.isolated
-      ? violation("isolatedPeer", container)
-      : reachSurface(split);
+    return container.isolated ? violation("isolatedPeer", container) : reach();
+  }
+
+  function acrossDirectories(
+    reach: () => BoundaryViolation | undefined,
+  ): BoundaryViolation | undefined {
+    const split = divergence(importerLineage, targetLineage);
+
+    return importerLineage[split]?.kind === "directory"
+      ? reachPeer(split, reach)
+      : reach();
   }
 
   function decide(
@@ -184,20 +200,22 @@ export function checkBoundary(
     targetDomain: LineageMember,
   ): BoundaryViolation | undefined {
     if (atRoot) {
-      if (importer.kind === "role") {
-        if (global) {
-          return;
+      return acrossDirectories(() => {
+        if (importer.kind === "role") {
+          if (global) {
+            return;
+          }
+
+          return kind === "type"
+            ? reachSurface(divergence(importerLineage, targetLineage))
+            : violation("globalRole");
         }
 
-        return kind === "type"
-          ? reachSurface(divergenceBelowRoot(importerLineage, targetLineage))
-          : violation("globalRole");
-      }
-
-      return global || target.public ? undefined : privateTo(targetDomain);
+        return global || target.public ? undefined : privateTo(targetDomain);
+      });
     }
 
-    const split = divergenceBelowRoot(importerLineage, targetLineage);
+    const split = divergence(importerLineage, targetLineage);
     const within = split === targetLineage.length;
 
     if (importer.kind === "domain" && importer.role === entryRoleName) {
@@ -205,6 +223,7 @@ export function checkBoundary(
         return isOnSurface(target) ? undefined : privateTo(domain);
       }
 
+      // @debt an entry collects a role from every domain past layers and directory order, so a lower directory's entry re-exports a higher directory's modules
       if (
         target.role !== undefined &&
         importer.collects.includes(target.role) &&

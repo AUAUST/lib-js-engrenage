@@ -146,7 +146,13 @@ describe("createEntityIndex", () => {
       role: "utils",
       lineage: [
         {
+          path: ".",
+          kind: "namespace",
+          layers: undefined,
+        },
+        {
           path: "src",
+          kind: "directory",
           layers: ["foundation", "project"],
         },
         {

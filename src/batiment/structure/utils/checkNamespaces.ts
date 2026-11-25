@@ -6,6 +6,7 @@ import {
   indexRoleName,
 } from "#batiment/roles/constants";
 import { getImportCategory } from "#batiment/structure/utils/getImportCategory";
+import { getLineageDirectory } from "#batiment/structure/utils/getLineageDirectory";
 import type { BoundaryViolation } from "#batiment/structure/types/BoundaryViolation";
 import type { Entity } from "#batiment/structure/types/Entity";
 import type { ImportEdge } from "#batiment/structure/types/ImportEdge";
@@ -15,11 +16,14 @@ function isRootFile(
   { namespace, lineage, path, role }: Entity,
   elements: ImportGrants["elements"],
 ): boolean {
+  const directory = getLineageDirectory(lineage);
+
   return (
     namespace !== undefined &&
     elements.includes(namespace) &&
-    lineage.length === 1 &&
-    lineage[0]?.path === path &&
+    directory !== undefined &&
+    lineage.at(-1) === directory &&
+    directory.path === path &&
     (role === indexRoleName || role === entryRoleName)
   );
 }

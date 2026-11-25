@@ -3,6 +3,7 @@ import { relative } from "node:path";
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
 import {
+  getLineageDirectory,
   getTargetScope,
   type BoundaryCause,
   type BoundaryViolation,
@@ -78,18 +79,28 @@ export function defineBoundaryRule({
       target,
     } = edge;
 
-    const environment = (
-      importer?.lineage[0]?.path ?? importer?.path ?? projectRoot
-    );
+    const directory = importer === undefined
+      ? undefined
+      : getLineageDirectory(importer.lineage);
+
+    const environment = directory?.path ?? importer?.path ?? projectRoot;
 
     const owner = importer?.lineage.at(-1)?.path ?? environment;
     const boundaryPath = boundary?.path ?? environment;
     const path = within(projectRoot, file);
 
     // @debt a boundary in another environment or another directory of the importer's namespace renders relative to the importer's directory, as `../admin/…`
-    const boundaryName = boundaryPath === environment
-      ? environment
-      : within(environment, boundaryPath);
+    function nameBoundary(): string {
+      if (boundary !== undefined && boundary === importer?.lineage[0]) {
+        return importer.namespace ?? environment;
+      }
+
+      return boundaryPath === environment
+        ? environment
+        : within(environment, boundaryPath);
+    }
+
+    const boundaryName = nameBoundary();
 
     const guidance = importer?.variant === undefined
       ? undefined

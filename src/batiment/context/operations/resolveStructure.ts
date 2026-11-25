@@ -1,8 +1,10 @@
+import { posix } from "node:path";
+
 import { freeze, record, values } from "@auaust/toolkit/object";
 
 import { resolveNamespaceStructure } from "#batiment/context/operations/resolveNamespaceStructure";
-import { namespaceMetadataFile } from "#batiment/scopes/constants";
 import {
+  listDirectoriesRootDiagnostics,
   listNamespaceDirectories,
   listStructureDiagnostics,
   listUnreachedDeclarations,
@@ -103,23 +105,24 @@ async function resolveNamespace({
 
   const spansDirectories = directories.length > 1;
 
-  if (spansDirectories && rootDeclaration?.children !== undefined) {
-    const path = `${optionPaths[namespaceRoot] ?? namespaceRoot}.children`;
-    const origin = origins.get(path);
-
+  if (spansDirectories) {
     diagnostics.push(
-      freeze({
-        severity: "error",
-        code: "directories-root-children",
-        message: `${name} spans the directories ${directories.join(", ")}, so its root holds directories and takes no children; set children in each directory's ${namespaceMetadataFile}`,
-        blocking: true,
+      ...listDirectoriesRootDiagnostics({
         namespace: name,
-        files: freeze([]),
-        config: freeze({
-          key,
-          path,
-          ...(origin === undefined ? {} : { origin }),
+        directories: directories.map((directory) => {
+          return posix.relative(scope, directory);
         }),
+        declaration: rootDeclaration,
+        configOf(field) {
+          const path = `${optionPaths[namespaceRoot] ?? namespaceRoot}.${field}`;
+          const origin = origins.get(path);
+
+          return freeze({
+            key,
+            path,
+            ...(origin === undefined ? {} : { origin }),
+          });
+        },
       }),
     );
   }

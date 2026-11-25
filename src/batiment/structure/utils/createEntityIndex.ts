@@ -26,13 +26,12 @@ import { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation
 import { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
 import { inheritPublicRoles } from "#batiment/structure/utils/inheritPublicRoles";
 import { isPublicRole } from "#batiment/structure/utils/isPublicRole";
+import { listDirectoryLineages } from "#batiment/structure/utils/listDirectoryLineages";
 import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
-import { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { EntityIndex } from "#batiment/structure/apis/EntityIndex";
 import type { Entity } from "#batiment/structure/types/Entity";
-import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { LocatedEntity } from "#batiment/structure/types/LocatedEntity";
 import type { NamedFileRole } from "#batiment/structure/types/NamedFileRole";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
@@ -51,7 +50,6 @@ interface CodeNamespace {
 
 const projectRoot = ".";
 const selfSubpath = ".";
-const noLineage: readonly LineageMember[] = freeze([]);
 const noNamedFileRoles: readonly NamedFileRole[] = freeze([]);
 
 function sortVariants(
@@ -247,13 +245,14 @@ export function createEntityIndex({
     }
 
     const { root: tree, name } = namespace;
+    const lineages = listDirectoryLineages(namespace);
 
-    for (const { directory, node } of listNamespaceDirectories(namespace)) {
+    for (const { directory, node, lineage } of lineages) {
       const entity: Entity = freeze({
         ...createStructureEntity(name, directory, rootScope),
         kind: node.kind,
         group: tree.group === true,
-        lineage: extendEntityLineage(noLineage, node, directory),
+        lineage,
         location: extendRoleLocation(
           createStructureEntity(name, directory, rootScope).location,
           {

@@ -67,6 +67,7 @@ export { findStructureAliases } from "#batiment/structure/utils/findStructureAli
 export { flattenStructure } from "#batiment/structure/utils/flattenStructure";
 export { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
 export { getImportCategory } from "#batiment/structure/utils/getImportCategory";
+export { getLineageDirectory } from "#batiment/structure/utils/getLineageDirectory";
 export { getLocalRoleName } from "#batiment/structure/utils/getLocalRoleName";
 export { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
 export { getNamespaceRootRole } from "#batiment/structure/utils/getNamespaceRootRole";
@@ -83,6 +84,8 @@ export { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 export { isViolatingNode } from "#batiment/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingDiagnostics";
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";
+export { listDirectoriesRootDiagnostics } from "#batiment/structure/utils/listDirectoriesRootDiagnostics";
+export { listDirectoryLineages } from "#batiment/structure/utils/listDirectoryLineages";
 export { listKindConflictPaths } from "#batiment/structure/utils/listKindConflictPaths";
 export { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 export { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";

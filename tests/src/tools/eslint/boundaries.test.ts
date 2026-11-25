@@ -190,6 +190,29 @@ function createSpanningProject() {
   });
 }
 
+function createRuntimesProject(relation: "peers" | "isolated") {
+  return createTemporaryProject({
+    "package.json": JSON.stringify({
+      name: "library",
+      type: "module",
+      imports: {
+        "#core/*": "./src/core/*.ts",
+        "#ui/*": "./admin/ui/*.ts",
+        "#cart/*": "./storefront/cart/*.ts",
+      },
+    }),
+    "engrenage.config.ts": `export default { preset: "library", src: { dirs: ["src", "admin", "storefront"], roles: ${renderCodeRoles(entry())}, structure: { layers: ["src", "*"], relation: "${relation}", domains: { ui: { public: true } } } } };\n`,
+    "tsconfig.json": "{}",
+    "src/entry.ts": exported,
+    "src/core/index.ts": exported,
+    "src/core/utils/own.ts": exported,
+    "admin/entry.ts": exported,
+    "admin/ui/index.ts": exported,
+    "admin/ui/entry.ts": exported,
+    "storefront/cart/index.ts": exported,
+  });
+}
+
 function createConsumerProject() {
   const operations = createRolePreset({ name: "operations" });
 
@@ -473,6 +496,66 @@ describe("structure boundaries", () => {
     );
 
     expect(message).toContain("is a package entry");
+  });
+
+  test("orders the directories of one namespace by its root layers", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createRuntimesProject("peers"),
+    );
+
+    const messages = await lint.messages(
+      "src/core/index.ts",
+      'export { value } from "#ui/index";\n',
+    );
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]).toContain("src < *");
+
+    expect(
+      await lint("admin/ui/index.ts", 'export { value } from "#core/index";\n'),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "admin/ui/index.ts",
+        'export { value } from "#core/utils/own";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+
+    expect(
+      await lint("admin/ui/index.ts", 'export { value } from "#cart/index";\n'),
+    ).toEqual([]);
+
+    expect(
+      await lint("src/entry.ts", 'export { value } from "#ui/index";\n'),
+    ).toEqual(["auaust/import-layers"]);
+
+    expect(
+      await lint("admin/entry.ts", 'export { value } from "#core/index";\n'),
+    ).toEqual([]);
+  });
+
+  test("keeps the peer directories of an isolated namespace apart, root entries included", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createRuntimesProject("isolated"),
+    );
+
+    const [message] = await lint.messages(
+      "admin/ui/index.ts",
+      'export { value } from "#cart/index";\n',
+    );
+
+    expect(message).toContain("peers of the isolated `src`");
+
+    expect(
+      await lint("admin/entry.ts", 'export { value } from "#cart/index";\n'),
+    ).toEqual(["auaust/import-layers"]);
+
+    expect(
+      await lint("admin/ui/index.ts", 'export { value } from "#core/index";\n'),
+    ).toEqual([]);
   });
 
   test("lets a peer import the constants of a domain", async () => {

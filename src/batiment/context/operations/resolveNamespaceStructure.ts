@@ -17,6 +17,7 @@ import {
 import {
   collectStructureNodes,
   createMirrorClassifier,
+  getStructureLayer,
   groupRoleFiles,
   listStructureRoles,
   loosenStructureNode,
@@ -244,11 +245,19 @@ export async function resolveNamespaceStructure({
     ...(keys(rootRoleFiles).length === 0 ? {} : { roleFiles: rootRoleFiles }),
     children: spansDirectories
       ? walked.map((each): StructureNode => {
+          const directoryName = posix.relative(scope, each.directory);
+
+          const layer = getStructureLayer(
+            directoryName,
+            rootDeclaration?.layers,
+          );
+
           return freeze({
             path: each.directory,
-            name: posix.relative(scope, each.directory),
+            name: directoryName,
             kind: "directory",
             source: each.declaration?.source ?? "inferred",
+            ...(layer === undefined ? {} : { layer }),
             ...describeNamespace(each.declaration),
             ...(keys(each.roleFiles).length === 0
               ? {}
