@@ -875,3 +875,7 @@ entries:
     subject: eslint suppressions shift error counts
     tried: comparing reported import-specifiers counts before and after a fix
     stopped: suppression counts absorbed 9 unchanged errors; counted suppressedMessages too
+  - id: 261125-099a
+    subject: vitest console output in tests
+    tried: console.log timings from a test
+    stopped: silenced, then stderr guard failed the test; wrote stderr with --silent=false and removed it

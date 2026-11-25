@@ -22,6 +22,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ jsdoc  Parse and print JSDoc blocks.
 │  ├─ json  Read and edit JSON while preserving its formatting and comments, through jsonc-parser's edit API.
 │  ├─ markdown  Parse Markdown structure: frontmatter, sections and prose.
+│  ├─ matching  Match and rank text against queries: the query tree, swappable matchers and field-weighted ranking.
 │  ├─ modules  Load lazily imported modules and resolve the export they provide.
 │  ├─ options  Declare and validate configuration options.
 │  ├─ processes  Run external processes.

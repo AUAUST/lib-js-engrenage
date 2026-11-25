@@ -747,3 +747,7 @@ entries:
     subject: fuse.js
     need: ranked fielded record search
     reason: fuzzy-only scoring, no query syntax or per-string matcher; corpus small
+  - id: 261125-bbf9
+    subject: "@auaust/toolkit unaccent"
+    need: text normalization for matching
+    reason: NFD not NFKD, per-character spread too slow for the ranking budget
