@@ -244,12 +244,6 @@ entries:
     why: "#675 › Decisions lets nested tests import root `tests` helpers; #800 and #743 › Decisions seal `tests` inward."
     want: 'decide among an opt-in per workspace tests environment, `inward: "surface"` for `tests` (`tests/utils`, `tests/fixtures`, as #728 recommends), or a separate helpers kind.'
     created: 2026-11-22T00:00:00Z
-  - id: BL-0c171a
-    title: Packages, repositories and environments declare no scope an architecture review can judge against
-    why: only namespaces and domains carry a purpose; the architecture review (data/metalbrain/shared/architecture-review.md) must ask the user for any wider scope, every review
-    want: a declared scope for the project and each environment, rendered into the project maps beside namespace and domain purposes
-    done: the project maps state a scope for the root and each environment
-    created: 2026-11-22T00:00:00Z
   - id: BL-5687d8
     title: Extensions reach other domains' constants only through re-exports
     sites:
@@ -294,3 +288,11 @@ entries:
     why: "Since #729 public role modules are exported, and #906 adds `publicRoles`"
     want: The description states what `public` now does for imports and package exports
     created: 2026-11-25T06:39:43Z
+  - id: BL-600a9b
+    title: Member metafiles cannot carry fields another layer owns
+    sites:
+      - src/batiment/scopes/config/declarers/declareStructureNodes.ts:71
+    why: "member debt belongs to tools/metalbrain but batiment declares it: closed schemas and static codegen"
+    want: a project/structure slot through which extensions contribute member fields, schemas and published JSON schemas built from it
+    done: debt moves to tools/metalbrain, once a second contributed field appears (#916 Decisions)
+    created: 2026-11-25T12:27:07Z

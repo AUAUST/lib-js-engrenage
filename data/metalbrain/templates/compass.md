@@ -1,0 +1,1 @@
+The project states no Compass yet. In the main session, before acting on the first request, draft with the user a paragraph stating what the project does, set it as `agents.compass` in the engrenage config, then run `pnpm engrenage sync`.

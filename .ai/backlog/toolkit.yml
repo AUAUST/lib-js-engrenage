@@ -12,12 +12,6 @@ entries:
     want: "`string[]` (ideally `[string, ...string[]]`)."
     done: the guard narrows as expected in a released toolkit version.
     created: 2026-11-22T00:00:00Z
-  - id: BL-93ded8
-    title: "Toolkit has no `RegExp.escape` substitute, and engrenage pins `node: 24` meanwhile."
-    why: "`@auaust/toolkit` has no regex domain exposing `RegExp.escape`, which is not widely available until `ES2025` is standard."
-    want: "a toolkit regex domain with an `escape` method; engrenage then drops the `node: 24` option in `engrenage.config.ts` and relies on its own default again."
-    done: the toolkit exposes `escape` and `engrenage.config.ts` no longer sets `node`.
-    created: 2026-11-22T00:00:00Z
   - id: BL-8ba8a9
     title: Toolkit's `ProtocolRegistry` needs globals the baseline does not declare.
     why: "`ProtocolRegistry` (`src/modules/protocol/types/ProtocolRegistry.ts`) uses `Symbol.dispose`, `Symbol.asyncDispose`, `Disposable` and `AsyncDisposable`, and `src/modules/math/utils/f16round.ts` `Math.f16round`, none declared by a `2026-10` baseline's libs. Decided, options weighed in #128: engrenage ships `disposable` and `float16` `src.apis` groups that never leak into a library's published declarations (#128, plan #119, verified by #127)."

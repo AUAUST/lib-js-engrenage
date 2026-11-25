@@ -31,7 +31,9 @@ export const agentsSchema = declareObject(
         "The project's Compass: a paragraph stating what the project does, rendered into `AGENTS.md` by the shared `compass` section.",
         "Sync reports a project whose agents lack one.",
       ],
-      optional: unset("none, so the `compass` section renders empty"),
+      optional: unset(
+        "none, so the `compass` section asks agents to draft one with the user",
+      ),
     }),
     preferred: declare(preferredSchema, {
       description: [

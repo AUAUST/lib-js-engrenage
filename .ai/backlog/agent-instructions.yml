@@ -1,4 +1,7 @@
 purpose: Shared agent instructions, skills and the backlog conventions.
+taps:
+  - {id: BL-2b2967, at: 2026-11-25T10:40:40Z, note: main role at 4799 of its 4800 word cap; any always-loaded addition needs a cut first}
+  - {id: BL-2b2967, at: 2026-11-25T11:55:05Z, note: "main cap raised to 4865 for the 65-word Compass (#917); cut back to 4800 in #921"}
 entries:
   - id: BL-46f0f0
     title: Attribution rule conflicts go unreported

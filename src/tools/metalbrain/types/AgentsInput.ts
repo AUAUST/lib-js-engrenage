@@ -7,7 +7,7 @@ export interface AgentsInput {
   /**
    * The project's Compass: a paragraph stating what the project does, rendered into `AGENTS.md` by the shared `compass` section.
    * Sync reports a project whose agents lack one.
-   * @default none, so the `compass` section renders empty
+   * @default none, so the `compass` section asks agents to draft one with the user
    */
   compass?: (string | undefined)
   /**

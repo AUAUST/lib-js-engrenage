@@ -285,6 +285,7 @@ records:
   purpose: "Metalbrain agent records: the record kinds, their IDs and their commands."
   entries:
     - BL-511109
+    - BL-3aa775
 spec-migration:
   purpose: "Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume."
   entries:
@@ -331,13 +332,13 @@ structure:
     - BL-185690
     - BL-6d0e91
     - BL-fbce03
-    - BL-0c171a
     - BL-5687d8
     - BL-d012fb
     - BL-6937f5
     - BL-3000a5
     - BL-3c7795
     - BL-ed6d62
+    - BL-600a9b
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:
@@ -365,7 +366,6 @@ toolkit:
   entries:
     - BL-102287
     - BL-d98d8b
-    - BL-93ded8
     - BL-8ba8a9
     - BL-f91446
     - BL-719310

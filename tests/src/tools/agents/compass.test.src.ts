@@ -37,13 +37,17 @@ test("renders the project's Compass into AGENTS.md through the compass section",
     `{ preferred: ["claude"], compass: ${JSON.stringify(compass)} }`,
   );
 
-  expect(agentsFile).toContain(`## Compass\n\n${compass}\n`);
+  expect(agentsFile).toContain(`\n${compass}\n`);
+
+  expect(agentsFile).not.toContain("agents.compass");
 
   expect(hints).toEqual([]);
 });
 
-test("reports a project without a Compass, naming the option", async () => {
-  const { hints } = await sync('{ preferred: ["claude"] }');
+test("asks agents to draft a missing Compass and reports it, naming the option", async () => {
+  const { agentsFile, hints } = await sync('{ preferred: ["claude"] }');
+
+  expect(agentsFile).toContain("`agents.compass`");
 
   expect(hints.map(({ level }) => level)).toEqual(["info"]);
 });

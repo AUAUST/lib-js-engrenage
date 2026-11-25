@@ -18,7 +18,7 @@ environment          own directories and import rights
 A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too, which no code enforces and no directory name fixes:
 
 - **Foundations.** Primitives every namespace builds on; they build on no namespace.
-- **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level. A helper holding business logic belongs to the domain owning that logic.
+- **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level.
 - **Binding.** The effectful glue injecting one domain into another: `extension.ts`, ports typing what fills a slot. Never support, even when small.
 - **Ambient declarations** (`*.d.ts`). Between support and the environment.
 

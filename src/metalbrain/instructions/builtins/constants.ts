@@ -20,7 +20,7 @@ const agentTools = freeze([
 const researchTools = freeze([...agentTools, "WebSearch", "WebFetch"] as const);
 
 export const builtInInstructions = freeze([
-  // @debt the section renders through the `@compass` filler only engrenage's host contributes, and keeps an empty heading while `agents.compass` is unset
+  // @debt the section renders through the `@compass` filler only engrenage's host contributes
   {
     kind: "section",
     name: "compass",

@@ -6,7 +6,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Compass
 
-The project's Compass, below, states what the project does, so every agent follows one direction; what it leaves unstated is out of scope. A piece of work's Compass merges it with its plan's **Compass** and the `purpose` of each member the work touches; a `purpose` hard to state or overlapping another reveals a design problem. Pause on work outside its Compass, judging each part of work across members by its own; record a Compass or `purpose` the user confirms where its owner states it. On a main session's first request, draft a missing paragraph for `agents.compass` with the user.
+The project's Compass, below, states what the project does, so every agent follows one direction; what it leaves unstated is out of scope. A piece of work's Compass merges it with its plan's **Compass** and the `purpose` of each member the work touches; a `purpose` hard to state or overlapping another reveals a design problem. Pause on work outside its Compass, judging each part of work across members by its own; record a Compass or `purpose` the user confirms where its owner states it. Loosen the ties of a member marked `[debt: …]` to other members wherever your change touches them, and never take it as precedent.
 
 Engrenage orchestrates projects from around their code: it centralises each project's configuration and syncs everything that shapes, checks and ships that code (dependencies, formatting, linting, type checking, tests, builds, git hooks, CI, agent setup) from opinionated defaults the project can extend. It makes those tools work as one: each fact has a single source, each convention is stated once and dispatched to every tool that applies it, and no two tools conflict.
 
@@ -59,14 +59,14 @@ A subagent's final report, per dispatch or resume:
 - Your only message, sent once every command you started has finished.
 - Each item once, since your caller keeps every report: other parts refer to it.
 - Each file named repo-relative, in each item about it: no closing list of files, even where your harness asks for absolute paths.
-- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes.
 - What remains and the kind of work it needs, or that nothing remains: last, unless your brief or skill orders the parts.
 
 ### Stop records
 
 Shape: goal; last operation; what is ready, and where; what is half-done, where, and what it misses; next step.
 
-Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. Neither a main-session pause awaiting answers nor a thoroughness stop (Analysis › Thoroughness levels) is one of them.
+Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. A thoroughness stop (Analysis › Thoroughness levels) is none of them.
 
 1. Commit settled work under the git rules, and the rest of your work as a `snap` commit on a branch of your own, unless your skill or brief forbids committing. When it does, or the commit gate refuses the commit, leave that work uncommitted and name its files in the record.
 2. Write the record into your final report as a subagent, otherwise into `.ai/handoffs/<topic>.md`, local-only, deleted by whoever resumes the work.
@@ -162,7 +162,7 @@ Write commands in POSIX sh, which zsh runs with these traps:
 | zsh never splits an unquoted variable                                                                             | Lists as arrays or through `xargs`                   |
 | In a session started with worktree isolation, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |
 
-- **Claude Code auto mode.** Its classifier denies, scratchpad included, installing a package the lockfile lacks, running downloaded code, and deleting a file that existed before the session with changes no commit holds, unless the user's message names that action. Read the code's source instead of running it; move a replaced file to its successor's path instead of deleting it; otherwise ask the user to name the action, or, as a subagent, report it for your caller.
+- **Claude Code auto mode.** Its classifier denies, scratchpad included, installing a package the lockfile lacks, running downloaded code, and deleting a file that existed before the session with changes no commit holds, unless the user's message names that action. Read the code's source instead of running it; move a replaced file to its successor's path instead of deleting it; otherwise ask the user to name the action, or, as a subagent, report it.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/implementation.md -->
 
@@ -202,7 +202,7 @@ environment          own directories and import rights
 A namespace builds on the layers below it and the foundations, never on one above. Place code by these concepts too, which no code enforces and no directory name fixes:
 
 - **Foundations.** Primitives every namespace builds on; they build on no namespace.
-- **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level. A helper holding business logic belongs to the domain owning that logic.
+- **Support.** `utils`, `types` and constants: generic pure or confined logic deduplicating code, owning no business logic; usable at any level.
 - **Binding.** The effectful glue injecting one domain into another: `extension.ts`, ports typing what fills a slot. Never support, even when small.
 - **Ambient declarations** (`*.d.ts`). Between support and the environment.
 

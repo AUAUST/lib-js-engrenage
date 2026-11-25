@@ -11,13 +11,17 @@ import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { freeze } from "@auaust/toolkit/object";
 
-import { pnpmWorkspaceFile } from "#constants";
+import { engrenage, pnpmWorkspaceFile } from "#constants";
+import { metalbrain } from "#metalbrain/instructions/constants";
 import { gitDirectory } from "#tools/git/constants";
 import type { HookRoots } from "#metalbrain/runtimes/index";
 
 export const agentsTarget = "agents";
 
 export const compassFiller = "compass";
+
+// @debt the missing-Compass text sits in `templates/`, which holds the starting content of agent files, because fragment conditions know only extensions and files, not config values
+export const missingCompassTemplate = `${engrenage}/${metalbrain}/templates/compass.md`;
 
 export const hookRoots: HookRoots = freeze({
   repository: gitDirectory,

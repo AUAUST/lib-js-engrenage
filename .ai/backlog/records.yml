@@ -8,3 +8,10 @@ entries:
     want: A merge leaves no orphan tap, or a command removes orphan taps
     done: An orphan tap after a union merge no longer needs a hand edit
     created: 2026-11-25T02:49:45Z
+  - id: BL-3aa775
+    title: Debt is recorded only as code markers, so no command lists every debt whatever its origin
+    sites:
+      - bin/metalbrain/debt.ts:1
+    why: the Compass plan (#916) makes debt one concept, in code markers and namespace and domain metafiles alike
+    want: metalbrain debt lists debt from every source that states it
+    created: 2026-11-25T11:21:49Z

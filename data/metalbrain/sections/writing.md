@@ -44,7 +44,7 @@ A subagent's final report, per dispatch or resume:
 
 <!-- @extension tools/github/issues/planning -->
 
-- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes, which the gate and git record.
+- Briefed with a `Walk:` line, or as a merger: each item in one line, never the commands you ran, the checks that passed or commit hashes.
 
 <!-- @end -->
 
@@ -54,7 +54,7 @@ A subagent's final report, per dispatch or resume:
 
 Shape: goal; last operation; what is ready, and where; what is half-done, where, and what it misses; next step.
 
-Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. Neither a main-session pause awaiting answers nor a thoroughness stop (Analysis › Thoroughness levels) is one of them.
+Write one when you stop with unfinished work no commit or issue holds, in these cases only: the user stops you; a limit forces you to stop; you stop midway as a subagent. A thoroughness stop (Analysis › Thoroughness levels) is none of them.
 
 1. Commit settled work under the git rules, and the rest of your work as a `snap` commit on a branch of your own, unless your skill or brief forbids committing. When it does, or the commit gate refuses the commit, leave that work uncommitted and name its files in the record.
 2. Write the record into your final report as a subagent, otherwise into `.ai/handoffs/<topic>.md`, local-only, deleted by whoever resumes the work.
