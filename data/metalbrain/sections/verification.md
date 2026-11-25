@@ -7,7 +7,7 @@ description: Verify and report changes.
 
 | When                                    | Check                                                                                                                                                                                                   |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| During implementation                   | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`                                                                                                         |
+| During implementation                   | Targeted checks; lint by hand with `pnpm engrenage eslint:fix <files>`                                                                                                                                  |
 | Before delivery, when you changed files | Review against architectural boundaries and quality requirements, not only behavior; run the worktree gate, `pnpm engrenage gate --worktree`, once on the uncommitted work, adding only checks it lacks |
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 

@@ -5,9 +5,9 @@ description: Review what a walk landed since its previous boundary review, start
 
 # Merging
 
-Review the range a walk landed since its previous boundary review, the work of the leaves the walker dispatched to a worker or a debugger, and fix your findings yourself; route only what §Findings sends elsewhere.
+Review the range a walk landed since its previous boundary review, the work of leaves the walker dispatched to a worker or a debugger, and fix your findings yourself; route only what §Findings sends elsewhere.
 
-Read this file before your review, for its criteria and how to sort findings:
+Read this file before your review, for its criteria and sorting:
 
 <!-- @shared-file review.md -->
 <!-- @end -->
@@ -15,7 +15,7 @@ Read this file before your review, for its criteria and how to sort findings:
 ## Brief
 
 - The walker briefs the `Walk:` and `Base:` lines; the issues whose close runs the review, the walked plan at the walk's end; the commit range landed since the previous review run; that run's carry-over; the actions leaves' reports left undone that a permission refused.
-- Read the issues and plan sections the brief names, and the landed commits.
+- Read the issues and plan sections the brief names, the nearest plan's **Compass**, and the landed commits.
 - Treat the carry-over as findings already handled: never report them again.
 
 ## Review
@@ -26,7 +26,7 @@ The range base is the range's first parent.
 2. Read whole every file the range changes; search beyond them only for twins of what the range adds, by name and shape, in the changed domains and the domains they import.
 3. When the project has jscpd, run `pnpm engrenage jscpd:new <range base>` once, and verify each clone it lists as a lead.
 4. Compare each leaf of the range with the rest of the range: duplicated helpers, tests or fixtures; diverging names, patterns or choices for one concern; code one leaf added that another could reuse; release or project requirements one leaf meets and a sibling misses.
-5. In each changed module, look for helpers two modules now need, helpers duplicating an export of a dependency or another domain, and near-twins to merge; check that each function still serves its module's concern and role, and that no concern is handled two ways.
+5. In each changed module, look for helpers two modules now need, helpers duplicating an export of a dependency or another domain, and near-twins to merge; check that each function stays within its Compass and module's role, and that no concern is handled two ways.
 6. Read the code around each change for bugs, and for improvements the change makes worth doing.
 7. Check each clause of the **Done when** of each issue the brief names against the code; at a plan's close, one not holding is a plan finding.
 

@@ -66,7 +66,7 @@ Implement one specified change: its specification states the end state and the c
 
 With an issue as specification, first run `pnpm metalbrain planning issue check <n>`, `<n>` its number. When it fails, stop with a blocked report holding its findings and that command, to run again once they are settled.
 
-With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when it holds information the issue needs.
+With an issue or a draft as specification, read it, then the nearest plan's **Compass** and only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when it holds information the issue needs.
 
 - The issue's outcome: its **Done when** and each **Tests** case.
 - The plans' **Compass** and **Decisions** and the issue's **Context**: the intent and facts your design serves.
@@ -83,8 +83,8 @@ Everything the specification states binds you: deliver its outcome and write eac
 Stop as soon as you find one of these, before applying any change it concerns, and report it:
 
 - part of the outcome, a stated structure included, or a contract the specification fixes, cannot hold as written;
-- the outcome needs code no domain's purpose covers or no placement holds without architectural debt, or a new layer, namespace, role or public domain the specification does not state;
-- the outcome needs a user-facing change, as the Environment table defines it, that the specification does not state;
+- the outcome reaches outside its Compass, has no placement free of architectural debt, or needs a new layer, namespace, role or public domain the specification does not state;
+- the outcome needs a user-facing change (Environment table) the specification does not state;
 - the outcome needs a change to a contract a Model section of a plan above the issue states, that the issue does not state;
 - a defect in the code of another repository, one `pnpm engrenage link` lists, blocks the change: never work around it.
 

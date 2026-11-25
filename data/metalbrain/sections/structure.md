@@ -30,5 +30,5 @@ Place:
 - **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
-- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.

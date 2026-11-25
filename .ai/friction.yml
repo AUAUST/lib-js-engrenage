@@ -1176,3 +1176,8 @@ entries:
     tried: engrenage sync after importing a new module through a barrel
     stopped: sync loads the stale barrel first; added the export line by hand
     created: 2026-11-25T12:32:38Z
+  - id: FR-46be1a
+    subject: backlog show on closed entries
+    tried: pnpm metalbrain backlog show on briefed closed IDs
+    stopped: reports no entry, not closed; read the issue context instead
+    created: 2026-11-25T13:09:57Z

@@ -51,7 +51,7 @@ The walker runs a segment's members at once and a sequence's one at a time: plac
 
 Deepen an item until it is ready for its agent (§Readiness).
 
-1. **Read** the item, its ancestors, the plan sections its header names, its prerequisites and its siblings' gists.
+1. **Read** the item, its ancestors, the nearest plan's **Compass**, the plan sections its header names, its prerequisites and its siblings' gists.
 2. **Ground** in code only what the item states, the rest left to its worker: each path, name and shape in its **Context**, and each contract it fixes or relies on, against the code providing it; each owner against the project maps.
 3. **Write** **Done when**, the **Tests** cases it needs and its **Provides** (issue-drafts rule › Bodies); for a `problem`, **Fix** or **Leads**; for an item whose own work after its sub-issues is only housekeeping, **Housekeeping**; splitting the item under §Splitting a task with sub-issues under it only. Remove **Planning** once settled; keep under it design resting on code another open item writes beyond Model-section contracts, which that code's landing would rewrite.
 4. **Review** the item and each sub-issue you wrote under §Readiness.

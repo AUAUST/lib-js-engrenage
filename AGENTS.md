@@ -6,7 +6,7 @@ Apply throughout the repository. Follow these rules in changed code; preserve un
 
 ## Compass
 
-The project's Compass, below, states what the project does, so every agent follows one direction; what it leaves unstated is out of scope. A piece of work's Compass merges it with its plan's **Compass** and the `purpose` of each member the work touches, each stated by its owner; a `purpose` hard to state or overlapping another reveals a design problem. On a main session's first request, draft a missing paragraph with the user, then set it as `agents.compass`.
+The project's Compass, below, states what the project does, so every agent follows one direction; what it leaves unstated is out of scope. A piece of work's Compass merges it with its plan's **Compass** and the `purpose` of each member the work touches; a `purpose` hard to state or overlapping another reveals a design problem. Pause on work outside its Compass, judging each part of work across members by its own; record a Compass or `purpose` the user confirms where its owner states it. On a main session's first request, draft a missing paragraph for `agents.compass` with the user.
 
 Engrenage orchestrates projects from around their code: it centralises each project's configuration and syncs everything that shapes, checks and ships that code (dependencies, formatting, linting, type checking, tests, builds, git hooks, CI, agent setup) from opinionated defaults the project can extend. It makes those tools work as one: each fact has a single source, each convention is stated once and dispatched to every tool that applies it, and no two tools conflict.
 
@@ -160,7 +160,6 @@ Write commands in POSIX sh, which zsh runs with these traps:
 | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
 | zsh aborts on an unquoted glob matching nothing                                                                   | Quote every glob passed as an argument               |
 | zsh never splits an unquoted variable                                                                             | Lists as arrays or through `xargs`                   |
-| BSD `sed` requires the in-place suffix                                                                            | `sed -i ''`                                          |
 | In a session started with worktree isolation, Claude Code refuses compound commands, heredocs and text naming git | Each git command alone; files through the edit tools |
 
 - **Claude Code auto mode.** Its classifier denies, scratchpad included, installing a package the lockfile lacks, running downloaded code, and deleting a file that existed before the session with changes no commit holds, unless the user's message names that action. Read the code's source instead of running it; move a replaced file to its successor's path instead of deleting it; otherwise ask the user to name the action, or, as a subagent, report it for your caller.
@@ -215,7 +214,7 @@ Place:
 - **A concern with two engines, or whose intent a consumer needs without one.** A contract domain. Its `ports/` state intents and conventions, never one engine's options; tool domains implement them in `adapters/`; the composing layer injects them.
 - **A generated module.** Where a handwritten one would go, with a header naming its generator.
 - **A `bin` command's logic.** The domain owning it; the command stays thin.
-- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories, then `pnpm engrenage sync`. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
+- **A structure change.** Its one-line `purpose`, the config, and the `.namespace.json` and `.domain.json` beside the directories. A new layer, namespace, role or public domain is an architectural contract under the decision protocol.
 - **A test of public behavior.** Through its public specifier; `.src` only to reach internals.
 
 <!-- @reference @auaust/engrenage/metalbrain/sections/backlog.md -->
@@ -257,7 +256,7 @@ Filing an entry:
 
 | When                                    | Check                                                                                                                                                                                                   |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| During implementation                   | Targeted checks; lint by hand only the files you name, with `pnpm engrenage eslint:fix <files>`                                                                                                         |
+| During implementation                   | Targeted checks; lint by hand with `pnpm engrenage eslint:fix <files>`                                                                                                                                  |
 | Before delivery, when you changed files | Review against architectural boundaries and quality requirements, not only behavior; run the worktree gate, `pnpm engrenage gate --worktree`, once on the uncommitted work, adding only checks it lacks |
 | Each commit                             | Pass the commit gate, never bypassing it; it formats, lints and checks the changed files, so never format by hand                                                                                       |
 
