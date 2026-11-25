@@ -16,3 +16,8 @@ entries:
     need: report each role measured words before and after an instruction change
     instead: node script in session scratchpad mirroring checkWordCaps measureRoles
     created: 2026-11-25T12:58:38Z
+  - id: MI-a5ff48
+    subject: ESLint over a temporary project config
+    need: lint a synced fixture project in tests
+    instead: new ESLint with createEslintConfig in spanningEnvironments.test.src.ts, cloned from createEslintConfig.test.src.ts
+    created: 2026-11-25T19:24:02Z

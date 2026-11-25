@@ -1184,3 +1184,8 @@ entries:
     tried: fixture with admin environment on admin dir
     stopped: admin placed as src until src env got dirs [src]
     created: 2026-11-25T19:12:58Z
+  - id: FR-caf4e3
+    subject: type-checking a temporary project
+    tried: tsc over synced tsconfig.tests.json
+    stopped: missing @auaust/engrenage base, @types/node and preact; linked packages and stubbed preact
+    created: 2026-11-25T19:24:03Z
