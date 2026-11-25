@@ -6,3 +6,8 @@ entries:
     need: record search tree output
     instead: private branch drawing in src/metalbrain/kinds/utils/formatRecordTree.ts
     created: 2026-11-25T03:14:04Z
+  - id: MI-3ab438
+    subject: commander invocation chaining
+    need: parse several invocations of one command per call
+    instead: parseOptions override and twin commands in src/workflows/cli/operations/createCommandDefinition.ts
+    created: 2026-11-25T09:45:47Z

@@ -9,6 +9,7 @@ import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import { reportAgentChecks } from "#tools/metalbrain/operations/reportAgentChecks";
 import {
   createProgram as createDefinedProgram,
+  defineChainedCommand,
   defineCommand,
   defineGroup,
   getRunContext,
@@ -137,6 +138,45 @@ describe("runProgram", () => {
     await runProgram(program(), ["node", "program", "progress", "--verbose"]);
 
     expect(stderr.mock.calls.map(String).join("")).toContain("progressing");
+  });
+
+  test("keeps --verbose of one chained invocation for the whole run", async () => {
+    const stderr = vi
+      .spyOn(process.stderr, "write")
+      .mockImplementation(() => true);
+
+    const program = createDefinedProgram(
+      "program",
+      defineGroup({
+        commands: {
+          progress: defineChainedCommand({
+            configure(command) {
+              return command.argument("<step>");
+            },
+            action() {
+              return Promise.resolve((steps: readonly [string][]) => {
+                getRunContext().reporter.info(`progressing ${steps.join(" ")}`);
+              });
+            },
+            parse(step) {
+              return [step];
+            },
+          }),
+        },
+      }),
+    );
+
+    await runProgram(program, [
+      "node",
+      "program",
+      "progress",
+      "a",
+      "--verbose",
+      "--next",
+      "b",
+    ]);
+
+    expect(stderr.mock.calls.map(String).join("")).toContain("progressing a b");
   });
 });
 

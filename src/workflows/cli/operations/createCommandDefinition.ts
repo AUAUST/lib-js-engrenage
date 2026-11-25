@@ -1,4 +1,8 @@
-import type { Command, CommandUnknownOpts } from "@commander-js/extra-typings";
+import {
+  Command,
+  CommanderError,
+  type CommandUnknownOpts,
+} from "@commander-js/extra-typings";
 
 import { isFunction } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
@@ -7,10 +11,17 @@ import { loadLazy } from "#foundation/modules/index";
 import {
   commandExtension,
   commandRegistration,
+  invocationSeparator,
 } from "#workflows/cli/constants";
+import { InvocationsError } from "#workflows/cli/errors/InvocationsError";
+import { addRunOptions } from "#workflows/cli/operations/addRunOptions";
 import { configureCommand } from "#workflows/cli/operations/configureCommand";
 import { runContext } from "#workflows/cli/operations/runContext";
+import { toUsageError } from "#workflows/cli/utils/toUsageError";
 import type { CommandDefinition } from "#workflows/cli/types/CommandDefinition";
+import type { InvocationFailure } from "#workflows/cli/types/InvocationFailure";
+
+type ParseParameters = (...parameters: unknown[]) => readonly unknown[];
 
 async function loadFunction(
   load: () => unknown,
@@ -30,23 +41,6 @@ async function loadFunction(
 
 function countDeclarations(command: Command): number {
   return command.registeredArguments.length + command.options.length;
-}
-
-function resolveParameters(
-  parameters: unknown[],
-  {
-    parse,
-    bare,
-  }: {
-    parse: ((...parameters: unknown[]) => readonly unknown[]) | undefined;
-    bare: boolean;
-  },
-): readonly unknown[] {
-  if (parse !== undefined) {
-    return parse(...parameters);
-  }
-
-  return bare ? [] : parameters;
 }
 
 function createExtension(
@@ -75,38 +69,203 @@ function createExtension(
   };
 }
 
+function splitInvocations(args: readonly string[]): string[][] {
+  const invocations: string[][] = [[]];
+
+  for (const [index, arg] of args.entries()) {
+    if (arg === "--") {
+      invocations.at(-1)?.push(...args.slice(index));
+
+      break;
+    }
+
+    if (arg === invocationSeparator) {
+      invocations.push([]);
+    } else {
+      invocations.at(-1)?.push(arg);
+    }
+  }
+
+  return invocations;
+}
+
+// @debt each later invocation parses on a twin under stand-ins named after the command's ancestors, so parse and extensions read the group names without running the ancestors' hooks; a parse contract receiving the group names would spare them
+function createTwin(command: Command): Command {
+  const twin = new Command(command.name());
+
+  let child: Command = twin;
+
+  for (
+    let ancestor = command.parent;
+    ancestor !== null;
+    ancestor = ancestor.parent
+  ) {
+    const standIn = new Command(ancestor.name());
+
+    standIn.addCommand(child);
+
+    child = standIn;
+  }
+
+  return twin;
+}
+
+function mountParameters(
+  command: Command,
+  {
+    configure,
+    parse,
+  }: {
+    configure: ((command: Command) => CommandUnknownOpts) | undefined;
+    parse: ParseParameters | undefined;
+  },
+  receive: (parameters: readonly unknown[]) => Promise<void> | void,
+): void {
+  const declared = countDeclarations(command);
+
+  if (configure !== undefined) {
+    configureCommand(command, configure);
+  }
+
+  const bare = countDeclarations(command) === declared;
+
+  command.action((...parameters) => {
+    if (parse !== undefined) {
+      return receive(parse(...parameters));
+    }
+
+    return receive(bare ? [] : parameters);
+  });
+}
+
 export function createCommandDefinition({
   configure,
   load,
   extend,
   parse,
+  chain = false,
 }: {
   configure: ((command: Command) => CommandUnknownOpts) | undefined;
   load(): unknown;
   extend: (() => Promise<unknown>) | undefined;
-  parse: ((...parameters: unknown[]) => readonly unknown[]) | undefined;
+  parse: ParseParameters | undefined;
+  chain?: boolean;
 }): CommandDefinition {
+  const extension = extend === undefined ? undefined : createExtension(extend);
+
+  async function parseInvocation(
+    command: Command,
+    args: readonly string[],
+  ): Promise<readonly unknown[]> {
+    const twin = createTwin(command);
+
+    let parsed: readonly unknown[] | undefined;
+
+    mountParameters(twin, { configure, parse }, (parameters) => {
+      parsed = parameters;
+    });
+
+    await extension?.(twin);
+
+    const declared = new Set(twin.options);
+
+    addRunOptions(twin);
+
+    const runOptions = twin.options.filter((option) => {
+      return !declared.has(option);
+    });
+
+    twin.exitOverride().configureOutput({
+      outputError() {},
+    });
+
+    await twin.parseAsync(args, { from: "user" });
+
+    if (parsed === undefined) {
+      throw new Error(`The ${command.name()} command took no action`);
+    }
+
+    for (const option of runOptions) {
+      const name = option.attributeName();
+
+      if (twin.getOptionValueSource(name) === "cli") {
+        command.setOptionValueWithSource(
+          name,
+          twin.getOptionValue(name),
+          "cli",
+        );
+      }
+    }
+
+    return parsed;
+  }
+
+  async function parseChain(
+    command: Command,
+    first: readonly unknown[],
+    rest: readonly (readonly string[])[],
+  ): Promise<(readonly unknown[])[]> {
+    const invocations = [first];
+
+    const failures: InvocationFailure[] = [];
+
+    for (const [index, args] of rest.entries()) {
+      try {
+        invocations.push(await parseInvocation(command, args));
+      } catch (error) {
+        failures.push({
+          position: index + 2,
+          error: error instanceof CommanderError ? toUsageError(error) : error,
+        });
+      }
+    }
+
+    if (failures.length > 0) {
+      throw new InvocationsError(failures, rest.length + 1);
+    }
+
+    return invocations;
+  }
+
   return freeze({
-    ...(extend !== undefined && {
-      [commandExtension]: createExtension(extend),
+    ...(extension !== undefined && {
+      [commandExtension]: extension,
     }),
     [commandRegistration](command: Command) {
-      const declared = countDeclarations(command);
+      let rest: (readonly string[])[] = [];
 
-      if (configure !== undefined) {
-        configureCommand(command, configure);
+      if (chain) {
+        // @debt splits invocations by overriding the instance's parseOptions, since Commander parses one invocation per command; a usage error in invocation 1 stops Commander before later invocations are checked, naming no position
+        const parseOptions = command.parseOptions.bind(command);
+
+        command.parseOptions = (args) => {
+          const [first = [], ...others] = splitInvocations(args);
+
+          rest = others;
+
+          return parseOptions(first);
+        };
+
+        command.addHelpText(
+          "after",
+          `\nChain several invocations in one call by separating them with ${invocationSeparator}, writing --<option>=${invocationSeparator} for the text ${invocationSeparator}; nothing takes effect unless every invocation succeeds, and each failure names its invocation's position.`,
+        );
       }
 
-      const bare = countDeclarations(command) === declared;
+      mountParameters(command, { configure, parse }, async (parameters) => {
+        const invocations = chain
+          ? await parseChain(command, parameters, rest)
+          : undefined;
 
-      command.action(async (...parameters) => {
         const action = await loadFunction(load, command.name(), "action");
 
         // @debt Tests run commands outside runProgram, so the run context stays optional here instead of required through getRunContext.
         // @debt Past this check, an aborted run stops only where its action checks the signal; prompts, config loads and writes ignore it.
         runContext.getStore()?.signal.throwIfAborted();
 
-        await action(...resolveParameters(parameters, { parse, bare }));
+        await (invocations === undefined
+          ? action(...parameters)
+          : action(invocations));
       });
     },
   });

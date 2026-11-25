@@ -1,11 +1,11 @@
 import {
   collectArgument,
   collectListArgument,
-  defineLazyCommand,
+  defineChainedCommand,
 } from "#workflows/cli/index";
 
 // @debt the help states the item limit `backlog.detailLimit` holds, since command definitions load with the hook graph and cannot import it
-export default defineLazyCommand({
+export default defineChainedCommand({
   configure(command) {
     return command
       .description(
@@ -41,5 +41,8 @@ export default defineLazyCommand({
   },
   action() {
     return import("#bin/metalbrain/backlog/actions/update");
+  },
+  parse(id, options) {
+    return [id, options];
   },
 });

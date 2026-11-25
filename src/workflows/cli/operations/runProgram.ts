@@ -7,10 +7,10 @@ import {
   createConsoleReporter,
   type Reporter,
 } from "#foundation/reports/index";
-import { CommandUsageError } from "#workflows/cli/errors/CommandUsageError";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 import { runContext } from "#workflows/cli/operations/runContext";
+import { toUsageError } from "#workflows/cli/utils/toUsageError";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
@@ -30,15 +30,6 @@ function overrideExits(command: CommandUnknownOpts): void {
   for (const subcommand of command.commands) {
     overrideExits(subcommand);
   }
-}
-
-// @debt strips the `error: ` prefix Commander formats its messages with, which no Commander API exposes apart
-function toUsageError({ code, message }: CommanderError): CommandUsageError {
-  return new CommandUsageError(
-    code === "commander.help"
-      ? "no command given"
-      : message.replace(/^error: /u, ""),
-  );
 }
 
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
@@ -72,18 +63,16 @@ export async function runProgram(
   } = {},
 ): Promise<void> {
   let running: CommandUnknownOpts | null = program;
-  let verbose = false;
 
   program.hook("preAction", (_command, action) => {
     running = action;
-    verbose = isFlagSet(action, "verbose");
   });
 
   const runReporter = (
     reporter ??
     createConsoleReporter({
       isVerbose: () => {
-        return verbose;
+        return isFlagSet(running, "verbose");
       },
     })
   );

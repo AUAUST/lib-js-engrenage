@@ -959,3 +959,13 @@ entries:
     need: commit hints read added debt statements
     reason: eslint utils barrel would export every eslint util
     created: 2026-11-25T03:01:37Z
+  - id: DS-78cdc1
+    subject: commander reparse via program
+    need: parse chained invocations
+    reason: reentrant parse resets the running command state
+    created: 2026-11-25T09:45:49Z
+  - id: DS-94977d
+    subject: chained carrier command without native parse
+    need: positional usage errors for invocation 1
+    reason: parent operands and mandatory options still checked natively
+    created: 2026-11-25T09:45:49Z

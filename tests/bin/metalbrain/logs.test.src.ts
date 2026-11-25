@@ -74,6 +74,68 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     expect(created).toBeLessThanOrEqual(after);
   });
 
+  test("add chains invocations with --next, printing each ID in order", async () => {
+    const project = createProject();
+
+    const { messages } = await runCommand(
+      "friction",
+      logs,
+      "add",
+      "--subject",
+      "git add",
+      "--tried",
+      "ran it",
+      "--stopped=--next",
+      "--next",
+      "--subject",
+      "zsh globs",
+      "--tried",
+      "quoted it",
+      "--stopped",
+      "it matched",
+    );
+
+    const { entries } = parse(project.read(".ai/friction.yml"));
+
+    expect(entries).toMatchObject([
+      { subject: "git add", stopped: "--next" },
+      { subject: "zsh globs", stopped: "it matched" },
+    ]);
+
+    expect(messages.slice(-2).map(({ text }) => text)).toEqual(
+      entries.map(({ id }: { id: string }) => id),
+    );
+  });
+
+  test("add writes nothing when a chained invocation fails, naming its position", async () => {
+    const project = createProject();
+
+    await expect(
+      runCommand(
+        "friction",
+        logs,
+        "add",
+        "--subject",
+        "git add",
+        "--tried",
+        "ran it",
+        "--stopped",
+        "it failed",
+        "--next",
+        "--subject",
+        "zsh globs",
+        "--tried",
+        "quoted it",
+        "--stopped",
+        "word ".repeat(200),
+      ),
+    ).rejects.toThrow(
+      /^1 of 2 invocations failed, so none took effect:\ninvocation 2: /u,
+    );
+
+    expect(existsSync(project.resolve(".ai/friction.yml"))).toBe(false);
+  });
+
   test("stats flags a subject with three entries as recurring", async () => {
     createProject();
 

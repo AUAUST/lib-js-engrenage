@@ -1143,3 +1143,8 @@ entries:
     tried: lint a workspace .tsx file in a temporary project
     stopped: no rule reported anything; switched the test importer to .ts
     created: 2026-11-25T06:55:54Z
+  - id: FR-add198
+    subject: worktree gate typecheck
+    tried: ran gate --worktree after the fix
+    stopped: typecheck step failed with no diagnostics; passed alone and on a gate rerun
+    created: 2026-11-25T09:49:13Z

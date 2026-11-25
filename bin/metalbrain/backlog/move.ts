@@ -1,6 +1,6 @@
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineChainedCommand } from "#workflows/cli/index";
 
-export default defineLazyCommand({
+export default defineChainedCommand({
   configure(command) {
     return command
       .description(
@@ -11,5 +11,8 @@ export default defineLazyCommand({
   },
   action() {
     return import("#bin/metalbrain/backlog/actions/move");
+  },
+  parse(id, category) {
+    return [id, category];
   },
 });
