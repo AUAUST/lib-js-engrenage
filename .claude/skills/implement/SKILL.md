@@ -61,7 +61,6 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 - The change is done when the specification's outcome holds, with the release work the Environment table requires.
 - As a subagent, your final report is a completion, a stop §Stops or Analysis › Thoroughness levels opens, or otherwise a blocked report opening with `Blocked:` and carrying a stop record (Writing › Stop records).
 - Report, per **Done when** clause, or for the outcome when the specification has none, the command or test showing it holds and its result, exempt from Writing › Reports' bar on commands and passing checks; each deviation from the specification, never a choice §Design leaves you, with its reason; each shape you fixed that other work will build on, naming each `Concurrent:` leaf it concerns; each discovery that sibling work or the plan above your specification must account for.
-- When resumed with a merger's findings, fix each one your issue covers, and report the rest with the reason.
 - Never edit, comment on, set types or fields on, close or publish issues or drafts.
 
 <!-- @end -->

@@ -1,6 +1,6 @@
 # Dispatching
 
-Rules for each agent you dispatch: when it runs beside others, its brief lines, its thoroughness stop and the findings its report names. Your skill refines them; Analysis › Thoroughness levels defines the levels and each agent's default.
+Rules for each agent you dispatch: when it runs beside others, its brief lines, its thoroughness stop and the findings its report names; and the pending work you log meanwhile. Your skill refines them; Analysis › Thoroughness levels defines the levels and each agent's default.
 
 ## Parallel agents
 
@@ -19,6 +19,10 @@ Leave the agent's checkout and commits out of its brief unless the user decided 
 - When resuming an agent, add one only to hand it a task of its own, which opens a new window.
 - Iterate work deeper than one agent's level across fresh agents, each taking over from its predecessor's handoff; split work too large for one agent before dispatch: no level sizes the work handed over.
 - **A report opening with `Thoroughness stop:`.** Never resume the stopped agent. When what remains is part of what you dispatched it for, unless it is a successor that did none of what its predecessor left, commit the files it changed as your skill commits an agent's work, otherwise under the git rules, towards the task, then dispatch a new agent of the same role and level for what remains: briefed as the stopped one was, from the new dispatch base, plus that report's progress and the gaps your review of its work found. Otherwise take the report as it stands and handle what remains as your skill handles a blocked report or one missing what you asked.
+
+## Pending work
+
+Log `pending` (agent-records rule), fields `--subject <the follow-up> --what <the work left> --why <why it waits> --owner <the issue, backlog entry or task it belongs to>`: as a main session, each follow-up you leave for a later step of your pass that no issue, backlog entry or agent in flight holds, a finding awaiting its backlog entry included. Close it once handled, and list the open ones with `pnpm metalbrain pending list` after a compaction.
 
 <!-- @file .ai/backlog/index.yml -->
 

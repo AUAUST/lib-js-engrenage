@@ -77,7 +77,6 @@ Open the report of a linked defect with `Linked defect: <short name>`, the repos
 
 <!-- @extension tools/github/issues/planning -->
 
-- When resumed with a merger's findings, fix each one your issue covers, and report the rest with the reason.
 - Never edit, comment on, set types or fields on, close or publish issues or drafts.
 
 <!-- @end -->

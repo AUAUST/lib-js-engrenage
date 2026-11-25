@@ -35,7 +35,7 @@ Read `.claude/rules/issues.md` before writing anything up. Your findings become 
 
 Dispatch each as an `analyser` briefed read-only, in the main checkout and in the background; dispatch no other agent. Without an `analyser` agent, run its part of the stages yourself. Beyond the stage-0 files, read only what a report points to, at the lines it names.
 
-Read this file before the first dispatch, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
+Read this file before the first dispatch, for parallel agents, the brief lines, thoroughness stops, pending work and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->

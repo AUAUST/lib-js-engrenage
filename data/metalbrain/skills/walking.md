@@ -30,20 +30,14 @@ walk check ──► route the ready set (§Handling table)
   │
   ├─ Housekeeping ──► apply it (§Housekeeping) ──► closing commit ──► walk check
   │
-  ├─ leaf ──► dispatch (§Dispatching) ──► agent report
-  │              ├─ blocked ──► consultant ──► resume the agent
-  │              ├─ deviation or discovery ──► consultant ──► rejected: resume the agent · asked: wait for the answer · accepted: completion
-  │              ├─ thoroughness stop ──► review, handover commit ──► consultant splits the rest ──► walk check
-  │              ├─ scope stop ──► consultant settles it ──► drop the leaf's work ──► walk check
-  │              └─ completion
-  │                   ▼
-  │             integration merger (§Integration), or your own review (§Review)
-  │                   ▼
-  │             leaf findings ──► resume the agent ──► check its fixes
-  │                   ├─ no plan findings ──► closing commit (§Commit) ──► commit line ──► walk check
-  │                   └─ plan findings ──► snap commit (§Commit) ──► consultant ──► revert it when the consultant drops it ──► walk check
-  │
-  └─ segment, plan or walk closes ──► review merger ──► plan findings to the consultant, the rest to a debugger ──► commit ──► walk check
+  └─ leaf ──► dispatch (§Dispatching) ──► agent report
+                 ├─ blocked ──► consultant ──► resume the agent
+                 ├─ deviation or discovery ──► consultant ──► rejected: resume the agent · asked: wait for the answer · accepted: completion
+                 ├─ thoroughness stop ──► handover commit ──► consultant splits the rest ──► walk check
+                 ├─ scope stop ──► consultant settles it ──► drop the leaf's work ──► walk check
+                 └─ completion ──► closing commit (§Commit) ──► commit line
+                                      ├─ closes no boundary ──► walk check
+                                      └─ closes a boundary ──► merger (§Boundary reviews) ──► plan findings to the consultant ──► boundary commit ──► walk check
 ```
 
 ## Handling table
@@ -79,12 +73,12 @@ Handle each issue by the first matching row; the `complexity` row applies on top
 
 ## Dispatching
 
-Before the first `walk check`, and again after each compaction, read this file: it holds the lifecycle of each leaf's agent and boundary-review debugger, dispatched under it with the walked branch as its working branch:
+Before the first `walk check`, and again after each compaction, read this file: it holds the lifecycle of each leaf's agent and boundary merger, dispatched under it with the walked branch as its working branch:
 
 <!-- @shared-file worktree-dispatch.md -->
 <!-- @end -->
 
-Read this file with it, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
+Read this file with it, for parallel agents, the brief lines, thoroughness stops, pending work and the findings a report names:
 
 <!-- @shared-file dispatching.md -->
 <!-- @end -->
@@ -93,42 +87,20 @@ Read this file with it, for parallel agents, the brief lines, thoroughness stops
 - Dispatch every leaf to a new agent: a worker under the implement skill, a debugger under the debugging skill.
 - Brief a leaf's agent with `Issue: <owner>/<repo>#<n>` as the first line, which the dispatch hook checks, then `Walk: <owner>/<repo>#<walked issue>`, then `Base: <dispatch base>`, then one `Concurrent: <owner>/<repo>#<n>` line per leaf in flight sharing a contract with it, then its `Thoroughness:` line. Never paste issue or plan content: the agent reads it itself.
 - Two leaves share a contract when their `walk check` `Model:` lines name a common section.
-- Send a completion naming a deviation, or a discovery for sibling work or the plan, to the consultant before integrating or reviewing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
-- Brief a debugger given a review merger's findings with the `Walk:` and `Base:` lines, the segment or nested plan whose close ran the review (none at the walk's end) and those findings, and no `Issue:` line: they belong to no single issue.
+- Commit a completion without reviewing it: the boundary merger reviews it (§Boundary reviews).
+- Send a completion naming a deviation, or a discovery for sibling work or the plan, to the consultant before committing it, then handle the leaf by its answer: a rejection, resume the agent with the gap it returns; a question, the leaf waits until the consultant settles the user's answer; an acceptance, as a completion.
 - Send a scope stop, a worker report opening with `Scope stop:`, to the consultant with the worker's leads. Once the consultant has handled the issue, drop the leaf's work under `worktree-dispatch.md` › Dropping work instead of resuming the agent, then run `walk check`, which routes the issues it edited to new agents.
-- A leaf's thoroughness stop, in place of the successor `dispatching.md` › Thoroughness levels dispatches: integrate or review its work as a completion's, without resuming the agent for its findings, commit it as a handover commit (§Commit), then send the consultant the report with that review's leaf findings, to split what remains into sub-issues, and run `walk check`, which routes them.
-- Treat a report that leaves a light gap (merging §Integration: an action the instructions already decide) as a completion, even when worded as a blocked report or a question: the integration merger closes it. Without an integration merger, resume the agent once with it. When a permission refuses the action again, or refuses it to the merger, which reports it, name it in the commit line. Never ask the user about it.
-
-## Integration
-
-Runs for each completed leaf at K > 1; otherwise §Review applies.
-
-1. Integrate completed leaves one at a time, in report order: pass each to the segment's integration merger, briefed as the merging skill's §Brief states for integration mode. Resume the current one, or dispatch a new merger under §Resumed agents.
-2. When the merger reports leaf findings, resume the leaf's agent with all of them in one message, so its stop gate checks the tree the merger left; then check only that each finding is fixed or declined with a reason.
-3. When it reports plan findings, commit the leaf's work as a snap commit (§Commit) instead of the closing commit, then send the findings to the consultant, the leaf's issue set aside until it returns. Once it returns, resume each agent in flight with the changes it made to that agent's issue; when it drops the leaf's work, revert the leaf's commits, snap commit included, with `git revert`, in the checkout holding them; then run `walk check`, which routes the leaf's issue, as the consultant left it, to a new agent.
-4. Leave conflicts to the merger's rebase; when it reports one needing design, resume the leaf's agent to rebase its worktree onto the walked branch, then resume the merger.
-
-## Review
-
-When no integration merger runs:
-
-1. Read the leaf's diff from its dispatch base: `git diff --stat` first, then the hunks its issue's **Done when**, **Provides** and **Tests** concern; skip generated files and lockfiles, and read no code beyond the diff.
-2. Review it by this file, within what you read:
-
-<!-- @shared-file review.md -->
-<!-- @end -->
-
-3. Record each finding of the diff or the agent's report left unrecorded.
-4. Resume the agent with all leaf findings in one message; then check only its fixes. Handle plan findings as §Integration, step 3, states.
+- A leaf's thoroughness stop, in place of the successor `dispatching.md` › Thoroughness levels dispatches: commit its work as a handover commit (§Commit), then send the consultant the report, to split what remains into sub-issues, and run `walk check`, which routes them.
+- Treat a report that leaves a light gap, an action the instructions already decide, as a completion, even when worded as a blocked report or a question: resume the agent once with it. When a permission refuses the action again, name it in the commit line and brief it to the next boundary merger. Never ask the user about it.
 
 ## Commit
 
 1. When the closing commit will close a nested plan, first send that plan to the consultant to move its facts worth keeping, and go on once it returns.
 2. Commit the leaf by `worktree-dispatch.md` › Committing work, its commit being the closing commit: made under the project's git rules, closing the issue and every segment or parent it completes but the walked issue. Do not run the checks: the commit gate runs them.
-3. Once the closing commit exists, run `walk check` and refill the pool, except when the commit closes a segment or a nested plan: §Boundary reviews runs first, and what is ordered after it waits.
+3. Once the closing commit exists, run `walk check` and refill the pool, except when the commit closes a boundary: §Boundary reviews runs first, and what is ordered after it waits.
 4. Send the user one commit line: issue · consequences · decisions and deviations. Never re-send an earlier line or the table: the final report rebuilds it from the commits.
 
-A handover commit, after a thoroughness stop, or a snap commit, after plan findings: steps 2 to 4, with `Towards #<n>` for the issue instead of closing anything; a snap commit typed `snap`.
+A handover commit, after a thoroughness stop: steps 2 to 4, with `Towards #<n>` for the issue instead of closing anything.
 
 ## Housekeeping
 
@@ -142,24 +114,24 @@ Apply an issue's **Housekeeping** in the walked checkout, a foreign one's by `cr
 
 ## Holding a leaf
 
-Hold the work of a leaf's agent or a boundary-review debugger, the leaf here, by `worktree-dispatch.md` › Holding work, on the hold branch `<agent>/issue-<n>` for a leaf, `<agent>` being `worker` or `debugger`, or `debugger/review-<walked issue>` for a boundary-review debugger. Until the user says how to proceed, dispatch neither a held leaf nor the issues ordered after it, which `walk check` still reports ready, nor, for a held boundary-review debugger, anything ordered after its segment; refill the pool with the rest.
+Hold the work of a leaf's agent or a boundary merger, the leaf here, by `worktree-dispatch.md` › Holding work, on the hold branch `<agent>/issue-<n>` for a leaf, `<agent>` being `worker` or `debugger`, or `merger/review-<walked issue>` for a boundary merger. Until the user says how to proceed, dispatch neither a held leaf nor the issues ordered after it, which `walk check` still reports ready, nor, for a held boundary merger, anything ordered after its boundary; refill the pool with the rest.
 
 ## After a debugger
 
 | Its outcome | Next                                                                                      |
 | ----------- | ----------------------------------------------------------------------------------------- |
-| Fixed       | Integrate or review, then commit it as any leaf                                           |
+| Fixed       | Commit it as any leaf                                                                     |
 | Written up  | Run `walk check`, which routes each issue it wrote                                        |
 | Blocked     | Send its questions to the consultant when the plan may settle them, otherwise to the user |
 
 ## Boundary reviews
 
-When a segment or a nested plan closes and at the walk's end, the walked plan's close:
+A boundary: a commit closing a segment, a nested plan, or a `task` or `problem` with sub-issues whose parent is neither, the top of its task tree; and the walk's end, the walked plan's close. Mergers run only there, never per leaf:
 
-1. Dispatch a new merger under the merging skill in the main checkout, briefed as its §Brief states for review mode, with the range since the previous review run or the walk's start, and the plan when one closes.
-2. Send its plan findings to the consultant. When it reports other findings or agents declined leaf findings since the previous review run, brief a new debugger with them and handle the outcome by §After a debugger; otherwise dispatch no debugger.
-3. Commit the backlog entries the merger added with the debugger's fix, or alone when no debugger ran or it fixed nothing; its other records follow git rules › Commits. At the walk's end, unless the debugger or the consultant added an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
-4. Dispatch nothing ordered after the segment until that commit lands: the fix may change what later work builds on.
+1. Dispatch a new merger under the merging skill in the main checkout, once per boundary commit, briefed as its §Brief states, with the range since the previous review run or the walk's start; skip it when no leaf's work landed in that range. Commit no other leaf's work until step 3's commit lands.
+2. Send its plan findings to the consultant.
+3. Commit the merger's work, its fixes and the backlog entries it added, when it holds any, by §Commit steps 2 to 4, the merger standing for the leaf's agent and the commit closing nothing but, at the walk's end, the walked issue; its other records follow git rules › Commits. At the walk's end, unless the consultant added an issue under the walked issue, first send a walked plan to the consultant as §Commit step 1 states, then let that commit, empty when nothing changed, close the walked issue.
+4. Dispatch nothing ordered after the boundary until that commit lands: the fixes may change what later work builds on.
 
 In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cross-repository.md` › Boundary reviews.
 
@@ -173,9 +145,9 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 ## Resumed agents
 
-- Resume the consultant and the integration merger through the client's messaging or resume tool instead of starting new ones.
-- Start a new consultant or integration merger instead when a segment closes, or once its context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs. A hook refuses such a resume: on a refusal, start a new one as below, never retrying the resume.
-- Brief a new consultant as the first one was briefed, adding the previous one's last carry-over; a new integration merger as merging §Brief states.
+- Resume the consultant through the client's messaging or resume tool instead of starting a new one.
+- Start a new consultant instead when a segment closes, or once its context exceeds its agent's **Fresh up to** in §Agent limits: past that, every resumed turn re-reads more history than a fresh start costs. A hook refuses such a resume: on a refusal, start a new one as below, never retrying the resume.
+- Brief a new consultant as the first one was briefed, adding the previous one's last carry-over.
 
 ## Agent limits
 
@@ -184,18 +156,18 @@ In each linked checkout holding foreign leaves, run steps 1–3 as well, by `cro
 
 ## Stops and restarts
 
-- Stopping with leaves not committed: have a merger in flight abort its rebase, then stop by `worktree-dispatch.md` › Stopping, on the hold branches §Holding a leaf names.
-- Starting a walk, before the first dispatch: list the `worker/issue-*`, `debugger/issue-*` and `debugger/review-*` branches, the git worktrees other than the main checkout, and a leaf's work in the main checkout: commits and uncommitted changes a stop record ties to a leaf. Hold such main-checkout work by `worktree-dispatch.md` › Holding work, steps 1–2, on the hold branches §Holding a leaf names. Handle a branch for an issue `walk check` reports ready, a review branch, and the work just held as held leaves: report each by `worktree-dispatch.md` › Holding work, step 3, and wait as §Holding a leaf states. Report each worktree holding commits or changes beyond the walked branch with its path, as held work, and leave it in place.
+- Stopping with leaves not committed: stop by `worktree-dispatch.md` › Stopping, on the hold branches §Holding a leaf names.
+- Starting a walk, before the first dispatch: list the `worker/issue-*`, `debugger/issue-*` and `merger/review-*` branches, the git worktrees other than the main checkout, and a leaf's work in the main checkout: commits and uncommitted changes a stop record ties to a leaf. Hold such main-checkout work by `worktree-dispatch.md` › Holding work, steps 1–2, on the hold branches §Holding a leaf names. Handle a branch for an issue `walk check` reports ready, a review branch, and the work just held as held leaves: report each by `worktree-dispatch.md` › Holding work, step 3, and wait as §Holding a leaf states. Report each worktree holding commits or changes beyond the walked branch with its path, as held work, and leave it in place.
 - Linked checkouts: `cross-repository.md` › Walk start extends the walk-start step, and › Holding and dropping covers holding a foreign leaf.
 
 ## Context
 
 Every turn re-reads your whole context, and a long walk outgrows it.
 
-- Read only `walk check` output and agent reports, the issue and the diff §Review names, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, and the backlog category Backlog has you check for a bug an agent reported; never plans or code beyond that diff.
+- Read only `walk check` output and agent reports, an issue's **Housekeeping** with the files and output its steps name, the listings §Stops and restarts names, the pending log, and the backlog category Backlog has you check for a bug an agent reported; never plans, diffs or code.
 - Make the commands of one step one call, chained with `&&` so a failure stops the rest: a leaf's record stash, cherry-picks and apply; its log entries' adds and commit; its worktree removal and the next `walk check`.
 - Message the user only with the commit lines, held work, set-aside issues and questions your mode allows, and the final report: no progress or status messages in between.
-- Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits and the held leaves' branches.
+- Keep only the latest carry-over of each consultant and merger; rebuild everything else after a compaction from `walk check`, the walk's commits, the held leaves' branches and the pending log.
 
 ## Report
 

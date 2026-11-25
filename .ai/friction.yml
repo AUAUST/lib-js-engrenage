@@ -1159,3 +1159,8 @@ entries:
     tried: asserted a Commander usage error through runCommand
     stopped: process.exit fired; tested via exitOverride program instead
     created: 2026-11-25T10:13:03Z
+  - id: FR-b8ed4d
+    subject: word-cap raise denied
+    tried: "raising caps in word-caps.json after #914 additions"
+    stopped: auto mode denied it; left for the user
+    created: 2026-11-25T10:23:34Z

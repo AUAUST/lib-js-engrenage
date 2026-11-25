@@ -20,6 +20,6 @@ Write up each independent change on its own, and several ordered changes as one 
 
 ## Recording
 
-- Record every finding worth keeping without being asked, so it outlives the session: findings on the concern the request names as issues while the issue-drafts rule exists, otherwise as backlog entries; debt, friction, discarded solutions and missing capabilities under the agent-records rule; other findings in the backlog. Answer in chat alone only a narrow question whose request expects a short answer.
+- Record every finding worth keeping without being asked, so it outlives the session: findings on the concern the request names as issues while the issue-drafts rule exists, otherwise as backlog entries; what the agent-records rule defines as a record, as that record; other findings in the backlog. Answer in chat alone only a narrow question whose request expects a short answer.
 
 <!-- @end -->

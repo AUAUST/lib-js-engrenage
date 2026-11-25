@@ -19,7 +19,7 @@ Handle each request of the user by its kind:
 Lay the groundwork in breadth: the plan, the tree, and each item's context, valid enough for a planner or the walk's consultant to deepen the item alone.
 
 1. **Goal.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the goal is clear.
-2. **Load.** Load the open-issue index (issue-drafts rule › Filing). Read the project maps the goal needs (issue-drafts rule › Owners), the backlog categories, `@debt` markers, discarded solutions and missing capabilities covering what the goal touches.
+2. **Load.** Load the open-issue index (issue-drafts rule › Filing). Read the project maps the goal needs (issue-drafts rule › Owners), the backlog categories and the agent records covering what the goal touches.
 3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
 4. **Design.** Write into the plan its **Done when**, the Model sections and the **Decisions** several items share (issue-drafts rule › Bodies). A fact two items would each decide belongs here.
 5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, its **Done when**, and under **Planning** the design left to settle.
@@ -41,7 +41,7 @@ Report each item as ready, with its inner planner, or left under **Planning** wi
 
 ## Inner dispatch
 
-Read this file before the first inner dispatch, for parallel agents, the brief lines, thoroughness stops and the findings a report names:
+Read this file before the first inner dispatch, for parallel agents, the brief lines, thoroughness stops, pending work and the findings a report names:
 
 `.claude/skills/planning/dispatching.md`
 

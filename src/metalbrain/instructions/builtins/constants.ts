@@ -286,11 +286,12 @@ export const builtInInstructions = freeze([
     when: isPlanning,
     agent: {
       name: "merger",
-      description: "Merger that rebases a walked leaf onto the walked branch and reviews it against its issue and its siblings, or reviews a closed segment or plan against its siblings and the code around it, fixing only mechanical, behaviour-neutral edits inside the diff. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself.",
+      description: "Merger that reviews what a walk landed since its previous boundary review, at a segment, nested-plan, task-tree-top or walk-end boundary, starting from the full test suite, and fixes its findings within the reviewed files. Dispatch it only when a skill you follow or the user asks for a merger; otherwise do the work yourself.",
       model: "opus",
       effort: "medium",
       thoroughness: "scoped",
       ceiling: 100_000,
+      gate: true,
       tools: agentTools,
     },
   },

@@ -10,7 +10,7 @@ The working branch: the main checkout's branch your skill commits the agents' wo
 
 - Dispatch every agent from the working branch's `HEAD` commit, its dispatch base, briefed on a `Base: <dispatch base>` line: at K = 1 in the main checkout; past it, each in the background with `isolation: "worktree"`.
 - Resume the same agent to answer its question, return the gaps and findings of its review, or return the failing commands and output from its stop or commit gate.
-- Resume an agent at most twice for one cause: a gate failure, a gap or finding, a blocked report on the same question, or a conflict reported as needing design. Instead of a third resume, hold its work under §Holding work.
+- Resume an agent at most twice for one cause: a gate failure, a gap or finding, a blocked report on the same question, or a conflict in its work (§Committing work, step 3). Instead of a third resume, hold its work under §Holding work.
 - Complete an agent's work on its final report, a completion or a blocked report; never wait for a later agent-finished event, which may never wake you.
 - Stay inactive between agent events: end your turn where the client wakes you, otherwise wait with its longest timeout. Never poll or sleep; request progress from the agents in flight only when a decision depends on it or after 3 consecutive timeouts with no agent event.
 
@@ -20,7 +20,7 @@ Each commit of an agent's work, made in the main checkout:
 
 1. For an agent in a worktree, cherry-pick the commits it made since its dispatch base, then apply its uncommitted rest, both without its changes to the files of the agent logs (agent-records rule), where both sides' additions conflict; never otherwise rewrite those commits. Bring its entries in those logs by §Dropping work, steps 1 and 3. When the main checkout holds uncommitted records (git rules › Commits), stash them by path before the cherry-picks and pop the stash after the apply: a cherry-pick refuses a dirty file it touches.
 2. Make the commit your skill sets on the uncommitted rest, empty when none is left; the agent's own commits stay as they are.
-3. When the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent with the gate's failing commands and output.
+3. When a cherry-pick or the apply conflicts, or the commit fails, for an agent in a worktree first undo its work in the main checkout as §Dropping work, step 2, states, keeping its worktree; then resume the agent: on a conflict, to rebase its work onto the working branch's `HEAD` commit, its new dispatch base, so both sides' intent holds; on a failure, with the gate's failing commands and output.
 4. Once the commit exists, remove the agent's worktree, when it has one, and write the backlog entries its report leaves you (`dispatching.md` › Backlog).
 
 ## Holding work

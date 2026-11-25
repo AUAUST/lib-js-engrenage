@@ -31,7 +31,7 @@ A caller message with a `Thoroughness:` line, your brief included, opens a windo
 
 <!-- @file .claude/skills/shape/dispatching.md -->
 
-Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings.
+Under Claude Code, before your first dispatch and after each compaction, read `.claude/skills/shape/dispatching.md`: parallel agents, brief lines, thoroughness stops, report findings, pending work.
 
 <!-- @end -->
 
