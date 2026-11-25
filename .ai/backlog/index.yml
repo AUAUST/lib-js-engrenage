@@ -390,6 +390,7 @@ tsdown:
     - BL-349345
     - BL-dc14f1
     - BL-e3cb01
+    - BL-461b06
 typescript:
   purpose: "Generated tsconfigs: checks, variant resolution and shipped type declarations."
   entries:

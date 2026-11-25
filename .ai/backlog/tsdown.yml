@@ -50,3 +50,10 @@ entries:
     why: template literal types rely on hand-tracked braces.
     want: the declaration emitter or rolldown-plugin-dts exposing the comments it prints (upstream, not AUAUST's).
     created: 2026-11-22T00:00:00Z
+  - id: BL-461b06
+    title: Declarations keep bare side-effect imports of externals whose types tree-shaking dropped
+    sites:
+      - src/tools/tsdown/operations/createTsdownConfig.ts:226
+    why: consumers load and type-check packages no public type uses; sh-syntax's DOM-only types broke typecheck:dist once an internal index re-exported sh-syntax-typed utils
+    want: externals reached only from declarations resolve without module side effects, so unused ones drop from .d.mts output
+    created: 2026-11-25T03:34:05Z
