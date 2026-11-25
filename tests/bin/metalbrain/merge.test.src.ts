@@ -1,12 +1,11 @@
 import { describe, expect, test } from "vitest";
 import { parse, stringify } from "yaml";
 
+import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
-
-import logs from "#bin/metalbrain/logs/index";
 
 const created = "2026-11-20T00:00:00Z";
 
@@ -53,7 +52,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "friction",
-      logs,
+      defineLogGroup({ taps: true }),
       "add",
       "--subject",
       "offline pnpm install",
@@ -88,7 +87,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "friction",
-      logs,
+      defineLogGroup({ taps: true }),
       "add",
       "--subject",
       "shell refused the command",
@@ -122,9 +121,22 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
   test("merge removes the new entry and taps the kept one with its taps and subject", async () => {
     const project = createProject();
 
-    await runCommand("friction", logs, "tap", "FR-0b0b0b", "--note", "again");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "tap",
+      "FR-0b0b0b",
+      "--note",
+      "again",
+    );
 
-    await runCommand("friction", logs, "merge", "FR-0b0b0b", "FR-0a0a0a");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "merge",
+      "FR-0b0b0b",
+      "FR-0a0a0a",
+    );
 
     const { entries, taps } = parse(project.read(".ai/friction.yml"));
 

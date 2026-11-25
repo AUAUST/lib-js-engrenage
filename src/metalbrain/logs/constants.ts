@@ -67,6 +67,11 @@ export const pending = freeze({
     subject,
     what: freeze({ type: "text", description: "the work left" }),
     why: freeze({ type: "text", description: "why it was left" }),
+    owner: freeze({
+      type: "line",
+      description: "the issue, backlog entry or task it belongs to",
+      requiredOnAdd: true,
+    }),
   }),
   detailLimit: 0,
   wordCap: "logEntry",
@@ -76,6 +81,7 @@ export const pending = freeze({
     weights: freeze({
       id: 4,
       subject: 3,
+      owner: 2,
       what: 1.5,
       why: 1,
     }),

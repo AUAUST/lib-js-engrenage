@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { describe, expect, test, vi } from "vitest";
 import { parse } from "yaml";
 
+import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { createFilesystem } from "#foundation/filesystem/index";
 import { recordFiles } from "#metalbrain/kinds/constants";
 import { friction } from "#metalbrain/logs/constants";
@@ -11,8 +12,6 @@ import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
-
-import logs from "#bin/metalbrain/logs/index";
 
 const friction1 = "entries:\n  - id: FR-0a0a0a\n    subject: git add\n    tried: ran it\n    stopped: it failed\n    created: 2026-11-20T00:00:00Z\n";
 
@@ -51,7 +50,7 @@ function git(root: string, ...args: string[]) {
 function addFriction(subject: string) {
   return runCommand(
     "friction",
-    logs,
+    defineLogGroup({ taps: true }),
     "add",
     "--subject",
     subject,
@@ -66,20 +65,37 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
   test("taps show in show, list and stats, and close removes them", async () => {
     const project = createProject();
 
-    await runCommand("friction", logs, "tap", "FR-0a0a0a", "--note", "again");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "tap",
+      "FR-0a0a0a",
+      "--note",
+      "again",
+    );
 
-    await runCommand("friction", logs, "tap", "FR-0a0a0a");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "tap",
+      "FR-0a0a0a",
+    );
 
-    const { messages: listed } = await runCommand("friction", logs, "list");
+    const {
+      messages: listed,
+    } = await runCommand("friction", defineLogGroup({ taps: true }), "list");
 
     expect(listed.map(({ text }) => text)).toEqual([
       "friction:",
       "└ FR-0a0a0a git add: ran it — it failed (2 taps)",
     ]);
 
-    const {
-      messages: shown,
-    } = await runCommand("friction", logs, "show", "FR-0a0a0a");
+    const { messages: shown } = await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "show",
+      "FR-0a0a0a",
+    );
 
     expect(shown.slice(-3).map(({ text }) => text)).toEqual([
       "  taps:",
@@ -87,27 +103,37 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
       expect.stringMatching(/^ {2}└ \S+Z$/u),
     ]);
 
-    const { messages: counted } = await runCommand("friction", logs, "stats");
+    const {
+      messages: counted,
+    } = await runCommand("friction", defineLogGroup({ taps: true }), "stats");
 
     expect(counted.map(({ text }) => text)).toEqual(["3 git add (recurring)"]);
 
     await addFriction("zsh");
 
-    await runCommand("friction", logs, "close", "FR-0a0a0a");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "close",
+      "FR-0a0a0a",
+    );
 
     expect(project.read(".ai/friction.yml")).not.toContain("taps");
   });
 
-  test("rejects a multi-line note and the pending log, tapping nothing", async () => {
+  test("rejects a multi-line note, tapping nothing", async () => {
     const project = createProject();
 
     await expect(
-      runCommand("friction", logs, "tap", "FR-0a0a0a", "--note", "a\nb"),
+      runCommand(
+        "friction",
+        defineLogGroup({ taps: true }),
+        "tap",
+        "FR-0a0a0a",
+        "--note",
+        "a\nb",
+      ),
     ).rejects.toThrow("A tap note is one line of text");
-
-    await expect(
-      runCommand("pending", logs, "tap", "FR-0a0a0a"),
-    ).rejects.toThrow("take no taps");
 
     expect(project.read(".ai/friction.yml")).toBe(friction1);
   });
@@ -128,7 +154,14 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
       now: Date.parse("2026-11-25T10:00:00Z"),
     });
 
-    await runCommand("friction", logs, "tap", "FR-0a0a0a", "--note", "other");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "tap",
+      "FR-0a0a0a",
+      "--note",
+      "other",
+    );
 
     await addFriction("other branch");
 
@@ -138,7 +171,14 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     vi.setSystemTime(Date.parse("2026-11-25T10:00:05Z"));
 
-    await runCommand("friction", logs, "tap", "FR-0a0a0a", "--note", "main");
+    await runCommand(
+      "friction",
+      defineLogGroup({ taps: true }),
+      "tap",
+      "FR-0a0a0a",
+      "--note",
+      "main",
+    );
 
     await addFriction("main branch");
 

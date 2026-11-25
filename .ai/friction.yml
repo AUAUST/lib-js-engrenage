@@ -1149,3 +1149,8 @@ entries:
     tried: ran gate --worktree after the fix
     stopped: typecheck step failed with no diagnostics; passed alone and on a gate rerun
     created: 2026-11-25T09:49:13Z
+  - id: FR-f8a74e
+    subject: hook module graph bans kind imports
+    tried: derive log groups from logKinds in bin root
+    stopped: executable test rejected the import; restated taps per group with a test
+    created: 2026-11-25T10:06:28Z

@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
 
+import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
 import backlog from "#bin/metalbrain/backlog/index";
-import logs from "#bin/metalbrain/logs/index";
 import search from "#bin/metalbrain/search";
 
 const cli = "purpose: Commands.\nentries:\n  - id: BL-0c1100\n    title: Output to a closed pipe crashes\n  - id: BL-0c1200\n    title: Program wiring copies internals\n";
@@ -62,7 +62,12 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     createProject();
 
     const lines = await readLines(
-      runCommand("friction", logs, "search", '"git ls-files"'),
+      runCommand(
+        "friction",
+        defineLogGroup({ taps: true }),
+        "search",
+        '"git ls-files"',
+      ),
     );
 
     expect(lines).toEqual([
@@ -97,7 +102,13 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     createProject();
 
     const lines = await readLines(
-      runCommand("friction", logs, "search", "add", "nowhere"),
+      runCommand(
+        "friction",
+        defineLogGroup({ taps: true }),
+        "search",
+        "add",
+        "nowhere",
+      ),
     );
 
     expect(lines).toEqual([
@@ -113,7 +124,7 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     const lines = await readLines(
       runCommand(
         "friction",
-        logs,
+        defineLogGroup({ taps: true }),
         "search",
         "--text",
         "listed `git ls-files --others` (OR",

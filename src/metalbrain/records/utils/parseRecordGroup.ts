@@ -35,6 +35,8 @@ function strictMessage(issue: BaseIssue<unknown>): string {
 
 const textSchema = pipe(string(), nonEmpty("expected text"));
 
+const lineSchema = pipe(textSchema, regex(/^[^\n]*$/u, "expected one line"));
+
 const detailSchema = union(
   [textSchema, pipe(array(textSchema), minLength(1, "expected items"))],
   "expected text or a list of texts",
@@ -47,6 +49,7 @@ const sitesSchema = pipe(
 
 const fieldSchemas = {
   text: textSchema,
+  line: exactOptional(lineSchema),
   sites: exactOptional(sitesSchema),
   detail: exactOptional(detailSchema),
 } satisfies Record<RecordFieldType, GenericSchema<unknown, FieldValue | undefined>>;
@@ -66,8 +69,6 @@ const timeSchema = pipe(
     return formatRecordTime(new Date(time)) === time;
   }, "expected an existing time"),
 );
-
-const noteSchema = pipe(textSchema, regex(/^[^\n]*$/u, "expected one line"));
 
 const looseGroupSchema = fallback(
   looseObject({
@@ -93,7 +94,7 @@ function createGroupSchema({ location, namespace, taps }: RecordKind) {
     {
       id: createIdSchema(namespace),
       at: timeSchema,
-      note: exactOptional(noteSchema),
+      note: exactOptional(lineSchema),
     },
     strictMessage,
   );

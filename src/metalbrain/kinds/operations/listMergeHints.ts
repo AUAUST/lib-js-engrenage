@@ -11,7 +11,8 @@ import type { Filesystem } from "#foundation/filesystem/index";
 /**
  * The lines listing the entries of `kind` similar to its entry `id`, as
  * `findSimilarRecords` finds them from the entry's field values, each followed
- * by the command merging `id` into it; none when no entry is similar.
+ * by the command merging `id` into it, or, for a kind taking no taps, followed
+ * by the command closing `id`; none when no entry is similar.
  *
  * @throws {Error} When `findRecord` finds no entry `id`, or as
  * `findSimilarRecords` throws.
@@ -43,6 +44,14 @@ export async function listMergeHints(
 
   if (similar.length === 0) {
     return [];
+  }
+
+  if (kind.taps !== true) {
+    return [
+      `Similar ${kind.name} entries; close ${id} if one records the same thing:`,
+      ...similar.map(({ record }) => formatRecordLine(kind, record)),
+      `  pnpm metalbrain ${kind.name} close ${id}`,
+    ];
   }
 
   return [
