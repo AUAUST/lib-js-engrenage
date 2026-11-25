@@ -40,12 +40,14 @@ function isOperator(text: string): text is Operator {
   return operators.has(text);
 }
 
+// @debt should belong in a @auaust/toolkit regex module
 function measure(pattern: RegExp, query: string, index: number) {
   pattern.lastIndex = index;
 
   return pattern.exec(query)?.[0].length;
 }
 
+// @debt should belong in a @auaust/toolkit regex module
 function find(pattern: RegExp, query: string, index: number) {
   pattern.lastIndex = index;
 

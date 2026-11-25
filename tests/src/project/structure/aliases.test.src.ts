@@ -120,21 +120,11 @@ describe("aliases", () => {
     expect((await read("package.json")).imports).toMatchObject({
       "#data/*": "./data/*",
       "#utils/*": {
-        types: [
-          "./src/utils/*.ts",
-          "./src/utils/*.mts",
-          "./src/utils/*.cts",
-          "./src/utils/*.tsx",
-        ],
+        types: ["./src/utils/*.ts", "./src/utils/*.tsx"],
         default: "./src/utils/*",
       },
       "#constants": {
-        types: [
-          "./src/constants.ts",
-          "./src/constants.mts",
-          "./src/constants.cts",
-          "./src/constants.tsx",
-        ],
+        types: ["./src/constants.ts", "./src/constants.tsx"],
         default: "./src/constants",
       },
     });
@@ -278,7 +268,7 @@ describe("aliases", () => {
     expect(
       JSON.parse(project.read("package.json")).imports["#config/*"],
     ).toEqual({
-      types: ["./src/config/*.ts", "./src/config/*.mts", "./src/config/*.cts"],
+      types: ["./src/config/*.ts"],
       default: "./src/config/*",
     });
 
@@ -299,11 +289,22 @@ describe("aliases", () => {
 
     expect(
       JSON.parse(project.read("package.json")).imports["#config/*"].types,
-    ).toEqual([
-      "./src/config/*.ts",
-      "./src/config/*.mts",
-      "./src/config/*.cts",
-    ]);
+    ).toEqual(["./src/config/*.ts"]);
+  });
+
+  test("gives src's bundled aliases a .mts target, never a .cts one, once its moduleExtensions list .mts", async () => {
+    const project = createUnrecordedBundledProject("./src/config/*.ts");
+
+    project.write(
+      "engrenage.config.ts",
+      `export default { environments: { src: { languages: [{ name: "typescript", options: { moduleExtensions: [".mts"] } }], execution: { globals: "node", syntax: 24 }, bundled: true } } };\n`,
+    );
+
+    await syncOnDisk(project.root);
+
+    expect(
+      JSON.parse(project.read("package.json")).imports["#config/*"].types,
+    ).toEqual(["./src/config/*.ts", "./src/config/*.mts"]);
   });
 
   test("fails on an unrecorded string import outside the generated types", async () => {

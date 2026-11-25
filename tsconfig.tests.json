@@ -1,11 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "tests/**/*.ts",
-    "tests/**/*.mts",
-    "tests/**/*.cts",
-    "global.d.ts"
-  ],
+  "include": ["tests/**/*.ts", "global.d.ts"],
   "exclude": ["tests/**/fixtures/**"],
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.tests.tsbuildinfo",

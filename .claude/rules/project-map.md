@@ -54,9 +54,9 @@ The matrix states top-level namespace grants; domain and role boundaries still a
 
 | Files | Runs against | May import | Never |
 | --- | --- | --- | --- |
-| `**/*.test{.ts,.mts,.cts}` | source and dist | `public-entries`, `tests`, `dist-artefacts` | `internal-aliases`, `bin`, `scripts`, `tooling`, `data` |
-| `**/*.test.src{.ts,.mts,.cts}` | source | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `dist-artefacts` | `public-entries`, `data` |
-| `**/*.test.dist{.ts,.mts,.cts}` | dist | `public-entries`, `tests`, `dist-artefacts` | `internal-aliases`, `bin`, `scripts`, `tooling`, `data` |
+| `**/*.test.ts` | source and dist | `public-entries`, `tests`, `dist-artefacts` | `internal-aliases`, `bin`, `scripts`, `tooling`, `data` |
+| `**/*.test.src.ts` | source | `internal-aliases`, `tests`, `bin`, `scripts`, `tooling`, `dist-artefacts` | `public-entries`, `data` |
+| `**/*.test.dist.ts` | dist | `public-entries`, `tests`, `dist-artefacts` | `internal-aliases`, `bin`, `scripts`, `tooling`, `data` |
 
 ## Roles
 

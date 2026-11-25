@@ -31,7 +31,7 @@ describe("environments", () => {
       dirs: ["src"],
       generated: [],
       discovered: [],
-      globs: ["src/**/*{.ts,.mts,.cts}"],
+      globs: ["src/**/*.ts"],
     });
 
     expect(await config.resolve("tests")).toMatchObject({
@@ -39,12 +39,8 @@ describe("environments", () => {
       dirs: ["tests"],
       generated: [],
       discovered: [],
-      globs: ["tests/**/*{.ts,.mts,.cts}"],
-      files: [
-        "**/*.test{.ts,.mts,.cts}",
-        "**/*.test.src{.ts,.mts,.cts}",
-        "**/*.test.dist{.ts,.mts,.cts}",
-      ],
+      globs: ["tests/**/*.ts"],
+      files: ["**/*.test.ts", "**/*.test.src.ts", "**/*.test.dist.ts"],
       fixtures: ["**/fixtures/**"],
       coverageDir: "coverage",
     });
@@ -63,7 +59,7 @@ describe("environments", () => {
       active: true,
       dirs: ["tooling"],
       rootFiles: ["*.config.ts", ".*.ts"],
-      globs: ["*.config.ts", ".*.ts", "tooling/**/*{.ts,.mts,.cts}"],
+      globs: ["*.config.ts", ".*.ts", "tooling/**/*.ts"],
     });
 
     expect((await config.resolve("files")).fixtures).toEqual([
@@ -71,13 +67,13 @@ describe("environments", () => {
     ]);
 
     expect((await config.resolve("files")).published).toEqual([
-      "src/**/*{.ts,.mts,.cts}",
-      "bin/**/*{.ts,.mts,.cts}",
+      "src/**/*.ts",
+      "bin/**/*.ts",
     ]);
 
     expect((await config.resolve("files")).private).toEqual([
-      "tests/**/*{.ts,.mts,.cts}",
-      "scripts/**/*{.ts,.mts,.cts}",
+      "tests/**/*.ts",
+      "scripts/**/*.ts",
     ]);
   });
 
@@ -114,9 +110,7 @@ describe("environments", () => {
       globs: [],
     });
 
-    expect((await config.resolve("files")).published).toEqual([
-      "src/**/*{.ts,.mts,.cts}",
-    ]);
+    expect((await config.resolve("files")).published).toEqual(["src/**/*.ts"]);
   });
 
   test("prefix the generated and discovered globs of every environment by its dirs, discovered roles included", async () => {
@@ -223,9 +217,7 @@ describe("environments", () => {
       "*.config.ts",
     ]);
 
-    expect((await config.resolve("src")).globs).toEqual([
-      "src/**/*{.ts,.mts,.cts,.tsx}",
-    ]);
+    expect((await config.resolve("src")).globs).toEqual(["src/**/*{.ts,.tsx}"]);
   });
 });
 
@@ -298,13 +290,9 @@ describe("environment tsconfigs", () => {
 
     const config = await loadConfig(project.root);
 
-    expect((await config.resolve("src")).globs).toContain(
-      "src/**/*{.ts,.mts,.cts}",
-    );
+    expect((await config.resolve("src")).globs).toContain("src/**/*.ts");
 
-    expect((await config.resolve("files")).published).toContain(
-      "src/**/*{.ts,.mts,.cts}",
-    );
+    expect((await config.resolve("files")).published).toContain("src/**/*.ts");
   });
 
   test("warn when the base tsconfig is not named tsconfig.json", async () => {

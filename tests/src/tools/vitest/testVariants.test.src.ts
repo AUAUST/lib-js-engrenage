@@ -62,9 +62,9 @@ describe("test variants", () => {
     const config = await loadConfig(project.root);
 
     expect((await config.resolve("tests")).patterns).toEqual({
-      plain: ["**/*.test{.ts,.mts,.cts}"],
-      source: ["**/*.test.src{.ts,.mts,.cts}"],
-      dist: ["**/*.test.dist{.ts,.mts,.cts}"],
+      plain: ["**/*.test.ts"],
+      source: ["**/*.test.src.ts"],
+      dist: ["**/*.test.dist.ts"],
     });
 
     expect(
@@ -75,8 +75,8 @@ describe("test variants", () => {
         })
       ).test?.include,
     ).toEqual([
-      "**/*.test{.ts,.mts,.cts}",
-      "**/*.test.src{.ts,.mts,.cts}",
+      "**/*.test.ts",
+      "**/*.test.src.ts",
       "**/*.test.?(c|m)[jt]s?(x)",
       "**/*.test.src.?(c|m)[jt]s?(x)",
     ]);
@@ -89,8 +89,8 @@ describe("test variants", () => {
         })
       ).test?.include,
     ).toEqual([
-      "**/*.test{.ts,.mts,.cts}",
-      "**/*.test.dist{.ts,.mts,.cts}",
+      "**/*.test.ts",
+      "**/*.test.dist.ts",
       "**/*.test.?(c|m)[jt]s?(x)",
       "**/*.test.dist.?(c|m)[jt]s?(x)",
     ]);

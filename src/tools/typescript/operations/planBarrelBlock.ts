@@ -8,6 +8,7 @@ import {
   type StructureNode,
 } from "#batiment/structure/index";
 import { domainsBlock } from "#tools/typescript/constants";
+import { createModuleMatcher } from "#tools/typescript/operations/createModuleMatcher";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
 import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels";
@@ -18,6 +19,7 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { BarrelModule } from "#tools/typescript/types/BarrelModule";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
+import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -25,6 +27,7 @@ async function planDomainsBlock(
   filesystem: Filesystem,
   environment: NamespaceStructure,
   file: File,
+  isModule: ModuleMatcher,
 ): Promise<BarrelPlan> {
   const { dirs, entryFile, root } = environment;
   const directory = dirname(file);
@@ -39,7 +42,7 @@ async function planDomainsBlock(
     );
   }
 
-  const roleBarrels = await planIndexBarrels(filesystem, environment);
+  const roleBarrels = await planIndexBarrels(filesystem, environment, isModule);
 
   return {
     file,
@@ -61,6 +64,7 @@ async function listBlockModules(
   { owner, directory }: { owner: StructureNode; directory: Directory },
   role: string,
   contract: ResolvedRoleContract,
+  isModule: ModuleMatcher,
 ): Promise<BarrelModule[]> {
   if (!contract.collected) {
     const modules = await listDomainModules(
@@ -68,12 +72,13 @@ async function listBlockModules(
       owner,
       environment,
       (name) => name === role,
+      isModule,
     );
 
     return modules.filter((module) => isBelow(directory, module.file));
   }
 
-  return listCollectedModules(filesystem, environment, [role]);
+  return listCollectedModules(filesystem, environment, [role], isModule);
 }
 
 export async function planBarrelBlock(
@@ -93,8 +98,10 @@ export async function planBarrelBlock(
     throw new Error(`${file} lies in no environment of the structure`);
   }
 
+  const isModule = await createModuleMatcher(config);
+
   if (role === domainsBlock) {
-    return planDomainsBlock(filesystem, environment, file);
+    return planDomainsBlock(filesystem, environment, file, isModule);
   }
 
   const contract = getOwn(environment.roles, role)?.contract;
@@ -135,6 +142,7 @@ export async function planBarrelBlock(
       { owner, directory },
       role,
       contract,
+      isModule,
     ),
     reexports: [],
   };

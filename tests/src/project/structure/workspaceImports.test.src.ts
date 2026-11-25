@@ -186,6 +186,43 @@ describe("workspace imports by package name", () => {
     },
   );
 
+  test.each([
+    [
+      "exports only the .mts module",
+      'languages: [{ name: "typescript", options: { moduleExtensions: [".mts"] } }], ',
+      true,
+    ],
+    ["exports neither module", "", false],
+  ] as const)(
+    "sync %s of public .mts and .cts modules as the environment's moduleExtensions list .mts or nothing",
+    async (_name, languages, exported) => {
+      const project = await createLinkedProject(
+        {
+          [rootName]: "workspace:*",
+        },
+        {
+          roles: '[{ name: "formats", accepts: ["*.mts", "*.cts"] }]',
+          languages,
+          files: {
+            "src/ui/.domain.json": '{ "publicRoles": ["formats"] }',
+            "src/ui/formats/esm.mts": "export const esm = 'esm';\n",
+            "src/ui/formats/cjs.cts": "export const cjs = 'cjs';\n",
+          },
+        },
+      );
+
+      const { exports } = JSON.parse(project.read("package.json"));
+
+      expect(exports).toMatchObject({ "./ui/index": "./src/ui/index.ts" });
+
+      expect(exports["./ui/formats/esm"]).toBe(
+        exported ? "./src/ui/formats/esm.mts" : undefined,
+      );
+
+      expect(exports).not.toHaveProperty("./ui/formats/cjs");
+    },
+  );
+
   test("sync exports nothing from a root no workspace depends on", async () => {
     const project = await createLinkedProject({});
 

@@ -9,11 +9,6 @@ import {
   values,
 } from "@auaust/toolkit/object";
 
-import {
-  getFileEnvironment,
-  type EnvironmentPlacements,
-  type RegisteredEnvironment,
-} from "#batiment/environments/index";
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { rootScope } from "#batiment/scopes/constants";
 import {
@@ -26,8 +21,8 @@ import {
 } from "#batiment/structure/index";
 import { withExtensions, type Filesystem } from "#foundation/filesystem/index";
 import {
-  readEnvironmentLanguages,
-  type LanguageEntry,
+  createLanguageFileMatcher,
+  readLanguageExtensions,
 } from "#project/environments/index";
 import { readAliasedLanguage } from "#project/structure/operations/readAliasedLanguage";
 import type { ResolvedRoleContract } from "#batiment/roles/index";
@@ -138,53 +133,6 @@ function toSubpath(
 }
 
 /**
- * The extensions `language` takes in each environment registered in `scope`, by
- * environment name, as the environment's language options resolve them.
- */
-async function readScopeExtensions(
-  config: ConfigResolver,
-  scope: Scope,
-  registered: readonly RegisteredEnvironment[],
-  language: LanguageEntry,
-): Promise<ReadonlyMap<string, readonly string[]>> {
-  const scoped = await config.context.scope(scope.dir);
-
-  const extensions = await Promise.all(
-    registered
-      .filter((environment) => environment.scope === scope.dir)
-      .map(async ({ registration: { name } }) => {
-        const languages = await readEnvironmentLanguages(scoped, name);
-
-        const selected = languages.find(
-          (entry) => entry.name === language.name,
-        );
-
-        return [name, selected?.extensions ?? []] as const;
-      }),
-  );
-
-  return new Map(extensions);
-}
-
-function isLanguageModule(
-  file: File,
-  placements: EnvironmentPlacements,
-  extensions: ReadonlyMap<string, readonly string[]>,
-): boolean {
-  const environment = getFileEnvironment(placements, file);
-
-  if (environment === undefined) {
-    throw new Error(
-      `${file} is a public module a workspace imports by package name, but no environment covers it, so no language options tell whether it is a module to export`,
-    );
-  }
-
-  return (extensions.get(environment) ?? []).some((extension) => {
-    return file.endsWith(extension);
-  });
-}
-
-/**
  * The `exports` map of each unpublished scope a workspace declares as a
  * dependency, by scope directory: each public module of its top-level
  * namespaces whose kind is not sealed, at the subpath mirroring its `#…`
@@ -213,8 +161,6 @@ export async function resolveScopeExports(
   const { filesystem } = config.context;
   const [extension = ""] = language.extensions;
 
-  const { environments } = await context.discover();
-
   const imported = new Set(
     groups.flatMap(({ workspaces }) => {
       return workspaces.flatMap(({ dependencies }) => dependencies);
@@ -231,12 +177,12 @@ export async function resolveScopeExports(
         ? await config.resolve("structure")
         : await context.walk(scope.dir);
 
-      const extensions = await readScopeExtensions(
-        config,
-        scope,
-        environments.registered,
-        language,
-      );
+      const scoped = await config.context.scope(scope.dir);
+
+      const [extensions, isLanguageFile] = await Promise.all([
+        readLanguageExtensions(scoped, language.name),
+        createLanguageFileMatcher(scoped, language.name),
+      ]);
 
       const globbed = toDeduplicated([...extensions.values()].flat());
 
@@ -260,9 +206,7 @@ export async function resolveScopeExports(
 
       const exports = modules
         .flat()
-        .filter((file) => {
-          return isLanguageModule(file, environments.placements, extensions);
-        })
+        .filter(isLanguageFile)
         .map((file) => {
           return [
             toSubpath(aliases, scope, file, extension),

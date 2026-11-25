@@ -202,22 +202,6 @@ entries:
     why: Seven friction lines across walkers, writers and workers
     want: Agents stop writing separators the hook refuses, through the Shell traps table or a hook message naming the alternative
     created: 2026-11-22T00:00:00Z
-  - id: BL-51b89a
-    title: no instruction says when agents write a pending log entry
-    sites:
-      - src/metalbrain/logs/constants.ts:1
-    why: "#825 added the pending kind for follow-up work left outside a pass; the #811 instruction switch introduced the friction and discarded commands only, user deferring the pending log's use"
-    want: agents know when a follow-up becomes a pending entry rather than a backlog entry or issue
-    done: an instruction names when to add pending entries, or the kind is dropped
-    created: 2026-11-23T00:00:00Z
-  - id: BL-7016b6
-    title: Walks dispatch an integration merger per leaf, whose single-leaf findings cost more than they find
-    sites:
-      - .claude/skills/walking/SKILL.md:1
-    why: "User decision (#881 walk): fewer tiny agents, one thorough review across several steps"
-    want: Commit a worker's completion directly after sending only genuine deviations or discoveries to the consultant; mergers run only at segment, nested-plan, task-tree-top or walk-end boundaries, or after a few large leaves, fix their findings themselves and send only plan or contract deviations to the consultant
-    done: walking and autonomous skills updated, per-leaf §Integration/§Review removed
-    created: 2026-11-24T00:00:00Z
   - id: BL-d0f942
     title: Agents reach for git stash in the shared checkout and lose or misapply work
     why: "friction subject git stash recurs (6 entries): refused stashes, pops applying unrelated stashes, index writes beside concurrent commits"

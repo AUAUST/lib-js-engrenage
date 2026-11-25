@@ -13,10 +13,7 @@ export async function planScopeBarrels(
 
   const plans = await Promise.all(
     configs.map(async (scoped) => {
-      return planBarrels(
-        config.context.filesystem,
-        await scoped.resolve("structure"),
-      );
+      return planBarrels(scoped, await scoped.resolve("structure"));
     }),
   );
 

@@ -8,6 +8,7 @@ import {
   type NamespaceStructure,
   type ResolvedStructure,
 } from "#batiment/structure/index";
+import { createModuleMatcher } from "#tools/typescript/operations/createModuleMatcher";
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listCollectedModules } from "#tools/typescript/operations/listCollectedModules";
 import { listDomainModules } from "#tools/typescript/operations/listDomainModules";
@@ -15,7 +16,9 @@ import { planIndexBarrels } from "#tools/typescript/operations/planIndexBarrels"
 import { isCollected } from "#tools/typescript/utils/isCollected";
 import { listRootReexports } from "#tools/typescript/utils/listRootReexports";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { ConfigResolver } from "#project/config/index";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
+import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 import type { File } from "#types/File";
 
 async function planRootEntries(
@@ -61,10 +64,11 @@ async function planRootEntries(
 async function planEnvironment(
   filesystem: Filesystem,
   environment: NamespaceStructure,
+  isModule: ModuleMatcher,
 ): Promise<BarrelPlan[]> {
   const { root, indexFile, entryFile } = environment;
 
-  const barrels = await planIndexBarrels(filesystem, environment);
+  const barrels = await planIndexBarrels(filesystem, environment, isModule);
 
   if (entryFile === undefined) {
     return barrels;
@@ -89,12 +93,14 @@ async function planEnvironment(
         domain,
         environment,
         (_, contract) => isCollected(contract),
+        isModule,
       );
 
       const collected = await listCollectedModules(
         filesystem,
         environment,
         domain.collects ?? [],
+        isModule,
       );
 
       const listed = new Set(own.map(({ file }) => file));
@@ -115,14 +121,21 @@ async function planEnvironment(
   ];
 }
 
+/**
+ * The barrels of the scope `config` resolves, `structure` its walk.
+ */
 export async function planBarrels(
-  filesystem: Filesystem,
+  config: ConfigResolver,
   structure: ResolvedStructure,
 ): Promise<readonly BarrelPlan[]> {
+  const { filesystem } = config.context;
+
+  const isModule = await createModuleMatcher(config);
+
   const plans = await Promise.all(
     filterMap(values(structure), (environment) => {
       if (environment !== undefined) {
-        return planEnvironment(filesystem, environment);
+        return planEnvironment(filesystem, environment, isModule);
       }
     }),
   );

@@ -244,7 +244,7 @@ describe("environment languages", () => {
       scopes,
     ] = await Promise.all([config.resolve("src"), resolveScopeSources(config)]);
 
-    expect(source.globs).toEqual(["src/**/*{.ts,.mts,.cts}"]);
+    expect(source.globs).toEqual(["src/**/*.ts"]);
 
     expect(
       resolveScope(scopes, ["files.code"]).filter((glob) => {
@@ -558,6 +558,6 @@ describe("registered environments", () => {
 
     expect(
       listLanguageFiles(await readEnvironmentLanguages(config, "edge")),
-    ).toEqual(["**/*{.ts,.mts,.cts}"]);
+    ).toEqual(["**/*.ts"]);
   });
 });

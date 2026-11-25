@@ -5,9 +5,11 @@ import { freeze } from "@auaust/toolkit/object";
 
 import type { BlockSyntax } from "#types/BlockSyntax";
 
-export const typescriptExtensions = freeze([".ts", ".mts", ".cts"] as const);
+export const typescriptExtensions = freeze([".ts"] as const);
 
 export const tsxExtensions = freeze([".tsx"] as const);
+
+export const moduleExtensions = freeze([".mts", ".cts"] as const);
 
 // @debt jsx flavours should be contributed by a typescript tsx extension that consumers can extend, not hard-coded
 export const jsxFlavours = freeze({

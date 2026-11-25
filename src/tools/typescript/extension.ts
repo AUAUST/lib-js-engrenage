@@ -2,6 +2,7 @@ import {
   barrelDirective,
   barrelExportsEntry,
   barrelsTarget,
+  moduleExtensions,
   tsxExtensions,
   typescript,
   typescriptBlocks,
@@ -155,9 +156,14 @@ export default {
       },
     ],
     "blocks.syntaxes": [
+      // @debt matches every extension TypeScript can take, not the covering environment's resolved list, as a block syntax's `files` are static globs
       {
         name: "typescript",
-        files: [...typescriptExtensions, ...tsxExtensions].map((extension) => {
+        files: [
+          ...typescriptExtensions,
+          ...tsxExtensions,
+          ...moduleExtensions,
+        ].map((extension) => {
           return `**/*${extension}`;
         }),
         ...typescriptBlocks,

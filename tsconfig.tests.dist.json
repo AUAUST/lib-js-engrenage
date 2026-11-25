@@ -8,11 +8,7 @@
   },
   "include": [
     "tests/**/*.test.ts",
-    "tests/**/*.test.mts",
-    "tests/**/*.test.cts",
     "tests/**/*.test.dist.ts",
-    "tests/**/*.test.dist.mts",
-    "tests/**/*.test.dist.cts",
     "tests/setup.ts",
     "tests/**/*.d.ts",
     "global.d.ts"

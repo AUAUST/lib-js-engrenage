@@ -21,7 +21,7 @@ export async function syncBarrelFiles(config: LoadedConfig) {
     const structure = await scoped.resolve("structure");
 
     const [plans, render] = await Promise.all([
-      planBarrels(filesystem, structure),
+      planBarrels(scoped, structure),
       createBarrelRenderer(scoped),
     ]);
 

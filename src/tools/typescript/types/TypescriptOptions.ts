@@ -4,6 +4,7 @@ import type { typescriptOptionsSchema } from "#tools/typescript/config/schemas/t
 
 /**
  * The options an environment selects the TypeScript language with; `tsx` names
- * the JSX flavour its `.tsx` files take, none without it.
+ * the JSX flavour its `.tsx` files take, none without it, and `moduleExtensions`
+ * lists the `.mts` and `.cts` module formats it uses, beside `.ts`.
  */
 export type TypescriptOptions = InferInput<typeof typescriptOptionsSchema>;

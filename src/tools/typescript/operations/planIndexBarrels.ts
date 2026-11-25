@@ -18,6 +18,7 @@ import { locateDomain } from "#tools/typescript/utils/locateDomain";
 import type { ResolvedRoleContract } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
+import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Files } from "#types/Files";
@@ -85,6 +86,7 @@ function planRoleBarrels(
 export async function planIndexBarrels(
   filesystem: Filesystem,
   environment: NamespaceStructure,
+  isModule: ModuleMatcher,
 ): Promise<BarrelPlan[]> {
   const { root, roles, indexFile } = environment;
 
@@ -114,7 +116,7 @@ export async function planIndexBarrels(
         return [];
       }
 
-      const files = await listRoleModules(filesystem, node);
+      const files = await listRoleModules(filesystem, node, isModule);
 
       return planRoleBarrels(node, contract, files, {
         indexFile,

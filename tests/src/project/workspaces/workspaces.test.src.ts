@@ -515,7 +515,7 @@ describe("workspace tsconfigs", () => {
 
     expect(JSON.parse(project.read("theme/tsconfig.web.json"))).toMatchObject({
       extends: "../tsconfig.json",
-      include: ["src/**/*.ts", "src/**/*.mts", "src/**/*.cts"],
+      include: ["src/**/*.ts"],
       exclude: ["src/worker/**"],
     });
 

@@ -73,6 +73,19 @@ export * as object from "#modules/object/entry";
     await expectSettledSync(config);
   });
 
+  test("lists no .mts module while the environment's moduleExtensions leave it out", async () => {
+    const { project, sync } = createKit({
+      files: {
+        "src/modules/object/utils/keys.ts": "export function keys() {}\n",
+        "src/modules/object/utils/legacy.mts": "export function legacy() {}\n",
+      },
+    });
+
+    await sync();
+
+    expect(project.read("src/modules/object/entry.ts")).not.toContain("legacy");
+  });
+
   test("orders a barrel mixing export groups as the export order lint wants", async () => {
     const { project, config, sync } = createKit({
       files: {
@@ -440,7 +453,7 @@ export type * from "#modules/guard/utils/isNull";
     const structure = await config.resolve("structure");
 
     const [plans, render] = await Promise.all([
-      planBarrels(config.context.filesystem, structure),
+      planBarrels(config, structure),
       createBarrelRenderer(config),
     ]);
 

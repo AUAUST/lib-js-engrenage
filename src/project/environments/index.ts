@@ -31,6 +31,7 @@ export type * from "#project/environments/types/EnvironmentLanguage";
 export type * from "#project/environments/types/Execution";
 export type * from "#project/environments/types/ExecutionGlobals";
 export type * from "#project/environments/types/GlobalsFactory";
+export type * from "#project/environments/types/LanguageFileMatcher";
 export type * from "#project/environments/types/ModuleFormat";
 export type * from "#project/environments/types/ResolvedBin";
 export type * from "#project/environments/types/ResolvedCodeEnvironment";
@@ -72,6 +73,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
 export { createEnvironmentTsconfig } from "#project/environments/operations/createEnvironmentTsconfig";
+export { createLanguageFileMatcher } from "#project/environments/operations/createLanguageFileMatcher";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { listNamespaceEnvironments } from "#project/environments/operations/listNamespaceEnvironments";
@@ -81,6 +83,7 @@ export { readEnvironment } from "#project/environments/operations/readEnvironmen
 export { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
 export { readEnvironmentOptions } from "#project/environments/operations/readEnvironmentOptions";
 export { readEnvironments } from "#project/environments/operations/readEnvironments";
+export { readLanguageExtensions } from "#project/environments/operations/readLanguageExtensions";
 export { readLayoutContext } from "#project/environments/operations/readLayoutContext";
 export { readScopeNamespaces } from "#project/environments/operations/readScopeNamespaces";
 export { readSelectedLanguage } from "#project/environments/operations/readSelectedLanguage";

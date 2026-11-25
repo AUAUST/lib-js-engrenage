@@ -10,11 +10,11 @@ import {
 import { isGeneratedBarrel } from "#tools/typescript/operations/isGeneratedBarrel";
 import { listRoleModules } from "#tools/typescript/operations/listRoleModules";
 import { collectRoleNodes } from "#tools/typescript/utils/collectRoleNodes";
-import { isModule } from "#tools/typescript/utils/isModule";
 import { locateDomain } from "#tools/typescript/utils/locateDomain";
 import type { ResolvedRoleContract } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { BarrelModule } from "#tools/typescript/types/BarrelModule";
+import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 import type { File } from "#types/File";
 
 // @debt re-derives the role of each file inside a role directory from `fileNames`, which the structure walker already classifies; the resolved structure could carry each role node's files with their roles
@@ -37,6 +37,7 @@ export async function listDomainModules(
   domain: StructureNode,
   environment: NamespaceStructure,
   accepts: (role: string, contract: ResolvedRoleContract) => boolean,
+  isModule: ModuleMatcher,
 ): Promise<BarrelModule[]> {
   const { roles, indexFile } = environment;
   const location = locateDomain(environment, domain);
@@ -78,7 +79,7 @@ export async function listDomainModules(
 
   const directoryModules = await Promise.all(
     collectRoleNodes(domain).map(async (node) => {
-      const files = await listRoleModules(filesystem, node);
+      const files = await listRoleModules(filesystem, node, isModule);
 
       const roleOf = nameRoleFiles(node);
 

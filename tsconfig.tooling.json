@@ -1,13 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "include": [
-    "*.config.ts",
-    ".*.ts",
-    "tooling/**/*.ts",
-    "tooling/**/*.mts",
-    "tooling/**/*.cts",
-    "global.d.ts"
-  ],
+  "include": ["*.config.ts", ".*.ts", "tooling/**/*.ts", "global.d.ts"],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/typescript/tsconfig.tooling.tsbuildinfo",

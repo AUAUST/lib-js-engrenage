@@ -6,11 +6,13 @@ import { listDomainModules } from "#tools/typescript/operations/listDomainModule
 import { isCollected } from "#tools/typescript/utils/isCollected";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { BarrelModule } from "#tools/typescript/types/BarrelModule";
+import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 
 export async function listCollectedModules(
   filesystem: Filesystem,
   environment: NamespaceStructure,
   roles: readonly string[],
+  isModule: ModuleMatcher,
 ): Promise<BarrelModule[]> {
   if (roles.length === 0) {
     return [];
@@ -29,6 +31,7 @@ export async function listCollectedModules(
         (role, contract) => {
           return roles.includes(role) && isCollected(contract);
         },
+        isModule,
       );
     }),
   );
