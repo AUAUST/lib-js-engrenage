@@ -48,12 +48,7 @@ async function planDomainsBlock(
     file,
     node: root,
     modules: [],
-    reexports: listRootReexports(
-      environment,
-      directory,
-      entryFile,
-      roleBarrels,
-    ),
+    reexports: listRootReexports(environment, entryFile, roleBarrels),
   };
 }
 

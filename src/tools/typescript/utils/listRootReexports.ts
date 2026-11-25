@@ -7,11 +7,9 @@ import {
   collectStructureNodes,
   type NamespaceStructure,
 } from "#batiment/structure/index";
-import { isBelow } from "#tools/typescript/utils/isBelow";
 import type { ReexportMode } from "#batiment/roles/index";
 import type { BarrelExport } from "#tools/typescript/types/BarrelExport";
 import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
-import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 const subpathPrefix = "./";
@@ -37,7 +35,6 @@ function reexportAs(
 
 export function listRootReexports(
   environment: NamespaceStructure,
-  directory: Directory,
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],
 ): BarrelExport[] {
@@ -53,11 +50,7 @@ export function listRootReexports(
 
   const domainExports = collectStructureNodes(root)
     .filter((node) => {
-      return (
-        node.kind === "domain" &&
-        node.public === true &&
-        isBelow(directory, node.path)
-      );
+      return node.kind === "domain" && node.public === true;
     })
     .flatMap((domain) => {
       const entry = posix.join(domain.path, entryFile);
@@ -82,13 +75,7 @@ export function listRootReexports(
 
     const barrel = posix.join(node.path, indexFile);
 
-    const isReexported = (
-      contract?.reexport !== undefined &&
-      barrels.has(barrel) &&
-      isBelow(directory, node.path)
-    );
-
-    return isReexported
+    return contract?.reexport !== undefined && barrels.has(barrel)
       ? reexportAs(
           barrel,
           contract.reexport,

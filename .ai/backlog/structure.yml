@@ -1,4 +1,7 @@
 purpose: Project structure description, its report and the tooling generated from it.
+taps:
+  - {id: BL-c24c01, at: 2026-11-25T18:41:10Z, note: "Cross-directory imports of one namespace taken up by #932"}
+  - {id: BL-f9a67b, at: 2026-11-25T18:41:11Z, note: "Owns ordering runtimes like layers (core < adapters < rendering), left out of #932"}
 entries:
   - id: BL-8a4f63
     title: Naming rules of the roles are broken by many modules (#141 findings).

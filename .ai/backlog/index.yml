@@ -410,7 +410,6 @@ typescript:
     - BL-537ace
     - BL-e32b84
     - BL-a66057
-    - BL-d3e19c
 utils:
   purpose: Shared helpers and their placement.
   entries:

@@ -13,6 +13,7 @@ export function createBarrelProject({
   namespaces = {},
   extensions = [],
   published = true,
+  dirs,
 }: {
   files: Record<string, string>;
   roles: readonly Role[];
@@ -20,6 +21,7 @@ export function createBarrelProject({
   namespaces?: Record<string, Record<string, unknown>>;
   extensions?: readonly unknown[];
   published?: boolean;
+  dirs?: readonly string[] | undefined;
 }) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "@fixture/kit", "type": "module" }',
@@ -43,6 +45,7 @@ export function createBarrelProject({
         },
       },
       src: {
+        ...(dirs === undefined ? {} : { dirs }),
         roles: [index(), entrypoint(), ...roles],
         structure: {
           namespaces: {

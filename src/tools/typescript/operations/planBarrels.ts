@@ -21,44 +21,50 @@ import type { BarrelPlan } from "#tools/typescript/types/BarrelPlan";
 import type { ModuleMatcher } from "#tools/typescript/types/ModuleMatcher";
 import type { File } from "#types/File";
 
-async function planRootEntries(
+async function isHandWritten(
+  filesystem: Filesystem,
+  file: File,
+): Promise<boolean> {
+  return (
+    (await filesystem.exists(file)) &&
+    !(await isGeneratedBarrel(filesystem, file))
+  );
+}
+
+async function planRootEntry(
   filesystem: Filesystem,
   environment: NamespaceStructure,
   entryFile: File,
   roleBarrels: readonly BarrelPlan[],
 ): Promise<BarrelPlan[]> {
-  const plans: BarrelPlan[] = [];
+  const [directory] = environment.dirs;
 
-  for (const directory of environment.dirs) {
-    const file = posix.join(directory, entryFile);
-
-    const isHandWritten = (
-      (await filesystem.exists(file)) &&
-      !(await isGeneratedBarrel(filesystem, file))
-    );
-
-    if (isHandWritten) {
-      continue;
-    }
-
-    const reexports = listRootReexports(
-      environment,
-      directory,
-      entryFile,
-      roleBarrels,
-    );
-
-    if (reexports.length > 0) {
-      plans.push({
-        file,
-        node: environment.root,
-        modules: [],
-        reexports,
-      });
-    }
+  if (directory === undefined) {
+    return [];
   }
 
-  return plans;
+  const claimed = await Promise.all(
+    environment.dirs.map((dir) => {
+      return isHandWritten(filesystem, posix.join(dir, entryFile));
+    }),
+  );
+
+  if (claimed.includes(true)) {
+    return [];
+  }
+
+  const reexports = listRootReexports(environment, entryFile, roleBarrels);
+
+  return reexports.length === 0
+    ? []
+    : [
+        {
+          file: posix.join(directory, entryFile),
+          node: environment.root,
+          modules: [],
+          reexports,
+        },
+      ];
 }
 
 async function planEnvironment(
@@ -76,13 +82,14 @@ async function planEnvironment(
 
   const entryOnly = await Promise.all(
     collectStructureNodes(root).map(async (node) => {
-      const isEntryOnly = (
+      const hasGeneratedEntry = (
         node.kind === "domain" &&
         node.public === true &&
-        !(await filesystem.exists(posix.join(node.path, indexFile)))
+        !(await filesystem.exists(posix.join(node.path, indexFile))) &&
+        !(await isHandWritten(filesystem, posix.join(node.path, entryFile)))
       );
 
-      return isEntryOnly ? [node] : [];
+      return hasGeneratedEntry ? [node] : [];
     }),
   );
 
@@ -117,7 +124,7 @@ async function planEnvironment(
   return [
     ...barrels,
     ...domainEntries,
-    ...(await planRootEntries(filesystem, environment, entryFile, barrels)),
+    ...(await planRootEntry(filesystem, environment, entryFile, barrels)),
   ];
 }
 
