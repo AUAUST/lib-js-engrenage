@@ -5,7 +5,7 @@ description: Record work deferred beyond the current task.
 
 ## Backlog
 
-Record out-of-scope findings and user-deferred work in the shared backlog, reading and changing it only through `pnpm metalbrain backlog categories|list|search|show|create|add|update|move|close`.
+Record out-of-scope findings and user-deferred work in the shared backlog, reading and changing it only through `pnpm metalbrain backlog categories|list|search|show|create|add|update|tap|merge|move|relocate|close`.
 
 A finding outside your task that no agent record holds:
 
@@ -15,6 +15,6 @@ A finding outside your task that no agent record holds:
 Filing an entry:
 
 - **Category.** The one owning the dependency family or project subsystem that must change, from `categories`: upstream work under its dependency's product family, one per tool, never per vendor or integration; local coding conventions and linting under `coding-style`. When none owns it, create one without asking, its purpose naming the product or behavior it owns.
-- **Entry.** Search first, and update an entry covering the finding instead of adding a duplicate. Title: the problem or need, stated exactly; then `--sites` for its code sites and at most three items across `--why`, `--want` and `--done`, none restating the title.
+- **Entry.** Search first; instead of adding a duplicate, tap an entry the finding adds nothing to, or update the entry it extends. Title: the problem or need, stated exactly; then `--sites` for its code sites and at most three items across `--why`, `--want` and `--done`, none restating the title.
 - **Closing.** Close an entry once resolved, obsolete or tracked in full by a GitHub issue; reduce one an issue tracks in part to what the issue leaves, linking it.
 - Cite an entry by its ID, only within this repository.

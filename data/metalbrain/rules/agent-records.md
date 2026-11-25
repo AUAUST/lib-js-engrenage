@@ -1,19 +1,37 @@
 ---
 title: Agent records
-description: Record friction, discarded solutions and debt so recurring ones surface.
+description: Record friction, discarded solutions, missing capabilities and debt so recurring ones surface.
 ---
 
 # Agent records
 
-- **Friction**, with `pnpm metalbrain friction add --subject <its cause> --tried <what you tried> --stopped <what stopped it and how you got past>`: each retry, workaround or lookup anything but your own changes cost you.
-- **Discarded solution**, with `pnpm metalbrain discarded add --subject <the solution> --need <need> --reason <reason set aside>`: each solution you set aside because its cost exceeded what the task or your role allows, naming a library by its package name.
+Each record but debt goes to its agent log, `<log>` below:
+
+- **Friction**, log `friction`, fields `--subject <its cause> --tried <what you tried> --stopped <what stopped it and how you got past>`: each retry, workaround or lookup anything but your own changes cost you.
+- **Discarded solution**, log `discarded`, fields `--subject <the solution> --need <need> --reason <reason set aside>`: each solution you set aside because its cost exceeded what the task or your role allows, naming a library by its package name.
+- **Missing capability**, log `missing`, fields `--subject <the capability> --need <what you needed it for> --instead <what you wrote or did instead, with its site>`: each operation you write, or work around because nothing provides it, that holds nothing specific to the case it serves: one a dependency or a shared domain could provide, sparing you that code. State the capability, never why it belongs elsewhere; when you wonder, record it.
 - **Debt**, as defined below, a comment at the code. Form: `@debt <statement>` at the start of its own comment, one per comment, stating what could be better as you see it; a fix only when you already know one.
+
+Every log and the backlog take the same commands, `<kind>` naming a log or `backlog`, each text in single quotes:
+
+```sh
+pnpm metalbrain <log> add --<field> '<text>' …            # prints the new ID
+pnpm metalbrain <kind> update <id> --<field> '<text>' …
+pnpm metalbrain <kind> tap <id…> [--note '<text>']
+pnpm metalbrain <kind> merge <new-id> <kept-id> [--note '<text>']
+pnpm metalbrain <kind> search <query…>                    # GitHub code search syntax
+pnpm metalbrain <kind> search --text '<raw text>'
+pnpm metalbrain <log> stats
+pnpm metalbrain search <query…>                           # every kind together
+pnpm metalbrain [<kind>] show|close <id…>                 # without <kind>, read from each ID
+```
 
 - Write each record yourself as soon as you find what it records, without asking or awaiting review, whatever your role, mode or brief; only in the current repository, reporting what you notice elsewhere.
 - Telling anyone a finding records nothing: record it first, under this rule or Backlog, and name where. Report unrecorded only a finding Backlog leaves to your caller, and, as pending, one whose entry waits on a dispatched agent's work.
 - Before your final report as a subagent, or ending a turn in the main session, ahead of any closing step your harness asks for, write each record and backlog entry due since your dispatch, resume or turn began.
-- Read and change the friction and discarded logs only through their `pnpm metalbrain friction|discarded` commands. Keep each field to a few words, so mentions of one subject match.
-- Before weighing a solution or adding a friction entry, search its log for the subject. A subject its log's `stats` flags as recurring is a candidate: report it with its entry count and the needs its entries record.
+- Read and change the agent logs only through these commands. Keep each log field to a few words, so mentions of one subject match.
+- An entry you know records what you met again: tap it instead of adding one, its note holding what the entry lacks.
+- Before weighing a solution, search the discarded log for it. A subject its `stats` flags as recurring is a candidate: report it with its entry count and the needs its entries record.
 - Close a subject's log entries once a backlog entry, issue or change takes it up, and remove a debt marker only when your change resolves it.
 
 ## Debt

@@ -75,7 +75,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
     expect(id).toMatch(/^FR-[\da-f]{6}$/u);
 
     expect(heading).toBe(
-      `Similar friction entries, each with the command merging ${id} into it:`,
+      `Similar friction entries; merge ${id} into the one recording the same thing, if any:`,
     );
 
     expect(first).toMatch(/^FR-0a0a0a /u);

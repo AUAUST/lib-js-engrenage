@@ -7,7 +7,7 @@ description: Commit, write commit messages and write to GitHub.
 
 ## Commits
 
-Records here are uncommitted changes to the files of the friction and discarded logs (agent-records rule), and files whose only uncommitted changes are debt markers.
+Records here are uncommitted changes to the files of the agent logs (agent-records rule), and files whose only uncommitted changes are debt markers.
 
 | When                                                                    | Do                                                                                                         |
 | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -18,6 +18,12 @@ Records here are uncommitted changes to the files of the friction and discarded 
 
 - Stage by path only your changes and the records, whoever wrote them, never naming the records' staging in a commit message or report.
 - A task whose work is the records themselves commits like any other.
+
+<!-- @file .ai/backlog/index.yml -->
+
+- Backlog entries the commit gate lists as related: as a subagent, name their IDs in your report unless the commit is a checkpoint; in the main session, close each one the commit resolves and reduce each one it advances to what remains.
+
+<!-- @end -->
 
 | Message part    | Form                                                                                                                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |

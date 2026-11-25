@@ -50,7 +50,7 @@ You compare facts; agents do the scans and the changes. Beyond the diffs you rev
 | A change taking no choice: a changeset, a `@debt` marker, a configuration value the user named, a sync run | Yourself                                                            |
 
 - Choose the cheapest agent, effort and thoroughness level that fit each need; raise a gatherer or analyser to high effort only on the user's request.
-- For each new idea or topic, first read the backlog categories covering it for entries it would ease, worsen or take up; have a gatherer search the `@debt` markers and the agent-friction and discarded-solutions logs for the same.
+- For each new idea or topic, first read the backlog categories covering it for entries it would ease, worsen or take up; have a gatherer search the `@debt` markers and the agent logs for the same.
 - Beyond backlog entries, agent-log entries and issue drafts, edit files only for the changes the last row names, and only while no agent changes files in the main checkout.
 - When a gatherer's report misses what you asked, dispatch one more with a narrowed prompt; past that, tell the user what is still unknown.
 

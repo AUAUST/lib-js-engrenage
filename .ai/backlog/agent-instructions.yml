@@ -223,9 +223,11 @@ entries:
     why: "friction subject git stash recurs (6 entries): refused stashes, pops applying unrelated stashes, index writes beside concurrent commits"
     want: Instructions or a tool give a stash-free way to test a base or set work aside, such as a temporary worktree
     created: 2026-11-24T00:00:00Z
-  - id: BL-e3d01e
-    title: Agents have no instruction on what to do with the similar entries a commit or add lists
-    why: "Once #900 lands, the commit-msg gate step lists possibly related backlog entries as a factual message, and nothing tells agents who acts on them"
-    want: A subagent forwards the listed IDs to its dispatcher in its final report, except after a checkpoint commit; a main-session agent weighs and handles them itself
-    done: "With #888's end-of-plan instruction changes: agent-records asks for `missing` entries; the git rule counts `.ai/missing.yml`; curation reads its stats; agents learn when to `tap`, what to do with `add`'s merge hints, and `<kind> merge`"
-    created: 2026-11-24T00:00:00Z
+  - id: BL-a33d47
+    title: Worktree dispatch carries agent-log entries by hand although record files merge as unions
+    sites:
+      - data/metalbrain/shared/worktree-dispatch.md:19
+      - data/metalbrain/shared/worktree-dispatch.md:40
+    why: Its committing and dropping steps exclude the agent logs from cherry-picks for conflicts union merge now resolves, and re-add kept entries with new IDs, losing taps and created
+    want: Cherry-pick the agent logs with the rest wherever the record files merge as unions
+    created: 2026-11-25T06:11:47Z

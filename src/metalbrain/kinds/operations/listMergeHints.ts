@@ -45,7 +45,7 @@ export async function listMergeHints(
   }
 
   return [
-    `Similar ${kind.name} entries, each with the command merging ${id} into it:`,
+    `Similar ${kind.name} entries; merge ${id} into the one recording the same thing, if any:`,
     ...similar.flatMap(({ record }) => {
       return [
         formatRecordLine(kind, record),

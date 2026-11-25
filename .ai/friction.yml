@@ -1122,3 +1122,8 @@ entries:
     tried: reset sync-rewritten record files with git checkout
     stopped: denied as destructive; rewrote them with a scratchpad script
     created: 2026-11-25T02:44:55Z
+  - id: FR-6767e2
+    subject: backlog add --sites
+    tried: several paths after one --sites
+    stopped: commander took them as arguments; repeat --sites per path
+    created: 2026-11-25T06:11:56Z
