@@ -2,6 +2,7 @@ purpose: Project structure description, its report and the tooling generated fro
 taps:
   - {id: BL-c24c01, at: 2026-11-25T18:41:10Z, note: "Cross-directory imports of one namespace taken up by #932"}
   - {id: BL-f9a67b, at: 2026-11-25T18:41:11Z, note: "Owns ordering runtimes like layers (core < adapters < rendering), left out of #932"}
+  - {id: BL-f9a67b, at: 2026-11-25T19:55:17Z, note: "Source namespace hard-coded as src: resolveScopeExports.ts:10, aliasesSection.ts:55, createTsdownConfig.ts:142, produceTsconfigInclude.ts:45, syncPackageJson.ts:71; #933 weighs directory nodes instead"}
 entries:
   - id: BL-8a4f63
     title: Naming rules of the roles are broken by many modules (#141 findings).
@@ -302,8 +303,8 @@ entries:
     title: Root namespaces per runtime cannot be declared, only directories of src
     sites:
       - src/project/structure/adapters/createResolverContext.ts:32
-    why: Runtimes in one src namespace share one project-map row and grants (#926 chose that shape)
-    want: User-declared top-level namespaces with entries, per-namespace aliases and a cross-namespace collision check
+    why: "One package whose source spans several namespaces: #933 orders runtimes as directory nodes of src instead"
+    want: Project-declared top-level namespaces with entries, per-namespace aliases and a cross-namespace collision check
     created: 2026-11-25T17:51:53Z
   - id: BL-40d8e5
     title: Unpublished root imported by workspaces has no entrypoint role by default
