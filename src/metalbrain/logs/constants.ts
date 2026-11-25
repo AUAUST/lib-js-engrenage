@@ -23,6 +23,14 @@ export const friction = freeze({
   detailLimit: 0,
   wordCap: "logEntry",
   groupBy: "subject",
+  search: freeze({
+    weights: freeze({
+      id: 4,
+      subject: 3,
+      stopped: 1.5,
+      tried: 1,
+    }),
+  }),
 } as const) satisfies RecordKind;
 
 export const discarded = freeze({
@@ -37,6 +45,14 @@ export const discarded = freeze({
   detailLimit: 0,
   wordCap: "logEntry",
   groupBy: "subject",
+  search: freeze({
+    weights: freeze({
+      id: 4,
+      subject: 3,
+      need: 1.5,
+      reason: 1,
+    }),
+  }),
 } as const) satisfies RecordKind;
 
 export const pending = freeze({
@@ -51,6 +67,14 @@ export const pending = freeze({
   detailLimit: 0,
   wordCap: "logEntry",
   groupBy: "subject",
+  search: freeze({
+    weights: freeze({
+      id: 4,
+      subject: 3,
+      what: 1.5,
+      why: 1,
+    }),
+  }),
 } as const) satisfies RecordKind;
 
 export const missing = freeze({
@@ -71,6 +95,14 @@ export const missing = freeze({
   detailLimit: 0,
   wordCap: "logEntry",
   groupBy: "subject",
+  search: freeze({
+    weights: freeze({
+      id: 4,
+      subject: 3,
+      need: 1.5,
+      instead: 1,
+    }),
+  }),
 } as const) satisfies RecordKind;
 
 export const logKinds = freeze([

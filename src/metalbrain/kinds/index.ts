@@ -7,4 +7,5 @@ export { resolveRecordKind } from "#metalbrain/kinds/operations/resolveRecordKin
 // @barrel utils
 export { findNamedRecordKind } from "#metalbrain/kinds/utils/findNamedRecordKind";
 export { findRecordKind } from "#metalbrain/kinds/utils/findRecordKind";
+export { formatRecordLine } from "#metalbrain/kinds/utils/formatRecordLine";
 // @end

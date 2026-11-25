@@ -7,9 +7,9 @@ import create from "#bin/metalbrain/backlog/create";
 import list from "#bin/metalbrain/backlog/list";
 import move from "#bin/metalbrain/backlog/move";
 import relocate from "#bin/metalbrain/backlog/relocate";
-import search from "#bin/metalbrain/backlog/search";
 import show from "#bin/metalbrain/backlog/show";
 import update from "#bin/metalbrain/backlog/update";
+import search from "#bin/metalbrain/search";
 
 // @debt the single-quote help note restates the one in `bin/metalbrain/logs/index.ts`, since bin modules are commands and share no constants
 export default defineGroup({

@@ -8,12 +8,13 @@ import github from "#bin/metalbrain/github/index";
 import hook from "#bin/metalbrain/hook/index";
 import logs from "#bin/metalbrain/logs/index";
 import planning from "#bin/metalbrain/planning/index";
+import search from "#bin/metalbrain/search";
 import show from "#bin/metalbrain/show";
 
 export default defineGroup({
   configure(command) {
     return command.description(
-      "Run the agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the friction, discarded, pending and missing logs, entries of any record kind by ID, debt markers, and the hooks recording what agents do.",
+      "Run the agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the friction, discarded, pending and missing logs, a ranked search across record kinds, entries of any record kind by ID, debt markers, and the hooks recording what agents do.",
     );
   },
   commands: {
@@ -25,6 +26,7 @@ export default defineGroup({
     discarded: logs,
     pending: logs,
     missing: logs,
+    search,
     show,
     close,
     debt,

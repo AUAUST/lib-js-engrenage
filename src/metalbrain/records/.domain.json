@@ -1,4 +1,4 @@
 {
   "specifier": "future/metalbrain/records",
-  "purpose": "The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, and the generated index."
+  "purpose": "The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, ranked search, and the generated index."
 }

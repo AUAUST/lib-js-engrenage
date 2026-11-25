@@ -27,15 +27,15 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ options  Declare and validate configuration options.
 │  ├─ processes  Run external processes.
 │  ├─ reports  Report typed messages to the handler the running context chooses.
-│  └─ shell  Parse shell commands into the simple commands they run.
+│  └─ shell  Parse shell commands into the simple commands they run, and quote words for them.
 ├─ metalbrain/  #metalbrain/…  facts < records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: the facts instructions render from, agent records and their kinds, instruction files and runtime hooks.
 │  ├─ backlog*  The backlog record kind: its declaration, its categories, how its entries list, and the migration of legacy Markdown categories.
 │  ├─ facts*  The manifest instructions render from: the config values agents need, word caps and output limit, and the sources of instruction fragments.
 │  ├─ instructions*{builtins}  The instruction registry of sections, rules and skills built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter.
 │  │  └─ builtins  The built-in instruction entries: engrenage's own sections, rules, and skills with the agents they define.
-│  ├─ kinds  Every record kind together: the kind an entry ID or a kind name names, the namespace check across kinds and the rename of former IDs.
+│  ├─ kinds  Every record kind together: the kind an entry ID or a kind name names, how each kind's entries print on one line, the namespace check across kinds and the rename of former IDs.
 │  ├─ logs  The friction, discarded, pending and missing record kinds, each one YAML file, and the migration of the legacy Markdown logs.
-│  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, and the generated index.
+│  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, ranked search, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.

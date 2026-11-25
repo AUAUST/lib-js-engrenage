@@ -1,5 +1,6 @@
 import type { RecordFields } from "#metalbrain/records/types/RecordFields";
 import type { RecordLocation } from "#metalbrain/records/types/RecordLocation";
+import type { RecordSearch } from "#metalbrain/records/types/RecordSearch";
 
 /**
  * A record kind's declaration, all the record core needs to store, check,
@@ -26,4 +27,8 @@ export interface RecordKind<WordCap extends string = string> {
    * The text field `countRecords` counts entries by.
    */
   readonly groupBy?: string;
+  /**
+   * The fields searches rank entries on; a kind without it is not searchable.
+   */
+  readonly search?: RecordSearch;
 }

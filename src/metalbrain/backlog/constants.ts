@@ -33,6 +33,18 @@ export const backlog = freeze({
   }),
   detailLimit: 3,
   wordCap: "backlogEntry",
+  search: freeze({
+    weights: freeze({
+      id: 4,
+      title: 3,
+      category: 3,
+      want: 1.5,
+      why: 1,
+      done: 1,
+      sites: 1,
+    }),
+    group: "category",
+  }),
 } as const) satisfies GroupedRecordKind;
 
 export const backlogRecordIndex = `${backlogDirectory}/${recordIndexName}${recordFileExtension}` satisfies File;

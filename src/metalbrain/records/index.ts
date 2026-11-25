@@ -39,6 +39,8 @@ export type * from "#metalbrain/records/types/RecordFieldType";
 export type * from "#metalbrain/records/types/RecordGroup";
 export type * from "#metalbrain/records/types/RecordKind";
 export type * from "#metalbrain/records/types/RecordLocation";
+export type * from "#metalbrain/records/types/RecordQuery";
+export type * from "#metalbrain/records/types/RecordSearch";
 export type * from "#metalbrain/records/types/RecordSiteRelocation";
 export type * from "#metalbrain/records/types/RecordValues";
 export type * from "#metalbrain/records/types/WordCapFinding";

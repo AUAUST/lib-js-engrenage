@@ -1,3 +1,3 @@
 {
-  "purpose": "Parse shell commands into the simple commands they run."
+  "purpose": "Parse shell commands into the simple commands they run, and quote words for them."
 }
