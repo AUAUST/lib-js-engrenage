@@ -40,7 +40,7 @@ const task = (number: number, header = "#10 › #11 · Roadmap") => {
 const tree: Record<number, MockIssue> = {
   10: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [11],
   },
   11: {
@@ -53,26 +53,26 @@ const tree: Record<number, MockIssue> = {
   14: task(14),
   20: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #21\n2. #22\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #21\n2. #22\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [21, 22],
   },
   21: task(21, "#20 · Roadmap"),
   22: task(22, "#20 · Roadmap"),
   30: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #31\n2. #33\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #31\n2. #33\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [31, 33],
   },
   31: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #32\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #32\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [32],
   },
   32: task(32, "#31 · Roadmap"),
   33: task(33, "#30 · Roadmap"),
   40: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #41\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #41\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [41],
   },
   41: {
@@ -100,7 +100,7 @@ const tree: Record<number, MockIssue> = {
   },
   50: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #51\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #51\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [51],
   },
   51: {
@@ -114,7 +114,7 @@ const tree: Record<number, MockIssue> = {
   },
   60: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #61\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #61\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [61],
   },
   61: {
@@ -128,7 +128,7 @@ const tree: Record<number, MockIssue> = {
   },
   70: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Scope tree\n\nx\n\n## Report\n\nx\n\n## Roadmap\n\n1. #71\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Scope tree\n\nx\n\n## Report\n\nx\n\n## Roadmap\n\n1. #71\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [71],
   },
   71: {
@@ -138,7 +138,7 @@ const tree: Record<number, MockIssue> = {
   },
   72: {
     type: "Task",
-    body: task(72, "#70 › #71 · Goal, Scope tree: g").body.replace(
+    body: task(72, "#70 › #71 · Compass, Scope tree: g").body.replace(
       "## Tests",
       "## Provides\n\n- Report: the stray list.\n- Scope tree: each scope.\n\n## Tests",
     ),
@@ -149,7 +149,7 @@ const tree: Record<number, MockIssue> = {
   },
   80: {
     type: "Plan",
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #81\n2. #82\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #81\n2. #82\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     subIssues: [81, 82],
   },
   81: task(81, "#80 · Roadmap"),

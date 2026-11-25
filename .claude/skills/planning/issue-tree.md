@@ -8,7 +8,7 @@ Shaping a tree of planned issues. `§…` names this file's sections.
 
 | Issue     | What it is                                                             | Its sub-issues                                                                                  |
 | --------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `plan`    | A standalone tree's root: goal, design and decisions                   | Its sequence                                                                                    |
+| `plan`    | A standalone tree's root: compass, design and decisions                | Its sequence                                                                                    |
 | `segment` | A wrapper with no work of its own, grouping items that share a context | Its members, in any order, never another segment                                                |
 | `task`    | Item: positive work, one feature taken from nothing to finished        | When split, a sequence of its inner parts, at any depth; segments group unrelated prerequisites |
 | `problem` | Item: negative work, something wrong to fix                            | When split, a sequence of its inner parts, at any depth; segments group unrelated prerequisites |
@@ -62,7 +62,7 @@ Deepen an item until it is ready for its agent (§Readiness).
 
 An issue is ready for a worker when `pnpm metalbrain planning issue check <n>` passes, it holds one agent's worth (issue-drafts rule › Size) and, read with its ancestors as a worker reads it:
 
-- its **Done when** states an observable end state serving the plan's **Done when** within its **Goal** and **Decisions**;
+- its **Done when** states an observable end state serving the plan's **Done when** within its **Compass** and **Decisions**;
 - each contract other items or users rely on is stated, in a Model section or the item's **Provides**;
 - it names each capability's owner and fixes no procedure (issue-drafts rule › Bodies, Owners);
 - its **Context** states only verified facts.

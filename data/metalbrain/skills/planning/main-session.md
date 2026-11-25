@@ -16,9 +16,9 @@ Handle each request of the user by its kind:
 
 Lay the groundwork in breadth: the plan, the tree, and each item's context, valid enough for a planner or the walk's consultant to deepen the item alone.
 
-1. **Goal.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the goal is clear.
-2. **Load.** Load the open-issue index (issue-drafts rule › Filing). Read the project maps the goal needs (issue-drafts rule › Owners), the backlog categories and the agent records covering what the goal touches.
-3. **Implications.** Find everything the goal touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
+1. **Compass.** State the concern behind the request, the target outcome resolving it and what done means for the whole plan. Create the plan issue as soon as the compass is clear.
+2. **Load.** Load the open-issue index (issue-drafts rule › Filing). Read the project maps the compass needs (issue-drafts rule › Owners), the backlog categories and the agent records covering what the compass touches.
+3. **Implications.** Find everything the compass touches (domains, entry points, models, conventions, contracts, call sites, issues, backlog entries, debt markers) and how the plan relates to each: extends, supersedes, conflicts with or depends on it.
 4. **Design.** Write into the plan its **Done when**, the Model sections and the **Decisions** several items share (issue-drafts rule › Bodies). A fact two items would each decide belongs here.
 5. **Items.** Create, split, order and link each item as soon as its need is settled. Give it its header, its **Context** with the reach **Implications** found, its **Prerequisites**, its **Done when**, and under **Planning** the design left to settle.
 6. **Reconcile.** Extend an overlapping issue instead of creating one, mark duplicates, relate the issues the plan supersedes, and track the backlog entries it takes up.
@@ -46,7 +46,7 @@ Read this file before the first inner dispatch, for parallel agents, the brief l
 
 Once the groundwork holds:
 
-- the plan has no **Planning** or **Questions**, and the user confirmed its **Goal**, **Done when**, Model sections and **Decisions**;
+- the plan has no **Planning** or **Questions**, and the user confirmed its **Compass**, **Done when**, Model sections and **Decisions**;
 - every item states its **Context** and, under **Planning**, what is left to design;
 - every fact more than one item would decide is in the plan;
 - every draft is published.

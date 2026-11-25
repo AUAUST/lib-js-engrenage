@@ -10,7 +10,7 @@ async function listTemplates(kind: InstructionKind) {
     facts: {
       wordCaps: {
         mode: "warn",
-        goal: 1,
+        compass: 1,
         context: 1,
         doneWhen: 1,
         comment: 1,

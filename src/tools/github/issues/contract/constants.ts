@@ -7,7 +7,7 @@ import type { NamedMeaning } from "#tools/github/issues/contract/types/NamedMean
 export const typeMeanings = freeze({
   plan: freeze({
     name: "Plan",
-    intent: "Goal, design, decisions and roadmap of a tree of issues.",
+    intent: "Compass, design, decisions and roadmap of a tree of issues.",
   }),
   segment: freeze({
     name: "Segment",
@@ -331,7 +331,7 @@ export const issueContracts = freeze({
   } as const),
   plan: freeze({
     sections: freeze([
-      "Goal",
+      "Compass",
       roadmapSection,
       "Decisions",
       resplitSection,
@@ -344,11 +344,14 @@ export const issueContracts = freeze({
         summary: "with a **Roadmap**",
         audience: "verification",
         required: freeze([
-          "Goal",
+          "Compass",
           roadmapSection,
           "Decisions",
           "Done when",
         ] as const),
+        forbidden: freeze({
+          Goal: "**Goal** is now **Compass**: rename the section.",
+        }),
       }),
     ] as const),
     modelsAfter: roadmapSection,

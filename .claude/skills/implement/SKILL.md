@@ -27,7 +27,7 @@ With an issue as specification, first run `pnpm metalbrain planning issue check 
 With an issue or a draft as specification, read it, then only the ancestors and plan sections its header line names; for a draft without one, the parent listing it in `subIssues` and the sections its entry there names. Your context ends at the nearest plan above it: read any other plan only when it holds information the issue needs.
 
 - The issue's outcome: its **Done when** and each **Tests** case.
-- The plans' **Goal** and **Decisions** and the issue's **Context**: the intent and facts your design serves.
+- The plans' **Compass** and **Decisions** and the issue's **Context**: the intent and facts your design serves.
 - The contracts it fixes: its own, and those of each Model section of a plan above it.
 
 Each `Concurrent: <owner>/<repo>#<n>` line in your brief names a leaf another worker builds at the same time, sharing a Model section with yours; its work is not on your base. Read its header line, **Provides** and **Done when**; build on the shared section as stated, and deliver none of that leaf's **Done when** or **Provides**.

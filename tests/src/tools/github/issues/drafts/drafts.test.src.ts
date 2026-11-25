@@ -79,7 +79,7 @@ subIssues:
     sections: []
 ---
 
-## Goal
+## Compass
 
 g
 
@@ -100,7 +100,7 @@ Nature: Feature
 Complexity: Trivial
 ---
 
-Goal: the first step
+Compass: the first step
 
 ## Context
 
@@ -273,7 +273,7 @@ blockedBy: []
       ],
     });
 
-    expect(parent?.body).toContain("## Goal");
+    expect(parent?.body).toContain("## Compass");
   });
 
   test.each([
@@ -443,7 +443,7 @@ labels: [Tooling]
 Complexity: null
 ---
 
-Goal: the segment
+Compass: the segment
 
 ## Done when
 
@@ -491,7 +491,7 @@ Goal: the segment
         .replace("labels: []", "labels: [Tests]")
         .replace("Nature: null", "Nature: Chore")
         .replace("Complexity: null", "Complexity: Involved")
-        .replace("<sections>: <gist>", "Goal: fresh")
+        .replace("<sections>: <gist>", "Compass: fresh")
         .replace("## Context\n", "## Context\n\nc\n")
         .replace("## Prerequisites\n", "## Prerequisites\n\n- #12: x.\n")
         .replace(/## Provides\n[^#]*/, "")
@@ -589,8 +589,8 @@ o
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan,
       ".ai/issues/new-first.draft.md": first.replace(
-        "Goal: the first step",
-        "#207 › #212 · Goal: the first step",
+        "Compass: the first step",
+        "#207 › #212 · Compass: the first step",
       ),
     });
 
@@ -607,7 +607,10 @@ o
     const config = await createProject({
       ".ai/issues/new-plan.draft.md": plan,
       ".ai/issues/new-first.draft.md": first
-        .replace("Goal: the first step", "A plain paragraph\nover two lines.")
+        .replace(
+          "Compass: the first step",
+          "A plain paragraph\nover two lines.",
+        )
         .replace("## Context\n\nc\n", "## Context\n\nc after #{new-plan}.\n")
         .replace("\n## Done when\n\n- Done.\n- Checked.\n", ""),
     });

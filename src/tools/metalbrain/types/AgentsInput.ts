@@ -77,10 +77,10 @@ export interface AgentsInput {
      */
     mode?: (("warn" | "deny") | undefined)
     /**
-     * Words of the **Goal** section of an issue.
+     * Words of the **Compass** section of a plan.
      * @default 110
      */
-    goal?: (number | undefined)
+    compass?: (number | undefined)
     /**
      * Words of the **Context** section of an issue.
      * @default 120

@@ -6,7 +6,7 @@ Reviews the structure a work sets: scope, ownership, dependency direction, bound
 
 ## Material
 
-- **Reviewed.** The plan's or draft's **Goal**, **Done when**, Model sections and **Decisions**, and the owners its items' **Context** names; without a plan or draft, the work as discussed.
+- **Reviewed.** The plan's or draft's **Compass**, **Done when**, Model sections and **Decisions**, and the owners its items' **Context** names; without a plan or draft, the work as discussed.
 - **Judged against.** The user's decisions, then the `purpose` of each namespace and domain in the project maps, and Project structure's placement rules.
 - **A scope no `purpose` declares precisely enough to place a capability**, a repository's, package's or environment's included. Ask the user to confirm the scope the code and history suggest, as a question; judge nothing against it until confirmed.
 

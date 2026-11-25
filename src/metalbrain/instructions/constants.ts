@@ -26,7 +26,7 @@ export const preserveDirective = "@preserve";
 export const rulesDirectory = ".claude/rules" satisfies Directory;
 
 export const wordCapLabels = freeze({
-  goal: "Issue **Goal**",
+  compass: "Plan **Compass**",
   context: "Issue **Context**",
   doneWhen: "Issue **Done when**",
   comment: "Issue comment",

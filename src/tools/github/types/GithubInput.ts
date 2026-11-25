@@ -48,7 +48,7 @@ export interface GithubInput {
      */
     types?: ({
       /**
-       * Goal, design, decisions and roadmap of a tree of issues.
+       * Compass, design, decisions and roadmap of a tree of issues.
        * @default `Plan`
        */
       plan?: (string | undefined)

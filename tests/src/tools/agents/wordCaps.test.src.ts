@@ -27,7 +27,7 @@ describe("word caps", () => {
 
     expect(await loadWordCaps(project.root)).toEqual({
       mode: "warn",
-      goal: 110,
+      compass: 110,
       context: 120,
       doneWhen: 110,
       comment: 150,
@@ -48,7 +48,7 @@ describe("word caps", () => {
   test("names wordCaps for the former budgets key", async () => {
     const project = createTemporaryProject({
       "package.json": '{"type":"module"}',
-      "engrenage.config.ts": "export default { agents: { budgets: { goal: 60 } } };\n",
+      "engrenage.config.ts": "export default { agents: { budgets: { compass: 60 } } };\n",
     });
 
     await expect(loadWordCaps(project.root)).rejects.toThrow(

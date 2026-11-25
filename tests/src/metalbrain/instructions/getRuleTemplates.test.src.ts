@@ -66,15 +66,15 @@ describe("getRuleTemplates", () => {
 
   test("states the configured word caps in the rule a sync renders", async () => {
     const content = await renderFixtureRule(
-      "agents: { wordCaps: { goal: 80 } },",
-      "@word-caps goal context doneWhen",
+      "agents: { wordCaps: { compass: 80 } },",
+      "@word-caps compass context doneWhen",
     );
 
     expect(content).toContain(
       [
         "| Text | Word cap |",
         "| --- | --- |",
-        "| Issue **Goal** | 80 |",
+        "| Plan **Compass** | 80 |",
         "| Issue **Context** | 120 |",
         "| Issue **Done when** | 110 |",
       ].join("\n"),

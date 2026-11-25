@@ -22,8 +22,13 @@ describe("@word-caps", () => {
     });
 
     await expect(
-      render(project.root, "<!-- @word-caps goal summary -->\n<!-- @end -->\n"),
-    ).rejects.toThrow("Unknown word cap kind summary, expected one of: goal,");
+      render(
+        project.root,
+        "<!-- @word-caps compass summary -->\n<!-- @end -->\n",
+      ),
+    ).rejects.toThrow(
+      "Unknown word cap kind summary, expected one of: compass,",
+    );
   });
 });
 

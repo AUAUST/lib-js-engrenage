@@ -82,7 +82,7 @@ describe("parseIssueBody", () => {
   test("parses a rendered header, which stripHeaderChain removes the chain of", () => {
     const header = renderHeader(
       ["#1", "AUAUST/lib-js-toolkit#2"],
-      "Goal: gist",
+      "Compass: gist",
     );
 
     expect(parseIssueBody(header).header).toEqual({
@@ -90,11 +90,11 @@ describe("parseIssueBody", () => {
         { repository: undefined, number: 1 },
         { repository: "AUAUST/lib-js-toolkit", number: 2 },
       ],
-      sections: ["Goal"],
+      sections: ["Compass"],
     });
 
     expect(stripHeaderChain(`${header}\n\n## Context`)).toBe(
-      "Goal: gist\n\n## Context",
+      "Compass: gist\n\n## Context",
     );
   });
 
@@ -185,6 +185,22 @@ describe("checkIssueBody", () => {
       {
         rule: "forbidden-section",
         message: expect.stringContaining("Tests"),
+      },
+    ]);
+  });
+
+  test("rejects Goal on a plan, naming Compass", () => {
+    expect(
+      checkIssueBody(
+        "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+        "plan",
+        contractNames,
+        1,
+      ),
+    ).toEqual([
+      {
+        rule: "forbidden-section",
+        message: expect.stringContaining("**Compass**"),
       },
     ]);
   });
@@ -452,10 +468,10 @@ describe("checkIssue", () => {
     vi.unstubAllGlobals();
   });
 
-  const plan = { body: "## Goal\n\nx\n", type: "Plan" };
+  const plan = { body: "## Compass\n\nx\n", type: "Plan" };
 
   const validPlan = {
-    body: "## Goal\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+    body: "## Compass\n\nx\n\n## Roadmap\n\n1. #11\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
     type: "Plan",
     subIssues: [{ number: 11, state: "open" as const }],
   };
@@ -665,7 +681,7 @@ describe("checkIssue", () => {
   describe("open sections above the direct parent", () => {
     const grandparent = {
       ...validPlan,
-      body: "## Goal\n\nx\n\n## Roadmap\n\n1. #10\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
+      body: "## Compass\n\nx\n\n## Roadmap\n\n1. #10\n\n## Decisions\n\nx\n\n## Done when\n\n- d\n",
       subIssues: [{ number: 10, state: "open" as const }],
     };
 
@@ -743,7 +759,7 @@ describe("checkIssue", () => {
     mockGithub({
       10: {
         ...validPlan,
-        body: "## Goal\n\nx #99\n",
+        body: "## Compass\n\nx #99\n",
       },
       11: {
         body: task,

@@ -38,7 +38,7 @@ Started by the user, read this file first:
 
 An issue edit undoes a wrong guess before any worker builds on it, so your own questions get latitude. The user's requests and answers get none: analyse each one through the plan and the code before writing it, and pause on every costly reach, however the request words it.
 
-- Count as costly any reach that changes the plan's **Goal**, **Done when**, Model sections or **Decisions**. Splitting, merging and reordering items under them is not costly (issue-drafts rule › Size).
+- Count as costly any reach that changes the plan's **Compass**, **Done when**, Model sections or **Decisions**. Splitting, merging and reordering items under them is not costly (issue-drafts rule › Size).
 - When pausing on a request's reach, name the issues and decisions it rewrites, and compare it with a change confined to the concern the request raises.
 - Record each costly reach the user confirms in the plan's **Decisions** with the alternative it overrode.
 - Write what no open question affects without waiting for answers.
@@ -51,10 +51,10 @@ Investigate every question in the code, configuration, history, documentation, d
 
 ### Latitude
 
-| Mode         | Settle yourself                                                                 | Never settle                                                                   |
-| ------------ | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Main session | What investigation settles or makes reasonably clear, balanced options included | Changes to the plan's **Goal**, **Done when**, Model sections or **Decisions** |
-| Inner        | The same, within your scope                                                     | Also what the plan, a sibling or a shared contract owns                        |
+| Mode         | Settle yourself                                                                 | Never settle                                                                      |
+| ------------ | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Main session | What investigation settles or makes reasonably clear, balanced options included | Changes to the plan's **Compass**, **Done when**, Model sections or **Decisions** |
+| Inner        | The same, within your scope                                                     | Also what the plan, a sibling or a shared contract owns                           |
 
 Handle each question, after investigation:
 
@@ -67,7 +67,7 @@ Handle each question, after investigation:
 
 Extract a part of a plan into its own plan when the Roadmap grows too long to scan or the part is clearly distinct from the rest. Do it when obvious; otherwise propose it with the part's scope.
 
-- A nested plan works on its own: its goal, design and decisions cover its part without reading the plans that reference it.
+- A nested plan works on its own: its compass, design and decisions cover its part without reading the plans that reference it.
 - Move into it every fact only its part uses; link with their gist the facts it shares with other plans.
 - Other plans treat it as a task: one Roadmap entry, never expanded, with a gist stating what it contributes there.
 

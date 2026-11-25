@@ -172,7 +172,7 @@ test("passes the checkouts the project links with the local one", async () => {
 test("checks a first-line draft of the checkout, denying its findings or another path", async () => {
   const { project, filesystem } = await installed("{}", {
     ".engrenage/github.json": '{"repositories":{},"organizations":{}}',
-    ".ai/issues/new-x.draft.md": "## Goal\n\ng\n",
+    ".ai/issues/new-x.draft.md": "## Compass\n\ng\n",
   });
 
   await filesystem.flush();

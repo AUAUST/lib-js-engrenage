@@ -108,13 +108,13 @@ const snapshot = {
   },
 };
 
-const planBody = `## Goal
+const planBody = `## Compass
 
 g
 
 ## Roadmap
 
-1. #11: the segment · [Goal](#goal), done
+1. #11: the segment · [Compass](#compass), done
    - #13
 2. #12: the task
 
@@ -126,7 +126,7 @@ d
 
 - d`;
 
-const taskBody = `#10 · Goal: the extra
+const taskBody = `#10 · Compass: the extra
 
 ## Context
 
@@ -407,7 +407,7 @@ beforeEach(() => {
       11,
       createIssue(11, {
         type: "Segment",
-        body: `#10 · Goal: the segment\n\n${segmentDoneWhen}`,
+        body: `#10 · Compass: the segment\n\n${segmentDoneWhen}`,
         subIssues: [13],
       }),
     ],
@@ -609,7 +609,7 @@ subIssues:
   - ref: "#11"
     gist: the segment
     sections:
-      - Goal
+      - Compass
       - done
   - ref: "#12"
     gist: the task
@@ -627,7 +627,7 @@ ${planBody}
   - ref: "#11"
     gist: the segment
     sections:
-      - Goal
+      - Compass
       - done
   - ref: "#12"
     gist: the task
@@ -796,7 +796,7 @@ ${planBody}
 
     await config.context.filesystem.write(
       ".ai/issues/20.draft.md",
-      read(root, "20.draft.md").replace("Goal: the extra\n\n", ""),
+      read(root, "20.draft.md").replace("Compass: the extra\n\n", ""),
     );
 
     await config.context.filesystem.flush();
@@ -868,7 +868,7 @@ type: Segment
 subIssues: ["#13"]
 ---
 
-Goal: the group
+Compass: the group
 
 ${segmentDoneWhen}
 `,
@@ -892,9 +892,9 @@ ${segmentDoneWhen}
 
   test("publishes a new Segment listed by a new Task", async () => {
     const root = createProject({
-      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
-      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n\n${segmentDoneWhen}\n`,
-      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Compass: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
+      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nCompass: the group\n\n${segmentDoneWhen}\n`,
+      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the step")}\n`,
     });
 
     const { lines, passed } = await publishIssues(await loadConfig(root), [
@@ -908,9 +908,9 @@ ${segmentDoneWhen}
 
   test("publishes a Segment missing **Done when**, which only check and readiness refuse", async () => {
     const root = createProject({
-      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Goal: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
-      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n`,
-      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+      ".ai/issues/new-parent.draft.md": `---\ntitle: Parent\ntype: Task\nNature: Feature\nsubIssues: ["#{new-group}"]\n---\n\n${taskBody.replace("#10 · Compass: the extra\n\n", "").replace(/\n+## Tests[^]*$/, "")}\n`,
+      ".ai/issues/new-group.draft.md": `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nCompass: the group\n`,
+      ".ai/issues/new-step.draft.md": `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the step")}\n`,
     });
 
     const check = await checkIssues(
@@ -939,7 +939,7 @@ ${segmentDoneWhen}
       31,
       createIssue(31, {
         type: "Segment",
-        body: `#${parent.number} · Goal: the segment\n\n${segmentDoneWhen}`,
+        body: `#${parent.number} · Compass: the segment\n\n${segmentDoneWhen}`,
         subIssues: [32],
       }),
     );
@@ -953,7 +953,7 @@ ${segmentDoneWhen}
 
     await config.context.filesystem.write(
       ".ai/issues/new-step.draft.md",
-      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the step")}\n`,
     );
 
     await config.context.filesystem.flush();
@@ -984,8 +984,8 @@ ${segmentDoneWhen}
 
   test("fails checking a Segment draft listing another Segment draft", async () => {
     const root = createProject({
-      ".ai/issues/new-outer.draft.md": `---\ntitle: Outer\ntype: Segment\nsubIssues: ["#{new-inner}"]\n---\n\nGoal: the outer\n\n${segmentDoneWhen}\n`,
-      ".ai/issues/new-inner.draft.md": `---\ntitle: Inner\ntype: Segment\nsubIssues: ["#13"]\n---\n\nGoal: the inner\n\n${segmentDoneWhen}\n`,
+      ".ai/issues/new-outer.draft.md": `---\ntitle: Outer\ntype: Segment\nsubIssues: ["#{new-inner}"]\n---\n\nCompass: the outer\n\n${segmentDoneWhen}\n`,
+      ".ai/issues/new-inner.draft.md": `---\ntitle: Inner\ntype: Segment\nsubIssues: ["#13"]\n---\n\nCompass: the inner\n\n${segmentDoneWhen}\n`,
     });
 
     const { lines, passed } = await checkIssues(
@@ -1069,7 +1069,7 @@ ${segmentDoneWhen}
 
   test("claims a Task without its chain and publishes the same header back", async () => {
     const published = taskBody.replace(
-      "#10 · Goal: the extra",
+      "#10 · Compass: the extra",
       "#10 › #11 · Pipeline: gist",
     );
 
@@ -1100,12 +1100,12 @@ ${segmentDoneWhen}
 
     await config.context.filesystem.write(
       ".ai/issues/new-group.draft.md",
-      `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nGoal: the group\n\n${segmentDoneWhen}\n`,
+      `---\ntitle: Group\ntype: Segment\nsubIssues: ["#{new-step}"]\n---\n\nCompass: the group\n\n${segmentDoneWhen}\n`,
     );
 
     await config.context.filesystem.write(
       ".ai/issues/new-step.draft.md",
-      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the step")}\n`,
+      `---\ntitle: Step\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the step")}\n`,
     );
 
     await config.context.filesystem.flush();
@@ -1122,10 +1122,10 @@ ${segmentDoneWhen}
 
     const step = [...issues.values()].find(({ title }) => title === "Step");
 
-    expect(group?.body).toBe(`#10 · Goal: the group\n\n${segmentDoneWhen}`);
+    expect(group?.body).toBe(`#10 · Compass: the group\n\n${segmentDoneWhen}`);
 
     expect(step?.body.split("\n")[0]).toBe(
-      `#10 › #${group?.number} · Goal: the step`,
+      `#10 › #${group?.number} · Compass: the step`,
     );
   });
 
@@ -1139,14 +1139,14 @@ ${segmentDoneWhen}
     await config.context.filesystem.write(
       ".ai/issues/10.draft.md",
       read(root, "10.draft.md").replace(
-        '  - ref: "#11"\n    gist: the segment\n    sections:\n      - Goal\n      - done\n',
+        '  - ref: "#11"\n    gist: the segment\n    sections:\n      - Compass\n      - done\n',
         "",
       ),
     );
 
     await config.context.filesystem.write(
       ".ai/issues/new-other.draft.md",
-      `---\ntitle: Other\ntype: Plan\nsubIssues:\n  - ref: "#11"\n    gist: the segment\n    sections: []\n---\n\n## Goal\n\ng\n\n## Decisions\n\nd\n`,
+      `---\ntitle: Other\ntype: Plan\nsubIssues:\n  - ref: "#11"\n    gist: the segment\n    sections: []\n---\n\n## Compass\n\ng\n\n## Decisions\n\nd\n`,
     );
 
     await config.context.filesystem.flush();
@@ -1222,7 +1222,7 @@ ${segmentDoneWhen}
       expect.objectContaining({ sub_issue_id: 1020, replace_parent: true }),
     ]);
 
-    expect(findIssue(20).body.split("\n")[0]).toBe("#10 · Goal: the extra");
+    expect(findIssue(20).body.split("\n")[0]).toBe("#10 · Compass: the extra");
   });
 
   test("fails moving an issue out of a Plan outside the set before any write", async () => {
@@ -1423,7 +1423,7 @@ See #{unknown.1}.
 
   test("publishes another repository's claimed issue merged with a GitHub edit, without the lock", async () => {
     findIssue(45, "toolkit").body = taskBody.replace(
-      "#10 · Goal: the extra\n\n",
+      "#10 · Compass: the extra\n\n",
       "",
     );
 
@@ -1568,7 +1568,7 @@ After ${reference}.
 
     await config.context.filesystem.write(
       ".ai/issues/toolkit.new-port.draft.md",
-      `---\ntitle: Port\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Goal: the extra", "Goal: the port")}\n`,
+      `---\ntitle: Port\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the port")}\n`,
     );
 
     await config.context.filesystem.flush();
@@ -1584,7 +1584,7 @@ After ${reference}.
     expect(findIssue(11).toolkitSubIssues).toEqual([46]);
 
     expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
-      "AUAUST/app#10 › AUAUST/app#11 · Goal: the port",
+      "AUAUST/app#10 › AUAUST/app#11 · Compass: the port",
     );
 
     const check = await checkIssues(

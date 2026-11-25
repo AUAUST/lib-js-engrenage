@@ -1,7 +1,7 @@
 import { freeze } from "@auaust/toolkit/object";
 
 export const wordCapKinds = freeze([
-  "goal",
+  "compass",
   "context",
   "doneWhen",
   "comment",
@@ -14,7 +14,7 @@ export const wordCapModes = freeze(["warn", "deny"] as const);
 export const defaultWordCapMode = "warn" as const;
 
 export const defaultWordCaps = freeze({
-  goal: 110,
+  compass: 110,
   context: 120,
   doneWhen: 110,
   comment: 150,

@@ -104,9 +104,9 @@ export const agentsSchema = declareObject(
           description: "`warn` reports a text over its word cap to the agent; `deny` also blocks the GitHub write it would make. The gate only ever warns.",
           optional: { value: defaultWordCapMode },
         }),
-        goal: declare(limitSchema, {
-          description: "Words of the **Goal** section of an issue.",
-          optional: { value: defaultWordCaps.goal },
+        compass: declare(limitSchema, {
+          description: "Words of the **Compass** section of a plan.",
+          optional: { value: defaultWordCaps.compass },
         }),
         context: declare(limitSchema, {
           description: "Words of the **Context** section of an issue.",

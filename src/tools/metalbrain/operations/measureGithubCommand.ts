@@ -9,7 +9,7 @@ import type { WordCapKind, WordCaps } from "#metalbrain/facts/index";
 import type { WordCapFinding } from "#metalbrain/records/index";
 
 const sectionKinds: Readonly<Partial<Record<string, WordCapKind>>> = {
-  "Goal": "goal",
+  "Compass": "compass",
   "Context": "context",
   "Done when": "doneWhen",
 };
