@@ -387,6 +387,7 @@ export function createEntityIndex({
     specifierOf(file) {
       return getAliasSpecifier(specifiers, toProjectPath(file));
     },
+    // @debt holds the files of another environment's placement nested in a namespace directory, which the walk stops at, so they read as unclassified unless a namespace lists that placement
     withinStructure(file) {
       return nearest(posix.dirname(toProjectPath(file))) !== undefined;
     },

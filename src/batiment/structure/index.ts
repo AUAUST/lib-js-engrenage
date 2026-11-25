@@ -90,6 +90,7 @@ export { listKindConflictPaths } from "#batiment/structure/utils/listKindConflic
 export { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 export { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 export { listNodeViolations } from "#batiment/structure/utils/listNodeViolations";
+export { listSharedPathDiagnostics } from "#batiment/structure/utils/listSharedPathDiagnostics";
 export { listStructureDiagnostics } from "#batiment/structure/utils/listStructureDiagnostics";
 export { listStructureRoles } from "#batiment/structure/utils/listStructureRoles";
 export { listUnreachedDeclarations } from "#batiment/structure/utils/listUnreachedDeclarations";

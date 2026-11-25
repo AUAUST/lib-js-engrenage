@@ -24,6 +24,8 @@ const separators = {
   "children-domains-namespace": "  ",
   "directories-root-children": "  ",
   "unknown-directory-layer": "  ",
+  "nested-namespace-directory": "  ",
+  "shared-structure-path": "  ",
   "private-domain-entry": "  ",
   "collected-role-not-public": "  ",
   "unknown-public-role": "  ",

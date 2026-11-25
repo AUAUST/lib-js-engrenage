@@ -1,5 +1,3 @@
-import { posix } from "node:path";
-
 import { freeze, record, values } from "@auaust/toolkit/object";
 
 import { resolveNamespaceStructure } from "#batiment/context/operations/resolveNamespaceStructure";
@@ -19,6 +17,7 @@ import {
   type StructureOptions,
   type TestsContext,
 } from "#batiment/structure/index";
+import type { EnvironmentPlacements } from "#batiment/environments/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
@@ -29,12 +28,14 @@ const projectRoot = ".";
 async function resolveNamespace({
   filesystem,
   scope,
+  placements,
   internals,
   namespace,
   tests,
 }: {
   filesystem: Filesystem;
   scope: Directory;
+  placements: EnvironmentPlacements;
   internals: boolean;
   namespace: DeclaredNamespace;
   tests?: TestsContext;
@@ -109,9 +110,9 @@ async function resolveNamespace({
     diagnostics.push(
       ...listDirectoriesRootDiagnostics({
         namespace: name,
-        directories: directories.map((directory) => {
-          return posix.relative(scope, directory);
-        }),
+        scope,
+        directories,
+        placements,
         declaration: rootDeclaration,
         configOf(field) {
           const path = `${optionPaths[namespaceRoot] ?? namespaceRoot}.${field}`;
@@ -161,6 +162,7 @@ async function resolveNamespace({
     name,
     filesystem,
     scope,
+    placements,
     dirs,
     options: toOptions(rootMerged),
     directories: perDirectory.map(({ directory, merged }) => {
@@ -318,11 +320,13 @@ function mirrorOf({ option, layout }: DeclaredNamespace): boolean | undefined {
 export async function resolveStructure({
   filesystem,
   scope,
+  placements,
   internals,
   namespaces,
 }: {
   filesystem: Filesystem;
   scope: Directory;
+  placements: EnvironmentPlacements;
   internals: boolean;
   namespaces: readonly DeclaredNamespace[];
 }): Promise<ResolvedStructure> {
@@ -338,6 +342,7 @@ export async function resolveStructure({
       await resolveNamespace({
         filesystem,
         scope,
+        placements,
         internals,
         namespace,
       }),
@@ -359,6 +364,7 @@ export async function resolveStructure({
         await resolveNamespace({
           filesystem,
           scope,
+          placements,
           internals,
           namespace,
           tests: { mirror, namespaces: tests },

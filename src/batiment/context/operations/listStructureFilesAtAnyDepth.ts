@@ -11,6 +11,7 @@ export async function listStructureFilesAtAnyDepth(
   filesystem: Filesystem,
   directory: Directory,
 ): Promise<string[]> {
+  // @debt counts the files of another environment's placement nested in the role directory, which the structure walk stops at
   const files = await filesystem.list(directory, {
     skip: ignoredDirectories,
   });

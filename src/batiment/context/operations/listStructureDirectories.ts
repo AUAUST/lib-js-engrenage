@@ -3,7 +3,12 @@ import { posix } from "node:path";
 import { sort, toArray } from "@auaust/toolkit/array";
 import { flatMap, unique } from "@auaust/toolkit/iterable";
 
-import { toPosixPath, type Filesystem } from "#foundation/filesystem/index";
+import {
+  escapeGlob,
+  toPosixPath,
+  type Filesystem,
+} from "#foundation/filesystem/index";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 
 const ignoredDirectories = ["**/node_modules"];
@@ -11,9 +16,10 @@ const ignoredDirectories = ["**/node_modules"];
 export async function listStructureDirectories(
   filesystem: Filesystem,
   directory: Directory,
+  stops: Directories,
 ): Promise<string[]> {
   const files = await filesystem.list(directory, {
-    skip: ignoredDirectories,
+    skip: [...ignoredDirectories, ...stops.map(escapeGlob)],
   });
 
   const holding = flatMap(files, (file) => {

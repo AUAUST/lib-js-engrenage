@@ -26,6 +26,7 @@ export { getEnvironmentCoverage } from "#batiment/environments/utils/getEnvironm
 export { getFileEnvironment } from "#batiment/environments/utils/getFileEnvironment";
 export { listEnvironmentInstances } from "#batiment/environments/utils/listEnvironmentInstances";
 export { listForeignPlacementGlobs } from "#batiment/environments/utils/listForeignPlacementGlobs";
+export { listForeignPlacements } from "#batiment/environments/utils/listForeignPlacements";
 export { resolveRegisteredEnvironments } from "#batiment/environments/utils/resolveRegisteredEnvironments";
 // @end
 

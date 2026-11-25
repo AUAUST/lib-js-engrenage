@@ -8,6 +8,10 @@ import { createStructureDomainResolver } from "#batiment/context/operations/crea
 import { createStructureRoleResolver } from "#batiment/context/operations/createStructureRoleResolver";
 import { createStructureWalker } from "#batiment/context/operations/createStructureWalker";
 import {
+  listForeignPlacements,
+  type EnvironmentPlacements,
+} from "#batiment/environments/index";
+import {
   getEntryFile,
   getIndexFile,
   type NamespaceRoles,
@@ -73,6 +77,7 @@ export async function resolveNamespaceStructure({
   name,
   filesystem,
   scope,
+  placements,
   dirs,
   options,
   directories,
@@ -85,6 +90,7 @@ export async function resolveNamespaceStructure({
   name: string;
   filesystem: Filesystem;
   scope: Directory;
+  placements: EnvironmentPlacements;
   dirs: Directories;
   options: StructureOptions;
   directories: readonly {
@@ -156,6 +162,12 @@ export async function resolveNamespaceStructure({
         roleResolver,
         domainResolver,
         classifyMirror,
+        stops: [
+          ...listForeignPlacements(placements, directory).map(({ dir }) => dir),
+          ...directories
+            .map((other) => other.directory)
+            .filter((other) => other.startsWith(`${directory}/`)),
+        ],
       });
 
       const declaration = directoryOptions.namespaces[namespaceRoot];

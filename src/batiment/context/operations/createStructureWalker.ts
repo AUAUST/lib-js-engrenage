@@ -17,6 +17,7 @@ import type { createStructureDomainResolver } from "#batiment/context/operations
 import type { createStructureRoleResolver } from "#batiment/context/operations/createStructureRoleResolver";
 import type { ResolvedRoles, RoleLocation } from "#batiment/roles/index";
 import type { Filesystem } from "#foundation/filesystem/index";
+import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -32,6 +33,7 @@ export function createStructureWalker({
   roleResolver,
   domainResolver,
   classifyMirror,
+  stops,
 }: {
   filesystem: Filesystem;
   options: StructureOptions;
@@ -42,6 +44,7 @@ export function createStructureWalker({
   roleResolver: ReturnType<typeof createStructureRoleResolver>;
   domainResolver: ReturnType<typeof createStructureDomainResolver>;
   classifyMirror: ReturnType<typeof createMirrorClassifier> | undefined;
+  stops: Directories;
 }) {
   const optOut = new Set(options.optOut);
 
@@ -309,6 +312,7 @@ export function createStructureWalker({
     const directories = await listStructureDirectories(
       filesystem,
       join(envDirectory, subpath),
+      stops,
     );
 
     return Promise.all(

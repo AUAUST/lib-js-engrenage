@@ -4,10 +4,12 @@
  * declaration the walk never reaches, a domain without purpose, an import cycle,
  * or a walk finding: a metafile unreadable, invalid, misplaced or conflicting
  * with another metafile or the config, `children` set on the root of a namespace
- * spanning several directories or its root `layers` naming none of them, a private
- * domain holding an entry, a collected role that is not public, two files sharing
- * one specifier, or a root directory a static layout does not list or a required
- * one it lacks; or a scope tree finding: a workspace inside a root environment's
+ * spanning several directories or its root `layers` naming none of them, one
+ * of its directories inside another with no other environment's placement
+ * between, a domain or sub-namespace path held in two of them, a private domain
+ * holding an entry, a collected role that is not public, two files sharing one
+ * specifier, or a root directory a static layout does not list or a required one
+ * it lacks; or a scope tree finding: a workspace inside a root environment's
  * directory, a workspace key equal to a root environment name, a workspace inside
  * another, a directory a `workspaces` glob matches without a `.workspace.json`,
  * a `.workspace.json` no glob matches under `workspaces.extra` `report`, an
@@ -38,6 +40,8 @@ export type StructureDiagnosticCode =
   | "children-domains-namespace"
   | "directories-root-children"
   | "unknown-directory-layer"
+  | "nested-namespace-directory"
+  | "shared-structure-path"
   | "private-domain-entry"
   | "collected-role-not-public"
   | "unknown-public-role"

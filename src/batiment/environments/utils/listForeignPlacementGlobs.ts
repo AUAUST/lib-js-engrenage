@@ -2,7 +2,8 @@ import { escape } from "minimatch";
 
 import { entries } from "@auaust/toolkit/object";
 
-import { getEnvironmentCoverage } from "#batiment/environments/utils/getEnvironmentCoverage";
+import { getDirectoryEnvironment } from "#batiment/environments/utils/getDirectoryEnvironment";
+import { listForeignPlacements } from "#batiment/environments/utils/listForeignPlacements";
 import type { EnvironmentPlacements } from "#batiment/environments/types/EnvironmentPlacements";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
@@ -16,7 +17,7 @@ export function listForeignPlacementGlobs(
   placements: EnvironmentPlacements,
   dir: Directory,
 ): Globs {
-  const { environment, nested } = getEnvironmentCoverage(placements, dir);
+  const environment = getDirectoryEnvironment(placements, dir);
 
   const files = entries(placements.files)
     .filter(([file, owner]) => {
@@ -25,9 +26,9 @@ export function listForeignPlacementGlobs(
     .map(([file]) => escape(file));
 
   return [
-    ...nested
-      .filter((placement) => placement.environment !== environment)
-      .map((placement) => `${escape(placement.dir)}/**`),
+    ...listForeignPlacements(placements, dir).map((placement) => {
+      return `${escape(placement.dir)}/**`;
+    }),
     ...files,
   ];
 }

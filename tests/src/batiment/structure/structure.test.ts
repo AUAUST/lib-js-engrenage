@@ -1081,8 +1081,12 @@ describe("layouts", () => {
 });
 
 describe("namespaces spanning several directories", () => {
-  function createInterscriptProject(structure: string) {
+  function createInterscriptProject(
+    structure: string,
+    extra: Record<string, string> = {},
+  ) {
     return createTemporaryProject({
+      ...extra,
       "package.json": '{ "name": "project", "type": "module" }',
       "engrenage.config.ts": `export default { preset: "library", src: { dirs: ["src", "admin", "storefront"], roles: ${sourceRoles}, structure: ${structure} } };\n`,
       "src/.namespace.json": '{ "layers": ["shopify", "*"] }',
@@ -1200,6 +1204,71 @@ describe("namespaces spanning several directories", () => {
         blocking: true,
         message: expect.stringContaining("naming shop,"),
         config: { path: "src.structure.layers" },
+      },
+    ]);
+  });
+
+  test("fail on a domain path held in two directories, naming both at the topmost one", async () => {
+    const project = createInterscriptProject("{}", {
+      "admin/cart/index.ts": "",
+      "admin/cart/line/index.ts": "",
+      "storefront/cart/line/index.ts": "",
+      "admin/types/a.ts": "",
+      "src/types/a.ts": "",
+      "src/index.html": "",
+      "admin/index.html": "",
+    });
+
+    const { src } = await loadStructure(project.root);
+
+    expect(
+      src!.diagnostics.filter(({ code }) => code === "shared-structure-path"),
+    ).toMatchObject([
+      {
+        blocking: true,
+        path: "admin/cart",
+        files: ["admin/cart", "storefront/cart"],
+      },
+    ]);
+  });
+
+  test("walk a directory re-entered below another environment's placement as its own node, failing on one nested with no placement between", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default { preset: "library", environments: { web: { preset: "src", dirs: ["src/web"] } }, src: { dirs: ["src", "src/web/legacy", "src/inner"], roles: ${sourceRoles} } };\n`,
+      "src/core/index.ts": "",
+      "src/inner/feature/index.ts": "",
+      "src/web/app.ts": "",
+      "src/web/legacy/old/index.ts": "",
+    });
+
+    const { src } = await loadStructure(project.root);
+
+    expect(src!.root.children).toMatchObject([
+      {
+        path: "src",
+        children: [{ path: "src/core" }],
+      },
+      {
+        path: "src/web/legacy",
+        kind: "directory",
+        children: [{ path: "src/web/legacy/old" }],
+      },
+      {
+        path: "src/inner",
+        children: [{ path: "src/inner/feature" }],
+      },
+    ]);
+
+    expect(
+      src!.diagnostics.filter(({ code }) => {
+        return code === "nested-namespace-directory";
+      }),
+    ).toMatchObject([
+      {
+        blocking: true,
+        path: "src/inner",
+        message: expect.stringMatching(/^src\/inner lies inside src,/),
       },
     ]);
   });

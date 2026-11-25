@@ -7,8 +7,9 @@ taps:
   - {id: FR-dc82e8, at: 2026-11-25T12:47:35Z, note: scratchpad file write also works}
   - {id: FR-dc82e8, at: 2026-11-25T18:01:51Z, note: "probe under pnpm engrenage vitest: wrote output to a scratchpad file"}
   - {id: FR-990e2d, at: 2026-11-25T18:56:04Z, note: barrel export missing before sync}
-  - {id: FR-6bf8ff, at: 2026-11-25T19:05:11Z, note: sync loads stale barrel}
   - {id: FR-990e2d, at: 2026-11-25T21:25:43Z, note: barrel export before sync}
+  - {id: FR-990e2d, at: 2026-11-25T19:05:11Z, note: sync loads stale barrel}
+  - {id: FR-990e2d, at: 2026-11-25T21:27:43Z, note: "same: sync loads stale barrel"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1044,11 +1045,6 @@ entries:
     subject: worktree gate test timeout under load
     tried: pnpm engrenage gate --worktree
     stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
-    created: 2026-11-24T00:00:00Z
-  - id: FR-6bf8ff
-    subject: barrel loaded before sync
-    tried: typecheck after adding a util export
-    stopped: barrel lacked the export; added the line by hand, then sync
     created: 2026-11-24T00:00:00Z
   - id: FR-2da325
     subject: workspace barrel fixture

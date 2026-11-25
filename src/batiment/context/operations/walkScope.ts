@@ -60,6 +60,7 @@ export async function walkScope({
   return resolveStructure({
     filesystem,
     scope: dir,
+    placements: discovery.environments.placements,
     internals: declarations.internals,
     namespaces,
   });

@@ -1,6 +1,7 @@
 import { flatMap } from "@auaust/toolkit/array";
 
 import { collectStructureNodes } from "#batiment/structure/utils/collectStructureNodes";
+import { listSharedPathDiagnostics } from "#batiment/structure/utils/listSharedPathDiagnostics";
 import { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
 import { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
 import type { StructureDiagnostic } from "#batiment/report/index";
@@ -61,6 +62,7 @@ export function listStructureDiagnostics(
 
   return [
     ...flatMap(nodes, (node) => listNodeErrors(node, namespace)),
+    ...listSharedPathDiagnostics(namespace),
     ...namespace.unreached.map(({ path, kind, config, files }) => {
       const sources = [...(config ? ["the config"] : []), ...files];
 
