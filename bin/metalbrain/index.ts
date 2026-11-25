@@ -14,7 +14,7 @@ import show from "#bin/metalbrain/show";
 export default defineGroup({
   configure(command) {
     return command.description(
-      "Run the agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the friction, discarded, pending and missing logs, a ranked search across record kinds, entries of any record kind by ID, debt markers, and the hooks recording what agents do.",
+      "Run agent tooling: dispatch, planning, GitHub metadata, records and hooks.",
     );
   },
   commands: {

@@ -4,9 +4,9 @@ export default defineChainedCommand({
   configure(command) {
     return command
       .description(
-        "Move a backlog entry, its ID kept, to the end of another category, so references to it stay valid; moving a category's last entry deletes that category.",
+        "Move a backlog entry to another category, keeping its ID; deletes a category left empty.",
       )
-      .argument("<id>", "the entry's ID, as `BL-xxxxxx`")
+      .argument("<id>", "the entry's ID")
       .argument("<category>", "an existing category's name");
   },
   action() {

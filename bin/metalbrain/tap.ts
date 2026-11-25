@@ -6,9 +6,9 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Record that entries mattered again: a tap at the current UTC time, with an optional one-line note within the log entry word cap, on each entry; takes several IDs, finding every entry before tapping any, so one unknown ID taps nothing and every unknown ID is named. `list` and `search` lines show each entry's tap count, `show` its taps.",
+        "Record that entries mattered again, none when an ID is unknown.",
       )
-      .argument("<ids...>", "the entries' IDs, as `<namespace>-xxxxxx`")
+      .argument("<ids...>", "the entries' IDs")
       .addOption(
         new Option("--note <text>", "context the entries lack, on one line"),
       );

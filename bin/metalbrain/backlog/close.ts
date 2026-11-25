@@ -4,9 +4,9 @@ export default defineLazyCommand({
   configure(command) {
     return command
       .description(
-        "Remove resolved or obsolete backlog entries, or ones a GitHub issue now tracks in full; takes several IDs, finding every entry before removing any, so one unknown ID removes nothing and every unknown ID is named. Closing a category's last entry deletes that category.",
+        "Remove backlog entries, none when an ID is unknown; deletes a category left empty.",
       )
-      .argument("<ids...>", "the entries' IDs, as `BL-xxxxxx`");
+      .argument("<ids...>", "the entries' IDs");
   },
   action() {
     return import("#bin/metalbrain/actions/close");

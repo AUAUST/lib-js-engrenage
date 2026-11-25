@@ -23,7 +23,7 @@ export default function (command: CommandUnknownOpts): void {
     .addOption(
       new Option(
         "--text <raw>",
-        "search raw text, such as a command or a draft entry, as a text query instead of the query syntax: its backtick spans and tokens holding `/`, `.`, `_`, `-` or `#` as phrases, its other words without stopwords, entries matching two of them",
+        "raw text to search, such as a command or a draft entry, instead of a query",
       ),
     )
     .addOption(

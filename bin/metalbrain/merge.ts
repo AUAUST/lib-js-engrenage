@@ -6,14 +6,14 @@ export default defineChainedCommand({
   configure(command) {
     return command
       .description(
-        "Merge a new entry into an existing one recording the same thing: remove the new entry and tap the kept one, which keeps its `created` and receives the removed entry's taps; the tap's note defaults to the removed entry's title or subject.",
+        "Remove a new entry recording what another does, and tap the kept one.",
       )
-      .argument("<new-id>", "the entry to remove, as `<namespace>-xxxxxx`")
+      .argument("<new-id>", "the entry to remove")
       .argument("<kept-id>", "the entry to keep and tap")
       .addOption(
         new Option(
           "--note <text>",
-          "the tap's note on one line, instead of the removed entry's title or subject",
+          "the tap's note, on one line; defaults to the removed entry's title or subject",
         ),
       );
   },

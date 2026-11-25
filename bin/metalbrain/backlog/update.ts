@@ -4,21 +4,15 @@ import {
   defineChainedCommand,
 } from "#workflows/cli/index";
 
-// @debt the help states the item limit `backlog.detailLimit` holds, since command definitions load with the hook graph and cannot import it
 export default defineChainedCommand({
   configure(command) {
     return command
-      .description(
-        "Replace or remove fields of a backlog entry, keeping its ID and other fields; writes nothing when the entry would break the backlog file schema: at most 3 items across --why, --want and --done, each site naming an existing file, within the backlog entry word cap.",
-      )
-      .argument("<id>", "the entry's ID, as `BL-xxxxxx`")
-      .option(
-        "--title <title>",
-        "the claim: the problem or need, stated exactly",
-      )
+      .description("Replace or remove fields of a backlog entry.")
+      .argument("<id>", "the entry's ID")
+      .option("--title <title>", "the problem or need")
       .option(
         "--sites <sites>",
-        "code sites as `<path>:<line>`, comma-separated or repeated",
+        "code sites as `<path>:<line>`, each naming an existing file; comma-separated or repeated",
         collectListArgument,
       )
       .option("--why <text>", "context; repeat for a list", collectArgument)
@@ -34,7 +28,7 @@ export default defineChainedCommand({
       )
       .option(
         "--unset <field>",
-        "remove a field: `sites`, `why`, `want` or `done`; comma-separated or repeated",
+        "fields to remove: `sites`, `why`, `want` or `done`; comma-separated or repeated",
         collectListArgument,
         [],
       );

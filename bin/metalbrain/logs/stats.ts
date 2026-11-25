@@ -1,10 +1,9 @@
 import { defineLazyCommand } from "#workflows/cli/index";
 
-// @debt the help states the count `recurringEntryCount` holds, since command definitions load with the hook graph and cannot import it
 export default defineLazyCommand({
   configure(command) {
     return command.description(
-      "Count the entries by subject, ignoring case, most first, one line each: count and subject, flagging a subject with 3 or more entries as recurring.",
+      "Count the entries per subject, flagging recurring subjects.",
     );
   },
   action() {

@@ -248,7 +248,7 @@ export function createCommandDefinition({
 
         command.addHelpText(
           "after",
-          `\nChain several invocations in one call by separating them with ${invocationSeparator}, writing --<option>=${invocationSeparator} for the text ${invocationSeparator}; nothing takes effect unless every invocation succeeds, and each failure names its invocation's position.`,
+          `\nChain invocations by separating them with ${invocationSeparator}, writing --<option>=${invocationSeparator} for the text ${invocationSeparator}; nothing takes effect unless every invocation succeeds.`,
         );
       }
 

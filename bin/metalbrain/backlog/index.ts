@@ -13,17 +13,9 @@ import merge from "#bin/metalbrain/merge";
 import search from "#bin/metalbrain/search";
 import tap from "#bin/metalbrain/tap";
 
-// @debt the single-quote help note restates the one in `bin/metalbrain/logs/index.ts`, since bin modules are commands and share no constants
 export default defineGroup({
   configure(command) {
-    return command
-      .description(
-        "Create, find, update, tap, merge, move and close the backlog's categories and entries in .ai/backlog/, and relocate their sites, checked against the backlog file schema; every write regenerates .ai/backlog/index.yml.",
-      )
-      .addHelpText(
-        "afterAll",
-        "\nPass text arguments in single quotes, writing '\\'' for a single quote inside: within double quotes, the shell runs backticks and `$(…)` and expands variables before metalbrain reads them.",
-      );
+    return command.description("Manage the backlog's categories and entries.");
   },
   commands: {
     categories,

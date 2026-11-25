@@ -5,7 +5,7 @@ import type { Globs } from "#types/Globs";
 
 const subject = freeze({
   type: "text",
-  description: "what the entry is about, in a few words, so mentions of one subject match",
+  description: "what the entry is about, in a few words",
 } as const);
 
 export const friction = freeze({
@@ -89,7 +89,7 @@ export const missing = freeze({
   fields: freeze({
     subject: freeze({
       type: "text",
-      description: "the capability missed, in a few words, so mentions of one capability match",
+      description: "the capability missed, in a few words",
     }),
     need: freeze({ type: "text", description: "what the work needed it for" }),
     instead: freeze({
