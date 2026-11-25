@@ -165,7 +165,7 @@ export function renderProjectMap({
     "| Namespace | Purpose |",
     "| --- | --- |",
     // @debt a structured namespace's purpose and debt come from its walk's root and an unstructured one's from discovery, so one fact has two resolution paths
-    ...namespaces.map(({ id, purpose, debt }) => {
+    ...namespaces.flatMap(({ id, purpose, debt }) => {
       const root = getOwn(structure, id)?.root;
 
       const described = renderPurpose({
@@ -173,7 +173,16 @@ export function renderProjectMap({
         debt: root?.debt ?? debt,
       });
 
-      return `| ${code(id)} | ${described} |`;
+      const directories = (root?.children ?? []).filter(({ kind }) => {
+        return kind === "directory";
+      });
+
+      return [
+        `| ${code(id)} | ${described} |`,
+        ...directories.map((directory) => {
+          return `| ${code(id)} › ${code(`${directory.name}/`)} | ${renderPurpose({ purpose: directory.purpose, debt: directory.debt })} |`;
+        }),
+      ];
     }),
     "",
     `The matrix states top-level namespace grants; domain and role boundaries still apply. No importer but its namespace's root \`executable.ts\` may import a root index or entry file of ${list(grants.elements)}. ${renderSurface(grants)}`.trimEnd(),

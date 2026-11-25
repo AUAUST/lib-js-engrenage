@@ -40,7 +40,17 @@ async function resolveNamespace({
   namespace: DeclaredNamespace;
   tests?: TestsContext;
 }): Promise<NamespaceStructure | undefined> {
-  const { name, key, dirs, active, option, layout, roles, origins } = namespace;
+  const {
+    name,
+    key,
+    dirs,
+    active,
+    option,
+    layout,
+    roles,
+    directoryRoles,
+    origins,
+  } = namespace;
 
   if (!option.enabled || !active) {
     return;
@@ -169,6 +179,7 @@ async function resolveNamespace({
       return { directory, options: toOptions(merged) };
     }),
     roles,
+    directoryRoles,
     defined,
     internals,
     layout,

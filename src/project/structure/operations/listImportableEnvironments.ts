@@ -1,10 +1,6 @@
 import { map, toDeduplicated } from "@auaust/toolkit/array";
 import { getOwn, keys } from "@auaust/toolkit/object";
 
-import {
-  getEnvironmentCoverage,
-  type EnvironmentPlacements,
-} from "#batiment/environments/index";
 import { getNamespaceId } from "#batiment/scopes/index";
 import {
   getNamespaceCategory,
@@ -16,53 +12,9 @@ import {
   listNamespaceEnvironments,
   readScopeNamespaces,
 } from "#project/environments/index";
+import { listDirectoryEnvironments } from "#project/structure/utils/listDirectoryEnvironments";
+import type { EnvironmentPlacements } from "#batiment/environments/index";
 import type { ConfigResolver } from "#project/config/index";
-import type { Directory } from "#types/Directory";
-
-function isWithin(path: Directory, dir: Directory): boolean {
-  return path === dir || path.startsWith(`${dir}/`);
-}
-
-// @debt maps placements to the namespace directory holding them here, beside listNamespaceEnvironments' own walk over the same coverage, instead of one environments helper both read
-/**
- * Lists, by directory of `structure`, the environments covering it: the one
- * placed at or above it, and those placed below it outside a nested directory
- * of the namespace.
- */
-function listDirectoryEnvironments(
-  placements: EnvironmentPlacements,
-  structure: NamespaceStructure,
-): ReadonlyMap<Directory, readonly string[]> {
-  const directories = map(
-    listNamespaceDirectories(structure),
-    ({ directory }) => directory,
-  );
-
-  return new Map(
-    map(directories, (directory) => {
-      const {
-        environment,
-        nested,
-      } = getEnvironmentCoverage(placements, directory);
-
-      const inner = directories.filter((other) => {
-        return other !== directory && isWithin(other, directory);
-      });
-
-      const own = nested.filter(({ dir }) => {
-        return !inner.some((other) => isWithin(dir, other));
-      });
-
-      return [
-        directory,
-        toDeduplicated([
-          ...(environment === undefined ? [] : [environment]),
-          ...map(own, (placement) => placement.environment),
-        ]),
-      ] as const;
-    }),
-  );
-}
 
 /**
  * Lists the environments of `structure` whose modules the code of `environment`
@@ -73,7 +25,10 @@ function listReachableDirectoryEnvironments(
   structure: NamespaceStructure,
   environment: string,
 ): readonly string[] {
-  const covered = listDirectoryEnvironments(placements, structure);
+  const covered = listDirectoryEnvironments(
+    placements,
+    map(listNamespaceDirectories(structure), ({ directory }) => directory),
+  );
 
   const reachable = [...covered]
     .filter(([, environments]) => environments.includes(environment))

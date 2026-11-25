@@ -11,6 +11,7 @@ import {
   readScopeNamespaces,
   type ContributedEnvironmentEntry,
 } from "#project/environments/index";
+import { readDirectoryRoles } from "#project/structure/operations/readDirectoryRoles";
 import { readEnvironmentRoles } from "#project/structure/operations/readEnvironmentRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 import type {
@@ -186,6 +187,7 @@ async function readNamespaceDeclarations(
       option,
       layout,
       roles: undefined,
+      directoryRoles: new Map(),
       declared: undefined,
       origins: new Map(),
     };
@@ -224,6 +226,7 @@ async function readNamespaceDeclarations(
     option,
     layout,
     roles: await readEnvironmentRoles(config, name),
+    directoryRoles: await readDirectoryRoles(config, name),
     declared,
     origins,
   };

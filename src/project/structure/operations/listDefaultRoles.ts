@@ -3,24 +3,16 @@ import { getOwn } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
 import {
-  listNamespaceEnvironments,
   readEnvironmentLanguages,
   readScopeNamespaces,
 } from "#project/environments/index";
 import type { Role } from "#batiment/roles/index";
 import type { ConfigResolver } from "#project/config/index";
 
-async function readNamespaceLanguages(
+async function readLanguages(
   config: ConfigResolver,
-  namespace: string,
+  environments: readonly string[],
 ): Promise<ReadonlySet<string>> {
-  const environments = await listNamespaceEnvironments(
-    config,
-    (_kind, name) => {
-      return name === namespace;
-    },
-  );
-
   const selections = await Promise.all(
     map(environments, (environment) => {
       return readEnvironmentLanguages(config, environment);
@@ -32,9 +24,14 @@ async function readNamespaceLanguages(
   );
 }
 
+/**
+ * Lists the default roles of the `namespace` kind for the languages
+ * `environments` select.
+ */
 export async function listDefaultRoles(
   config: ConfigResolver,
-  environment: string,
+  namespace: string,
+  environments: readonly string[],
 ): Promise<readonly Role[]> {
   const [contributions, traits, namespaces] = await Promise.all([
     config.context.registry.contributions("roles", config),
@@ -42,7 +39,7 @@ export async function listDefaultRoles(
     readScopeNamespaces(config),
   ]);
 
-  const discovered = getOwn(namespaces, environment);
+  const discovered = getOwn(namespaces, namespace);
 
   if (discovered?.active !== true) {
     return [];
@@ -50,7 +47,7 @@ export async function listDefaultRoles(
 
   const kind = discovered.kind.name;
 
-  const languages = await readNamespaceLanguages(config, environment);
+  const languages = await readLanguages(config, environments);
 
   const entries = contributions
     .map(({ entry }) => entry)

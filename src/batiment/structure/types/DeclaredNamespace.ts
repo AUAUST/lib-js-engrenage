@@ -17,6 +17,7 @@ export interface DeclaredNamespace {
   readonly option: NamespaceStructureOption;
   readonly layout: Layout | undefined;
   readonly roles: NamespaceRoles | undefined;
+  readonly directoryRoles: ReadonlyMap<Directory, NamespaceRoles>;
   readonly declared:
     | (DeclaredStructure & {
         readonly defined: RoleRegistry;

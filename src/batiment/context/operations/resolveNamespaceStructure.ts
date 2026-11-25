@@ -83,6 +83,7 @@ export async function resolveNamespaceStructure({
   options,
   directories,
   roles,
+  directoryRoles,
   defined,
   tests,
   layout,
@@ -100,6 +101,7 @@ export async function resolveNamespaceStructure({
   }[];
   internals?: boolean;
   roles?: NamespaceRoles | undefined;
+  directoryRoles: ReadonlyMap<Directory, NamespaceRoles>;
   defined?: RoleRegistry;
   tests?: TestsContext;
   layout?: Layout | undefined;
@@ -139,12 +141,36 @@ export async function resolveNamespaceStructure({
   }
 
   const rootDeclaration = namespaces[namespaceRoot];
-  const rootScopes = rootDeclaration?.roles.enable ?? [];
-  const rootRoles = rolesFor(rootScopes);
   const spansDirectories = directories.length > 1;
+
+  function roleResolverOf(directory: Directory) {
+    if (!spansDirectories || roles === undefined) {
+      return roleResolver;
+    }
+
+    const own = directoryRoles.get(directory);
+
+    if (own === undefined) {
+      throw new Error(
+        `The ${name} namespace spans ${directory}, which its host gave no roles`,
+      );
+    }
+
+    return createStructureRoleResolver({
+      name,
+      filesystem,
+      roles: own,
+      defined,
+    });
+  }
 
   const walked = await Promise.all(
     directories.map(async ({ directory, options: directoryOptions }) => {
+      const declaration = directoryOptions.namespaces[namespaceRoot];
+      const scopes = declaration?.roles.enable ?? [];
+      const directoryRoleResolver = roleResolverOf(directory);
+      const directoryRolesFor = directoryRoleResolver.rolesFor;
+
       const domainResolver = createStructureDomainResolver({
         name,
         filesystem,
@@ -153,7 +179,7 @@ export async function resolveNamespaceStructure({
         indexFile,
         entryFile,
         internals,
-        rolesFor,
+        rolesFor: directoryRolesFor,
         report,
       });
 
@@ -164,7 +190,7 @@ export async function resolveNamespaceStructure({
         layoutEntries: layout?.nature === "static" ? layout.entries : undefined,
         indexFile,
         rolesIn,
-        roleResolver,
+        roleResolver: directoryRoleResolver,
         domainResolver,
         classifyMirror,
         stops: [
@@ -175,16 +201,14 @@ export async function resolveNamespaceStructure({
         ],
       });
 
-      const declaration = directoryOptions.namespaces[namespaceRoot];
-
       const children = await walk(directory, namespaceRoot, {
         kind: "root",
         layers: declaration?.layers,
         ...(declaration?.children === undefined
           ? {}
           : { childKind: declaration.children }),
-        scopes: rootScopes,
-        owned: rootScopes,
+        scopes,
+        owned: scopes,
         structured: false,
         source: declaration?.source ?? "inferred",
         location: freeze({
@@ -200,12 +224,15 @@ export async function resolveNamespaceStructure({
         }),
       });
 
+      const rootRoles = directoryRolesFor(scopes);
+
       const roleFiles = groupRoleFiles(
         await assignRoleFiles(filesystem, directory, rootRoles),
       );
 
       return {
         directory,
+        rootRoles,
         declaration,
         domainResolver,
         children,
@@ -287,7 +314,7 @@ export async function resolveNamespaceStructure({
 
   const structureRoles = listStructureRoles(
     resolvedRoot,
-    walked.map(({ directory }) => {
+    walked.map(({ directory, rootRoles }) => {
       return { directory, roles: rootRoles };
     }),
     rolesIn,

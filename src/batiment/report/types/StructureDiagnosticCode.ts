@@ -39,6 +39,7 @@ export type StructureDiagnosticCode =
   | "domain-glob-namespace"
   | "children-domains-namespace"
   | "directories-root-children"
+  | "directories-root-roles"
   | "unknown-directory-layer"
   | "nested-namespace-directory"
   | "shared-structure-path"

@@ -4,7 +4,7 @@ import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { syncAgents } from "@auaust/engrenage/metalbrain";
-import { createRolePreset, entry } from "@auaust/engrenage/roles";
+import { components, createRolePreset, entry } from "@auaust/engrenage/roles";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
@@ -310,6 +310,69 @@ describe("project map", () => {
     expect(overview).toContain("| `data` | Shipped JSON \\| YAML files. |");
     expect(overview).toContain("| `extensions/a` | The extension. | none |");
     expect(project.read(sourceFile)).toContain("src/  feature  The code.");
+  });
+
+  test("renders each directory of a namespace with its own purpose and global roles", async () => {
+    const project = createTemporaryProject({
+      "package.json": '{ "name": "project", "type": "module" }',
+      "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        environments: {
+          src: { dirs: ["src"] },
+          admin: {
+            preset: "src",
+            dirs: ["admin"],
+            languages: [{ name: "typescript", options: { tsx: "preact" } }],
+            execution: { syntax: "2026-10" },
+          },
+          storefront: { preset: "src", dirs: ["storefront"] },
+        },
+        src: {
+          dirs: ["src", "admin", "storefront"],
+          roles: ${renderCodeRoles(entry(), components())},
+          structure: { purpose: "The app.", layers: ["src", "*"], domains: { ui: { public: true } } },
+        },
+      };`,
+      "src/.namespace.json": '{ "purpose": "The core." }',
+      "src/core/index.ts": "",
+      "src/core/components/Button.tsx": "",
+      "admin/.namespace.json": '{ "purpose": "The App Home UI." }',
+      "admin/components/Panel.tsx": "",
+      "admin/ui/index.ts": "",
+      "admin/ui/entry.ts": "",
+      "storefront/cart/index.ts": "",
+    });
+
+    const { config } = await syncProject(project);
+
+    const { src } = await config.resolve("structure");
+
+    const [core] = src!.root.children;
+
+    const coreDomain = core?.children.find(({ name }) => name === "core");
+
+    expect(
+      coreDomain?.children.find(({ name }) => name === "components")?.kind,
+    ).not.toBe("role");
+
+    const overview = project.read(overviewFile);
+
+    expect(overview).toContain("| `src` | The app. |");
+    expect(overview).toContain("| `src` › `src/` | The core. |");
+    expect(overview).toContain("| `src` › `admin/` | The App Home UI. |");
+    expect(overview).toContain("| `src` › `storefront/` |  |");
+
+    const lines = project.read(sourceFile).split("\n");
+
+    const row = (prefix: string) => {
+      return lines.find((line) => line.includes(prefix)) ?? "";
+    };
+
+    expect(row("src  ")).not.toContain("admin/");
+    expect(row("src/  ")).toContain("The core.");
+    expect(row("src/  ")).toContain("constants.ts");
+    expect(row("src/  ")).not.toContain("components");
   });
 
   test("renders each namespace's and domain's debt beside its purpose", async () => {

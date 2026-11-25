@@ -30,7 +30,7 @@ export function listDirectoriesRootDiagnostics({
   directories: Directories;
   placements: EnvironmentPlacements;
   declaration: DeclaredStructure["namespaces"][string] | undefined;
-  configOf(field: "children" | "layers"): OptionSource;
+  configOf(field: "children" | "layers" | "roles"): OptionSource;
 }): readonly StructureDiagnostic[] {
   const located = {
     severity: "error",
@@ -69,6 +69,16 @@ export function listDirectoriesRootDiagnostics({
             code: "directories-root-children" as const,
             message: `${namespace} spans the directories ${names.join(", ")}, so its root holds directories and takes no children; set children in each directory's ${namespaceMetadataFile}`,
             config: configOf("children"),
+          }),
+        ]),
+    ...(declaration === undefined || declaration.roles.enable.length === 0
+      ? []
+      : [
+          freeze({
+            ...located,
+            code: "directories-root-roles" as const,
+            message: `${namespace} spans the directories ${names.join(", ")}, so its root enables no roles, ignoring ${declaration.roles.enable.join(", ")}; enable them in each directory's ${namespaceMetadataFile}`,
+            config: configOf("roles"),
           }),
         ]),
     ...(unknownLayers.length === 0

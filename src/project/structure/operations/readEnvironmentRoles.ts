@@ -1,5 +1,8 @@
+import { toSorted } from "@auaust/toolkit/array";
+
 import { listNamespaceRoles, type NamespaceRoles } from "#batiment/roles/index";
 import { memoizeByContext, type ConfigResolver } from "#project/config/index";
+import { listNamespaceEnvironments } from "#project/environments/index";
 import { listDefaultRoles } from "#project/structure/operations/listDefaultRoles";
 import { readStructureOption } from "#project/structure/operations/readStructureOption";
 
@@ -10,6 +13,7 @@ const readsFor = memoizeByContext(() => {
 async function createEnvironmentRoles(
   config: ConfigResolver,
   environment: string,
+  environments: readonly string[],
 ): Promise<NamespaceRoles | undefined> {
   const { option, layout } = await readStructureOption(config, environment);
 
@@ -24,7 +28,7 @@ async function createEnvironmentRoles(
     defaultModules,
     { published },
   ] = await Promise.all([
-    listDefaultRoles(config, environment),
+    listDefaultRoles(config, environment, environments),
     config.resolve("structure.options"),
     config.resolve("typescript.options"),
     config.resolve("effectModules"),
@@ -46,23 +50,33 @@ async function createEnvironmentRoles(
 }
 
 /**
- * Reads the roles of an environment, its default role presets loaded once
- * per config context.
+ * Reads the roles of an environment, its default role presets those of the
+ * languages `environments` select, every environment its namespace covers by
+ * default, loaded once per config context.
  *
  * @returns Nothing when the environment's structure is disabled.
  */
-export function readEnvironmentRoles(
+export async function readEnvironmentRoles(
   config: ConfigResolver,
   environment: string,
+  environments?: readonly string[],
 ): Promise<NamespaceRoles | undefined> {
-  const reads = readsFor(config.context);
+  const covered = (
+    environments ??
+    (await listNamespaceEnvironments(config, (_kind, name) => {
+      return name === environment;
+    }))
+  );
 
-  let read = reads.get(environment);
+  const reads = readsFor(config.context);
+  const key = [environment, ...toSorted(covered)].join("\0");
+
+  let read = reads.get(key);
 
   if (read === undefined) {
-    read = createEnvironmentRoles(config, environment);
+    read = createEnvironmentRoles(config, environment, covered);
 
-    reads.set(environment, read);
+    reads.set(key, read);
   }
 
   return read;

@@ -1,4 +1,8 @@
+import { map } from "@auaust/toolkit/array";
+
+import { resolveRoles } from "#batiment/roles/index";
 import { renderNamespaceMap } from "#batiment/structure/index";
+import { readDirectoryRoles } from "#project/structure/operations/readDirectoryRoles";
 import type { LoadedConfig } from "#project/config/index";
 
 export async function fillEnvironmentMap(
@@ -19,10 +23,20 @@ export async function fillEnvironmentMap(
     );
   }
 
+  const directoryRoles = await readDirectoryRoles(config, name);
+
   return renderNamespaceMap({
     name,
     namespace: environment,
     roles: roles[name],
+    directoryRoles: new Map(
+      map([...directoryRoles], ([directory, declared]) => {
+        return [
+          directory,
+          resolveRoles({ ...declared, namespace: name }),
+        ] as const;
+      }),
+    ),
     aliases: [...aliases.global, ...aliases.src],
   });
 }

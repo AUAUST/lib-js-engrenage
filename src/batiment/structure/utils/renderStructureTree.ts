@@ -17,6 +17,16 @@ interface TreeOptions {
   readonly aliases: ReadonlyMap<string, string>;
   readonly detailed: boolean;
   readonly groupLabel: string | undefined;
+  readonly globalRoles: ReadonlyMap<StructureNode, readonly string[]>;
+}
+
+function renderGlobalRoles(
+  node: StructureNode,
+  { globalRoles }: TreeOptions,
+): readonly string[] {
+  const roles = globalRoles.get(node) ?? [];
+
+  return roles.length === 0 ? [] : [`(global roles: ${roles.join(" ")})`];
 }
 
 function listDiagnostics(node: StructureNode): TreeRow[] {
@@ -62,6 +72,7 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
           node: child,
           ...options,
           inlined: child.kind === "domain",
+          extras: renderGlobalRoles(child, options),
         }),
         node: child,
       };
@@ -90,15 +101,19 @@ function renderRows(
 export function renderStructureTree({
   namespace,
   aliases,
-  globalRoles = [],
+  globalRoles = new Map(),
   detailed = false,
 }: {
   namespace: NamespaceStructure;
   aliases: readonly Alias[];
-  globalRoles?: readonly string[];
+  globalRoles?: ReadonlyMap<StructureNode, readonly string[]>;
   detailed?: boolean;
 }): string[] {
   const { root } = namespace;
+
+  const spansDirectories = root.children.some(({ kind }) => {
+    return kind === "directory";
+  });
 
   const options = {
     aliases: findStructureAliases(namespace, aliases),
@@ -106,18 +121,17 @@ export function renderStructureTree({
     groupLabel: namespace.layout?.nature === "recursive"
       ? namespace.layout.node.label
       : undefined,
+    globalRoles,
   };
 
   return [
     renderStructureLabel({
       node: root,
       ...options,
-      name: `${namespace.dirs.join("/ ")}/`,
+      name: spansDirectories ? namespace.name : `${namespace.dirs.join("/ ")}/`,
       extras: [
         ...(detailed ? [`(${namespace.strictness})`] : []),
-        ...(globalRoles.length === 0
-          ? []
-          : [`(global roles: ${globalRoles.join(" ")})`]),
+        ...renderGlobalRoles(root, options),
       ],
     }),
     ...renderRows(root, options, ""),
