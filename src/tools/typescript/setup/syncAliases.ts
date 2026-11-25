@@ -1,3 +1,4 @@
+import { posix } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 
 import { map } from "@auaust/toolkit/array";
@@ -6,7 +7,11 @@ import { getOwn, hasOwn, keys, record } from "@auaust/toolkit/object";
 import { packageJsonFile } from "#constants";
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits } from "#foundation/json/index";
-import { readEnvironmentLanguages } from "#project/environments/index";
+import {
+  createLanguageExtensions,
+  findFileExtension,
+  type LanguageExtensions,
+} from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
 import { readGeneratedKeys, writeGeneratedKeys } from "#project/sync/index";
 import {
@@ -66,33 +71,40 @@ async function syncPaths(config: LoadedConfig, aliases: readonly Alias[]) {
   await writeGeneratedKeys(config, pathsPart, keys(generated));
 }
 
-// @debt Recovers the stem by stripping the language's first extension from a target the alias resolver built; an `Alias` carrying its stem would remove that coupling.
+// @debt Recovers the stem by stripping the extension of its environment's language from a target the alias resolver built; an `Alias` carrying its stem would remove that coupling.
+// @debt Looks a wildcard target up as a file, so it takes its directory's environment and ignores the file placements below that directory, which one wildcard target cannot follow.
 function toBundledImport(
   { key, target }: Alias,
-  extensions: readonly string[],
+  extensionsOf: LanguageExtensions,
 ): ImportTarget {
-  const [extension] = extensions;
+  const extensions = extensionsOf(posix.normalize(target));
 
-  if (extension === undefined || !target.endsWith(extension)) {
+  const extension = findFileExtension(target, extensions);
+
+  if (extension === undefined) {
     throw new Error(
-      `The generated alias ${key} → ${target} targets no ${extension} module`,
+      `The generated alias ${key} → ${target} targets no module of ${extensions.join(", ")}`,
     );
   }
 
   return createBundledImport(target.slice(0, -extension.length), extensions);
 }
 
-async function readSourceExtensions(
+async function listBundledImports(
   config: LoadedConfig,
-  needed: boolean,
-): Promise<readonly string[]> {
-  if (!needed) {
-    return [];
+  aliases: readonly Alias[],
+): Promise<Record<string, ImportTarget>> {
+  if (aliases.length === 0) {
+    return {};
   }
 
-  const languages = await readEnvironmentLanguages(config, "src");
+  const extensionsOf = await createLanguageExtensions(config, typescript);
 
-  return languages.find(({ name }) => name === typescript)?.extensions ?? [];
+  return record(
+    map(aliases, (alias) => {
+      return [alias.key, toBundledImport(alias, extensionsOf)] as const;
+    }),
+  );
 }
 
 export async function syncAliases(config: LoadedConfig) {
@@ -107,6 +119,7 @@ export async function syncAliases(config: LoadedConfig) {
     config.resolve("environments.execution"),
   ]);
 
+  // @debt Reads `bundled` from the src environment alone, though the namespace's other directories may lie in environments bundled otherwise.
   const bundled = getOwn(execution, "src")?.bundled ?? false;
 
   const generated = bundled
@@ -115,15 +128,9 @@ export async function syncAliases(config: LoadedConfig) {
       })
     : [];
 
-  const extensions = await readSourceExtensions(config, generated.length > 0);
-
   const imports = {
     ...listSubpathImports([...global, ...src]),
-    ...record(
-      map(generated, (alias) => {
-        return [alias.key, toBundledImport(alias, extensions)] as const;
-      }),
-    ),
+    ...(await listBundledImports(config, generated)),
   };
 
   await syncImports(config, packageJsonFile, imports);

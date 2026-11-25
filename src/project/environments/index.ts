@@ -5,6 +5,7 @@ export { declareCodeEnvironment } from "#project/environments/config/declarers/d
 // @barrel utils
 export { composeTestsPatterns } from "#project/environments/utils/composeTestsPatterns";
 export { composeVariantPatterns } from "#project/environments/utils/composeVariantPatterns";
+export { findFileExtension } from "#project/environments/utils/findFileExtension";
 export { getOptionsKey } from "#project/environments/utils/getOptionsKey";
 export { listLanguageFiles } from "#project/environments/utils/listLanguageFiles";
 export { readInputDirs } from "#project/environments/utils/readInputDirs";
@@ -31,6 +32,7 @@ export type * from "#project/environments/types/EnvironmentLanguage";
 export type * from "#project/environments/types/Execution";
 export type * from "#project/environments/types/ExecutionGlobals";
 export type * from "#project/environments/types/GlobalsFactory";
+export type * from "#project/environments/types/LanguageExtensions";
 export type * from "#project/environments/types/LanguageFileMatcher";
 export type * from "#project/environments/types/ModuleFormat";
 export type * from "#project/environments/types/ResolvedBin";
@@ -73,6 +75,7 @@ export { toolingSchema } from "#project/environments/config/schemas/toolingSchem
 // @barrel operations
 export { createDefine } from "#project/environments/operations/createDefine";
 export { createEnvironmentTsconfig } from "#project/environments/operations/createEnvironmentTsconfig";
+export { createLanguageExtensions } from "#project/environments/operations/createLanguageExtensions";
 export { createLanguageFileMatcher } from "#project/environments/operations/createLanguageFileMatcher";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";

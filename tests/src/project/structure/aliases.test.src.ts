@@ -134,6 +134,54 @@ describe("aliases", () => {
     );
   });
 
+  test("gives each bundled alias of a namespace spanning several environments the extensions of its own environment", async () => {
+    const { read } = await sync(
+      `{ environments: { src: { dirs: ["src"], execution: { globals: "node", syntax: 24 }, bundled: true }, admin: { preset: "src", dirs: ["admin"], languages: [{ name: "typescript", options: { tsx: "preact" } }], execution: { globals: "browser", syntax: "2026-10" } } }, src: { dirs: ["src", "admin"] } }`,
+      {
+        "admin/ui/index.ts": "",
+        "admin/ui/components/FileRouter.tsx": "",
+        "admin/panel.ts": "",
+        "admin/App.tsx": "",
+        "src/App.tsx": "",
+      },
+    );
+
+    expect((await read("package.json")).imports).toMatchObject({
+      "#utils/*": {
+        types: ["./src/utils/*.ts"],
+        default: "./src/utils/*",
+      },
+      "#ui/*": {
+        types: ["./admin/ui/*.ts", "./admin/ui/*.tsx"],
+        default: "./admin/ui/*",
+      },
+      "#ui": {
+        types: ["./admin/ui/index.ts", "./admin/ui/index.tsx"],
+        default: "./admin/ui/index",
+      },
+      "#panel": {
+        types: ["./admin/panel.ts", "./admin/panel.tsx"],
+        default: "./admin/panel",
+      },
+      "#App": {
+        types: ["./admin/App.ts", "./admin/App.tsx"],
+        default: "./admin/App",
+      },
+    });
+  });
+
+  test("gives the bundled aliases of a namespace's directories the src environment's extensions while it covers them all", async () => {
+    const { read } = await sync(
+      `{ environments: { src: { languages: [{ name: "typescript", options: { tsx: "solid" } }], execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { dirs: ["src", "admin"] } }`,
+      { "admin/ui/index.ts": "" },
+    );
+
+    expect((await read("package.json")).imports["#ui/*"]).toEqual({
+      types: ["./admin/ui/*.ts", "./admin/ui/*.tsx"],
+      default: "./admin/ui/*",
+    });
+  });
+
   test("writes no tsconfig paths for a bundled app without bundler aliases", async () => {
     const { read } = await sync(bundled({ "#shop/*": "./shopify/*.ts" }));
 

@@ -3,13 +3,17 @@ import { join, posix } from "node:path";
 import { flat, map } from "@auaust/toolkit/array";
 import { entries, freeze } from "@auaust/toolkit/object";
 
+import {
+  findFileExtension,
+  type LanguageEntry,
+  type LanguageExtensions,
+} from "#project/environments/index";
 import type {
   Alias,
   NamespaceStructure,
   ResolvedAliases,
 } from "#batiment/structure/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { LanguageEntry } from "#project/environments/index";
 import type { AliasesOption } from "#project/structure/types/AliasesOption";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
@@ -78,6 +82,7 @@ async function createSourceAliases(
   scope: Directory,
   { dirs, root: tree, indexFile, entryFile }: NamespaceStructure,
   { extension, declarations }: AliasedFiles,
+  extensionsOf: LanguageExtensions,
 ): Promise<Alias[]> {
   const directories = flat(
     await Promise.all(
@@ -101,24 +106,32 @@ async function createSourceAliases(
           recursive: false,
         });
 
-        return listed
-          .map((file) => posix.basename(file))
-          .filter((name) => {
-            return (
-              name.endsWith(extension) &&
-              (declarations === undefined || !name.endsWith(declarations)) &&
-              name !== indexFile &&
-              name !== entryFile
-            );
-          })
-          .map((name): Alias => {
-            return {
-              key: `#${name.slice(0, -extension.length)}`,
-              target: targetOf(scope, join(dir, name)),
-              source: `src entry ${join(dir, name)}`,
-              path: join(dir, name),
-            };
-          });
+        return listed.flatMap((file): Alias[] => {
+          const name = posix.basename(file);
+
+          const path = join(dir, name);
+
+          if (
+            name === indexFile ||
+            name === entryFile ||
+            (declarations !== undefined && name.endsWith(declarations))
+          ) {
+            return [];
+          }
+
+          const found = findFileExtension(name, extensionsOf(path));
+
+          return found === undefined
+            ? []
+            : [
+                {
+                  key: `#${name.slice(0, -found.length)}`,
+                  target: targetOf(scope, path),
+                  source: `src entry ${path}`,
+                  path,
+                },
+              ];
+        });
       }),
     ),
   );
@@ -172,6 +185,7 @@ export async function resolveAliases({
   outDir,
   source,
   language,
+  extensionsOf,
 }: {
   filesystem: Filesystem;
   scope: Directory;
@@ -184,6 +198,7 @@ export async function resolveAliases({
     | { readonly name: string; readonly structure: NamespaceStructure }
     | undefined;
   language: LanguageEntry;
+  extensionsOf: LanguageExtensions;
 }): Promise<ResolvedAliases> {
   if (!options.global.enabled) {
     return freeze({
@@ -257,6 +272,7 @@ export async function resolveAliases({
               scope,
               generatedSource.structure,
               files,
+              extensionsOf,
             )),
         ...createDefinedAliases(options.src, "src.aliases.define", bundled),
       ]

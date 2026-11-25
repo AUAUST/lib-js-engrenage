@@ -6,6 +6,7 @@ taps:
   - {id: FR-b8ed4d, at: 2026-11-25T11:52:49Z, note: "recurred for the Compass section, +65 words per role (#917)"}
   - {id: FR-dc82e8, at: 2026-11-25T12:47:35Z, note: scratchpad file write also works}
   - {id: FR-dc82e8, at: 2026-11-25T18:01:51Z, note: "probe under pnpm engrenage vitest: wrote output to a scratchpad file"}
+  - {id: FR-990e2d, at: 2026-11-25T18:56:04Z, note: barrel export missing before sync}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

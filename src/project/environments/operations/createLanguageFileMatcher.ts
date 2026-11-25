@@ -1,7 +1,5 @@
-import { map } from "@auaust/toolkit/array";
-
-import { getFileEnvironment } from "#batiment/environments/index";
-import { readEnvironmentLanguages } from "#project/environments/operations/readEnvironmentLanguages";
+import { createLanguageExtensions } from "#project/environments/operations/createLanguageExtensions";
+import { findFileExtension } from "#project/environments/utils/findFileExtension";
 import type { ConfigResolver } from "#project/config/index";
 import type { LanguageFileMatcher } from "#project/environments/types/LanguageFileMatcher";
 import type { File } from "#types/File";
@@ -17,37 +15,9 @@ export async function createLanguageFileMatcher(
   config: ConfigResolver,
   language: string,
 ): Promise<LanguageFileMatcher> {
-  const context = await config.resolve("structure.context");
-
-  const { environments } = await context.discover();
-
-  const registered = environments.registered.filter(({ scope }) => {
-    return scope === config.context.scopeDir;
-  });
-
-  const selected = await Promise.all(
-    map(registered, async ({ registration: { name } }) => {
-      const languages = await readEnvironmentLanguages(config, name);
-
-      const entry = languages.find((candidate) => candidate.name === language);
-
-      return [name, entry?.extensions ?? []] as const;
-    }),
-  );
-
-  const extensions = new Map(selected);
+  const extensionsOf = await createLanguageExtensions(config, language);
 
   return (file: File) => {
-    const environment = getFileEnvironment(environments.placements, file);
-
-    if (environment === undefined) {
-      throw new Error(
-        `${file} lies in no environment, so no language options tell whether it is a ${language} file`,
-      );
-    }
-
-    return (extensions.get(environment) ?? []).some((extension) => {
-      return file.endsWith(extension);
-    });
+    return findFileExtension(file, extensionsOf(file)) !== undefined;
   };
 }

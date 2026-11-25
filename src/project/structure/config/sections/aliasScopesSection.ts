@@ -4,7 +4,11 @@ import { freeze, getOwn, record, values } from "@auaust/toolkit/object";
 import { rootScope } from "#batiment/scopes/constants";
 import { declareSection } from "#foundation/options/index";
 import { dataNamespaceKind } from "#project/environments/constants";
-import { aliasesSchema, type LanguageEntry } from "#project/environments/index";
+import {
+  aliasesSchema,
+  createLanguageExtensions,
+  type LanguageEntry,
+} from "#project/environments/index";
 import { readAliasedLanguage } from "#project/structure/operations/readAliasedLanguage";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
 import { isAliasedNamespaceKind } from "#project/structure/utils/isAliasedNamespaceKind";
@@ -41,10 +45,11 @@ async function resolveWorkspaceAliases({
     context.walk(scope.dir),
   ]);
 
-  const [switches, { aliases }] = await Promise.all([
+  const [switches, { aliases }, extensionsOf] = await Promise.all([
     scoped.input("aliases"),
     // @debt the source aliases' options come from `src.options` whatever the name of the workspace's entries namespace
     scoped.resolve("src.options"),
+    createLanguageExtensions(scoped, language.name),
   ]);
 
   const source = flatMap(entries, ({ name }) => {
@@ -76,6 +81,7 @@ async function resolveWorkspaceAliases({
     outDir: undefined,
     source: source[0],
     language,
+    extensionsOf,
   });
 }
 

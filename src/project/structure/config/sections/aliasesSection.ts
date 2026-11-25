@@ -2,7 +2,11 @@ import { getOwn, record } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
 import { declareSection } from "#foundation/options/index";
-import { aliasesSchema, readEnvironments } from "#project/environments/index";
+import {
+  aliasesSchema,
+  createLanguageExtensions,
+  readEnvironments,
+} from "#project/environments/index";
 import { readAliasedLanguage } from "#project/structure/operations/readAliasedLanguage";
 import { readOutDir } from "#project/structure/operations/readOutDir";
 import { resolveAliases } from "#project/structure/operations/resolveAliases";
@@ -17,12 +21,20 @@ export const aliasesSection = declareSection({
 
     const global = aliasesSchema.resolve(input, undefined, "aliases");
 
-    const [environments, data, traits, trees, execution] = await Promise.all([
+    const [
+      environments,
+      data,
+      traits,
+      trees,
+      execution,
+      language,
+    ] = await Promise.all([
       readEnvironments(config),
       config.resolve("data"),
       config.resolve("traits"),
       config.resolve("structure"),
       config.resolve("environments.execution"),
+      readAliasedLanguage(config),
     ]);
 
     return resolveAliases({
@@ -43,7 +55,8 @@ export const aliasesSection = declareSection({
       source: trees.src === undefined
         ? undefined
         : { name: "src", structure: trees.src },
-      language: await readAliasedLanguage(config),
+      language,
+      extensionsOf: await createLanguageExtensions(config, language.name),
     });
   },
 });
