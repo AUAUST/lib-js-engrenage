@@ -119,6 +119,7 @@ export default defineConfig({
     },
   },
   agents: {
+    compass: "Engrenage orchestrates projects from around their code: it centralises each project's configuration and syncs everything that shapes, checks and ships that code (dependencies, formatting, linting, type checking, tests, builds, git hooks, CI, agent setup) from opinionated defaults the project can extend. It makes those tools work as one: each fact has a single source, each convention is stated once and dispatched to every tool that applies it, and no two tools conflict.",
     preferred: ["claude"],
     attribution: false,
     gate: {

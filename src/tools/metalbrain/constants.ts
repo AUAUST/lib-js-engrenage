@@ -17,6 +17,8 @@ import type { HookRoots } from "#metalbrain/runtimes/index";
 
 export const agentsTarget = "agents";
 
+export const compassFiller = "compass";
+
 export const hookRoots: HookRoots = freeze({
   repository: gitDirectory,
   workspace: pnpmWorkspaceFile,

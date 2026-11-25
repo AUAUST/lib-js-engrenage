@@ -5,6 +5,12 @@ import type { Globs } from "#types/Globs";
 
 export interface AgentsInput {
   /**
+   * The project's Compass: a paragraph stating what the project does, rendered into `AGENTS.md` by the shared `compass` section.
+   * Sync reports a project whose agents lack one.
+   * @default none, so the `compass` section renders empty
+   */
+  compass?: (string | undefined)
+  /**
    * Agents the project uses (`claude`).
    * `engrenage sync agents` runs only when at least one is listed, and writes their files.
    * @default none

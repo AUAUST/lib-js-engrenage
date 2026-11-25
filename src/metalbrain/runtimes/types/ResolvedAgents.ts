@@ -10,6 +10,7 @@ import type { Globs } from "#types/Globs";
  * and resolution fails when it names a runtime no active extension registers.
  */
 export interface ResolvedAgents {
+  readonly compass: string | undefined;
   readonly preferred: readonly Agent[] | undefined;
   readonly instructionFiles: Globs;
   readonly snippetsDir: Directory | undefined;

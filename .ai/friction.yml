@@ -1164,3 +1164,8 @@ entries:
     tried: "raising caps in word-caps.json after #914 additions"
     stopped: auto mode denied it; left for the user
     created: 2026-11-25T10:23:34Z
+  - id: FR-5ec03a
+    subject: shared reference unresolved in temp project
+    tried: filling @auaust/engrenage section references in a createTemporaryProject test
+    stopped: blocks left untouched with a warning; fixed by linkSourcePackage into node_modules
+    created: 2026-11-25T11:50:04Z

@@ -303,6 +303,10 @@ describe("engrenage init", () => {
 
     expect(project.read("AGENTS.md")).toContain("## Precedence and conflicts");
 
+    expect(project.read("AGENTS.md")).toContain(
+      "<!-- @reference @auaust/engrenage/metalbrain/sections/compass.md -->",
+    );
+
     expect(project.read(".prettierignore")).toContain("# @ignore defaults");
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({

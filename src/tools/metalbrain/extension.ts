@@ -2,6 +2,7 @@ import {
   agentLoaderEntry,
   agentRuntimeEntry,
   agentsTarget,
+  compassFiller,
   instructionEntry,
   markdownBlocks,
   recordFiles,
@@ -26,7 +27,7 @@ import type { File } from "#types/File";
  * instruction files, the agent record files, the generated rules, the agent stats
  * directory and the `reference` directive, through which the `blocks` target
  * fills the `@reference` blocks of instruction files, and syncs agent files.
- * Contributes the agent limits filler.
+ * Contributes the `@compass` filler.
  */
 export default {
   name: "tools/metalbrain",
@@ -130,6 +131,18 @@ export default {
     },
   },
   contributes: {
+    "agents.fillers": [
+      {
+        name: compassFiller,
+        async load() {
+          const {
+            fillCompass,
+          } = await import("#tools/metalbrain/operations/fillCompass");
+
+          return fillCompass;
+        },
+      },
+    ],
     "blocks.syntaxes": [
       {
         name: "markdown",
@@ -204,6 +217,15 @@ export default {
           } = await import("#tools/metalbrain/operations/reportMissingExtensionRules");
 
           return reportMissingExtensionRules;
+        },
+      },
+      {
+        async load() {
+          const {
+            reportMissingCompass,
+          } = await import("#tools/metalbrain/operations/reportMissingCompass");
+
+          return reportMissingCompass;
         },
       },
     ],

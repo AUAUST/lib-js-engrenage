@@ -1,4 +1,4 @@
-import { array, boolean, picklist, string } from "valibot";
+import { array, boolean, nonEmpty, picklist, pipe, string } from "valibot";
 
 import { toArray } from "@auaust/toolkit/array";
 
@@ -26,6 +26,13 @@ import { codexRemoval } from "#tools/metalbrain/constants";
 
 export const agentsSchema = declareObject(
   {
+    compass: declare(pipe(string(), nonEmpty()), {
+      description: [
+        "The project's Compass: a paragraph stating what the project does, rendered into `AGENTS.md` by the shared `compass` section.",
+        "Sync reports a project whose agents lack one.",
+      ],
+      optional: unset("none, so the `compass` section renders empty"),
+    }),
     preferred: declare(preferredSchema, {
       description: [
         "Agents the project uses (`claude`).",

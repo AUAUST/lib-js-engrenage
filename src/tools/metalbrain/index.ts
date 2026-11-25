@@ -23,6 +23,7 @@ export { agentsSection } from "#tools/metalbrain/config/sections/agentsSection";
 // @barrel operations
 export { checkAgentDispatch } from "#tools/metalbrain/operations/checkAgentDispatch";
 export { dispatchAgent } from "#tools/metalbrain/operations/dispatchAgent";
+export { fillCompass } from "#tools/metalbrain/operations/fillCompass";
 export { fillReferenceBlock } from "#tools/metalbrain/operations/fillReferenceBlock";
 export { getAgentRuntimes } from "#tools/metalbrain/operations/getAgentRuntimes";
 export { guardClaudeDispatch } from "#tools/metalbrain/operations/guardClaudeDispatch";
@@ -45,6 +46,7 @@ export { loadMetalbrainFacts } from "#tools/metalbrain/operations/loadMetalbrain
 export { measureGithubCommand } from "#tools/metalbrain/operations/measureGithubCommand";
 export { recordClaudeStop } from "#tools/metalbrain/operations/recordClaudeStop";
 export { reportAgentChecks } from "#tools/metalbrain/operations/reportAgentChecks";
+export { reportMissingCompass } from "#tools/metalbrain/operations/reportMissingCompass";
 export { reportMissingExtensionRules } from "#tools/metalbrain/operations/reportMissingExtensionRules";
 export { reportSyncedAgentChecks } from "#tools/metalbrain/operations/reportSyncedAgentChecks";
 export { startClaudeRun } from "#tools/metalbrain/operations/startClaudeRun";
