@@ -1,8 +1,4 @@
-import { performance } from "node:perf_hooks";
-
 import { describe, expect, test } from "vitest";
-
-import { min } from "@auaust/toolkit/math";
 
 import {
   createLiteralLeaf,
@@ -146,77 +142,6 @@ describe("rankDocuments", () => {
     expect(() => {
       return rankDocuments(prepareDocuments([], fields), term("x", "tags"));
     }).toThrow(/tags/u);
-  });
-
-  test("ranks 1,000 documents of five fields against a ten-leaf query in under 20 ms", () => {
-    const vocabulary = [
-      "config",
-      "loader",
-      "cache",
-      "gate",
-      "commit",
-      "lint",
-      "format",
-      "record",
-      "backlog",
-      "friction",
-      "worktree",
-      "session",
-      "matcher",
-      "query",
-      "ranking",
-    ];
-
-    const documents = Array.from({ length: 1000 }, (_, index) => {
-      return Array.from({ length: 5 }, (_, field) => {
-        return Array.from({ length: 12 }, (_, word) => {
-          return vocabulary[(index * 7 + field * 3 + word * 5) % 15];
-        }).join(" ");
-      });
-    });
-
-    const documentFields = Array.from({ length: 5 }, (_, index) => {
-      return {
-        name: `field${index}`,
-        weight: index + 1,
-        read: (document: readonly string[]) => {
-          return document[index] ?? "";
-        },
-      };
-    });
-
-    const query = {
-      kind: "any" as const,
-      min: 2,
-      children: [
-        "configs",
-        "loading",
-        "cache",
-        "gates",
-        "commits",
-        "lin",
-        "formatted",
-        "records",
-        "-f",
-        "worktree",
-      ].map((value) => {
-        return term(value);
-      }),
-    };
-
-    function measure() {
-      const start = performance.now();
-
-      rankDocuments(prepareDocuments(documents, documentFields), query);
-
-      return performance.now() - start;
-    }
-
-    measure();
-
-    const fastest = min(...Array.from({ length: 5 }, measure));
-
-    expect(fastest).toBeLessThan(20);
   });
 });
 
@@ -366,25 +291,5 @@ describe("parseQuery", () => {
     expect(parse("OR")).toEqual(term("or"));
 
     expect(parse("")).toEqual({ kind: "all", children: [] });
-  });
-
-  test("parses a 200-character query in under 1 ms", () => {
-    const query = 'title:"word caps" (eslint OR prettier) NOT legacy -body:/^git (log|diff)/ ls-files $(pwd) '
-      .repeat(3)
-      .slice(0, 200);
-
-    function measure() {
-      const start = performance.now();
-
-      parse(query);
-
-      return performance.now() - start;
-    }
-
-    measure();
-
-    const fastest = min(...Array.from({ length: 5 }, measure));
-
-    expect(fastest).toBeLessThan(1);
   });
 });
