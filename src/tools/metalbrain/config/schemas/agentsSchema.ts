@@ -118,7 +118,7 @@ export const agentsSchema = declareObject(
           optional: { value: defaultWordCaps.backlogEntry },
         }),
         logEntry: declare(limitSchema, {
-          description: "Words of one friction, discarded or pending entry, written through `metalbrain friction|discarded|pending add`.",
+          description: "Words of one friction, discarded, pending or missing entry, written through `metalbrain friction|discarded|pending|missing add`.",
           optional: { value: defaultWordCaps.logEntry },
         }),
       },

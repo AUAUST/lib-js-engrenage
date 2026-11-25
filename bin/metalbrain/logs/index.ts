@@ -12,6 +12,7 @@ const purposes: Readonly<Record<string, string>> = {
   friction: "the friction agents meet: each retry, workaround or lookup anything but their own changes cost them, in .ai/friction.yml",
   discarded: "the solutions agents set aside because their cost exceeded what the task or role allows, in .ai/discarded.yml",
   pending: "the follow-up work agents leave outside a pass, in .ai/pending.yml",
+  missing: "the capabilities agents built or worked around because the codebase or a dependency lacked them, in .ai/missing.yml",
 };
 
 export default defineGroup({

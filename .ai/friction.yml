@@ -883,3 +883,7 @@ entries:
     subject: git index.lock during commit
     tried: commit through the gate
     stopped: lock held briefly by another git process; retry passed
+  - id: FR-2f06c8
+    subject: flaky worktree gate test
+    tried: ran gate --worktree
+    stopped: one test failed once; rerun passed

@@ -13,7 +13,7 @@ import show from "#bin/metalbrain/show";
 export default defineGroup({
   configure(command) {
     return command.description(
-      "Run the agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the friction, discarded and pending logs, entries of any record kind by ID, debt markers, and the hooks recording what agents do.",
+      "Run the agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the friction, discarded, pending and missing logs, entries of any record kind by ID, debt markers, and the hooks recording what agents do.",
     );
   },
   commands: {
@@ -24,6 +24,7 @@ export default defineGroup({
     friction: logs,
     discarded: logs,
     pending: logs,
+    missing: logs,
     show,
     close,
     debt,

@@ -34,7 +34,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ instructions*{builtins}  The instruction registry of sections, rules and skills built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter.
 │  │  └─ builtins  The built-in instruction entries: engrenage's own sections, rules, and skills with the agents they define.
 │  ├─ kinds  Every record kind together: the kind an entry ID names, the namespace check across kinds and the rename of former IDs.
-│  ├─ logs  The friction, discarded and pending record kinds, each one YAML file, and the migration of the legacy Markdown logs.
+│  ├─ logs  The friction, discarded, pending and missing record kinds, each one YAML file, and the migration of the legacy Markdown logs.
 │  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.

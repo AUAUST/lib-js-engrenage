@@ -96,7 +96,7 @@ export interface AgentsInput {
      */
     backlogEntry?: (number | undefined)
     /**
-     * Words of one friction, discarded or pending entry, written through `metalbrain friction|discarded|pending add`.
+     * Words of one friction, discarded, pending or missing entry, written through `metalbrain friction|discarded|pending|missing add`.
      * @default 60
      */
     logEntry?: (number | undefined)

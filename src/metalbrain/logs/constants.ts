@@ -53,7 +53,32 @@ export const pending = freeze({
   groupBy: "subject",
 } as const) satisfies RecordKind;
 
-export const logKinds = freeze([friction, discarded, pending] as const);
+export const missing = freeze({
+  name: "missing",
+  namespace: "MI",
+  location: freeze({ file: ".ai/missing.yml" }),
+  fields: freeze({
+    subject: freeze({
+      type: "text",
+      description: "the capability missed, in a few words, so mentions of one capability match",
+    }),
+    need: freeze({ type: "text", description: "what the work needed it for" }),
+    instead: freeze({
+      type: "text",
+      description: "what was built or done instead, with its site",
+    }),
+  }),
+  detailLimit: 0,
+  wordCap: "logEntry",
+  groupBy: "subject",
+} as const) satisfies RecordKind;
+
+export const logKinds = freeze([
+  friction,
+  discarded,
+  pending,
+  missing,
+] as const);
 
 export const legacyLogs = freeze([
   freeze({ kind: friction, file: ".ai/friction.md" }),

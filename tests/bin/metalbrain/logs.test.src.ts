@@ -94,3 +94,36 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     expect(existsSync(project.resolve(".ai/pending.yml"))).toBe(false);
   });
 });
+
+describe("metalbrain missing", { timeout: binaryTimeout }, () => {
+  test("add writes the capability, its need and what was done instead", async () => {
+    const project = createProject();
+
+    const { messages } = await runCommand(
+      "missing",
+      logs,
+      "add",
+      "--subject",
+      "deep object merge",
+      "--need",
+      "merge config layers",
+      "--instead",
+      "local helper in src/x.ts",
+    );
+
+    const id = messages.at(-1)?.text ?? "";
+
+    expect(id).toMatch(/^MI-[\da-f]{6}$/u);
+
+    expect(parse(project.read(".ai/missing.yml"))).toEqual({
+      entries: [
+        {
+          id,
+          subject: "deep object merge",
+          need: "merge config layers",
+          instead: "local helper in src/x.ts",
+        },
+      ],
+    });
+  });
+});
