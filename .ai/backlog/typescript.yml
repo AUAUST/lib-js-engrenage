@@ -79,9 +79,10 @@ entries:
     title: TypeScript producers special-case targets
     sites:
       - src/tools/typescript/operations/tsconfigProducers.ts:15
-      - src/tools/typescript/setup/syncTsconfigFiles.ts:45
+      - src/tools/typescript/setup/syncTsconfigFiles.ts:48
       - src/tools/typescript/utils/toTsconfigEnvironment.ts:8
       - src/tools/typescript/operations/listTsconfigTargets.ts:38
+      - src/tools/typescript/operations/produceTsconfigPaths.ts:21
     why: most producers open with `key === "base"`; `tests.dist` does not fit the config shape, so it is special-cased in producers and `createResolvedConfig`; producers compute inherited `tests.dist` fields that sync then drops.
     want: base and environment producers split, or declared targets; one tsconfig-key-to-config-path lookup; inherited fields skipped.
     created: 2026-11-22T00:00:00Z
