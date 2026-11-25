@@ -9,6 +9,7 @@ import {
   createRegexLeaf,
   createTextQuery,
   matchTiered,
+  parseQuery,
   prepareDocuments,
   prepareText,
   rankDocuments,
@@ -266,5 +267,124 @@ describe("createTextQuery", () => {
       min: 1,
       children: [term("loader")],
     });
+  });
+});
+
+describe("parseQuery", () => {
+  const names = ["title", "body"];
+
+  function parse(query: string) {
+    return parseQuery(query, names);
+  }
+
+  function leaf(created: QueryLeaf | undefined) {
+    if (created == null) {
+      throw new Error("No leaf.");
+    }
+
+    return created;
+  }
+
+  test("binds NOT, then AND, then OR", () => {
+    expect(parse("eslint OR prettier NOT legacy")).toEqual({
+      kind: "any",
+      min: 1,
+      children: [
+        term("eslint"),
+        {
+          kind: "all",
+          children: [term("prettier"), { kind: "not", child: term("legacy") }],
+        },
+      ],
+    });
+  });
+
+  test("negates only qualifiers, so shell flags stay literal", () => {
+    expect(parse("-f unix")).toEqual({
+      kind: "all",
+      children: [term("-f"), term("unix")],
+    });
+
+    expect(parse("-title:cli")).toEqual({
+      kind: "not",
+      child: term("cli", "title"),
+    });
+  });
+
+  test("reads unbalanced parentheses as literal text", () => {
+    expect(parse("(eslint")).toEqual(term("(eslint"));
+
+    expect(parse("$(pwd) (cache OR config)")).toEqual({
+      kind: "all",
+      children: [
+        term("$(pwd)"),
+        {
+          kind: "any",
+          min: 1,
+          children: [term("cache"), term("config")],
+        },
+      ],
+    });
+  });
+
+  test("reads a regex only between slashes ending a token", () => {
+    expect(parse("/usr/bin/time -p")).toEqual({
+      kind: "all",
+      children: [term("/usr/bin/time"), term("-p")],
+    });
+
+    expect(parse("/^git (log|diff)/")).toEqual(
+      leaf(createRegexLeaf("^git (log|diff)")),
+    );
+
+    expect(parse("/a(/")).toEqual(term("/a(/"));
+  });
+
+  test("restricts qualifiers to declared fields", () => {
+    expect(parse('title:"word caps"')).toEqual(
+      leaf(createLiteralLeaf("phrase", "word caps", "title")),
+    );
+
+    expect(parse("nofield:x")).toEqual(term("nofield:x"));
+  });
+
+  test("drops stopword terms unless every term is one", () => {
+    expect(parse("and or with")).toEqual({
+      kind: "all",
+      children: [term("and"), term("or"), term("with")],
+    });
+
+    expect(parse("config and cache")).toEqual({
+      kind: "all",
+      children: [term("config"), term("cache")],
+    });
+  });
+
+  test("reads operators missing an operand as literal text", () => {
+    expect(parse("eslint OR")).toEqual(term("eslint"));
+
+    expect(parse("OR")).toEqual(term("or"));
+
+    expect(parse("")).toEqual({ kind: "all", children: [] });
+  });
+
+  test("parses a 200-character query in under 1 ms", () => {
+    const query = 'title:"word caps" (eslint OR prettier) NOT legacy -body:/^git (log|diff)/ ls-files $(pwd) '
+      .repeat(3)
+      .slice(0, 200);
+
+    function measure() {
+      const start = performance.now();
+
+      parse(query);
+
+      return performance.now() - start;
+    }
+
+    measure();
+
+    const fastest = min(...Array.from({ length: 5 }, measure));
+
+    expect(fastest).toBeLessThan(1);
   });
 });

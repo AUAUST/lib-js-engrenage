@@ -15,6 +15,7 @@ export { createRegexLeaf } from "#foundation/matching/utils/createRegexLeaf";
 export { createTextQuery } from "#foundation/matching/utils/createTextQuery";
 export { matchTiered } from "#foundation/matching/utils/matchTiered";
 export { normalizeText } from "#foundation/matching/utils/normalizeText";
+export { parseQuery } from "#foundation/matching/utils/parseQuery";
 export { prepareDocuments } from "#foundation/matching/utils/prepareDocuments";
 export { prepareText } from "#foundation/matching/utils/prepareText";
 export { rankDocuments } from "#foundation/matching/utils/rankDocuments";
