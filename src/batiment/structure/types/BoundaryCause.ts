@@ -10,6 +10,8 @@ export type BoundaryCause =
   | "rootEntry"
   | "testVariant"
   | "scope"
+  | "scopePath"
+  | "unexportedSubpath"
   | "relativePath"
   | "selfImport"
   | "unknownPath"

@@ -48,7 +48,7 @@ describe("createImportResolver", () => {
     });
   });
 
-  test("resolves each specifier from its importer's scope", () => {
+  test("resolves each specifier from its importer's scope, another scope's package name against its exports", () => {
     const ui = aliasesOf({
       key: "#ui",
       target: "./src/ui/index.ts",
@@ -58,8 +58,19 @@ describe("createImportResolver", () => {
     const resolveScoped = createImportResolver({
       root: "/project",
       scopes: {
-        ".": { aliases: ui, packageName: "@x/root" },
-        "theme": { aliases: ui, packageName: "@x/theme" },
+        ".": {
+          aliases: ui,
+          packageName: "@x/root",
+        },
+        "theme": {
+          aliases: ui,
+          packageName: "@x/theme",
+          exports: {
+            "./*": true,
+            "./private/*": false,
+            "./private/open": true,
+          },
+        },
       },
     });
 
@@ -79,8 +90,22 @@ describe("createImportResolver", () => {
     });
 
     expect(resolveScoped("@x/theme/b", "src/a.ts")).toEqual({
-      kind: "package",
-      name: "@x/theme",
+      kind: "scope",
+      scope: "theme",
+      subpath: "./b",
+      exported: true,
+    });
+
+    expect(resolveScoped("@x/theme/private/b", "src/a.ts")).toMatchObject({
+      exported: false,
+    });
+
+    expect(resolveScoped("@x/theme/private/open", "src/a.ts")).toMatchObject({
+      exported: true,
+    });
+
+    expect(resolveScoped("@x/theme", "src/a.ts")).toMatchObject({
+      exported: false,
     });
   });
 

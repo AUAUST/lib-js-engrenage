@@ -32,6 +32,8 @@ export const boundaryMessages = freeze({
   rootEntry: "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
   testVariant: "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
   scope: "`{{scope}}` imports `{{targetScope}}`, not a declared dependency of `{{scope}}`.",
+  scopePath: "`{{scope}}` reaches `{{targetScope}}` through `{{specifier}}`; import it by package name, declared as a dependency.",
+  unexportedSubpath: "`{{specifier}}` names a subpath `{{targetScope}}` does not export.",
   selfImport: "`{{path}}` imports itself.",
   relativePath: "Import {{fix}} instead of `{{specifier}}`.",
   unknownPath: "`{{unknown}}` is not in the structure map; if you just created it, reload the editor window.",

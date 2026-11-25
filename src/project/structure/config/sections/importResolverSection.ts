@@ -76,6 +76,27 @@ function listDeclaredAliases(
   });
 }
 
+// @debt reads the `exports` sync last wrote rather than the map the config resolves, so lint judges an unpublished scope against a stale map until the next sync
+function listExportedSubpaths(
+  exports: PackageJson["exports"] | undefined,
+): Readonly<Record<string, boolean>> | undefined {
+  if (exports === undefined) {
+    return;
+  }
+
+  const subpaths = isString(exports) || isArray(exports)
+    ? []
+    : entries(exports).filter(([key]) => key.startsWith("."));
+
+  return subpaths.length === 0
+    ? { ".": true }
+    : record(
+        subpaths.map(([key, target]) => {
+          return [key, target !== null] as const;
+        }),
+      );
+}
+
 // @debt reads a workspace's package.json outside the live packageJson key, so a renamed workspace package keeps its old name and imports in a long-lived resolver
 async function readWorkspacePackageJson(
   config: ConfigResolver,
@@ -106,7 +127,7 @@ export const importResolverSection = declareSection({
           ? rootPackageJson
           : await readWorkspacePackageJson(config, dir);
 
-        const { name, imports: declared } = packageJson.optional;
+        const { name, imports: declared, exports } = packageJson.optional;
 
         return [
           dir,
@@ -117,6 +138,7 @@ export const importResolverSection = declareSection({
               ...listDeclaredAliases(declared, aliases),
             ],
             packageName: name,
+            exports: listExportedSubpaths(exports),
           } satisfies ScopeImports,
         ] as const;
       }),

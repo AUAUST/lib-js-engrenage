@@ -77,7 +77,9 @@ export default defineConvention({
         return unknownPath(targetFile);
       }
 
-      const fix = resolved.kind === "relative"
+      const fix = (
+        resolved.kind === "relative" && importer?.scope === target?.scope
+      )
         ? entities.specifierOf(targetFile)
         : undefined;
 

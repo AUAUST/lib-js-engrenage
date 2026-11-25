@@ -85,6 +85,7 @@ export function createEntityIndex({
   packageName: string | undefined;
 }): EntityIndex {
   const directories = new Map<Directory, LocatedEntity>();
+  // @debt holds the root scope's aliases alone, so `specifierOf` never names the `#…` alias a workspace module is imported by
   const specifiers = [...aliases.src, ...aliases.global];
 
   const namespaces = listNamespaces(scopes).filter(({ scope }) => {

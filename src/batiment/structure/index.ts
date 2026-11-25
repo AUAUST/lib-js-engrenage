@@ -71,6 +71,7 @@ export { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCate
 export { getNamespaceRootRole } from "#batiment/structure/utils/getNamespaceRootRole";
 export { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
+export { getTargetScope } from "#batiment/structure/utils/getTargetScope";
 export { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
 export { inheritPublicRoles } from "#batiment/structure/utils/inheritPublicRoles";
 export { isEntryReference } from "#batiment/structure/utils/isEntryReference";

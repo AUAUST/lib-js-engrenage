@@ -2,16 +2,17 @@ import { relative } from "node:path";
 
 import { freeze, getOwn } from "@auaust/toolkit/object";
 
+import {
+  getTargetScope,
+  type BoundaryCause,
+  type BoundaryViolation,
+  type ImportCategory,
+  type ImportEdge,
+  type ImportGrants,
+} from "#batiment/structure/index";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import { analyzeImports } from "#tools/eslint/utils/analyzeImports";
 import { visitImportSources } from "#tools/eslint/utils/visitImportSources";
-import type {
-  BoundaryCause,
-  BoundaryViolation,
-  ImportCategory,
-  ImportEdge,
-  ImportGrants,
-} from "#batiment/structure/index";
 import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 import type { RuleModule } from "#tools/eslint/types/RuleModule";
 import type { Directory } from "#types/Directory";
@@ -67,14 +68,16 @@ export function defineBoundaryRule({
 
   function render(
     { boundary, fix, category, unclassified = "" }: BoundaryViolation,
-    {
+    edge: ImportEdge,
+  ): Record<string, string> {
+    const {
       file,
       importer,
       specifier,
       targetFile: targetPath = specifier,
       target,
-    }: ImportEdge,
-  ): Record<string, string> {
+    } = edge;
+
     const environment = (
       importer?.lineage[0]?.path ?? importer?.path ?? projectRoot
     );
@@ -109,7 +112,7 @@ export function defineBoundaryRule({
       namespace: importer?.namespace ?? "",
       category: category === undefined ? "" : labelCategory(category),
       scope: importer?.scope ?? "",
-      targetScope: target?.scope ?? "",
+      targetScope: getTargetScope(edge) ?? "",
       variantReach: guidance?.reach ?? "",
       variantMove: guidance?.move ?? "",
       unknown: importer === undefined ? path : targetPath,

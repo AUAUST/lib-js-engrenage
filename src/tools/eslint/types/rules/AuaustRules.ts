@@ -98,8 +98,8 @@ export interface AuaustRules {
    */
   "auaust/import-tests"?: Rule<[]>;
   /**
-   * A workspace imports another only when it declares it as a dependency, and
-   * the root src never imports a workspace.
+   * A workspace imports another scope only by package name, through a declared
+   * dependency, onto a subpath it exports; the root src never imports a workspace.
    */
   "auaust/import-workspaces"?: Rule<[]>;
   /**

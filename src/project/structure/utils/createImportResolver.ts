@@ -1,7 +1,7 @@
 import { posix, relative } from "node:path";
 
 import { memoize } from "@auaust/toolkit/function";
-import { getOwn, keys } from "@auaust/toolkit/object";
+import { entries, getOwn, keys } from "@auaust/toolkit/object";
 
 import { createScopeFinder } from "#batiment/scopes/index";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
@@ -14,24 +14,62 @@ const aliasPrefix = "#";
 const scopePrefix = "@";
 const selfSubpath = ".";
 
-// @debt expands to the alias's single `.ts` target, so a `#…` import of a `.tsx` module resolves to a `.ts` path that does not exist, while a bundled `src` imports it through `types` listing both extensions
-function expandAlias(alias: Alias, specifier: string): string | undefined {
-  const star = alias.key.indexOf("*");
+function matchPattern(key: string, specifier: string): string | undefined {
+  const star = key.indexOf("*");
 
   if (star === -1) {
-    return specifier === alias.key ? alias.target : undefined;
+    return specifier === key ? "" : undefined;
   }
 
-  const prefix = alias.key.slice(0, star);
-  const suffix = alias.key.slice(star + 1);
+  const prefix = key.slice(0, star);
+  const suffix = key.slice(star + 1);
 
   return specifier.startsWith(prefix) &&
     specifier.endsWith(suffix) &&
     specifier.length >= prefix.length + suffix.length
-    ? alias.target.replace("*", () => {
-        return specifier.slice(prefix.length, specifier.length - suffix.length);
-      })
+    ? specifier.slice(prefix.length, specifier.length - suffix.length)
     : undefined;
+}
+
+// @debt expands to the alias's single `.ts` target, so a `#…` import of a `.tsx` module resolves to a `.ts` path that does not exist, while a bundled `src` imports it through `types` listing both extensions
+function expandAlias(alias: Alias, specifier: string): string | undefined {
+  const captured = matchPattern(alias.key, specifier);
+
+  return captured === undefined
+    ? undefined
+    : alias.target.replace("*", () => captured);
+}
+
+function comparePatternKeys(first: string, second: string): number {
+  return (
+    second.indexOf("*") - first.indexOf("*") || second.length - first.length
+  );
+}
+
+function isExported(
+  exports: Readonly<Record<string, boolean>> | undefined,
+  subpath: string,
+): boolean {
+  if (exports === undefined) {
+    return true;
+  }
+
+  const exact = getOwn(exports, subpath);
+
+  if (exact !== undefined) {
+    return exact;
+  }
+
+  const [key] = keys(exports)
+    .filter((candidate) => {
+      return (
+        candidate.includes("*") &&
+        matchPattern(candidate, subpath) !== undefined
+      );
+    })
+    .toSorted(comparePatternKeys);
+
+  return key !== undefined && getOwn(exports, key) === true;
 }
 
 function packageNameOf(specifier: string): string {
@@ -51,10 +89,15 @@ export function createImportResolver({
 }): (specifier: string, from: File) => ResolvedSpecifier | undefined {
   const findScope = createScopeFinder(keys(scopes));
 
+  const owners = new Map(
+    entries(scopes).flatMap(([dir, { packageName }]) => {
+      return packageName === undefined ? [] : [[packageName, dir] as const];
+    }),
+  );
+
   const classify = memoize(
     (scope: Directory, specifier: string) => {
       const imports = getOwn(scopes, scope);
-      const packageName = imports?.packageName;
 
       for (const alias of imports?.aliases ?? []) {
         const expanded = expandAlias(alias, specifier);
@@ -72,21 +115,30 @@ export function createImportResolver({
         return;
       }
 
-      if (
-        packageName !== undefined &&
-        packageNameOf(specifier) === packageName
-      ) {
+      const name = packageNameOf(specifier);
+      const subpath = `${selfSubpath}${specifier.slice(name.length)}`;
+
+      if (name === imports?.packageName) {
         return {
           kind: "self",
-          subpath: `${selfSubpath}${specifier.slice(packageName.length)}`,
+          subpath,
+        } satisfies ResolvedSpecifier;
+      }
+
+      const owner = owners.get(name);
+
+      if (owner !== undefined) {
+        return {
+          kind: "scope",
+          scope: owner,
+          subpath,
+          exported: isExported(getOwn(scopes, owner)?.exports, subpath),
         } satisfies ResolvedSpecifier;
       }
 
       return {
         kind: "package",
-        name: specifier.startsWith("node:")
-          ? specifier
-          : packageNameOf(specifier),
+        name: specifier.startsWith("node:") ? specifier : name,
       } satisfies ResolvedSpecifier;
     },
     (scope, specifier) => `${scope}\0${specifier}`,

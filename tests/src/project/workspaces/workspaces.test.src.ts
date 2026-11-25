@@ -265,7 +265,7 @@ describe("workspaces", () => {
     );
   });
 
-  test("checks workspace imports against declared dependencies", async () => {
+  test("checks workspace imports by package name against declared dependencies", async () => {
     const project = createProject();
 
     const config = await loadConfig(project.root);
@@ -286,7 +286,14 @@ describe("workspaces", () => {
           file,
           importer,
           specifier: targetFile,
-          resolved: undefined,
+          resolved: target?.scope === undefined
+            ? undefined
+            : {
+                kind: "scope",
+                scope: target.scope,
+                subpath: ".",
+                exported: true,
+              },
           targetFile,
           target,
           kind: "runtime",
@@ -331,23 +338,109 @@ describe("workspaces", () => {
       "`.` imports `extensions/action-a`, not a declared dependency of `.`.",
     ]);
   });
+
+  describe("from a workspace into another scope", () => {
+    const declaring = {
+      ...files,
+      "package.json": JSON.stringify({
+        name: "app",
+        type: "module",
+        exports: {
+          "./utils/json": "./src/utils/json.ts",
+          "./utils/hidden": null,
+          "./ui/*": "./src/ui/*.ts",
+        },
+      }),
+      "src/utils/json.ts": "export {};\n",
+      "extensions/action-a/package.json": JSON.stringify({
+        name: "@scope/app-action-a",
+        dependencies: {
+          "app": "workspace:*",
+          "@scope/app-action-b": "workspace:*",
+        },
+      }),
+      "extensions/action-b/package.json": JSON.stringify({
+        name: "@scope/app-action-b",
+        exports: { ".": "./src/index.ts" },
+      }),
+      "extensions/functions-c/package.json": JSON.stringify({
+        name: "@scope/fn-functions-c",
+      }),
+    };
+
+    async function lintImports(...specifiers: string[]) {
+      const { lint } = await createProjectLinter(config, {
+        ...declaring,
+        "extensions/action-a/src/imports.ts": specifiers
+          .map((specifier) => `import "${specifier}";\n`)
+          .join(""),
+      });
+
+      const messages = await lint(
+        "extensions/action-a/src/imports.ts",
+        (ruleId) => {
+          return (
+            ruleId === "auaust/import-workspaces" ||
+            ruleId === "auaust/import-specifiers"
+          );
+        },
+      );
+
+      return messages.map(({ message }) => message);
+    }
+
+    test("refuses a relative path into the root, even a declared one, without suggesting a root alias", async () => {
+      expect(await lintImports("../../../src/utils/json")).toEqual([
+        "`extensions/action-a` reaches `.` through `../../../src/utils/json`; import it by package name, declared as a dependency.",
+      ]);
+    });
+
+    test("refuses a package name without a declared dependency", async () => {
+      expect(await lintImports("@scope/fn-functions-c")).toEqual([
+        "`extensions/action-a` imports `extensions/functions-c`, not a declared dependency of `extensions/action-a`.",
+      ]);
+    });
+
+    test("refuses a declared package name onto a subpath the target does not export", async () => {
+      expect(
+        await lintImports(
+          "app/utils/other",
+          "app/utils/hidden",
+          "@scope/app-action-b/src/index",
+        ),
+      ).toEqual([
+        "`app/utils/other` names a subpath `.` does not export.",
+        "`app/utils/hidden` names a subpath `.` does not export.",
+        "`@scope/app-action-b/src/index` names a subpath `extensions/action-b` does not export.",
+      ]);
+    });
+
+    test("accepts a declared package name onto an exported subpath, patterns included", async () => {
+      expect(
+        await lintImports(
+          "app/utils/json",
+          "app/ui/button",
+          "@scope/app-action-b",
+        ),
+      ).toEqual([]);
+    });
+  });
 });
 
 describe("workspace modules", () => {
-  test("import their own aliased modules and a src alias, type-check and build through Vite", async () => {
+  test("import their own aliased modules, type-check and build through Vite", async () => {
     const project = createTemporaryProject({
       "engrenage.config.ts": `export default {
-        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } }, src: { aliases: { define: { "$shared/*": "./shared/*.ts" } } },
+        environments: { src: { execution: { globals: "node", syntax: 24 }, bundled: true } },
         typescript: { tsconfig: { extends: false, compilerOptions: { module: "ESNext", moduleResolution: "Bundler", target: "ESNext", strict: true, noEmit: true, skipLibCheck: true, lib: ["ESNext"], types: [] } } },
         workspaces: { globs: { "extensions/action-*": { name: "@scope/app-${placeholder}", environments: { src: { dirs: [] }, actions: { preset: "src", dirs: ["src"], execution: { globals: "browser", syntax: "2026-10" }, bundled: true } } } } },
       };\n`,
       "package.json": '{ "name": "app", "type": "module" }',
       "tsconfig.json": "{}",
       "src/index.ts": "",
-      "shared/greeting.ts": 'export const greeting: string = "hello";\n',
       "extensions/action-a/.workspace.json": "{}",
       "extensions/action-a/src/helper.ts": "export const helper: string = 'helped';\n",
-      "extensions/action-a/src/index.ts": "import { greeting } from '$shared/greeting';\nimport { helper } from '#helper';\n\nexport const message: string = `${greeting} ${helper}`;\n",
+      "extensions/action-a/src/index.ts": "import { helper } from '#helper';\n\nexport const message: string = `hello ${helper}`;\n",
     });
 
     const resolved = await loadConfig(project.root);
