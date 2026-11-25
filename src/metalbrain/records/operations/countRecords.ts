@@ -6,9 +6,10 @@ import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
 /**
- * The entries of `kind` counted by the value of its `groupBy` field, ignoring case
- * and surrounding spaces, most entries first: each value as its first entry spells
- * it, and whether it is recurring, held by `recurringEntryCount` entries or more.
+ * The entries of `kind` and their taps counted by the value of its `groupBy`
+ * field, ignoring case and surrounding spaces, highest count first: each
+ * value as its first entry spells it, and whether it is recurring, counted
+ * `recurringEntryCount` times or more.
  */
 export async function countRecords(
   filesystem: Filesystem,
@@ -16,7 +17,7 @@ export async function countRecords(
 ): Promise<{ value: string; count: number; recurring: boolean }[]> {
   const counts = new Map<string, { value: string; count: number }>();
 
-  for (const { entry } of await listRecords(filesystem, kind)) {
+  for (const { entry, taps } of await listRecords(filesystem, kind)) {
     const value = entry[kind.groupBy];
 
     if (!isString(value)) {
@@ -27,7 +28,7 @@ export async function countRecords(
 
     const counted = counts.get(key) ?? { value: value.trim(), count: 0 };
 
-    counted.count += 1;
+    counted.count += 1 + taps.length;
 
     counts.set(key, counted);
   }

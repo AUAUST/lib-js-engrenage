@@ -7,3 +7,4 @@ entries:
       - src/workflows/init/operations/createStepContext.ts:173
     why: '`setKey("preset", …)` bypasses the preset `getPreset` reads; an override resolving to `undefined` falls back to the config value.'
     want: overriding one key updates every accessor of it; an override can clear a key.
+    created: 2026-11-22T00:00:00Z

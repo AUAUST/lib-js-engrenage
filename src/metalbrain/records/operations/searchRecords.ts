@@ -117,8 +117,8 @@ function relaxImplicitAnd(
 
 /**
  * The entries of `kinds` matching `query`, ranked together on the fields each
- * kind's `search` weighs, each with its kind, score and similarity; ties keep each
- * kind's newest entry first. An implicit-`AND` query nothing matches ranks the
+ * kind's `search` weighs, each with its kind, score and similarity; ties keep
+ * the newest `created` first. An implicit-`AND` query nothing matches ranks the
  * entries matching any of its terms instead, `relaxed` then `true` when any does.
  *
  * @throws {Error} When a kind declares no searchable field or weighs one it
@@ -136,14 +136,17 @@ export async function searchRecords(
     kinds.map(async (kind) => {
       const entries = await listRecords(filesystem, kind);
 
-      // @debt reversed file order stands in for newest first until entries carry their creation time
-      return entries.reverse().map((entry) => {
+      return entries.map((entry) => {
         return { ...entry, kind };
       });
     }),
   );
 
-  const prepared = prepareDocuments(listed.flat(), fields);
+  const newestFirst = listed.flat().toSorted((first, second) => {
+    return (second.created ?? "").localeCompare(first.created ?? "");
+  });
+
+  const prepared = prepareDocuments(newestFirst, fields);
 
   if (query.kind === "text") {
     return {

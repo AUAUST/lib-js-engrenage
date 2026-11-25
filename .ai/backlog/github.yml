@@ -7,11 +7,14 @@ entries:
       - src/tools/github/operations/renderWorkflow.ts:10
     why: regex replacements silently stop matching when a template changes; the lockfile name repeats `tools/pnpm`'s resource.
     want: templated YAML; the lockfile location read from its owner.
+    created: 2026-11-22T00:00:00Z
   - id: BL-059932
     title: Remote Agents and Planning labels differ from the config
     why: "`metalbrain github labels sync --check` reports `differs Agents` and `differs Planning` at 75dc54fe; unknown whether the config or the remote is stale, and the check names no differing property."
     want: the remote labels match the config, with `labels sync --check` naming what differs.
+    created: 2026-11-22T00:00:00Z
   - id: BL-9d535a
     title: Issue writes use REST endpoints GitHub deprecates in 2028
     why: "`planning issue publish` prints Octokit warnings that `POST` and `PATCH /repos/{owner}/{repo}/issues` are deprecated, removed on 2028-03-10, per GitHub's REST API versions page; each warning also floods the command's output."
     want: issue writes on the supported API version, publish printing no deprecation warning.
+    created: 2026-11-22T00:00:00Z

@@ -8,17 +8,20 @@ entries:
       - src/foundation/extensions/utils/createRegistry.ts:153
     why: "`ExtensionShape` types `owns` and `contributes` as `object`, so reads cast them; the slot policy union is restated twice; per-kind and per-slot maps erase declaration and entry types. Related: #331."
     want: typed declarations and entries through the registry; one slot policy union.
+    created: 2026-11-22T00:00:00Z
   - id: BL-e60bb8
     title: The tsc constant is re-exported only for its extension
     sites:
       - src/tools/typescript/tsc/constants.ts:1
     why: "`roles/extension/extension-imports` keeps the extension from importing `typescript` from `#constants`, so the domain re-exports it."
     want: the extension imports the constant from its owner.
+    created: 2026-11-22T00:00:00Z
   - id: BL-9ac5d6
     title: Doc tag values cannot reference globals checked against the baseline
     why: "toolkit's `@native Array.prototype.map` targets must exist in the configured baseline's lib declarations (AUAUST/lib-js-toolkit#183, #221); tag value schemas (#439) are static and see no config."
     want: a way for a tag's validation to resolve a global path against the baseline libs `createLibraryCompiler` loads.
     done: toolkit's `@native` vocabulary is settled and a reference check is designed or rejected.
+    created: 2026-11-22T00:00:00Z
   - id: BL-910442
     title: Directive fills cache their per-run state in module-level maps
     sites:
@@ -26,15 +29,18 @@ entries:
       - src/tools/metalbrain/operations/fillReferenceBlock.ts:53
     why: "`DirectiveFill` runs once per marker with no per-run setup, so each fill memoizes its presets or fillers in a `WeakMap` keyed by `LoadedConfig`, a lifetime `syncDirectiveBlocks` does not own; `memoizeByContext` keys by `ConfigContext` and fits neither."
     want: "`DirectiveDeclaration` loads a per-run fill factory (`(config) => fill`) that `syncDirectiveBlocks` calls once per run."
+    created: 2026-11-22T00:00:00Z
   - id: BL-e81759
     title: Lazy loaders may still resolve a module by its export count
     sites:
       - src/foundation/modules/utils/loadLazy.ts:30
     why: bundling adds exports to lazily loaded chunks (0.16.0 shipped `syncPackageJson, t`); built-in loaders select theirs by name, third-party ones may not.
     want: in a minor release, `loadLazy` rejects namespaces without `default`.
+    created: 2026-11-22T00:00:00Z
   - id: BL-58a0bd
     title: The lint rule loader in `engrenage.config.ts` is lazy only to skip ESLint tools
     sites:
       - engrenage.config.ts:36
     why: "a config load would otherwise import `tools/eslint`. Related: #616."
     done: "#331 injects the tools a run needs; then drop the loader."
+    created: 2026-11-22T00:00:00Z

@@ -20,6 +20,7 @@ import {
 } from "valibot";
 import { parse as parseYaml } from "yaml";
 
+import { formatRecordTime } from "#metalbrain/records/utils/formatRecordTime";
 import { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 import type { RecordFieldType } from "#metalbrain/records/types/RecordFieldType";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
@@ -55,44 +56,74 @@ const looseDetailSchema = fallback(
   undefined,
 );
 
-const groupSchema = strictObject(
-  {
-    purpose: textSchema,
-    entries: array(unknown()),
-  },
-  strictMessage,
+const timeSchema = pipe(
+  string(),
+  regex(
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/u,
+    "expected a UTC time as YYYY-MM-DDTHH:MM:SSZ",
+  ),
+  check((time) => {
+    return formatRecordTime(new Date(time)) === time;
+  }, "expected an existing time"),
 );
 
-const collectionSchema = strictObject(
-  {
-    entries: array(unknown()),
-  },
-  strictMessage,
-);
+const noteSchema = pipe(textSchema, regex(/^[^\n]*$/u, "expected one line"));
 
 const looseGroupSchema = fallback(
   looseObject({
     purpose: fallback(optional(textSchema), undefined),
+    taps: fallback(array(unknown()), []),
     entries: fallback(array(unknown()), []),
   }),
-  { entries: [] },
+  { taps: [], entries: [] },
 );
+
+function createIdSchema(namespace: string) {
+  return pipe(
+    string(),
+    check(
+      (id) => parseRecordId(id)?.namespace === namespace,
+      `expected an ID as ${namespace}-xxxxxx, 6 hex characters`,
+    ),
+  );
+}
+
+function createGroupSchema({ location, namespace, taps }: RecordKind) {
+  const tap = strictObject(
+    {
+      id: createIdSchema(namespace),
+      at: timeSchema,
+      note: exactOptional(noteSchema),
+    },
+    strictMessage,
+  );
+
+  const keys: Record<string, GenericSchema> = {
+    ...("directory" in location && { purpose: textSchema }),
+    ...(taps === true && {
+      taps: exactOptional(pipe(array(tap), minLength(1, "expected taps"))),
+    }),
+    entries: array(unknown()),
+  };
+
+  return {
+    group: strictObject(keys, strictMessage),
+    tap,
+  };
+}
 
 function createEntrySchemas({ namespace, fields }: RecordKind) {
   const declared = Object.entries(fields);
 
   const entry: GenericSchema<
     unknown,
-    { readonly id: string } & Readonly<Record<string, FieldValue | undefined>>
+    { readonly id: string; readonly created: string } & Readonly<
+      Record<string, FieldValue | undefined>
+    >
   > = strictObject(
     {
-      id: pipe(
-        string(),
-        check(
-          (id) => parseRecordId(id)?.namespace === namespace,
-          `expected an ID as ${namespace}-xxxxxx, 6 hex characters`,
-        ),
-      ),
+      id: createIdSchema(namespace),
+      created: timeSchema,
       ...Object.fromEntries(
         declared.map(([key, { type }]) => [key, fieldSchemas[type]]),
       ),
@@ -106,11 +137,13 @@ function createEntrySchemas({ namespace, fields }: RecordKind) {
     unknown,
     {
       readonly id?: string | undefined;
+      readonly created?: string | undefined;
       readonly [key: string]: unknown;
     }
   > = fallback(
     looseObject({
       id: fallback(optional(string()), undefined),
+      created: fallback(optional(string()), undefined),
       ...Object.fromEntries(details.map(([key]) => [key, looseDetailSchema])),
     }),
     {},
@@ -121,10 +154,11 @@ function createEntrySchemas({ namespace, fields }: RecordKind) {
 
 /**
  * A `kind` group file's `content` read through the kind's schema, a `purpose`
- * required only of a kind keeping a directory: its parse error, or its schema
- * issues and each entry checked on its own, keeping the purpose and each entry's
- * keys read loosely, its ID and details checked for form only, so a departure
- * from the schema hides none of them.
+ * required only of a kind keeping a directory, `taps` allowed only of a kind
+ * taking taps: its parse error, or its schema issues, its taps of valid form and
+ * each entry checked on its own, keeping the purpose and each entry's keys read
+ * loosely, its ID and details checked for form only, so a departure from the
+ * schema hides none of them.
  */
 export function parseRecordGroup(kind: RecordKind, content: string) {
   let data: unknown;
@@ -140,17 +174,21 @@ export function parseRecordGroup(kind: RecordKind, content: string) {
 
   const schemas = createEntrySchemas(kind);
 
-  const { purpose, entries } = parse(looseGroupSchema, data);
+  const groupSchemas = createGroupSchema(kind);
 
-  const strict = safeParse(
-    "directory" in kind.location ? groupSchema : collectionSchema,
-    data,
-  );
+  const { purpose, taps, entries } = parse(looseGroupSchema, data);
+
+  const strict = safeParse(groupSchemas.group, data);
 
   return {
     kind: "parsed" as const,
     purpose,
     issues: strict.success ? [] : strict.issues,
+    taps: taps.flatMap((raw) => {
+      const tap = safeParse(groupSchemas.tap, raw);
+
+      return tap.success ? [tap.output] : [];
+    }),
     entries: entries.map((raw) => {
       const loose = parse(schemas.loose, raw);
 

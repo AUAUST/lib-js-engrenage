@@ -5,6 +5,7 @@ entries:
     why: '`produceTsconfig*` (12 modules) and `tsconfigProducers` sit in `operations/`, `produce` being no decided verb and no role fitting better; convention `define*` builders (`tools/eslint/utils/`) break "`define…Config` for definers only"; `syncBlocks`, `syncFiles`, `syncIgnoreFile`, `syncFrontmatter` and `syncEditHook` are no sync targets; `TsconfigEnvironment` (exported by `project/config`) permutes `EnvironmentTsconfig`, and renaming it breaks.'
     want: "a decision per group: amend the naming rule or rename."
     done: names and rules agree.
+    created: 2026-11-22T00:00:00Z
   - id: BL-621764
     title: The `conventions` role in `engrenage.config.ts` is unscoped and misnamed
     sites:
@@ -12,21 +13,25 @@ entries:
       - engrenage.config.ts:129
     why: namespace `roles.enable` only accepts catalogue roles; it imports section values only the creator resolves; `conventions` names ESLint rule conventions and collides with `project/format`'s `Conventions`.
     want: scope the role to its namespace (or state why not); a decision on the name (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-fdac3a
     title: Roles for step adapters and non-tool sync targets are undefined (#143)
     why: '`createPrompter` (adapter of the `Prompter` port) stays in `workflows/cli/operations`, `workflows/sync` has no `adapters/` role to take it; `syncPackageJson`, a sync target of no tool, went to `workflows/sync/setup/`; the plan names only "init and sync step contracts" for `project/steps`, yet `Prompter` and `Invocation` live there.'
     want: decide whether `workflows` domains get `adapters/` and whether `setup/` may hold targets of no tool; state `project/steps` content.
     done: the roles and the plan agree.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b9b869
     title: Interfaces implemented elsewhere may be ports, not types
     why: "`src/foundation/filesystem/types/Filesystem.ts`, `FileFormatter.ts` and `src/project/steps/types/Prompter.ts` state an interface that another domain implements (`createPrompter`); #154 made `Formatter` a port in `src/project/format/ports/`, which is what `ports/` and `adapters/` are for; they sit in `types/`. Other interfaces injected by `workflows` may be the same."
     want: review which `types/` modules are ports (interface injected, implemented by an adapter in another domain) and whether the decisions' "contract domains declare ports" applies beyond `project/build`; then relocate or state why not.
     done: every injected interface is a port or has a stated reason not to be.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b43bba
     title: Hook vocabulary and GitHub command logic have no home (#172)
     why: "`HookEvent`, `HookDefinition` and `WordCapMode` sit in `metalbrain/runtimes/types/` and `metalbrain/records/types/` though hook-sync vocabulary belongs with each runtime's sub-domain and the map has no home for code shared by agent sub-domains; `getEntryBudgetKind` hard-codes the `.ai/backlog` layout with `debtFile`, split from `createBacklogStep`."
     want: "a home for code shared by the agent sub-domains, one owner of the backlog layout. #256 moves the GitHub-command parsing to `tools/github/utils`."
     done: each piece has one owner.
+    created: 2026-11-22T00:00:00Z
   - id: BL-a4b87d
     title: Generator wiring is hand-listed (#147)
     sites:
@@ -34,19 +39,23 @@ entries:
     why: the `generated` globs list `Rules.ts` and `rules/**` by hand while `ConfigInput.ts` and `editions/constants.ts` are generated but not listed (the generators format them); `scripts/codegen/index.ts` runs generators in a hard-coded order (`editions, apis, config, rules, barrels`) derived from nothing. The list also feeds `.prettierignore`, jscpd's exclusions and ESLint's `files.generated` scope, so formatting generated output does not make it unneeded.
     want: derive the globs and the order from the generators.
     done: adding a generator needs no second list.
+    created: 2026-11-22T00:00:00Z
   - id: BL-16bac4
     title: No way to detect unused code
     why: "`no-unused-vars` sees file-local symbols only; exports never imported and symbols reachable only through cycles need a cross-file reference graph (TypeScript language service, or knip)."
     want: a `structure` subcommand reporting each symbol that is local and unused, exported and only re-exported from an entrypoint, or exported and never referenced; test usage does not count. Ideally also symbols unreachable from every public entrypoint, cycles included.
     done: the command runs, reporting like the structure report.
+    created: 2026-11-22T00:00:00Z
   - id: BL-ea3b49
     title: "`discovered` (role, `<env>.discovered`, `files.discovered`) loses its only lint consumer in #150"
     why: '#150 step 3 removes `noDefaultExport`, the sole reader, and enforces `exports`; `discovered` then only feeds the project map, duplicating `exports: "default"` (`setup.ts`, loaded by path, is the exception). `BL-38066b` concerns the widening. `stylistic/naming`, `padded*` and `debtMarkers` derive from no structure.'
     want: decide whether `discovered` goes from roles and config; state a reason for each non-structure rule.
+    created: 2026-11-22T00:00:00Z
   - id: BL-bb0739
     title: Packages built with engrenage publish no effect levels for their exports
     why: "#234 ranks other packages' imports through the `structure.effects` config map only, though an engrenage-built package's roles already carry a level per export."
     want: such packages publish levels derived from their roles, read when another project imports them, so consumers stop declaring them by hand.
+    created: 2026-11-22T00:00:00Z
   - id: BL-e613b7
     title: Global modules own domain vocabulary
     sites:
@@ -55,6 +64,7 @@ entries:
       - src/entry.ts:1
     why: global constants carry tool knowledge (package names, config file names, the agents' hook program); the global types role holds block types, sync results, `IgnorePresets` and `GlobGroup`.
     want: each value and type moved to its owning domain.
+    created: 2026-11-22T00:00:00Z
   - id: BL-825eaa
     title: Role and domain names are hardcoded or collide
     sites:
@@ -65,6 +75,7 @@ entries:
       - src/foundation/data/index.ts:1
     why: index and entry roles found by fixed names though a preset's `name` renames them; the constants and contract roles found by preset name; the index key repeats `batiment/roles`, which a utility cannot import at runtime; `data` names a one-function domain like the environment.
     want: roles resolved from declared names; a domain name not colliding with an environment.
+    created: 2026-11-22T00:00:00Z
   - id: BL-d605f2
     title: Structure declaration in `engrenage.config.ts` mixes concerns
     sites:
@@ -72,6 +83,7 @@ entries:
       - engrenage.config.ts:135
     why: the `config` role holds the identity definer `defineConfig` beside I/O, while lint ranks roles by imports only; scripts and tooling list roles none of their modules use.
     want: a decision on the role split (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-987297
     title: Structure resolvers and index hold loose rules
     sites:
@@ -82,6 +94,7 @@ entries:
       - src/project/structure/operations/findImportCycles.ts:238
     why: a later `undefined` overrides an earlier glob's value; a directory role passes as a file role; public file roles stay out of the surface; child visibility misses a namespace's scoped roles; without `verbatimModuleSyntax`, a value re-export of a type-only module counts as a runtime edge.
     want: each rule fixed at its site.
+    created: 2026-11-22T00:00:00Z
   - id: BL-c24c01
     title: Structure boundary and layer rules miss cases
     sites:
@@ -92,6 +105,7 @@ entries:
       - src/batiment/structure/utils/checkSurfaces.ts:8
     why: the fix reads the index specifier as the first surface entry; files at an environment root outside global roles and root entry, and imports between two directories of one environment, are never checked; layer and surface rules split by target kind; the lineage condition never decides.
     want: index specifier read directly; every environment file checked; rules split by broken relation.
+    created: 2026-11-22T00:00:00Z
   - id: BL-9acea6
     title: Structure reads tsconfig to find output directories
     sites:
@@ -102,6 +116,7 @@ entries:
       - src/tools/typescript/setup/syncAliases.ts:182
     why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only, looked up apart from `readSelectedLanguage`; a `#…` import of a `.tsx` module resolves to the alias's `.ts` target; `syncAliases` strips the first extension to recover a stem.
     want: output directory resolved without the tsconfig; aliases reading their language through `readSelectedLanguage`; an `Alias` carrying its stem and every extension.
+    created: 2026-11-22T00:00:00Z
   - id: BL-eebc78
     title: Map and tree renderers are ad hoc
     sites:
@@ -109,6 +124,7 @@ entries:
       - src/batiment/structure/utils/renderStructureTree.ts:15
     why: map renderers repeat code; one `detailed` flag branches every tree helper.
     want: one structured renderer shared by the map renderers; two row policies over one drawing.
+    created: 2026-11-22T00:00:00Z
   - id: BL-2d95c9
     title: Namespaces declared under a domain glob are ignored
     sites:
@@ -116,14 +132,17 @@ entries:
       - src/batiment/context/operations/createStructureDomainResolver.ts:40
     why: "`flattenStructure` keys a namespace under a glob domain by its glob path (`a/*/ns`); `describe` looks namespaces up by exact path, so none matches."
     want: namespaces under globs matched like domains, or rejected by the schema.
+    created: 2026-11-22T00:00:00Z
   - id: BL-16127b
     title: A domain's index drops a role's modules silently when it has no `@barrel <role>` marker
     why: '`fillBarrelBlock` (`src/tools/typescript/operations/fillBarrelBlock.ts`) fills only existing markers, so modules moved into a role the index has no block for leave its surface while `sync --check` passes; seen moving interfaces to `apis/` and `ports/` in AUAUST/lib-js-engrenage#533. Related: #8 ("Markers fail silently").'
     want: sync adds the missing block, or `--check` reports each placed role whose modules no marker of the index covers.
+    created: 2026-11-22T00:00:00Z
   - id: BL-7871c6
     title: Duplicate-role errors name merged positions, not the config's
     why: since default roles (AUAUST/lib-js-engrenage#629), `listNamespaceRoles` puts defaults before listed roles, so `registerRoles` names `src.roles[9]` for the config's `src.roles[0]`; marked `@debt` in `src/batiment/roles/utils/registerRoles.ts`.
     want: "`resolveRoles` receives each role's own config position (or none for a default) and errors name it."
+    created: 2026-11-22T00:00:00Z
   - id: BL-0ff128
     title: Structure types restate schema vocabulary and field names
     sites:
@@ -134,12 +153,14 @@ entries:
       - src/batiment/structure/types/DeclaredStructure.ts:14
     why: relation and `children` picklists repeat `declareStructureNodes` and `StructureRelation`; `childKind` differs in name from the `children` option; `DomainDeclaration`, `DeclaredStructure` and `StructureOptions` repeat the domain fields (jscpd).
     want: types derived from the schemas; `StructureOptions` extends `DeclaredStructure` with `source`.
+    created: 2026-11-22T00:00:00Z
   - id: BL-340c68
     title: Structure node records accept undefined children
     sites:
       - src/batiment/scopes/config/declarers/declareStructureNodes.ts:115
     why: the root `structure` needs optionality, so child records also accept `undefined`, resolved as empty namespaces.
     want: optional only at the root.
+    created: 2026-11-22T00:00:00Z
   - id: BL-c638bd
     title: Role contracts stay unfrozen and cannot see their directory
     sites:
@@ -147,6 +168,7 @@ entries:
       - src/batiment/roles/utils/completeRole.ts:96
     why: freezing in place would freeze caller-owned preset values; a root role never placed at an environment root passes the contract check.
     want: frozen copies once toolkit's `constant()` exists (`BL-ed9073`); directory context for contracts (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-c41c51
     title: Role file assignments are re-derived by their consumers
     sites:
@@ -155,6 +177,7 @@ entries:
       - src/tools/typescript/operations/listDomainModules.ts:20
     why: "`getStructureCardinality` regroups the assignments; `assignRoleFiles` recomputes the static globs; `listDomainModules` re-derives roles from `fileNames` though the walker classifies each file."
     want: the resolved structure carries each role node's files, groups and globs.
+    created: 2026-11-22T00:00:00Z
   - id: BL-dfc6ad
     title: Schemas of data files have no role
     sites:
@@ -164,12 +187,14 @@ entries:
       - src/tools/pnpm/config/schemas/linksSchema.ts:5
     why: they validate generated or local state files, not option declarations, so `schemas/` under `config/` misplaces them.
     done: "needs planning: a role for data-file schemas."
+    created: 2026-11-22T00:00:00Z
   - id: BL-ac4484
     title: Subdomain re-exports are hand-written
     sites:
       - src/tools/github/index.ts:1
     why: the index lists its subdomains' exports by hand.
     done: "needs planning: generated re-exports for subdomains."
+    created: 2026-11-22T00:00:00Z
   - id: BL-c405f1
     title: Barrel blocks hide flat-entry collisions and reload their renderer
     sites:
@@ -178,6 +203,7 @@ entries:
       - src/tools/typescript/setup/syncBarrelFiles.ts:11
     why: a block cannot read the names a hand-written flat entry spreads, so collisions surface only in TypeScript; each block builds its own renderer, reloading the `barrels.exports` resolvers.
     want: one renderer per run; collisions read from the flat entry or forbidden (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-0cbe9c
     title: Role presets and structure sources leave contracts unstated
     sites:
@@ -186,6 +212,7 @@ entries:
       - src/batiment/structure/types/StructureSource.ts:1
     why: "`schemas` is pure by default though declarer-built schemas import confined utils; `testutils` waits for an observing level; no code produces the `preset` source."
     want: role levels matching what modules import; the `preset` source produced or removed.
+    created: 2026-11-22T00:00:00Z
   - id: BL-86932d
     title: Layer and surface checks skip package self-references
     sites:
@@ -193,36 +220,43 @@ entries:
       - src/batiment/structure/utils/getImportCategory.ts:11
     why: only `relative` and `alias` imports are checked; `@auaust/engrenage/...` counts as `public-entries`, granted to `src`, so a lower layer importing a workflows entry passes lint.
     want: self-references resolved to their source domain and checked like aliases.
+    created: 2026-11-22T00:00:00Z
   - id: BL-e432f0
     title: No issue owns walking workspace environments' structure
     sites:
       - src/project/structure/config/sections/structureSection.ts:31
     why: "the section resolves root environments only, yet #741 (`structure[id]`), #758, #760 and #761 assume a per-scope walk (#732 › Resolution)."
     want: "one issue owns the per-scope walk, as a first leaf of #757 or an item under #732."
+    created: 2026-11-22T00:00:00Z
   - id: BL-185690
     title: The workspaces schema describes each glob as one environment
     sites:
       - src/project/workspaces/config/schemas/workspacesSchema.ts:13
     why: "since #793 environments come from `.environment.json`, so the description is stale."
+    created: 2026-11-22T00:00:00Z
   - id: BL-6d0e91
     title: Workspace `imports` declared in two places
     why: "#675 › Decisions puts a workspace's `imports` in `.workspace.json` (#729, read by #714); #739 and #802 put per-environment opt-ins in `.environment.json`."
     want: "one owner; recommended: #802's opt-ins, #729 deriving from them, #675 and #714 updated."
+    created: 2026-11-22T00:00:00Z
   - id: BL-fbce03
     title: Workspace tests cannot reach root test helpers past sealed `tests`
     why: "#675 › Decisions lets nested tests import root `tests` helpers; #800 and #743 › Decisions seal `tests` inward."
     want: 'decide among an opt-in per workspace tests environment, `inward: "surface"` for `tests` (`tests/utils`, `tests/fixtures`, as #728 recommends), or a separate helpers kind.'
+    created: 2026-11-22T00:00:00Z
   - id: BL-0c171a
     title: Packages, repositories and environments declare no scope an architecture review can judge against
     why: only namespaces and domains carry a purpose; the architecture review (data/metalbrain/shared/architecture-review.md) must ask the user for any wider scope, every review
     want: a declared scope for the project and each environment, rendered into the project maps beside namespace and domain purposes
     done: the project maps state a scope for the root and each environment
+    created: 2026-11-22T00:00:00Z
   - id: BL-5687d8
     title: Extensions reach other domains' constants only through re-exports
     sites:
       - src/tools/eslint/rules/extensionImports.ts:1
     why: roles/extension/extension-imports lets an extension.ts statically import only its own domain's constants, so tools/metalbrain, tools/typescript/tsc and tools/shopify/theme re-export foreign constants under @debt markers (#832 kept 4 in tools/metalbrain/constants.ts).
     want: "a user decision: the rule allowing another domain's public constants role, which drops every such re-export, or the pattern kept."
+    created: 2026-11-22T00:00:00Z
   - id: BL-d012fb
     title: Instructions call the per-namespace project maps environment maps
     sites:
@@ -230,21 +264,25 @@ entries:
     why: "Under #732's two dimensions maps describe top-level namespaces, keyed by their ID; environments are runtimes"
     want: The instruction text naming the maps and telling agents which map to read speaks of top-level namespaces, covering workspace maps (project-map/theme/src.md); needs a writer with consent
     done: "#760 lands its per-namespace maps"
+    created: 2026-11-23T00:00:00Z
   - id: BL-6937f5
     title: batiment/context's operations mix discovery with the structure walk in one flat role
     sites:
       - src/batiment/context/index.ts:1
     why: "16 modules: discovery and the walk with its resolvers landed together when #861 hid them"
     want: "Sub-domains or a split along discovery and walk, once #841 and #844 reshape the port"
+    created: 2026-11-23T00:00:00Z
   - id: BL-3000a5
     title: A .namespace.json in a workspace directory no placement names is ignored without a diagnostic
     sites:
       - src/batiment/context/operations/discoverContext.ts:252
     why: Workspace namespaces now come from registered placements only, so a stray metafile once creating a namespace now does nothing
     want: A diagnostic naming the metafile and the placement it lacks
+    created: 2026-11-24T00:00:00Z
   - id: BL-3c7795
     title: "A workspace's `@barrel` blocks go unfilled: the directive lists and fills candidates against the root's structure only"
     sites:
       - src/tools/typescript/extension.ts:109
     why: "#762 moved barrel files per scope; directive blocks stay root-only, outside #881's scope, which removes Interscript stand-ins only"
     want: "Each scope's @barrel blocks filled against its own walk, alias table and child resolver, as a #675 consumer"
+    created: 2026-11-24T00:00:00Z

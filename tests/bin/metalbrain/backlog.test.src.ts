@@ -12,9 +12,9 @@ import { runCommand } from "#tests/utils/runCommand";
 
 import backlog from "#bin/metalbrain/backlog/index";
 
-const tools = "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    title: A claim\n    sites: [src/a.ts:3]\n    want: [one, two]\n";
+const tools = "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n    sites: [src/a.ts:3]\n    want: [one, two]\n";
 
-const docs = "purpose: Docs.\nentries:\n  - id: BL-0b1c2d\n    title: Document the gate\n    why: [first, second]\n";
+const docs = "purpose: Docs.\nentries:\n  - id: BL-0b1c2d\n    created: 2026-11-20T00:00:00Z\n    title: Document the gate\n    why: [first, second]\n";
 
 function createProject() {
   const project = createTemporaryProject({
@@ -77,8 +77,13 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
 
     expect(id).toMatch(/^BL-[\da-f]{6}$/u);
 
+    const created = parse(project.read(".ai/backlog/tools.yml")).entries[1]
+      .created;
+
+    expect(created).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/u);
+
     expect(project.read(".ai/backlog/tools.yml")).toBe(
-      `${tools}  - id: ${id}\n    title: Another claim\n    sites:\n      - src/a.ts:1\n      - src/index.ts:1\n    why: reason\n    want:\n      - first\n      - second\n`,
+      `${tools}  - id: ${id}\n    title: Another claim\n    sites:\n      - src/a.ts:1\n      - src/index.ts:1\n    why: reason\n    want:\n      - first\n      - second\n    created: ${created}\n`,
     );
 
     expect(parse(project.read(".ai/backlog/index.yml"))).toEqual({
@@ -115,11 +120,13 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
       entries: [
         {
           id: "BL-0b1c2d",
+          created: "2026-11-20T00:00:00Z",
           title: "Document the gate",
           why: ["first", "second"],
         },
         {
           id: "BL-3fa9c1",
+          created: "2026-11-20T00:00:00Z",
           title: "A claim",
           sites: ["src/a.ts:3"],
           want: ["one", "two"],
@@ -200,7 +207,7 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     );
 
     expect(project.read(".ai/backlog/tools.yml")).toBe(
-      "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    title: A claim\n    why: a reason\n    want: [one, two]\n",
+      "purpose: Tools.\nentries:\n  - id: BL-3fa9c1\n    title: A claim\n    why: a reason\n    want: [one, two]\n    created: 2026-11-20T00:00:00Z\n",
     );
 
     const {

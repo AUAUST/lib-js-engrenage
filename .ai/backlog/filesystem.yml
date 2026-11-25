@@ -6,6 +6,7 @@ entries:
       - src/tools/typescript/extension.ts:74
     why: each barrel path becomes a glob unescaped, so a path such as `[id]` matches other files or none; `escapeGlob` in foundation/filesystem now escapes the git-ignored list
     want: literal paths escaped before globbing.
+    created: 2026-11-22T00:00:00Z
   - id: BL-0dbb36
     title: Glob helpers return or render more than asked
     sites:
@@ -13,3 +14,4 @@ entries:
       - src/foundation/blocks/utils/anchorGlobs.ts:11
     why: "`globFiles` also yields the directories `patterns` match, so `glob` returns them as files; minimatch's `braceExpand` unescapes `\\{`, so an anchored glob for a literal brace renders it unescaped."
     want: files only from `glob`; literal braces kept escaped.
+    created: 2026-11-22T00:00:00Z

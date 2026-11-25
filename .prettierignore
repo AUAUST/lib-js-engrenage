@@ -29,6 +29,15 @@ bun.lockb
 # Agent stats
 /.ai/stats
 
+# Agent records
+/.ai/friction.md
+/.ai/discarded.md
+/.ai/backlog/*.yml
+/.ai/friction.yml
+/.ai/discarded.yml
+/.ai/pending.yml
+/.ai/missing.yml
+
 # Agent rules
 /.claude/rules/project-map.md
 /.claude/rules/project-map/**/*.md

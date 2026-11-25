@@ -10,13 +10,14 @@ import relocate from "#bin/metalbrain/backlog/relocate";
 import show from "#bin/metalbrain/backlog/show";
 import update from "#bin/metalbrain/backlog/update";
 import search from "#bin/metalbrain/search";
+import tap from "#bin/metalbrain/tap";
 
 // @debt the single-quote help note restates the one in `bin/metalbrain/logs/index.ts`, since bin modules are commands and share no constants
 export default defineGroup({
   configure(command) {
     return command
       .description(
-        "Create, find, update, move and close the backlog's categories and entries in .ai/backlog/, and relocate their sites, checked against the backlog file schema; every write regenerates .ai/backlog/index.yml.",
+        "Create, find, update, tap, move and close the backlog's categories and entries in .ai/backlog/, and relocate their sites, checked against the backlog file schema; every write regenerates .ai/backlog/index.yml.",
       )
       .addHelpText(
         "afterAll",
@@ -28,6 +29,7 @@ export default defineGroup({
     list,
     search,
     show,
+    tap,
     create,
     add,
     update,

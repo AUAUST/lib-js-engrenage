@@ -8,6 +8,7 @@ entries:
       - src/tools/github/issues/drafts/utils/toLocalStem.ts:24
     why: "`toLocalStem` throws for any repository missing from `github.repositories`; found publishing #677 and #680 under AUAUST/clients-intscr-shopify#49 before that repository was registered."
     want: an ancestor outside the registry kept as its full `owner/repo#n` reference instead of failing the publish.
+    created: 2026-11-22T00:00:00Z
   - id: BL-cef515
     title: "`planning issue check` demands readiness sections of closed drafts"
     sites:
@@ -15,6 +16,7 @@ entries:
       - src/tools/github/issues/drafts/utils/checkDrafts.ts:363
     why: "`complete` is one flag for every draft checked, whatever its `state`; #708 and #713, both `completed`, fail on missing **Steps** and **Tests**."
     want: a draft whose `state` is not `open` checked without the worker-readiness sections.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b74b6f
     title: GitHub snapshot errors and ordering lose information
     sites:
@@ -22,6 +24,7 @@ entries:
       - src/tools/github/issues/api/operations/fetchGithubSnapshot.ts:325
     why: a GraphQL error from a fine-grained token lacking a permission surfaces without naming it, unlike the REST reads; sorting by name drops GitHub's option priority and pinned order.
     want: the missing permission named; GitHub's order kept.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b02d39
     title: Manifest and remote reads treat any failure as missing
     sites:
@@ -29,6 +32,7 @@ entries:
       - src/tools/github/issues/api/operations/readOriginRepository.ts:13
     why: an unreadable manifest reads as a missing one; any git failure as a missing `origin` remote.
     want: a missing file or remote told from a failed read.
+    created: 2026-11-22T00:00:00Z
   - id: BL-e25ae9
     title: The repository is carried as an unparsed string
     sites:
@@ -36,6 +40,7 @@ entries:
       - src/tools/github/issues/contract/types/ParsedIssueBody.ts:3
     why: "every route splits `<owner>/<repo>` again; a plain `#<n>` entry carries `repository: undefined`."
     want: owner and name parsed once; entries parsed against a base repository.
+    created: 2026-11-22T00:00:00Z
   - id: BL-978eec
     title: Planning vocabulary is restated by hand in schemas
     sites:
@@ -43,18 +48,21 @@ entries:
       - src/tools/github/config/schemas/contractNamesSchema.ts:33
     why: complexity keys and each group's meaning keys repeat the GitHub contract's meanings.
     want: entries derived from the meaning constants.
+    created: 2026-11-22T00:00:00Z
   - id: BL-fc8caf
     title: Roadmap links miss repeated-heading anchors
     sites:
       - src/tools/github/issues/contract/utils/renderRoadmap.ts:4
     why: GitHub suffixes a repeated heading's anchor with `-<k>`.
     want: the suffixed anchor linked.
+    created: 2026-11-22T00:00:00Z
   - id: BL-6bd2b4
     title: Publishing an unchanged draft can push formatter-only changes
     sites:
       - src/tools/github/issues/drafts/operations/fetchPublishedDraft.ts:134
     why: the merge returns the formatted remote body, so an unchanged draft may rewrite GitHub's body.
     want: the remote body kept when the draft is unchanged.
+    created: 2026-11-22T00:00:00Z
   - id: BL-a20920
     title: Issue commands duplicate resolution and requests
     sites:
@@ -64,6 +72,7 @@ entries:
       - bin/metalbrain/planning/issue/actions/claim.ts:1
     why: "`releaseIssues` repeats `claimIssues`' stem resolution, itself unlike `toClaimedIssue`'s; sub-issue paging repeats thrice; the tree check rebuilds a tree it flattened; claim, publish and release clone each other."
     want: one stem resolver; one sub-issue location fetch; the check returning its tree.
+    created: 2026-11-22T00:00:00Z
   - id: BL-050e8b
     title: Draft checks and reads fail silently or on wording
     sites:
@@ -71,12 +80,14 @@ entries:
       - src/tools/github/issues/drafts/operations/readDraft.ts:26
     why: a draft whose repository fails to resolve drops out of parent and cycle checks; the comment-separation error is detected by `yaml`'s message wording.
     want: the resolution failure reported in every check; detection by error code or structure.
+    created: 2026-11-22T00:00:00Z
   - id: BL-4e0b2d
     title: "`planning issue check` passes trees `publish` refuses"
     sites:
       - src/tools/github/issues/drafts/operations/publishIssues.ts:199
     why: "friction ×4: a header line without ancestors and a Segment or new `subIssues` whose Plan is outside the published set pass `check`, then `publish` refuses them. Also a **Provides** line whose Plan draft is outside the published set: `publish` calls `checkDrafts` without `known`, so the plan reads as having no Model headings (#815, walk of #811)."
     want: "`check` applies `publish`'s tree preconditions to the refs it checks."
+    created: 2026-11-22T00:00:00Z
   - id: BL-0c220f
     title: "`publish` sends the skeleton's hint comments to GitHub"
     sites:
@@ -84,14 +95,17 @@ entries:
       - src/foundation/markdown/utils/stripComments.ts:3
     why: "`create problem` writes HTML hint comments above **Steps** and **Leads**; `check` strips them, `publish` keeps any the author left."
     want: hint comments stripped from the published body, or `check` failing on one left.
+    created: 2026-11-22T00:00:00Z
   - id: BL-2a4732
     title: "`planning issue publish` exits 1 after printing `published` for every draft"
     why: "friction ×1; `publishIssues` returns `passed: true` on that path, so the code comes from later; not reproduced without GitHub writes."
     want: the exit code matching the outcome; needs live-GitHub debugging.
+    created: 2026-11-22T00:00:00Z
   - id: BL-5a9bcc
     title: "`planning issue check` treats every **Planning** section as open"
     why: "friction ×2: any **Planning** section counts as open, and a task for a shaper is refused without **Steps** and **Tests**."
     want: a decision on which issues may leave **Planning** open and need no **Steps**/**Tests** (planning-contract policy).
+    created: 2026-11-22T00:00:00Z
   - id: BL-c72639
     title: "`planning walk check` lists a leaf ready that the dispatch hook refuses for its ancestors"
     sites:
@@ -99,30 +113,36 @@ entries:
       - src/tools/github/issues/contract/operations/checkIssue.ts:103
     why: "the walk checks each issue alone; dispatch also checks ancestors (a parent's **Questions**, any ancestor's `Drafting`): #733 was listed `Ready` under #732 holding both."
     want: the walk's ready set matching what dispatch accepts.
+    created: 2026-11-22T00:00:00Z
   - id: BL-4e53c9
     title: "`check` lets a **Housekeeping** step name source or test paths"
     why: the instructions limit Housekeeping to edits outside code and tests, enforced only when an orchestrator applies it.
     want: a `check` finding for a Housekeeping step naming a path under a code or test environment.
+    created: 2026-11-22T00:00:00Z
   - id: BL-f760c2
     title: No command briefs an agent on its issue per role
     why: agents fetch and read whole issues and ancestors to find what their role needs; `planning walk check` and `planning issue check` already serve the walker and the planner.
     want: "an agent-facing command printing, per role, only the facts it needs: for a worker the issue's **Done when**, **Context** and **Tests**, the ancestor chain and the plan's **Goal** and **Decisions**, skipping sections its role never uses."
     done: a worker starts from that command's output alone.
+    created: 2026-11-22T00:00:00Z
   - id: BL-3f11df
     title: Agents fetch issues to read them instead of reading a local copy
     why: each `gh issue view` puts the whole issue in context through tool output; a local copy read by path may cost fewer tokens.
     want: a command fetching an issue when missing or stale and printing the path of its local copy.
     done: "measured first: a session reading by path spends fewer tokens than one fetching; dropped otherwise, since saving tokens is its only purpose."
+    created: 2026-11-22T00:00:00Z
   - id: BL-073588
     title: "`planning issue check` cannot check a draft by path"
     sites:
       - data/metalbrain/skills/implement.md:45
     why: it takes only draft stems under the current checkout's `.ai/issues/`; a `Draft:` brief carries an absolute path, often outside the worker's worktree, so the worker cannot check its draft before implementing.
     want: the command accepting a draft path, then the implement rule covering `Draft:` briefs too.
+    created: 2026-11-22T00:00:00Z
   - id: BL-088353
     title: "`planning issue check` names no published issue of another registered repository"
     why: "the implement rule runs `planning issue check <n>`; a foreign leaf (`Issue: <owner>/<repo>#<n>`) checks only when its worker runs in that repository's checkout, and the help documents no `<repo>.<n>` form."
     want: a form or `--checkout` reaching a registered repository's published issue, unless walkers always place foreign-leaf workers in that checkout.
+    created: 2026-11-22T00:00:00Z
   - id: BL-f4306f
     title: Plans cannot schedule the analysis of an idea
     sites:
@@ -130,7 +150,9 @@ entries:
       - .claude/skills/walking/SKILL.md:80
     why: "an idea worth weighing once code it depends on lands has no place in a plan: `idea` issues are related, never sub-issues, and the walker never dispatches them."
     want: an `idea` sub-issue ordered in a plan; the walker dispatches it to an `analyser` once its prerequisites land, to report what is at play; planning tooling (`walk check`, readiness, dispatch hook) accepts it.
+    created: 2026-11-22T00:00:00Z
   - id: BL-1ae1ff
     title: "`planning issue publish` leaves a `resplit` reason's draft reference unresolved in the plan's generated Re-split log"
     why: "Plan #888 shows `#{new-missing-record}` literally where #905 belongs"
     want: Publishing resolves draft references in Re-split log reasons to the published issue numbers
+    created: 2026-11-25T02:34:24Z

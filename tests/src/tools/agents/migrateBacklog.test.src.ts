@@ -35,6 +35,8 @@ async function sync(root: string) {
   await config.context.filesystem.flush();
 }
 
+const recordTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/u;
+
 describe("backlog migration", () => {
   test("removes the index page, listing the categories in index.yml", async () => {
     const project = createProject(
@@ -110,14 +112,16 @@ describe("backlog migration", () => {
       purpose: "Tool integrations.",
       entries: [
         {
-          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
+          id: expect.stringMatching(/^BL-[\da-f]{6}$/u),
+          created: expect.stringMatching(recordTime),
           title: "A claim",
           sites: ["src/a.ts:3"],
           why: expect.any(String),
           want: ["one", "two", "three"],
         },
         {
-          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
+          id: expect.stringMatching(/^BL-[\da-f]{6}$/u),
+          created: expect.stringMatching(recordTime),
           title: "Another claim",
           done: "never",
         },
@@ -135,7 +139,8 @@ describe("backlog migration", () => {
     expect(parse(project.read(".ai/friction.yml"))).toEqual({
       entries: [
         {
-          id: expect.stringMatching(/^\d{6}-[\da-f]{4}$/u),
+          id: expect.stringMatching(/^FR-[\da-f]{6}$/u),
+          created: expect.stringMatching(recordTime),
           subject: "x",
           tried: `${first.id} and tools.12`,
           stopped: "y",

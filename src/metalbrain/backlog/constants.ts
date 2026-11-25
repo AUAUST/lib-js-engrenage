@@ -45,6 +45,7 @@ export const backlog = freeze({
     }),
     group: "category",
   }),
+  taps: true,
 } as const) satisfies GroupedRecordKind;
 
 export const backlogRecordIndex = `${backlogDirectory}/${recordIndexName}${recordFileExtension}` satisfies File;

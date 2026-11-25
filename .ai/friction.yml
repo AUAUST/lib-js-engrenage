@@ -1,893 +1,1123 @@
+taps:
+  - {id: FR-26dc34, at: 2026-11-25T02:44:43Z, note: "agents/check.test.src.ts timed out under the #899 worktree gate"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
     tried: queried the registry for the package
     stopped: "`devEngines.packageManager` (pnpm) makes npm abort with EBADDEVENGINES; reran from the scratchpad"
+    created: 2026-11-23T00:00:00Z
   - id: FR-a4be31
     subject: zsh `/usr/bin/time -p node …`
     tried: timed CLI runs
     stopped: reported ~0.12s regardless of command; got real timings by spawning from `node -e` with `performance.now()`
+    created: 2026-11-23T00:00:00Z
   - id: FR-717f6c
     subject: PreToolUse Bash hook (`git commit --no-verify`)
     tried: committed a baseline in a scratch copy of another repository
     stopped: the hook denies it everywhere; used the git index as the baseline and diffed against it
+    created: 2026-11-23T00:00:00Z
   - id: FR-b6be75
     subject: eslint `-f unix`
     tried: listed repo-wide lint findings with the unix formatter
     stopped: not bundled in ESLint 9+, used `-f json -o <file>` instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-cf3cb3
     subject: "`git ls-files --others --ignored --directory`"
     tried: list ignored paths
     stopped: skips untracked directories and fails inside a nested ignored base; used `git status --porcelain --ignored=matching --untracked-files=normal` from the repository root
+    created: 2026-11-23T00:00:00Z
   - id: FR-fcf6f0
     subject: gh issue edit hook
     tried: piped the body from a scratch file, then a `.draft.md` file
     stopped: hook demands a heredoc and rejects a Decisions section in a Task; used a heredoc and folded decisions into Steps
+    created: 2026-11-23T00:00:00Z
   - id: FR-a16a0f
     subject: type check of tests
     tried: changed exported signatures, `pnpm test` reported "Type Errors no errors" while test files still used the old ones
     stopped: "`pnpm exec tsc -b` found them"
+    created: 2026-11-23T00:00:00Z
   - id: FR-ac7a34
     subject: Claude PreToolUse Bash hook
     tried: user asked to commit skipping the gate
     stopped: the hook denies gate-skipping commits, and any Bash command whose text names that flag; left the commit to the user
+    created: 2026-11-23T00:00:00Z
   - id: FR-8f9e76
     subject: "`engrenage eslint:fix`"
     tried: "`auaust/name-replacements` autofix renamed `ref`/`refs` to `reference`/`references`"
     stopped: collided into `references_` and shadowed names; renamed by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-4d7640
     subject: type check of tests
     tried: ran after changing a function signature its tests call
     stopped: reported "All good" while `tsc -b tsconfig.json` reported the test errors; used `tsc -b`
+    created: 2026-11-23T00:00:00Z
   - id: FR-8d5e3b
     subject: issue-planning skill §GitHub mechanics
     tried: posted `"value":["Improvement"]` for single-select Nature as the example shows
     stopped: GitHub answers 422 "must be a string option name"; posted a bare string
+    created: 2026-11-23T00:00:00Z
   - id: FR-7e3a82
     subject: "`git add` by path list"
     tried: staged paths from `git status --porcelain`
     stopped: a deletion already staged by `git rm` failed the pathspec; staged with `git add -A -- . ':!.ai/issues'`
+    created: 2026-11-23T00:00:00Z
   - id: FR-6a3cf9
     subject: vitest toHaveProperty
     tried: asserted a missing "." key with a string path
     stopped: the string parses as a property path and throws; passed ["."] instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-ae5788
     subject: engrenage planning CLI
     tried: pnpm exec engrenage in engrenage itself
     stopped: binary not linked; pnpm engrenage (package script) works
+    created: 2026-11-23T00:00:00Z
   - id: FR-9d27a7
     subject: engrenage planning CLI
     tried: pnpm exec engrenage planning issue claim in engrenage itself
     stopped: binary not linked; pnpm engrenage (package script) works
+    created: 2026-11-23T00:00:00Z
   - id: FR-0a4c35
     subject: "`git add` by path list"
     tried: staged by name a deletion already in the index
     stopped: '"pathspec did not match" aborted the whole add, and the next commit took the staged deletion; staged with `git add -A -- . '':(exclude)…''` or left staged deletions out of the list'
+    created: 2026-11-23T00:00:00Z
   - id: FR-4fce69
     subject: Agent `isolation
     tried: '"worktree"`: dispatched workers expecting a worktree at `HEAD`'
     stopped: each branch started at `6b1506b8`, an older commit; workers checked out the briefed commit detached
+    created: 2026-11-23T00:00:00Z
   - id: FR-b94da7
     subject: Agent tool
     tried: dispatched a `.claude/agents` file written mid-session
     stopped: not loaded until restart; probed with `claude -p --agents` instead.
+    created: 2026-11-23T00:00:00Z
   - id: FR-393637
     subject: claude -p
     tried: passed the prompt after `--allowedTools Agent`
     stopped: the variadic flag swallowed it; piped the prompt on stdin.
+    created: 2026-11-23T00:00:00Z
   - id: FR-4b15d5
     subject: pnpm
     tried: sandboxed package-manager bootstrap stalled on registry access
     stopped: ran authorized pnpm commands with network access.
+    created: 2026-11-23T00:00:00Z
   - id: FR-1eb8aa
     subject: npm in the repository
     tried: inspected a formatter from the repository
     stopped: devEngines requires pnpm; packed from /private/tmp.
+    created: 2026-11-23T00:00:00Z
   - id: FR-1c3dbc
     subject: repository lookup
     tried: guessed config and plugin paths
     stopped: read the file inventory and installed package sources instead.
+    created: 2026-11-23T00:00:00Z
   - id: FR-4215cb
     subject: listInfoMessages
     tried: listed a file's `info` lint messages
     stopped: no command exposes them; wrote a scratch script importing it
+    created: 2026-11-23T00:00:00Z
   - id: FR-07e004
     subject: scratchpad
     tried: wrote spec files under generic names in the session scratchpad
     stopped: a parallel worker shares the directory and overwrote them; moved to a per-issue subdirectory
+    created: 2026-11-23T00:00:00Z
   - id: FR-46b9ff
     subject: pnpm format:all
     tried: rewrapped JSDoc after a layout change
     stopped: generated eslint rule types stayed stale and codegen --check failed in the gate; reran pnpm support codegen
+    created: 2026-11-23T00:00:00Z
   - id: FR-1c37d9
     subject: engrenage planning issue check
     tried: kept a **Planning** section holding a settled decision
     stopped: check reads any Planning section as open and demands `Open questions`; moved the decision into Context
+    created: 2026-11-23T00:00:00Z
   - id: FR-b3fb14
     subject: CLAUDE_SCRATCH
     tried: redirected output to `$CLAUDE_SCRATCH`
     stopped: the variable is unset; used the scratchpad's absolute path
+    created: 2026-11-23T00:00:00Z
   - id: FR-ea1474
     subject: tsdown build with a scratch `outDir`
     tried: built experiment variants outside `dist`
     stopped: the build rewrote `package.json` paths to the scratch dir; restored with `git checkout`
+    created: 2026-11-23T00:00:00Z
   - id: FR-c52e24
     subject: rolldown plugin `getModuleInfo(...).isExternal`
     tried: marked modules importing packages in `buildEnd`
     stopped: externals are listed in `getModuleIds` without `isExternal`; tested for non-path ids instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-434fc2
     subject: gh run view --log-failed
     tried: fetched logs of the latest run
     stopped: returned empty/404 (repo renamed); got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
+    created: 2026-11-23T00:00:00Z
   - id: FR-261f9e
     subject: "`engrenage planning issue create --repo`"
     tried: draft an issue for a client repository
     stopped: only repositories in the planning sheet are registered; kept the client report in chat
+    created: 2026-11-23T00:00:00Z
   - id: FR-5d4b9d
     subject: "`prettier --experimental-cli`"
     tried: checked the repository with engrenage's config
     stopped: silently dropped object plugins (options cross a worker boundary), 357 false reports; emulated with worker threads in a scratch script
+    created: 2026-11-23T00:00:00Z
   - id: FR-35653a
     subject: BSD sed
     tried: subagent edited files with GNU `sed -i`
     stopped: macOS needs `-i ''`; retried
+    created: 2026-11-23T00:00:00Z
   - id: FR-935835
     subject: deny rule on .env*
     tried: "moving and reading the Interscript theme .env/.env.example for #581"
     stopped: blocked even outside the repo; left the move to the user
+    created: 2026-11-23T00:00:00Z
   - id: FR-a47f0f
     subject: engrenage planning issue create
     tried: passed `report` as the type
     stopped: it takes `resource`; the material is a field
+    created: 2026-11-23T00:00:00Z
   - id: FR-e73d9e
     subject: changesets rule
     tried: wrote a changeset through a Bash heredoc
     stopped: the rule is path-scoped to `.changeset/**`, so it never loaded; found its summary style only when reading the rule later
+    created: 2026-11-23T00:00:00Z
   - id: FR-8ce36f
     subject: "`syncAgentFiles` tests"
     tried: expected a package `@reference` block filled in a temporary project
     stopped: package specifiers stay unresolved there without a warning; asserted the marker only
+    created: 2026-11-23T00:00:00Z
   - id: FR-380adf
     subject: commit gate vitest
     tried: ENOTEMPTY rmdir node_modules/.vitest-cache at startup right after a lockfile change
     stopped: retrying the commit passed
+    created: 2026-11-23T00:00:00Z
   - id: FR-cd3099
     subject: "`engrenage planning issue publish`"
     tried: published drafts while another session had uncommitted `src` edits
     stopped: the source-run CLI failed loading extensions; published from a temporary `HEAD` worktree holding copies of the drafts
+    created: 2026-11-23T00:00:00Z
   - id: FR-48c61d
     subject: git index lock
     tried: commit right after `git add` in one call
     stopped: transient `.git/index.lock` from the editor's git polling; retried alone
+    created: 2026-11-23T00:00:00Z
   - id: FR-be324c
     subject: gh issue edit hook
     tried: "`--body-file $S/…` with a variable path in a compound command"
     stopped: hook rejects variable paths and the whole command; edited the file in one call, published with a literal path in another
+    created: 2026-11-23T00:00:00Z
   - id: FR-34cbae
     subject: PreToolUse Bash hook
     tried: zsh `${=files}` word splitting in a lint command
     stopped: the hook's shell parser rejects it as an invalid parameter name; wrote the list to a file and passed it through `xargs`
+    created: 2026-11-23T00:00:00Z
   - id: FR-6ea522
     subject: unicorn/no-incorrect-template-string-interpolation
     tried: git revision `${revision}^{commit}` in a template
     stopped: flagged `^{commit}` as a missed interpolation; moved `^{commit}` into a constant
+    created: 2026-11-23T00:00:00Z
   - id: FR-79f9c3
     subject: claude -p
     tried: expected the agent's frontmatter `Stop` hook to fire
     stopped: it fires only for subagents; probed the payloads in a scratch repository
+    created: 2026-11-23T00:00:00Z
   - id: FR-747484
     subject: "`engrenage sync` after moving `data.exports`"
     tried: ran sync before the build
     stopped: sync reads fragments through the stale `package.json` exports, which only `pnpm engrenage tsdown` regenerates, and deleted every generated skill and agent file; restored them, built, synced again
+    created: 2026-11-23T00:00:00Z
   - id: FR-287d9a
     subject: "`$CLAUDE_PROJECT_DIR` in a worktree subagent's hooks"
     tried: no instruction or doc says which checkout it names
     stopped: logged from the worktree's `engrenage-hook` executable, which never ran, so the hook root is not the worktree
+    created: 2026-11-23T00:00:00Z
   - id: FR-b7c522
     subject: tool extension in temporary-project tests
     tried: symlinked `node_modules/eslint` alone
     stopped: '`resources.path` threw "absent from this project", the `installed` condition reads `package.json` dependencies; declared `eslint` in `devDependencies`'
+    created: 2026-11-23T00:00:00Z
   - id: FR-9af7f0
     subject: gh api graphql
     tried: read issues' project `complexity` field for dispatch effort
     stopped: token lacks `read:project`; dispatched at default effort
+    created: 2026-11-23T00:00:00Z
   - id: FR-dc4512
     subject: BSD sed
     tried: deleted lines matching `(true\|false)` with basic regex
     stopped: silently matched nothing; used `sed -E`
+    created: 2026-11-23T00:00:00Z
   - id: FR-88920e
     subject: "`execFileSync` tsc in temporary-project tests"
     tried: failure printed only "Command failed"
     stopped: logged `stdout` temporarily to see TS2688 (env tsconfigs need node types) and the unset `src.baseline` warning failing the stderr guard
+    created: 2026-11-23T00:00:00Z
   - id: FR-2ba307
     subject: git index lock
     tried: committed in the main checkout while a worktree debugger ran
     stopped: "`index.lock` existed; it was gone on retry"
+    created: 2026-11-23T00:00:00Z
   - id: FR-9b89a2
     subject: gh run view --log-failed
     tried: read failed job logs of a run
     stopped: printed nothing for whole runs and single jobs; got them with gh api repos/AUAUST/lib-js-engrenage/actions/jobs/<id>/logs
+    created: 2026-11-23T00:00:00Z
   - id: FR-0150bf
     subject: changeset version
     tried: reproduced the release step locally
     stopped: "@changesets/changelog-github needs GITHUB_TOKEN, and `pnpm exec` sets pnpm_config_verify_deps_before_run=false for children, hiding the failure; ran node bin.js directly with the default changelog in a scratch clone"
+    created: 2026-11-23T00:00:00Z
   - id: FR-7e612e
     subject: commit gate codegen --check
     tried: prettier layout change left data/apis declarations stale
     stopped: reran pnpm support codegen
+    created: 2026-11-23T00:00:00Z
   - id: FR-307e64
     subject: Write tool on instruction sources
     tried: writing `data/metalbrain/shared/analysis.md` as a subagent
     stopped: harness refused it as a report file; wrote it through a shell heredoc
+    created: 2026-11-23T00:00:00Z
   - id: FR-a5d46d
     subject: "`@shared-file` marker"
     tried: indented inside a list item
     stopped: sync left it unrendered and installed no copy; moved it to a paragraph at column 0
+    created: 2026-11-23T00:00:00Z
   - id: FR-69f56d
     subject: sync table-cells check
     tried: two-row report table in a skill
     stopped: failed on cells over 25 words, a limit no instruction states; moved the rows into a list
+    created: 2026-11-23T00:00:00Z
   - id: FR-91eed3
     subject: commit gate
     tried: committing retired-rule change
     stopped: pre-existing failing agent tests blocked it; left uncommitted
+    created: 2026-11-23T00:00:00Z
   - id: FR-35033d
     subject: commit gate budgets
     tried: staging the backlog file
     stopped: pre-existing over-budget entries 12 and 15 fail the gate
+    created: 2026-11-23T00:00:00Z
   - id: FR-f751e2
     subject: pnpm verifyDepsBeforeRun
     tried: running vitest after a concurrent release run in the checkout
     stopped: '"workspace structure has changed"; ran `pnpm install --offline --frozen-lockfile`'
+    created: 2026-11-23T00:00:00Z
   - id: FR-551898
     subject: "`git checkout <rev> -- <paths>`"
     tried: reverting a committed file
     stopped: the working file kept the committed content while the index took the old one; rewrote it from `git show <rev>:<path>`
+    created: 2026-11-23T00:00:00Z
   - id: FR-746d41
     subject: "`git commit --no-verify` in a scratch clone"
     tried: built merge-reproduction commits
     stopped: the PreToolUse hook refused it anyway; dropped the full merge reproduction
+    created: 2026-11-23T00:00:00Z
   - id: FR-a95e52
     subject: "`pnpm engrenage planning issue create`"
     tried: ran it on a fresh session on `main`
     stopped: "`ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace structure changed since install; ran `pnpm install --offline`"
+    created: 2026-11-23T00:00:00Z
   - id: FR-d6173f
     subject: BSD `ls <dir> -R`
     tried: listed a tree with the flag after the path
     stopped: macOS ls reads `-R` as a file; used `find` or flag-first
+    created: 2026-11-23T00:00:00Z
   - id: FR-c8cabd
     subject: "`pnpm engrenage planning issue publish`"
     tried: published three drafts
     stopped: exited 1 though each printed `published` and the drafts and `Drafting` locks were gone; checked GitHub by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-d50344
     subject: planning issue check
     tried: tasks for a shaper, goal and **Planning** only
     stopped: '`check` requires **Steps** and **Tests** and refuses a "settle **Planning**" step; wrote only the known steps'
+    created: 2026-11-23T00:00:00Z
   - id: FR-75b400
     subject: "`pnpm engrenage vitest`"
     tried: a source type error under `--typecheck`
     stopped: summary printed "Type Errors no errors" beside two unhandled TypeCheckErrors; read the errors section
+    created: 2026-11-23T00:00:00Z
   - id: FR-80d076
     subject: "`eslint --print-config`"
     tried: listing the effective rule set
     stopped: needs `--flag unstable_native_nodejs_ts_config` for `eslint.config.ts`, which no instruction names; took it from `eslintFlags` in `src/tools/eslint/constants.ts`
+    created: 2026-11-23T00:00:00Z
   - id: FR-c56f62
     subject: worker dispatch hook
     tried: dispatched a published leaf (#733) while its parent plan (#732) was claimed with open **Questions**
     stopped: refused on the ancestor's Questions and `Drafting` blocker; no instruction says a leaf waits on its plan's questions
+    created: 2026-11-23T00:00:00Z
   - id: FR-808580
     subject: planning skill › Ordering
     tried: shaping a tree so a leaf dispatches while its plan has open **Questions**
     stopped: "no instruction says which ancestor sections and Blockers the dispatch hook checks (direct parent: all; above it: all but **Questions**, **Planning** and `Open questions`); read `checkIssueReadiness.ts` to learn it"
+    created: 2026-11-23T00:00:00Z
   - id: FR-017ca5
     subject: "`pnpm engrenage planning walk 732`"
     tried: walking the tree
     stopped: unknown command; the subcommand is `walk check <n>`
+    created: 2026-11-23T00:00:00Z
   - id: FR-3c5f43
     subject: published issue complexity
     tried: "needed #749's complexity for its dispatch effort after `planning issue publish`"
     stopped: publish deletes the drafts and `gh issue view` omits issue fields; dispatched at medium
+    created: 2026-11-23T00:00:00Z
   - id: FR-4f1bf0
     subject: grep is ugrep
     tried: "`grep -o` with `.{0,1800}` context on a minified binary dump"
     stopped: ugrep rejects it as exceeding complexity limits; used `tr` to split and plain `grep -n`
+    created: 2026-11-23T00:00:00Z
   - id: FR-514394
     subject: "`git reset --hard HEAD`"
     tried: redo a `cherry-pick -n`
     stopped: auto mode classifier denied it as destructive though only the picked changes were uncommitted; reverse-applied the second commit's diff with `git apply -R --index`
+    created: 2026-11-23T00:00:00Z
   - id: FR-355742
     subject: commit gate vitest
     tried: bin tests (`sync`, `pnpm`) timed out at 5000ms while a worker ran its gate in parallel
     stopped: each passed alone; retried the commit
+    created: 2026-11-23T00:00:00Z
   - id: FR-798059
     subject: commit-msg hook
     tried: 77-character subject rejected
     stopped: no git rule states the 72-character limit; shortened the subject
+    created: 2026-11-23T00:00:00Z
   - id: FR-01c2a4
     subject: "issue #733 placement of `rolePresetEntry`"
     tried: moved it private into `extension.ts` as the issue mapped
     stopped: "`roles/extension/extension-imports` allows static imports only from the domain's `constants.ts`; kept it there"
+    created: 2026-11-23T00:00:00Z
   - id: FR-4c1c11
     subject: engrenage-hook claude PreToolUse
     tried: "dispatching workers for #768 and #769"
     stopped: GET issues/<n>/issue-field-values returned 404, hook checks skipped; dispatched with effort set by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-581733
     subject: Claude Code worktree isolation
     tried: "`cd` plus a git command, several `git mv` in a loop, `git -C .`"
     stopped: refused as unverifiable; ran each git command alone with an absolute `-C`
+    created: 2026-11-23T00:00:00Z
   - id: FR-f4ef83
     subject: "`pnpm engrenage gate --worktree`"
     tried: first run reformatted the generated, moved `NamespaceInput.ts` despite `.prettierignore` listing its new path, then failed `codegen --check`
     stopped: regenerated it; second run passed
+    created: 2026-11-23T00:00:00Z
   - id: FR-b7d5f2
     subject: commit gate vitest
     tried: "committing #768 while a worker ran its gate"
     stopped: "`tests/scripts/codegen/config.test.src.ts` timed out at 5000ms; passed alone, retried the commit"
+    created: 2026-11-23T00:00:00Z
   - id: FR-fff36f
     subject: Claude Code worktree isolation
     tried: a heredoc and a loop whose text named `github` or `git`
     stopped: refused as unverifiable; edited files through the edit tools and ran commands one by one
+    created: 2026-11-23T00:00:00Z
   - id: FR-382525
     subject: "`planning issue check`"
     tried: passed a new draft as `#{new-<slug>}`
     stopped: '"no draft at" error; bare `new-<slug>` works'
+    created: 2026-11-23T00:00:00Z
   - id: FR-78c028
     subject: "`engrenage agents stats`"
     tried: needed live usage of running subagents and the quota window
     stopped: stats cover stopped runs of one session only; parsed transcripts under `~/.claude/projects` by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-60d84e
     subject: WebFetch on the Anthropic pricing page
     tried: asked for 3 model rows
     stopped: 54 kB output spilled to a file; grepped the spill
+    created: 2026-11-23T00:00:00Z
   - id: FR-aaccd4
     subject: Claude transcript format
     tried: needed effort, thinking, compaction and resume fields for issue design
     stopped: undocumented; inspected `~/.claude/projects` jsonl by hand with jq
+    created: 2026-11-23T00:00:00Z
   - id: FR-a3b79b
     subject: WebFetch on the Claude Code hooks reference
     tried: needed subagent payload and stop-lever fields
     stopped: 295k-character page answered in three offset calls, the last spilled to a file; grepped the spill
+    created: 2026-11-23T00:00:00Z
   - id: FR-b66914
     subject: Claude transcript format
     tried: needed a subagent's transcript path inside PreToolUse
     stopped: payload carries only the main `transcript_path`; confirmed `<session>/subagents/agent-<id>.jsonl` on disk
+    created: 2026-11-23T00:00:00Z
   - id: FR-35f4b4
     subject: WebFetch on the Anthropic Messages API reference
     tried: needed the response Usage schema
     stopped: 1.3M-character page, the first 100k characters held only the request side; did not page on, took usage fields from the prompt-caching, fast-mode and compaction pages
+    created: 2026-11-23T00:00:00Z
   - id: FR-c6825b
     subject: WebFetch on code.claude.com docs
     tried: fetched long pages
     stopped: truncated at 100k chars, needed offset re-fetches; PreCompact subagent behaviour not documented
+    created: 2026-11-23T00:00:00Z
   - id: FR-d371aa
     subject: Claude Code worktree isolation
     tried: sed edit chained with a gate run whose text named git
     stopped: refused as unverifiable; edited through the edit tool, ran the gate alone
+    created: 2026-11-23T00:00:00Z
   - id: FR-7e15df
     subject: Claude Code worktree isolation
     tried: a heredoc writing source files and a chained command naming git
     stopped: refused as unverifiable; wrote files through the edit tools and split the commands
+    created: 2026-11-23T00:00:00Z
   - id: FR-3c900f
     subject: "`pnpm engrenage` after sync adds a `bin` entry"
     tried: ran typecheck
     stopped: "`ERR_PNPM_VERIFY_DEPS_BEFORE_RUN`, workspace bins changed since install; ran `pnpm install --offline`"
+    created: 2026-11-23T00:00:00Z
   - id: FR-a2a7a4
     subject: "`engrenage sync` after changing `data.exports`"
     tried: added an export and synced
     stopped: sync left `package.json` exports stale, so self-referencing the new subpath failed; ran `pnpm engrenage tsdown`
+    created: 2026-11-23T00:00:00Z
   - id: FR-aeae01
     subject: gh api graphql
     tried: "read #772/#773 `Complexity` field before dispatch"
     stopped: token lacks `read:project`; read it from a claimed draft's manifest instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-760dde
     subject: Bash cd into an agent worktree
     tried: "`cd <worktree> && git diff` moved the session cwd there; removing the worktree broke the next command"
     stopped: use `git -C` with absolute paths
+    created: 2026-11-23T00:00:00Z
   - id: FR-936b49
     subject: Claude Code worktree isolation
     tried: "`prettier --check` over a `git diff --name-only` substitution"
     stopped: refused as naming git; listed the files by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-2d8374
     subject: Claude Code worktree isolation
     tried: heredocs writing scratch and bin files, naming no git
     stopped: refused as unverifiable; wrote each file through the write tool
+    created: 2026-11-23T00:00:00Z
   - id: FR-ff08d8
     subject: instruction review
     tried: the user requests behind past `brain:` commits
     stopped: no record keeps them; parsed session transcripts under `~/.claude/projects` by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-2bbbbc
     subject: pnpm engrenage gate --worktree
     tried: ran it in the shared main checkout
     stopped: another editor replaced `isFiniteNumber` mid-run, breaking hooks and the gate; waited for the tree to settle and committed only my paths
+    created: 2026-11-23T00:00:00Z
   - id: FR-f9f656
     subject: gh issue edit hook
     tried: '`--body-file "$TMPDIR/…"` with a variable path'
     stopped: hook rejects it; piped a heredoc into `--body-file -`
+    created: 2026-11-23T00:00:00Z
   - id: FR-457d6f
     subject: Agent dispatch hook
     tried: "`Issue: #779` brief line"
     stopped: "refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line"
+    created: 2026-11-23T00:00:00Z
   - id: FR-2c107a
     subject: Agent dispatch hook
     tried: debugger briefed `Issue:` on a Task (#788)
     stopped: refused, a debugger takes only a Problem; briefed the bug without an `Issue:` line
+    created: 2026-11-23T00:00:00Z
   - id: FR-0588de
     subject: Agent dispatch hook
     tried: "worker on #789 while its blocker #788 stayed open for a pending hand check"
     stopped: refused; ran the check first with a probe gatherer
+    created: 2026-11-23T00:00:00Z
   - id: FR-302f10
     subject: metalbrain budget hook by hand
     tried: passed the subagent transcript as `transcript_path`
     stopped: the hook derives the subagent path from the main transcript, doubling it; no instruction states the payload shape
+    created: 2026-11-23T00:00:00Z
   - id: FR-15b342
     subject: worktree-isolated Bash
     tried: "`echo $?; git status; git diff` in one call"
     stopped: refused as too complex; ran git status alone
+    created: 2026-11-23T00:00:00Z
   - id: FR-5136ff
     subject: Bash cwd after `cd` into an agent worktree
     tried: the session moved its primary directory there; removing that worktree failed the next command
     stopped: reran from the main checkout with `git -C`
+    created: 2026-11-23T00:00:00Z
   - id: FR-5f2960
     subject: "`pnpm engrenage planning issue check`"
     tried: crashed on a missing module while another session moved `src/project/structure` to `src/batiment` in the same checkout
     stopped: left the draft unchecked and unpublished
+    created: 2026-11-23T00:00:00Z
   - id: FR-4bec8f
     subject: Bash safety check
     tried: zsh `${(f)…}` loop with `git mv` in one command
     stopped: refused as unresolvable removal; moved files with plain `mv` from a bash script file
+    created: 2026-11-23T00:00:00Z
   - id: FR-ba7d58
     subject: "`pnpm engrenage planning issue publish`"
     tried: closing a detached issue as duplicate with a lead line before `## Context`
     stopped: refused as a header line without ancestors; moved the line into **Context**
+    created: 2026-11-23T00:00:00Z
   - id: FR-f8b6a2
     subject: "`pnpm engrenage planning issue publish`"
     tried: moving closed segments to a new parent plan
     stopped: refused until every leaf under them was claimed, their ancestor chain changing; claimed 14 closed leaves and republished, past the 120s Bash timeout
+    created: 2026-11-23T00:00:00Z
   - id: FR-4ef823
     subject: worktree isolation
     tried: compound command chaining tests and git status
     stopped: refused as git too complex; split into separate calls
+    created: 2026-11-23T00:00:00Z
   - id: FR-c1e418
     subject: Claude Code worktree isolation
     tried: a shell function running several sed reads, naming no git
     stopped: refused as too complex; ran plain sed reads per directory
+    created: 2026-11-23T00:00:00Z
   - id: FR-36cce7
     subject: "`pnpm engrenage sync` before `pnpm run support codegen schemas`"
     tried: a new `metadataSchemas` entry
     stopped: sync failed on the missing schema file; ran codegen first, then sync
+    created: 2026-11-23T00:00:00Z
   - id: FR-55247e
     subject: worktree isolation
     tried: python heredoc editing files, naming `git` as a string
     stopped: refused as git too complex; edited through the edit tools
+    created: 2026-11-23T00:00:00Z
   - id: FR-e10b9b
     subject: "`pnpm engrenage gate --worktree`"
     tried: "`tests/scripts/codegen/config.test.src.ts` hit its 5s timeout under the gate load, twice in four runs, and passed alone"
     stopped: reran the gate
+    created: 2026-11-23T00:00:00Z
   - id: FR-94f374
     subject: Claude Code worktree isolation
     tried: a python heredoc editing files, after two that ran
     stopped: refused as unverifiable on the third; used the edit tools
+    created: 2026-11-23T00:00:00Z
   - id: FR-99c609
     subject: "`declare` `optional"
     tried: "true`: issue spec gave it for a leaf option"
     stopped: "`true` only fits `declareObject`, crashed with `in` on a boolean; used `optional: { value: undefined }`"
+    created: 2026-11-23T00:00:00Z
   - id: FR-e3d7af
     subject: tsc with file arguments
     tried: "`pnpm exec tsc --noEmit a.ts b.ts` in the repo"
     stopped: TS5112 refuses files beside a tsconfig; passed `--ignoreConfig`
+    created: 2026-11-23T00:00:00Z
   - id: FR-71d912
     subject: commit gate vitest
     tried: '`config.test.src.ts` "passes the check on the committed interface" timed out at 5000ms under parallel agent load'
     stopped: passed on retry
+    created: 2026-11-23T00:00:00Z
   - id: FR-303ced
     subject: consultant brief `leaf in flight (integrating)`
     tried: read the leaf's shapes from its worktree and stash
     stopped: the leaf had landed on main meanwhile; read main instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-8468ff
     subject: gh issue edit hook
     tried: "`--body-file $D/…` with a variable path at the end of a compound command"
     stopped: hook rejects the whole command, so the earlier steps never ran; prepared the file in one call, published with a literal path in another
+    created: 2026-11-23T00:00:00Z
   - id: FR-2ad8a7
     subject: commit gate verification
     tried: '"Files changed while the gate verified them" on `.ai/friction.md`'
     stopped: re-staged and retried, passed
+    created: 2026-11-23T00:00:00Z
   - id: FR-84532a
     subject: zsh `"$c:AGENTS.md"`
     tried: git show of a revision held in a variable
     stopped: zsh read `:A` as its absolute-path modifier and mangled the revision; wrote `"${c}:AGENTS.md"`
+    created: 2026-11-23T00:00:00Z
   - id: FR-e986f2
     subject: "`.ai/stats` transcripts"
     tried: matching run records to Claude transcripts
     stopped: 70 of 155 sessions live under other `~/.claude/projects/*` directories (repository moved from the Desktop path); globbed every project directory
+    created: 2026-11-23T00:00:00Z
   - id: FR-214c1d
     subject: Claude transcripts `*.jsonl`
     tried: counting Agent, SendMessage and SubagentHandback tool uses
     stopped: each block repeats across streamed lines, doubling counts; deduplicated by tool-use id
+    created: 2026-11-23T00:00:00Z
   - id: FR-fd5ad4
     subject: WebFetch on moved provider pages
     tried: fetched cognition.ai, docs.claude.com and cookbook.openai.com URLs
     stopped: each answered with a cross-host redirect, not followed; re-fetched the redirect URL
+    created: 2026-11-23T00:00:00Z
   - id: FR-43477a
     subject: WebFetch on an OpenAI PDF guide
     tried: needed the text of a 7 MB PDF
     stopped: returned raw binary, `pdftotext` not installed; took the guide's claims from search results instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-39fc69
     subject: WebFetch on platform.claude.com and code.claude.com guides
     tried: fetched long prompting and best-practice pages
     stopped: 51–77 kB output spilled to files; grepped headings and read sections with sed
+    created: 2026-11-23T00:00:00Z
   - id: FR-fe8a70
     subject: grep is ugrep
     tried: '`grep -o` with `[^"]\{0,160\}` context on a transcript JSONL'
     stopped: ugrep rejects it as exceeding complexity limits; used a Python regex scan instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-4370cc
     subject: Bash cat on long scratchpad reports
     tried: read two 40–49 kB Markdown reports
     stopped: output spilled to a file; re-read them with Read `allow_large`
+    created: 2026-11-23T00:00:00Z
   - id: FR-38d033
     subject: ls in `~/.claude/projects`
     tried: piped `ls -d */` to iterate project directories
     stopped: a directory name starting with `-` read as an option; used `find -maxdepth 2 -name` instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-63200a
     subject: ls in `~/.claude/projects`
     tried: piped `ls -d */` to find a session's project directory
     stopped: a `-`-prefixed directory name read as an option again; used `find -maxdepth 2 -name`
+    created: 2026-11-23T00:00:00Z
   - id: FR-65c1b8
     subject: Bash cat on long scratchpad reports
     tried: read a 45 kB synthesis with cat
     stopped: output spilled to a file twice; re-read it with Read
+    created: 2026-11-23T00:00:00Z
   - id: FR-67be20
     subject: Run records for budget-hook coverage
     tried: needed when `checkBudget` started to judge "0 budget stops"
     stopped: no record or doc dates the hook; took it from `git log` on `checkBudget.ts` (6331641f3, 2026-11-20 23:01)
+    created: 2026-11-23T00:00:00Z
   - id: FR-330193
     subject: engrenage gate backlog-sites
     tried: a `file:36-46` line range in a sites bullet
     stopped: refused, only `file:line` spans; listed each line
+    created: 2026-11-23T00:00:00Z
   - id: FR-1e6b24
     subject: engrenage gate --worktree in the main checkout
     tried: gated BL-ad6729 work
     stopped: failed on another session's uncommitted budget defaults (`budgets.test.src.ts`) and on a test failing at HEAD; checked each failure against my diff
+    created: 2026-11-23T00:00:00Z
   - id: FR-4d815e
     subject: Agent `isolation
     tried: '"worktree"`: dispatched a writer and a worker expecting a worktree at `HEAD`'
     stopped: branch started at `6ab2fc08`, an older commit; agents checked out the briefed `Base:` detached
+    created: 2026-11-23T00:00:00Z
   - id: FR-b62470
     subject: Agent dispatch hook
     tried: "`Issue: #809` brief line"
     stopped: "refused, wants `Issue: <owner>/<repo>#<n>`; rewrote the line"
+    created: 2026-11-23T00:00:00Z
   - id: FR-7f3b3e
     subject: Agent dispatch hook
     tried: "worker resuming a brief-only pass on #809 (a Resource with open **Questions**)"
     stopped: refused the `Issue:` line; dispatched as a brief without it, no instruction says a brief may cite a non-leaf issue
+    created: 2026-11-23T00:00:00Z
   - id: FR-c89877
     subject: Agent dispatch hook
     tried: "worker briefed `Issue: AUAUST/lib-js-engrenage#809` for one decision of a Resource report"
     stopped: refused, not a ready Task or Problem; dispatched on a plain brief without Issue line
+    created: 2026-11-23T00:00:00Z
   - id: FR-93f7d9
     subject: Claude Code worktree isolation
     tried: a heredoc python edit chained with `cd ../..` and a sync and git status
     stopped: refused as unverifiable; ran the edit and the sync as separate commands
+    created: 2026-11-23T00:00:00Z
   - id: FR-ae3b8d
     subject: "`engrenage sync agents`"
     tried: regenerating a deleted `.claude/agents/<name>.md`
     stopped: sync reports it conflicting and never recreates it; reran `engrenage agents skills add <skill>`
+    created: 2026-11-23T00:00:00Z
   - id: FR-9faa0a
     subject: Claude Code worktree isolation
     tried: a grep whose pattern held the word `complete`, and a vitest call on a path through `tools/github`
     stopped: refused as running a string through `complete` or naming git; split the grep from git commands and filtered vitest by `issues/drafts/`
+    created: 2026-11-23T00:00:00Z
   - id: FR-5506a5
     subject: metalbrain budget hook
     tried: "brief ended a prose line with `Budget: standard.`"
     stopped: "the hook reads only a whole `Budget: <level>` line and silently fell back to scoped (80000), forcing a budget stop mid-triage; put the line alone, no period"
+    created: 2026-11-23T00:00:00Z
   - id: FR-d386b8
     subject: engrenage sync, skill frontmatter
     tried: description with a colon
     stopped: YAML parse failure; rephrased without colon
+    created: 2026-11-23T00:00:00Z
   - id: FR-34cbb7
     subject: Bash safety check
     tried: zsh `${(f)…}` loop with `cat` only, no removal
     stopped: refused as unresolvable removal; reran as plain listing commands
+    created: 2026-11-23T00:00:00Z
   - id: FR-0dd55e
     subject: commit gate verification
     tried: commit while another session edited `.ai/scratchpad.md`
     stopped: gate refused "files changed while the gate verified them"; retried
+    created: 2026-11-23T00:00:00Z
   - id: FR-4bb0f0
     subject: "`pnpm engrenage sync` backlog-sites"
     tried: another session's uncommitted `BL-4d7278` sites bullet lacked a line number
     stopped: sync and gate failed; added `:64`
+    created: 2026-11-23T00:00:00Z
   - id: FR-08da5c
     subject: "`pnpm engrenage gate --worktree` verification"
     tried: another session edited `.ai/backlog/agents.md` mid-run
     stopped: refused "files changed while the gate verified them"; reran
+    created: 2026-11-23T00:00:00Z
   - id: FR-1b7d61
     subject: writer dispatch
     tried: "one `standard` brief bundling about 14 #809 items"
     stopped: budget stop at 121k; committed its work and dispatched a second writer for the rest
+    created: 2026-11-23T00:00:00Z
   - id: FR-c53453
     subject: BSD sed `0,/re/` range
     tried: used the GNU-only first-match address
     stopped: no-op on macOS; replaced with a plain substitution
+    created: 2026-11-23T00:00:00Z
   - id: FR-33d22a
     subject: walking budget stop
     tried: handover commit of a leaf whose remaining work is what the gate checks (#813 backlog data, lint)
     stopped: commit gate refuses it; skill forbids resuming the stopped agent, asked the user
+    created: 2026-11-23T00:00:00Z
   - id: FR-820544
     subject: commit gate in a shared checkout
     tried: "committed the #813 ID change while a #814 worker removed Codex"
     stopped: config load failed (`agents.preferred lists codex`), tests too; verified in a temporary worktree, left the commit undone
+    created: 2026-11-23T00:00:00Z
   - id: FR-df500e
     subject: walking budget stop
     tried: "#814 worker also stopped at the standard ceiling with only checks, changeset and a dependency removal left"
     stopped: user had the walker finish it; second near-done stop in one walk
+    created: 2026-11-23T00:00:00Z
   - id: FR-80a02f
     subject: walking parallel dispatch
     tried: "ran a writer and a second worker beside the #814 worker at K=1"
     stopped: shared checkout broke config load and hooks for all, all three hit the rate limit together; user restored K=1
+    created: 2026-11-23T00:00:00Z
   - id: FR-93cf02
     subject: commit gate vitest
     tried: ENOTEMPTY rmdir node_modules/.vitest-cache right after `pnpm install --offline`, twice
     stopped: retrying the commit passed
+    created: 2026-11-23T00:00:00Z
   - id: FR-858fcd
     subject: engrenage-hook claude
     tried: "config invalid while #814 removed Codex mid-change"
     stopped: 'every hook reported "did not run", checks off for the rest of #814'
+    created: 2026-11-23T00:00:00Z
   - id: FR-094a36
     subject: "`pnpm engrenage planning issue publish`"
     tried: published three leaves with **Provides** lines
     stopped: refused as naming no Model section, `check` passing; published again with the plan draft in the set
+    created: 2026-11-23T00:00:00Z
   - id: FR-69f49e
     subject: word-caps check
     tried: "adding 5 words to the Environment section for #815"
     stopped: every role sat at its exact cap, so sync failed for 20 roles; cut 5 words elsewhere in the section instead of asking for a raise
+    created: 2026-11-23T00:00:00Z
   - id: FR-9f6326
     subject: planning issue create
     tried: debugger write-up under a brief keeping `.ai/issues/` untouched
     stopped: drafts live only there; left the issue to the caller
+    created: 2026-11-23T00:00:00Z
   - id: FR-0ecfaf
     subject: auto mode classifier
     tried: "`gh issue comment` posting scratchpad notes the user did not name"
     stopped: denied; relied on git history instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-0f0938
     subject: "`pnpm engrenage typecheck` after renaming entries"
     tried: ran it before `pnpm build`
     stopped: tests project failed with 83 circular-type errors while `package.json` exports still named the old entries; `pnpm build` rewrote them and typecheck passed
+    created: 2026-11-23T00:00:00Z
   - id: FR-fc42e3
     subject: writer subagent loaded AGENTS.md
     tried: auditing data/metalbrain against it
     stopped: the context copy predated 4e29dca7 (no smallest-step line, old Precedence); grepped the file on disk
+    created: 2026-11-23T00:00:00Z
   - id: FR-3aa07f
     subject: Write tool on instruction sources
     tried: rewriting `sections/analysis.md` as a subagent
     stopped: harness refused .md writes as report files; used Edit and scripted replacements
+    created: 2026-11-23T00:00:00Z
   - id: FR-bd5834
     subject: fragment-files check
     tried: named a renamed state file not yet existing in an instruction
     stopped: sync failed; kept the current path
+    created: 2026-11-23T00:00:00Z
   - id: FR-457bf2
     subject: word-caps check
     tried: raising caps per instruction-writing step 7
     stopped: auto mode denied editing `.engrenage/word-caps.json`; dropped the growth instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-3ed26a
     subject: commit gate backlog sync
     tried: splitting one backlog file across two commits
     stopped: gate checks staged backlog sites against the working tree; moved one site line to the other commit
+    created: 2026-11-23T00:00:00Z
   - id: FR-c7247f
     subject: "`agents stats` stale thoroughness state"
     tried: smoke-testing `metalbrain agents stats`
     stopped: a pre-`opened`/`scanned` `.thoroughness.json` in `.ai/stats` fails the whole report; left it, covered by backlog BL-9300ba
+    created: 2026-11-23T00:00:00Z
   - id: FR-d2c52d
     subject: defineLazyCommand parse literals
     tried: returned `["name"]` for a literal-typed action parameter
     stopped: widened to string[], no overload matched; annotated parse's return type
+    created: 2026-11-23T00:00:00Z
   - id: FR-33ea97
     subject: metalbrain hooks run from source
     tried: moving `metalbrain/runtimes` modules mid-task
     stopped: every PreToolUse guard reported itself off until the imports settled; finished the move, no workaround
+    created: 2026-11-23T00:00:00Z
   - id: FR-95792c
     subject: engrenage typecheck silent pass
     tried: ran it after moving modules
     stopped: printed nothing, exit 0, while tests held missing imports; `pnpm exec tsc -b --force` showed them
+    created: 2026-11-23T00:00:00Z
   - id: FR-61409f
     subject: hook graph import scan
     tried: '`executable.test.src.ts` read `from "` inside a string literal of `runtimes/constants.ts` as an import'
     stopped: moved the new constants above `formerCodexFiles`
+    created: 2026-11-23T00:00:00Z
   - id: FR-b12e2e
     subject: log migration line shape
     tried: synced to migrate the Markdown logs
     stopped: one line lacked the em dash separator, blocking the whole migration; added it by hand
+    created: 2026-11-23T00:00:00Z
   - id: FR-1e5e65
     subject: fragment-files check on log paths
     tried: named the .yml log paths in the git rule
     stopped: sync fails on a project file absent until a log has entries; named the logs instead
+    created: 2026-11-23T00:00:00Z
   - id: FR-6524a7
     subject: sub_issues api cross-repo numbers
     tried: claimed tree from gh sub_issues numbers
     stopped: "engrenage #65 claimed for interscript #65; released, claimed interscript.65"
+    created: 2026-11-23T00:00:00Z
   - id: FR-4aeb36
     subject: publish of superseded Steps leaves
     tried: publish parents dropping Steps leaves closed as duplicate
     stopped: check refuses Steps leaves, parents need them in set; kept attached, closed via gh api
+    created: 2026-11-23T00:00:00Z
   - id: FR-9af4a9
     subject: "PreToolUse Bash hook: zsh `=` word"
     tried: echo ====== as a separator
     stopped: hook refused `=` command-path expansion; used a quoted separator
+    created: 2026-11-23T00:00:00Z
   - id: FR-44fbfc
     subject: publish refuses unchanged Steps leaves
     tried: publishing every claimed issue, leaves kept as claimed
     stopped: check rejects Steps bodies; deleted their drafts and ran release
+    created: 2026-11-23T00:00:00Z
   - id: FR-c5f03d
     subject: zsh equals expansion hook
     tried: echo of a ==== separator
     stopped: hook refused; dropped the separator
+    created: 2026-11-23T00:00:00Z
   - id: FR-ec2dd2
     subject: publish reparenting a Steps leaf
     tried: "dissolve #726, move #729 under #675"
     stopped: "publish needs #729 claimed, refuses claimed Steps leaf; kept #726 open until sweep"
+    created: 2026-11-23T00:00:00Z
   - id: FR-63987a
     subject: "worker dispatch hook: plan Planning"
     tried: "dispatching #861 with #732's Planning holding done batches"
     stopped: "hook refused on ancestor Planning; drafted #732 without it"
+    created: 2026-11-23T00:00:00Z
   - id: FR-7df18d
     subject: eslint:fix destructuring default
     tried: map(([, name = ""]) => name)
     stopped: fixer rewrote it to a fallback the same rule rejects; used filter(isString)
+    created: 2026-11-23T00:00:00Z
   - id: FR-bdddad
     subject: "commit gate: codegen config test 5s timeout"
     tried: "committing #862 twice"
     stopped: timed out under gate load, passed alone in 2.5s; retried
+    created: 2026-11-23T00:00:00Z
   - id: FR-622863
     subject: zsh leading = word
     tried: echo ====== as separator
     stopped: hook refused; used quoted separator
+    created: 2026-11-23T00:00:00Z
   - id: FR-e3ec6b
     subject: "#842 leaf exceeds standard thoroughness"
     tried: "implementing #842 after mapping readers"
     stopped: warning reached before first edit, second dispatch; stopped with a decided file-by-file plan
+    created: 2026-11-23T00:00:00Z
   - id: FR-3d5fae
     subject: codegen config on moved generated file
     tried: pnpm support codegen config after moving NamespaceInput.ts
     stopped: formatted it until sync rewrote .prettierignore; synced, restored, regenerated
+    created: 2026-11-23T00:00:00Z
   - id: FR-e77c57
     subject: BSD sed -E word boundary
     tried: renamed identifiers with sed -E and \b
     stopped: BSD sed silently matched nothing; reran without \b after checking no longer names contain them
+    created: 2026-11-23T00:00:00Z
   - id: FR-675ee6
     subject: dispatch brief Issue line format
     tried: "Issue: #n, then slug plus title"
     stopped: hook wants bare owner/repo#n line
+    created: 2026-11-23T00:00:00Z
   - id: FR-628695
     subject: "`pnpm metalbrain planning issue publish`: sub-issues under a leaf at GitHub's 7-layer depth"
     tried: "split #873 into two sub-issues"
     stopped: GitHub refused the link after publish created and edited issues; re-claimed, made them siblings, closed one as duplicate
+    created: 2026-11-24T00:00:00Z
   - id: FR-48098e
     subject: "`pnpm metalbrain planning issue publish`: republish after a partial publish"
     tried: publishing the reshaped drafts
     stopped: refused as body changed on GitHub since claim by the partial write; moved drafts aside, released, re-claimed, restored
+    created: 2026-11-24T00:00:00Z
   - id: FR-f33c64
     subject: codegen config test timeout
     tried: worktree gate
     stopped: 5s timeout under gate load; rerun passed
+    created: 2026-11-24T00:00:00Z
   - id: FR-d12ce3
     subject: tsconfig sync in temp project
     tried: runCommand sync tsconfig
     stopped: base.json unresolvable; set typescript.tsconfig.extends false
+    created: 2026-11-24T00:00:00Z
   - id: FR-48bc5a
     subject: gh issue view hook
     tried: gh issue view of a sibling issue
     stopped: hook points to the .ai/issues copy; read it instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-5c7e1d
     subject: extension-imports lint rule
     tried: dynamic import of a peer domain index in extension load
     stopped: rule allows own domain only; re-exported name via own constants
+    created: 2026-11-24T00:00:00Z
   - id: FR-521317
     subject: Interscript source not checked out
     tried: local search under Developer
     stopped: read files through gh api contents
+    created: 2026-11-24T00:00:00Z
   - id: FR-0a067e
     subject: zsh = word expansion
     tried: echo ===== separator
     stopped: hook refused; quoted it
+    created: 2026-11-24T00:00:00Z
   - id: FR-232635
     subject: gh issue view of locally cached issue
     tried: batched gh issue view including a claimed issue
     stopped: hook refused whole command; read .ai/issues copy instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-98cf1c
     subject: planning check audience
     tried: check on a debugger-routed Problem draft
     stopped: fails with no audience option; publish skips it, so published anyway
+    created: 2026-11-24T00:00:00Z
   - id: FR-fec53a
     subject: hook blocks gh issue view
     tried: fetching issue states with gh
     stopped: copy in .ai/issues; read drafts instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-f1367a
     subject: zsh equals-word expansion
     tried: echo ==== separator
     stopped: hook refused; used ---- instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-d63d57
     subject: publish reparent closed children
     tried: dropping a closed segment's parent
     stopped: publish wanted its closed Steps children converted; kept the segment in its parent
+    created: 2026-11-24T00:00:00Z
   - id: FR-62d9d8
     subject: publish leaf resplit
     tried: resplit on parents only
     stopped: each reparented leaf needs its own resplit; added them
+    created: 2026-11-24T00:00:00Z
   - id: FR-416537
     subject: "`planning issue check` Provides lines"
     tried: "Provides naming plan #732 Model headings in an unclaimed-plan tree"
     stopped: check lists no Model headings without the plan draft; dropped Provides
+    created: 2026-11-24T00:00:00Z
   - id: FR-973c6a
     subject: import-x no-extraneous skips unresolved imports
     tried: lint an undeclared package import in a fixture
     stopped: no report until a node_modules link resolved it; added the link
+    created: 2026-11-24T00:00:00Z
   - id: FR-20c216
     subject: zsh = word expansion
     tried: echo ====== as separator
     stopped: bash hook refused; quoted the separator
+    created: 2026-11-24T00:00:00Z
   - id: FR-253f10
     subject: worktree gate test timeout under load
     tried: pnpm engrenage gate --worktree
     stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
+    created: 2026-11-24T00:00:00Z
   - id: FR-6bf8ff
     subject: barrel loaded before sync
     tried: typecheck after adding a util export
     stopped: barrel lacked the export; added the line by hand, then sync
+    created: 2026-11-24T00:00:00Z
   - id: FR-2da325
     subject: workspace barrel fixture
     tried: role dirs in a workspace to get a generated barrel
     stopped: no default role gives index barrels; tested stale removal instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-0178a3
     subject: cd into linked checkout
     tried: ran sync in Interscript via cd
     stopped: session primary dir moved, Interscript hooks fired on stale config; cd back
+    created: 2026-11-24T00:00:00Z
   - id: FR-8a97a9
     subject: linked package executables
     tried: pnpm engrenage sync in a linked consumer
     stopped: bin shims ran the installed copy; fixed link
+    created: 2026-11-24T00:00:00Z
   - id: FR-4c0f5e
     subject: engrenage link --restore
     tried: restore link after offline install
     stopped: config import needed linked checkout; fixed action
+    created: 2026-11-24T00:00:00Z
   - id: FR-540820
     subject: pnpm verifyDepsBeforeRun
     tried: sync after lockfile-only install
     stopped: deps check refused; ran offline install
+    created: 2026-11-24T00:00:00Z
   - id: FR-47b069
     subject: zsh unmatched grep include
     tried: grep -r --include=*.ts in Interscript
     stopped: zsh aborted on the unquoted glob; listed directories instead
+    created: 2026-11-24T00:00:00Z
   - id: FR-fa6b22
     subject: zsh equals expansion hook
     tried: echo === as a separator
     stopped: hook refused the = word; quoted the separator
+    created: 2026-11-24T00:00:00Z
   - id: FR-07fd88
     subject: linked engrenage timing
     tried: profiling Interscript config resolution
     stopped: no timing hook; used inspector script from scratchpad
+    created: 2026-11-24T00:00:00Z
   - id: FR-ff01d4
     subject: barrel loaded before sync
     tried: engrenage sync after adding a filesystem util export
     stopped: sync failed on the missing barrel export; added the line by hand, then sync
+    created: 2026-11-24T00:00:00Z
   - id: FR-d833fa
     subject: "PreToolUse Bash hook: zsh `=word` expansion"
     tried: echoed a ===== separator between two cats
     stopped: hook rejects a word starting with =; read the files separately
+    created: 2026-11-24T00:00:00Z
   - id: FR-9476d4
     subject: eslint suppressions shift error counts
     tried: comparing reported import-specifiers counts before and after a fix
     stopped: suppression counts absorbed 9 unchanged errors; counted suppressedMessages too
+    created: 2026-11-24T00:00:00Z
   - id: FR-dc82e8
     subject: vitest console output in tests
     tried: console.log timings from a test
     stopped: silenced, then stderr guard failed the test; wrote stderr with --silent=false and removed it
+    created: 2026-11-25T00:00:00Z
   - id: FR-dc7efb
     subject: git index.lock during commit
     tried: commit through the gate
     stopped: lock held briefly by another git process; retry passed
+    created: 2026-11-25T00:00:00Z
   - id: FR-2f06c8
     subject: flaky worktree gate test
     tried: ran gate --worktree
     stopped: one test failed once; rerun passed
+    created: 2026-11-25T02:34:24Z
   - id: FR-26dc34
     subject: flaky worktree gate test
     tried: ran gate --worktree twice
     stopped: agents check/rules tests time out at 5s under load; pass alone
+    created: 2026-11-25T02:34:24Z
+  - id: FR-5dc7d7
+    subject: "auto mode classifier: git checkout of synced files"
+    tried: reset sync-rewritten record files with git checkout
+    stopped: denied as destructive; rewrote them with a scratchpad script
+    created: 2026-11-25T02:44:55Z

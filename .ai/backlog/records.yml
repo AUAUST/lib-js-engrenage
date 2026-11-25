@@ -4,3 +4,12 @@ entries:
     title: Chaining several invocations of `add`, `update`, `move`, `search` or `merge` in one metalbrain call is deferred
     why: "User-deferred from #888 Plural commands: one invocation per call for now"
     want: A `--next` separator with all-or-nothing validation, failures reported by position, and `--opt=--next` to pass the literal
+    created: 2026-11-25T02:34:24Z
+  - id: BL-511109
+    title: A tap whose entry another branch closed fails the record check after a union merge, and no command removes it
+    sites:
+      - src/metalbrain/records/operations/findRecordViolations.ts:67
+      - bin/metalbrain/tap.ts:5
+    want: A merge leaves no orphan tap, or a command removes orphan taps
+    done: An orphan tap after a union merge no longer needs a hand edit
+    created: 2026-11-25T02:49:45Z

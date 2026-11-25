@@ -31,4 +31,8 @@ export interface RecordKind<WordCap extends string = string> {
    * The fields searches rank entries on; a kind without it is not searchable.
    */
   readonly search?: RecordSearch;
+  /**
+   * Whether entries take taps, each recording when the entry mattered again.
+   */
+  readonly taps?: boolean;
 }

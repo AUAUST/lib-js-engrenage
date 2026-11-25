@@ -1,3 +1,3 @@
 {
-  "purpose": "Every record kind together: the kind an entry ID or a kind name names, how each kind's entries print on one line, the namespace check across kinds and the rename of former IDs."
+  "purpose": "Every record kind together: the kind an entry ID or a kind name names, how each kind's entries print on one line, the namespace check across kinds, the rename of former IDs and the creation times they backfill."
 }

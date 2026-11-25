@@ -4,6 +4,7 @@ import { readRecordDocument } from "#metalbrain/records/operations/readRecordDoc
 import { writeRecordDocument } from "#metalbrain/records/operations/writeRecordDocument";
 import { writeRecordIndex } from "#metalbrain/records/operations/writeRecordIndex";
 import { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
+import { formatRecordTime } from "#metalbrain/records/utils/formatRecordTime";
 import { toRecordValue } from "#metalbrain/records/utils/toRecordValue";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";
@@ -11,9 +12,9 @@ import type { RecordValues } from "#metalbrain/records/types/RecordValues";
 
 /**
  * Stages a new entry at the end of the `kind` group file `<group>.yml`, leaving
- * its other entries as they are, then regenerates the kind's index: an ID of
- * the kind no entry holds, then each field in the kind's order, a detail of
- * one item written as text.
+ * its other entries as they are, then regenerates the kind's index: an ID of the
+ * kind no entry holds, the current time as its `created`, then each field in the
+ * kind's order, a detail of one item written as text.
  *
  * @returns The new entry's ID.
  * @throws {Error} When the group is missing or unparsable, or the entry or its
@@ -36,6 +37,7 @@ export async function addRecord<Kind extends RecordKind>(
 
   appendRecordEntry(kind, record, {
     id,
+    created: formatRecordTime(new Date()),
     ...Object.fromEntries(
       Object.entries(kind.fields).map(([key, { type }]) => {
         return [key, toRecordValue(type, fields[key])];

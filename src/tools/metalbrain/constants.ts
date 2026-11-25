@@ -64,7 +64,7 @@ export {
 } from "#metalbrain/instructions/constants";
 
 // @debt re-exported only so the extension may import it under roles/extension/extension-imports
-export { agentLogFiles } from "#metalbrain/logs/constants";
+export { recordFiles } from "#metalbrain/kinds/constants";
 
 // @debt re-exported only so the extension may import it under roles/extension/extension-imports
 export { statsDirectory } from "#metalbrain/runtimes/constants";

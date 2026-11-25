@@ -6,8 +6,9 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
 /**
  * Each departure of the group files of `kind` from its schema: an unparsable
- * file, a group key or value of the wrong form, an ID another entry holds, and
- * each departure `findRecordEntryViolations` finds in an entry.
+ * file, a group key or value of the wrong form, an ID another entry holds, a tap
+ * naming no entry of its group, and each departure `findRecordEntryViolations`
+ * finds in an entry.
  */
 export async function findRecordViolations(
   filesystem: Filesystem,
@@ -57,6 +58,14 @@ export async function findRecordViolations(
           wordCap,
         )),
       );
+    }
+
+    const ids = new Set(group.entries.map(({ loose }) => loose.id));
+
+    for (const { id, at } of group.taps) {
+      if (!ids.has(id)) {
+        violations.push(`${file}: the tap of ${at} names no entry ${id} here`);
+      }
     }
   }
 

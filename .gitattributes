@@ -37,5 +37,10 @@
 /pnpm-lock.yaml linguist-generated -diff
 /.ai/friction.md merge=union
 /.ai/discarded.md merge=union
+/.ai/backlog/*.yml merge=union
+/.ai/friction.yml merge=union
+/.ai/discarded.yml merge=union
+/.ai/pending.yml merge=union
+/.ai/missing.yml merge=union
 
 # @end

@@ -13,12 +13,14 @@ entries:
       - src/tools/prettier/utils/printLines.ts:5
     why: parentheses, assignment layout, union groups, conditional indent and JSX mode are read from the shapes of Prettier's private printers; `fits` reads an undocumented `ifBreak`; sub-docs are printed to text to measure widths.
     done: "needs planning: keep the copies, use an own printer, or drop the layout plugin."
+    created: 2026-11-22T00:00:00Z
   - id: BL-284047
     title: Assignment layout measures candidates from the wrong column when a statement does not start its line
     sites:
       - src/tools/prettier/utils/printAssignment.ts:103
     why: the text before the left side is read from the syntax tree, so `for (const … =` or a leading comment shifts candidates 2 and 4.
     want: the column taken from the printed line.
+    created: 2026-11-22T00:00:00Z
   - id: BL-5b7c4e
     title: Layout plugin approximates comment attachment and range offsets
     sites:
@@ -26,12 +28,14 @@ entries:
       - src/tools/prettier/plugins/createLayoutPlugin.ts:203
     why: the ignored node is the outermost one starting after the comment; the whole text is reformatted before `rangeStart`, `rangeEnd` and `cursorOffset` are read, so they point into the unformatted text.
     want: Prettier's own attachment; offsets mapped through the reformat.
+    created: 2026-11-22T00:00:00Z
   - id: BL-ee4529
     title: Layout parser fails on Flow files
     sites:
       - src/tools/prettier/plugins/createLayoutPlugin.ts:216
     why: the `typescript` parser cannot read Flow syntax the `babel` parser accepts.
     want: the parser chosen by the file's syntax.
+    created: 2026-11-22T00:00:00Z
   - id: BL-44f27a
     title: Convention traversals walk metadata keys and cache across mutations
     sites:
@@ -39,6 +43,7 @@ entries:
       - src/tools/prettier/utils/collectStatementPairs.ts:29
     why: the visitor walks every enumerable key but known metadata instead of the parser's visitor keys; cached statement pairs hold only while no convention mutates the program between traversals.
     want: the parser's visitor keys; pairs recomputed or invalidated on mutation.
+    created: 2026-11-22T00:00:00Z
   - id: BL-4cc1e2
     title: Plugins named by a string bypass the layout and printer plugins
     sites:
@@ -46,6 +51,7 @@ entries:
       - src/tools/prettier/ports/PrettierPlugin.ts:19
     why: "Prettier loads string or URL plugins itself, so the layout plugin cannot wrap their parsers nor the printer chain their `estree` printer, and both shadow them; a contributed plugin's `options` is dropped without `files`, silently. #573 changes the plugin contract the other way (specifiers for the parallel CLI)."
     done: "needs planning with #573: wrap named plugins or change the plugin contract; an error for dropped `options`."
+    created: 2026-11-22T00:00:00Z
   - id: BL-ee8db6
     title: Formatting scope is every changed file and only changed files
     sites:
@@ -53,6 +59,7 @@ entries:
       - src/tools/prettier/operations/fixWithPrettier.ts:8
     why: a Prettier config or plugin change leaves unchanged files for CI to reject; changed files outside the declared environments, engrenage's own included, are formatted too.
     done: "needs planning: formatting scope."
+    created: 2026-11-22T00:00:00Z
   - id: BL-941f37
     title: "`canonicalJsdoc` approximates Markdown by line prefixes"
     sites:
@@ -60,6 +67,7 @@ entries:
       - src/tools/prettier/conventions/layout/canonicalJsdoc.ts:164
     why: "list items, verbatim lines and paragraphs are told apart by prefixes, approximating indented code and lazy continuations; a code body is recovered by slicing the tag text, holding only while `splitDocTag` returns it as the unmodified tail. Related: `BL-75bbcd`."
     want: a Markdown parser; `splitDocTag` returning the body's offset.
+    created: 2026-11-22T00:00:00Z
   - id: BL-48dd80
     title: Ignore files repeat Git's hash-comment syntax
     sites:
@@ -67,3 +75,4 @@ entries:
       - src/tools/prettier/extension.ts:109
     why: "`tools/git` declares the same syntax as `hashBlocks`."
     want: one shared ignore-file syntax.
+    created: 2026-11-22T00:00:00Z

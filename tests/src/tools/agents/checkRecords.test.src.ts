@@ -31,14 +31,14 @@ describe("checkRecords", () => {
   test("passes an entry matching the backlog file schema", async () => {
     await expect(
       check(
-        "  - id: BL-3fa9c1\n    title: A claim\n    sites: [src/a.ts:3]\n    why: reason\n    want: [one, two]\n",
+        "  - id: BL-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n    sites: [src/a.ts:3]\n    why: reason\n    want: [one, two]\n",
       ),
     ).resolves.toBeUndefined();
   });
 
   test("names both the excess details and the unknown key", async () => {
     const failure = check(
-      "  - id: BL-3fa9c1\n    title: A claim\n    why: reason\n    want: [one, two]\n    done: end\n    note: extra\n",
+      "  - id: BL-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n    why: reason\n    want: [one, two]\n    done: end\n    note: extra\n",
     );
 
     await expect(failure).rejects.toThrow(
@@ -50,13 +50,17 @@ describe("checkRecords", () => {
 
   test("fails on an ID of another kind's namespace", async () => {
     await expect(
-      check("  - id: FR-3fa9c1\n    title: A claim\n"),
+      check(
+        "  - id: FR-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n",
+      ),
     ).rejects.toThrow("expected an ID as BL-xxxxxx, 6 hex characters");
   });
 
   test("fails on a site naming no file", async () => {
     await expect(
-      check("  - id: BL-3fa9c1\n    title: A claim\n    sites: [src/b.ts:3]\n"),
+      check(
+        "  - id: BL-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n    sites: [src/b.ts:3]\n",
+      ),
     ).rejects.toThrow("site `src/b.ts` names no file");
   });
 
@@ -64,7 +68,9 @@ describe("checkRecords", () => {
     const words = Array.from({ length: 120 }, () => "word").join(" ");
 
     await expect(
-      check(`  - id: BL-3fa9c1\n    title: A claim\n    why: ${words}\n`),
+      check(
+        `  - id: BL-3fa9c1\n    created: 2026-11-20T00:00:00Z\n    title: A claim\n    why: ${words}\n`,
+      ),
     ).rejects.toThrow("words, over the backlogEntry word cap of 100");
   });
 });

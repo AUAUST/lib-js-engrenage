@@ -1,3 +1,3 @@
 {
-  "purpose": "Add, find, update, close and count the entries of one log record kind; registered once per kind, under the kind's name."
+  "purpose": "Add, find, update, tap, close and count the entries of one log record kind; registered once per kind, under the kind's name."
 }

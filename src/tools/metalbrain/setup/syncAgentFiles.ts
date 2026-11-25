@@ -31,7 +31,10 @@ import {
   type GeneratedFrontmatter,
   type InstructionRegistry,
 } from "#metalbrain/instructions/index";
-import { renameLegacyRecordIds } from "#metalbrain/kinds/index";
+import {
+  backfillRecordCreation,
+  renameLegacyRecordIds,
+} from "#metalbrain/kinds/index";
 import { migrateAgentLogs } from "#metalbrain/logs/index";
 import { writeRecordIndex } from "#metalbrain/records/index";
 import { skillFileName } from "#metalbrain/runtimes/constants";
@@ -261,6 +264,8 @@ export async function syncAgentFiles(loaded: LoadedConfig) {
     config.filesystem,
     config.agents.instructionFiles,
   );
+
+  await backfillRecordCreation(config.filesystem);
 
   const hasBacklog = (
     (await config.filesystem.exists(backlogRecordIndex)) ||

@@ -5,12 +5,15 @@ entries:
     why: "the table defined in plan #37 will belong in it."
     want: the table, generated from the environment definitions rather than copied by hand.
     done: the API is declared stable and the table is in the README.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b7926a
     title: The README lacks the list of supported tools.
     why: Vite, Vitest, tsdown, ESLint and Prettier.
     want: the list, kept in line with the entries engrenage actually provides.
     done: the API is declared stable and the list is in the README.
+    created: 2026-11-22T00:00:00Z
   - id: BL-25c0b4
     title: The README lacks the CLI reference.
     want: the reference, generated from the CLI command definitions rather than copied by hand.
     done: the API is declared stable and the reference is in the README.
+    created: 2026-11-22T00:00:00Z

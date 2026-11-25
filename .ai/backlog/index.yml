@@ -288,6 +288,7 @@ records:
   purpose: "Metalbrain agent records: the record kinds, their IDs and their commands."
   entries:
     - BL-fa8f87
+    - BL-511109
 spec-migration:
   purpose: "Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume."
   entries:

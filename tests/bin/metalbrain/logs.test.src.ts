@@ -37,11 +37,17 @@ function addFriction(subject: string) {
   );
 }
 
+const recordTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/u;
+
 describe("metalbrain friction", { timeout: binaryTimeout }, () => {
   test("add writes an entry with the kind's fields and prints its ID", async () => {
     const project = createProject();
 
+    const before = Math.floor(Date.now() / 1000) * 1000;
+
     const { messages } = await addFriction("git add");
+
+    const after = Date.now();
 
     const id = messages.at(-1)?.text ?? "";
 
@@ -51,12 +57,21 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
       entries: [
         {
           id,
+          created: expect.stringMatching(recordTime),
           subject: "git add",
           tried: "ran it",
           stopped: "it failed; reran",
         },
       ],
     });
+
+    const created = Date.parse(
+      parse(project.read(".ai/friction.yml")).entries[0].created,
+    );
+
+    expect(created).toBeGreaterThanOrEqual(before);
+
+    expect(created).toBeLessThanOrEqual(after);
   });
 
   test("stats flags a subject with three entries as recurring", async () => {
@@ -91,6 +106,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
       entries: [
         {
           id,
+          created: expect.stringMatching(recordTime),
           subject: "git add",
           tried: "ran it",
           stopped: "c",
@@ -101,13 +117,18 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     const { messages: shown } = await runCommand("friction", logs, "show", id);
 
     expect(shown.map(({ text }) => text)).toEqual([
-      `id: ${id}\nsubject: git add\ntried: ran it\nstopped: c`,
+      expect.stringMatching(
+        new RegExp(
+          `^id: ${id}\nsubject: git add\ntried: ran it\nstopped: c\ncreated: \\S+$`,
+          "u",
+        ),
+      ),
     ]);
   });
 
   test("close removes the entry, deleting the file with its last one", async () => {
     const project = createProject({
-      ".ai/pending.yml": "entries:\n  - id: PD-0a0a0a\n    subject: docs\n    what: write them\n    why: out of scope\n",
+      ".ai/pending.yml": "entries:\n  - id: PD-0a0a0a\n    created: 2026-11-20T00:00:00Z\n    subject: docs\n    what: write them\n    why: out of scope\n",
     });
 
     const { messages } = await runCommand("pending", logs, "list");
@@ -146,6 +167,7 @@ describe("metalbrain missing", { timeout: binaryTimeout }, () => {
       entries: [
         {
           id,
+          created: expect.stringMatching(recordTime),
           subject: "deep object merge",
           need: "merge config layers",
           instead: "local helper in src/x.ts",

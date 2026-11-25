@@ -5,6 +5,7 @@ entries:
     why: "the `files` field, derived by the sync `package` target, publishes the whole of `dist`, `data` and `src`; `.gitignore` already keeps such files (`.DS_Store`) out of the repository, so the risk is nearly nil: a low-priority improvement, not a bug."
     want: a decision on adding an `.npmignore` (or an equivalent mechanism) excluding stray files, and if so who owns it (engrenage's own repository only, or generated for consumers by the sync target).
     done: the safeguard is added or the decision not to is recorded; obsolete if the published `files` stop covering directories that can hold stray files.
+    created: 2026-11-22T00:00:00Z
   - id: BL-18817c
     title: The "No package.json found" guard repeats in five places
     sites:
@@ -14,15 +15,18 @@ entries:
       - src/tools/tsdown/operations/createTsdownConfig.ts:115
       - src/workflows/init/operations/createStepContext.ts:66
     want: the resolved config exposes a required package.json path.
+    created: 2026-11-22T00:00:00Z
   - id: BL-8bc97b
     title: Sync keeps bin entries of deleted commands
     sites:
       - src/workflows/sync/setup/syncPackageJson.ts:86
     why: "sync writes a `bin` field per command directory but never removes one whose directory is gone; #820 deleting `bin/engrenage-hook` left its entry pointing at a file the build no longer emits."
     want: sync removing `bin` entries no command directory produces.
+    created: 2026-11-22T00:00:00Z
   - id: BL-4aefd0
     title: "Sync keeps a stale `private: true` in a scope that gains the `published` trait, and a stale `publishConfig` in one that loses it"
     sites:
       - src/project/package/utils/createScopeFields.ts:11
     why: "Every workspace got `private: true` before #762, so a workspace enabling `published` cannot publish until edited by hand"
     want: Sync removes the field the other branch of the published trait writes, needing a removal primitive beside writePackageJsonValue
+    created: 2026-11-24T00:00:00Z

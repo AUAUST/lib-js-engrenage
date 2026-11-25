@@ -1,10 +1,10 @@
 import {
   agentLoaderEntry,
-  agentLogFiles,
   agentRuntimeEntry,
   agentsTarget,
   instructionEntry,
   markdownBlocks,
+  recordFiles,
   rulesDirectory,
   statsDirectory,
 } from "#tools/metalbrain/constants";
@@ -23,7 +23,7 @@ import type { File } from "#types/File";
 /**
  * Owns the `agents` config key, the `agents.runtimes`, `agents.instructions`,
  * `agents.fillers` and `agents.rules` slots, the `debt` line marker, the
- * instruction files, the agent logs, the generated rules, the agent stats
+ * instruction files, the agent record files, the generated rules, the agent stats
  * directory and the `reference` directive, through which the `blocks` target
  * fills the `@reference` blocks of instruction files, and syncs agent files.
  * Contributes the agent limits filler.
@@ -69,14 +69,15 @@ export default {
         },
       },
       "agents.logs": {
-        title: "Agent logs",
+        title: "Agent records",
         appendOnly: true,
+        formatted: false,
         async locate(config): Promise<FileLocation | undefined> {
           const { preferred } = await config.resolve("agents");
 
           return (preferred?.length ?? 0) === 0
             ? undefined
-            : { globs: agentLogFiles };
+            : { globs: recordFiles };
         },
       },
       "agents.generatedRules": {

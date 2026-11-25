@@ -10,6 +10,7 @@ entries:
       - src/tools/jscpd/extension.ts:28
     why: "staged mode reads the worktree, not the index; `eslint --fix` runs before `prettier --write`, so concise-arrow and line-budget checks miss Prettier's rewrites (adaff366 broke CI: `max-lines` 352/350 after Prettier wrapped a line); jscpd only warns; a stamped tree hides budget and step warnings; ESLint lints only changed files, so dependents' type-aware rules wait for `gate --all`. Dependents' type-aware lint: #284."
     want: each gap checked by the gate, or recorded as an accepted limit (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-0dfc57
     title: Process locks and gate state leave stale or double holders
     sites:
@@ -20,25 +21,30 @@ entries:
       - src/workflows/gate/operations/checkAgentStop.ts:33
     why: a waiter moving away a holder can leave two holders; a reused pid blocks waiters until timeout; a signal before the release listeners leaves the lock; a signal leaves the lock released while spawned tools write; the failing-tree marker hashes after the lock release.
     want: lock acquisition and release covering signals and pid reuse (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-b5eba9
     title: "`GateWarning` repeats `GateFailure`'s shape"
     sites:
       - src/workflows/gate/types/GateWarning.ts:1
     want: one gate entry type carrying its severity.
+    created: 2026-11-22T00:00:00Z
   - id: BL-9b78aa
     title: "`gate --worktree` in a shared checkout touches other sessions' work"
     why: "it fixes files other sessions changed, and its lint output interleaves runs from other worktrees (friction ×8; #615 › F25). #666 limits the stop gate to a session's files."
     want: "`gate --worktree` scoped like #666's stop gate; output kept per run."
+    created: 2026-11-22T00:00:00Z
   - id: BL-79f585
     title: The commit gate refuses the `snap` commit setting aside a leaf held for a failing gate
     why: "`walking.md` §Dispatching commits its rest on `worker/issue-<n>` or `debugger/issue-<n>`; bypasses are denied; stopping ends the autonomous walk."
     want: the gate exempting `snap` on `worker/*` and `debugger/*`; meanwhile, the skill leaving the rest uncommitted in a worktree on that branch, stashed there at K = 1.
     done: such a leaf reaches its branch without a gate bypass.
+    created: 2026-11-22T00:00:00Z
   - id: BL-4d0247
     title: No check warns when a commit changes shipped files without a changeset
     why: reviewers miss the Environment table's changeset row; the `gatherer` fragments shipped unlisted.
     want: where changesets are used, commit and worktree gates warn on changes to a published package's `files` adding no `.changeset/*.md`.
     done: the warning exists; review checks keep only what it leaves manual.
+    created: 2026-11-22T00:00:00Z
   - id: BL-06830b
     title: Gate test selection skips dependents and filters by substring
     sites:
@@ -46,18 +52,22 @@ entries:
       - src/tools/vitest/operations/runGateTests.ts:74
     why: "a file with a mirrored domain runs only its mirror's tests, so tests through dependents run only in CI; mirror directories reach Vitest as substring filters kept apart by a trailing `/`, mixed with test files as plain strings. Related: #286."
     want: exact directory matches; dependents' tests selected.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b1f577
     title: Message checks are listed in the gate
     sites:
       - src/workflows/gate/operations/runMessageGate.ts:81
     why: "gate steps are contributed by their domains; message checks are not. Related: #375."
     want: domains owning commit conventions contribute their message checks.
+    created: 2026-11-22T00:00:00Z
   - id: BL-467bf7
     title: The worktree gate formats a moved generated file `.prettierignore` lists
     why: "in #768, the first `pnpm engrenage gate --worktree` reformatted the moved `src/batiment/environments/types/NamespaceInput.ts`, failing `codegen --check`; regenerating it, the second run passed."
     want: the gate honoring the ignore file for renamed paths.
+    created: 2026-11-22T00:00:00Z
   - id: BL-33f7c7
     title: Closing a backlog entry a commit hint matched needs a later commit instead of amending the matched one
     why: "Once #900 lands, an agent accepting a commit hint closes the entry in its next commit, so the closing lands apart from the commit that resolved it"
     want: A command closing the hinted entries and amending them into the last commit, creating no new commit
     done: The commit hint names that command and accepting a hint leaves no separate closing commit
+    created: 2026-11-24T00:00:00Z

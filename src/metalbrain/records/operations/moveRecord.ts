@@ -4,13 +4,15 @@ import { removeRecordEntry } from "#metalbrain/records/operations/removeRecordEn
 import { writeRecordDocument } from "#metalbrain/records/operations/writeRecordDocument";
 import { writeRecordIndex } from "#metalbrain/records/operations/writeRecordIndex";
 import { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
+import { appendRecordTaps } from "#metalbrain/records/utils/appendRecordTaps";
+import { removeRecordTaps } from "#metalbrain/records/utils/removeRecordTaps";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { GroupedRecordKind } from "#metalbrain/records/types/GroupedRecordKind";
 
 /**
- * Stages the `kind` entry `id`, its ID kept, at the end of the group file
- * `<group>.yml`, then its removal from its current group as `closeRecord` does,
- * then regenerates the kind's index.
+ * Stages the `kind` entry `id`, its ID, `created` and taps kept, at the end
+ * of the group file `<group>.yml`, then its removal from its current group as
+ * `closeRecord` does, then regenerates the kind's index.
  *
  * @returns The entry's current ID and former group, and whether moving it
  * removed that group.
@@ -36,6 +38,8 @@ export async function moveRecord(
   const target = await readRecordDocument(filesystem, kind, group);
 
   appendRecordEntry(kind, target, found.entry);
+
+  appendRecordTaps(target, removeRecordTaps(found, found.id));
 
   await writeRecordDocument(filesystem, kind, target, {
     id: found.id,

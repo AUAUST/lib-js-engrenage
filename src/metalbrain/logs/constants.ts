@@ -31,6 +31,7 @@ export const friction = freeze({
       tried: 1,
     }),
   }),
+  taps: true,
 } as const) satisfies RecordKind;
 
 export const discarded = freeze({
@@ -53,6 +54,7 @@ export const discarded = freeze({
       reason: 1,
     }),
   }),
+  taps: true,
 } as const) satisfies RecordKind;
 
 export const pending = freeze({
@@ -103,6 +105,7 @@ export const missing = freeze({
       instead: 1,
     }),
   }),
+  taps: true,
 } as const) satisfies RecordKind;
 
 export const logKinds = freeze([

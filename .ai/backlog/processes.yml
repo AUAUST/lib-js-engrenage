@@ -10,6 +10,7 @@ entries:
       - src/project/tsconfig/operations/createTsconfig.ts:75
     why: Node has no promise-based module resolution; Prettier loads through `require`; the TypeScript config parser probes each `extends` level before the real parse.
     want: per site, an async alternative (`import()`, one async tsconfig read) or an accepted limit (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-77fd05
     title: Process and git failures lose or repeat output handling
     sites:
@@ -17,3 +18,4 @@ entries:
       - src/tools/git/operations/readCommit.ts:6
     why: the process error drops the stderr a caller captured; `readCommit` repeats `runGit`'s failure handling to accept a revision naming no commit.
     want: the error keeps the captured stderr; `runGit` taking the accepted exit statuses.
+    created: 2026-11-22T00:00:00Z

@@ -4,6 +4,7 @@ import { createRecordKindResolver } from "#metalbrain/kinds/index";
 import {
   findRecords,
   formatRecordRename,
+  listRecordTaps,
   orderRecordEntry,
 } from "#metalbrain/records/index";
 import { getRunContext } from "#workflows/cli/index";
@@ -33,7 +34,16 @@ export default async function (
       reporter.warn(rename);
     }
 
-    const entry = orderRecordEntry(kind, found.entry);
+    const taps = listRecordTaps(found, found.id);
+
+    const entry = {
+      ...orderRecordEntry(kind, found.entry),
+      ...(taps.length > 0 && {
+        taps: taps.map(({ at, note }) => {
+          return note === undefined ? at : `${at} ${note}`;
+        }),
+      }),
+    };
 
     // @debt a grouped kind's group prints as `category` under its kind's own command and `group` under `metalbrain show`, since a kind declares no name for its groups
     const printed = kindName === undefined

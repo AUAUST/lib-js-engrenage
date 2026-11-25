@@ -17,6 +17,7 @@ entries:
       - src/tools/eslint/conventions/stylistic/noUselessReturn.ts:21
     why: "rules typed against core ESTree nodes (`defineRoleRule` takes `Rule.RuleContext`), so TS fields are probed with `in` or through `{ type: string }` guards; listeners widened to `Rule.Node`; doc rules mark ESTree typing at each TS node (`documented.ts` ×7); a report node lacks `parent`, so it is found again by location; ESTree-to-TS map cast `as TsNode`/`as never`; `context as unknown as ImportContext`; the sections record asserted; config key `sections` is a leftover name."
     want: typed typescript-eslint listeners; a typed record mapper; the key renamed.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b2fa2e
     title: ESLint rules check less than they should
     sites:
@@ -30,6 +31,7 @@ entries:
       - src/tools/eslint/conventions/docs/thrownErrors.ts:6
     why: dynamic-import rule sees direct imports only; bare side-effect imports take the highest binding level (#315); the specifier check lives outside `project/structure`, and an unknown path may postdate the index; `bin` has no lint scope; the schema accepts unknown convention names; imports of files the index knows as `unclassified` get no `unclassifiedPath` report (#707 covers unknown files only); a re-export without `type` counts as a value; thrown-error prose detection is heuristic.
     want: rule walks the static graph; specifier check in `project/structure`, index refreshed on unknown paths; `bin` checked; unknown names rejected; unclassified files reported.
+    created: 2026-11-22T00:00:00Z
   - id: BL-7f85d8
     title: ESLint plugin and analysis hold on unchecked inputs
     sites:
@@ -42,6 +44,7 @@ entries:
       - src/tools/eslint/operations/loadEslintConfigs.ts:13
     why: "`analyzeImports` is keyed by the entity index alone; it forces the importer's extension on targets (`.json`, `.tsx` wrong); a disabled convention reading sections registers no rule; a boundary in another environment renders as `../src/…`; the fix hardcodes a two-space indent; the inverted-comparison fix leaves doubled parentheses; loaded configs are checked only as plain objects."
     want: inputs tied to one loaded config; target extensions from the target; disabled conventions reported; indent from the source.
+    created: 2026-11-22T00:00:00Z
   - id: BL-6ce2fc
     title: "`readonly-constants` forces schemas to `StandardSchemaV1`, erasing output types"
     sites:
@@ -57,21 +60,25 @@ entries:
       - src/workflows/gate/constants.ts:8
       - src/batiment/environments/constants.ts:7
     want: "a readonly-constants form keeping the schema's output type (planning: the rule is shared)."
+    created: 2026-11-22T00:00:00Z
   - id: BL-2e0823
     title: The naming rule splits words by hand
     sites:
       - src/tools/eslint/conventions/stylistic/naming.ts:22
     want: toolkit `splitWords`.
+    created: 2026-11-22T00:00:00Z
   - id: BL-ea6108
     title: "`projectService` spends ~5 s of a full lint matching files to tsconfigs"
     sites:
       - src/tools/eslint/utils/createTypeAwareLanguageOptions.ts:10
     why: TypeScript's `isMatchedByConfig` scans every solution reference's file names per opened file, quadratic in project size; per-environment `parserOptions.project` cut a full lint from 30.5 s to 23.9 s.
     want: per-environment `project` (against typescript-eslint's recommendation), or an upstream TypeScript fix (question).
+    created: 2026-11-22T00:00:00Z
   - id: BL-dae876
     title: "`auaust/documented` reports aliases whose signature states their whole contract"
     why: "#541's pass answered with filler restating the alias (`Directories`, `Files`, `Globs`, `PackageNames`, eslint `Config`, `Plugin`, `RuleModule`, vscode `Setting`), which its Decisions forbid."
     want: the rule skips plain aliases of a list or an upstream type, or the convention names the comment they take.
+    created: 2026-11-22T00:00:00Z
   - id: BL-761252
     title: Rules mirror upstream rule internals
     sites:
@@ -79,45 +86,53 @@ entries:
       - src/tools/eslint/conventions/stylistic/noReturnUndefined.ts:26
     why: one copies the upstream usage count to look through `NoInfer`; the other mirrors `unicorn/no-useless-undefined`'s skipped return types, so an upstream change reopens a gap or a double report.
     done: upstream fixes, or a decision to keep the copies.
+    created: 2026-11-22T00:00:00Z
   - id: BL-8d4cf7
     title: An option-bearing rule stays out of `typescriptRules`
     sites:
       - src/tools/eslint/operations/createRecommendedRules.ts:44
     why: "`Rule` types options as mutable tuples, which the constants role rejects. Related: `BL-6ce2fc`."
     want: the constants role accepts readonly tuples, or rule options typed readonly.
+    created: 2026-11-22T00:00:00Z
   - id: BL-1eadd2
     title: Tooling definer entries are memoized per process
     sites:
       - tooling/eslint/rules/definerEntries.ts:59
     why: "a long-lived ESLint, such as an editor server, keeps an entry's first reading after the config changes. Related: #57."
     want: memoized per lint run.
+    created: 2026-11-22T00:00:00Z
   - id: BL-27bff0
     title: "`metalbrain debt` loads every ESLint plugin to run one rule"
     sites:
       - src/tools/eslint/operations/listDebtMarkers.ts:24
     why: "a cold run takes seconds. Related: #554."
     want: only the debt-marker rule loaded.
+    created: 2026-11-22T00:00:00Z
   - id: BL-9702f1
     title: Extensions cannot attach lint rules to the role presets they contribute
     sites:
       - src/tools/eslint/config/schemas/optionsSchema.ts:50
     why: "#862 moved role rule loaders to defineEslintConfig's roleRules option, which only the user's ESLint config sets"
     want: an eslint.roleRules extension slot, shaped like eslint.conventions
+    created: 2026-11-23T00:00:00Z
   - id: BL-119303
     title: "Type-aware recommended rules and other `files.*` references reach no workspace file: the project-only `files` key lists the root scope's published, private and discovered files only"
     sites:
       - src/tools/eslint/operations/createScopeRules.ts:142
     why: "Left by #764, which lints each scope from its child resolver; workspace files never had these rules, and #881 only removes Interscript stand-ins"
     want: "Each scope's published, private and discovered files resolved per scope, so its block's references cover its own files (a #675 consumer)"
+    created: 2026-11-24T00:00:00Z
   - id: BL-58f13f
     title: "A lint convention contributed by an extension active in one workspace alone reaches no scope: convention categories load from the root config only"
     sites:
       - src/tools/eslint/operations/createEslintConfig.ts:51
     why: "#754 activates extensions per scope by when.preset; none of its contributions is a lint convention, so #881 needs no fix"
     want: Each scope's conventions loaded from its own child resolver's active extensions
+    created: 2026-11-24T00:00:00Z
   - id: BL-e557f3
     title: The ESLint config repeats every convention per scope, so ESLint matches thousands of file patterns per file
     sites:
       - src/tools/eslint/operations/createScopeRules.ts:95
     why: Interscript's config has 574 objects and 8,476 file patterns; config-array's getConfig takes ~2.7 s CPU of the 19 s whole-project lint, minimatch 1.2 s of it
     want: fewer objects per scope, such as one merged object per scope and file kind, or basePath instead of prefixed patterns
+    created: 2026-11-24T00:00:00Z

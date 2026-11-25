@@ -9,9 +9,9 @@ import type { RecordKind } from "#metalbrain/records/types/RecordKind";
 
 /**
  * Stages the `kind` entry `id` with each field `values` gives replaced, written
- * as `addRecord` writes it, and each `unset` field removed, its ID and other
- * fields kept as written, its keys in the kind's order, then regenerates
- * the kind's index.
+ * as `addRecord` writes it, and each `unset` field removed, its ID, `created`,
+ * taps and other fields kept as written, its keys in the kind's order, then
+ * regenerates the kind's index.
  *
  * @returns The entry's current ID.
  * @throws {Error} When the update changes nothing, `unset` names a field the

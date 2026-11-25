@@ -21,6 +21,8 @@ export { relocateRecordSites } from "#metalbrain/records/operations/relocateReco
 export { removeRecordEntry } from "#metalbrain/records/operations/removeRecordEntry";
 export { resolveRecordId } from "#metalbrain/records/operations/resolveRecordId";
 export { searchRecords } from "#metalbrain/records/operations/searchRecords";
+export { tapRecord } from "#metalbrain/records/operations/tapRecord";
+export { tapRecords } from "#metalbrain/records/operations/tapRecords";
 export { updateRecord } from "#metalbrain/records/operations/updateRecord";
 export { writeRecordDocument } from "#metalbrain/records/operations/writeRecordDocument";
 export { writeRecordIndex } from "#metalbrain/records/operations/writeRecordIndex";
@@ -42,23 +44,28 @@ export type * from "#metalbrain/records/types/RecordLocation";
 export type * from "#metalbrain/records/types/RecordQuery";
 export type * from "#metalbrain/records/types/RecordSearch";
 export type * from "#metalbrain/records/types/RecordSiteRelocation";
+export type * from "#metalbrain/records/types/RecordTap";
 export type * from "#metalbrain/records/types/RecordValues";
 export type * from "#metalbrain/records/types/WordCapFinding";
 // @end
 
 // @barrel utils
 export { appendRecordEntry } from "#metalbrain/records/utils/appendRecordEntry";
+export { appendRecordTaps } from "#metalbrain/records/utils/appendRecordTaps";
 export { findNamespaceViolations } from "#metalbrain/records/utils/findNamespaceViolations";
 export { formatRecordDocument } from "#metalbrain/records/utils/formatRecordDocument";
 export { formatRecordRename } from "#metalbrain/records/utils/formatRecordRename";
+export { formatRecordTime } from "#metalbrain/records/utils/formatRecordTime";
 export { formatSchemaIssues } from "#metalbrain/records/utils/formatSchemaIssues";
 export { formatWordCapFinding } from "#metalbrain/records/utils/formatWordCapFinding";
 export { isLegacyRecordId } from "#metalbrain/records/utils/isLegacyRecordId";
 export { isRecordId } from "#metalbrain/records/utils/isRecordId";
+export { listRecordTaps } from "#metalbrain/records/utils/listRecordTaps";
 export { orderRecordEntry } from "#metalbrain/records/utils/orderRecordEntry";
 export { parseRecordGroup } from "#metalbrain/records/utils/parseRecordGroup";
 export { parseRecordId } from "#metalbrain/records/utils/parseRecordId";
 export { pickRecordValues } from "#metalbrain/records/utils/pickRecordValues";
+export { removeRecordTaps } from "#metalbrain/records/utils/removeRecordTaps";
 export { resolveRecordFile } from "#metalbrain/records/utils/resolveRecordFile";
 export { sortRecordEntryNode } from "#metalbrain/records/utils/sortRecordEntryNode";
 export { throwViolations } from "#metalbrain/records/utils/throwViolations";

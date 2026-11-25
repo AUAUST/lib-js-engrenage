@@ -6,9 +6,11 @@ entries:
       - src/tools/lefthook/constants.ts:5
     why: in a monorepo sub-package it belongs at the git root.
     want: the git root, or a documented limit (planning).
+    created: 2026-11-22T00:00:00Z
   - id: BL-2c0fdf
     title: The Lefthook key is still named `local`
     sites:
       - src/tools/lefthook/constants.ts:10
     why: the command runs every `everyone` gate step.
     done: "needs planning: renaming makes sync remove the old key from existing `lefthook.yml` files."
+    created: 2026-11-22T00:00:00Z

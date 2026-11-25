@@ -7,15 +7,18 @@ entries:
       - src/tools/git/utils/readCommitMessage.ts:5
     why: the common directory is assumed to sit in the main worktree, false for submodules and separate git directories; comment lines are recognised by `#` though `core.commentChar` picks another.
     want: the main worktree from `git worktree list`; the comment character read from config.
+    created: 2026-11-22T00:00:00Z
   - id: BL-b5153e
     title: Agent worktree ignores sit in the editor group
     sites:
       - src/tools/git/constants.ts:60
     why: agent worktrees are not editor files.
     want: an agents group, or the agents domain contributing its own ignores.
+    created: 2026-11-22T00:00:00Z
   - id: BL-3f3917
     title: Vitest gets every git-ignored file as its own exclude glob
     sites:
       - src/tools/vitest/operations/createVitestConfig.ts:169
     why: "Interscript passes 2,154 globs: ~85 ms of picomatch per run, and a 70 KB exclude dump when no test file matches"
     want: a shorter list that keeps Git's semantics, tracked files and negations included
+    created: 2026-11-24T00:00:00Z

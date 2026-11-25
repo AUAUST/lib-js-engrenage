@@ -33,9 +33,9 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  (global 
 │  ├─ facts*  The manifest instructions render from: the config values agents need, word caps and output limit, and the sources of instruction fragments.
 │  ├─ instructions*{builtins}  The instruction registry of sections, rules and skills built-ins and extensions register, and the instruction files: parse them, resolve their references and render their fragments and generated frontmatter.
 │  │  └─ builtins  The built-in instruction entries: engrenage's own sections, rules, and skills with the agents they define.
-│  ├─ kinds  Every record kind together: the kind an entry ID or a kind name names, how each kind's entries print on one line, the namespace check across kinds and the rename of former IDs.
+│  ├─ kinds  Every record kind together: the kind an entry ID or a kind name names, how each kind's entries print on one line, the namespace check across kinds, the rename of former IDs and the creation times they backfill.
 │  ├─ logs  The friction, discarded, pending and missing record kinds, each one YAML file, and the migration of the legacy Markdown logs.
-│  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, schema and word-cap checks, ranked search, and the generated index.
+│  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, creation times, taps, schema and word-cap checks, ranked search, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
