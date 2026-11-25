@@ -24,9 +24,9 @@ const importer = "extensions/home/src/index.ts";
 
 const placeholder = "{dir}";
 
-function createConfig(roles = "[]") {
+function createConfig(roles = "[]", languages = "") {
   return `export default {
-  environments: { src: { execution: { globals: "node", syntax: 24 } } },
+  environments: { src: { ${languages}execution: { globals: "node", syntax: 24 } } },
   src: { roles: ${roles} },
   workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
 };
@@ -38,9 +38,10 @@ const config = createConfig();
 function createFiles(
   dependencies: Readonly<Record<string, string>>,
   roles?: string,
+  languages?: string,
 ) {
   return {
-    "engrenage.config.ts": createConfig(roles),
+    "engrenage.config.ts": createConfig(roles, languages),
     "package.json": JSON.stringify({
       name: rootName,
       type: "module",
@@ -72,14 +73,16 @@ async function createLinkedProject(
   dependencies: Readonly<Record<string, string>>,
   {
     roles,
+    languages,
     files = {},
   }: {
     roles?: string;
+    languages?: string;
     files?: Readonly<Record<string, string>>;
   } = {},
 ) {
   const project = createTemporaryProject({
-    ...createFiles(dependencies, roles),
+    ...createFiles(dependencies, roles, languages),
     ...files,
   });
 
@@ -148,6 +151,40 @@ describe("workspace imports by package name", () => {
 
     expect(exports).not.toHaveProperty("./b/utils/y");
   });
+
+  test.each([
+    [
+      "exports",
+      'languages: [{ name: "typescript", options: { tsx: "preact" } }], ',
+      true,
+    ],
+    ["leaves out", "", false],
+  ] as const)(
+    "sync %s a public .tsx module as the environment's TypeScript options do or do not add .tsx",
+    async (_name, languages, exported) => {
+      const project = await createLinkedProject(
+        {
+          [rootName]: "workspace:*",
+        },
+        {
+          roles: '[{ name: "components", accepts: ["*.tsx"] }]',
+          languages,
+          files: {
+            "src/ui/.domain.json": '{ "publicRoles": ["components"] }',
+            "src/ui/components/FileRouter.tsx": "export const FileRouter = 'router';\n",
+          },
+        },
+      );
+
+      const { exports } = JSON.parse(project.read("package.json"));
+
+      expect(exports).toMatchObject({ "./ui/index": "./src/ui/index.ts" });
+
+      expect(exports["./ui/components/FileRouter"]).toBe(
+        exported ? "./src/ui/components/FileRouter.tsx" : undefined,
+      );
+    },
+  );
 
   test("sync exports nothing from a root no workspace depends on", async () => {
     const project = await createLinkedProject({});
