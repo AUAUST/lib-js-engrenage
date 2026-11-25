@@ -200,7 +200,10 @@ export function mergeStructureMetadata({
         children: pick("children", existing?.children, fields.children),
         purpose: pick("purpose", existing?.purpose, fields.purpose),
         debt: pick("debt", existing?.debt, fields.debt),
-        roles: existing?.roles ?? freeze({ enable: freeze([]) }),
+        roles: (
+          pick("roles", existing?.roles, fields.roles) ??
+          freeze({ enable: freeze([]) })
+        ),
         source: existing?.source ?? "metadata",
       });
 

@@ -50,6 +50,7 @@ function createNamespaceMetadata(
     layers,
     relation,
     children,
+    roles,
   }: Omit<InferOutput<typeof namespaceMetadataSchema>, "$schema">,
   file: File,
 ): StructureMetadata {
@@ -63,6 +64,7 @@ function createNamespaceMetadata(
       layers: locate(layers, file),
       relation: locate(relation, file),
       children: locate(children, file),
+      roles: locate(roles, file),
       specifier: undefined,
       internals: undefined,
       reexport: undefined,
@@ -113,6 +115,7 @@ function parseFileMetadata(
       layers: undefined,
       relation: undefined,
       children: undefined,
+      roles: undefined,
       specifier: locate(specifier, file),
       internals: locate(internals, file),
       reexport: locate(reexport, file),

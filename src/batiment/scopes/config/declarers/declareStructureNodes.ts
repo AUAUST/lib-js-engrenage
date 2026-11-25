@@ -181,6 +181,17 @@ const nodes = freeze({
         ),
       }),
       ...namespaceFields,
+      roles: declareObject(
+        {
+          enable: declare(array(string()), {
+            description: "Roles of the environment to turn on for the whole subtree of the namespace, by name.",
+          }),
+        },
+        {
+          description: "Scoped roles the namespace enables. In a directory of a namespace spanning several, the only place that directory's roles are enabled.",
+          optional: true,
+        },
+      ),
     }),
     domain: declareObject({ $schema: schemaReferenceSchema, ...domainFields }),
   }),

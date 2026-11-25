@@ -14,6 +14,8 @@ export interface StructureMetadata {
     readonly layers: MetadataField<readonly string[]> | undefined;
     readonly relation: MetadataField<StructureRelation> | undefined;
     readonly children: MetadataField<"domains"> | undefined;
+    readonly roles:
+      MetadataField<{ readonly enable: readonly string[] }> | undefined;
     readonly specifier: MetadataField<string> | undefined;
     readonly internals: MetadataField<boolean> | undefined;
     readonly reexport:

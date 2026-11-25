@@ -326,18 +326,19 @@ describe("project map", () => {
             languages: [{ name: "typescript", options: { tsx: "preact" } }],
             execution: { syntax: "2026-10" },
           },
-          storefront: { preset: "src", dirs: ["storefront"] },
+          storefront: { preset: "src", dirs: ["storefront"], languages: ["javascript"] },
         },
         src: {
           dirs: ["src", "admin", "storefront"],
-          roles: ${renderCodeRoles(entry(), components())},
+          roles: ${JSON.stringify([entry(), components()])},
+          omitRoles: ["enums"],
           structure: { purpose: "The app.", layers: ["src", "*"], domains: { ui: { public: true } } },
         },
       };`,
       "src/.namespace.json": '{ "purpose": "The core." }',
       "src/core/index.ts": "",
       "src/core/components/Button.tsx": "",
-      "admin/.namespace.json": '{ "purpose": "The App Home UI." }',
+      "admin/.namespace.json": '{ "purpose": "The App Home UI.", "roles": { "enable": ["components"] } }',
       "admin/components/Panel.tsx": "",
       "admin/ui/index.ts": "",
       "admin/ui/entry.ts": "",
@@ -348,13 +349,17 @@ describe("project map", () => {
 
     const { src } = await config.resolve("structure");
 
-    const [core] = src!.root.children;
+    const [core, admin] = src!.root.children;
 
     const coreDomain = core?.children.find(({ name }) => name === "core");
 
     expect(
       coreDomain?.children.find(({ name }) => name === "components")?.kind,
     ).not.toBe("role");
+
+    expect(
+      admin?.children.find(({ name }) => name === "components")?.kind,
+    ).toBe("role");
 
     const overview = project.read(overviewFile);
 
@@ -373,6 +378,8 @@ describe("project map", () => {
     expect(row("src/  ")).toContain("The core.");
     expect(row("src/  ")).toContain("constants.ts");
     expect(row("src/  ")).not.toContain("components");
+    expect(row("admin/  ")).toContain("(global roles: components constants.ts");
+    expect(row("storefront/  ")).not.toContain("global roles");
   });
 
   test("renders each namespace's and domain's debt beside its purpose", async () => {

@@ -340,3 +340,8 @@ entries:
     why: "deferred from #939 for Interscript critical path"
     want: a config key shape setting a directory roles
     created: 2026-11-25T21:58:59Z
+  - id: BL-ef4bed
+    title: Same-named role directories in two directories of a namespace collide on their alias
+    why: "src/components beside admin/components fails: Alias #components/* declared twice"
+    want: role directories of each directory aliased apart, or a diagnostic naming both
+    created: 2026-11-25T22:21:26Z

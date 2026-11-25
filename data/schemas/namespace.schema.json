@@ -44,6 +44,21 @@
     "debt": {
       "type": "string",
       "description": "Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.\n@default none"
+    },
+    "roles": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Roles of the environment to turn on for the whole subtree of the namespace, by name."
+        }
+      },
+      "required": ["enable"],
+      "additionalProperties": false,
+      "description": "Scoped roles the namespace enables. In a directory of a namespace spanning several, the only place that directory's roles are enabled."
     }
   },
   "required": [],
