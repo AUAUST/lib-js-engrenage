@@ -179,6 +179,85 @@ describe("syncTsconfigFiles", () => {
     });
   });
 
+  test("removes a compilerOptions entry dropped from the config and reports it under --check", async () => {
+    const configured = (compilerOptions: Record<string, unknown>) => {
+      return {
+        environments: {
+          src: {
+            tsconfig: { compilerOptions },
+          },
+        },
+      };
+    };
+
+    const { project, config } = await createProject(
+      configured({ customFlag: true, jsx: "preserve" }),
+      files,
+    );
+
+    await config.context.filesystem.flush();
+
+    async function resync(input: Record<string, unknown>) {
+      const next = createProjectConfig({
+        root: project.root,
+        raw: withSourceRuntime(input),
+        configFile: undefined,
+      });
+
+      await syncTsconfigFiles(next);
+
+      return next.context.filesystem;
+    }
+
+    const checked = await resync(configured({ jsx: "preserve" }));
+
+    expect(
+      checked
+        .discard()
+        .map(({ file }) => file)
+        .sort(),
+    ).toEqual([".engrenage/sync.json", "tsconfig.src.json"]);
+
+    await (await resync(configured({ jsx: "preserve" }))).flush();
+
+    const { compilerOptions } = JSON.parse(project.read("tsconfig.src.json"));
+
+    expect(compilerOptions).not.toHaveProperty("customFlag");
+
+    expect(compilerOptions.jsx).toBe("preserve");
+  });
+
+  test("keeps a dropped compilerOptions entry that sync manages itself", async () => {
+    const { project, config } = await createProject(
+      {
+        environments: {
+          src: {
+            tsconfig: {
+              compilerOptions: { incremental: false },
+            },
+          },
+        },
+      },
+      files,
+    );
+
+    await config.context.filesystem.flush();
+
+    const next = createProjectConfig({
+      root: project.root,
+      raw: withSourceRuntime({}),
+      configFile: undefined,
+    });
+
+    await syncTsconfigFiles(next);
+
+    await next.context.filesystem.flush();
+
+    expect(
+      JSON.parse(project.read("tsconfig.src.json")).compilerOptions.incremental,
+    ).toBe(true);
+  });
+
   test("creates the tsconfig of an active environment only", async () => {
     const { project, config } = await createProject(
       {},

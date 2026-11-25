@@ -36,6 +36,7 @@ async function createPackageFields(
     scoped.resolve("visibility"),
   ]);
 
+  // @debt a version or license removed from the config is never written, so the workspace package.json keeps the stale one and `sync --check` passes, as compilerOptions did before the sync record held them
   return [
     ...(version === undefined
       ? []

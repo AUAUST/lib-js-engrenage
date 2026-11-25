@@ -286,3 +286,11 @@ entries:
     why: "#762 moved barrel files per scope; directive blocks stay root-only, outside #881's scope, which removes Interscript stand-ins only"
     want: "Each scope's @barrel blocks filled against its own walk, alias table and child resolver, as a #675 consumer"
     created: 2026-11-24T00:00:00Z
+  - id: BL-ed6d62
+    title: The role option `public` is described as leaving package exports to the domain visibility
+    sites:
+      - src/batiment/roles/types/RoleInput.ts:66
+      - src/batiment/roles/config/declarers/declareRoleContractEntries.ts:79
+    why: "Since #729 public role modules are exported, and #906 adds `publicRoles`"
+    want: The description states what `public` now does for imports and package exports
+    created: 2026-11-25T06:39:43Z

@@ -117,4 +117,45 @@ describe("produceTsconfigPaths", () => {
 
     expect(read("tsconfig.tests.dist.json").compilerOptions.paths).toEqual({});
   });
+
+  test("writes empty paths in a workspace tsconfig extending the base one", async () => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({ name: "@scope/package" }),
+      "src/index.ts": "",
+      "theme/package.json": JSON.stringify({ name: "theme", type: "module" }),
+      "theme/.workspace.json": "{}",
+      "theme/src/index.ts": "",
+      "tsconfig.json": JSON.stringify({
+        compilerOptions: {
+          paths: { "#utils/*": ["./src/utils/*.ts"] },
+        },
+      }),
+    });
+
+    const config = createProjectConfig({
+      root: project.root,
+      raw: withSourceRuntime({
+        workspaces: {
+          globs: {
+            theme: { name: "theme" },
+          },
+        },
+      }),
+      configFile: undefined,
+    });
+
+    await syncTsconfigFiles(config);
+
+    await config.context.filesystem.flush();
+
+    const theme = JSON.parse(project.read("theme/tsconfig.src.json"));
+
+    expect(theme.extends).toBe("../tsconfig.json");
+
+    expect(theme.compilerOptions.paths).toEqual({});
+
+    expect(
+      JSON.parse(project.read("tsconfig.src.json")).compilerOptions,
+    ).not.toHaveProperty("paths");
+  });
 });

@@ -1127,3 +1127,8 @@ entries:
     tried: several paths after one --sites
     stopped: commander took them as arguments; repeat --sites per path
     created: 2026-11-25T06:11:56Z
+  - id: FR-71303e
+    subject: backlog add --sites
+    tried: file path without line
+    stopped: refused, needs path:line; added lines
+    created: 2026-11-25T06:40:39Z

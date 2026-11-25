@@ -1,6 +1,6 @@
 import { iterable } from "@auaust/toolkit";
 import { flatMap, map } from "@auaust/toolkit/array";
-import { entries } from "@auaust/toolkit/object";
+import { entries, keys } from "@auaust/toolkit/object";
 
 import { emptyObjectFile } from "#foundation/json/constants";
 import { applyJsonEdits, type JsonEdit } from "#foundation/json/index";
@@ -9,6 +9,7 @@ import {
   resolveEnvironmentTsconfig,
 } from "#project/environments/index";
 import { jsonIndentation } from "#project/format/constants";
+import { readGeneratedKeys, writeGeneratedKeys } from "#project/sync/index";
 import {
   isLeftAlone,
   toJsonValue,
@@ -77,9 +78,29 @@ async function listInheritedPaths(
   });
 }
 
+function toCompilerOptionsPart({ file }: TsconfigTarget) {
+  return `${file}#compilerOptions`;
+}
+
+function removeDroppedOptions(
+  target: TsconfigTarget,
+  recorded: readonly string[] | undefined,
+  kept: readonly string[],
+): JsonEdit[] {
+  const configured = keys(target.compilerOptions);
+
+  return (recorded ?? [])
+    .filter((name) => !configured.includes(name))
+    .map((name): JsonEdit => {
+      return { path: ["compilerOptions", name], value: undefined };
+    })
+    .filter((edit) => !isLeftAlone(edit, kept));
+}
+
 async function createEdits(
   config: LoadedConfig,
   target: TsconfigTarget,
+  recorded: readonly string[] | undefined,
 ): Promise<readonly JsonEdit[]> {
   const leftAlone = [...listPaths(target), ...target.unmanaged];
 
@@ -106,7 +127,11 @@ async function createEdits(
     return !isLeftAlone(edit, leftAlone);
   });
 
-  // @debt configured compilerOptions are only ever set: one removed from the config stays in the tsconfig file and `sync --check` still passes
+  const dropped = removeDroppedOptions(target, recorded, [
+    ...leftAlone,
+    ...map(managed, ({ path }) => path.join(".")),
+  ]);
+
   const custom = iterable.map(
     entries(target.compilerOptions),
     ([name, value]): JsonEdit => {
@@ -117,7 +142,33 @@ async function createEdits(
     },
   );
 
-  return [...managed, ...custom];
+  return [...managed, ...dropped, ...custom];
+}
+
+async function writeTsconfig(config: LoadedConfig, target: TsconfigTarget) {
+  const filesystem = config.context.filesystem;
+
+  const part = toCompilerOptionsPart(target);
+
+  const recorded = await readGeneratedKeys(config, part);
+
+  const current = await filesystem.read(target.file);
+
+  await filesystem.write(
+    target.file,
+    applyJsonEdits(
+      current ?? emptyObjectFile,
+      target.file,
+      await createEdits(config, target, recorded),
+      jsonIndentation,
+    ),
+  );
+
+  const configured = keys(target.compilerOptions);
+
+  if (recorded !== undefined || configured.length > 0) {
+    await writeGeneratedKeys(config, part, configured);
+  }
 }
 
 async function listDeclaredTsconfigFiles(
@@ -152,16 +203,6 @@ export async function syncTsconfigFiles(config: LoadedConfig) {
   }
 
   for (const target of targets) {
-    const current = await filesystem.read(target.file);
-
-    await filesystem.write(
-      target.file,
-      applyJsonEdits(
-        current ?? emptyObjectFile,
-        target.file,
-        await createEdits(config, target),
-        jsonIndentation,
-      ),
-    );
+    await writeTsconfig(config, target);
   }
 }

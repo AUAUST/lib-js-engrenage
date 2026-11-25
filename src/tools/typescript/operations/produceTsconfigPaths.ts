@@ -1,6 +1,7 @@
 import { map } from "@auaust/toolkit/array";
 import { entries, record } from "@auaust/toolkit/object";
 
+import { rootScope } from "#batiment/scopes/constants";
 import { resolveExportPaths } from "#project/package/index";
 import {
   isPackageAlias,
@@ -15,9 +16,9 @@ const pathsLocation = ["compilerOptions", "paths"];
 
 export async function produceTsconfigPaths(
   config: LoadedConfig,
-  { key, file }: TsconfigTarget,
+  { key, scope, file }: TsconfigTarget,
 ): Promise<readonly JsonEdit[]> {
-  if (key === "tests.dist") {
+  if (key === "tests.dist" || scope !== rootScope) {
     return [
       {
         path: pathsLocation,
