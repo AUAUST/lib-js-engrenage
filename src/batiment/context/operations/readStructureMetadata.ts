@@ -63,6 +63,7 @@ function createNamespaceMetadata(
       internals: undefined,
       reexport: undefined,
       collects: undefined,
+      publicRoles: undefined,
       public: undefined,
     },
     files: [file],
@@ -92,6 +93,7 @@ function parseFileMetadata(
     internals,
     reexport,
     collects,
+    publicRoles,
     public: isPublic,
   } = validate(domainMetadataSchema, content, file);
 
@@ -107,6 +109,7 @@ function parseFileMetadata(
       internals: locate(internals, file),
       reexport: locate(reexport, file),
       collects: locate(collects, file),
+      publicRoles: locate(publicRoles, file),
       public: locate(isPublic, file),
     },
     files: [file],
@@ -183,6 +186,7 @@ function mergeAtPath(
       internals: fields.internals ?? next.fields.internals,
       reexport: fields.reexport ?? next.fields.reexport,
       collects: fields.collects ?? next.fields.collects,
+      publicRoles: fields.publicRoles ?? next.fields.publicRoles,
       public: fields.public ?? next.fields.public,
     },
     files: [...merged.files, ...next.files],

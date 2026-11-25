@@ -12,43 +12,57 @@ import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { rootScope } from "#batiment/scopes/constants";
 import {
   getAliasSpecifier,
+  inheritPublicRoles,
+  isPublicRole,
   type Alias,
   type NamespaceStructure,
   type StructureNode,
 } from "#batiment/structure/index";
 import { withExtensions, type Filesystem } from "#foundation/filesystem/index";
 import { readAliasedLanguage } from "#project/structure/operations/readAliasedLanguage";
+import type { ResolvedRoleContract } from "#batiment/roles/index";
 import type { Scope } from "#batiment/scopes/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
+import type { Glob } from "#types/Glob";
 
 const aliasPrefix = "#";
 
-function isPublicRole(
+function contractOf(
   role: string | undefined,
   { roles }: NamespaceStructure,
-): boolean {
-  return (
-    role === indexRoleName ||
-    role === entryRoleName ||
-    (role !== undefined && getOwn(roles, role)?.contract.public === true)
-  );
+): ResolvedRoleContract | undefined {
+  return role === undefined ? undefined : getOwn(roles, role)?.contract;
 }
 
 function isExportedRole(
   role: string,
   node: StructureNode,
   structure: NamespaceStructure,
+  publicRoles: readonly string[],
 ): boolean {
-  if (
-    node === structure.root &&
-    (role === indexRoleName || role === entryRoleName)
-  ) {
-    return false;
+  if (role === indexRoleName || role === entryRoleName) {
+    return node !== structure.root;
   }
 
-  return isPublicRole(role, structure);
+  return isPublicRole(role, contractOf(role, structure), publicRoles);
+}
+
+function listModuleGlobs(
+  directory: Directory,
+  { nesting, categories }: ResolvedRoleContract,
+  extensions: readonly string[],
+): Glob[] {
+  if (nesting === "any") {
+    return [withExtensions(`${directory}/**/*`, extensions)];
+  }
+
+  const depth = nesting + (categories === true ? 1 : 0);
+
+  return Array.from({ length: depth + 1 }, (_, level) => {
+    return withExtensions(`${directory}/${"*/".repeat(level)}*`, extensions);
+  });
 }
 
 async function listPublicModules(
@@ -56,18 +70,33 @@ async function listPublicModules(
   structure: NamespaceStructure,
   filesystem: Filesystem,
   extensions: readonly string[],
+  inherited: readonly string[],
 ): Promise<File[]> {
+  const publicRoles = inheritPublicRoles(inherited, node);
+
   const own = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
-    return isExportedRole(role, node, structure) ? files : [];
+    return isExportedRole(role, node, structure, publicRoles) ? files : [];
   });
 
-  const contained = node.kind === "role" && isPublicRole(node.role, structure)
-    ? await filesystem.glob(withExtensions(`${node.path}/*`, extensions))
+  const contract = contractOf(node.role, structure);
+
+  const contained = (
+    node.kind === "role" &&
+    contract !== undefined &&
+    isPublicRole(node.role, contract, publicRoles)
+  )
+    ? await filesystem.glob(listModuleGlobs(node.path, contract, extensions))
     : [];
 
   const nested = await Promise.all(
     node.children.map((child) => {
-      return listPublicModules(child, structure, filesystem, extensions);
+      return listPublicModules(
+        child,
+        structure,
+        filesystem,
+        extensions,
+        publicRoles,
+      );
     }),
   );
 
@@ -161,6 +190,7 @@ export async function resolveScopeExports(
                   walked,
                   filesystem,
                   language.extensions,
+                  [],
                 );
           }),
       );

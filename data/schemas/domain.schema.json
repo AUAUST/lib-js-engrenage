@@ -47,6 +47,13 @@
       },
       "description": "Roles whose collected modules, from every domain of the environment, the domain's generated entry re-exports besides its own modules. Each must be a public collected role of the environment.\n@default none"
     },
+    "publicRoles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Roles whose modules, in this domain and its sub-domains only, other domains and workspaces import one by one, as they do a public role's. Each must be a role of the environment.\n@default none"
+    },
     "public": {
       "type": "boolean",
       "description": "Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.\n@default none"

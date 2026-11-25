@@ -145,7 +145,7 @@ export function renderProjectMap({
     "",
     "## Notation",
     "",
-    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other, `[domains]` every child directory is a domain, `[collects: …]` entry re-exporting those roles from every domain.",
+    "Trees: `name*` public domain, `{…}` sub-domains, `#alias/…` import alias, `[isolated]` peers never import each other, `[domains]` every child directory is a domain, `[collects: …]` entry re-exporting those roles from every domain, `[public: …]` roles public in that domain's subtree.",
     "",
     "| Relation | A domain may import |",
     "| --- | --- |",

@@ -1,6 +1,6 @@
 import { basename, extname, join, matchesGlob } from "node:path";
 
-import { entries, freeze, keys, values } from "@auaust/toolkit/object";
+import { entries, freeze, hasOwn, keys, values } from "@auaust/toolkit/object";
 
 import { assignRoleFiles } from "#batiment/context/operations/assignRoleFiles";
 import {
@@ -27,7 +27,7 @@ import type { File } from "#types/File";
 
 type DomainDeclaration = StructureOptions["domains"][string];
 
-type CollectsSource = NonNullable<DomainDeclaration["collectsSource"]>;
+type FieldSources = DomainDeclaration["sources"];
 
 export function createStructureDomainResolver({
   name,
@@ -52,7 +52,7 @@ export function createStructureDomainResolver({
 }) {
   const { namespaces } = options;
   const domains = entries(options.domains);
-  const collectsSources = new Map<Directory, CollectsSource>();
+  const fieldSources = new Map<Directory, FieldSources>();
 
   function describe(subpath: string) {
     const directory = subpath.slice(subpath.lastIndexOf("/") + 1);
@@ -91,10 +91,11 @@ export function createStructureDomainResolver({
               : { reexport: declared.reexport }),
             ...(declared.collects === undefined
               ? {}
-              : {
-                  collects: declared.collects,
-                  collectsSource: declared.collectsSource,
-                }),
+              : { collects: declared.collects }),
+            ...(declared.publicRoles === undefined
+              ? {}
+              : { publicRoles: declared.publicRoles }),
+            sources: { ...merged.sources, ...declared.sources },
             ...(declared.public === undefined
               ? {}
               : { public: declared.public }),
@@ -137,9 +138,34 @@ export function createStructureDomainResolver({
     const roles = rolesFor(scopes);
     const { roles: contracts } = roles;
 
-    if (metadata.collectsSource !== undefined) {
-      collectsSources.set(path, metadata.collectsSource);
+    if (metadata.sources !== undefined) {
+      fieldSources.set(path, metadata.sources);
     }
+
+    const unknown = (metadata.publicRoles ?? []).filter((role) => {
+      return !hasOwn(contracts, role);
+    });
+
+    // @debt builds its diagnostic like `collected-role-not-public` in `resolveNamespaceStructure`; a helper reporting a dropped role option with its source would serve both
+    for (const role of unknown) {
+      const source = metadata.sources?.publicRoles;
+
+      report(
+        freeze({
+          severity: "error",
+          code: "unknown-public-role",
+          message: `${path} lists ${role} in its publicRoles, but ${name} has no such role there; dropping it`,
+          blocking: true,
+          namespace: name,
+          files: freeze([...(source?.files ?? [])]),
+          ...(source?.config === undefined ? {} : { config: source.config }),
+        }),
+      );
+    }
+
+    const publicRoles = (metadata.publicRoles ?? []).filter((role) => {
+      return !unknown.includes(role);
+    });
 
     const fileGlobs = values(contracts).flatMap(({ file }) => {
       return listStaticFileGlobs(file);
@@ -189,12 +215,15 @@ export function createStructureDomainResolver({
       ...(metadata.collects === undefined
         ? {}
         : { collects: metadata.collects }),
+      ...(publicRoles.length === 0 ? {} : { publicRoles }),
       ...(metadata.purpose === undefined ? {} : { purpose: metadata.purpose }),
     };
   }
 
-  function collectsSourceOf(path: Directory): CollectsSource | undefined {
-    return collectsSources.get(path);
+  function collectsSourceOf(
+    path: Directory,
+  ): FieldSources["collects"] | undefined {
+    return fieldSources.get(path)?.collects;
   }
 
   return {

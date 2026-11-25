@@ -322,6 +322,26 @@ describe("structure", () => {
     });
   });
 
+  test("reports a role a domain file lists in its publicRoles that the environment lacks, dropping it", async () => {
+    const { structure, nodes } = await describeSource(declaration, {
+      "src/feature/.domain.json": '{ "publicRoles": ["utils", "missing"] }',
+    });
+
+    expect(
+      structure.diagnostics.filter(({ code }) => {
+        return code === "unknown-public-role";
+      }),
+    ).toMatchObject([
+      {
+        severity: "error",
+        blocking: true,
+        files: ["src/feature/.domain.json"],
+      },
+    ]);
+
+    expect(nodes.get("src/feature")?.publicRoles).toEqual(["utils"]);
+  });
+
   test("reports a domain declared `public: false` beside its entry file, keeping it private", async () => {
     const { structure, nodes } = await describeSource(declaration, {
       "src/feature/sub/.domain.json": '{ "public": false }',

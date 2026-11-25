@@ -227,6 +227,7 @@ describe("structure origins", () => {
             internals: undefined,
             reexport: undefined,
             collects: undefined,
+            publicRoles: undefined,
             public: undefined,
             namespaces: {},
             domains: {},

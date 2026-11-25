@@ -87,7 +87,7 @@ const namespaceFields = freeze({
   }),
 });
 
-// @debt `specifier`, `reexport`, `public` and `collects` are JavaScript package fields, split out with the language port (#740)
+// @debt `specifier`, `reexport`, `public`, `collects` and `publicRoles` are JavaScript package fields, split out with the language port (#740)
 const domainFields = freeze({
   specifier: declare(string(), {
     description: "Public specifier of the domain, overriding the one derived from its path.",
@@ -107,6 +107,10 @@ const domainFields = freeze({
   }),
   collects: declare(array(string()), {
     description: "Roles whose collected modules, from every domain of the environment, the domain's generated entry re-exports besides its own modules. Each must be a public collected role of the environment.",
+    optional: { value: undefined },
+  }),
+  publicRoles: declare(array(string()), {
+    description: "Roles whose modules, in this domain and its sub-domains only, other domains and workspaces import one by one, as they do a public role's. Each must be a role of the environment.",
     optional: { value: undefined },
   }),
   public: declare(boolean(), {

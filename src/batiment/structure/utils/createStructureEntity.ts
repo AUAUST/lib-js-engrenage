@@ -27,6 +27,7 @@ export function createStructureEntity(
     domain: undefined,
     surface: freeze([]),
     collects: freeze([]),
+    publicRoles: freeze([]),
     role: undefined,
     fileRole: undefined,
     contract: undefined,

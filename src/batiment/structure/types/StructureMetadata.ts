@@ -17,6 +17,7 @@ export interface StructureMetadata {
     readonly reexport:
       MetadataField<ReexportMode | readonly ReexportMode[]> | undefined;
     readonly collects: MetadataField<readonly string[]> | undefined;
+    readonly publicRoles: MetadataField<readonly string[]> | undefined;
     readonly public: MetadataField<boolean> | undefined;
   };
   readonly files: readonly File[];

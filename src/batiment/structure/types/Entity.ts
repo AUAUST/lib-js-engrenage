@@ -8,9 +8,10 @@ import type { Directory } from "#types/Directory";
  * `dist`, `undefined` in a scope outside every namespace of it, the directory
  * and kind of its nearest structure node, the namespaces and domains above it,
  * its nearest domain with that domain's public specifiers and collected roles,
- * and the role and contract it holds, if any. `variant` names the test variant
- * of a file in a namespace holding tests, `environment` the ID of the registered
- * environment its placements give it, if any.
+ * the roles its enclosing domains make public in their subtree, and the role
+ * and contract it holds, if any. `variant` names the test variant of a file in
+ * a namespace holding tests, `environment` the ID of the registered environment
+ * its placements give it, if any.
  */
 export interface Entity {
   readonly scope: string;
@@ -23,6 +24,7 @@ export interface Entity {
   readonly domain: string | undefined;
   readonly surface: readonly string[];
   readonly collects: readonly string[];
+  readonly publicRoles: readonly string[];
   readonly role: string | undefined;
   readonly fileRole: string | undefined;
   readonly contract: ResolvedRoleContract | undefined;

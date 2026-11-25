@@ -29,6 +29,11 @@ export interface DomainInput {
    */
   collects?: (string[] | undefined)
   /**
+   * Roles whose modules, in this domain and its sub-domains only, other domains and workspaces import one by one, as they do a public role's. Each must be a role of the environment.
+   * @default none
+   */
+  publicRoles?: (string[] | undefined)
+  /**
    * Whether the domain is a package entry, so `engrenage sync` creates the `entry.ts` of a domain without `index.ts`. Unset, whether its `entry.ts` exists; `false` fails when it does.
    * @default none
    */

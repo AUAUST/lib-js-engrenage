@@ -15,9 +15,13 @@ function renderName(node: StructureNode): string {
     ? ""
     : `[collects: ${node.collects.join(" ")}]`;
 
+  const publicRoles = node.publicRoles === undefined
+    ? ""
+    : `[public: ${node.publicRoles.join(" ")}]`;
+
   const directory = node.kind === "namespace" || node.kind === "mirror";
 
-  return `${node.name}${directory ? "/" : ""}${node.public === true ? "*" : ""}${collects}`;
+  return `${node.name}${directory ? "/" : ""}${node.public === true ? "*" : ""}${collects}${publicRoles}`;
 }
 
 function inline(node: StructureNode): string {

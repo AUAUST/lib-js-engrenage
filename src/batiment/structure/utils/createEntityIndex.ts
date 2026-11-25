@@ -24,6 +24,8 @@ import { createStructureEntity } from "#batiment/structure/utils/createStructure
 import { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
 import { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";
 import { getAliasSpecifier } from "#batiment/structure/utils/getAliasSpecifier";
+import { inheritPublicRoles } from "#batiment/structure/utils/inheritPublicRoles";
+import { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 import { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles";
 import { resolve, toPosixPath } from "#foundation/filesystem/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
@@ -122,8 +124,13 @@ export function createEntityIndex({
     }
   }
 
-  function surfaceOf(node: StructureNode, namespace: NamespaceStructure) {
+  function surfaceOf(
+    node: StructureNode,
+    namespace: NamespaceStructure,
+    publicRoles: readonly string[],
+  ) {
     const extension = extname(namespace.indexFile);
+    const contracts = rolesOf(namespace.name).roles;
 
     const entry = publicEntries.get(`${node.path}/${namespace.entryFile}`);
 
@@ -133,7 +140,7 @@ export function createEntityIndex({
         return (
           child.kind === "role" &&
           child.role !== undefined &&
-          rolesOf(namespace.name).roles[child.role]?.public
+          isPublicRole(child.role, contracts[child.role], publicRoles)
         );
       })
       .map((child) => {
@@ -141,7 +148,7 @@ export function createEntityIndex({
       });
 
     const roleFiles = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
-      return rolesOf(namespace.name).roles[role]?.public ? files : [];
+      return isPublicRole(role, contracts[role], publicRoles) ? files : [];
     });
 
     const barrels = node.children
@@ -195,6 +202,8 @@ export function createEntityIndex({
       ),
     );
 
+    const publicRoles = inheritPublicRoles(parent.publicRoles, node);
+
     const entity: Entity = freeze({
       ...parent,
       path: node.path,
@@ -206,7 +215,7 @@ export function createEntityIndex({
         ? node.path.slice(directory.length + 1)
         : parent.domain,
       surface: node.kind === "domain"
-        ? surfaceOf(node, namespace)
+        ? surfaceOf(node, namespace, publicRoles)
         : parent.surface,
       collects: node.kind === "domain"
         ? freeze([...(node.collects ?? [])])
@@ -214,7 +223,8 @@ export function createEntityIndex({
       role,
       contract,
       effects: role === undefined ? undefined : node.effects,
-      public: contract?.public === true,
+      publicRoles,
+      public: isPublicRole(role, contract, publicRoles),
     });
 
     register(node.path, {
@@ -358,7 +368,7 @@ export function createEntityIndex({
       contract,
       effects,
       public: (
-        contract?.public === true ||
+        isPublicRole(role, contract, entity.publicRoles) ||
         role === indexRoleName ||
         role === entryRoleName
       ),

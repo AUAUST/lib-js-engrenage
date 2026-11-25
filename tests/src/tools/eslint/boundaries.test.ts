@@ -287,6 +287,31 @@ describe("structure boundaries", () => {
     ).toEqual([]);
   });
 
+  test("makes a role a domain lists in its publicRoles importable in that domain's subtree only", async () => {
+    const lint = await createLinter(
+      "auaust/import-",
+      createBoundaryProject({
+        files: {
+          "src/project/other/.domain.json": '{ "publicRoles": ["utils"] }',
+        },
+      }),
+    );
+
+    expect(
+      await lint(
+        "src/project/feature/index.ts",
+        'export { value } from "#project/other/utils/priv";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        "src/project/other/index.ts",
+        'export { value } from "#project/feature/utils/own";\n',
+      ),
+    ).toEqual(["auaust/import-surfaces"]);
+  });
+
   test("reaches a collected role inside a sub-domain past its parent's surface", async () => {
     const lint = await createLinter("auaust/import-", createCollectedProject());
 

@@ -121,6 +121,7 @@ export function flattenStructure({
         internals: domain.internals,
         reexport: domain.reexport,
         collects: domain.collects,
+        publicRoles: domain.publicRoles,
         public: domain.public,
       });
 

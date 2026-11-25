@@ -29,11 +29,20 @@ export interface StructureOptions {
         readonly internals: boolean | undefined;
         readonly reexport: ReexportMode | readonly ReexportMode[] | undefined;
         readonly collects: readonly string[] | undefined;
+        readonly publicRoles: readonly string[] | undefined;
         readonly public: boolean | undefined;
         readonly source: StructureSource;
-        readonly collectsSource:
-          | { readonly files: readonly File[]; readonly config?: OptionSource }
-          | undefined;
+        readonly sources: Readonly<
+          Partial<
+            Record<
+              "collects" | "publicRoles",
+              {
+                readonly files: readonly File[];
+                readonly config?: OptionSource;
+              }
+            >
+          >
+        >;
       }
     >
   >;

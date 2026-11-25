@@ -25,6 +25,7 @@ const separators = {
   "children-domains-namespace": "  ",
   "private-domain-entry": "  ",
   "collected-role-not-public": "  ",
+  "unknown-public-role": "  ",
   "shared-specifier": "  ",
   "unlisted-layout-entry": "  ",
   "missing-layout-entry": "  ",

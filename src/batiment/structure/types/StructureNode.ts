@@ -33,6 +33,7 @@ export interface StructureNode {
   readonly internals?: boolean;
   readonly reexport?: readonly ReexportMode[];
   readonly collects?: readonly string[];
+  readonly publicRoles?: readonly string[];
   readonly purpose?: string;
   readonly effects?: string;
   readonly mirror?: StructureMirror;

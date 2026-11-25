@@ -20,6 +20,8 @@ import type { Directory } from "#types/Directory";
 
 const namespaceRoot = ".";
 
+const sourcedFields = freeze(["collects", "publicRoles"] as const);
+
 type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
 
 export function mergeStructureMetadata({
@@ -67,12 +69,24 @@ export function mergeStructureMetadata({
         {
           ...domain,
           source: "config",
-          collectsSource: domain.collects === undefined
-            ? undefined
-            : freeze({
-                files: freeze([]),
-                config: freeze({ key, path: `${optionPath(path)}.collects` }),
-              }),
+          sources: freeze(
+            record(
+              sourcedFields
+                .filter((field) => domain[field] !== undefined)
+                .map((field) => {
+                  return [
+                    field,
+                    freeze({
+                      files: freeze([]),
+                      config: freeze({
+                        key,
+                        path: `${optionPath(path)}.${field}`,
+                      }),
+                    }),
+                  ] as const;
+                }),
+            ),
+          ),
         },
       ];
     }),
@@ -200,11 +214,25 @@ export function mergeStructureMetadata({
       internals: pick("internals", existing?.internals, fields.internals),
       reexport: pick("reexport", existing?.reexport, fields.reexport),
       collects: pick("collects", existing?.collects, fields.collects),
+      publicRoles: pick(
+        "publicRoles",
+        existing?.publicRoles,
+        fields.publicRoles,
+      ),
       public: pick("public", existing?.public, fields.public),
       source: existing?.source ?? "metadata",
-      collectsSource: fields.collects === undefined
-        ? existing?.collectsSource
-        : freeze({ files: freeze([fields.collects.file]) }),
+      sources: freeze({
+        ...existing?.sources,
+        ...record(
+          sourcedFields.flatMap((field) => {
+            const located = fields[field];
+
+            return located === undefined
+              ? []
+              : [[field, freeze({ files: freeze([located.file]) })] as const];
+          }),
+        ),
+      }),
     });
   }
 

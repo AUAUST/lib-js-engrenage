@@ -72,8 +72,10 @@ export { getNamespaceRootRole } from "#batiment/structure/utils/getNamespaceRoot
 export { getStructureCardinality } from "#batiment/structure/utils/getStructureCardinality";
 export { getStructureLayer } from "#batiment/structure/utils/getStructureLayer";
 export { groupRoleFiles } from "#batiment/structure/utils/groupRoleFiles";
+export { inheritPublicRoles } from "#batiment/structure/utils/inheritPublicRoles";
 export { isEntryReference } from "#batiment/structure/utils/isEntryReference";
 export { isPlaced } from "#batiment/structure/utils/isPlaced";
+export { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 export { isViolatingNode } from "#batiment/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingDiagnostics";
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";

@@ -24,15 +24,23 @@ const importer = "extensions/home/src/index.ts";
 
 const placeholder = "{dir}";
 
-const config = `export default {
+function createConfig(roles = "[]") {
+  return `export default {
   environments: { src: { execution: { globals: "node", syntax: 24 } } },
+  src: { roles: ${roles} },
   workspaces: { globs: { "extensions/*": { name: "@project/${placeholder}" } } },
 };
 `;
+}
 
-function createFiles(dependencies: Readonly<Record<string, string>>) {
+const config = createConfig();
+
+function createFiles(
+  dependencies: Readonly<Record<string, string>>,
+  roles?: string,
+) {
   return {
-    "engrenage.config.ts": config,
+    "engrenage.config.ts": createConfig(roles),
     "package.json": JSON.stringify({
       name: rootName,
       type: "module",
@@ -62,8 +70,18 @@ function linkRoot(project: ReturnType<typeof createTemporaryProject>) {
 
 async function createLinkedProject(
   dependencies: Readonly<Record<string, string>>,
+  {
+    roles,
+    files = {},
+  }: {
+    roles?: string;
+    files?: Readonly<Record<string, string>>;
+  } = {},
 ) {
-  const project = createTemporaryProject(createFiles(dependencies));
+  const project = createTemporaryProject({
+    ...createFiles(dependencies, roles),
+    ...files,
+  });
 
   linkRoot(project);
 
@@ -88,6 +106,47 @@ describe("workspace imports by package name", () => {
       "./ui/constants": "./src/ui/constants.ts",
       "./ui/index": "./src/ui/index.ts",
     });
+  });
+
+  test("sync exports each module of a public role at every depth its nesting allows", async () => {
+    const project = await createLinkedProject(
+      {
+        [rootName]: "workspace:*",
+      },
+      {
+        roles: '[{ name: "definitions", public: true, nesting: 1 }]',
+        files: {
+          "src/a/index.ts": "export const a = 'a';\n",
+          "src/a/definitions/kind/module.ts": "export const module = 'm';\n",
+        },
+      },
+    );
+
+    expect(JSON.parse(project.read("package.json")).exports).toMatchObject({
+      "./a/definitions/kind/module": "./src/a/definitions/kind/module.ts",
+    });
+  });
+
+  test("sync exports the modules of a role a domain lists in its publicRoles, in its subtree only", async () => {
+    const project = await createLinkedProject(
+      {
+        [rootName]: "workspace:*",
+      },
+      {
+        files: {
+          "src/ui/.domain.json": '{ "publicRoles": ["utils"] }',
+          "src/ui/utils/x.ts": "export function x() {}\n",
+          "src/b/index.ts": "export const b = 'b';\n",
+          "src/b/utils/y.ts": "export function y() {}\n",
+        },
+      },
+    );
+
+    const { exports } = JSON.parse(project.read("package.json"));
+
+    expect(exports).toMatchObject({ "./ui/utils/x": "./src/ui/utils/x.ts" });
+
+    expect(exports).not.toHaveProperty("./b/utils/y");
   });
 
   test("sync exports nothing from a root no workspace depends on", async () => {
