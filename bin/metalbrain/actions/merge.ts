@@ -1,5 +1,3 @@
-import { isNumber } from "@auaust/toolkit";
-
 import { findNamedRecordKind } from "#metalbrain/kinds/index";
 import { formatRecordRename, mergeRecord } from "#metalbrain/records/index";
 import { settleChanges } from "#project/sync/index";
@@ -20,14 +18,6 @@ export default async function (
 
   const { wordCaps } = await config.resolve("agents");
 
-  const wordCap: unknown = wordCaps[kind.wordCap];
-
-  if (!isNumber(wordCap)) {
-    throw new Error(
-      `No word cap "${kind.wordCap}" bounds the ${kind.name} records`,
-    );
-  }
-
   const merged = await mergeRecord(
     config.context.filesystem,
     kind,
@@ -38,7 +28,7 @@ export default async function (
     {
       note,
       noteCap: wordCaps.logEntry,
-      wordCap,
+      wordCap: wordCaps[kind.wordCap],
     },
   );
 

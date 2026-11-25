@@ -2,11 +2,11 @@ import { isArray, isString } from "@auaust/toolkit";
 import { filterMap } from "@auaust/toolkit/array";
 import { max } from "@auaust/toolkit/math";
 
+import { createTextQuery, rankDocuments } from "#foundation/matching/index";
 import {
   similarityThreshold,
   similarLimit,
-} from "#foundation/matching/constants";
-import { createTextQuery, rankDocuments } from "#foundation/matching/index";
+} from "#metalbrain/records/constants";
 import { prepareRecordSearch } from "#metalbrain/records/operations/prepareRecordSearch";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { RecordKind } from "#metalbrain/records/types/RecordKind";

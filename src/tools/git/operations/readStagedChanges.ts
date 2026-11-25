@@ -15,7 +15,7 @@ const diffArguments = [
 ] as const;
 
 function readPath(line: string, prefix: string): File | undefined {
-  const path = line.slice(4);
+  const path = line.slice(4).replace(/\t$/u, "");
 
   return path === "/dev/null" ? undefined : path.slice(prefix.length);
 }
