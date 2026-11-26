@@ -444,6 +444,10 @@ utils:
     - BL-7a7336
     - BL-2692c9
     - BL-0c1548
+vite:
+  purpose: Generated Vite configuration and the defineViteConfig definer.
+  entries:
+    - BL-891fdf
 vitest:
   purpose: Generated Vitest configuration.
   entries:

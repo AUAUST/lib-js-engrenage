@@ -16,6 +16,9 @@ import type { Resolvable } from "#types/Resolvable";
  * Returns a Vite config function building the config of the project `load`
  * resolves, then merging the `test` option and `configs` over it in order, each
  * resolved with the loaded config and Vite's config env.
+ *
+ * @throws {Error} No layer sets `root` where engrenage leaves it unset, the src
+ * environment having several directories.
  */
 export function createViteConfigFn(
   load: () => Promise<LoadedConfig>,
@@ -43,6 +46,13 @@ export function createViteConfigFn(
       const resolvedNativeConfig = await value(nativeConfig, config, env);
 
       merged = mergeConfig(merged, resolvedNativeConfig ?? {});
+    }
+
+    // @debt The failure infers its cause from createViteConfig leaving root unset only for several src.dirs, a contract no type carries.
+    if (merged.root === undefined) {
+      throw new Error(
+        `Several src.dirs in ${config.context.root}, so Vite has no single root: set root in the native Vite config layer`,
+      );
     }
 
     return merged;

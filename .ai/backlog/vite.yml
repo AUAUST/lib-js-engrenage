@@ -1,0 +1,8 @@
+purpose: Generated Vite configuration and the defineViteConfig definer.
+entries:
+  - id: BL-891fdf
+    title: "A native Vite layer setting publicDir cannot resolve several static.dirs: createViteConfig throws before layers merge"
+    sites:
+      - src/tools/vite/operations/createViteConfig.ts:136
+    want: Several static.dirs fail only when no native layer sets publicDir, like several src.dirs and root (#974)
+    created: 2026-11-26T19:46:04Z

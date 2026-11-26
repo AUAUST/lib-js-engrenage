@@ -51,6 +51,66 @@ describe("defineViteConfig", () => {
     });
   });
 
+  describe("with several src.dirs", () => {
+    function createProject() {
+      return createTemporaryProject({
+        "package.json": JSON.stringify({
+          type: "module",
+          devDependencies: { vite: "*" },
+        }),
+        "engrenage.config.ts": `export default ${JSON.stringify({
+          src: {
+            dirs: ["src", "admin"],
+          },
+          environments: {
+            src: {
+              execution: { syntax: "2026-10" },
+            },
+          },
+          build: {
+            outDir: "dist",
+          },
+        })};\n`,
+        "src/index.ts": "",
+        "admin/index.ts": "",
+      });
+    }
+
+    const env = {
+      command: "build",
+      mode: "production",
+    } as const;
+
+    test("takes root from the native config, keeping outDir and envDir at the project root", async () => {
+      const project = createProject();
+
+      vi.stubEnv("VITEST", undefined);
+
+      const viteConfig = await defineViteConfig.at(project.root)(
+        undefined,
+        ({ context }) => {
+          return { root: context.root };
+        },
+      )(env);
+
+      expect(viteConfig).toMatchObject({
+        root: project.root,
+        envDir: project.root,
+        build: { outDir: join(project.root, "dist") },
+      });
+    });
+
+    test("fails when no native config sets root", async () => {
+      const project = createProject();
+
+      vi.stubEnv("VITEST", undefined);
+
+      await expect(defineViteConfig.at(project.root)()(env)).rejects.toThrow(
+        "Several src.dirs",
+      );
+    });
+  });
+
   test("passes test-scoped globals only when Vitest runs the config", async () => {
     const project = createTemporaryProject({
       "package.json": '{ "type": "module" }',

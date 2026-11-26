@@ -152,7 +152,7 @@ describe("createViteConfig", () => {
     );
   });
 
-  test("fails outside tests with several src.dirs", async () => {
+  test("leaves root unset outside tests with several src.dirs", async () => {
     const config = await loadProject(
       {
         src: { dirs: ["src", "app"] },
@@ -164,9 +164,11 @@ describe("createViteConfig", () => {
       },
     );
 
-    await expect(
-      createViteConfig(config, { isTesting: false }),
-    ).rejects.toThrow("Several src.dirs");
+    const vite = await createViteConfig(config, { isTesting: false });
+
+    expect(vite).not.toHaveProperty("root");
+
+    expect(vite.envDir).toBe(config.context.root);
   });
 
   test("targets the same browsers as tsdown for a baseline", async () => {

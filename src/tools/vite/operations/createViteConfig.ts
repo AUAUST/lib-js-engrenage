@@ -39,30 +39,33 @@ function resolveViteRoot(
   root: Directory,
   source: ResolvedSource,
   isTesting: boolean,
-): Directory {
+): Pick<Config, "root"> {
   if (isTesting || !source.active) {
-    return root;
+    return { root };
   }
 
-  return (
-    resolveOnlyDirectory(
-      root,
-      source.dirs,
-      `Several src.dirs in ${root}, so Vite has no single root: set root in the native Vite config layer`,
-    ) ?? root
-  );
+  const [directory, ...others] = source.dirs;
+
+  if (isNonEmptyArray(others)) {
+    return {};
+  }
+
+  return {
+    root: directory === undefined ? root : resolveWithin(root, directory),
+  };
 }
 
 /**
  * Builds the Vite config of a loaded config: root, tsconfig paths, defined
- * globals, public directory and build output, emptying the output directory
- * only when `build.clean` is `all`. The root is the src environment's only
- * directory, or the project root under tests or without an active src directory.
- * The output and env directories are absolute from the project root, so a native
- * config setting `root` never moves them. `isTesting` drops build-only globals
- * instead of test-only ones.
+ * globals, public directory and build output, emptying the output directory only
+ * when `build.clean` is `all`. The root is the src environment's only directory,
+ * or the project root under tests or without an active src directory; it stays
+ * unset when the src environment has several directories, for a native config
+ * to set. The output and env directories are absolute from the project root, so
+ * a native config setting `root` never moves them. `isTesting` drops build-only
+ * globals instead of test-only ones.
  *
- * @throws {Error} The src environment has several directories.
+ * @throws {Error} The static environment has several directories.
  */
 export async function createViteConfig(
   config: LoadedConfig,
@@ -83,7 +86,7 @@ export async function createViteConfig(
   const runtime = await resolveEntriesRuntime(config);
 
   return {
-    root: resolveViteRoot(root, source, isTesting),
+    ...resolveViteRoot(root, source, isTesting),
     envDir: root,
     publicDir: await resolvePublicDir(config),
     ...(tsconfig === undefined
