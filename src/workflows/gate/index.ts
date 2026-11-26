@@ -5,6 +5,7 @@ export { checkVerifiedTree } from "#workflows/gate/operations/checkVerifiedTree"
 export { gateClaudeStop } from "#workflows/gate/operations/gateClaudeStop";
 export { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
 export { listRelatedRecords } from "#workflows/gate/operations/listRelatedRecords";
+export { listStageSteps } from "#workflows/gate/operations/listStageSteps";
 export { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 export { runGate } from "#workflows/gate/operations/runGate";
 export { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";
@@ -20,9 +21,12 @@ export type * from "#workflows/gate/apis/GateStep";
 export type * from "#workflows/gate/types/GateChanges";
 export type * from "#workflows/gate/types/GateCoverage";
 export type * from "#workflows/gate/types/GateFailure";
+export type * from "#workflows/gate/types/GateGroupTiming";
 export type * from "#workflows/gate/types/GateMode";
 export type * from "#workflows/gate/types/GateReport";
 export type * from "#workflows/gate/types/GateRunReport";
+export type * from "#workflows/gate/types/GateStepTiming";
+export type * from "#workflows/gate/types/GateTimings";
 export type * from "#workflows/gate/types/GateWarning";
 export type * from "#workflows/gate/types/MessageGateReport";
 export type * from "#workflows/gate/types/StepsOutcome";
@@ -34,4 +38,5 @@ export { coverSteps } from "#workflows/gate/utils/coverSteps";
 export { formatGateCoverage } from "#workflows/gate/utils/formatGateCoverage";
 export { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 export { formatGateSummary } from "#workflows/gate/utils/formatGateSummary";
+export { formatGateTimings } from "#workflows/gate/utils/formatGateTimings";
 // @end

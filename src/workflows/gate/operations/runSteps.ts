@@ -1,17 +1,36 @@
 import { iterable } from "@auaust/toolkit";
-import { filter } from "@auaust/toolkit/array";
+import { filter, map } from "@auaust/toolkit/array";
+import { sum } from "@auaust/toolkit/math";
+import { measureAsync } from "@auaust/toolkit/time";
 
 import type { GateResult } from "#project/gate/index";
 import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
+import type { GateStepTiming } from "#workflows/gate/types/GateStepTiming";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
 
 interface StepOutcome {
   readonly failure: GateFailure | undefined;
   readonly warning: GateWarning | undefined;
+  readonly timing: GateStepTiming;
+}
+
+async function settleStep(
+  step: GateStep,
+  files: Files,
+  removed: Files,
+): Promise<GateResult> {
+  try {
+    return await step.run(files, removed);
+  } catch (error) {
+    return {
+      ok: false,
+      output: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 async function runStep(
@@ -19,16 +38,10 @@ async function runStep(
   files: Files,
   removed: Files,
 ): Promise<StepOutcome> {
-  let result: GateResult;
-
-  try {
-    result = await step.run(files, removed);
-  } catch (error) {
-    result = {
-      ok: false,
-      output: error instanceof Error ? error.message : String(error),
-    };
-  }
+  const {
+    result,
+    duration,
+  } = await measureAsync(settleStep, step, files, removed);
 
   const name = result.name ?? step.name;
 
@@ -37,23 +50,34 @@ async function runStep(
     warning: result.warnings === undefined || result.warnings === ""
       ? undefined
       : { step: name, output: result.warnings },
+    timing: { name: step.name, duration },
   };
 }
 
-function collectOutcomes(outcomes: readonly StepOutcome[]): StepsOutcome {
+function collectOutcomes(
+  group: string,
+  outcomes: readonly StepOutcome[],
+  duration: number,
+): StepsOutcome {
   return {
     failures: filter(
-      outcomes.map(({ failure }) => failure),
+      map(outcomes, ({ failure }) => failure),
       (failure) => failure !== undefined,
     ),
     warnings: filter(
-      outcomes.map(({ warning }) => warning),
+      map(outcomes, ({ warning }) => warning),
       (warning) => warning !== undefined,
     ),
+    timing: {
+      name: group,
+      duration,
+      steps: map(outcomes, ({ timing }) => timing),
+    },
   };
 }
 
 async function runSequentially(
+  group: string,
   steps: readonly GateStep[],
   files: Files,
   removed: Files,
@@ -64,29 +88,40 @@ async function runSequentially(
     outcomes.push(await runStep(step, files, removed));
   }
 
-  return collectOutcomes(outcomes);
+  return collectOutcomes(
+    group,
+    outcomes,
+    sum(...map(outcomes, ({ timing }) => timing.duration)),
+  );
 }
 
 async function runConcurrently(
+  group: string,
   steps: readonly GateStep[],
   files: Files,
   removed: Files,
 ): Promise<StepsOutcome> {
-  const outcomes = await Promise.all(
-    iterable.map(steps, (step) => {
-      return runStep(step, files, removed);
-    }),
-  );
+  const { result: outcomes, duration } = await measureAsync(() => {
+    return Promise.all(
+      iterable.map(steps, (step) => {
+        return runStep(step, files, removed);
+      }),
+    );
+  });
 
-  return collectOutcomes(outcomes);
+  return collectOutcomes(group, outcomes, duration);
 }
 
+/**
+ * Runs `steps` as the `group` its outcome's timing names, one after another
+ * unless `concurrent`.
+ */
 export function runSteps(
   steps: readonly GateStep[],
   { files, removed }: GateChanges,
-  { concurrent }: { concurrent: boolean },
+  { group, concurrent }: { group: string; concurrent: boolean },
 ): Promise<StepsOutcome> {
   return concurrent
-    ? runConcurrently(steps, files, removed)
-    : runSequentially(steps, files, removed);
+    ? runConcurrently(group, steps, files, removed)
+    : runSequentially(group, steps, files, removed);
 }

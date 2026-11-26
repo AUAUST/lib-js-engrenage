@@ -84,3 +84,22 @@ entries:
       - src/tools/metalbrain/config/schemas/agentsSchema.ts:86
     why: the gate also serves `--everyone` and CI, yet `agents.gate.commands` makes its commands an agent concern that the Git hook never runs
     created: 2026-11-25T23:49:55Z
+  - id: BL-8cf381
+    title: Gate action eagerly imports the ESLint barrel
+    sites:
+      - src/tools/metalbrain/operations/lintClaudeEdit.ts:1
+    why: "runGate imports #tools/metalbrain/index for listLocalFilePatterns; lintClaudeEdit pulls every ESLint plugin, typescript-eslint and typescript: 1.3 s of the gate's 1.6 s import"
+    want: The gate process loads ESLint only when it lints
+    created: 2026-11-26T17:34:04Z
+  - id: BL-f39490
+    title: Child processes miss the compile cache
+    sites:
+      - bin/engrenage/executable.ts:1
+    why: enableCompileCache sets no NODE_COMPILE_CACHE, so ESLint, Prettier, Vitest and codegen children recompile; 0.1-0.2 s each
+    want: Spawned Node processes share the compile cache
+    created: 2026-11-26T17:34:04Z
+  - id: BL-b586d9
+    title: jscpd, sync --check and generators dominate a 22-file worktree gate
+    why: "One measured gate --worktree run: vitest 28s, jscpd 19.8s, sync --check 12.2s, eslint fix 7.6s, generators 5.7s, total 42s"
+    want: jscpd, sync --check and generators cost in proportion to the changed files
+    created: 2026-11-26T17:42:44Z

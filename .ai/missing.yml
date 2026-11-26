@@ -36,11 +36,6 @@ entries:
     need: lint import resolution probing module files
     instead: statSync in src/project/structure/config/sections/importResolverSection.ts
     created: 2026-11-26T15:09:41Z
-  - id: MI-147192
-    subject: per-step gate durations
-    need: finding which gate step is slow
-    instead: probe script timing each component apart, in the session scratchpad
-    created: 2026-11-26T17:18:58Z
   - id: MI-77320b
     subject: eslint-typegen emitting unknown index signatures without | undefined
     need: codegen rules output matching lint-fixed form

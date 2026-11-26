@@ -1,5 +1,7 @@
 import { describe, expect, test } from "vitest";
 
+import { map } from "@auaust/toolkit/array";
+
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { gateIdentity } from "#tests/constants";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
@@ -56,7 +58,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       checked: { scope: 1, reused: false },
     });
 
-    expect(await runGate(config, { mode: "staged" })).toEqual({
+    const reused = await runGate(config, { mode: "staged" });
+
+    expect(reused).toMatchObject({
       failures: [],
       warnings: [],
       checked: {
@@ -65,6 +69,11 @@ describe("runGate", { timeout: binaryTimeout }, () => {
         reused: true,
       },
     });
+
+    expect(map(reused.timings.groups, ({ name }) => name)).toEqual([
+      "local",
+      "stamp",
+    ]);
 
     expect(project.read(".runs")).toBe("run\n");
   });

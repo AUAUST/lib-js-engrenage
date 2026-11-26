@@ -22,6 +22,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const {
       failures,
       checked,
+      timings,
     } = await runGate(await loadConfig(project.root), { mode: "staged" });
 
     expect(failures).toEqual([]);
@@ -31,6 +32,24 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       scope: 1,
       reused: false,
     });
+
+    expect(map(timings.groups, ({ name }) => name)).toEqual([
+      "local",
+      "generate",
+      "fixes",
+      "checks",
+      "commands",
+      "warnings",
+      "tree",
+    ]);
+
+    expect(
+      timings.groups.find(({ name }) => name === "checks")?.steps,
+    ).toContainEqual({ name: "typecheck", duration: expect.any(Number) });
+
+    expect(map(timings.groups.at(-1)?.steps ?? [], ({ name }) => name)).toEqual(
+      ["staging", "identity", "verification", "stamp"],
+    );
 
     expect(project.read("src/index.ts")).toBe(
       "export const value: number = 2;\n",

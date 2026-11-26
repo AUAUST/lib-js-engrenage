@@ -218,12 +218,16 @@ gate:
     - BL-33f7c7
     - BL-5d3f7c
     - BL-7b26ca
+    - BL-8cf381
+    - BL-f39490
+    - BL-b586d9
 git:
   purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
   entries:
     - BL-157177
     - BL-b5153e
     - BL-3f3917
+    - BL-3dad2c
 github:
   purpose: Generated GitHub workflows and templates.
   entries:
@@ -449,6 +453,7 @@ vitest:
     - BL-86f952
     - BL-e9c8c8
     - BL-657743
+    - BL-e102fb
 vscode:
   purpose: Synced VS Code files.
   entries:

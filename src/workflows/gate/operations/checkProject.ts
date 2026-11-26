@@ -5,18 +5,20 @@ import { coverSteps } from "#workflows/gate/utils/coverSteps";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
+import type { GateGroupTiming } from "#workflows/gate/types/GateGroupTiming";
 import type { GateRunReport } from "#workflows/gate/types/GateRunReport";
 
 const noChanges: GateChanges = { files: [], removed: [] };
 
 /**
  * Runs each step's whole-project check: the `generate` stage's one after another
- * first, ending the run when one fails, then the others concurrently, beside
- * the agents' commands.
+ * first, ending the run when one fails, then the others concurrently, beside the
+ * agents' commands, recording each group's timing into `groups`.
  */
 export async function checkProject(
   config: LoadedConfig,
-): Promise<GateRunReport> {
+  groups: GateGroupTiming[],
+): Promise<Omit<GateRunReport, "timings">> {
   const contributions = await config.context.registry.contributions(
     "gate.steps",
     config,
@@ -46,8 +48,11 @@ export async function checkProject(
   const commands = await listCommandSteps(config);
 
   const generateOutcome = await runSteps(generators, noChanges, {
+    group: "generate",
     concurrent: false,
   });
+
+  groups.push(generateOutcome.timing);
 
   if (generateOutcome.failures.length > 0) {
     return {
@@ -58,9 +63,11 @@ export async function checkProject(
   }
 
   const [stepOutcome, commandOutcome] = await Promise.all([
-    runSteps(steps, noChanges, { concurrent: true }),
-    runSteps(commands, noChanges, { concurrent: false }),
+    runSteps(steps, noChanges, { group: "checks", concurrent: true }),
+    runSteps(commands, noChanges, { group: "commands", concurrent: false }),
   ]);
+
+  groups.push(stepOutcome.timing, commandOutcome.timing);
 
   return {
     failures: [...stepOutcome.failures, ...commandOutcome.failures],

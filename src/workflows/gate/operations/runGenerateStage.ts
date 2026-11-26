@@ -5,7 +5,17 @@ import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
 import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
 
-const noOutcome: StepsOutcome = { failures: [], warnings: [] };
+const group = "generate";
+
+const noOutcome: StepsOutcome = {
+  failures: [],
+  warnings: [],
+  timing: {
+    name: group,
+    duration: 0,
+    steps: [],
+  },
+};
 
 /**
  * Runs the `generate` stage's steps one after another and, in `staged` mode,
@@ -23,7 +33,10 @@ export async function runGenerateStage(
 
   const unstaged = mode === "staged" ? await listUnstagedFiles(root) : [];
 
-  const outcome = await runSteps(steps, changes, { concurrent: false });
+  const outcome = await runSteps(steps, changes, {
+    group,
+    concurrent: false,
+  });
 
   if (mode === "staged") {
     const before = new Set(unstaged);

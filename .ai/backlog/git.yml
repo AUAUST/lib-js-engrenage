@@ -22,3 +22,11 @@ entries:
     why: "Interscript passes 2,154 globs: ~85 ms of picomatch per run, and a 70 KB exclude dump when no test file matches"
     want: a shorter list that keeps Git's semantics, tracked files and negations included
     created: 2026-11-24T00:00:00Z
+  - id: BL-3dad2c
+    title: Worktree tree identity hashes the tree twice per call
+    sites:
+      - src/tools/git/operations/hashTree.ts:1
+      - src/workflows/gate/operations/readTreeIdentity.ts:1
+    why: Each hashTree copies the index and reruns git add -A; readTreeIdentity runs 3 times per gate, 165 ms each
+    want: One temporary index yields both hashes
+    created: 2026-11-26T17:34:04Z

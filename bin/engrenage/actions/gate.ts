@@ -4,6 +4,7 @@ import {
   formatGateCoverage,
   formatGateEntry,
   formatGateSummary,
+  formatGateTimings,
   runGate,
   runMessageGate,
   type GateReport,
@@ -89,5 +90,11 @@ export default async function ({
 
   if (printReport(report)) {
     reporter.log(formatGateCoverage(report.checked));
+  }
+
+  const timings = formatGateTimings(report.timings);
+
+  if (timings !== undefined) {
+    reporter.log(timings);
   }
 }

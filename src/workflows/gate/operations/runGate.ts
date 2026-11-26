@@ -1,8 +1,11 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
+import { map } from "@auaust/toolkit/array";
+import { sum } from "@auaust/toolkit/math";
+import { measureAsync } from "@auaust/toolkit/time";
+
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
-import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
 import {
@@ -16,18 +19,19 @@ import {
 import { listLocalFilePatterns } from "#tools/metalbrain/index";
 import { checkProject } from "#workflows/gate/operations/checkProject";
 import { checkVerifiedTree } from "#workflows/gate/operations/checkVerifiedTree";
-import { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
+import { listStageSteps } from "#workflows/gate/operations/listStageSteps";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";
 import { runSteps } from "#workflows/gate/operations/runSteps";
 import { coverSteps } from "#workflows/gate/utils/coverSteps";
 import type { LoadedConfig } from "#project/config/index";
-import type { GateStage } from "#project/gate/index";
 import type { Directory } from "#types/Directory";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
+import type { GateGroupTiming } from "#workflows/gate/types/GateGroupTiming";
 import type { GateMode } from "#workflows/gate/types/GateMode";
 import type { GateRunReport } from "#workflows/gate/types/GateRunReport";
+import type { GateStepTiming } from "#workflows/gate/types/GateStepTiming";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
@@ -44,48 +48,6 @@ const lockLabels = {
   worktree: "worktree gate",
   all: "whole-project gate",
 } as const satisfies Record<GateMode, string>;
-
-async function listSteps(
-  config: LoadedConfig,
-  audience: GateStep["audience"],
-): Promise<Record<GateStage, GateStep[]>> {
-  const contributions = await config.context.registry.contributions(
-    "gate.steps",
-    config,
-  );
-
-  const steps: Record<GateStage, GateStep[]> = {
-    generate: [],
-    fixes: [],
-    checks: [],
-    commands: [],
-    warnings: [],
-  };
-
-  for (const { entry } of contributions) {
-    if (audience === "everyone" && entry.audience !== "everyone") {
-      continue;
-    }
-
-    steps[entry.stage].push({
-      audience: entry.audience,
-      name: entry.name,
-      async run(files, removed) {
-        const run = await loadLazy(entry);
-
-        return run(config, files, removed);
-      },
-    });
-  }
-
-  if (audience === "everyone") {
-    return steps;
-  }
-
-  steps.commands.push(...(await listCommandSteps(config)));
-
-  return steps;
-}
 
 async function readStamps(file: string): Promise<readonly string[]> {
   const content = await readTextFile(file);
@@ -175,7 +137,8 @@ async function verify(
   config: LoadedConfig,
   mode: ChangeMode,
   audience: GateStep["audience"],
-): Promise<GateRunReport> {
+  groups: GateGroupTiming[],
+): Promise<Omit<GateRunReport, "timings">> {
   const { root } = config.context;
 
   const [edited, removed] = await Promise.all([
@@ -190,8 +153,10 @@ async function verify(
   const local = await runSteps(
     localSteps,
     { files: edited, removed: [] },
-    { concurrent: false },
+    { group: "local", concurrent: false },
   );
+
+  groups.push(local.timing);
 
   if (local.failures.length > 0) {
     return { ...local, checked: coverSteps([localSteps], scope) };
@@ -231,7 +196,16 @@ async function verify(
   const stamps = agents ? await readStamps(stamp) : [];
 
   if (stamps.length > 0) {
-    const initial = await readTreeIdentity(config, mode);
+    const {
+      result: initial,
+      duration,
+    } = await measureAsync(readTreeIdentity, config, mode);
+
+    groups.push({
+      name: "stamp",
+      duration,
+      steps: [{ name: "lookup", duration }],
+    });
 
     // @debt a stamped tree reports no duplicate or step warnings, so the commit after a passing stop never shows them again.
     if (stamps.some((line) => isReusable(line, mode, initial))) {
@@ -253,12 +227,14 @@ async function verify(
     checks,
     commands,
     warnings,
-  } = await listSteps(config, audience);
+  } = await listStageSteps(config, audience);
 
   const generateOutcome = await runGenerateStage(root, mode, generate, {
     files: edited,
     removed,
   });
+
+  groups.push(generateOutcome.timing);
 
   if (generateOutcome.failures.length > 0) {
     return {
@@ -281,7 +257,25 @@ async function verify(
 
   const changes: GateChanges = { files, removed };
 
-  const fixOutcome = await runSteps(fixes, changes, { concurrent: false });
+  const fixOutcome = await runSteps(fixes, changes, {
+    group: "fixes",
+    concurrent: false,
+  });
+
+  groups.push(fixOutcome.timing);
+
+  const tree: GateStepTiming[] = [];
+
+  async function timeTree<Result>(
+    name: string,
+    task: () => Promise<Result>,
+  ): Promise<Result> {
+    const { result, duration } = await measureAsync(task);
+
+    tree.push({ name, duration });
+
+    return result;
+  }
 
   const failures = [
     ...local.failures,
@@ -290,16 +284,24 @@ async function verify(
   ];
 
   if (mode === "staged") {
-    await runGit(root, ["add", "--", ...files]);
+    await timeTree("staging", () => runGit(root, ["add", "--", ...files]));
   }
 
-  const verified = await readTreeIdentity(config, mode);
+  const verified = await timeTree("identity", () => {
+    return readTreeIdentity(config, mode);
+  });
 
   const [checkOutcome, commandOutcome, warningOutcome] = await Promise.all([
-    runSteps(checks, changes, { concurrent: true }),
-    runSteps(commands, changes, { concurrent: false }),
-    runSteps(warnings, changes, { concurrent: true }),
+    runSteps(checks, changes, { group: "checks", concurrent: true }),
+    runSteps(commands, changes, { group: "commands", concurrent: false }),
+    runSteps(warnings, changes, { group: "warnings", concurrent: true }),
   ]);
+
+  groups.push(
+    checkOutcome.timing,
+    commandOutcome.timing,
+    warningOutcome.timing,
+  );
 
   failures.push(...checkOutcome.failures, ...commandOutcome.failures);
 
@@ -314,22 +316,32 @@ async function verify(
     ...warningOutcome.warnings,
   ];
 
-  const current = await readTreeIdentity(config, mode);
+  const changed = await timeTree("verification", async () => {
+    const current = await readTreeIdentity(config, mode);
 
-  const changed = await checkVerifiedTree(root, mode, verified, current);
+    return checkVerifiedTree(root, mode, verified, current);
+  });
 
   if (changed !== undefined) {
     failures.push(changed);
   }
 
   if (agents && failures.length === 0) {
-    await mkdir(dirname(stamp), { recursive: true });
+    await timeTree("stamp", async () => {
+      await mkdir(dirname(stamp), { recursive: true });
 
-    await writeFile(
-      stamp,
-      `${[...stamps, formatStamp(mode, verified)].slice(-stampLimit).join("\n")}\n`,
-    );
+      await writeFile(
+        stamp,
+        `${[...stamps, formatStamp(mode, verified)].slice(-stampLimit).join("\n")}\n`,
+      );
+    });
   }
+
+  groups.push({
+    name: "tree",
+    duration: sum(...map(tree, ({ duration }) => duration)),
+    steps: tree,
+  });
 
   return {
     failures,
@@ -367,10 +379,19 @@ export async function runGate(
           );
         },
       },
-      () => {
-        return mode === "all"
-          ? checkProject(config)
-          : verify(config, mode, audience);
+      async () => {
+        const groups: GateGroupTiming[] = [];
+
+        const { result, duration } = await measureAsync(() => {
+          return mode === "all"
+            ? checkProject(config, groups)
+            : verify(config, mode, audience, groups);
+        });
+
+        return {
+          ...result,
+          timings: { groups, duration },
+        };
       },
     );
   } catch (error) {
@@ -390,6 +411,10 @@ export async function runGate(
         steps: [],
         scope: 0,
         reused: false,
+      },
+      timings: {
+        groups: [],
+        duration: 0,
       },
     };
   }
