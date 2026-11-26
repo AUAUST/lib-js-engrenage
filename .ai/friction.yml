@@ -14,6 +14,7 @@ taps:
   - {id: FR-990e2d, at: 2026-11-25T21:54:59Z, note: barrel export before sync}
   - {id: FR-990e2d, at: 2026-11-25T22:08:01Z, note: "Again for listMirrorRoots, listTestsRootDiagnostics and MirrorRoot in batiment/structure"}
   - {id: FR-dc82e8, at: 2026-11-25T22:29:18Z, note: vitest console output silenced}
+  - {id: FR-253f10, at: 2026-11-26T11:33:55Z, note: also tests/bin/engrenage/pnpm.test.src.ts upgrade test}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

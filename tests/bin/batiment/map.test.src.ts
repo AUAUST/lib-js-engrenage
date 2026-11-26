@@ -4,7 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import map from "#bin/engrenage/batiment/map";
+import map from "#bin/batiment/map";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -32,7 +32,7 @@ afterEach(() => {
   process.exitCode = undefined;
 });
 
-describe("engrenage batiment map", () => {
+describe("batiment map", () => {
   test("prints each environment as the project map's tree, with classification details", async () => {
     createProject(
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." } } } } }',

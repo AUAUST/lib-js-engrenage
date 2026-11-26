@@ -1,0 +1,4 @@
+{
+  "purpose": "Batiment commands: walk the project structure and report how batiment classifies it.",
+  "debt": "Ships batiment's CLI inside engrenage, by an earlier decision outside engrenage's Compass."
+}

@@ -6,9 +6,9 @@ paths:
 # Project map: bin
 
 ```
-bin/  The `engrenage` and `metalbrain` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains.  (global roles: executable.ts *.ts)
-├─ engrenage{batiment pnpm}  Project tooling commands.
-│  ├─ batiment  Walk the project structure and report how batiment classifies it.  [debt: Exposes batiment, hosted here by an earlier decision outside engrenage's Compass, through engrenage's CLI.]
+bin/  The `engrenage`, `metalbrain` and `batiment` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains.  (global roles: executable.ts *.ts)
+├─ batiment  Batiment commands: walk the project structure and report how batiment classifies it.  [debt: Ships batiment's CLI inside engrenage, by an earlier decision outside engrenage's Compass.]
+├─ engrenage{pnpm}  Project tooling commands.
 │  └─ pnpm  Package manager maintenance commands.
 └─ metalbrain{agents{rules skills} backlog github{labels} hook{claude} logs planning{issue walk}}  Metalbrain agent commands: agent integration, dispatch and runs, issue planning, GitHub metadata, the shared backlog, the agent logs, ranked search across record kinds, debt markers, and the hooks the runtimes run directly from their settings.  [debt: Ships metalbrain's CLI inside engrenage, by an earlier decision outside engrenage's Compass.]
    ├─ agents{rules skills}  Agent lifecycle and instruction commands.

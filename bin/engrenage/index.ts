@@ -1,6 +1,5 @@
 import { defineGroup } from "#workflows/cli/index";
 
-import batiment from "#bin/engrenage/batiment/index";
 import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";
 import eslintSuppress from "#bin/engrenage/eslintSuppress";
@@ -34,7 +33,6 @@ export default defineGroup({
   commands: {
     "init": init,
     "sync": sync,
-    "batiment": batiment,
     "gate": gate,
     "pnpm": pnpm,
     "link": link,

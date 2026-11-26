@@ -31,6 +31,18 @@ test(
 );
 
 test(
+  "the executable rejects `batiment`, moved to its own `batiment` command",
+  { timeout: binaryTimeout },
+  async () => {
+    const failure = run(process.execPath, [getExecutable(), "batiment"]);
+
+    await expect(failure).rejects.toMatchObject({
+      stderr: expect.stringContaining("unknown command 'batiment'"),
+    });
+  },
+);
+
+test(
   "the executable rejects `structure`, renamed `batiment map`",
   { timeout: binaryTimeout },
   async () => {

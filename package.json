@@ -14,10 +14,12 @@
   },
   "type": "module",
   "bin": {
+    "batiment": "./dist/bin/batiment.mjs",
     "engrenage": "./dist/bin/engrenage.mjs",
     "metalbrain": "./dist/bin/metalbrain.mjs"
   },
   "scripts": {
+    "batiment": "node bin/batiment/executable.ts",
     "build": "pnpm run engrenage tsdown && pnpm run engrenage typecheck:dist && pnpm run engrenage vitest:dist",
     "ci": "pnpm run ci:check && pnpm run ci:test && pnpm run ci:build",
     "ci:build": "pnpm run build",

@@ -1,4 +1,0 @@
-{
-  "purpose": "Walk the project structure and report how batiment classifies it.",
-  "debt": "Exposes batiment, hosted here by an earlier decision outside engrenage's Compass, through engrenage's CLI."
-}

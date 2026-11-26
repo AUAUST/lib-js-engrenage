@@ -2,6 +2,7 @@ purpose: Command definitions, registration and program runs.
 taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
   - {id: BL-a3ff44, at: 2026-11-26T10:38:32Z, note: interscript saw gate output vanish when piped; draft new-gate-silent-pass takes it up}
+  - {id: BL-a3ff44, at: 2026-11-26T11:34:25Z, note: also batiment map --json}
 entries:
   - id: BL-62e56b
     title: Command registration state is shared or re-derived
@@ -81,7 +82,7 @@ entries:
     title: Split CLIs need engrenage's config, sync and tools, so their split is more than a package switch
     sites:
       - bin/metalbrain/index.ts:1
-      - bin/engrenage/batiment/actions/map.ts:1
+      - bin/batiment/actions/map.ts:1
     why: "bin/metalbrain imports #workflows/config 32 times, #project/sync 16, #tools/* 17; batiment map needs #workflows/config and #project/structure reportStructure; only the command interface is settled"
     want: A decision on how a split CLI finds its host, or which commands stay in engrenage
     created: 2026-11-26T11:19:47Z

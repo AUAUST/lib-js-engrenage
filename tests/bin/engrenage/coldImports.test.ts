@@ -40,8 +40,7 @@ test(
       [
         "--import",
         `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
-        getExecutable(),
-        "batiment",
+        getExecutable("batiment"),
         "map",
       ],
       { cwd: project.root },
