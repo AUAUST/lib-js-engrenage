@@ -1,6 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 
 import { hasNodeCondition } from "#foundation/processes/operations/hasNodeCondition";
+import { ensureNativeConfigLoader } from "#tools/vitest/operations/ensureNativeConfigLoader";
 import { resolveVitestArguments } from "#tools/vitest/operations/resolveVitestArguments";
 import { resolveVitestWatchArguments } from "#tools/vitest/operations/resolveVitestWatchArguments";
 
@@ -18,8 +19,8 @@ test.each([
   expect(hasNodeCondition("source", options)).toBe(active);
 });
 
-test("loads the Vitest config natively only under the source condition", () => {
-  vi.stubEnv("NODE_OPTIONS", "--conditions=source");
+test("loads the Vitest config natively whenever Node strips types", () => {
+  vi.stubEnv("NODE_OPTIONS", "");
 
   expect(resolveVitestArguments(["--", "a.test.ts"])).toEqual([
     "run",
@@ -30,9 +31,13 @@ test("loads the Vitest config natively only under the source condition", () => {
     "a.test.ts",
   ]);
 
-  vi.stubEnv("NODE_OPTIONS", "");
+  expect(ensureNativeConfigLoader(["run"], "strip")).toEqual([
+    "run",
+    "--configLoader",
+    "native",
+  ]);
 
-  expect(resolveVitestArguments([])).not.toContain("--configLoader");
+  expect(ensureNativeConfigLoader(["run"], false)).toEqual(["run"]);
 });
 
 test("reads a leading Vitest mode as the mode, never as a file filter", () => {
@@ -42,11 +47,15 @@ test("reads a leading Vitest mode as the mode, never as a file filter", () => {
     "run",
     "a.test.ts",
     "--typecheck",
+    "--configLoader",
+    "native",
   ]);
 
   expect(resolveVitestWatchArguments(["dev"])).toEqual([
     "watch",
     "--typecheck",
+    "--configLoader",
+    "native",
   ]);
 
   expect(() => resolveVitestArguments(["watch"])).toThrow(/watch mode/u);

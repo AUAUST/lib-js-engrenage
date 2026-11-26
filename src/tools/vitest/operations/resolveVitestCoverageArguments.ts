@@ -1,5 +1,5 @@
 import { ensureIncludes } from "#foundation/processes/index";
-import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
+import { ensureNativeConfigLoader } from "#tools/vitest/operations/ensureNativeConfigLoader";
 import { dropVitestMode } from "#tools/vitest/utils/dropVitestMode";
 
 export function resolveVitestCoverageArguments(
@@ -9,5 +9,5 @@ export function resolveVitestCoverageArguments(
 
   ensureIncludes(resolved, "--coverage");
 
-  return ensureSourceConfigLoader(["run", ...resolved]);
+  return ensureNativeConfigLoader(["run", ...resolved]);
 }

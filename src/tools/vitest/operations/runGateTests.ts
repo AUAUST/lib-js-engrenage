@@ -9,7 +9,7 @@ import {
 } from "#batiment/structure/index";
 import { packages } from "#constants";
 import { runGateBinary, type GateResult } from "#project/gate/index";
-import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
+import { ensureNativeConfigLoader } from "#tools/vitest/operations/ensureNativeConfigLoader";
 import type { LoadedConfig } from "#project/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -125,14 +125,14 @@ export async function runGateTests(
       : runGateBinary(
           root,
           packages.vitest,
-          ensureSourceConfigLoader(["run", "--passWithNoTests", ...owned]),
+          ensureNativeConfigLoader(["run", "--passWithNoTests", ...owned]),
         ),
     related.length === 0
       ? undefined
       : runGateBinary(
           root,
           packages.vitest,
-          ensureSourceConfigLoader([
+          ensureNativeConfigLoader([
             "related",
             "--run",
             "--passWithNoTests",

@@ -1,6 +1,6 @@
 import { ensureIncludes } from "#foundation/processes/index";
 import { buildMode } from "#tools/vitest/constants";
-import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
+import { ensureNativeConfigLoader } from "#tools/vitest/operations/ensureNativeConfigLoader";
 import { includeTypeTests } from "#tools/vitest/operations/includeTypeTests";
 import { dropVitestMode } from "#tools/vitest/utils/dropVitestMode";
 
@@ -9,5 +9,5 @@ export function resolveVitestDistArguments(args: readonly string[]): string[] {
 
   ensureIncludes(resolved, ["--mode", buildMode]);
 
-  return ensureSourceConfigLoader(["run", ...resolved]);
+  return ensureNativeConfigLoader(["run", ...resolved]);
 }

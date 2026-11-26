@@ -21,10 +21,3 @@ entries:
     why: friction ×1, maybe ×3 with the "type check of tests" lines; the run fails while the summary says it passed.
     want: the summary counting errors in source files; investigate the engrenage Vitest config or reporter.
     created: 2026-11-22T00:00:00Z
-  - id: BL-e102fb
-    title: Repository Vitest runs bundle the source config
-    sites:
-      - src/tools/vitest/operations/ensureSourceConfigLoader.ts:1
-    why: "--configLoader native is added only under the source condition; pnpm engrenage runs without it, so Vite bundles src behind vitest.config.ts: 2.5 s startup against 1.27 s native"
-    want: The native loader whenever Node can strip the config's types
-    created: 2026-11-26T17:34:04Z

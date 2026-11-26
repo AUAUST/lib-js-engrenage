@@ -40,7 +40,13 @@ describe("runGateTests", () => {
       [
         project.root,
         packages.vitest,
-        ["run", "--passWithNoTests", "tests/src/tools/lefthook/"],
+        [
+          "run",
+          "--passWithNoTests",
+          "tests/src/tools/lefthook/",
+          "--configLoader",
+          "native",
+        ],
       ],
     ]);
   });
@@ -66,6 +72,8 @@ describe("runGateTests", () => {
           "--run",
           "--passWithNoTests",
           "src/tools/lefthook/setup/syncLefthookConfig.ts",
+          "--configLoader",
+          "native",
         ],
       ],
     ]);

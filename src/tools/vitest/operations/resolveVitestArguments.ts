@@ -1,9 +1,9 @@
-import { ensureSourceConfigLoader } from "#tools/vitest/operations/ensureSourceConfigLoader";
+import { ensureNativeConfigLoader } from "#tools/vitest/operations/ensureNativeConfigLoader";
 import { includeTypeTests } from "#tools/vitest/operations/includeTypeTests";
 import { dropVitestMode } from "#tools/vitest/utils/dropVitestMode";
 
 export function resolveVitestArguments(args: readonly string[]): string[] {
-  return ensureSourceConfigLoader([
+  return ensureNativeConfigLoader([
     "run",
     ...includeTypeTests(dropVitestMode("run", args)),
   ]);
