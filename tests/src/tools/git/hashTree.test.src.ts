@@ -32,6 +32,38 @@ describe("hashTree", () => {
     expect(git("status", "--porcelain")).toContain("?? draft.md");
   });
 
+  test("hashes the included ignored files in both modes", async () => {
+    const { project } = await createGitRepository(
+      {
+        "package.json": '{"type":"module"}',
+        ".gitignore": "node_modules\ngenerated.ts\n",
+        "generated.ts": "export {};\n",
+      },
+      [],
+    );
+
+    const include = ["generated.ts"];
+
+    const staged = await hashTree(project.root, { mode: "staged", include });
+
+    const worktree = await hashTree(project.root, {
+      mode: "worktree",
+      include,
+    });
+
+    expect(staged).not.toBe(await hashTree(project.root, { mode: "staged" }));
+
+    project.write("generated.ts", "export const value = 1;\n");
+
+    expect(await hashTree(project.root, { mode: "staged", include })).not.toBe(
+      staged,
+    );
+
+    expect(
+      await hashTree(project.root, { mode: "worktree", include }),
+    ).not.toBe(worktree);
+  });
+
   test("excludes files on an unborn branch", async () => {
     const project = createTemporaryProject({ "a.md": "a\n" });
 

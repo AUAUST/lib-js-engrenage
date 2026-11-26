@@ -33,11 +33,22 @@ async function unstage(
   await runGit(root, args, env);
 }
 
+/**
+ * The tree hash of `selection`: the index in `staged` mode, the worktree without
+ * its `exclude` files in `worktree` mode, plus in both the `include` files Git
+ * ignores, as they are on disk.
+ *
+ * @throws {Error} When git fails.
+ */
 export async function hashTree(
   root: Directory,
-  selection: { mode: "staged" } | { mode: "worktree"; exclude?: Files },
+  selection:
+    | { mode: "staged"; include?: Files }
+    | { mode: "worktree"; exclude?: Files; include?: Files },
 ): Promise<string> {
-  if (selection.mode === "staged") {
+  const include = selection.include ?? [];
+
+  if (selection.mode === "staged" && include.length === 0) {
     return hashIndex(root);
   }
 
@@ -60,9 +71,15 @@ export async function hashTree(
 
     const env = { GIT_INDEX_FILE: index };
 
-    await runGit(root, ["add", "-A"], env);
+    if (selection.mode === "worktree") {
+      await runGit(root, ["add", "-A"], env);
 
-    await unstage(root, selection.exclude ?? [], env);
+      await unstage(root, selection.exclude ?? [], env);
+    }
+
+    if (include.length > 0) {
+      await runGit(root, ["add", "-f", "--", ...include], env);
+    }
 
     return await hashIndex(root, env);
   } finally {

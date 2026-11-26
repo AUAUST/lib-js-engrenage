@@ -17,6 +17,7 @@ taps:
   - {id: FR-253f10, at: 2026-11-26T11:33:55Z, note: also tests/bin/engrenage/pnpm.test.src.ts upgrade test}
   - {id: FR-253f10, at: 2026-11-26T12:00:24Z, note: "again on #954, first gate run; second passed"}
   - {id: FR-e10b9b, at: 2026-11-26T12:11:06Z, note: also barrelDirective.test.src.ts}
+  - {id: FR-dc82e8, at: 2026-11-26T13:12:28Z, note: vitest hides test console output}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1233,3 +1234,8 @@ entries:
     tried: --category option
     stopped: category is positional; read --help
     created: 2026-11-26T12:40:35Z
+  - id: FR-33b33d
+    subject: gate fix stage reformats test fixtures
+    tried: stamp reuse test with unformatted graphql
+    stopped: prettier changed the tree, no reuse; wrote formatted fixtures
+    created: 2026-11-26T13:12:22Z

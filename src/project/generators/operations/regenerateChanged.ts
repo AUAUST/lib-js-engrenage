@@ -30,6 +30,8 @@ async function isStale(
   return matched.includes(false);
 }
 
+// @debt a generator reruns only when the change set touches its inputs, so an output an earlier run left from other inputs stays stale while the tree holds no change to them; freshness keyed on its inputs' contents would not depend on the change set
+// @debt inputs reach only the scope's own files, so a generator reading a dependency cannot declare the lockfile or a linked checkout that changes it
 /**
  * Runs, in declaration order, each generator whose inputs match a changed or
  * removed file, or one of whose outputs matches no file.

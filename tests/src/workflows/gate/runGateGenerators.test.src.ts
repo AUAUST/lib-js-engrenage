@@ -126,6 +126,34 @@ describe("runGate generators", { timeout: binaryTimeout }, () => {
     expect(git("diff", "--name-only")).toBe("");
   });
 
+  test("reruns the generator whose ignored output a later run changed, once the tree returns to a passed state", async () => {
+    const { project } = await createGeneratorRepository({
+      command: "cp schema/a.graphql .runs-schema",
+      inputs: "schema/**",
+      outputs: ".runs-schema",
+    });
+
+    const config = await loadConfig(project.root);
+
+    const passed = "type Query {\n  b: Int\n}\n";
+
+    project.write("schema/a.graphql", passed);
+
+    await runGate(config, { mode: "worktree" });
+
+    project.write("schema/a.graphql", "type Query {\n  c: Int\n}\n");
+
+    await runGate(config, { mode: "worktree" });
+
+    project.write("schema/a.graphql", passed);
+
+    const { failures } = await runGate(config, { mode: "worktree" });
+
+    expect(failures).toEqual([]);
+
+    expect(project.read(".runs-schema")).toBe(passed);
+  });
+
   test("fails the gate under the name of a failing generator", async () => {
     const { project, git } = await createGeneratorRepository({
       command: "echo broken; exit 1",
