@@ -9,6 +9,7 @@ import {
   roadmapSection,
 } from "#tools/github/issues/contract/constants";
 import { parseIssueList } from "#tools/github/issues/contract/utils/parseIssueList";
+import { stripExternalWriteMarker } from "#tools/github/issues/contract/utils/stripExternalWriteMarker";
 import type { ParsedIssueBody } from "#tools/github/issues/contract/types/ParsedIssueBody";
 
 const headerPattern = new RegExp(`^${qualifiedReferenceSource}`);
@@ -45,7 +46,7 @@ function parseSectionNames(text: string) {
 function parseHeader(line: string): ParsedIssueBody["header"] {
   const [ancestors = "", ...rest] = line.split(partSeparator);
 
-  const text = rest.join(partSeparator);
+  const text = stripExternalWriteMarker(rest.join(partSeparator));
 
   const colon = text.indexOf(":");
 

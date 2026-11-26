@@ -1,6 +1,7 @@
 import { keys } from "@auaust/toolkit/object";
 
 import {
+  stripExternalWriteMarker,
   stripHeaderChain,
   type IssueContract,
 } from "#tools/github/issues/contract/index";
@@ -23,5 +24,7 @@ export function toDraftBody(
     .flatMap(({ lines }) => lines)
     .join("\n");
 
-  return localizeReferences(stripHeaderChain(kept), source, context);
+  const stripped = stripExternalWriteMarker(stripHeaderChain(kept)).trim();
+
+  return localizeReferences(stripped, source, context);
 }

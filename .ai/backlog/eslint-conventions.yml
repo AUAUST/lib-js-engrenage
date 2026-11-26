@@ -136,3 +136,8 @@ entries:
     why: Interscript's config has 574 objects and 8,476 file patterns; config-array's getConfig takes ~2.7 s CPU of the 19 s whole-project lint, minimatch 1.2 s of it
     want: fewer objects per scope, such as one merged object per scope and file kind, or basePath instead of prefixed patterns
     created: 2026-11-24T00:00:00Z
+  - id: BL-30e730
+    title: Lint conventions apply one threshold to every role, though roles differ in what they hold
+    why: a contract constants file outgrows max-lines by nature, yet must stay one file; workers split it or disable the rule
+    want: "each role tunes its own lint conventions: file length, complexity, private members allowed, and similar per-role limits"
+    created: 2026-11-26T13:30:20Z

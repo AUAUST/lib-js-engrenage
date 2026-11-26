@@ -12,6 +12,7 @@ import {
 import {
   isSameIssue,
   parseIssueBody,
+  renderExternalWriteMarker,
   renderHeader,
   renderReference,
   renderRoadmap,
@@ -21,6 +22,7 @@ import {
 import { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
 import { insertResplitLog } from "#tools/github/issues/drafts/utils/insertResplitLog";
 import { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
+import { isExternalWrite } from "#tools/github/issues/drafts/utils/isExternalWrite";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { readDraftHeader } from "#tools/github/issues/drafts/utils/readDraftHeader";
 import { renderDraftReferences } from "#tools/github/issues/drafts/utils/renderDraftReferences";
@@ -81,13 +83,26 @@ function renderBodyHeader(
     numbers,
   );
 
+  if (contract?.hasHeader !== true) {
+    return rendered;
+  }
+
   const header = readDraftHeader(rendered);
 
-  if (
-    contract?.hasHeader !== true ||
-    header === undefined ||
-    ancestors.length === 0
-  ) {
+  const chain = header === undefined
+    ? []
+    : ancestors.map((reference) => {
+        return renderReference(
+          resolveIssueLocation(reference, context, numbers),
+          access.repository,
+        );
+      });
+
+  const marker = isExternalWrite(access.repository, context.repository)
+    ? [renderExternalWriteMarker(context.repository)]
+    : [];
+
+  if (chain.length === 0 && marker.length === 0) {
     return rendered;
   }
 
@@ -95,13 +110,9 @@ function renderBodyHeader(
 
   return [
     renderHeader(
-      ancestors.map((reference) => {
-        return renderReference(
-          resolveIssueLocation(reference, context, numbers),
-          access.repository,
-        );
-      }),
-      header,
+      chain,
+      ...marker,
+      ...(chain.length === 0 || header === undefined ? [] : [header]),
     ),
     "",
     ...sections.flatMap(({ lines }) => lines),

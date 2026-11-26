@@ -10,6 +10,8 @@ import { max } from "@auaust/toolkit/math";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { externalWritePrefix } from "#tools/github/issues/contract/constants";
+import { renderExternalWriteMarker } from "#tools/github/issues/contract/utils/renderExternalWriteMarker";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
 import { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
@@ -139,6 +141,8 @@ c
 ## Tests
 
 - t → passes`;
+
+const foreignTests = "\n\n## Tests\n\n- t → passes";
 
 const segmentDoneWhen = "## Done when\n\n- The later items can start.";
 
@@ -1302,10 +1306,6 @@ Follows #{app.12} and #{toolkit.45}.
 ## Done when
 
 - Done.
-
-## Tests
-
-- t → passes
 `,
       ".ai/issues/new-local.draft.md": `---
 title: "Local after #{toolkit.new-port}, #{app.7} and \`#{app.8}\`"
@@ -1339,7 +1339,13 @@ Follows #{app.7}.
       "Follows AUAUST/app#12 and #45.",
     );
 
+    expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
+      renderExternalWriteMarker("AUAUST/app"),
+    );
+
     expect(findIssue(14).body).toContain("Follows #7.");
+
+    expect(findIssue(14).body).not.toContain(externalWritePrefix);
 
     expect(findIssue(14).title).toBe(
       "Local after AUAUST/toolkit#46, #7 and `#{app.8}`",
@@ -1422,10 +1428,9 @@ See #{unknown.1}.
   });
 
   test("publishes another repository's claimed issue merged with a GitHub edit, without the lock", async () => {
-    findIssue(45, "toolkit").body = taskBody.replace(
-      "#10 · Compass: the extra\n\n",
-      "",
-    );
+    findIssue(45, "toolkit").body = taskBody
+      .replace("#10 · Compass: the extra\n\n", "")
+      .replace(foreignTests, "");
 
     const root = createProject();
 
@@ -1502,10 +1507,6 @@ After ${reference}.
 ## Done when
 
 - Done.
-
-## Tests
-
-- t → passes
 `,
     });
   }
@@ -1530,6 +1531,82 @@ After ${reference}.
     );
 
     expect(qualified.passed).toBe(true);
+  });
+
+  function createCrashDraft(fix: string) {
+    return createProject({
+      ".ai/issues/toolkit.new-crash.draft.md": `---
+title: Crash
+type: Problem
+Defect: Bug
+---
+
+## Context
+
+Running \`port\` from #{app.12} crashes.
+
+## Leads
+
+- The stack trace ends in \`parse\`.
+${fix}`,
+    });
+  }
+
+  test("refuses **Fix** in a draft of another repository, naming that repository's agents", async () => {
+    const root = createCrashDraft("\n## Fix\n\nGuard `parse`.\n");
+
+    const {
+      lines,
+      passed,
+    } = await publishIssues(await loadConfig(root), ["toolkit.new-crash"]);
+
+    expect({ lines, passed }).toEqual({
+      lines: expect.arrayContaining([
+        "toolkit.new-crash: **Fix** states a cause, mechanism or approach in AUAUST/toolkit's code, which AUAUST/toolkit's agents settle: a draft written from AUAUST/app keeps only **Context**, **Leads**, and **Done when**, stating the symptoms you see and the outcome you need. Delete **Fix**.",
+      ]),
+      passed: false,
+    });
+  });
+
+  test("publishes a draft of another repository holding only **Context** and **Leads** with the external write marker", async () => {
+    const root = createCrashDraft("");
+
+    const {
+      passed,
+    } = await publishIssues(await loadConfig(root), ["toolkit.new-crash"]);
+
+    expect(passed).toBe(true);
+
+    expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
+      renderExternalWriteMarker("AUAUST/app"),
+    );
+  });
+
+  test("drops the external write marker when the target repository republishes the issue", async () => {
+    findIssue(
+      45,
+      "toolkit",
+    ).body = `${renderExternalWriteMarker("AUAUST/app")}\n\n${taskBody.replace("#10 · Compass: the extra\n\n", "")}`;
+
+    const root = createProject({
+      "package.json": JSON.stringify({
+        name: "@auaust/toolkit",
+        type: "module",
+        repository: "github:AUAUST/toolkit",
+      }),
+    });
+
+    await claimIssues(await loadConfig(root), ["45"]);
+
+    expect(read(root, "45.draft.md")).not.toContain(externalWritePrefix);
+
+    const { passed } = await publishIssues(await loadConfig(root), ["45"]);
+
+    expect(passed).toBe(true);
+
+    expect(findIssue(45, "toolkit").body).toBe(
+      taskBody.replace("#10 · Compass: the extra\n\n", ""),
+    );
   });
 
   test("claims a Plan's roadmap line naming a toolkit sub-issue and publishes it back unchanged", async () => {
@@ -1568,7 +1645,7 @@ After ${reference}.
 
     await config.context.filesystem.write(
       ".ai/issues/toolkit.new-port.draft.md",
-      `---\ntitle: Port\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the port")}\n`,
+      `---\ntitle: Port\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the port").replace(foreignTests, "")}\n`,
     );
 
     await config.context.filesystem.flush();
@@ -1584,7 +1661,7 @@ After ${reference}.
     expect(findIssue(11).toolkitSubIssues).toEqual([46]);
 
     expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
-      "AUAUST/app#10 › AUAUST/app#11 · Compass: the port",
+      `AUAUST/app#10 › AUAUST/app#11 · ${renderExternalWriteMarker("AUAUST/app")} · Compass: the port`,
     );
 
     const check = await checkIssues(

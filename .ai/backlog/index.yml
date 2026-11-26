@@ -159,6 +159,7 @@ eslint-conventions:
     - BL-119303
     - BL-58f13f
     - BL-e557f3
+    - BL-30e730
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:

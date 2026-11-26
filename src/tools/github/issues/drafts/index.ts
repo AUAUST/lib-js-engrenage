@@ -28,6 +28,7 @@ export { writeResplitLogs } from "#tools/github/issues/drafts/operations/writeRe
 export { checkDraftBody } from "#tools/github/issues/drafts/utils/checkDraftBody";
 export { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 export { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
+export { checkExternalSections } from "#tools/github/issues/drafts/utils/checkExternalSections";
 export { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 export { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
 export { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";
@@ -36,6 +37,7 @@ export { findTypeNodeId } from "#tools/github/issues/drafts/utils/findTypeNodeId
 export { insertResplitLog } from "#tools/github/issues/drafts/utils/insertResplitLog";
 export { insertSection } from "#tools/github/issues/drafts/utils/insertSection";
 export { isClaimedStem } from "#tools/github/issues/drafts/utils/isClaimedStem";
+export { isExternalWrite } from "#tools/github/issues/drafts/utils/isExternalWrite";
 export { isSlug } from "#tools/github/issues/drafts/utils/isSlug";
 export { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 export { listManifestOptions } from "#tools/github/issues/drafts/utils/listManifestOptions";

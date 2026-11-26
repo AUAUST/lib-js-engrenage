@@ -8,6 +8,12 @@ entries:
   - id: PD-10e786
     subject: architecture review trigger instruction
     what: "BL-40b4ed: run the architecture review unasked when work adds, moves or duplicates a capability across owners"
-    why: user batches instruction changes into a later consolidated writer pass
+    why: user moved it into the foreign-issue writer batch (PD-983cec)
     owner: BL-40b4ed
     created: 2026-11-26T12:04:16Z
+  - id: PD-983cec
+    subject: cross-repo issue reading instructions
+    what: "writer: agents read issues written from another repository as symptoms and a consumer's goal, never a template or trusted approach; restating consumer records states only what HEAD proves"
+    why: "waits on #967 landing, so the wording matches the marker it ships"
+    owner: "#967"
+    created: 2026-11-26T13:21:20Z

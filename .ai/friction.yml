@@ -1239,3 +1239,18 @@ entries:
     tried: stamp reuse test with unformatted graphql
     stopped: prettier changed the tree, no reuse; wrote formatted fixtures
     created: 2026-11-26T13:12:22Z
+  - id: FR-5189cb
+    subject: contract constants.ts max-lines limit
+    tried: shared external section list to fit 350 lines
+    stopped: "user decision: leave the lint finding, design kept per contract"
+    created: 2026-11-26T13:32:13Z
+  - id: FR-1af537
+    subject: metalbrain show on closed backlog IDs
+    tried: show BL-e93942 BL-7333f0 BL-d3e19c cited by open issues
+    stopped: no entry printed for closed IDs; traced them through git log -S
+    created: 2026-11-26T13:33:04Z
+  - id: FR-03a07f
+    subject: shell hook rejections
+    tried: echo "====" separator and timeout
+    stopped: hook refused both; reworded separator, used tool timeout
+    created: 2026-11-26T13:33:04Z

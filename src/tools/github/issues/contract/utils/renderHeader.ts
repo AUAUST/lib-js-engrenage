@@ -3,6 +3,12 @@ import {
   partSeparator,
 } from "#tools/github/issues/contract/constants";
 
-export function renderHeader(chain: readonly string[], line: string): string {
-  return `${chain.join(chainSeparator)}${partSeparator}${line}`;
+export function renderHeader(
+  chain: readonly string[],
+  ...parts: readonly string[]
+): string {
+  return [
+    ...(chain.length === 0 ? [] : [chain.join(chainSeparator)]),
+    ...parts,
+  ].join(partSeparator);
 }

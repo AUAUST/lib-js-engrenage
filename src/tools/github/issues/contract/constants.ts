@@ -1,3 +1,5 @@
+/* eslint-disable auaust/max-lines -- contract constants hold every kind in one file, past the repository-wide length */
+// @debt one file-length limit binds every role; per-role tuning (BL-30e730) would lift this exception
 import { freeze } from "@auaust/toolkit/object";
 
 import type { IssueContract } from "#tools/github/issues/contract/types/IssueContract";
@@ -263,6 +265,7 @@ export const issueContracts = freeze({
       Provides: "Provides only for what a plan's Model contracts or a user-facing surface expect from this issue; delete it otherwise.",
       [housekeepingSection]: housekeepingHint,
     } as const),
+    externalSections: freeze(["Context", "Done when"] as const),
     hasHeader: true,
     subIssues: "references",
   } as const),
@@ -303,6 +306,7 @@ export const issueContracts = freeze({
       Fix: "Fix exactly when the cause is identified and its fix decided: that fix, for a worker. Keep at most one of Leads and Fix.",
       [housekeepingSection]: housekeepingHint,
     } as const),
+    externalSections: freeze(["Context", "Leads", "Done when"] as const),
     hasHeader: true,
     subIssues: "references",
   } as const),
@@ -326,6 +330,7 @@ export const issueContracts = freeze({
         }),
       }),
     ] as const),
+    externalSections: freeze(["Context", "Done when"] as const),
     hasHeader: true,
     subIssues: "references",
   } as const),
@@ -367,5 +372,9 @@ export const issueContracts = freeze({
 export const chainSeparator = " › ";
 
 export const partSeparator = " · ";
+
+export const externalWritePrefix = "External write from";
+
+export const externalWriteNotice = "all it states is symptoms of a consumer's goal, not a template; find the local change for that need, never trusting its stated approach";
 
 export const qualifiedReferenceSource = String.raw`(?:([\w.-]+\/[\w.-]+))?#(\d+)`;

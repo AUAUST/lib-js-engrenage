@@ -47,10 +47,12 @@ export { readIssueNumber } from "#tools/github/issues/contract/utils/readIssueNu
 export { readRepositoryFlag } from "#tools/github/issues/contract/utils/readRepositoryFlag";
 export { readShellFlag } from "#tools/github/issues/contract/utils/readShellFlag";
 export { readShellLiteral } from "#tools/github/issues/contract/utils/readShellLiteral";
+export { renderExternalWriteMarker } from "#tools/github/issues/contract/utils/renderExternalWriteMarker";
 export { renderHeader } from "#tools/github/issues/contract/utils/renderHeader";
 export { renderPlanningSheet } from "#tools/github/issues/contract/utils/renderPlanningSheet";
 export { renderReference } from "#tools/github/issues/contract/utils/renderReference";
 export { renderRoadmap } from "#tools/github/issues/contract/utils/renderRoadmap";
+export { stripExternalWriteMarker } from "#tools/github/issues/contract/utils/stripExternalWriteMarker";
 export { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeaderChain";
 // @end
 
