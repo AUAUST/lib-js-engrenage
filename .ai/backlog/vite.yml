@@ -3,6 +3,6 @@ entries:
   - id: BL-891fdf
     title: "A native Vite layer setting publicDir cannot resolve several static.dirs: createViteConfig throws before layers merge"
     sites:
-      - src/tools/vite/operations/createViteConfig.ts:136
-    want: Several static.dirs fail only when no native layer sets publicDir, like several src.dirs and root (#974)
+      - src/tools/vite/operations/createViteConfig.ts:143
+    want: Several static.dirs no longer throw before a native layer can set publicDir; several src.dirs now fall back to the project root for Vite root instead
     created: 2026-11-26T19:46:04Z

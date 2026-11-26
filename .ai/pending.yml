@@ -1,0 +1,7 @@
+entries:
+  - id: PD-943c4e
+    subject: External write notice as Markdown quote
+    what: Render the issue-body External write notice as a blockquote
+    why: Waits for the next worker to pull it in
+    owner: This shape session
+    created: 2026-11-26T20:19:08Z

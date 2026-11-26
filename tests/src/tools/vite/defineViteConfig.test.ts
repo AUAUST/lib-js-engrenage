@@ -81,17 +81,12 @@ describe("defineViteConfig", () => {
       mode: "production",
     } as const;
 
-    test("takes root from the native config, keeping outDir and envDir at the project root", async () => {
+    test("falls back to the project root, keeping outDir and envDir there", async () => {
       const project = createProject();
 
       vi.stubEnv("VITEST", undefined);
 
-      const viteConfig = await defineViteConfig.at(project.root)(
-        undefined,
-        ({ context }) => {
-          return { root: context.root };
-        },
-      )(env);
+      const viteConfig = await defineViteConfig.at(project.root)()(env);
 
       expect(viteConfig).toMatchObject({
         root: project.root,
@@ -100,14 +95,23 @@ describe("defineViteConfig", () => {
       });
     });
 
-    test("fails when no native config sets root", async () => {
+    test("takes root from a native config setting it", async () => {
       const project = createProject();
 
       vi.stubEnv("VITEST", undefined);
 
-      await expect(defineViteConfig.at(project.root)()(env)).rejects.toThrow(
-        "Several src.dirs",
-      );
+      const viteConfig = await defineViteConfig.at(project.root)(
+        undefined,
+        ({ context }) => {
+          return { root: join(context.root, "admin") };
+        },
+      )(env);
+
+      expect(viteConfig).toMatchObject({
+        root: join(project.root, "admin"),
+        envDir: project.root,
+        build: { outDir: join(project.root, "dist") },
+      });
     });
   });
 

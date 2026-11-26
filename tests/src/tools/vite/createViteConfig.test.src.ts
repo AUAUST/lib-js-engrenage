@@ -152,7 +152,7 @@ describe("createViteConfig", () => {
     );
   });
 
-  test("leaves root unset outside tests with several src.dirs", async () => {
+  test("falls back to the project root outside tests with several src.dirs", async () => {
     const config = await loadProject(
       {
         src: { dirs: ["src", "app"] },
@@ -166,7 +166,7 @@ describe("createViteConfig", () => {
 
     const vite = await createViteConfig(config, { isTesting: false });
 
-    expect(vite).not.toHaveProperty("root");
+    expect(vite.root).toBe(config.context.root);
 
     expect(vite.envDir).toBe(config.context.root);
   });
