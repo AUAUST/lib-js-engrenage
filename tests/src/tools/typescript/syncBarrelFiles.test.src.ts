@@ -121,6 +121,28 @@ export * as guard from "#panels/guard/entry";
     });
   });
 
+  test("removes a generated root entry left in another directory and writes the root entry in the first one, without a shared specifier", async () => {
+    const { project, config, sync } = createSplitKit({
+      "admin/entry.ts": `${header}export * as guard from "#panels/guard/entry";\n`,
+    });
+
+    const { src } = await config.resolve("structure");
+
+    expect(
+      (src?.diagnostics ?? []).filter(({ code }) => {
+        return code === "shared-specifier";
+      }),
+    ).toEqual([]);
+
+    await sync();
+
+    expect(existsSync(project.resolve("admin/entry.ts"))).toBe(false);
+
+    expect(project.read("src/entry.ts")).toBe(
+      `${header}export * as object from "#modules/object/entry";\n`,
+    );
+  });
+
   test("writes the root entry beside a hand-written `entry.ts` at the root of another directory, keeping it", async () => {
     const entry = 'export * from "#panels/guard/entry";\n';
 
