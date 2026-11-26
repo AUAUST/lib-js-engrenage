@@ -46,7 +46,7 @@ entries:
       - tests/src/tools/shopify/theme/theme.test.src.ts:101
       - tests/src/tools/github/issues/contract/issueTree.test.src.ts:146
       - tests/src/tools/github/issues/contract/issueContract.test.src.ts:831
-      - tests/src/tools/git/hashTree.test.src.ts:38
+      - tests/src/tools/git/hashTrees.test.src.ts:38
       - tests/src/tools/git/listExcludeFiles.test.src.ts:11
       - tests/src/tools/git/listIgnoredGlobs.test.src.ts:18
       - tests/src/tools/eslint/createEslintConfig.test.src.ts:1595

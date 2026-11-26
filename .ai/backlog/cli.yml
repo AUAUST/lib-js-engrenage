@@ -17,7 +17,7 @@ entries:
     sites:
       - src/nexus/cli/operations/getRunContext.ts:4
       - bin/engrenage/actions/vite.ts:5
-    why: "each bin and scripts action calls `loadValidatedConfig(…, { reporter: getRunContext().reporter })`, cloned across actions (jscpd: `structure`, codegen `editions`, `rules`, `schemas`); the Vite action repeats `ensureSourceConfigLoader` of `#tools/vitest`."
+    why: "each bin and scripts action calls `loadValidatedConfig(…, { reporter: getRunContext().reporter })`, cloned across actions (jscpd: `structure`, codegen `editions`, `rules`, `schemas`); the Vite action repeats the native config loader choice of `ensureNativeConfigLoader` in `#tools/vitest`."
     want: a run-scoped config loader in the run context; one source config loader.
     created: 2026-11-22T00:00:00Z
   - id: BL-97905e

@@ -7,11 +7,6 @@ import {
 } from "#metalbrain/runtimes/index";
 import { loadValidatedConfig, type LoadedConfig } from "#project/config/index";
 import { MissingEslintError } from "#tools/eslint/errors/MissingEslintError";
-import {
-  formatInfoMessages,
-  listInfoMessages,
-  type InfoMessage,
-} from "#tools/eslint/index";
 import type { File } from "#types/File";
 
 const payloadSchema = looseObject({
@@ -21,15 +16,20 @@ const payloadSchema = looseObject({
   }),
 });
 
-async function listEditMessages(
+async function describeEdit(
   config: LoadedConfig,
   file: File,
-): Promise<readonly InfoMessage[]> {
+): Promise<string | undefined> {
+  const {
+    formatInfoMessages,
+    listInfoMessages,
+  } = await import("#tools/eslint/index");
+
   try {
-    return await listInfoMessages(config, file);
+    return formatInfoMessages(file, await listInfoMessages(config, file));
   } catch (error) {
     if (error instanceof MissingEslintError) {
-      return [];
+      return;
     }
 
     throw error;
@@ -50,10 +50,7 @@ export async function lintClaudeEdit(
 
   const config = await loadValidatedConfig(resolveHookDirectory(cwd));
 
-  const context = formatInfoMessages(
-    file,
-    await listEditMessages(config, file),
-  );
+  const context = await describeEdit(config, file);
 
   return context === undefined ? undefined : { decision: "context", context };
 }
