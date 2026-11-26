@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
-import { enableCompileCache } from "node:module";
+import { constants, enableCompileCache } from "node:module";
 
-enableCompileCache();
+const { directory, status } = enableCompileCache();
+
+if (
+  status === constants.compileCacheStatus.ENABLED &&
+  directory !== undefined
+) {
+  process.env.NODE_COMPILE_CACHE = directory;
+}
 
 // @debt runs through engrenage's launch and run wrapper, reading engrenage's debug variable and config, until a split CLI finds its host (BL-efac74)
 const [

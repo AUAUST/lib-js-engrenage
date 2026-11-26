@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
-import { enableCompileCache } from "node:module";
+import { constants, enableCompileCache } from "node:module";
 
-enableCompileCache();
+const { directory, status } = enableCompileCache();
+
+if (
+  status === constants.compileCacheStatus.ENABLED &&
+  directory !== undefined
+) {
+  process.env.NODE_COMPILE_CACHE = directory;
+}
 
 // @debt a failure loading the cli barrel crashes a hook instead of failing open, since openHook lives behind it
 const { launch, openHook } = await import("#workflows/cli/index");
