@@ -66,6 +66,7 @@ export default defineConvention({
             return;
           }
 
+          // @debt Only the first declaration ranks a merged symbol; declarations spread over several files may rank differently.
           return target.declarations?.[0]?.getSourceFile();
         }
 
@@ -91,6 +92,7 @@ export default defineConvention({
           let target: string;
           let targetLevel: string | undefined;
 
+          // @debt A `/node_modules/` substring decides what is external; a symlinked workspace package resolves to its real path and may fall through `entityOf` unranked and unreported.
           if (
             program.isSourceFileFromExternalLibrary(file) ||
             file.fileName.includes("/node_modules/")
@@ -117,6 +119,7 @@ export default defineConvention({
               ? relativePath
               : `${declaring.role} (${relativePath})`;
 
+            // @debt A value declared in a local ambient `declare module` resolves to the unranked `declarations` role, so a ranked importer of that module is reported as importing an unranked target.
             targetLevel = declaring.effects;
           }
 

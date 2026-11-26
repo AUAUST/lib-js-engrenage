@@ -1014,3 +1014,18 @@ entries:
     need: fetch group without the DOM closure
     reason: shared declarations duplicate across sources; one worker-lib source drops only browser-only APIs
     created: 2026-11-26T19:54:47Z
+  - id: DS-20e6ef
+    subject: declared effect ceilings on ports
+    need: effects of stored listeners reaching emit callers
+    reason: covers 5% of the 5% import levels miss; levels cover own code only
+    created: 2026-11-26T21:17:03Z
+  - id: DS-833d22
+    subject: callbacks passed to top-level calls charged at evaluation
+    need: evaluation charge for `[…].map(cb)` at import
+    reason: "reports interscript definitions passing handlers, which #985 must allow"
+    created: 2026-11-26T22:02:21Z
+  - id: DS-e3a29c
+    subject: scope manager global variables as the globals list
+    need: telling a global reference apart for effect ranks
+    reason: typescript-eslint implicit lib holds only class-like values (`Math`, `AbortController`), not `console`, `fetch`, `globalThis`, `process`
+    created: 2026-11-26T22:02:21Z
