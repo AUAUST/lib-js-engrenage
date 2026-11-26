@@ -9,7 +9,19 @@ function aliasesOf(...aliases: Alias[]): readonly Alias[] {
   return aliases;
 }
 
+const modules: ReadonlySet<string> = new Set([
+  "src/project/feature/x/index.ts",
+  "src/project/feature/Card.tsx",
+  "src/project/feature/format.ts",
+]);
+
+const moduleFiles = {
+  extensions: [".ts", ".tsx"],
+  isFile: (file: string) => modules.has(file),
+};
+
 const resolveImport = createImportResolver({
+  ...moduleFiles,
   root: "/project",
   scopes: {
     ".": {
@@ -32,9 +44,9 @@ describe("createImportResolver", () => {
       path: "src/project/feature/index.ts",
     });
 
-    expect(resolveImport("../x", from)).toEqual({
+    expect(resolveImport("../y", from)).toEqual({
       kind: "relative",
-      path: "src/project/feature/x",
+      path: "src/project/feature/y",
     });
 
     expect(resolveImport("library/eslint", from)).toEqual({
@@ -48,6 +60,28 @@ describe("createImportResolver", () => {
     });
   });
 
+  test("resolves a path to the module file it names, whatever its extension", () => {
+    expect(resolveImport("#project/feature/Card", from)).toMatchObject({
+      kind: "alias",
+      path: "src/project/feature/Card.tsx",
+    });
+
+    expect(resolveImport("../Card", from)).toEqual({
+      kind: "relative",
+      path: "src/project/feature/Card.tsx",
+    });
+
+    expect(resolveImport("../format.js", from)).toEqual({
+      kind: "relative",
+      path: "src/project/feature/format.ts",
+    });
+
+    expect(resolveImport("../x", from)).toEqual({
+      kind: "relative",
+      path: "src/project/feature/x/index.ts",
+    });
+  });
+
   test("resolves each specifier from its importer's scope, another scope's package name against its exports", () => {
     const ui = aliasesOf({
       key: "#ui",
@@ -56,6 +90,7 @@ describe("createImportResolver", () => {
     });
 
     const resolveScoped = createImportResolver({
+      ...moduleFiles,
       root: "/project",
       scopes: {
         ".": {

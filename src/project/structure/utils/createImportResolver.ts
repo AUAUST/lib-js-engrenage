@@ -1,4 +1,4 @@
-import { posix, relative } from "node:path";
+import { extname, posix, relative } from "node:path";
 
 import { memoize } from "@auaust/toolkit/function";
 import { entries, getOwn, keys } from "@auaust/toolkit/object";
@@ -31,13 +31,29 @@ function matchPattern(key: string, specifier: string): string | undefined {
     : undefined;
 }
 
-// @debt expands to the alias's single `.ts` target, so a `#…` import of a `.tsx` module resolves to a `.ts` path that does not exist, while a bundled `src` imports it through `types` listing both extensions
 function expandAlias(alias: Alias, specifier: string): string | undefined {
   const captured = matchPattern(alias.key, specifier);
 
   return captured === undefined
     ? undefined
     : alias.target.replace("*", () => captured);
+}
+
+function listModuleCandidates(
+  path: string,
+  extensions: readonly string[],
+): string[] {
+  const extension = extname(path);
+  const stem = path.slice(0, path.length - extension.length);
+
+  return [
+    path,
+    ...extensions.map((candidate) => `${path}${candidate}`),
+    ...(extension === ""
+      ? []
+      : extensions.map((candidate) => `${stem}${candidate}`)),
+    ...extensions.map((candidate) => posix.join(path, `index${candidate}`)),
+  ];
 }
 
 function comparePatternKeys(first: string, second: string): number {
@@ -80,12 +96,22 @@ function packageNameOf(specifier: string): string {
     : (segments[0] ?? specifier);
 }
 
+/**
+ * Resolves a relative or `#` alias specifier to the module file it names: the
+ * expanded path itself, then with each of `extensions` appended, replacing
+ * its extension, or as its directory's index, the first `isFile` accepts; the
+ * expanded path when none does.
+ */
 export function createImportResolver({
   root,
   scopes,
+  extensions,
+  isFile,
 }: {
   root: Directory;
   scopes: Readonly<Record<string, ScopeImports>>;
+  extensions: readonly string[];
+  isFile(file: File): boolean;
 }): (specifier: string, from: File) => ResolvedSpecifier | undefined {
   const findScope = createScopeFinder(keys(scopes));
 
@@ -154,11 +180,25 @@ export function createImportResolver({
     (directory, specifier) => `${directory}\0${specifier}`,
   );
 
+  function toModuleFile(resolved: ResolvedSpecifier): ResolvedSpecifier {
+    if (resolved.kind !== "relative" && resolved.kind !== "alias") {
+      return resolved;
+    }
+
+    const path = listModuleCandidates(resolved.path, extensions).find(isFile);
+
+    return path === undefined || path === resolved.path
+      ? resolved
+      : { ...resolved, path };
+  }
+
   return function resolveImport(specifier, from) {
     const file = toPosixPath(relative(root, resolve(root, from)));
 
-    return specifier.startsWith(".")
+    const resolved = specifier.startsWith(".")
       ? expandRelative(posix.dirname(file), specifier)
       : classify(findScope(file), specifier);
+
+    return resolved === undefined ? undefined : toModuleFile(resolved);
   };
 }

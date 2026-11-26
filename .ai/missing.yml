@@ -31,3 +31,8 @@ entries:
     need: keep references before trailers
     instead: trailer regex in tools/git/utils/canonicalizeCommitReferences.ts
     created: 2026-11-26T10:56:58Z
+  - id: MI-7329b3
+    subject: synchronous file existence probe in project filesystem
+    need: lint import resolution probing module files
+    instead: statSync in src/project/structure/config/sections/importResolverSection.ts
+    created: 2026-11-26T15:09:41Z

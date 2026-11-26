@@ -1,15 +1,7 @@
-import { extname } from "node:path";
-
 import type { Rule, SourceCode } from "eslint";
 
-import { getOwn } from "@auaust/toolkit/object";
-
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type {
-  Entity,
-  EntityIndex,
-  ImportEdge,
-} from "#batiment/structure/index";
+import type { EntityIndex, ImportEdge } from "#batiment/structure/index";
 import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 
 interface ImportAnalysis {
@@ -22,26 +14,8 @@ const analyses = new WeakMap<
   WeakMap<SourceCode, ImportAnalysis>
 >();
 
-function sourceExtensionOf(
-  graph: ImportGraph,
-  importer: Entity | undefined,
-  filename: string,
-): string {
-  const structure = importer?.namespace === undefined
-    ? undefined
-    : getOwn(graph.structure, importer.namespace);
-
-  return extname(structure?.indexFile ?? filename);
-}
-
-// @debt forces the importer's source extension onto every target, so a `.json` or `.tsx` target gets a wrong path
-function withExtension(path: string, extension: string): string {
-  return `${path.slice(0, path.length - extname(path).length)}${extension}`;
-}
-
 function createAnalysis(graph: ImportGraph, filename: string): ImportAnalysis {
   const importer = graph.entities.entityOf(filename);
-  const extension = sourceExtensionOf(graph, importer, filename);
   const edges = new Map<Rule.Node, ImportEdge>();
 
   function edgeOf(node: Rule.Node, specifier: string): ImportEdge {
@@ -56,7 +30,7 @@ function createAnalysis(graph: ImportGraph, filename: string): ImportAnalysis {
     const targetFile = (
       resolved?.kind === "relative" || resolved?.kind === "alias"
     )
-      ? withExtension(resolved.path, extension)
+      ? resolved.path
       : undefined;
 
     const edge: ImportEdge = {

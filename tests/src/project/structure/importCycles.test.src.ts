@@ -1,21 +1,23 @@
 import { describe, expect, test } from "vitest";
 
-import { map } from "@auaust/toolkit/array";
-
 import { loadConfig } from "#project/config/operations/loadConfig";
+import {
+  readSelectedLanguages,
+  type LanguageEntry,
+} from "#project/environments/index";
 import { findImportCycles } from "#project/structure/operations/findImportCycles";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import type { LanguageEntry } from "#project/environments/index";
 
 async function cyclesOf(
   files: Record<string, string>,
   typescript = "{}",
   fixtures: readonly LanguageEntry[] = [],
+  source = '{ execution: { globals: "node", syntax: 24 } }',
 ) {
   const project = createTemporaryProject({
     "package.json": '{ "name": "project", "type": "module" }',
     "tsconfig.json": "{}",
-    "engrenage.config.ts": `export default { environments: { src: { execution: { globals: "node", syntax: 24 } } }, typescript: ${typescript} };\n`,
+    "engrenage.config.ts": `export default { environments: { src: ${source} }, typescript: ${typescript} };\n`,
     "src/index.ts": "",
     ...files,
   });
@@ -29,13 +31,7 @@ async function cyclesOf(
     structure: await config.resolve("structure"),
     resolveImport: await config.resolve("importResolver"),
     verbatimModuleSyntax,
-    languages: [
-      ...map(
-        await config.context.registry.contributions("languages", config),
-        ({ entry }) => entry,
-      ),
-      ...fixtures,
-    ],
+    languages: [...(await readSelectedLanguages(config)), ...fixtures],
   });
 }
 
@@ -100,9 +96,25 @@ describe("findImportCycles", () => {
     ]);
   });
 
+  test("reports a cycle through a .tsx module an alias names without its extension", async () => {
+    const cycles = await cyclesOf(
+      {
+        "src/a/index.ts": 'export { b } from "#b/CardView";\nexport const a = 1;\n',
+        "src/b/CardView.tsx": 'import { a } from "#a/index";\nexport const b = a;\n',
+      },
+      "{}",
+      [],
+      '{ languages: [{ name: "typescript", options: { tsx: "solid" } }], execution: { globals: "node", syntax: 24 } }',
+    );
+
+    expect(cycles).toEqual([
+      ["src/a/index.ts", "src/b/CardView.tsx", "src/a/index.ts"],
+    ]);
+  });
+
   test("resolves no import to a file of a language without modules", async () => {
     const files = {
-      "src/a.ts": 'import { b } from "./b";\nexport const a = b;\n',
+      "src/a.ts": 'import { b } from "./b.liquid";\nexport const a = b;\n',
       "src/b.liquid": 'import { a } from "./a";\nexport const b = a;\n',
     };
 

@@ -14,6 +14,7 @@ import { iterable } from "@auaust/toolkit";
 import { flat, flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
+import { listModuleExtensions } from "#project/structure/utils/listModuleExtensions";
 import type {
   ImportCycle,
   ResolvedSpecifier,
@@ -36,7 +37,7 @@ function readModuleFiles(languages: readonly LanguageEntry[]): ModuleFiles {
   const modules = languages.filter((language) => language.modules === true);
 
   return {
-    extensions: flatMap(modules, (language) => language.extensions),
+    extensions: listModuleExtensions(languages),
     declarations: flatMap(modules, (language) => {
       return language.declarations === undefined ? [] : [language.declarations];
     }),
@@ -102,27 +103,6 @@ async function readRuntimeSpecifiers(
 
     return [];
   });
-}
-
-function candidatesOf(path: string, { extensions }: ModuleFiles): string[] {
-  const stripped = extensions
-    .filter((extension) => path.endsWith(extension))
-    .reduce((longest, extension) => {
-      return extension.length > longest.length ? extension : longest;
-    }, "");
-
-  const withoutExtension = path.slice(0, path.length - stripped.length);
-
-  return [
-    path,
-    ...iterable.map(extensions, (extension) => {
-      return `${withoutExtension}${extension}`;
-    }),
-    ...iterable.map(extensions, (extension) => `${path}${extension}`),
-    ...iterable.map(extensions, (extension) => {
-      return posix.join(path, `index${extension}`);
-    }),
-  ];
 }
 
 function findComponents(graph: ReadonlyMap<string, string[]>): string[][] {
@@ -256,10 +236,9 @@ export async function findImportCycles({
   function resolve(from: string, specifier: string): string | undefined {
     const resolved = resolveImport(specifier, from);
 
-    return resolved?.kind === "relative" || resolved?.kind === "alias"
-      ? candidatesOf(resolved.path, modules).find((candidate) => {
-          return files.has(candidate);
-        })
+    return (resolved?.kind === "relative" || resolved?.kind === "alias") &&
+      files.has(resolved.path)
+      ? resolved.path
       : undefined;
   }
 

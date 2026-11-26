@@ -16,9 +16,10 @@ export interface ImportGraph {
    */
   readonly entities: EntityIndex;
   /**
-   * Classifies `specifier` as imported from `from`: a relative path joined to the
-   * importer's directory, an expanded `#` alias, a self-reference to the package
-   * or another package. Returns `undefined` for a `#` specifier matching no alias.
+   * Classifies `specifier` as imported from `from`: a relative path or an
+   * expanded `#` alias, at the module file it names whatever its extension, or
+   * at the path itself when no file exists; a self-reference to the package or
+   * another package. Returns `undefined` for a `#` specifier matching no alias.
    */
   resolveImport(specifier: string, from: File): ResolvedSpecifier | undefined;
 }

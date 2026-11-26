@@ -19,6 +19,7 @@ export { structureSchema } from "#project/structure/config/schemas/structureSche
 export { createImportResolver } from "#project/structure/utils/createImportResolver";
 export { isAliasedNamespaceKind } from "#project/structure/utils/isAliasedNamespaceKind";
 export { listDirectoryEnvironments } from "#project/structure/utils/listDirectoryEnvironments";
+export { listModuleExtensions } from "#project/structure/utils/listModuleExtensions";
 // @end
 
 // @barrel config/sections

@@ -132,6 +132,7 @@ async function indexProject(root: string) {
     scopes,
     outDir: "dist",
     aliases,
+    extensions: [".ts"],
     packageName: "library",
   });
 }

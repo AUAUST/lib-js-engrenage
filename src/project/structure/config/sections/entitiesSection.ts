@@ -2,9 +2,13 @@ import { record } from "@auaust/toolkit/object";
 
 import { createEntityIndex, type EntityIndex } from "#batiment/structure/index";
 import { declareSection } from "#foundation/options/index";
-import { readEnvironments } from "#project/environments/index";
+import {
+  readEnvironments,
+  readSelectedLanguages,
+} from "#project/environments/index";
 import { readOutDir } from "#project/structure/operations/readOutDir";
 import { resolveTestPatterns } from "#project/structure/operations/resolveTestPatterns";
+import { listModuleExtensions } from "#project/structure/utils/listModuleExtensions";
 import type { ConfigResolver } from "#project/config/index";
 
 export const entitiesSection = declareSection({
@@ -19,6 +23,7 @@ export const entitiesSection = declareSection({
       packageJson,
       outDir,
       context,
+      languages,
     ] = await Promise.all([
       config.resolve("structure"),
       readEnvironments(config),
@@ -29,6 +34,7 @@ export const entitiesSection = declareSection({
       config.resolve("packageJson"),
       readOutDir(config),
       config.resolve("structure.context"),
+      readSelectedLanguages(config),
     ]);
 
     const discovery = await context.discover();
@@ -47,6 +53,7 @@ export const entitiesSection = declareSection({
       scopes,
       outDir,
       aliases,
+      extensions: listModuleExtensions(languages),
       packageName: packageJson.optional.name,
     });
   },

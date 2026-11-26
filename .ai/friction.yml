@@ -1255,3 +1255,8 @@ entries:
     tried: relocating moved files one by one
     stopped: validation of the whole file fails; updated sites with backlog update
     created: 2026-11-26T14:39:52Z
+  - id: FR-bc6670
+    subject: vitest console output hidden in engrenage vitest
+    tried: console.log and --project filter in a debug test
+    stopped: wrote observations to a scratch file instead
+    created: 2026-11-26T15:09:43Z

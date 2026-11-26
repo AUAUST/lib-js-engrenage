@@ -1,3 +1,4 @@
+import { statSync } from "node:fs";
 import { posix } from "node:path";
 
 import { isArray, isPlainObject, isString } from "@auaust/toolkit";
@@ -5,13 +6,16 @@ import { entries, record } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
 import { packageJsonFile } from "#constants";
+import { resolve } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
+import { readSelectedLanguages } from "#project/environments/index";
 import {
   createPackageJson,
   type PackageJson,
   type SubpathImports,
 } from "#project/package/index";
 import { createImportResolver } from "#project/structure/utils/createImportResolver";
+import { listModuleExtensions } from "#project/structure/utils/listModuleExtensions";
 import type { Alias, ResolvedAliases } from "#batiment/structure/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { ScopeImports } from "#project/structure/types/ScopeImports";
@@ -116,10 +120,13 @@ export const importResolverSection = declareSection({
     _input,
     config: ConfigResolver,
   ): Promise<ReturnType<typeof createImportResolver>> {
-    const [scopes, rootPackageJson] = await Promise.all([
+    const [scopes, rootPackageJson, languages] = await Promise.all([
       config.resolve("aliases.scopes"),
       config.resolve("packageJson"),
+      readSelectedLanguages(config),
     ]);
+
+    const { root } = config.context;
 
     const imports = await Promise.all(
       entries(scopes).map(async ([dir, aliases]) => {
@@ -145,8 +152,17 @@ export const importResolverSection = declareSection({
     );
 
     return createImportResolver({
-      root: config.context.root,
+      root,
       scopes: record(imports),
+      // @debt lists the module extensions of every environment, so a `.tsx` file resolves from an environment whose languages exclude tsx
+      extensions: listModuleExtensions(languages),
+      // @debt probes the disk rather than the project filesystem, which reads asynchronously, so a staged file no write has flushed resolves to no module
+      isFile(file) {
+        return (
+          statSync(resolve(root, file), { throwIfNoEntry: false })?.isFile() ===
+          true
+        );
+      },
     });
   },
 });

@@ -70,6 +70,7 @@ export function createEntityIndex({
   scopes,
   outDir,
   aliases,
+  extensions,
   packageName,
 }: {
   root: Directory;
@@ -81,11 +82,16 @@ export function createEntityIndex({
   scopes: ScopeTree;
   outDir: Directory | undefined;
   aliases: ResolvedAliases;
+  extensions: readonly string[];
   packageName: string | undefined;
 }): EntityIndex {
   const directories = new Map<Directory, LocatedEntity>();
   // @debt holds the root scope's aliases alone, so `specifierOf` never names the `#…` alias a workspace module is imported by
   const specifiers = [...aliases.src, ...aliases.global];
+
+  function aliasSpecifierOf(path: string): string | undefined {
+    return getAliasSpecifier(specifiers, path, extensions);
+  }
 
   const namespaces = listNamespaces(scopes).filter(({ scope }) => {
     return scope === rootScope;
@@ -144,7 +150,7 @@ export function createEntityIndex({
         );
       })
       .map((child) => {
-        return getAliasSpecifier(specifiers, `${child.path}/*${extension}`);
+        return aliasSpecifierOf(`${child.path}/*${extension}`);
       });
 
     const roleFiles = entries(node.roleFiles ?? {}).flatMap(([role, files]) => {
@@ -165,12 +171,9 @@ export function createEntityIndex({
 
     return freeze(
       [
-        getAliasSpecifier(
-          specifiers,
-          posix.join(node.path, namespace.indexFile),
-        ),
+        aliasSpecifierOf(posix.join(node.path, namespace.indexFile)),
         ...roles,
-        ...roleFiles.map((file) => getAliasSpecifier(specifiers, file)),
+        ...roleFiles.map((file) => aliasSpecifierOf(file)),
         ...packaged,
         entry === undefined || packageName === undefined
           ? undefined
@@ -385,7 +388,7 @@ export function createEntityIndex({
   return {
     entityOf,
     specifierOf(file) {
-      return getAliasSpecifier(specifiers, toProjectPath(file));
+      return aliasSpecifierOf(toProjectPath(file));
     },
     // @debt holds the files of another environment's placement nested in a namespace directory, which the walk stops at, so they read as unclassified unless a namespace lists that placement
     withinStructure(file) {
