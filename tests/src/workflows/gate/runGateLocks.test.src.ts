@@ -87,7 +87,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       const commit = runGate(config, { mode: "staged" });
 
       expect(await stop).toBeUndefined();
-      expect(await commit).toEqual({ failures: [], warnings: [] });
+      expect(await commit).toMatchObject({ failures: [], warnings: [] });
     } finally {
       write.mockRestore();
     }
@@ -139,6 +139,6 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       await runGate(await loadConfig(project.root), {
         mode: "worktree",
       }),
-    ).toEqual({ failures: [], warnings: [] });
+    ).toMatchObject({ failures: [], warnings: [] });
   });
 });

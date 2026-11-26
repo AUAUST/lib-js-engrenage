@@ -1,9 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-import { iterable } from "@auaust/toolkit";
-import { toArray } from "@auaust/toolkit/array";
-
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
@@ -18,21 +15,20 @@ import {
 } from "#tools/git/index";
 import { listLocalFilePatterns } from "#tools/metalbrain/index";
 import { checkProject } from "#workflows/gate/operations/checkProject";
+import { checkVerifiedTree } from "#workflows/gate/operations/checkVerifiedTree";
 import { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";
 import { runSteps } from "#workflows/gate/operations/runSteps";
+import { coverSteps } from "#workflows/gate/utils/coverSteps";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateStage } from "#project/gate/index";
 import type { Directory } from "#types/Directory";
-import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
-import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateMode } from "#workflows/gate/types/GateMode";
-import type { GateReport } from "#workflows/gate/types/GateReport";
+import type { GateRunReport } from "#workflows/gate/types/GateRunReport";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
-import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
 import type { TreeIdentity } from "#workflows/gate/types/TreeIdentity";
 
 const stampFile = "passed";
@@ -122,54 +118,12 @@ function isReusable(
   );
 }
 
-async function checkVerifiedTree(
-  root: Directory,
-  mode: ChangeMode,
-  verified: TreeIdentity,
-  current: TreeIdentity,
-): Promise<GateFailure | undefined> {
-  const changed: (readonly [string, string])[] = [];
-
-  if (verified.committable !== current.committable) {
-    changed.push([verified.committable, current.committable]);
-  }
-
-  if (mode === "staged" && verified.checked !== current.checked) {
-    changed.push([verified.checked, current.checked]);
-  }
-
-  if (changed.length === 0) {
-    return;
-  }
-
-  const outputs = await Promise.all(
-    iterable.map(changed, ([before, after]) => {
-      return runGit(root, ["diff-tree", "-r", "--name-only", before, after]);
-    }),
-  );
-
-  const paths = toArray(
-    iterable.unique(
-      outputs
-        .join("\n")
-        .split("\n")
-        .filter((path) => path !== ""),
-    ),
-  );
-
-  return {
-    step: "verification",
-    output: `Files changed while the gate verified them; run it again:\n${paths.join("\n")}`,
-  };
-}
-
-async function checkLocalFiles(
+async function listLocalSteps(
   config: LoadedConfig,
   mode: ChangeMode,
-  files: Files,
-): Promise<StepsOutcome> {
+): Promise<GateStep[]> {
   if (mode !== "staged") {
-    return { failures: [], warnings: [] };
+    return [];
   }
 
   const { root } = config.context;
@@ -191,7 +145,7 @@ async function checkLocalFiles(
     },
   };
 
-  return runSteps([local], { files, removed: [] }, { concurrent: false });
+  return [local];
 }
 
 async function warnUnstagedChanges(
@@ -211,7 +165,7 @@ async function warnUnstagedChanges(
   return [
     {
       step: "staging",
-      output: `No staged file to check, so nothing was checked; --worktree checks the unstaged changes:\n${unstaged.join("\n")}`,
+      output: `Unstaged changes, which --worktree checks:\n${unstaged.join("\n")}`,
     },
   ];
 }
@@ -221,7 +175,7 @@ async function verify(
   config: LoadedConfig,
   mode: ChangeMode,
   audience: GateStep["audience"],
-): Promise<GateReport> {
+): Promise<GateRunReport> {
   const { root } = config.context;
 
   const [edited, removed] = await Promise.all([
@@ -229,10 +183,18 @@ async function verify(
     listRemovedFiles(root, mode),
   ]);
 
-  const local = await checkLocalFiles(config, mode, edited);
+  const scope = edited.length + removed.length;
+
+  const localSteps = await listLocalSteps(config, mode);
+
+  const local = await runSteps(
+    localSteps,
+    { files: edited, removed: [] },
+    { concurrent: false },
+  );
 
   if (local.failures.length > 0) {
-    return local;
+    return { ...local, checked: coverSteps([localSteps], scope) };
   }
 
   if (mode === "staged") {
@@ -247,12 +209,17 @@ async function verify(
           },
         ],
         warnings: [],
+        checked: coverSteps([localSteps], scope),
       };
     }
   }
 
-  if (edited.length === 0 && removed.length === 0) {
-    return { failures: [], warnings: await warnUnstagedChanges(root, mode) };
+  if (scope === 0) {
+    return {
+      failures: [],
+      warnings: await warnUnstagedChanges(root, mode),
+      checked: coverSteps([localSteps], scope),
+    };
   }
 
   const agents = audience === "agents";
@@ -268,7 +235,15 @@ async function verify(
 
     // @debt a stamped tree reports no duplicate or step warnings, so the commit after a passing stop never shows them again.
     if (stamps.some((line) => isReusable(line, mode, initial))) {
-      return { failures: [], warnings: [] };
+      return {
+        failures: [],
+        warnings: [],
+        checked: {
+          steps: [],
+          scope,
+          reused: true,
+        },
+      };
     }
   }
 
@@ -289,6 +264,7 @@ async function verify(
     return {
       failures: [...local.failures, ...generateOutcome.failures],
       warnings: [...local.warnings, ...generateOutcome.warnings],
+      checked: coverSteps([localSteps, generate], scope),
     };
   }
 
@@ -297,7 +273,10 @@ async function verify(
     : await listChangedFiles(root, mode);
 
   if (files.length === 0) {
-    return generateOutcome;
+    return {
+      ...generateOutcome,
+      checked: coverSteps([localSteps, generate], scope),
+    };
   }
 
   const changes: GateChanges = { files, removed };
@@ -352,7 +331,14 @@ async function verify(
     );
   }
 
-  return { failures, warnings: [...duplicates, ...stepWarnings] };
+  return {
+    failures,
+    warnings: [...duplicates, ...stepWarnings],
+    checked: coverSteps(
+      [localSteps, generate, fixes, checks, commands, warnings],
+      scope,
+    ),
+  };
 }
 
 export async function runGate(
@@ -361,7 +347,7 @@ export async function runGate(
     mode,
     audience = "agents",
   }: { mode: GateMode; audience?: GateStep["audience"] },
-): Promise<GateReport> {
+): Promise<GateRunReport> {
   const resources = await config.resolve("resources");
 
   const lock = resolveWithin(resources.path("cache.gate"), lockFile);
@@ -400,6 +386,11 @@ export async function runGate(
         },
       ],
       warnings: [],
+      checked: {
+        steps: [],
+        scope: 0,
+        reused: false,
+      },
     };
   }
 }

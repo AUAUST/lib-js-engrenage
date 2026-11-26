@@ -45,7 +45,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("rm", "--force", ".ai/issues/1.md", ".env.local");
 
-    expect(await runGate(config, options)).toEqual({
+    expect(await runGate(config, options)).toMatchObject({
       failures: [],
       warnings: [],
     });
@@ -65,7 +65,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const options = { mode: "staged", audience: "everyone" } as const;
 
-    expect(await runGate(await loadConfig(project.root), options)).toEqual({
+    expect(
+      await runGate(await loadConfig(project.root), options),
+    ).toMatchObject({
       failures: [],
       warnings: [],
     });
@@ -80,7 +82,9 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     git("add", "--force", ".env.local");
     loadConfig.refresh(project.root);
 
-    expect(await runGate(await loadConfig(project.root), options)).toEqual({
+    expect(
+      await runGate(await loadConfig(project.root), options),
+    ).toMatchObject({
       failures: [],
       warnings: [],
     });
@@ -107,7 +111,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
         mode: "staged",
         audience: "everyone",
       }),
-    ).toEqual({ failures: [], warnings: [] });
+    ).toMatchObject({ failures: [], warnings: [] });
 
     expect(git("show", ":src/index.ts")).toBe(
       'export const value: number = "text";\n',
@@ -192,14 +196,14 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       },
     ]);
 
-    expect(await runGate(config, { mode: "worktree" })).toEqual({
+    expect(await runGate(config, { mode: "worktree" })).toMatchObject({
       failures: [],
       warnings: [],
     });
 
     git("add", "src/index.ts");
 
-    expect(await runGate(config, { mode: "staged" })).toEqual({
+    expect(await runGate(config, { mode: "staged" })).toMatchObject({
       failures: [],
       warnings: [],
     });

@@ -84,10 +84,3 @@ entries:
       - src/tools/metalbrain/config/schemas/agentsSchema.ts:86
     why: the gate also serves `--everyone` and CI, yet `agents.gate.commands` makes its commands an agent concern that the Git hook never runs
     created: 2026-11-25T23:49:55Z
-  - id: BL-f17099
-    title: A passing gate prints nothing, so a log cannot tell a pass from a run that checked nothing
-    sites:
-      - bin/engrenage/actions/gate.ts:60
-    why: interscript agents took an empty log with exit 0 for a silent failure and reran every check by hand (#949)
-    want: a passing run states which steps ran and passed
-    created: 2026-11-26T12:40:32Z

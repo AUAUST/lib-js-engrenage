@@ -50,10 +50,21 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     const config = await loadConfig(project.root);
 
-    const passed = { failures: [], warnings: [] };
+    expect(await runGate(config, { mode: "staged" })).toMatchObject({
+      failures: [],
+      warnings: [],
+      checked: { scope: 1, reused: false },
+    });
 
-    expect(await runGate(config, { mode: "staged" })).toEqual(passed);
-    expect(await runGate(config, { mode: "staged" })).toEqual(passed);
+    expect(await runGate(config, { mode: "staged" })).toEqual({
+      failures: [],
+      warnings: [],
+      checked: {
+        steps: [],
+        scope: 1,
+        reused: true,
+      },
+    });
 
     expect(project.read(".runs")).toBe("run\n");
   });
@@ -71,9 +82,10 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    expect(await runGate(config, { mode: "staged" })).toEqual({
+    expect(await runGate(config, { mode: "staged" })).toMatchObject({
       failures: [],
       warnings: [],
+      checked: { reused: false },
     });
 
     expect(project.read(".runs")).toBe("run\nrun\n");

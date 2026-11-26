@@ -19,11 +19,18 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     git("add", "src/index.ts");
 
-    const { failures } = await runGate(await loadConfig(project.root), {
-      mode: "staged",
-    });
+    const {
+      failures,
+      checked,
+    } = await runGate(await loadConfig(project.root), { mode: "staged" });
 
     expect(failures).toEqual([]);
+
+    expect(checked).toMatchObject({
+      steps: expect.arrayContaining(["typecheck"]),
+      scope: 1,
+      reused: false,
+    });
 
     expect(project.read("src/index.ts")).toBe(
       "export const value: number = 2;\n",
@@ -60,9 +67,12 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     const {
       failures,
       warnings,
+      checked,
     } = await runGate(await loadConfig(project.root), { mode: "staged" });
 
     expect(failures).toEqual([]);
+
+    expect(checked.scope).toBe(0);
 
     expect(warnings).toEqual([
       {
@@ -289,7 +299,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
 
     expect(
       await runGate(await loadConfig(project.root), { mode: "worktree" }),
-    ).toEqual({ failures: [], warnings: [] });
+    ).toMatchObject({ failures: [], warnings: [] });
 
     expect(project.read(".claude/worktrees/x/src/a.ts")).toBe(
       "export var a: any = 1\n",
@@ -314,7 +324,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       "eslint",
     );
 
-    expect(await runGate(config, { mode: "staged" })).toEqual({
+    expect(await runGate(config, { mode: "staged" })).toMatchObject({
       failures: [],
       warnings: [],
     });
@@ -334,7 +344,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       await runGate(await loadConfig(project.root), {
         mode: "staged",
       }),
-    ).toEqual({ failures: [], warnings: [] });
+    ).toMatchObject({ failures: [], warnings: [] });
 
     expect(project.read("src/index.ts")).toBe(
       "export const value: number = 2\n",

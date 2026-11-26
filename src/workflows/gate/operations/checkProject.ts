@@ -1,10 +1,11 @@
 import { loadLazy } from "#foundation/modules/index";
 import { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
 import { runSteps } from "#workflows/gate/operations/runSteps";
+import { coverSteps } from "#workflows/gate/utils/coverSteps";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
 import type { GateChanges } from "#workflows/gate/types/GateChanges";
-import type { GateReport } from "#workflows/gate/types/GateReport";
+import type { GateRunReport } from "#workflows/gate/types/GateRunReport";
 
 const noChanges: GateChanges = { files: [], removed: [] };
 
@@ -13,7 +14,9 @@ const noChanges: GateChanges = { files: [], removed: [] };
  * first, ending the run when one fails, then the others concurrently, beside
  * the agents' commands.
  */
-export async function checkProject(config: LoadedConfig): Promise<GateReport> {
+export async function checkProject(
+  config: LoadedConfig,
+): Promise<GateRunReport> {
   const contributions = await config.context.registry.contributions(
     "gate.steps",
     config,
@@ -47,7 +50,11 @@ export async function checkProject(config: LoadedConfig): Promise<GateReport> {
   });
 
   if (generateOutcome.failures.length > 0) {
-    return { failures: generateOutcome.failures, warnings: [] };
+    return {
+      failures: generateOutcome.failures,
+      warnings: [],
+      checked: coverSteps([generators], "project"),
+    };
   }
 
   const [stepOutcome, commandOutcome] = await Promise.all([
@@ -58,5 +65,6 @@ export async function checkProject(config: LoadedConfig): Promise<GateReport> {
   return {
     failures: [...stepOutcome.failures, ...commandOutcome.failures],
     warnings: [],
+    checked: coverSteps([generators, steps, commands], "project"),
   };
 }

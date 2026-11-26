@@ -1,6 +1,7 @@
 import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import {
+  formatGateCoverage,
   formatGateEntry,
   formatGateSummary,
   runGate,
@@ -32,33 +33,8 @@ async function checkMessage(
   });
 }
 
-export default async function ({
-  all,
-  worktree,
-  everyone,
-  message,
-}: {
-  all?: true | undefined;
-  worktree?: true | undefined;
-  everyone?: true | undefined;
-  message?: string | undefined;
-}): Promise<void> {
-  const audience = everyone === true ? "everyone" : "agents";
-
+function printReport({ failures, warnings }: GateReport): boolean {
   const { reporter } = getRunContext();
-
-  const report: GateReport & Partial<MessageGateReport> = message === undefined
-    ? await runGate(await loadConfig(), {
-        mode: all === true ? "all" : worktree === true ? "worktree" : "staged",
-        audience,
-      })
-    : await checkMessage(message, audience);
-
-  const { failures, warnings } = report;
-
-  if (report.rewritten === true) {
-    reporter.log("Rewrote the Closes and Towards lines in canonical form.");
-  }
 
   if (failures.length > 0) {
     reporter.error(formatGateSummary(failures));
@@ -74,5 +50,44 @@ export default async function ({
 
   if (failures.length > 0) {
     process.exitCode = 1;
+  }
+
+  return failures.length === 0;
+}
+
+export default async function ({
+  all,
+  worktree,
+  everyone,
+  message,
+}: {
+  all?: true | undefined;
+  worktree?: true | undefined;
+  everyone?: true | undefined;
+  message?: string | undefined;
+}): Promise<void> {
+  const audience = everyone === true ? "everyone" : "agents";
+
+  const { reporter } = getRunContext();
+
+  if (message !== undefined) {
+    const report = await checkMessage(message, audience);
+
+    if (report.rewritten) {
+      reporter.log("Rewrote the Closes and Towards lines in canonical form.");
+    }
+
+    printReport(report);
+
+    return;
+  }
+
+  const report = await runGate(await loadConfig(), {
+    mode: all === true ? "all" : worktree === true ? "worktree" : "staged",
+    audience,
+  });
+
+  if (printReport(report)) {
+    reporter.log(formatGateCoverage(report.checked));
   }
 }
