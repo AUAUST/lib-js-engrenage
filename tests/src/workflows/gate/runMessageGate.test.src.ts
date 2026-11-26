@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { describe, expect, test } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -33,17 +35,17 @@ describe("runMessageGate", () => {
     expect(await checkMessage(message)).toEqual({
       failures: [],
       warnings: [],
+      rewritten: false,
     });
   });
 
   test.each([
-    "fix: thing\n\nCloses #1\n\nCloses #2\n",
-    "fix: thing\n\nCloses #1\n\n\nTowards #2\n",
     `${longest}a\n`,
     "Fix thing\n",
     "wip: thing\n",
     "fix:thing\n",
     "fix: thing\n\nExplains the change.\nCloses #1\n",
+    "fix: thing\n\ncloses the gap\n",
   ])("rejects %j", async (message) => {
     const { failures } = await checkMessage(message);
 
@@ -51,9 +53,13 @@ describe("runMessageGate", () => {
   });
 
   test("checks only the subject length for everyone", async () => {
-    expect(
-      await checkMessage("Fix thing\n\nCloses #1\n\nCloses #2\n", "everyone"),
-    ).toEqual({ failures: [], warnings: [] });
+    expect(await checkMessage("Fix thing\n\nAny prose.\n", "everyone")).toEqual(
+      {
+        failures: [],
+        warnings: [],
+        rewritten: false,
+      },
+    );
 
     expect(await checkMessage(`${longest}a\n`, "everyone")).toEqual({
       failures: [
@@ -63,7 +69,73 @@ describe("runMessageGate", () => {
         },
       ],
       warnings: [],
+      rewritten: false,
     });
+  });
+
+  test.each([
+    [
+      "feat: my message\n\ncloses 1,#2 3\n\ntoward 4,5 #6\n",
+      "feat: my message\n\nCloses #1\nCloses #2\nCloses #3\nTowards #4\nTowards #5\nTowards #6\n",
+    ],
+    [
+      "fix: thing\n\nTowards #2\nCloses #2, #1\n",
+      "fix: thing\n\nCloses #2\nCloses #1\n",
+    ],
+    [
+      "fix: thing\n\nCloses #1\n\n\nTowards #2\n",
+      "fix: thing\n\nCloses #1\nTowards #2\n",
+    ],
+    [
+      "fix: thing\n\nCLOSED #1\n# comment\n# ------------------------ >8 ------------------------\nany diff\n",
+      "fix: thing\n\nCloses #1\n\n# comment\n# ------------------------ >8 ------------------------\nany diff\n",
+    ],
+  ])("rewrites %j for both audiences", async (message, rewritten) => {
+    for (const audience of ["agents", "everyone"] as const) {
+      const project = createTemporaryProject({ COMMIT_EDITMSG: message });
+
+      const file = `${project.root}/COMMIT_EDITMSG`;
+
+      expect(await runMessageGate(file, { audience })).toEqual({
+        failures: [],
+        warnings: [],
+        rewritten: true,
+      });
+
+      expect(readFileSync(file, "utf-8")).toBe(rewritten);
+    }
+  });
+
+  test("keeps prose and moves references under everyone", async () => {
+    const message = "Fix thing\n\nclose 1 2 3 4 5\n\ncloses the gap\ntoward 6\n\nCo-Authored-By: A <a@b.c>\n";
+
+    const project = createTemporaryProject({ COMMIT_EDITMSG: message });
+
+    const file = `${project.root}/COMMIT_EDITMSG`;
+
+    expect(await runMessageGate(file, { audience: "everyone" })).toEqual({
+      failures: [],
+      warnings: [],
+      rewritten: true,
+    });
+
+    expect(readFileSync(file, "utf-8")).toBe(
+      "Fix thing\n\ncloses the gap\n\nCloses #1\nCloses #2\nCloses #3\nCloses #4\nCloses #5\nTowards #6\n\nCo-Authored-By: A <a@b.c>\n",
+    );
+  });
+
+  test("keeps a canonical message byte-identical", async () => {
+    const message = "# note\n\nfix: thing\n\n\nCloses #1\nTowards #2  \n\n# Please enter\n";
+
+    const project = createTemporaryProject({ COMMIT_EDITMSG: message });
+
+    const file = `${project.root}/COMMIT_EDITMSG`;
+
+    expect((await runMessageGate(file, { audience: "agents" })).rewritten).toBe(
+      false,
+    );
+
+    expect(readFileSync(file, "utf-8")).toBe(message);
   });
 
   test("refuses attribution lines only when attribution is off", async () => {

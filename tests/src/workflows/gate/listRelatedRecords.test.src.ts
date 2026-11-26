@@ -80,6 +80,10 @@ describe("runMessageGate related records", { timeout: binaryTimeout }, () => {
       await checkCommit("fix: the of and to\n", {
         "src/other.ts": "export {};\n",
       }),
-    ).toEqual({ failures: [], warnings: [] });
+    ).toEqual({
+      failures: [],
+      warnings: [],
+      rewritten: false,
+    });
   });
 });

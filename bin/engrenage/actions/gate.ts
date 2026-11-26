@@ -6,6 +6,7 @@ import {
   runGate,
   runMessageGate,
   type GateReport,
+  type MessageGateReport,
 } from "#workflows/gate/index";
 
 function loadConfig() {
@@ -15,7 +16,7 @@ function loadConfig() {
 async function checkMessage(
   message: string,
   audience: "everyone" | "agents",
-): Promise<GateReport> {
+): Promise<MessageGateReport> {
   if (audience === "everyone") {
     return runMessageGate(message, { audience });
   }
@@ -44,14 +45,20 @@ export default async function ({
 }): Promise<void> {
   const audience = everyone === true ? "everyone" : "agents";
 
-  const { failures, warnings } = message === undefined
+  const { reporter } = getRunContext();
+
+  const report: GateReport & Partial<MessageGateReport> = message === undefined
     ? await runGate(await loadConfig(), {
         mode: all === true ? "all" : worktree === true ? "worktree" : "staged",
         audience,
       })
     : await checkMessage(message, audience);
 
-  const { reporter } = getRunContext();
+  const { failures, warnings } = report;
+
+  if (report.rewritten === true) {
+    reporter.log("Rewrote the Closes and Towards lines in canonical form.");
+  }
 
   if (failures.length > 0) {
     reporter.error(formatGateSummary(failures));

@@ -1,13 +1,12 @@
+import { commitScissors } from "#tools/git/constants";
 import type { CommitMessage } from "#tools/git/types/CommitMessage";
-
-const scissors = "# ------------------------ >8 ------------------------";
 
 // @debt comment lines are recognized by `#` only, while `core.commentChar` lets a repository pick another character
 export function readCommitMessage(message: string): CommitMessage {
   const lines: string[] = [];
 
   for (const line of message.split("\n")) {
-    if (line === scissors) {
+    if (line === commitScissors) {
       break;
     }
 

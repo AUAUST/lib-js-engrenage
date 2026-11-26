@@ -94,6 +94,8 @@ export const gitDirectory = ".git";
 
 export const commitSubjectLimit = 72;
 
+export const commitScissors = "# ------------------------ >8 ------------------------";
+
 // @debt the git rule's type table (`data/metalbrain/rules/git.md`) restates this list by hand instead of being rendered from it
 export const commitTypes = freeze([
   "feat",

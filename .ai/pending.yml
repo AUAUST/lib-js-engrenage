@@ -1,0 +1,7 @@
+entries:
+  - id: PD-d84259
+    subject: loosen commit reference instructions
+    what: writer trims git rule and agent wording on Closes/Towards shape the gate now canonicalises
+    why: "waits for #946 commit and user consent to the instruction change"
+    owner: "#946"
+    created: 2026-11-26T10:56:04Z

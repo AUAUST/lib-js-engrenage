@@ -26,3 +26,8 @@ entries:
     need: derive codegen generator inputs
     instead: scratch TypeScript preProcessFile walk; inputs hand-declared in engrenage.config.ts
     created: 2026-11-26T00:21:59Z
+  - id: MI-18e9ca
+    subject: commit trailer paragraph parsing
+    need: keep references before trailers
+    instead: trailer regex in tools/git/utils/canonicalizeCommitReferences.ts
+    created: 2026-11-26T10:56:58Z

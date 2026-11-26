@@ -1,4 +1,5 @@
 // @barrel utils
+export { canonicalizeCommitReferences } from "#tools/git/utils/canonicalizeCommitReferences";
 export { readCommitMessage } from "#tools/git/utils/readCommitMessage";
 // @end
 

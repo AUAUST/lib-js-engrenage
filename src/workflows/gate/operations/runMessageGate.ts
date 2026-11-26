@@ -1,14 +1,20 @@
+import { writeFile } from "node:fs/promises";
+
 import { readTextFile } from "#foundation/filesystem/index";
 import { commitSubjectLimit, commitTypes } from "#tools/git/constants";
-import { readCommitMessage, type CommitMessage } from "#tools/git/index";
+import {
+  canonicalizeCommitReferences,
+  readCommitMessage,
+  type CommitMessage,
+} from "#tools/git/index";
 import { listRelatedRecords } from "#workflows/gate/operations/listRelatedRecords";
 import type { ResolvedAgents } from "#metalbrain/runtimes/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { GateStepEntry } from "#project/gate/index";
 import type { File } from "#types/File";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
-import type { GateReport } from "#workflows/gate/types/GateReport";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
+import type { MessageGateReport } from "#workflows/gate/types/MessageGateReport";
 
 const step = "commit message";
 
@@ -47,16 +53,12 @@ function listBodyFailures(
 ): string[] {
   const failures: string[] = [];
 
-  const references: number[] = [];
-
-  for (const [index, line] of body.entries()) {
-    if (line === "") {
+  for (const line of body) {
+    if (line === "" || referencePattern.test(line)) {
       continue;
     }
 
-    if (referencePattern.test(line)) {
-      references.push(index);
-    } else if (!isAttribution(line)) {
+    if (!isAttribution(line)) {
       failures.push(
         `Keep the commit body to Closes #<n> and Towards #<n> lines; remove: ${line}`,
       );
@@ -65,19 +67,6 @@ function listBodyFailures(
         `Remove the attribution line, since agents.attribution is false: ${line}`,
       );
     }
-  }
-
-  const first = references.at(0);
-  const last = references.at(-1);
-
-  if (
-    first !== undefined &&
-    last !== undefined &&
-    last - first + 1 !== references.length
-  ) {
-    failures.push(
-      "Put the Closes and Towards lines on consecutive lines, in a single -m value: each -m starts a new paragraph.",
-    );
   }
 
   return failures;
@@ -151,22 +140,30 @@ async function listWarnings(
 export async function runMessageGate(
   file: File,
   options: MessageGateOptions,
-): Promise<GateReport> {
+): Promise<MessageGateReport> {
   const message = await readTextFile(file);
 
   if (message === undefined) {
     return {
       failures: [{ step, output: `Cannot read the commit message: ${file}` }],
       warnings: [],
+      rewritten: false,
     };
   }
 
-  const commit = readCommitMessage(message);
+  const canonical = canonicalizeCommitReferences(message);
+
+  if (canonical !== undefined) {
+    await writeFile(file, canonical);
+  }
+
+  const commit = readCommitMessage(canonical ?? message);
 
   return {
     failures: listFailures(commit, options).map((output): GateFailure => {
       return { step, output };
     }),
     warnings: await listWarnings(commit, options.config),
+    rewritten: canonical !== undefined,
   };
 }

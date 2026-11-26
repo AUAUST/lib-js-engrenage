@@ -21,6 +21,7 @@ export type * from "#workflows/gate/types/GateFailure";
 export type * from "#workflows/gate/types/GateMode";
 export type * from "#workflows/gate/types/GateReport";
 export type * from "#workflows/gate/types/GateWarning";
+export type * from "#workflows/gate/types/MessageGateReport";
 export type * from "#workflows/gate/types/StepsOutcome";
 export type * from "#workflows/gate/types/TreeIdentity";
 // @end
