@@ -74,3 +74,8 @@ entries:
     why: toolkit's `isArray` narrows to `any[]`, which a readonly list is not assignable to, so engrenage keeps a local guard.
     want: "`isArray` narrowing readonly lists upstream; then the local guard deleted."
     created: 2026-11-22T00:00:00Z
+  - id: BL-41f7f9
+    title: Toolkit helpers declare no effect level
+    why: "#986 adds per-symbol effect tags; toolkit helpers, which most projects reach for their operations, carry none"
+    want: each toolkit helper tagged with its level, so importers are charged its exact figure instead of a module cap
+    created: 2026-11-26T22:33:21Z

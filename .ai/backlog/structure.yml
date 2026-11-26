@@ -345,3 +345,8 @@ entries:
     why: "src/components beside admin/components fails: Alias #components/* declared twice"
     want: role directories of each directory aliased apart, or a diagnostic naming both
     created: 2026-11-25T22:21:26Z
+  - id: BL-3d1a24
+    title: Writes through methods and static mutators charge no effect
+    why: "#986 charges only assignment syntax: levelling mutating methods (push, Map#set) and static mutators (Object.assign) is wanted but not needed for its completion, a gap TypeScript accepts without known harm"
+    want: "charged as a data addition once #986 lands, its write operation left open to sources other than assignment syntax"
+    created: 2026-11-26T22:33:21Z

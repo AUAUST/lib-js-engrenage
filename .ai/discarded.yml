@@ -1029,3 +1029,8 @@ entries:
     need: telling a global reference apart for effect ranks
     reason: typescript-eslint implicit lib holds only class-like values (`Math`, `AbortController`), not `console`, `fetch`, `globalThis`, `process`
     created: 2026-11-26T22:02:21Z
+  - id: DS-d5f009
+    subject: effect level of a returned function
+    need: rank a pure factory returning an effectful function
+    reason: needs type checking to follow returned values; too complex for an edge case
+    created: 2026-11-26T23:21:43Z

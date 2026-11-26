@@ -368,6 +368,7 @@ structure:
     - BL-484321
     - BL-8fcd05
     - BL-ef4bed
+    - BL-3d1a24
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:
@@ -406,6 +407,7 @@ toolkit:
     - BL-2ff152
     - BL-b09e80
     - BL-2fdd18
+    - BL-41f7f9
 tsdown:
   purpose: "Generated tsdown build configuration: entries, outputs and declaration files."
   entries:
