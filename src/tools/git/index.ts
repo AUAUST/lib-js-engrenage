@@ -37,6 +37,7 @@ export { readIgnorePatterns } from "#tools/git/operations/readIgnorePatterns";
 export { readRenamedFiles } from "#tools/git/operations/readRenamedFiles";
 export { readStagedChanges } from "#tools/git/operations/readStagedChanges";
 export { runGit } from "#tools/git/operations/runGit";
+export { withTemporaryIndex } from "#tools/git/operations/withTemporaryIndex";
 // @end
 
 // @barrel config/schemas

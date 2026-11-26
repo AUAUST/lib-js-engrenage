@@ -4,6 +4,7 @@ import { resolveEslintArguments } from "#tools/eslint/operations/resolveEslintAr
 import type { LoadedConfig } from "#project/config/index";
 import type { Files } from "#types/Files";
 
+// @debt ESLint writes fixes before it applies suppressions, so this run rewrites code a suppression covers
 export function fixWithEslint(
   config: LoadedConfig,
   files: Files,

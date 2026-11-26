@@ -1,0 +1,19 @@
+entries:
+  - id: PD-e39d1a
+    subject: "#971 npm under pnpm devEngines: choose fix"
+    what: "pick: no change, park on npm/cli#10301 (recommended); sync [pnpm, npm] list; or duplicate pnpm warn entry"
+    why: npm 11.19 checks devEngines on every command; any form letting npm view run lets npm install run
+    owner: "#971"
+    created: 2026-11-26T15:28:36Z
+  - id: PD-b49839
+    subject: "#964 links after installs: choose trigger"
+    what: "pick: synced postinstall restore plus executable restoring on start (recommended); or links sync target repairing on write"
+    why: pnpm add and remove run no root script and pnpm 12 has no post-link hook
+    owner: "#964"
+    created: 2026-11-26T15:28:36Z
+  - id: PD-ae418f
+    subject: "#972 fixes behind suppressions: choose mechanism"
+    what: "pick: config processor dropping fixes of suppressed rules (recommended); in-process fix pass then CLI; or in-process gate step; and confirm covers means every fix of a suppressed rule in the file"
+    why: ESLint writes fixes before applying suppressions, and fix predicates get no file path
+    owner: "#972"
+    created: 2026-11-26T15:36:49Z

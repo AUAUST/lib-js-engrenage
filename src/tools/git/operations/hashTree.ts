@@ -1,10 +1,6 @@
-import { cp, mkdtemp, rm } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
-
-import { isMissingError, resolve } from "#foundation/filesystem/index";
 import { readHead } from "#tools/git/operations/readHead";
 import { runGit } from "#tools/git/operations/runGit";
+import { withTemporaryIndex } from "#tools/git/operations/withTemporaryIndex";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 
@@ -52,25 +48,7 @@ export async function hashTree(
     return hashIndex(root);
   }
 
-  const directory = await mkdtemp(join(tmpdir(), "engrenage-index-"));
-
-  try {
-    const index = join(directory, "index");
-
-    const indexPath = await runGit(root, ["rev-parse", "--git-path", "index"]);
-
-    const source = resolve(root, indexPath.trim());
-
-    try {
-      await cp(source, index, { preserveTimestamps: true });
-    } catch (error) {
-      if (!isMissingError(error)) {
-        throw error;
-      }
-    }
-
-    const env = { GIT_INDEX_FILE: index };
-
+  return withTemporaryIndex(root, async (env) => {
     if (selection.mode === "worktree") {
       await runGit(root, ["add", "-A"], env);
 
@@ -81,8 +59,6 @@ export async function hashTree(
       await runGit(root, ["add", "-f", "--", ...include], env);
     }
 
-    return await hashIndex(root, env);
-  } finally {
-    await rm(directory, { recursive: true, force: true });
-  }
+    return hashIndex(root, env);
+  });
 }

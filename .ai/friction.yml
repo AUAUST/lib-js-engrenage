@@ -19,6 +19,9 @@ taps:
   - {id: FR-e10b9b, at: 2026-11-26T12:11:06Z, note: also barrelDirective.test.src.ts}
   - {id: FR-dc82e8, at: 2026-11-26T13:12:28Z, note: vitest hides test console output}
   - {id: FR-46be1a, at: 2026-11-26T13:34:38Z, note: metalbrain show on closed backlog IDs}
+  - {id: FR-bf941d, at: 2026-11-26T15:27:32Z, note: "cause: npm checks devEngines on every command, npm/cli#10301; tracked by #971"}
+  - {id: FR-1eb8aa, at: 2026-11-26T15:27:32Z, note: "cause: npm checks devEngines on every command, npm/cli#10301; tracked by #971"}
+  - {id: FR-26dc34, at: 2026-11-26T15:35:28Z, note: "syncWorkspaceFile test, same 5s timeout"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1265,3 +1268,8 @@ entries:
     tried: wrote a new .tsx subpath test
     stopped: found workspaceImports test covering it; reverted
     created: 2026-11-26T15:13:27Z
+  - id: FR-2893c9
+    subject: pnpm 12 native binary
+    tried: reading pnpm devEngines and lifecycle handling in its dist
+    stopped: Rust binary, no JS source; settled by scratch-project runs
+    created: 2026-11-26T15:27:34Z

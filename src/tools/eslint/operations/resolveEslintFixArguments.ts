@@ -3,6 +3,7 @@ import { ensureIncludes, hasOption } from "#foundation/processes/index";
 import { resolveEslintArguments } from "#tools/eslint/operations/resolveEslintArguments";
 import type { LoadedConfig } from "#project/config/index";
 
+// @debt ESLint writes fixes before it applies suppressions, so this run rewrites code a suppression covers
 export async function resolveEslintFixArguments(
   args: readonly string[],
   config: LoadedConfig,

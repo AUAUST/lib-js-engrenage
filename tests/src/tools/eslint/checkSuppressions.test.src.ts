@@ -1,3 +1,5 @@
+import { renameSync } from "node:fs";
+
 import { describe, expect, test } from "vitest";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
@@ -81,5 +83,24 @@ describe("checkSuppressions", { timeout: binaryTimeout }, () => {
       ok: false,
       output: expect.stringContaining("src/b.ts no-console: 2 → 3"),
     });
+  });
+
+  test("accepts the suppressions of a file moved without staging", async () => {
+    const { project } = await createGitRepository(
+      {
+        "package.json": manifest,
+        "src/a.ts": source,
+        [file]: suppress(2),
+      },
+      ["eslint"],
+    );
+
+    const config = await loadConfig(project.root);
+
+    renameSync(project.resolve("src/a.ts"), project.resolve("src/b.ts"));
+
+    project.write(file, suppress(2, "src/b.ts"));
+
+    expect((await checkSuppressions(config, [file])).ok).toBe(true);
   });
 });

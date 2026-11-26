@@ -141,3 +141,17 @@ entries:
     why: a contract constants file outgrows max-lines by nature, yet must stay one file; workers split it or disable the rule
     want: "each role tunes its own lint conventions: file length, complexity, private members allowed, and similar per-role limits"
     created: 2026-11-26T13:30:20Z
+  - id: BL-9bfaf7
+    title: Consumer role rules cannot reuse the import visitor engrenage's rules use
+    sites:
+      - src/tools/eslint/entry.ts:1
+    why: visitImportSources is exported from the tools/eslint index, not the public ESLint entry
+    want: rules written with defineRoleRule visit import sources as engrenage's own do
+    created: 2026-11-26T15:21:22Z
+  - id: BL-9f6485
+    title: The extensionImports rule resolves specifiers itself instead of through the module resolver
+    sites:
+      - src/tools/eslint/rules/extensionImports.ts:2
+    why: it uses createRequire and compares directories
+    want: it resolves through the import graph role rules now receive
+    created: 2026-11-26T15:21:30Z
