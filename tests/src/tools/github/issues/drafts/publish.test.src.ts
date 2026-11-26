@@ -1582,6 +1582,77 @@ ${fix}`,
     );
   });
 
+  test("refuses a new Plan drafted for another repository", async () => {
+    const root = createProject({
+      ".ai/issues/toolkit.new-roadmap.draft.md": `---
+title: Roadmap
+type: Plan
+---
+
+${planBody}
+`,
+    });
+
+    const { lines, passed } = await checkIssues(
+      await loadConfig(root),
+      ["toolkit.new-roadmap"],
+      "worker",
+    );
+
+    expect(passed).toBe(false);
+
+    expect(lines).toContain(
+      "toolkit.new-roadmap: A new Plan for AUAUST/toolkit cannot be drafted from AUAUST/app: planning belongs to the repository owning the work, so AUAUST/toolkit's agents plan it. Draft your need as a Task or Problem instead.",
+    );
+  });
+
+  test("republishes another repository's published Plan with a new issue of its tree", async () => {
+    const root = createProject({
+      "package.json": JSON.stringify({
+        name: "@auaust/toolkit",
+        type: "module",
+        repository: "github:AUAUST/toolkit",
+        dependencies: { "@auaust/app": "1.0.0" },
+      }),
+      "node_modules/@auaust/app/package.json": JSON.stringify({
+        name: "@auaust/app",
+        repository: "github:AUAUST/app",
+      }),
+    });
+
+    const config = await loadConfig(root);
+
+    await claimIssues(config, ["app.10"]);
+
+    await config.context.filesystem.write(
+      ".ai/issues/app.10.draft.md",
+      read(root, "app.10.draft.md").replace(
+        '  - ref: "#{app.12}"',
+        '  - ref: "#{app.new-need}"\n    gist: the need\n    sections: []\n  - ref: "#{app.12}"',
+      ),
+    );
+
+    await config.context.filesystem.write(
+      ".ai/issues/app.new-need.draft.md",
+      `---\ntitle: Need\ntype: Task\nNature: Feature\n---\n\n${taskBody.replace("#10 · Compass: the extra", "Compass: the need").replace(foreignTests, "")}\n`,
+    );
+
+    await config.context.filesystem.flush();
+
+    const {
+      lines,
+      passed,
+    } = await publishIssues(await loadConfig(root), ["app.10", "app.new-need"]);
+
+    expect({ lines, passed }).toMatchObject({ passed: true });
+
+    expect(findIssue(10).body).not.toContain(externalWritePrefix);
+
+    expect(findIssue(14).body.split("\n")[0]).toBe(
+      `#10 · ${renderExternalWriteMarker("AUAUST/toolkit")} · Compass: the need`,
+    );
+  });
+
   test("drops the external write marker when the target repository republishes the issue", async () => {
     findIssue(
       45,

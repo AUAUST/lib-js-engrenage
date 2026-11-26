@@ -17,3 +17,9 @@ entries:
     why: "waits on #967 landing, so the wording matches the marker it ships"
     owner: "#967"
     created: 2026-11-26T13:21:20Z
+  - id: PD-3af343
+    subject: plan audit issue fixes
+    what: "resume the plan auditor to apply its recommendations: close #951, cut #952 to case 3 (case 4 into BL-4e0b2d), rewrite #959 #961 #962 #963 #965, split #959 #964 #965, fix both plans' verified-at-HEAD line and #945 Done when"
+    why: "user approved all; waits on the #967 worker, whose edits break the planning tool mid-run"
+    owner: "#945"
+    created: 2026-11-26T13:42:11Z

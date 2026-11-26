@@ -28,7 +28,7 @@ export { writeResplitLogs } from "#tools/github/issues/drafts/operations/writeRe
 export { checkDraftBody } from "#tools/github/issues/drafts/utils/checkDraftBody";
 export { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
 export { checkDrafts } from "#tools/github/issues/drafts/utils/checkDrafts";
-export { checkExternalSections } from "#tools/github/issues/drafts/utils/checkExternalSections";
+export { checkExternalDraft } from "#tools/github/issues/drafts/utils/checkExternalDraft";
 export { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 export { findBlockersField } from "#tools/github/issues/drafts/utils/findBlockersField";
 export { findPublishedLocation } from "#tools/github/issues/drafts/utils/findPublishedLocation";

@@ -17,7 +17,7 @@ import {
 } from "#tools/github/issues/contract/index";
 import { checkDraftBody } from "#tools/github/issues/drafts/utils/checkDraftBody";
 import { checkDraftHeader } from "#tools/github/issues/drafts/utils/checkDraftHeader";
-import { checkExternalSections } from "#tools/github/issues/drafts/utils/checkExternalSections";
+import { checkExternalDraft } from "#tools/github/issues/drafts/utils/checkExternalDraft";
 import { createManifestSchema } from "#tools/github/issues/drafts/utils/createManifestSchema";
 import { listDraftReferences } from "#tools/github/issues/drafts/utils/listDraftReferences";
 import { parseReference } from "#tools/github/issues/drafts/utils/parseReference";
@@ -357,12 +357,12 @@ export function checkDrafts(
         subIssues: listDraftReferences(manifest?.subIssues).length,
       }),
       ...checkNesting(meaning, described.get(parents.get(stem) ?? "")?.meaning),
-      ...checkExternalSections(
-        draft.body,
-        meaning === undefined ? undefined : issueContracts[meaning],
+      ...checkExternalDraft(draft.body, meaning, {
         repository,
-        context.repository,
-      ),
+        current: context.repository,
+        created: parseStem(stem)?.kind === "draft",
+        contractNames: context.contractNames,
+      }),
       ...checkDraftHeader(
         draft.body,
         meaning === undefined ? undefined : issueContracts[meaning],

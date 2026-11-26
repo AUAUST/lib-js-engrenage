@@ -156,3 +156,8 @@ entries:
     why: "Plan #888 shows `#{new-missing-record}` literally where #905 belongs"
     want: Publishing resolves draft references in Re-split log reasons to the published issue numbers
     created: 2026-11-25T02:34:24Z
+  - id: BL-1b1304
+    title: Plan logs clutter the plan body, and external writes to a plan leave no record
+    why: the Re-split log lives in the plan body; a republished external plan carries no marker (#967 leaves it as debt)
+    want: "planning logs kept as GitHub comments on the issue: re-splits, and an external-writes log naming each repository that republished it"
+    created: 2026-11-26T13:42:00Z

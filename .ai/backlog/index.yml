@@ -251,6 +251,7 @@ issues:
     - BL-088353
     - BL-f4306f
     - BL-1ae1ff
+    - BL-1b1304
 lefthook:
   purpose: Lefthook integration.
   entries:
