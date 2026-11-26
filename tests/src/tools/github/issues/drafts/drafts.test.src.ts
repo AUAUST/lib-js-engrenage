@@ -392,6 +392,19 @@ describe("checkIssues", () => {
     );
   });
 
+  test("reports the quoting hint for a value starting with a reserved character", async () => {
+    const config = await createProject({
+      ".ai/issues/new-x.draft.md": first.replace(
+        "title: First",
+        "title: `x` first",
+      ),
+    });
+
+    await expect(checkIssues(config, ["new-x"], "worker")).rejects.toThrow(
+      /at line 1, column 8:[\s\S]*write the value quoted/u,
+    );
+  });
+
   test("reports one line per manifest, contract and reference finding of a draft", async () => {
     const config = await createProject({
       ".ai/issues/new-x.draft.md": first

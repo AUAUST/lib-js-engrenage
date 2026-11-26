@@ -13,6 +13,8 @@ export const newDraftPrefix = "new-";
 
 export const quoteReferenceHint = 'write the reference quoted, as `"#{new-<slug>}"` or `"#123"`: YAML reads an unquoted `#` as a comment';
 
+export const quoteValueHint = 'write the value quoted, as `"<value>"`: YAML refuses an unquoted value starting with a reserved character';
+
 export const reservedKeys = object.freeze([
   "title",
   "type",
