@@ -214,7 +214,7 @@ test(
       "bin/metalbrain/index.ts": 'throw new Error("program is broken");\n',
       "nexus/cli/index.ts": "export function createProgram() {}\n",
       "tools/nexus/index.ts": "export function runEngrenageProgram() {}\n",
-      "workflows/cli/index.ts": `export function launch() {}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
+      "workflows/cli/index.ts": `export function launch() {}\nexport async function runExecutable(executable, specifier, run) {\n  await run();\n}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
     });
 
     cpSync(

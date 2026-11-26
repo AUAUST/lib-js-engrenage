@@ -11,10 +11,11 @@ if (
   process.env.NODE_COMPILE_CACHE = directory;
 }
 
+// @debt each bin repeats the compile-cache preamble and the program loading around `runExecutable`, which jscpd reports as a clone of `bin/batiment/executable.ts`
 const [
   { createProgram },
   { runEngrenageProgram },
-  { findSourceExecutable, launch, prepareLinkedRun },
+  { launch, runExecutable },
 ] = await Promise.all([
   import("#nexus/cli/index"),
   import("#tools/nexus/index"),
@@ -22,22 +23,9 @@ const [
 ]);
 
 await launch(async () => {
-  const checkout = await prepareLinkedRun(import.meta.url);
+  await runExecutable(import.meta, "#bin/engrenage/executable", async () => {
+    const { default: engrenage } = await import("#bin/engrenage/index");
 
-  if (checkout !== undefined) {
-    return void (await import(checkout));
-  }
-
-  const source = await findSourceExecutable(
-    import.meta,
-    "#bin/engrenage/executable",
-  );
-
-  if (source !== undefined) {
-    return void (await import(source));
-  }
-
-  const { default: engrenage } = await import("#bin/engrenage/index");
-
-  await runEngrenageProgram(createProgram("engrenage", engrenage));
+    await runEngrenageProgram(createProgram("engrenage", engrenage));
+  });
 });

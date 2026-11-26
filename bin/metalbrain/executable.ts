@@ -12,7 +12,11 @@ if (
 }
 
 // @debt a failure loading the cli barrel crashes a hook instead of failing open, since openHook lives behind it
-const { launch, openHook } = await import("#workflows/cli/index");
+const {
+  launch,
+  openHook,
+  runExecutable,
+} = await import("#workflows/cli/index");
 
 // @debt finds the command path by the first argument instead of from Commander's parse, so a run option before `hook` makes the hook fail loudly
 const isHook = process.argv[2] === "hook";
@@ -39,14 +43,20 @@ async function runMetalbrain(
 
 if (isHook) {
   try {
-    await runMetalbrain({
-      onError(error) {
-        openHook("metalbrain", error);
-      },
+    await runExecutable(import.meta, "#bin/metalbrain/executable", () => {
+      return runMetalbrain({
+        onError(error) {
+          openHook("metalbrain", error);
+        },
+      });
     });
   } catch (error) {
     openHook("metalbrain", error);
   }
 } else {
-  await launch(runMetalbrain);
+  await launch(() => {
+    return runExecutable(import.meta, "#bin/metalbrain/executable", () => {
+      return runMetalbrain();
+    });
+  });
 }

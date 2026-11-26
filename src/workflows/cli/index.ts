@@ -1,8 +1,7 @@
 export { defineToolCommand } from "#workflows/cli/operations/defineToolCommand";
-export { findSourceExecutable } from "#workflows/cli/operations/findSourceExecutable";
 export { launch } from "#workflows/cli/operations/launch";
 export { openHook } from "#workflows/cli/operations/openHook";
-export { prepareLinkedRun } from "#workflows/cli/operations/prepareLinkedRun";
+export { runExecutable } from "#workflows/cli/operations/runExecutable";
 
 // @barrel types
 export type * from "#workflows/cli/types/ToolAction";

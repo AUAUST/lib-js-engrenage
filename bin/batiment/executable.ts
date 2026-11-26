@@ -15,7 +15,7 @@ if (
 const [
   { createProgram },
   { runEngrenageProgram },
-  { launch },
+  { launch, runExecutable },
 ] = await Promise.all([
   import("#nexus/cli/index"),
   import("#tools/nexus/index"),
@@ -23,7 +23,9 @@ const [
 ]);
 
 await launch(async () => {
-  const { default: batiment } = await import("#bin/batiment/index");
+  await runExecutable(import.meta, "#bin/batiment/executable", async () => {
+    const { default: batiment } = await import("#bin/batiment/index");
 
-  await runEngrenageProgram(createProgram("batiment", batiment));
+    await runEngrenageProgram(createProgram("batiment", batiment));
+  });
 });
