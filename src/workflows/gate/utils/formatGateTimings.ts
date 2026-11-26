@@ -1,6 +1,9 @@
 import { filter, flatMap, map } from "@auaust/toolkit/array";
 import { max, round } from "@auaust/toolkit/math";
+import { values } from "@auaust/toolkit/object";
 
+import { gateBookkeepingGroups } from "#workflows/gate/constants";
+import type { GateGroupTiming } from "#workflows/gate/types/GateGroupTiming";
 import type { GateTimings } from "#workflows/gate/types/GateTimings";
 
 interface TimingLine {
@@ -16,20 +19,32 @@ function formatDuration(milliseconds: number): string {
     : `${(milliseconds / 1000).toFixed(2)}s`;
 }
 
-/**
- * Lists each group of steps that ran with its duration, its steps indented below
- * it, then the run's total, or nothing when no step ran.
- */
-export function formatGateTimings({
-  groups,
-  duration,
-}: GateTimings): string | undefined {
-  const ran = filter(groups, ({ steps }) => steps.length > 0);
+function formatSummary(
+  ran: readonly GateGroupTiming[],
+  duration: number,
+  reused: boolean,
+): string {
+  const bookkeeping: readonly string[] = values(gateBookkeepingGroups);
 
-  if (ran.length === 0) {
-    return;
+  const stages = filter(ran, ({ name }) => !bookkeeping.includes(name));
+
+  const total = `Duration ${formatDuration(duration)}`;
+
+  if (reused || stages.length === 0) {
+    return total;
   }
 
+  const parts = map(stages, (group) => {
+    return `${group.name} ${formatDuration(group.duration)}`;
+  });
+
+  return `${total} (${parts.join(", ")})`;
+}
+
+function formatDetails(
+  ran: readonly GateGroupTiming[],
+  duration: number,
+): string {
   const lines: TimingLine[] = [
     ...flatMap(ran, (group) => {
       return [
@@ -55,4 +70,30 @@ export function formatGateTimings({
       return `${label.padEnd(labelWidth)}  ${text.padStart(durationWidth)}`;
     }),
   ].join("\n");
+}
+
+/**
+ * The run's total on one line, followed by the duration of each stage group
+ * that ran unless an earlier run was `reused`; when `detailed`, instead lists
+ * every group that ran with its steps indented below it, then the total, or
+ * nothing when no step ran.
+ */
+export function formatGateTimings(
+  { groups, duration }: GateTimings,
+  {
+    detailed = false,
+    reused = false,
+  }: { detailed?: boolean; reused?: boolean } = {},
+): string | undefined {
+  const ran = filter(groups, ({ steps }) => steps.length > 0);
+
+  if (!detailed) {
+    return formatSummary(ran, duration, reused);
+  }
+
+  if (ran.length === 0) {
+    return;
+  }
+
+  return formatDetails(ran, duration);
 }

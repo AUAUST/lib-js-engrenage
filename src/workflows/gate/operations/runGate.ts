@@ -17,6 +17,7 @@ import {
   type ChangeMode,
 } from "#tools/git/index";
 import { listLocalFilePatterns } from "#tools/metalbrain/index";
+import { gateBookkeepingGroups } from "#workflows/gate/constants";
 import { checkProject } from "#workflows/gate/operations/checkProject";
 import { checkVerifiedTree } from "#workflows/gate/operations/checkVerifiedTree";
 import { listStageSteps } from "#workflows/gate/operations/listStageSteps";
@@ -202,7 +203,7 @@ async function verify(
     } = await measureAsync(readTreeIdentity, config, mode);
 
     groups.push({
-      name: "stamp",
+      name: gateBookkeepingGroups.stamp,
       duration,
       steps: [{ name: "lookup", duration }],
     });
@@ -338,7 +339,7 @@ async function verify(
   }
 
   groups.push({
-    name: "tree",
+    name: gateBookkeepingGroups.tree,
     duration: sum(...map(tree, ({ duration }) => duration)),
     steps: tree,
   });

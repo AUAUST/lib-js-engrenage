@@ -37,6 +37,12 @@ export default defineLazyCommand({
           "--all",
           "check the whole project without fixing anything: every step and the configured commands",
         ).conflicts(["staged", "worktree", "everyone", "message"]),
+      )
+      .addOption(
+        new Option(
+          "--timings",
+          "list the duration of every stage and step instead of the one-line total",
+        ).conflicts("message"),
       );
   },
   action() {

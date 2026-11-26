@@ -61,11 +61,13 @@ export default async function ({
   worktree,
   everyone,
   message,
+  timings: detailed,
 }: {
   all?: true | undefined;
   worktree?: true | undefined;
   everyone?: true | undefined;
   message?: string | undefined;
+  timings?: true | undefined;
 }): Promise<void> {
   const audience = everyone === true ? "everyone" : "agents";
 
@@ -92,7 +94,10 @@ export default async function ({
     reporter.log(formatGateCoverage(report.checked));
   }
 
-  const timings = formatGateTimings(report.timings);
+  const timings = formatGateTimings(report.timings, {
+    detailed: detailed === true,
+    reused: report.checked.reused,
+  });
 
   if (timings !== undefined) {
     reporter.log(timings);

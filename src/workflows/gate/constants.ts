@@ -1,9 +1,16 @@
 import { function_, looseObject, optional, picklist, string } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
+import { freeze } from "@auaust/toolkit/object";
+
 import type { PackageName } from "#types/PackageName";
 
 export const gateCache = "gate" satisfies PackageName;
+
+export const gateBookkeepingGroups = freeze({
+  stamp: "stamp",
+  tree: "tree",
+} as const);
 
 // @debt typed as StandardSchemaV1 to pass auaust/readonly-constants, erasing the validator's output type
 export const gateStepEntry: StandardSchemaV1 = looseObject({

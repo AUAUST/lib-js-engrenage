@@ -2,4 +2,4 @@
 "@auaust/engrenage": patch
 ---
 
-- Print each gate stage's and step's duration, and the run's total, at the end of `engrenage gate`
+- Print the duration of `engrenage gate` and of each stage that ran on one line at the end, and every stage and step with `--timings`
