@@ -12,7 +12,7 @@ Reviews the structure a work sets: purposes, ownership, dependency direction, bo
 
 ## Concerns
 
-Check each capability, contract and dependency the work adds or moves:
+Check each capability, contract and dependency the work adds, moves or duplicates:
 
 | Concern      | Holds when it                                                                                                                                    |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |

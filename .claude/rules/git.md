@@ -22,7 +22,7 @@ Records here are uncommitted changes to the files of the agent logs (agent-recor
 | Subject         | `<type>: <summary>`                                                                                                                               |
 | Summary         | The label a reader would recall the main change by: lowercase start, no trailing period, no verb the type carries, no parts, reasons or mechanics |
 | Several changes | Name what they have in common, never a list joined by "and"                                                                                       |
-| Body            | Only these lines, as one paragraph: `Closes #<n>` per issue resolved, `Towards #<n>` per issue advanced                                           |
+| Body            | `Closes #<n>` per issue resolved, `Towards #<n>` per issue advanced                                                                               |
 
 | Type      | Main purpose                                                 |
 | --------- | ------------------------------------------------------------ |

@@ -118,7 +118,7 @@ Write each part left out of the agreed scope as a backlog entry a later debugger
 
 ## Architecture review
 
-When the user asks, review the work's structure by this file; offer it when the work adds a package, environment or namespace, or moves a domain across them:
+Review the work's structure by this file whenever the work places code or a capability, creates a feature, or touches purposes, ownership, dependencies, boundaries, roles or their tooling; only work plainly touching none skips it:
 
 `.claude/skills/shape/architecture-review.md`
 

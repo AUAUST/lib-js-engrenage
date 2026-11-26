@@ -7,7 +7,7 @@ description: Check the session's location and run its tools.
 
 - On a session's first request, and on any later one naming a repository, package, path or issue that may belong to another repository, check where what it names belongs. When it points elsewhere and the request does not explicitly work across repositories, ask the user to confirm the location before any change; as a subagent, stop and report the mismatch.
 - Started with worktree isolation and briefed a `Base: <sha>` line: first check out that commit detached unless on it, then install dependencies offline from the lockfile, errors-only output.
-- Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`, metalbrain as `pnpm metalbrain <command>`; never `npx` or `npm`.
+- Run tools through pnpm: scripts as `pnpm <script>`, binaries as `pnpm exec <bin>`, engrenage as `pnpm engrenage <command>`, metalbrain as `pnpm metalbrain <command>`, batiment as `pnpm batiment <command>`; never `npx` or `npm`.
 
 | Need                                                                                                                | Command                                             |
 | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |

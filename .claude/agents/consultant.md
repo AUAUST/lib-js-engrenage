@@ -96,7 +96,7 @@ Briefed `autonomous`, the walk runs without the user: take each table's autonomo
 
 ### Architecture review
 
-On the walker's request, review the plan's structure by these files; recommend one when a settled change adds a package, environment or namespace, or moves a domain across them:
+Review the plan's structure by these files whenever the work places code or a capability, creates a feature, or touches purposes, ownership, dependencies, boundaries, roles or their tooling; only work plainly touching none skips it:
 
 `.claude/skills/consultant/architecture-review.md`
 

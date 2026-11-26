@@ -35,6 +35,7 @@ Applies, on top of the issues rule, to every issue you file or draft.
 - File each issue in the repository owning the code it changes, a `resource` in the repository acting on it. Filed outside your repository: the new issue names where you found the finding, and the issue or draft leading to it links to the new issue.
 - Filing in a registered repository (planning sheet › Repositories) counts as explicit cross-repository work under Environment: no confirmation needed.
 - Owner not registered, or the owner is the current repository and it has no GitHub remote: write a backlog entry naming the owner instead.
+- **Drafting for another repository**, an external write: write the symptoms you see, their reproduction and the outcome you need, never a cause, mechanism or approach in its code, which its agents settle (Precedence and conflicts › External material); `check` refuses a new `plan` and each section an external write leaves out.
 
 ## Bodies
 

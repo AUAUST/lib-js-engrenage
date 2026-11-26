@@ -1,4 +1,6 @@
 purpose: GitHub issue drafts, checks and planning commands.
+taps:
+  - {id: BL-4e0b2d, at: 2026-11-26T13:49:06Z, note: "interscript FR-94e847: a closed issue removed from its parent keeps its header; checkDraftHeader.ts:25 skips it without a parent, resolvePublishedAncestors.ts:240 refuses it; folded from #952"}
 entries:
   - id: BL-756b4f
     title: Publishing a draft fails on a published ancestor in an unregistered repository

@@ -35,7 +35,7 @@ agent-instructions:
     - BL-9d6bf2
     - BL-d0f942
     - BL-a33d47
-    - BL-40b4ed
+    - BL-530fd5
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:

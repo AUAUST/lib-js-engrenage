@@ -2,6 +2,7 @@ purpose: Shared agent instructions, skills and the backlog conventions.
 taps:
   - {id: BL-2b2967, at: 2026-11-25T10:40:40Z, note: main role at 4799 of its 4800 word cap; any always-loaded addition needs a cut first}
   - {id: BL-2b2967, at: 2026-11-25T11:55:05Z, note: "main cap raised to 4865 for the 65-word Compass (#917); cut back to 4800 in #921"}
+  - {id: BL-f2991b, at: 2026-11-26T13:53:17Z, note: met again on the external-write and architecture-review instruction change}
 entries:
   - id: BL-46f0f0
     title: Attribution rule conflicts go unreported
@@ -213,10 +214,11 @@ entries:
     why: Its committing and dropping steps exclude the agent logs from cherry-picks for conflicts union merge now resolves, and re-add kept entries with new IDs, losing taps and created
     want: Cherry-pick the agent logs with the rest wherever the record files merge as unions
     created: 2026-11-25T06:11:47Z
-  - id: BL-40b4ed
-    title: The architecture review runs only on request or when work adds a package, environment or namespace
+  - id: BL-530fd5
+    title: Walk consultants settle foreign leaves in issues their readers now distrust as external writes
     sites:
-      - .claude/skills/shape/architecture-review.md:1
-    why: Leaks such as a consumer re-implementing shared CLI tooling surface only once the user spots them, after duplication spread
-    want: Shaping, planning and review sessions apply it unasked whenever work adds, moves or duplicates a capability across owners, consumer workarounds and grouped findings included, and propose the Leaks split preparation
-    created: 2026-11-26T10:34:33Z
+      - data/metalbrain/skills/consultant.md:19
+      - data/metalbrain/skills/walking/cross-repository.md:1
+    why: "Consultant and planner edits to another registered repository's items are external writes: check refuses their decided sections and readers treat the rest as symptoms"
+    want: Decide whether cross-repository plans keep foreign items, and how decisions settled for them reach that repository's agents
+    created: 2026-11-26T13:52:46Z

@@ -105,7 +105,7 @@ As an inner planner:
 
 ## Architecture review
 
-When the user or your brief asks, review the plan's structure by this file; offer it when the work adds a package, environment or namespace, or moves a domain across them:
+Review the plan's structure by this file whenever the work places code or a capability, creates a feature, or touches purposes, ownership, dependencies, boundaries, roles or their tooling; only work plainly touching none skips it:
 
 `.claude/skills/planning/architecture-review.md`
 
