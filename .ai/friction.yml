@@ -1228,3 +1228,8 @@ entries:
     tried: publishing a new problem draft as a subagent
     stopped: classifier denial; left the draft for the caller
     created: 2026-11-26T11:22:13Z
+  - id: FR-8b5116
+    subject: metalbrain backlog add
+    tried: --category option
+    stopped: category is positional; read --help
+    created: 2026-11-26T12:40:35Z

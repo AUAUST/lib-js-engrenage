@@ -95,7 +95,6 @@ cli:
     - BL-9c8fb3
     - BL-dc8e50
     - BL-e63aac
-    - BL-a3ff44
     - BL-4e55ba
     - BL-ab1893
     - BL-efac74
@@ -210,6 +209,7 @@ gate:
     - BL-33f7c7
     - BL-5d3f7c
     - BL-7b26ca
+    - BL-f17099
 git:
   purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
   entries:

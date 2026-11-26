@@ -178,6 +178,31 @@ describe("runProgram", () => {
 
     expect(stderr.mock.calls.map(String).join("")).toContain("progressing a b");
   });
+
+  test.each([
+    ["stdout", process.stdout],
+    ["stderr", process.stderr],
+  ])("ends quietly once %s's reader closes", async (_name, stream) => {
+    await run(createProgram(), "failing");
+
+    const closed = Object.assign(new Error("write EPIPE"), { code: "EPIPE" });
+
+    expect(() => {
+      return stream.emit("error", closed);
+    }).not.toThrow();
+
+    expect(process.exitCode).toBe(1);
+  });
+
+  test("still raises other errors of its output streams", async () => {
+    await run(createProgram(), "failing");
+
+    const failure = Object.assign(new Error("write EIO"), { code: "EIO" });
+
+    expect(() => {
+      return process.stdout.emit("error", failure);
+    }).toThrow(failure);
+  });
 });
 
 describe("sync --check", () => {

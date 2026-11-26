@@ -1,8 +1,6 @@
 purpose: Command definitions, registration and program runs.
 taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
-  - {id: BL-a3ff44, at: 2026-11-26T10:38:32Z, note: interscript saw gate output vanish when piped; draft new-gate-silent-pass takes it up}
-  - {id: BL-a3ff44, at: 2026-11-26T11:34:25Z, note: also batiment map --json}
   - {id: BL-4e55ba, at: 2026-11-26T12:21:26Z, note: Reframed as command extensions (PD-b6bbc6)}
 entries:
   - id: BL-62e56b
@@ -53,13 +51,6 @@ entries:
       - src/workflows/cli/operations/explainStaleBarrel.ts:47
     why: After moving src/tools/agents/claude/extension.ts, the message for src/workflows/builtins/entry.ts said to delete the projectBuild line
     want: The message quotes the line whose specifier resolves to the missing module
-    created: 2026-11-22T00:00:00Z
-  - id: BL-a3ff44
-    title: CLI output to a closed pipe crashes with an unhandled EPIPE
-    sites:
-      - src/foundation/reports/operations/createConsoleReporter.ts:25
-    why: "piping `metalbrain debt` into `head` prints an `Unhandled 'error' event` stack and exits 1; seen during #819."
-    want: a closed stdout ends the run quietly.
     created: 2026-11-22T00:00:00Z
   - id: BL-4e55ba
     title: Programs cannot mount commands from extensions they discover, so consumers run scripts through per-project aliases

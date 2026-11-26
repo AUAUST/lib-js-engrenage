@@ -7,6 +7,7 @@ import {
   createConsoleReporter,
   type Reporter,
 } from "#foundation/reports/index";
+import { dropClosedOutput } from "#workflows/cli/operations/dropClosedOutput";
 import { formatCommandError } from "#workflows/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#workflows/cli/operations/isDebugEnvironment";
 import { runContext } from "#workflows/cli/operations/runContext";
@@ -62,6 +63,9 @@ export async function runProgram(
     onError?(error: unknown): void;
   } = {},
 ): Promise<void> {
+  dropClosedOutput(process.stdout);
+  dropClosedOutput(process.stderr);
+
   let running: CommandUnknownOpts | null = program;
 
   program.hook("preAction", (_command, action) => {
