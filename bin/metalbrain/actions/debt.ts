@@ -1,5 +1,5 @@
+import { getRunContext } from "#nexus/cli/index";
 import { listDebtMarkers } from "#tools/eslint/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function ({ json }: { json: boolean }): Promise<void> {

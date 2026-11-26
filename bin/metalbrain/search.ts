@@ -1,4 +1,4 @@
-import { defineChainedCommand } from "#workflows/cli/index";
+import { defineChainedCommand } from "#nexus/cli/index";
 
 export default defineChainedCommand({
   configure(command) {

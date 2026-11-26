@@ -11,6 +11,7 @@ import { dirname } from "node:path";
 
 import { describe, expect, test } from "vitest";
 
+import { runContext } from "#nexus/cli/operations/runContext";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createCheckout } from "#tests/utils/createCheckout";
@@ -22,7 +23,6 @@ import { listLinks } from "#tools/pnpm/operations/listLinks";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
 import { restoreLinks } from "#tools/pnpm/operations/restoreLinks";
 import { unlinkCheckout } from "#tools/pnpm/operations/unlinkCheckout";
-import { runContext } from "#workflows/cli/operations/runContext";
 
 import link from "#bin/engrenage/actions/link";
 

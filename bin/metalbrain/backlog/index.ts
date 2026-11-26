@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/backlog/add";
 import categories from "#bin/metalbrain/backlog/categories";

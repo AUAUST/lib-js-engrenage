@@ -1,7 +1,7 @@
 import { backlog } from "#metalbrain/backlog/constants";
 import { formatRecordTree } from "#metalbrain/kinds/index";
 import { listRecords } from "#metalbrain/records/index";
-import { getRunContext } from "#workflows/cli/index";
+import { getRunContext } from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (category: string | undefined): Promise<void> {

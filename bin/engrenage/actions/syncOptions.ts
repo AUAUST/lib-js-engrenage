@@ -1,7 +1,7 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
+import { getRunContext } from "#nexus/cli/index";
 import { listSyncOptions } from "#project/sync/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (command: CommandUnknownOpts): Promise<void> {

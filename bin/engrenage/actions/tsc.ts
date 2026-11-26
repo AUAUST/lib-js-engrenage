@@ -1,6 +1,7 @@
+import { getRunContext } from "#nexus/cli/index";
 import { resolveTscArguments } from "#tools/typescript/index";
-import { getRunContext, type ToolRuns } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
+import type { ToolRuns } from "#workflows/cli/index";
 
 export default async function (args: string[]): Promise<ToolRuns> {
   const { reporter } = getRunContext();

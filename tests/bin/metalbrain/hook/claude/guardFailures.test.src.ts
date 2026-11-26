@@ -2,11 +2,11 @@ import { spawnSync } from "node:child_process";
 
 import { afterEach, expect, test, vi } from "vitest";
 
+import { createProgram, runProgram } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
 import { readHookOutput } from "#tests/utils/readHookOutput";
-import { createProgram, runProgram } from "#workflows/cli/index";
 
 import metalbrain from "#bin/metalbrain/index";
 

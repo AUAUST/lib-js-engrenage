@@ -1,5 +1,5 @@
+import { getRunContext } from "#nexus/cli/index";
 import { reportClones } from "#tools/jscpd/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (reference: string): Promise<void> {

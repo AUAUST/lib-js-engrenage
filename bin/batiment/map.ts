@@ -1,5 +1,4 @@
-// @debt builds on engrenage's `workflows/cli` helpers until they move to nexus (BL-4e55ba)
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineLazyCommand } from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

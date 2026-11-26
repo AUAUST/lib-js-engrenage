@@ -2,8 +2,8 @@ import { stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
 import { readTextFile } from "#foundation/filesystem/index";
+import { getRunContext } from "#nexus/cli/index";
 import { dispatchAgent } from "#tools/metalbrain/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { Effort } from "#metalbrain/runtimes/index";
 

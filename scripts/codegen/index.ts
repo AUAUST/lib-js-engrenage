@@ -1,4 +1,4 @@
-import { defineCommand, defineGroup } from "#workflows/cli/index";
+import { defineCommand, defineGroup } from "#nexus/cli/index";
 
 import apis from "#scripts/codegen/apis";
 import config from "#scripts/codegen/config";

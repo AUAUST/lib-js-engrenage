@@ -1,4 +1,4 @@
-import { defineGroup, type CommandDefinition } from "#workflows/cli/index";
+import { defineGroup, type CommandDefinition } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/logs/add";
 import close from "#bin/metalbrain/logs/close";

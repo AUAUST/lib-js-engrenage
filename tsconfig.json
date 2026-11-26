@@ -43,6 +43,10 @@
       "@auaust/engrenage/future/metalbrain/runtimes/constants": [
         "./src/metalbrain/runtimes/constants.ts"
       ],
+      "@auaust/engrenage/future/nexus/cli": ["./src/nexus/cli/entry.ts"],
+      "@auaust/engrenage/future/nexus/cli/constants": [
+        "./src/nexus/cli/constants.ts"
+      ],
       "@auaust/engrenage/baseline": ["./src/project/baseline/entry.ts"],
       "@auaust/engrenage/baseline/constants": [
         "./src/project/baseline/constants.ts"

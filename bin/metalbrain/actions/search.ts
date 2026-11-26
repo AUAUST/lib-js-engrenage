@@ -8,7 +8,7 @@ import {
   CommandUsageError,
   getRunContext,
   runInvocations,
-} from "#workflows/cli/index";
+} from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 

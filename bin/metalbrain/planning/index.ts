@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import issue from "#bin/metalbrain/planning/issue/index";
 import walk from "#bin/metalbrain/planning/walk/index";

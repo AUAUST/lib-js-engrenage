@@ -1,4 +1,5 @@
 import { packageJsonFile } from "#constants";
+import { getRunContext } from "#nexus/cli/index";
 import {
   readProjectPnpmVersion,
   readSharedPnpmRange,
@@ -10,7 +11,6 @@ import {
   resolvePnpmRangeStatus,
   upgradePnpmManifest,
 } from "#tools/pnpm/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter } from "#workflows/init/index";
 

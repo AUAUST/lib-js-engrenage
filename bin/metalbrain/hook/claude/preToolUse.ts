@@ -1,6 +1,6 @@
 import { Argument } from "@commander-js/extra-typings";
 
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineLazyCommand } from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

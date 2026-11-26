@@ -10,8 +10,8 @@ import {
   resolveMainWorktree,
   type AgentRun,
 } from "#metalbrain/runtimes/index";
+import { getRunContext } from "#nexus/cli/index";
 import { findBriefedIssue } from "#tools/github/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 function selectSince(

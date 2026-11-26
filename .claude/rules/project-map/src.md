@@ -39,6 +39,7 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
 ├─ nexus/  #nexus/…  Shared program-building tooling: command definition and grouping, program runs and interop helpers that know nothing of the project engrenage orchestrates.  [debt: A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split.]
+│  └─ cli*  Define commands and command groups, create programs from them and run those programs with their run context, run options and error output.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < generators < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
@@ -75,6 +76,7 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ metalbrain*{claude*}  Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call.  [debt: Wraps metalbrain beyond the agent setup engrenage syncs, such as the host checks agent hooks call, only because metalbrain lives here by an earlier decision outside engrenage's Compass.]
 │  │  └─ claude*  Engrenage's Claude glue: Claude's init steps, settings sync and word-cap check.
+│  ├─ nexus  Engrenage's wrapper around nexus: the debug variable, configured debug and stale-barrel explanation its programs run with.
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*{preset*}  Configure code formatting.
 │  │  └─ preset*  The ready-made Prettier config, for Prettier to load from `package.json`.

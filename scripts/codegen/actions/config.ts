@@ -1,9 +1,9 @@
 import { glob } from "node:fs/promises";
 import { join } from "node:path";
 
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
 import { generateConfigTypes } from "#scripts/codegen/operations/generateConfigTypes";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { File } from "#types/File";
 

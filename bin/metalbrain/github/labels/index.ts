@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import prune from "#bin/metalbrain/github/labels/prune";
 import sync from "#bin/metalbrain/github/labels/sync";

@@ -222,3 +222,9 @@ entries:
     why: "Consultant and planner edits to another registered repository's items are external writes: check refuses their decided sections and readers treat the rest as symptoms"
     want: Decide whether cross-repository plans keep foreign items, and how decisions settled for them reach that repository's agents
     created: 2026-11-26T13:52:46Z
+  - id: BL-c5e806
+    title: A user saying they will compact gets no resume prompt unasked
+    why: resume prompts are framed ad hoc; the user must ask for one and its shape varies
+    want: "on a compaction notice, the agent sends a resume prompt shaped like a handoff: Markdown block, opening with the invoking skill command when there is one, naming the support files to reread"
+    done: a bare "I will compact" yields such a prompt
+    created: 2026-11-26T14:31:09Z

@@ -36,6 +36,7 @@ agent-instructions:
     - BL-d0f942
     - BL-a33d47
     - BL-530fd5
+    - BL-c5e806
 agents:
   purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
   entries:
@@ -101,6 +102,7 @@ cli:
     - BL-101628
     - BL-4037bb
     - BL-c7380b
+    - BL-b46a5f
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -136,6 +138,7 @@ configuration:
     - BL-9d892e
     - BL-c84fe4
     - BL-364f46
+    - BL-d8c551
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:

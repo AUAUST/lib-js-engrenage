@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { createProgram } from "#nexus/cli/index";
+import { runProgram } from "#nexus/cli/operations/runProgram";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { createProgram, defineToolCommand } from "#workflows/cli/index";
-import { runProgram } from "#workflows/cli/operations/runProgram";
+import { defineToolCommand } from "#workflows/cli/index";
 
 function defineFakeCommand(
   action: (args: string[]) => readonly string[],

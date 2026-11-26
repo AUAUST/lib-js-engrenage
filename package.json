@@ -171,6 +171,14 @@
       "source": "./src/metalbrain/runtimes/constants.ts",
       "default": "./dist/future/metalbrain/runtimes/constants.mjs"
     },
+    "./future/nexus/cli": {
+      "source": "./src/nexus/cli/entry.ts",
+      "default": "./dist/future/nexus/cli.mjs"
+    },
+    "./future/nexus/cli/constants": {
+      "source": "./src/nexus/cli/constants.ts",
+      "default": "./dist/future/nexus/cli/constants.mjs"
+    },
     "./git": {
       "source": "./src/tools/git/entry.ts",
       "default": "./dist/git.mjs"
@@ -489,6 +497,8 @@
       "./future/metalbrain/records/constants": "./dist/future/metalbrain/records/constants.mjs",
       "./future/metalbrain/runtimes": "./dist/future/metalbrain/runtimes.mjs",
       "./future/metalbrain/runtimes/constants": "./dist/future/metalbrain/runtimes/constants.mjs",
+      "./future/nexus/cli": "./dist/future/nexus/cli.mjs",
+      "./future/nexus/cli/constants": "./dist/future/nexus/cli/constants.mjs",
       "./git": "./dist/git.mjs",
       "./git/constants": "./dist/git/constants.mjs",
       "./github": "./dist/github.mjs",

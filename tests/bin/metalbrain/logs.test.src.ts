@@ -6,11 +6,11 @@ import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { logKinds } from "#metalbrain/logs/constants";
+import { createProgram } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
-import { createProgram } from "#workflows/cli/index";
 
 import metalbrain from "#bin/metalbrain/index";
 

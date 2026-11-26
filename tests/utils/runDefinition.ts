@@ -1,8 +1,8 @@
 import { onTestFinished } from "vitest";
 
+import { createProgram, type CommandDefinition } from "#nexus/cli/index";
+import { runContext } from "#nexus/cli/operations/runContext";
 import { createTestReporter } from "#tests/utils/createTestReporter";
-import { createProgram, type CommandDefinition } from "#workflows/cli/index";
-import { runContext } from "#workflows/cli/operations/runContext";
 
 export async function runDefinition(
   definition: CommandDefinition,

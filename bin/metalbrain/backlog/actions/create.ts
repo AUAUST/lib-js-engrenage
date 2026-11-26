@@ -1,6 +1,6 @@
 import { createBacklogCategory } from "#metalbrain/backlog/index";
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (

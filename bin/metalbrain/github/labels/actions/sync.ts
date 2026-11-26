@@ -1,6 +1,6 @@
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
 import { createGithubClient, syncLabels } from "#tools/github/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {

@@ -3,9 +3,9 @@ import { cancel, isCancel, multiselect } from "@clack/prompts";
 import { empty } from "@auaust/toolkit";
 
 import { addAgentSkills, getSkillTemplates } from "#metalbrain/runtimes/index";
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
 import { loadAgentInputs } from "#tools/metalbrain/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 type AgentInputs = Awaited<ReturnType<typeof loadAgentInputs>>;

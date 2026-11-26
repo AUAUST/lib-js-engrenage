@@ -4,7 +4,7 @@ import { relative } from "node:path";
 import { successMessage } from "#constants";
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
 import { resolveBinary } from "#foundation/processes/index";
-import { getRunContext } from "#workflows/cli/operations/getRunContext";
+import { getRunContext } from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

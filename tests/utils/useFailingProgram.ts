@@ -1,13 +1,13 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
-import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createTestReporter } from "#tests/utils/createTestReporter";
-import { mockCwd } from "#tests/utils/mockCwd";
 import {
   createProgram as createDefinedProgram,
   defineCommand,
   defineGroup,
-} from "#workflows/cli/index";
+} from "#nexus/cli/index";
+import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+import { createTestReporter } from "#tests/utils/createTestReporter";
+import { mockCwd } from "#tests/utils/mockCwd";
 
 const failing = defineCommand({
   action() {

@@ -1,0 +1,4 @@
+{
+  "specifier": "future/nexus/cli",
+  "purpose": "Define commands and command groups, create programs from them and run those programs with their run context, run options and error output."
+}

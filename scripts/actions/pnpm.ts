@@ -1,7 +1,7 @@
 import { project } from "#constants";
+import { getRunContext } from "#nexus/cli/index";
 import { parseVersion, readSharedPnpmRange } from "#project/package/index";
 import { resolveLatestPnpm } from "#tools/pnpm/index";
-import { getRunContext } from "#workflows/cli/index";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {
   const { reporter } = getRunContext();

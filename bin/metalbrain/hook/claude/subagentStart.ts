@@ -1,4 +1,4 @@
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineLazyCommand } from "#nexus/cli/index";
 import type { HookEvent, HostChecks } from "#metalbrain/runtimes/index";
 
 export default defineLazyCommand({

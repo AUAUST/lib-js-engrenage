@@ -1250,3 +1250,8 @@ entries:
     tried: echo "====" separator and timeout
     stopped: hook refused both; reworded separator, used tool timeout
     created: 2026-11-26T13:33:04Z
+  - id: FR-1da0ed
+    subject: backlog relocate refuses with other stale sites
+    tried: relocating moved files one by one
+    stopped: validation of the whole file fails; updated sites with backlog update
+    created: 2026-11-26T14:39:52Z

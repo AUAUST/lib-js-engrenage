@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import { createProgram, runProgram } from "#workflows/cli/index";
+import { createProgram } from "#nexus/cli/index";
+import { runEngrenageProgram } from "#tools/nexus/index";
 
 import support from "#scripts/index";
 
-await runProgram(createProgram("support", support));
+await runEngrenageProgram(createProgram("support", support));

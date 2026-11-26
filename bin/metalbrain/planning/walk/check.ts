@@ -1,6 +1,6 @@
 import { InvalidArgumentError } from "@commander-js/extra-typings";
 
-import { collectArgument, defineLazyCommand } from "#workflows/cli/index";
+import { collectArgument, defineLazyCommand } from "#nexus/cli/index";
 
 function parsePlanDepth(value: string) {
   if (value === "all") {

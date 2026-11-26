@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, test, vi } from "vitest";
 
+import { runContext } from "#nexus/cli/operations/runContext";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureBinaryOutput } from "#tests/utils/captureBinaryOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -10,7 +11,6 @@ import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 import { checkTypes } from "#tools/typescript/tsc/index";
-import { runContext } from "#workflows/cli/operations/runContext";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 import tsc from "#bin/engrenage/actions/tsc";

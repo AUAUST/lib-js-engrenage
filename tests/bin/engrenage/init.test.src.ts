@@ -11,6 +11,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { scratchpadPlaceholder } from "#metalbrain/backlog/constants";
+import { defineGroup } from "#nexus/cli/index";
 import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -18,7 +19,6 @@ import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { defineGroup } from "#workflows/cli/index";
 import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/init/operations/createPrompter";

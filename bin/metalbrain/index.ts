@@ -1,5 +1,5 @@
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import agents from "#bin/metalbrain/agents/index";
 import backlog from "#bin/metalbrain/backlog/index";

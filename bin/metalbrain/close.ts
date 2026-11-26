@@ -1,4 +1,4 @@
-import { collectListArgument, defineLazyCommand } from "#workflows/cli/index";
+import { collectListArgument, defineLazyCommand } from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

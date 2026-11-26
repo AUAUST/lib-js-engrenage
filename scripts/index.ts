@@ -1,5 +1,5 @@
 import { engrenage } from "#constants";
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import codegen from "#scripts/codegen/index";
 import pnpm from "#scripts/pnpm";

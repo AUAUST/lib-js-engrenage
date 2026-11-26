@@ -1,9 +1,9 @@
 import { checkAgents, formatAgentCheck } from "#metalbrain/runtimes/index";
+import { getRunContext } from "#nexus/cli/index";
 import {
   loadAgentInputs,
   loadInstructionFormatter,
 } from "#tools/metalbrain/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (): Promise<void> {

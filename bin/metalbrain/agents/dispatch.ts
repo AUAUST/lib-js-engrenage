@@ -1,7 +1,7 @@
 import { Option } from "@commander-js/extra-typings";
 
 import { efforts } from "#metalbrain/runtimes/constants";
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineLazyCommand } from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

@@ -23,6 +23,8 @@ const followedLoads = ["#bin/metalbrain/index", "#bin/metalbrain/hook/"];
 const allowedPrefixes = [
   "node:",
   "#workflows/cli/",
+  "#nexus/cli/",
+  "#tools/nexus/",
   "@commander-js/extra-typings",
 ];
 
@@ -102,7 +104,7 @@ function listOutsideImports(
   return { visited, outside: [...outside] };
 }
 
-test("the hook's module graph loads only its domain, the cli workflow, Commander and Node builtins", () => {
+test("the hook's module graph loads only its domain, the cli domains, Commander and Node builtins", () => {
   const { visited, outside } = listOutsideImports(
     [
       fileURLToPath(
@@ -204,11 +206,15 @@ test(
         type: "module",
         imports: {
           "#bin/*": "./bin/*.ts",
+          "#nexus/*": "./nexus/*.ts",
+          "#tools/*": "./tools/*.ts",
           "#workflows/*": "./workflows/*.ts",
         },
       }),
       "bin/metalbrain/index.ts": 'throw new Error("program is broken");\n',
-      "workflows/cli/index.ts": `export function createProgram() {}\nexport function launch() {}\nexport function runProgram() {}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
+      "nexus/cli/index.ts": "export function createProgram() {}\n",
+      "tools/nexus/index.ts": "export function runEngrenageProgram() {}\n",
+      "workflows/cli/index.ts": `export function launch() {}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
     });
 
     cpSync(

@@ -3,7 +3,7 @@ import { Argument } from "@commander-js/extra-typings";
 import { map } from "@auaust/toolkit/iterable";
 import { record } from "@auaust/toolkit/object";
 
-import { defineLazyCommand } from "#workflows/cli/index";
+import { defineLazyCommand } from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

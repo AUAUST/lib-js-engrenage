@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import upgrade from "#bin/engrenage/pnpm/upgrade";
 

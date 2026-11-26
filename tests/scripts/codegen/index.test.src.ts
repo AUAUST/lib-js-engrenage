@@ -11,7 +11,7 @@ const { runs } = vi.hoisted(() => {
 });
 
 async function createGenerator(name: string) {
-  const { defineCommand } = await import("#workflows/cli/index");
+  const { defineCommand } = await import("#nexus/cli/index");
 
   return {
     default: defineCommand({

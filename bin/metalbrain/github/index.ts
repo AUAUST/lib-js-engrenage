@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import fetch from "#bin/metalbrain/github/fetch";
 import labels from "#bin/metalbrain/github/labels/index";

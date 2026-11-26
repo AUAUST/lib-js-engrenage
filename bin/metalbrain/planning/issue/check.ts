@@ -4,7 +4,7 @@ import {
   collectArgument,
   collectListArgument,
   defineLazyCommand,
-} from "#workflows/cli/index";
+} from "#nexus/cli/index";
 
 export default defineLazyCommand({
   configure(command) {

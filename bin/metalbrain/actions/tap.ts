@@ -1,7 +1,7 @@
 import { createRecordKindResolver } from "#metalbrain/kinds/index";
 import { formatRecordRename, tapRecords } from "#metalbrain/records/index";
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (

@@ -6,6 +6,7 @@ import {
 } from "#batiment/structure/index";
 import { packageJsonFile } from "#constants";
 import { runProcess } from "#foundation/processes/index";
+import { getRunContext } from "#nexus/cli/index";
 import { loadConfig, type LoadedConfig } from "#project/config/index";
 import {
   formatChanges,
@@ -14,7 +15,6 @@ import {
   settleChanges,
 } from "#project/sync/index";
 import { createPnpmInvocation } from "#tools/pnpm/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import { createPrompter, listInitSteps, runSteps } from "#workflows/init/index";
 import type { Invocation, Prompter } from "#project/steps/index";

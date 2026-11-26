@@ -1,4 +1,4 @@
-import { defineGroup, defineLazyCommand } from "#workflows/cli/index";
+import { defineGroup, defineLazyCommand } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/agents/skills/add";
 

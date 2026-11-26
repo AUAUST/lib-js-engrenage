@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import PostToolUse from "#bin/metalbrain/hook/claude/postToolUse";
 import PreToolUse from "#bin/metalbrain/hook/claude/preToolUse";

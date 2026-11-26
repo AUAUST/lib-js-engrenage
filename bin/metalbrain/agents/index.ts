@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import check from "#bin/metalbrain/agents/check";
 import dispatch from "#bin/metalbrain/agents/dispatch";

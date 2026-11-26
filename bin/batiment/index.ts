@@ -1,5 +1,4 @@
-// @debt builds on engrenage's `workflows/cli` helpers until they move to nexus (BL-4e55ba)
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import map from "#bin/batiment/map";
 

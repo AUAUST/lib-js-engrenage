@@ -4,13 +4,15 @@ import { enableCompileCache } from "node:module";
 
 enableCompileCache();
 
-const {
-  createProgram,
-  enableLinkedSource,
-  findSourceExecutable,
-  launch,
-  runProgram,
-} = await import("#workflows/cli/index");
+const [
+  { createProgram },
+  { runEngrenageProgram },
+  { enableLinkedSource, findSourceExecutable, launch },
+] = await Promise.all([
+  import("#nexus/cli/index"),
+  import("#tools/nexus/index"),
+  import("#workflows/cli/index"),
+]);
 
 await launch(async () => {
   await enableLinkedSource(import.meta.url);
@@ -26,5 +28,5 @@ await launch(async () => {
 
   const { default: engrenage } = await import("#bin/engrenage/index");
 
-  await runProgram(createProgram("engrenage", engrenage));
+  await runEngrenageProgram(createProgram("engrenage", engrenage));
 });

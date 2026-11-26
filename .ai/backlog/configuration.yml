@@ -186,3 +186,8 @@ entries:
     why: "Interscript declares the shopify global for all of src and appends it by hand to admin and the extensions; the rest of environment composition is #959–#962"
     done: "Item in #966"
     created: 2026-11-26T10:59:20Z
+  - id: BL-d8c551
+    title: An empty record written over an inherited or preset one clears nothing
+    why: "input layering merges records per key, so a written {} keeps every inherited key; no consumer needs it once #959 drops same-key inheritance"
+    want: an empty object or record resolves empty; whether a non-empty record replaces stays open
+    created: 2026-11-26T14:28:05Z

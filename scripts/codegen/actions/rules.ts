@@ -1,5 +1,5 @@
+import { getRunContext } from "#nexus/cli/index";
 import { generateRuleTypes } from "#scripts/codegen/operations/generateRuleTypes";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function ({ check }: { check: boolean }): Promise<void> {

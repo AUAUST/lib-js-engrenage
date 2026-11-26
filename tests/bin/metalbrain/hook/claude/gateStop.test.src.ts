@@ -5,10 +5,10 @@ import { text } from "node:stream/consumers";
 import { literal, object, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { createProgram, runProgram } from "#nexus/cli/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
-import { createProgram, runProgram } from "#workflows/cli/index";
 
 import metalbrain from "#bin/metalbrain/index";
 

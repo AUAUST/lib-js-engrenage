@@ -1,7 +1,4 @@
-import {
-  collectListArgument,
-  defineChainedCommand,
-} from "#workflows/cli/index";
+import { collectListArgument, defineChainedCommand } from "#nexus/cli/index";
 
 export default defineChainedCommand({
   configure(command) {

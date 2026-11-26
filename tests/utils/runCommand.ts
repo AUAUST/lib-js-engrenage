@@ -1,5 +1,5 @@
+import { defineGroup, type CommandDefinition } from "#nexus/cli/index";
 import { runDefinition } from "#tests/utils/runDefinition";
-import { defineGroup, type CommandDefinition } from "#workflows/cli/index";
 
 export function runCommand(
   name: string,

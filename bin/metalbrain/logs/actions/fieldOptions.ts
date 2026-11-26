@@ -1,7 +1,7 @@
 import { Option, type CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { findLogKind } from "#metalbrain/logs/index";
-import { collectArgument } from "#workflows/cli/index";
+import { collectArgument } from "#nexus/cli/index";
 import type { RecordFields } from "#metalbrain/records/index";
 
 export default function (command: CommandUnknownOpts): void {

@@ -1,5 +1,5 @@
+import { getRunContext } from "#nexus/cli/index";
 import { resolvePrettierAllArguments } from "#tools/prettier/index";
-import { getRunContext } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (args: string[]): Promise<readonly string[]> {

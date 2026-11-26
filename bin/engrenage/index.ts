@@ -1,4 +1,4 @@
-import { defineGroup } from "#workflows/cli/index";
+import { defineGroup } from "#nexus/cli/index";
 
 import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";

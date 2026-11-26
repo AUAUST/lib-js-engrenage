@@ -4,9 +4,8 @@ import {
   renderStructureDiagnostic,
 } from "#batiment/structure/index";
 // @debt reports through engrenage's `project/structure` binding until a split CLI finds its host (BL-efac74)
+import { getRunContext } from "#nexus/cli/index";
 import { reportStructure } from "#project/structure/index";
-// @debt builds on engrenage's `workflows/cli` helpers until they move to nexus (BL-4e55ba)
-import { getRunContext } from "#workflows/cli/index";
 // @debt loads engrenage's config until a split CLI finds its host (BL-efac74)
 import { loadValidatedConfig } from "#workflows/config/index";
 

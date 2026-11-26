@@ -4,15 +4,19 @@ import { enableCompileCache } from "node:module";
 
 enableCompileCache();
 
-// @debt builds on engrenage's `workflows/cli` helpers until they move to nexus (BL-4e55ba)
-const {
-  createProgram,
-  launch,
-  runProgram,
-} = await import("#workflows/cli/index");
+// @debt runs through engrenage's launch and run wrapper, reading engrenage's debug variable and config, until a split CLI finds its host (BL-efac74)
+const [
+  { createProgram },
+  { runEngrenageProgram },
+  { launch },
+] = await Promise.all([
+  import("#nexus/cli/index"),
+  import("#tools/nexus/index"),
+  import("#workflows/cli/index"),
+]);
 
 await launch(async () => {
   const { default: batiment } = await import("#bin/batiment/index");
 
-  await runProgram(createProgram("batiment", batiment));
+  await runEngrenageProgram(createProgram("batiment", batiment));
 });
