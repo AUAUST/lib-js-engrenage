@@ -7,21 +7,7 @@ import {
   defineGroup,
   defineLazyCommand,
 } from "#nexus/cli/index";
-
-function captureOutput(command: CommandUnknownOpts, output: string[]): void {
-  command.exitOverride().configureOutput({
-    writeOut(text) {
-      output.push(text);
-    },
-    writeErr(text) {
-      output.push(text);
-    },
-  });
-
-  for (const subcommand of command.commands) {
-    captureOutput(subcommand, output);
-  }
-}
+import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 
 function createExtendedProgram() {
   const action = vi.fn();
@@ -52,7 +38,7 @@ function createExtendedProgram() {
 
   const output: string[] = [];
 
-  captureOutput(program, output);
+  captureCommandOutput(program, output);
 
   return {
     program,
@@ -183,7 +169,7 @@ describe("defineGroup", () => {
 
       const output: string[] = [];
 
-      captureOutput(program, output);
+      captureCommandOutput(program, output);
 
       return { program, output };
     }

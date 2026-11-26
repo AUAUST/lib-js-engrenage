@@ -2,12 +2,12 @@ import { existsSync } from "node:fs";
 
 import { describe, expect, test } from "vitest";
 import { parse } from "yaml";
-import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { logKinds } from "#metalbrain/logs/constants";
 import { createProgram } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
+import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -39,21 +39,6 @@ function addFriction(subject: string) {
     "--stopped",
     "it failed; reran",
   );
-}
-
-function captureOutput(command: CommandUnknownOpts, output: string[]): void {
-  command.exitOverride().configureOutput({
-    writeOut(text) {
-      output.push(text);
-    },
-    writeErr(text) {
-      output.push(text);
-    },
-  });
-
-  for (const subcommand of command.commands) {
-    captureOutput(subcommand, output);
-  }
 }
 
 const recordTime = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/u;
@@ -314,7 +299,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     const program = createProgram("metalbrain", metalbrain);
 
-    captureOutput(program, output);
+    captureCommandOutput(program, output);
 
     await expect(
       program.parseAsync(
