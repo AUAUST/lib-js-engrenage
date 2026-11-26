@@ -298,7 +298,8 @@
   "files": [
     "dist",
     "data",
-    "src"
+    "src",
+    "CHANGELOG.md"
   ],
   "dependencies": {
     "@eslint/js": "^10.0.1",

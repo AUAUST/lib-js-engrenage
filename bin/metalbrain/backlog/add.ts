@@ -32,6 +32,9 @@ export default defineChainedCommand({
         collectListArgument,
       );
   },
+  extend() {
+    return import("#bin/metalbrain/backlog/actions/wordCapHelp");
+  },
   action() {
     return import("#bin/metalbrain/backlog/actions/add");
   },

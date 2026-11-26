@@ -136,3 +136,8 @@ entries:
     why: Interscript's config has 574 objects and 8,476 file patterns; config-array's getConfig takes ~2.7 s CPU of the 19 s whole-project lint, minimatch 1.2 s of it
     want: fewer objects per scope, such as one merged object per scope and file kind, or basePath instead of prefixed patterns
     created: 2026-11-24T00:00:00Z
+  - id: BL-74872f
+    title: Lint suppressions break on moves and fixes
+    why: "Plan #945, from interscript handoff engrenage-gaps.md: path-keyed suppressions count as new after a file move; eslint --fix reapplies fixes behind suppressions"
+    done: "Needs planning under #945"
+    created: 2026-11-26T10:59:20Z

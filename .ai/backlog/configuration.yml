@@ -181,3 +181,8 @@ entries:
     why: Interscript's theme glob warned as if the root tests environment lacked syntax, though the root sets none and needs none
     want: Diagnostics from a workspace scope name the option where that scope states it, such as workspaces.globs.theme.environments.tests or its .workspace.json
     created: 2026-11-24T00:00:00Z
+  - id: BL-364f46
+    title: Environments cannot compose fields, types and globals
+    why: "Plan #945, from interscript handoff engrenage-gaps.md: no field inheritance with an unset, a workspace importing another misses its tsconfig (BL-d3e19c), no per-environment globals, define or declaration types, no .tsx in aliases and exports"
+    done: "Needs planning under #945"
+    created: 2026-11-26T10:59:20Z

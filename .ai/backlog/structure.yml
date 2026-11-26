@@ -345,3 +345,8 @@ entries:
     why: "src/components beside admin/components fails: Alias #components/* declared twice"
     want: role directories of each directory aliased apart, or a diagnostic naming both
     created: 2026-11-25T22:21:26Z
+  - id: BL-a6f87c
+    title: Roles lack an entity index and a stateless effect level
+    why: "Plan #945, from interscript handoff engrenage-gaps.md: lint rules resolve roles from path segments instead of a role entity index; no role effect level covers evaluation without state"
+    done: "Needs planning under #945"
+    created: 2026-11-26T10:59:20Z

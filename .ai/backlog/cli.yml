@@ -60,3 +60,20 @@ entries:
     why: "piping `metalbrain debt` into `head` prints an `Unhandled 'error' event` stack and exits 1; seen during #819."
     want: a closed stdout ends the run quietly.
     created: 2026-11-22T00:00:00Z
+  - id: BL-4e55ba
+    title: Consumers duplicate the CLI helpers and run local scripts through per-project aliases
+    why: "Plan #945 Decisions settle placement: nexus owns command registration and optional entry discovery, engrenage resolves the scripts entry from its project map. Interscript keeps stand-ins (MI-50cdf9) and runs pnpm exec tsx scripts/executable.ts shop build"
+    want: defineGroup, defineLazyCommand and siblings move from workflows/cli into nexus and are exported, after deciding what of workflows/cli needs project knowledge; a shipped shortcut runs and lists any command of a project scripts tree, with no per-project entry, interpreter or alias
+    done: "Needs planning under #945"
+    created: 2026-11-26T10:59:20Z
+  - id: BL-ab1893
+    title: Engrenage is awkward to install and invoke from consumers
+    why: "Plan #945, from interscript handoff engrenage-gaps.md: pnpm add replaces the engrenage link, bare engrenage is off PATH, devEngines breaks npx, batiment ships no bin"
+    done: "Needs planning under #945; each case holds an item or is dropped"
+    created: 2026-11-26T10:59:20Z
+  - id: BL-e93942
+    title: The help command refuses a nested command path such as `metalbrain help backlog add`
+    sites:
+      - src/workflows/cli/operations/defineGroup.ts:95
+    want: help takes a command path, as `<group> <command> --help` does
+    created: 2026-11-26T11:05:38Z

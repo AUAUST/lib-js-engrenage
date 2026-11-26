@@ -17,6 +17,7 @@ import {
   type PackageField,
 } from "#project/package/index";
 import { resolveScopeExports } from "#project/structure/index";
+import { changelogFile } from "#tools/changesets/constants";
 import { listPnpmWarnings } from "#tools/pnpm/index";
 import { resolveCommandFiles } from "#tools/tsdown/index";
 import type { Runtime } from "#project/baseline/index";
@@ -79,7 +80,11 @@ async function createPublishedFields(
     toArray(concat(data.dirs, sourcemap ? source.dirs : [])),
   );
 
-  const files = toArray(unique(concat([directory], shipped)));
+  const changelog = (await filesystem.exists(changelogFile))
+    ? [changelogFile]
+    : [];
+
+  const files = toArray(unique(concat([directory], shipped, changelog)));
 
   const commands = entries(
     await resolveCommandFiles(

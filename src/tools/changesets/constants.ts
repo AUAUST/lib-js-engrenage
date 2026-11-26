@@ -6,6 +6,8 @@ export const changesetDirectory = ".changeset" satisfies Directory;
 
 export const configFile = `${changesetDirectory}/config.json` satisfies File;
 
-export const changelogGlob = "**/CHANGELOG.md" satisfies Glob;
+export const changelogFile = "CHANGELOG.md" satisfies File;
+
+export const changelogGlob = `**/${changelogFile}` satisfies Glob;
 
 export { changesetsCli } from "#constants";

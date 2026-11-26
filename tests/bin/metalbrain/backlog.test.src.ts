@@ -110,6 +110,45 @@ describe("metalbrain backlog", { timeout: binaryTimeout }, () => {
     expect(project.read(".ai/backlog/tools.yml")).toBe(tools);
   });
 
+  test("add states the configured word cap in its help", () => {
+    const project = createProject();
+
+    project.write(
+      "engrenage.config.ts",
+      'export default { runtime: { node: 24 }, agents: { preferred: ["claude"], wordCaps: { backlogEntry: 12 } } };',
+    );
+
+    const result = spawnSync(
+      process.execPath,
+      [getExecutable("metalbrain"), "backlog", "add", "--help"],
+      {
+        cwd: project.root,
+        encoding: "utf-8",
+      },
+    );
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("at most 12 words");
+  });
+
+  test("add refuses an entry over the word cap, stating its word count and the cap", async () => {
+    const project = createProject();
+
+    await expect(
+      runCommand(
+        "backlog",
+        backlog,
+        "add",
+        "tools",
+        "A claim",
+        "--why",
+        Array.from({ length: 120 }, () => "word").join(" "),
+      ),
+    ).rejects.toThrow("122 words, over the backlogEntry word cap of 100");
+
+    expect(project.read(".ai/backlog/tools.yml")).toBe(tools);
+  });
+
   test("move keeps the ID in the new category and drops it from the old one", async () => {
     const project = createProject();
 

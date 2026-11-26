@@ -96,6 +96,9 @@ cli:
     - BL-dc8e50
     - BL-e63aac
     - BL-a3ff44
+    - BL-4e55ba
+    - BL-ab1893
+    - BL-e93942
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -130,6 +133,7 @@ configuration:
     - BL-bf98f4
     - BL-9d892e
     - BL-c84fe4
+    - BL-364f46
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:
@@ -153,6 +157,7 @@ eslint-conventions:
     - BL-119303
     - BL-58f13f
     - BL-e557f3
+    - BL-74872f
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:
@@ -174,6 +179,7 @@ extensions:
     - BL-910442
     - BL-e81759
     - BL-58a0bd
+    - BL-857148
 file-editing:
   purpose: In-memory editing of JSON and YAML files in the codegen tooling.
   entries:
@@ -349,6 +355,7 @@ structure:
     - BL-484321
     - BL-8fcd05
     - BL-ef4bed
+    - BL-a6f87c
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:

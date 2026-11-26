@@ -108,6 +108,12 @@ describe("syncPackageJson", () => {
     expect((await manifest()).files).toEqual(["dist", "src"]);
   });
 
+  test("lists the changelog in files once it exists", async () => {
+    const { manifest } = await sync(library, {}, { "CHANGELOG.md": "" });
+
+    expect((await manifest()).files).toEqual(["dist", "src", "CHANGELOG.md"]);
+  });
+
   test("keeps the other engines and devEngines keys and leaves bin alone without commands", async () => {
     const { manifest } = await sync(library, {
       bin: {
