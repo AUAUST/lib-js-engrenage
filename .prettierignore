@@ -51,8 +51,15 @@ bun.lockb
 /.engrenage/links.json
 
 # Codegen
+/src/project/baseline/editions/constants.ts
+/data/apis/**/*.d.ts
+/data/schemas/*.schema.json
 /src/tools/eslint/types/Rules.ts
-/src/tools/eslint/types/rules/**
+/src/tools/eslint/types/rules/*.ts
+/src/workflows/config/types/ConfigInput.ts
+/src/batiment/roles/types/RoleInput.ts
+/src/batiment/scopes/types/DomainInput.ts
+/src/batiment/scopes/types/NamespaceInput.ts
 /src/project/build/types/BuildInput.ts
 /src/project/cache/types/CacheInput.ts
 /src/project/docs/types/DocsInput.ts
@@ -60,23 +67,21 @@ bun.lockb
 /src/project/environments/types/BinInput.ts
 /src/project/environments/types/DataInput.ts
 /src/project/environments/types/DefineInput.ts
-/src/batiment/scopes/types/DomainInput.ts
-/src/batiment/scopes/types/NamespaceInput.ts
 /src/project/environments/types/RuntimeInput.ts
 /src/project/environments/types/ScriptsInput.ts
 /src/project/environments/types/SourceInput.ts
+/src/project/environments/types/StaticInput.ts
 /src/project/environments/types/TestsInput.ts
 /src/project/environments/types/ToolingInput.ts
 /src/project/format/types/FormatInput.ts
 /src/project/presets/types/TraitsInput.ts
-/src/batiment/roles/types/RoleInput.ts
 /src/project/structure/types/StructureInput.ts
 /src/project/tsconfig/types/TypescriptInput.ts
-/src/tools/metalbrain/types/AgentsInput.ts
+/src/project/workspaces/types/WorkspacesInput.ts
 /src/tools/git/types/GitInput.ts
 /src/tools/github/types/GithubInput.ts
+/src/tools/metalbrain/types/AgentsInput.ts
 /src/tools/prettier/types/PrettierInput.ts
 /src/tools/vscode/types/VscodeInput.ts
-/src/workflows/config/types/ConfigInput.ts
 
 # @end

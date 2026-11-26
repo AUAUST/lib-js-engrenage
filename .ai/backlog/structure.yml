@@ -37,11 +37,11 @@ entries:
     done: each piece has one owner.
     created: 2026-11-22T00:00:00Z
   - id: BL-a4b87d
-    title: Generator wiring is hand-listed (#147)
+    title: Generator order is hand-kept
     sites:
-      - engrenage.config.ts:163
-    why: "the `generated` globs are a hand list: `project/baseline/editions/constants.ts` and `data/apis/*.d.ts` are generated but unlisted; `scripts/codegen/index.ts` runs `editions, apis, config, rules, schemas` in an order derived from nothing. The list feeds `.prettierignore`, `.gitattributes`, jscpd and ESLint exclusions."
-    want: "order generators from their declared inputs and outputs; the globs move to declarations in #944"
+      - scripts/codegen/index.ts:15
+    why: "`scripts/codegen/index.ts` runs `editions, apis, config, rules, schemas` in an order derived from nothing, and the gate runs generators in declaration order"
+    want: order generators from their declared inputs and outputs
     done: generator order derives from declarations
     created: 2026-11-22T00:00:00Z
   - id: BL-16bac4

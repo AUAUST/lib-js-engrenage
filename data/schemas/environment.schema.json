@@ -10,7 +10,9 @@
       "description": "Name of the registered environment placed on the directory, covering its subtree."
     }
   },
-  "required": ["environment"],
+  "required": [
+    "environment"
+  ],
   "additionalProperties": false,
   "$schema": "http://json-schema.org/draft-07/schema#"
 }

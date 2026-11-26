@@ -31,7 +31,7 @@ export const generatorsSchema = declareRecord(
   {
     description: [
       "Code generators of the scope by name, run in declaration order before the gate's steps.",
-      "The gate runs a generator when the changes touch its inputs or one of its outputs is missing, and `gate --all` runs every one; tracked outputs it changes are restaged in a staged run.",
+      "The gate runs a generator when the changes touch its inputs or one of its outputs is missing, restaging the tracked outputs it changes in a staged run; `gate --all` runs every one and fails when one changes, adds or removes an output Git does not ignore.",
     ],
     optional: {
       value: {},

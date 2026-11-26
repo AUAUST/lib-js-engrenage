@@ -79,6 +79,27 @@ describe("runGate generators", { timeout: binaryTimeout }, () => {
     expect(project.read(".runs-generated")).toBe("generated\n");
   });
 
+  test("fails --all under the name of a generator changing a tracked output", async () => {
+    const { project, commit } = await createGeneratorRepository({
+      command: "cp schema/a.graphql src/schema.txt",
+      inputs: "schema/**",
+      outputs: "src/schema.txt",
+    });
+
+    project.write("src/schema.txt", "type Query { b: Int }\n");
+
+    commit("stale output");
+
+    const { failures } = await runGate(await loadConfig(project.root), {
+      mode: "all",
+    });
+
+    expect(failures).toContainEqual({
+      step: "schema",
+      output: "Outputs out of date with their inputs, regenerated; commit them:\nsrc/schema.txt",
+    });
+  });
+
   test("restages the tracked output a staged run regenerates", async () => {
     const { project, git, commit } = await createGeneratorRepository({
       command: "cp schema/a.graphql src/schema.txt",

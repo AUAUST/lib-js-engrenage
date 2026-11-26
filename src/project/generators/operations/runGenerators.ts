@@ -1,5 +1,5 @@
-import { resolveWithin } from "#foundation/filesystem/index";
-import { runGateProcess, type GateResult } from "#project/gate/index";
+import { runGenerator } from "#project/generators/operations/runGenerator";
+import type { GateResult } from "#project/gate/index";
 import type { ResolvedGenerator } from "#project/generators/types/ResolvedGenerator";
 import type { Directory } from "#types/Directory";
 
@@ -11,14 +11,11 @@ export async function runGenerators(
   root: Directory,
   generators: readonly ResolvedGenerator[],
 ): Promise<GateResult> {
-  for (const { name, command, dir } of generators) {
-    const result = await runGateProcess(resolveWithin(root, dir), "sh", [
-      "-c",
-      command,
-    ]);
+  for (const generator of generators) {
+    const result = await runGenerator(root, generator);
 
     if (!result.ok) {
-      return { ...result, name };
+      return result;
     }
   }
 

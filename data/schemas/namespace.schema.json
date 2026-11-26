@@ -15,7 +15,10 @@
         "type": "string"
       },
       "additionalProperties": {
-        "enum": ["whole", "surface"],
+        "enum": [
+          "whole",
+          "surface"
+        ],
         "type": "string"
       },
       "description": "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.\nA relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.\n@default only its kind's `imports`; ignored below a top-level namespace"
@@ -28,12 +31,17 @@
       "description": "Order of the namespace's children, lowest first, with `*` for every child not listed. Unset, the children are unordered peers.\n@default none"
     },
     "relation": {
-      "enum": ["peers", "isolated"],
+      "enum": [
+        "peers",
+        "isolated"
+      ],
       "type": "string",
       "description": "How children of one layer reach each other: `peers` through their `index.ts`, or `isolated`, never. Children of a namespace without `layers` all count as one layer. Unset, `peers`.\n@default none"
     },
     "children": {
-      "enum": ["domains"],
+      "enum": [
+        "domains"
+      ],
       "type": "string",
       "description": "What every child directory of the namespace is: `domains` makes each one a domain, without an `index.ts` or a `domains` entry. Unset, children are classified from their contents.\n@default none"
     },
@@ -56,7 +64,9 @@
           "description": "Roles of the environment to turn on for the whole subtree of the namespace, by name."
         }
       },
-      "required": ["enable"],
+      "required": [
+        "enable"
+      ],
       "additionalProperties": false,
       "description": "Scoped roles the namespace enables. In a directory of a namespace spanning several, the only place that directory's roles are enabled."
     }

@@ -24,20 +24,29 @@
     "reexport": {
       "anyOf": [
         {
-          "enum": ["namespace", "flat"],
+          "enum": [
+            "namespace",
+            "flat"
+          ],
           "type": "string"
         },
         {
           "type": "array",
           "items": [
             {
-              "enum": ["namespace", "flat"],
+              "enum": [
+                "namespace",
+                "flat"
+              ],
               "type": "string"
             }
           ],
           "minItems": 1,
           "additionalItems": {
-            "enum": ["namespace", "flat"],
+            "enum": [
+              "namespace",
+              "flat"
+            ],
             "type": "string"
           }
         }

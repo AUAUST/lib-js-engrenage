@@ -3,24 +3,19 @@
 import type { ListOption } from "#foundation/options/index";
 
 /**
- * The static environment. `false` serves no static directory.
- *
+ * The static environment.
+ * `false` serves no static directory.
  * @default disabled when the project is `published`
  */
 export interface StaticInput {
   /**
-   * The namespace kind the top-level namespace takes, naming a `namespaceKinds`
-   * entry giving its boundary facts.
-   *
-   * @default the namespace kind named like the environment; a `kind` in its
-   * `.namespace.json` overrides it
+   * The namespace kind the top-level namespace takes, naming a `namespaceKinds` entry giving its boundary facts.
+   * @default the namespace kind named like the environment; a `kind` in its `.namespace.json` overrides it
    */
-  kind?: string | undefined;
+  kind?: (string | undefined)
   /**
-   * Directories of files served as-is and fetched at runtime by URL, never
-   * imported by code; Vite takes a single one as its `publicDir`.
-   *
+   * Directories of files served as-is and fetched at runtime by URL, never imported by code; Vite takes a single one as its `publicDir`.
    * @default `public`
    */
-  dirs?: ListOption<string> | undefined;
+  dirs?: (ListOption<string> | undefined)
 }

@@ -21,3 +21,8 @@ entries:
     need: lint a synced fixture project in tests
     instead: new ESLint with createEslintConfig in spanningEnvironments.test.src.ts, cloned from createEslintConfig.test.src.ts
     created: 2026-11-25T19:24:02Z
+  - id: MI-7331a2
+    subject: module import closure listing
+    need: derive codegen generator inputs
+    instead: scratch TypeScript preProcessFile walk; inputs hand-declared in engrenage.config.ts
+    created: 2026-11-26T00:21:59Z

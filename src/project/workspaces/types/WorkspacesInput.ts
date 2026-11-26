@@ -3,73 +3,52 @@
 import type { ListOption } from "#foundation/options/index";
 
 /**
- * Workspaces of the project: the globs matching their directories, and how a
- * workspace outside them is handled.
+ * Workspaces of the project: the globs matching their directories, and how a workspace outside them is handled.
  */
 export interface WorkspacesInput {
   /**
-   * Workspaces of the project, by the glob matching their directories
-   * (`extensions/*`). Each glob is one environment; workspaces needing another
-   * structure or runtime get a glob of their own. Sync keeps `pnpm-workspace.yaml`
-   * in line with the globs and writes the managed keys of each workspace
-   * `package.json`.
-   *
+   * Workspaces of the project, by the glob matching their directories (`extensions/*`).
+   * Each glob is one environment; workspaces needing another structure or runtime get a glob of their own.
+   * Sync keeps `pnpm-workspace.yaml` in line with the globs and writes the managed keys of each workspace `package.json`.
    * @default none
    */
-  globs?:
-    | {
-        /**
-         * The environment of the workspaces a glob matches: each matched
-         * directory is a workspace with its own `package.json`. Its other keys
-         * are config keys its workspaces resolve below their `.workspace.json`;
-         * project-only keys are refused.
-         */
-        [k: string]: {
-          /**
-           * Package name of every workspace the glob matches, with `{dir}`
-           * standing for the directory name of the workspace; required when
-           * the glob holds a wildcard. Sync writes it as the `name` of the
-           * workspace `package.json`.
-           */
-          name: string;
-          /**
-           * Purpose of every workspace the glob matches, unless its
-           * `.workspace.json` sets one.
-           *
-           * @default none
-           */
-          purpose?: string | undefined;
-          /**
-           * Why the member does not fit the project's Compass, such as the earlier
-           * decision it stands on: agents decouple it at each opportunity and
-           * never take it as precedent.
-           *
-           * @default none
-           */
-          debt?: string | undefined;
-          /**
-           * Globs, inside each workspace, of files produced by tools, handled
-           * as `src.generated` is.
-           *
-           * @default none
-           */
-          generated?: ListOption<string> | undefined;
-          /**
-           * Globs, inside each workspace, of files that tools discover by path
-           * and that may export defaults, handled as `src.discovered` is.
-           *
-           * @default none
-           */
-          discovered?: ListOption<string> | undefined;
-          [k: string]: unknown;
-        };
-      }
-    | undefined;
+  globs?: ({
+    /**
+     * The environment of the workspaces a glob matches: each matched directory is a workspace with its own `package.json`.
+     * Its other keys are config keys its workspaces resolve below their `.workspace.json`; project-only keys are refused.
+     */
+    [k: string]: {
+      /**
+       * Package name of every workspace the glob matches, with `{dir}` standing for the directory name of the workspace; required when the glob holds a wildcard.
+       * Sync writes it as the `name` of the workspace `package.json`.
+       */
+      name: string
+      /**
+       * Purpose of every workspace the glob matches, unless its `.workspace.json` sets one.
+       * @default none
+       */
+      purpose?: (string | undefined)
+      /**
+       * Why the member does not fit the project's Compass, such as the earlier decision it stands on: agents decouple it at each opportunity and never take it as precedent.
+       * @default none
+       */
+      debt?: (string | undefined)
+      /**
+       * Globs, inside each workspace, of files produced by tools, handled as `src.generated` is.
+       * @default none
+       */
+      generated?: (ListOption<string> | undefined)
+      /**
+       * Globs, inside each workspace, of files that tools discover by path and that may export defaults, handled as `src.discovered` is.
+       * @default none
+       */
+      discovered?: (ListOption<string> | undefined)
+      [k: string]: unknown
+    }
+  } | undefined)
   /**
-   * What a `.workspace.json` no glob matches makes: `accept` keeps its directory
-   * a workspace, `report` reports it as an error and ignores it.
-   *
+   * What a `.workspace.json` no glob matches makes: `accept` keeps its directory a workspace, `report` reports it as an error and ignores it.
    * @default `accept`
    */
-  extra?: ("accept" | "report") | undefined;
+  extra?: (("accept" | "report") | undefined)
 }
