@@ -1,5 +1,11 @@
 import { freeze, keys } from "@auaust/toolkit/object";
 
+/**
+ * The TypeScript lib the `apiGroupRoots` groups are generated from: the worker
+ * globals, which leave out the browser-only APIs the DOM lib reaches.
+ */
+export const apiSourceLibrary = "lib.webworker.d.ts";
+
 // @debt Timer handles are typed `number`, the DOM signature, while Node returns an object; `setTimeout` results are not isomorphic.
 export const apiGroupRoots = freeze({
   abort: ["AbortController", "AbortSignal"],
@@ -10,6 +16,7 @@ export const apiGroupRoots = freeze({
   encoding: ["TextEncoder", "TextDecoder", "atob", "btoa"],
   events: ["Event", "EventTarget", "CustomEvent"],
   exceptions: ["DOMException"],
+  fetch: ["fetch", "Request", "Response", "Headers", "FormData"],
   microtasks: ["queueMicrotask"],
   performance: ["performance"],
   streams: [

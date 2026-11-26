@@ -6,10 +6,10 @@ entries:
     done: the idea is adopted (and `--check` plus the `data/apis/` generated files are removed) or rejected with a reason.
     created: 2026-11-22T00:00:00Z
   - id: BL-2ce632
-    title: Several `src.apis` groups are not generated yet.
-    why: "#101 leaves out `structuredClone`, `fetch`, `WebAssembly` (a `declare namespace` the generator does not index) and messaging, their `lib.dom.d.ts` closure being the whole DOM (~37,800 lines via `Transferable` and `HTMLFormElement`); `URLPattern`, `navigator`, `WebSocket` and `BroadcastChannel` are undecided (#101 questions). `url` pulls in browser-only `URL.createObjectURL`; `crypto` (~560 lines) and `performance` (~490) exceed common use."
-    want: "read `lib.webworker.d.ts` instead (`fetch` ~1,500 lines, `WebAssembly` ~1,650, `Transferable` ~7,500), add a stop list with narrowed replacements, or leave them out. Recommended in #101: `lib.webworker.d.ts`, the stop list decided separately."
-    done: each of these APIs is generated, or ruled out.
+    title: "Several `src.apis` groups are not generated yet: structuredClone, WebAssembly and messaging"
+    why: Groups now read `lib.webworker.d.ts` (#982 added `fetch`); `structuredClone` and messaging still reach `Transferable` (~7,500 lines), `WebAssembly` is a `declare namespace` the collector does not index. `URLPattern`, `navigator`, `WebSocket` and `BroadcastChannel` stay undecided (#101 questions).
+    want: A stop list with narrowed replacements such as `Transferable`, namespace indexing for `WebAssembly`, or ruling them out.
+    done: Each of these APIs is generated, or ruled out.
     created: 2026-11-22T00:00:00Z
   - id: BL-c506f7
     title: Enabling one `src.apis` group declares the globals of the groups it shares types with.

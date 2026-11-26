@@ -15,7 +15,11 @@ import { filter, filterMap, join, map, sort } from "@auaust/toolkit/array";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";
-import { apiGroupRoots, apiLibraryGroups } from "#project/baseline/constants";
+import {
+  apiGroupRoots,
+  apiLibraryGroups,
+  apiSourceLibrary,
+} from "#project/baseline/constants";
 import { includesEsLibrary, listEsSelections } from "#project/baseline/index";
 import { createApiDeclarationCollector } from "#scripts/codegen/utils/createApiDeclarationCollector";
 import { createLibraryCompiler, formatModule } from "#tools/typescript/index";
@@ -113,7 +117,9 @@ export async function generateApiDeclarations(
   {
     libraryGroups = apiLibraryGroups,
     libraries = dirname(
-      createRequire(import.meta.url).resolve("typescript/lib/lib.dom.d.ts"),
+      createRequire(import.meta.url).resolve(
+        `typescript/lib/${apiSourceLibrary}`,
+      ),
     ),
     selections = listEsSelections(),
   }: {
@@ -133,14 +139,15 @@ export async function generateApiDeclarations(
     );
   }
 
-  const libraryPath = createRequire(import.meta.url).resolve(
-    "typescript/lib/lib.dom.d.ts",
+  const text = await readFile(
+    createRequire(import.meta.url).resolve(
+      `typescript/lib/${apiSourceLibrary}`,
+    ),
+    "utf-8",
   );
 
-  const text = await readFile(libraryPath, "utf-8");
-
   const source = createSourceFile(
-    "lib.dom.d.ts",
+    apiSourceLibrary,
     text,
     ScriptTarget.ESNext,
     true,
@@ -177,7 +184,7 @@ export async function generateApiDeclarations(
       sharedFile,
       createModule({
         notice,
-        origin: "lib.dom.d.ts",
+        origin: apiSourceLibrary,
         reference: false,
         body: pickStatements(source, [...shared]),
       }),
@@ -191,7 +198,7 @@ export async function generateApiDeclarations(
       `${apisDirectory}/${group}.d.ts`,
       createModule({
         notice,
-        origin: "lib.dom.d.ts",
+        origin: apiSourceLibrary,
         reference: own.length < closure.size,
         body: pickStatements(source, own),
       }),

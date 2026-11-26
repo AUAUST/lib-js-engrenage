@@ -14,3 +14,10 @@ entries:
     why: listed from pnpm 12 runs, so a pnpm release may change them silently.
     want: a documented source, or a test catching drift.
     created: 2026-11-22T00:00:00Z
+  - id: BL-d168b0
+    title: The synced prepare script never restores links after pnpm add or pnpm remove, which skip prepare under pnpm 12
+    sites:
+      - src/tools/pnpm/setup/syncPrepare.ts:1
+    why: Its changeset links-survive-installs.md promises links survive installs; only pnpm install runs prepare
+    want: Links restored, or the promise narrowed, after every pnpm command replacing them
+    created: 2026-11-26T19:53:41Z

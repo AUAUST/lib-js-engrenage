@@ -23,7 +23,7 @@ afterEach(() => {
 });
 
 describe("support codegen apis", { timeout: binaryTimeout }, () => {
-  test("generates the timers group from the declarations of the DOM lib", async () => {
+  test("generates the timers group from the declarations of the worker lib", async () => {
     const project = createProject();
 
     await runDefinition(apis, "timers");
@@ -37,6 +37,26 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
     expect(content).toContain("type TimerHandler");
     expect(content).not.toContain("interface Window");
     expect(content).not.toContain("DOMHighResTimeStamp");
+  });
+
+  test("generates the fetch group without the browser-only declarations its init types reach in the DOM lib", async () => {
+    const project = createProject();
+
+    await runDefinition(apis, "fetch");
+
+    const content = [
+      project.read("data/apis/fetch.d.ts"),
+      project.read("data/apis/shared/common.d.ts"),
+    ].join("\n");
+
+    expect(content).toContain("declare function fetch(");
+    expect(content).toContain("declare var Request:");
+    expect(content).toContain("declare var Response:");
+    expect(content).toContain("declare var Headers:");
+    expect(content).toContain("type HeadersInit");
+    expect(content).toContain("type BodyInit");
+    expect(content).not.toContain("interface HTMLFormElement");
+    expect(content).not.toContain("interface MediaSource");
   });
 
   test("fails the check on an edited group", async () => {

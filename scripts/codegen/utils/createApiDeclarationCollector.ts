@@ -100,7 +100,7 @@ export function createApiDeclarationCollector(source: SourceFile) {
 
     for (const root of roots) {
       if (!index.has(root)) {
-        throw new Error(`lib.dom.d.ts declares no "${root}"`);
+        throw new Error(`${source.fileName} declares no "${root}"`);
       }
     }
 

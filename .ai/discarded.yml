@@ -1004,3 +1004,13 @@ entries:
     need: faster gate, fewer load timeouts
     reason: "measured: tsc and sync beside tests add 18% (15.5 s to 18.3 s); the load comes from runs of other sessions"
     created: 2026-11-26T17:19:00Z
+  - id: DS-b610c0
+    subject: dev exports default pointing at src
+    need: linked checkout sources in every consumer process (#976)
+    reason: "types then read src, against #680; editors need type stripping"
+    created: 2026-11-26T19:52:43Z
+  - id: DS-95cf93
+    subject: API groups from two TypeScript libs
+    need: fetch group without the DOM closure
+    reason: shared declarations duplicate across sources; one worker-lib source drops only browser-only APIs
+    created: 2026-11-26T19:54:47Z

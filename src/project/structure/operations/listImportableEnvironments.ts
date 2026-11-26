@@ -109,6 +109,7 @@ export async function listImportableEnvironments(
         );
   }
 
+  // @debt a grant into another namespace reaches every environment placed on it, so its importer's program takes the JSX settings, and through them the DOM lib, of directories it never imports (#980)
   // @debt reads grants per namespace within one scope: per-variant file grants and workspace dependencies on other scopes are ignored, so a workspace reaching another scope's modules (Interscript's extensions/* importing admin) gets none of their environments
   const reached = names.flatMap((target) => {
     if (importers.includes(target)) {

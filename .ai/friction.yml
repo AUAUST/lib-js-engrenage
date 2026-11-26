@@ -1284,3 +1284,8 @@ entries:
     tried: pnpm exec eslint with TIMING to profile the gate lint
     stopped: crashed reading typescriptOptionsSchema outside the engrenage wrapper; timed engrenage eslint instead
     created: 2026-11-26T17:18:57Z
+  - id: FR-95372b
+    subject: pnpm version outside the repository
+    tried: pnpm link experiments in the scratchpad
+    stopped: scratchpad ran pnpm 11.22, not 12.16.1; pinned devEngines there
+    created: 2026-11-26T19:52:42Z
