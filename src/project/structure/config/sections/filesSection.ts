@@ -10,6 +10,7 @@ import {
   readEnvironments,
   type ContributedEnvironment,
 } from "#project/environments/index";
+import { listGenerators } from "#project/generators/index";
 import { listScopeConfigs } from "#project/workspaces/index";
 import type { ResolvedFiles } from "#project/structure/types/ResolvedFiles";
 import type { Globs } from "#types/Globs";
@@ -37,12 +38,20 @@ async function listFixtures(scopes: readonly ConfigResolver[]): Promise<Globs> {
 
 export const filesSection = declareSection({
   async resolve(_input, config: ConfigResolver): Promise<ResolvedFiles> {
-    const [environments, scopes, groups, roles, resources] = await Promise.all([
+    const [
+      environments,
+      scopes,
+      groups,
+      roles,
+      resources,
+      generators,
+    ] = await Promise.all([
       readEnvironments(config),
       listScopeConfigs(config),
       config.resolve("workspaces"),
       config.resolve("environmentRoles"),
       config.resolve("resources"),
+      listGenerators(config),
     ]);
 
     return freeze({
@@ -54,6 +63,7 @@ export const filesSection = declareSection({
         ...flatMap(resources.list({ generated: true }), ({ location }) => {
           return listLocationGlobs(location);
         }),
+        ...flatMap(generators, ({ outputs }) => outputs),
       ],
       discovered: [
         ...flatMap(environments, ({ entry, environment }) => {

@@ -38,7 +38,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  The publ
 │  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, creation times, taps, schema and word-cap checks, ranked search, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
-├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < structure  Tool-agnostic project models and contract domains.
+├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < generators < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.
 │  ├─ build  Resolve build outputs and the emitted package manifest.
@@ -48,6 +48,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  The publ
 │  ├─ environments  Configure each environment's JavaScript side: options, sections, tsconfig and package fields.
 │  ├─ format*  Formatting contracts shared by tool adapters.
 │  ├─ gate  Contract of the steps the gate runs.
+│  ├─ generators  Declare each scope's code generators, with the input globs triggering them and the output globs they write, and run them before the gate's steps read their output.
 │  ├─ package*  Read and synchronize the project package manifest.
 │  ├─ presets  Project presets and their resolved traits.
 │  ├─ roles*  Contribute the generic role presets and own the `roles` slot.

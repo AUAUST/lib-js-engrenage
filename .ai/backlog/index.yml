@@ -200,6 +200,8 @@ gate:
     - BL-b1f577
     - BL-467bf7
     - BL-33f7c7
+    - BL-5d3f7c
+    - BL-7b26ca
 git:
   purpose: "The Git tool domain: repository layout, commit reading and Git-owned ignore globs."
   entries:

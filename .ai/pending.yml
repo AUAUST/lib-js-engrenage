@@ -1,7 +1,0 @@
-entries:
-  - id: PD-353691
-    subject: Interscript admin/storefront isolation
-    what: "adoption note: root relation isolated if admin and storefront differ in JSX flavour"
-    why: "adoption note waits on #940 decision"
-    owner: AUAUST/clients-intscr-shopify#23
-    created: 2026-11-25T21:55:57Z

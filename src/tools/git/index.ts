@@ -26,6 +26,8 @@ export { listIssueCommits } from "#tools/git/operations/listIssueCommits";
 export { listLocalFiles } from "#tools/git/operations/listLocalFiles";
 export { listNestedIgnoreFiles } from "#tools/git/operations/listNestedIgnoreFiles";
 export { listPartiallyStagedFiles } from "#tools/git/operations/listPartiallyStagedFiles";
+export { listRemovedFiles } from "#tools/git/operations/listRemovedFiles";
+export { listUnstagedFiles } from "#tools/git/operations/listUnstagedFiles";
 export { locateIgnoreFiles } from "#tools/git/operations/locateIgnoreFiles";
 export { readCommit } from "#tools/git/operations/readCommit";
 export { readCommittedFile } from "#tools/git/operations/readCommittedFile";

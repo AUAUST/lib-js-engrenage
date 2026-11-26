@@ -16,6 +16,7 @@
     "environments",
     "build",
     "workspaces",
+    "generators",
     "structure"
   ]
 }

@@ -16,10 +16,11 @@ export interface GateStepEntry extends EntryShape, Lazy<GateRun> {
    */
   readonly name: string;
   /**
-   * When the step runs: `fixes` one after another before the changed files are
-   * restaged, then `checks` and `warnings` concurrently and `commands` one
-   * after another. A `warnings` step only warns; any other step that does not
-   * pass fails the gate.
+   * When the step runs: `generate` one after another first, restaging the
+   * tracked files it changes, then `fixes` one after another before the changed
+   * files are restaged, then `checks` and `warnings` concurrently and `commands`
+   * one after another. A `warnings` step only warns; any other step that does
+   * not pass fails the gate.
    */
   readonly stage: GateStage;
   /**
@@ -28,8 +29,8 @@ export interface GateStepEntry extends EntryShape, Lazy<GateRun> {
    */
   readonly audience: "everyone" | "agents";
   /**
-   * The step's whole-project check, run by `gate --all`; a step without one is
-   * left out of that run.
+   * The step's whole-project check, run by `gate --all` after the checks of the
+   * stages before its own; a step without one is left out of that run.
    */
   readonly check?: Lazy<GateCheck>;
 }

@@ -6,6 +6,7 @@ export { default as projectConfig } from "#project/config/extension";
 export { default as projectDocs } from "#project/docs/extension";
 export { default as projectEnvironments } from "#project/environments/extension";
 export { default as projectFormat } from "#project/format/extension";
+export { default as projectGenerators } from "#project/generators/extension";
 export { default as projectPackage } from "#project/package/extension";
 export { default as projectPresets } from "#project/presets/extension";
 export { default as projectRoles } from "#project/roles/extension";

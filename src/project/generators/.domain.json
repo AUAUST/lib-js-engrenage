@@ -1,0 +1,3 @@
+{
+  "purpose": "Declare each scope's code generators, with the input globs triggering them and the output globs they write, and run them before the gate's steps read their output."
+}

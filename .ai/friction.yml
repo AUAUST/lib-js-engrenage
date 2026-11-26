@@ -1205,3 +1205,13 @@ entries:
     tried: enable components in admin/.namespace.json
     stopped: metafile schema rejects roles; thoroughness stop
     created: 2026-11-25T22:20:13Z
+  - id: FR-72c286
+    subject: cross-repo issue refs unqualified
+    tried: "posted note with bare #936 on another repo"
+    stopped: refs resolved to wrong repo; patched comment
+    created: 2026-11-25T22:31:58Z
+  - id: FR-54f9f4
+    subject: sync fails on a new builtin extension
+    tried: pnpm engrenage sync after adding a domain extension
+    stopped: Unknown config key until builtins entry hand-edited
+    created: 2026-11-26T00:11:23Z

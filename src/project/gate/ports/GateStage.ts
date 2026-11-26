@@ -1,4 +1,9 @@
 /**
  * @experimental
  */
-export type GateStage = "fixes" | "checks" | "commands" | "warnings";
+export type GateStage =
+  | "generate"
+  | "fixes"
+  | "checks"
+  | "commands"
+  | "warnings";

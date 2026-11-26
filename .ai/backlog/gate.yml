@@ -71,3 +71,16 @@ entries:
     want: A command closing the hinted entries and amending them into the last commit, creating no new commit
     done: The commit hint names that command and accepting a hint leaves no separate closing commit
     created: 2026-11-24T00:00:00Z
+  - id: BL-5d3f7c
+    title: Generators run only inside the gate
+    sites:
+      - data/github/workflows/library/ci.yml:1
+    why: "`ci:test`, `ci:build` and direct `engrenage typecheck`/`vitest` runs still rely on `prepare` to generate git-ignored output"
+    want: an `engrenage generate` command over the gate generator runner
+    created: 2026-11-25T23:41:06Z
+  - id: BL-7b26ca
+    title: Gate commands are declared in the agents section
+    sites:
+      - src/tools/metalbrain/config/schemas/agentsSchema.ts:86
+    why: the gate also serves `--everyone` and CI, yet `agents.gate.commands` makes its commands an agent concern that the Git hook never runs
+    created: 2026-11-25T23:49:55Z

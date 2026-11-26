@@ -22,6 +22,7 @@ export default {
     slots: {
       "gate.steps": {
         stages: [
+          "generate",
           "fixes",
           "checks",
           "commands",

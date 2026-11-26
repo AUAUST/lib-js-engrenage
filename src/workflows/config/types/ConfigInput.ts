@@ -16,6 +16,8 @@ import type { GithubInput } from "#tools/github/index";
 import type { AgentsInput } from "#tools/metalbrain/index";
 import type { PrettierInput } from "#tools/prettier/index";
 import type { VscodeInput } from "#tools/vscode/index";
+import type { Glob } from "#types/Glob";
+import type { Globs } from "#types/Globs";
 
 export interface BuiltinConfigInput {
   build?: (BuildInput | undefined)
@@ -227,6 +229,31 @@ export interface BuiltinConfigInput {
    * Formatting conventions and complexity limits of the project, mapped by each formatter or linter at its boundary (Prettier options, ESLint rules, and conventions no tool covers).
    */
   format?: (FormatInput | undefined)
+  /**
+   * Code generators of the scope by name, run in declaration order before the gate's steps.
+   * The gate runs a generator when the changes touch its inputs or one of its outputs is missing, and `gate --all` runs every one; tracked outputs it changes are restaged in a staged run.
+   * @default none
+   */
+  generators?: ({
+    /**
+     * One code generator: its command and the files it reads and writes.
+     */
+    [k: string]: {
+      /**
+       * Shell command producing the generator's outputs, run in the scope's directory.
+       */
+      command: string
+      /**
+       * Globs, inside the scope, of the files the generator reads: a change, deletion or rename of a file they match runs it in the gate.
+       */
+      inputs: Glob | Globs
+      /**
+       * Globs, inside the scope, of the files the generator writes, handled as `src.generated` is.
+       * An output glob matching no file runs the generator in the gate.
+       */
+      outputs: Glob | Globs
+    }
+  } | undefined)
   /**
    * Who may install the published package from npm: `public` for anyone, `private` for members of its scope (`restricted` access).
    * Applies only under the `published` trait; an unpublished package has no visibility.

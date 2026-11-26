@@ -4,6 +4,7 @@ import { filter } from "@auaust/toolkit/array";
 import type { GateResult } from "#project/gate/index";
 import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
+import type { GateChanges } from "#workflows/gate/types/GateChanges";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateWarning } from "#workflows/gate/types/GateWarning";
 import type { StepsOutcome } from "#workflows/gate/types/StepsOutcome";
@@ -13,11 +14,15 @@ interface StepOutcome {
   readonly warning: GateWarning | undefined;
 }
 
-async function runStep(step: GateStep, files: Files): Promise<StepOutcome> {
+async function runStep(
+  step: GateStep,
+  files: Files,
+  removed: Files,
+): Promise<StepOutcome> {
   let result: GateResult;
 
   try {
-    result = await step.run(files);
+    result = await step.run(files, removed);
   } catch (error) {
     result = {
       ok: false,
@@ -25,11 +30,13 @@ async function runStep(step: GateStep, files: Files): Promise<StepOutcome> {
     };
   }
 
+  const name = result.name ?? step.name;
+
   return {
-    failure: result.ok ? undefined : { step: step.name, output: result.output },
+    failure: result.ok ? undefined : { step: name, output: result.output },
     warning: result.warnings === undefined || result.warnings === ""
       ? undefined
-      : { step: step.name, output: result.warnings },
+      : { step: name, output: result.warnings },
   };
 }
 
@@ -49,11 +56,12 @@ function collectOutcomes(outcomes: readonly StepOutcome[]): StepsOutcome {
 async function runSequentially(
   steps: readonly GateStep[],
   files: Files,
+  removed: Files,
 ): Promise<StepsOutcome> {
   const outcomes: StepOutcome[] = [];
 
   for (const step of steps) {
-    outcomes.push(await runStep(step, files));
+    outcomes.push(await runStep(step, files, removed));
   }
 
   return collectOutcomes(outcomes);
@@ -62,10 +70,11 @@ async function runSequentially(
 async function runConcurrently(
   steps: readonly GateStep[],
   files: Files,
+  removed: Files,
 ): Promise<StepsOutcome> {
   const outcomes = await Promise.all(
     iterable.map(steps, (step) => {
-      return runStep(step, files);
+      return runStep(step, files, removed);
     }),
   );
 
@@ -74,10 +83,10 @@ async function runConcurrently(
 
 export function runSteps(
   steps: readonly GateStep[],
-  files: Files,
+  { files, removed }: GateChanges,
   { concurrent }: { concurrent: boolean },
 ): Promise<StepsOutcome> {
   return concurrent
-    ? runConcurrently(steps, files)
-    : runSequentially(steps, files);
+    ? runConcurrently(steps, files, removed)
+    : runSequentially(steps, files, removed);
 }

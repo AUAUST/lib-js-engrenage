@@ -16,4 +16,9 @@ export interface GateResult {
    * not the step passed.
    */
   readonly warnings?: string;
+  /**
+   * Labels the result's failure and warnings in the gate's report in place of
+   * the step's name, when the step runs several named units.
+   */
+  readonly name?: string;
 }

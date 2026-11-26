@@ -1,5 +1,5 @@
 import { listChangedFiles } from "#tools/git/operations/listChangedFiles";
-import { runGit } from "#tools/git/operations/runGit";
+import { listUnstagedFiles } from "#tools/git/operations/listUnstagedFiles";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 
@@ -8,10 +8,10 @@ export async function listPartiallyStagedFiles(
 ): Promise<Files> {
   const [staged, unstaged] = await Promise.all([
     listChangedFiles(root, "staged"),
-    runGit(root, ["diff", "--name-only", "--relative", "-z"]),
+    listUnstagedFiles(root),
   ]);
 
-  const modified = new Set(unstaged.split("\0"));
+  const modified = new Set(unstaged);
 
   return staged.filter((file) => modified.has(file));
 }

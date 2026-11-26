@@ -8,21 +8,26 @@ import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { loadLazy } from "#foundation/modules/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
 import { withProcessLock } from "#foundation/processes/index";
-import { runGateProcess, type GateStage } from "#project/gate/index";
 import {
   listChangedFiles,
   listLocalFiles,
   listPartiallyStagedFiles,
+  listRemovedFiles,
   runGit,
   type ChangeMode,
 } from "#tools/git/index";
 import { listLocalFilePatterns } from "#tools/metalbrain/index";
+import { checkProject } from "#workflows/gate/operations/checkProject";
+import { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
+import { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";
 import { runSteps } from "#workflows/gate/operations/runSteps";
 import type { LoadedConfig } from "#project/config/index";
+import type { GateStage } from "#project/gate/index";
 import type { Directory } from "#types/Directory";
 import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
+import type { GateChanges } from "#workflows/gate/types/GateChanges";
 import type { GateFailure } from "#workflows/gate/types/GateFailure";
 import type { GateMode } from "#workflows/gate/types/GateMode";
 import type { GateReport } from "#workflows/gate/types/GateReport";
@@ -54,6 +59,7 @@ async function listSteps(
   );
 
   const steps: Record<GateStage, GateStep[]> = {
+    generate: [],
     fixes: [],
     checks: [],
     commands: [],
@@ -68,10 +74,10 @@ async function listSteps(
     steps[entry.stage].push({
       audience: entry.audience,
       name: entry.name,
-      async run(files) {
+      async run(files, removed) {
         const run = await loadLazy(entry);
 
-        return run(config, files);
+        return run(config, files, removed);
       },
     });
   }
@@ -83,59 +89,6 @@ async function listSteps(
   steps.commands.push(...(await listCommandSteps(config)));
 
   return steps;
-}
-
-async function listCommandSteps(config: LoadedConfig): Promise<GateStep[]> {
-  const { gate } = await config.resolve("agents");
-
-  return gate.commands.map((command) => {
-    return {
-      audience: "agents",
-      name: command,
-      run() {
-        return runGateProcess(config.context.root, "sh", ["-c", command]);
-      },
-    };
-  });
-}
-
-async function checkProject(config: LoadedConfig): Promise<GateReport> {
-  const contributions = await config.context.registry.contributions(
-    "gate.steps",
-    config,
-  );
-
-  const steps: GateStep[] = [];
-
-  for (const { entry } of contributions) {
-    const { check } = entry;
-
-    if (check === undefined) {
-      continue;
-    }
-
-    steps.push({
-      audience: entry.audience,
-      name: entry.name,
-      async run() {
-        const run = await loadLazy(check);
-
-        return run(config);
-      },
-    });
-  }
-
-  const commands = await listCommandSteps(config);
-
-  const [stepOutcome, commandOutcome] = await Promise.all([
-    runSteps(steps, [], { concurrent: true }),
-    runSteps(commands, [], { concurrent: false }),
-  ]);
-
-  return {
-    failures: [...stepOutcome.failures, ...commandOutcome.failures],
-    warnings: [],
-  };
 }
 
 async function readStamps(file: string): Promise<readonly string[]> {
@@ -238,7 +191,7 @@ async function checkLocalFiles(
     },
   };
 
-  return runSteps([local], files, { concurrent: false });
+  return runSteps([local], { files, removed: [] }, { concurrent: false });
 }
 
 async function warnUnstagedChanges(
@@ -271,9 +224,12 @@ async function verify(
 ): Promise<GateReport> {
   const { root } = config.context;
 
-  const files = await listChangedFiles(root, mode);
+  const [edited, removed] = await Promise.all([
+    listChangedFiles(root, mode),
+    listRemovedFiles(root, mode),
+  ]);
 
-  const local = await checkLocalFiles(config, mode, files);
+  const local = await checkLocalFiles(config, mode, edited);
 
   if (local.failures.length > 0) {
     return local;
@@ -295,7 +251,7 @@ async function verify(
     }
   }
 
-  if (files.length === 0) {
+  if (edited.length === 0 && removed.length === 0) {
     return { failures: [], warnings: await warnUnstagedChanges(root, mode) };
   }
 
@@ -317,15 +273,42 @@ async function verify(
   }
 
   const {
+    generate,
     fixes,
     checks,
     commands,
     warnings,
   } = await listSteps(config, audience);
 
-  const fixOutcome = await runSteps(fixes, files, { concurrent: false });
+  const generateOutcome = await runGenerateStage(root, mode, generate, {
+    files: edited,
+    removed,
+  });
 
-  const failures = [...local.failures, ...fixOutcome.failures];
+  if (generateOutcome.failures.length > 0) {
+    return {
+      failures: [...local.failures, ...generateOutcome.failures],
+      warnings: [...local.warnings, ...generateOutcome.warnings],
+    };
+  }
+
+  const files = generate.length === 0
+    ? edited
+    : await listChangedFiles(root, mode);
+
+  if (files.length === 0) {
+    return generateOutcome;
+  }
+
+  const changes: GateChanges = { files, removed };
+
+  const fixOutcome = await runSteps(fixes, changes, { concurrent: false });
+
+  const failures = [
+    ...local.failures,
+    ...generateOutcome.failures,
+    ...fixOutcome.failures,
+  ];
 
   if (mode === "staged") {
     await runGit(root, ["add", "--", ...files]);
@@ -334,9 +317,9 @@ async function verify(
   const verified = await readTreeIdentity(config, mode);
 
   const [checkOutcome, commandOutcome, warningOutcome] = await Promise.all([
-    runSteps(checks, files, { concurrent: true }),
-    runSteps(commands, files, { concurrent: false }),
-    runSteps(warnings, files, { concurrent: true }),
+    runSteps(checks, changes, { concurrent: true }),
+    runSteps(commands, changes, { concurrent: false }),
+    runSteps(warnings, changes, { concurrent: true }),
   ]);
 
   failures.push(...checkOutcome.failures, ...commandOutcome.failures);
@@ -345,6 +328,7 @@ async function verify(
 
   const stepWarnings = [
     ...local.warnings,
+    ...generateOutcome.warnings,
     ...fixOutcome.warnings,
     ...checkOutcome.warnings,
     ...commandOutcome.warnings,
