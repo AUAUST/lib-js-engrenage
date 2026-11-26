@@ -119,8 +119,8 @@ entries:
     title: "`engrenage typecheck` exited 0 while `tsc -p tsconfig.tests.json` reported errors"
     sites:
       - src/tools/typescript/operations/resolveTscProjectArguments.ts:41
-    why: "Observed in #846 after a signature change (friction 261124-12aa); suspect `--build` with incremental tsbuildinfo skipping the tests project"
-    done: Reproduced and fixed, or shown to be a stale-cache one-off
+    why: "Reproduced: `tsc --build` judges each instance tsconfig up to date by its own root files only, so a src change breaking tests passes; drafted as .ai/issues/new-typecheck-stale-imports.draft.md under #945"
+    done: Close once that draft is published as an issue
     created: 2026-11-24T00:00:00Z
   - id: BL-7333f0
     title: Workspaces importing another scope's .tsx modules type-check them under their own JSX settings

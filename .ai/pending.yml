@@ -1,7 +1,7 @@
 entries:
   - id: PD-d84259
-    subject: loosen commit reference instructions
-    what: writer trims git rule and agent wording on Closes/Towards shape the gate now canonicalises
-    why: "waits for #946 commit and user consent to the instruction change"
+    subject: "instruction loosening batch after #945 cheap items"
+    what: "one writer trims instructions the landed checks make redundant (commit reference shape #946, backlog word cap #947, whatever #948-#952 enforce) and adds the pnpm batiment command beside pnpm metalbrain once #953 lands"
+    why: "user consented; batched once #952 lands"
     owner: "#946"
     created: 2026-11-26T10:56:04Z

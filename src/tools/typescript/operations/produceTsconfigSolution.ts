@@ -4,7 +4,7 @@ import {
   toTsconfigSpecifier,
   type TsconfigTarget,
 } from "#project/tsconfig/index";
-import { listReferencedTsconfigs } from "#tools/typescript/operations/listReferencedTsconfigs";
+import { partitionInstanceTsconfigs } from "#tools/typescript/operations/partitionInstanceTsconfigs";
 import type { JsonEdit } from "#foundation/json/index";
 import type { LoadedConfig } from "#project/config/index";
 
@@ -16,6 +16,8 @@ export async function produceTsconfigSolution(
     return [];
   }
 
+  const { checked } = await partitionInstanceTsconfigs(config);
+
   return [
     {
       path: ["files"],
@@ -23,7 +25,7 @@ export async function produceTsconfigSolution(
     },
     {
       path: ["references"],
-      value: map(await listReferencedTsconfigs(config), (referenced) => {
+      value: map(checked, (referenced) => {
         return { path: toTsconfigSpecifier(file, referenced) };
       }),
     },

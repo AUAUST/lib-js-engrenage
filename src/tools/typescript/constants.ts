@@ -17,6 +17,10 @@ export const jsxFlavours = freeze({
   preact: freeze({ jsx: "react-jsx", jsxImportSource: "preact" } as const),
 } as const);
 
+export const tscBuildOptions = freeze(["--build", "-b"] as const);
+
+export const tscProjectOptions = freeze(["--project", "-p"] as const);
+
 export const barrelsTarget = "barrels";
 
 export const barrelDirective = "barrel";

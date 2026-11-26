@@ -139,7 +139,7 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
 });
 
 describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
-  test("skips an environment with check: false", async () => {
+  test("names an environment with check: false as not type-checked", async () => {
     createSolution(
       'import { value } from "../src/index.ts";\n\nexport const text: string = value;\n',
       {
@@ -152,12 +152,19 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
       },
     );
 
-    await runDefinition(engrenage, "typecheck");
+    const reporter = await runDefinition(engrenage, "typecheck");
 
     expect(process.exitCode).toBe(0);
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "info",
+        text: "Not type-checked: tests (check: false)",
+      }),
+    );
   });
 
-  test("passes when no environment is checked", async () => {
+  test("fails when no environment is checked", async () => {
     createSolution("export {};\n", {
       "engrenage.config.ts": "export default { environments: { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } }, tooling: false };\n",
       "tsconfig.json": JSON.stringify({
@@ -166,9 +173,27 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
       }),
     });
 
-    await runDefinition(engrenage, "typecheck");
+    await expect(runDefinition(engrenage, "typecheck")).rejects.toThrow(
+      "No environment is type-checked: src (check: false), tests (check: false)",
+    );
+  });
 
-    expect(process.exitCode ?? 0).toBe(0);
+  test("checks a project named in the arguments when no environment is checked", async () => {
+    const output = await captureBinaryOutput();
+
+    const project = createSolution("export const text: string = 1;\n", {
+      "engrenage.config.ts": "export default { environments: { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } }, tooling: false };\n",
+    });
+
+    await runDefinition(
+      engrenage,
+      "typecheck",
+      "-p",
+      project.resolve("tsconfig.tests.json"),
+    );
+
+    expect(process.exitCode).not.toBe(0);
+    expect(output()).toContain("tests/index.ts(1,14): error TS2322");
   });
 });
 

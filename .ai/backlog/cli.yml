@@ -68,7 +68,7 @@ entries:
     created: 2026-11-26T10:59:20Z
   - id: BL-ab1893
     title: Engrenage is awkward to install and invoke from consumers
-    why: "Plan #945, from interscript handoff engrenage-gaps.md: pnpm add replaces the engrenage link, bare engrenage is off PATH, devEngines breaks npx, batiment ships no bin"
+    why: "Plan #945, from interscript handoff engrenage-gaps.md: pnpm add replaces the engrenage link, bare engrenage is off PATH, devEngines breaks npx; the missing batiment bin is #953"
     done: "Needs planning under #945; each case holds an item or is dropped"
     created: 2026-11-26T10:59:20Z
   - id: BL-e93942
@@ -77,3 +77,11 @@ entries:
       - src/workflows/cli/operations/defineGroup.ts:95
     want: help takes a command path, as `<group> <command> --help` does
     created: 2026-11-26T11:05:38Z
+  - id: BL-efac74
+    title: Split CLIs need engrenage's config, sync and tools, so their split is more than a package switch
+    sites:
+      - bin/metalbrain/index.ts:1
+      - bin/engrenage/batiment/actions/map.ts:1
+    why: "bin/metalbrain imports #workflows/config 32 times, #project/sync 16, #tools/* 17; batiment map needs #workflows/config and #project/structure reportStructure; only the command interface is settled"
+    want: A decision on how a split CLI finds its host, or which commands stay in engrenage
+    created: 2026-11-26T11:19:47Z

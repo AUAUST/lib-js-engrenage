@@ -1,15 +1,13 @@
 import { isNonEmptyArray } from "@auaust/toolkit/array";
 
-import {
-  ensureAnyOf,
-  ensureIncludes,
-  hasOption,
-} from "#foundation/processes/index";
+import { ensureIncludes, hasOption } from "#foundation/processes/index";
 import { createTsconfig } from "#project/tsconfig/index";
+import {
+  tscBuildOptions,
+  tscProjectOptions,
+} from "#tools/typescript/constants";
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
-
-const buildOptions = ["--build", "-b"];
 
 async function isSolution(
   config: LoadedConfig,
@@ -35,12 +33,13 @@ export async function resolveTscProjectArguments(
 
   const resolved = [...args];
 
-  const builds = hasOption(resolved, buildOptions);
+  // @debt `--build` judges a referenced project up to date by its root files' timestamps only, so a change in a file it imports from another environment (tests importing src) passes unchecked until the project's own files change
+  if (!hasOption(resolved, [...tscBuildOptions, ...tscProjectOptions])) {
+    const option = (await isSolution(config, project))
+      ? "--build"
+      : "--project";
 
-  if (!builds && (await isSolution(config, project))) {
-    resolved.unshift("--build", project);
-  } else if (!builds) {
-    ensureAnyOf(resolved, ["--project", "-p"], ["--project", project]);
+    resolved.unshift(option, project);
   }
 
   ensureIncludes(resolved, "--noEmit");

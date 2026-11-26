@@ -1215,3 +1215,13 @@ entries:
     tried: pnpm engrenage sync after adding a domain extension
     stopped: Unknown config key until builtins entry hand-edited
     created: 2026-11-26T00:11:23Z
+  - id: FR-530973
+    subject: mockCwd leaves spawned tools in the real cwd
+    tried: relative -p path in a typecheck test
+    stopped: tsc checked the repository tsconfig; passed an absolute path
+    created: 2026-11-26T11:22:13Z
+  - id: FR-b27eb4
+    subject: planning issue publish denied by auto mode
+    tried: publishing a new problem draft as a subagent
+    stopped: classifier denial; left the draft for the caller
+    created: 2026-11-26T11:22:13Z
