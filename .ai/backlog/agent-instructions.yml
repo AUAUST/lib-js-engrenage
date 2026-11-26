@@ -213,3 +213,10 @@ entries:
     why: Its committing and dropping steps exclude the agent logs from cherry-picks for conflicts union merge now resolves, and re-add kept entries with new IDs, losing taps and created
     want: Cherry-pick the agent logs with the rest wherever the record files merge as unions
     created: 2026-11-25T06:11:47Z
+  - id: BL-40b4ed
+    title: The architecture review runs only on request or when work adds a package, environment or namespace
+    sites:
+      - .claude/skills/shape/architecture-review.md:1
+    why: Leaks such as a consumer re-implementing shared CLI tooling surface only once the user spots them, after duplication spread
+    want: Shaping, planning and review sessions apply it unasked whenever work adds, moves or duplicates a capability across owners, consumer workarounds and grouped findings included, and propose the Leaks split preparation
+    created: 2026-11-26T10:34:33Z

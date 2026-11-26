@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
+src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
 ├─ batiment/  #batiment/…  report < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.  [debt: An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ context  The context port a host answers with root and scope facts, and the driver running discovery and each scope's walk over its answers.
 │  ├─ environments  Declare environment presets, their registrations and placements, and resolve the environment of each file they cover.
@@ -38,6 +38,7 @@ src/  foundation < batiment < metalbrain < project < tools < workflows  The publ
 │  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, creation times, taps, schema and word-cap checks, ranked search, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
+├─ nexus/  #nexus/…  Shared program-building tooling: command definition and grouping, program runs and interop helpers that know nothing of the project engrenage orchestrates.  [debt: A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split.]
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < generators < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.

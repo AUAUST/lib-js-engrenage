@@ -5,6 +5,7 @@
     "#constants",
     "#foundation/*",
     "#metalbrain/*",
+    "#nexus/*",
     "#package.json",
     "#project/*",
     "#scripts/*",

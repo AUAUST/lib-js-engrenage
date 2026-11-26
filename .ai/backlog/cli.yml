@@ -1,6 +1,7 @@
 purpose: Command definitions, registration and program runs.
 taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
+  - {id: BL-a3ff44, at: 2026-11-26T10:38:32Z, note: interscript saw gate output vanish when piped; draft new-gate-silent-pass takes it up}
 entries:
   - id: BL-62e56b
     title: Command registration state is shared or re-derived

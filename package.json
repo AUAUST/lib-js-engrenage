@@ -46,6 +46,7 @@
     "#constants": "./src/constants.ts",
     "#foundation/*": "./src/foundation/*.ts",
     "#metalbrain/*": "./src/metalbrain/*.ts",
+    "#nexus/*": "./src/nexus/*.ts",
     "#package.json": "./package.json",
     "#project/*": "./src/project/*.ts",
     "#scripts/*": "./scripts/*.ts",
