@@ -63,7 +63,8 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  ├─ agents{claude}  Holds the Claude runtime registration until it joins `tools/metalbrain/claude`.
 │  │  └─ claude  The Claude runtime: its constants and headless dispatch.
 │  ├─ changesets*  Configure release versioning and changelogs.
-│  ├─ eslint*{roles*}  Configure lint rules and project-aware checks.
+│  ├─ eslint*{effects roles*}  Configure lint rules and project-aware checks.
+│  │  ├─ effects  The ECMAScript application of the effects model: turning syntax into effect charges.
 │  │  └─ roles*  Role presets with their own lint rules, and those rules' loaders by role name, loadable without ESLint.
 │  ├─ git*  Configure Git conventions and repository files.
 │  ├─ github*{issues/{api contract drafts planning}}  Generate GitHub repository workflows; holds the GitHub issue namespace.

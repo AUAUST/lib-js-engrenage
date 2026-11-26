@@ -311,6 +311,46 @@ describe("import effects", () => {
     ).toHaveLength(1);
   });
 
+  test("charge side-effect imports and re-exports, and skip unresolved specifiers", async () => {
+    const lint = await createLinter();
+
+    const act = "#foundation/base/operations/act";
+
+    expect(await lint(utility, `import "${act}";\n`)).toEqual([
+      expect.stringContaining(`\`${act}\``),
+    ]);
+
+    expect(await lint(utility, `export * from "${act}";\n`)).toEqual([
+      expect.stringContaining("`*`"),
+    ]);
+
+    expect(await lint(utility, `export * as ns from "${act}";\n`)).toEqual([
+      expect.stringContaining("`*`"),
+    ]);
+
+    expect(await lint(utility, `export { act } from "${act}";\n`)).toEqual([
+      expect.stringContaining("`act`"),
+    ]);
+
+    expect(
+      await lint(
+        utility,
+        'export { helper } from "#foundation/base/utils/helper";\n',
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        utility,
+        importing("#foundation/base/operations/missing", "act"),
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(utility, 'import "#foundation/base/operations/missing";\n'),
+    ).toEqual([]);
+  });
+
   test("rank a file at a role's root by the nested role its name matches", async () => {
     const lint = await createLinter({ roles: [config()] });
 

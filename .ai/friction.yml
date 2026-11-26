@@ -1290,3 +1290,8 @@ entries:
     tried: pnpm link experiments in the scratchpad
     stopped: scratchpad ran pnpm 11.22, not 12.16.1; pinned devEngines there
     created: 2026-11-26T19:52:42Z
+  - id: FR-0c1650
+    subject: sync fails on an import of a new domain index
+    tried: pnpm engrenage sync to generate a new sub-domain index.ts
+    stopped: sync loads config importing the missing index; wrote the barrels by hand first
+    created: 2026-11-26T23:48:41Z

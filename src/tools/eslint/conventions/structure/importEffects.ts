@@ -1,21 +1,11 @@
-import { join } from "node:path";
-
-import {
-  SymbolFlags,
-  type Symbol,
-  type Node as TsNode,
-  type TypeChecker,
-} from "typescript";
-import type { Rule } from "eslint";
-
 import { getOwn } from "@auaust/toolkit/object";
 
-import { entryRoleName } from "#batiment/roles/constants";
-import { rankModule } from "#batiment/roles/index";
-import { relativeWithin } from "#foundation/filesystem/index";
+import {
+  collectEffectCharges,
+  type EffectCharge,
+} from "#tools/eslint/effects/index";
 import { defineConvention } from "#tools/eslint/utils/defineConvention";
 import { defineStructureRule } from "#tools/eslint/utils/defineStructureRule";
-import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 
 export default defineConvention({
   files: ["files.src", "files.scripts", "files.tooling", "files.tests"],
@@ -28,278 +18,54 @@ export default defineConvention({
       messages: {
         effects: "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
       },
-      create(context, { namespace, role: roleName, effects: level }) {
-        const services = context.sourceCode.parserServices;
-
+      create(context, { namespace, role, effects: roleLevel }) {
         const environmentRoles = namespace === undefined
           ? undefined
           : getOwn(roles, namespace);
 
         if (
           environmentRoles === undefined ||
-          roleName === undefined ||
-          level === undefined ||
-          services?.program == null ||
-          services.esTreeNodeToTSNodeMap == null
+          role === undefined ||
+          roleLevel === undefined
         ) {
           return {};
         }
 
-        const { program, esTreeNodeToTSNodeMap } = services;
-        const checker: TypeChecker = program.getTypeChecker();
         const { effects } = environmentRoles;
-        const allowed = effects.levels.indexOf(level);
+        const { levels } = effects;
+        const unitCeiling = roleLevel;
 
-        function declaringFile(symbol: Symbol | undefined) {
-          if (symbol === undefined) {
-            return;
-          }
-
-          const target = (symbol.flags & SymbolFlags.Alias) === 0
-            ? symbol
-            : checker.getAliasedSymbol(symbol);
+        function judge({ node, binding, target, level }: EffectCharge) {
+          const ceiling = unitCeiling;
 
           if (
-            target.declarations?.length === 0 ||
-            (target.flags & SymbolFlags.Value) === 0
-          ) {
-            return;
-          }
-
-          // @debt Only the first declaration ranks a merged symbol; declarations spread over several files may rank differently.
-          return target.declarations?.[0]?.getSourceFile();
-        }
-
-        function check({
-          reported,
-          specifier,
-          binding,
-          symbol,
-          imported,
-        }: {
-          reported: Rule.Node;
-          specifier: string;
-          binding: string;
-          symbol: Symbol | undefined;
-          imported?: string;
-        }) {
-          const file = declaringFile(symbol);
-
-          if (file === undefined) {
-            return;
-          }
-
-          let target: string;
-          let targetLevel: string | undefined;
-
-          // @debt A `/node_modules/` substring decides what is external; a symlinked workspace package resolves to its real path and may fall through `entityOf` unranked and unreported.
-          if (
-            program.isSourceFileFromExternalLibrary(file) ||
-            file.fileName.includes("/node_modules/")
-          ) {
-            target = `the module \`${specifier}\``;
-            targetLevel = rankModule(effects, specifier, imported);
-
-            if (targetLevel === undefined) {
-              return;
-            }
-          } else {
-            const declaring = entities.entityOf(file.fileName);
-
-            if (declaring === undefined) {
-              return;
-            }
-
-            const relativePath = relativeWithin(
-              join(root, declaring.path),
-              file.fileName,
-            );
-
-            target = declaring.role === undefined
-              ? relativePath
-              : `${declaring.role} (${relativePath})`;
-
-            // @debt A value declared in a local ambient `declare module` resolves to the unranked `declarations` role, so a ranked importer of that module is reported as importing an unranked target.
-            targetLevel = declaring.effects;
-          }
-
-          if (
-            targetLevel !== undefined &&
-            effects.levels.includes(targetLevel) &&
-            effects.levels.indexOf(targetLevel) <= allowed
+            level !== undefined &&
+            levels.includes(level) &&
+            levels.indexOf(level) <= levels.indexOf(ceiling)
           ) {
             return;
           }
 
           context.report({
-            node: reported,
+            node,
             messageId: "effects",
             data: {
-              role: roleName,
-              level,
+              role,
+              level: ceiling,
               binding,
               target,
-              targetLevel: targetLevel ?? "unranked",
+              targetLevel: level ?? "unranked",
             },
           });
         }
 
-        function checkExports({
-          reported,
-          specifier,
-          module,
-        }: {
-          reported: Rule.Node;
-          specifier: string;
-          module: Symbol;
-        }) {
-          for (const exported of checker.getExportsOfModule(module)) {
-            check({
-              reported,
-              specifier,
-              binding: exported.name,
-              imported: exported.name,
-              symbol: exported,
-            });
-          }
-        }
-
-        function entryModuleOf(symbol: Symbol | undefined) {
-          if (
-            symbol === undefined ||
-            (symbol.flags & SymbolFlags.Alias) === 0
-          ) {
-            return;
-          }
-
-          const module = checker.getAliasedSymbol(symbol);
-          const file = module.declarations?.[0]?.getSourceFile();
-
-          return file !== undefined &&
-            entities.entityOf(file.fileName)?.role === entryRoleName
-            ? module
-            : undefined;
-        }
-
-        // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
-        function symbolOf(node: object): Symbol | undefined {
-          return checker.getSymbolAtLocation(
-            esTreeNodeToTSNodeMap.get(node) as TsNode,
-          );
-        }
-
-        return {
-          ImportDeclaration(declaration) {
-            if (isTypeOnlyNode(declaration)) {
-              return;
-            }
-
-            const specifier = String(declaration.source.value);
-
-            if (declaration.specifiers.length === 0) {
-              // @debt module evaluation cannot be ranked separately from imported bindings, so bare side-effect imports use the module's highest binding level
-              return void check({
-                reported: declaration,
-                specifier,
-                binding: specifier,
-                symbol: symbolOf(declaration.source),
-              });
-            }
-
-            for (const imported of declaration.specifiers) {
-              if (isTypeOnlyNode(imported)) {
-                continue;
-              }
-
-              const symbol = symbolOf(imported.local);
-
-              if (imported.type === "ImportNamespaceSpecifier") {
-                const entry = entryModuleOf(symbol);
-
-                if (entry !== undefined) {
-                  checkExports({
-                    reported: declaration,
-                    specifier,
-                    module: entry,
-                  });
-
-                  continue;
-                }
-              }
-
-              check({
-                reported: declaration,
-                specifier,
-                binding: imported.local.name,
-                ...(imported.type === "ImportSpecifier"
-                  ? {
-                      imported: imported.imported.type === "Identifier"
-                        ? imported.imported.name
-                        : String(imported.imported.value),
-                    }
-                  : imported.type === "ImportDefaultSpecifier"
-                    ? { imported: "default" }
-                    : {}),
-                symbol,
-              });
-            }
-          },
-          ImportExpression(expression) {
-            if (expression.source.type !== "Literal") {
-              return;
-            }
-
-            const specifier = String(expression.source.value);
-            const loaded = symbolOf(expression.source);
-
-            if (loaded === undefined) {
-              return;
-            }
-
-            checkExports({
-              reported: expression,
-              specifier,
-              module: loaded,
-            });
-          },
-          ExportAllDeclaration(declaration) {
-            if (!isTypeOnlyNode(declaration)) {
-              check({
-                reported: declaration,
-                specifier: String(declaration.source.value),
-                binding: "*",
-                symbol: symbolOf(declaration.source),
-              });
-            }
-          },
-          ExportNamedDeclaration(declaration) {
-            if (declaration.source == null || isTypeOnlyNode(declaration)) {
-              return;
-            }
-
-            for (const exported of declaration.specifiers) {
-              if (isTypeOnlyNode(exported)) {
-                continue;
-              }
-
-              const tsNode = esTreeNodeToTSNodeMap.get(exported);
-
-              check({
-                reported: declaration,
-                specifier: String(declaration.source.value),
-                binding: exported.local.type === "Identifier"
-                  ? exported.local.name
-                  : String(exported.local.value),
-                imported: exported.local.type === "Identifier"
-                  ? exported.local.name
-                  : String(exported.local.value),
-                symbol: checker.getExportSpecifierLocalTargetSymbol(
-                  tsNode as never,
-                ),
-              });
-            }
-          },
-        };
+        return collectEffectCharges({
+          context,
+          entities,
+          effects,
+          root,
+          charge: judge,
+        });
       },
     });
   },
