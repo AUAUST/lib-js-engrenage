@@ -999,3 +999,8 @@ entries:
     need: cheap link lookup before every run
     reason: pnpm surface import costs ~370ms from source
     created: 2026-11-26T16:28:37Z
+  - id: DS-c06423
+    subject: one CPU budget across gate checks
+    need: faster gate, fewer load timeouts
+    reason: "measured: tsc and sync beside tests add 18% (15.5 s to 18.3 s); the load comes from runs of other sessions"
+    created: 2026-11-26T17:19:00Z

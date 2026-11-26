@@ -1274,3 +1274,13 @@ entries:
     tried: reading pnpm devEngines and lifecycle handling in its dist
     stopped: Rust binary, no JS source; settled by scratch-project runs
     created: 2026-11-26T15:27:34Z
+  - id: FR-b6fbc3
+    subject: vitest list --related
+    tried: counting related test files without running them
+    stopped: listed 0 files for every input; ran vitest related with a no-match -t filter instead
+    created: 2026-11-26T17:18:57Z
+  - id: FR-169e5d
+    subject: direct eslint run
+    tried: pnpm exec eslint with TIMING to profile the gate lint
+    stopped: crashed reading typescriptOptionsSchema outside the engrenage wrapper; timed engrenage eslint instead
+    created: 2026-11-26T17:18:57Z

@@ -2,6 +2,7 @@ purpose: Test infrastructure and coverage gaps.
 taps:
   - {id: BL-adfd1d, at: 2026-11-26T12:00:26Z, note: "gate typecheck now runs one tsc per environment concurrently (#954), adding load beside vitest"}
   - {id: BL-adfd1d, at: 2026-11-26T12:11:13Z, note: "barrelDirective.test.src.ts timed out at 5s under gate --worktree, twice"}
+  - {id: BL-adfd1d, at: 2026-11-26T17:32:15Z, note: "codegen/config resolved: whole-output test dropped for renderConfigType unit tests; apis tests (1.2 s, 1.7 s) keep measured budgets"}
 entries:
   - id: BL-9a6dd1
     title: Test infrastructure gaps
@@ -28,9 +29,10 @@ entries:
     want: test configs resolve package and tooling; the link limited to published and source-mode entries; the block test through the public entry.
     created: 2026-11-22T00:00:00Z
   - id: BL-adfd1d
-    title: Process-spawning tests time out under concurrent agents' load
-    why: "under load, spawn-based tests fail while passing alone: `runGateLocks`, `hookFailures`, `syncVscodeFiles`, `init`, `checkAgents`, `barrelDirective`, `syncDirectiveBlocks`, `codegen/config` and others hit 5000 ms in both gates and `pnpm build`, up to 4 commit attempts beside parallel sessions (friction ×11)."
-    want: these tests scale their timeouts with `binaryTimeout`, or the gate runs them without competing load.
+    title: Test outcomes depend on machine load
+    why: "Tests pass alone and time out at 5 s in gates and builds beside other runs (friction ×11): `runGateLocks`, `hookFailures`, `syncVscodeFiles`, `init`, `checkAgents`, `barrelDirective`, `syncDirectiveBlocks`, `codegen/config`. Most do heavy in-process work (config load, sync, Prettier) taking 1.5–2.5 s alone; few spawn processes."
+    want: "Zero tolerance on randomised outcomes: per test, fix its flakiness source, give it a measured time budget, or drop it."
+    done: No test outcome depends on load, order or timing.
     created: 2026-11-22T00:00:00Z
   - id: BL-518105
     title: Tests initialize Git repositories by hand

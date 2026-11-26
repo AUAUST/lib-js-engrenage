@@ -1,7 +1,0 @@
-entries:
-  - id: PD-e811d8
-    subject: "#972 debt markers"
-    what: remove the fixes-behind-suppressions @debt markers in fixWithEslint.ts and resolveEslintFixArguments.ts
-    why: "debugger for #964 is changing the main checkout"
-    owner: "#972"
-    created: 2026-11-26T16:19:19Z

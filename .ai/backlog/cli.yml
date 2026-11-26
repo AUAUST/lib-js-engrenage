@@ -99,3 +99,11 @@ entries:
     why: Registration symbols are shared by key, but each module instance holds its own AsyncLocalStorage, so getRunContext from the second instance throws and its abort check is skipped
     want: The run context reachable from every module instance of the entry
     created: 2026-11-26T14:40:01Z
+  - id: BL-26fcd2
+    title: "`pnpm support codegen <generator> --check` writes files instead of checking"
+    sites:
+      - scripts/codegen/index.ts:10
+      - scripts/codegen/rules.ts:9
+    why: 'Through scripts/executable.ts the flag is dropped: exit 0, files rewritten; runDefinition(rules, "--check") honors it'
+    want: A subcommand option after its name reaches that subcommand from the real CLI
+    created: 2026-11-26T17:23:13Z

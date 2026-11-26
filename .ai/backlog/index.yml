@@ -104,6 +104,7 @@ cli:
     - BL-4037bb
     - BL-c7380b
     - BL-b46a5f
+    - BL-26fcd2
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
