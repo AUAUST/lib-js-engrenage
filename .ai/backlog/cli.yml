@@ -3,16 +3,16 @@ taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
   - {id: BL-a3ff44, at: 2026-11-26T10:38:32Z, note: interscript saw gate output vanish when piped; draft new-gate-silent-pass takes it up}
   - {id: BL-a3ff44, at: 2026-11-26T11:34:25Z, note: also batiment map --json}
+  - {id: BL-4e55ba, at: 2026-11-26T12:21:26Z, note: Reframed as command extensions (PD-b6bbc6)}
 entries:
   - id: BL-62e56b
-    title: Command registration state is shared or re-derived
+    title: Command mounting re-derives state Commander hides
     sites:
       - src/workflows/cli/operations/configureCommand.ts:3
       - src/workflows/cli/operations/defineGroup.ts:22
-      - src/workflows/cli/operations/forwardingCommands.ts:3
       - src/workflows/cli/operations/runProgram.ts:44
-    why: Commander exposes no action getter, so mounting wraps `action` to detect a call; the help command joins a module-global forwarding registry only to skip `--debug`, linking `defineToolCommand` to `createProgram` through shared mutable state; a failing run resolves the config again.
-    want: the definition contract states whether a command forwards arguments and takes `--debug`; no shared mutable registry; the failing command's config reused.
+    why: Commander exposes no action getter, so mounting wraps action to detect a call; a failing run resolves the config again
+    want: "No action wrapping to detect a call; the failing command config reused; the forwarding registry is #955"
     created: 2026-11-22T00:00:00Z
   - id: BL-39182b
     title: Every action repeats the validated config load
@@ -37,7 +37,7 @@ entries:
       - src/workflows/cli/operations/runProgram.ts:35
       - src/workflows/cli/operations/defineCommand.ts:1
     why: "the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text; `defineCommand` and `defineLazyCommand` clone each other (jscpd)."
-    want: "extensions applied at the root; messages without the prefix; one command definer. Related: #385 moves the definers."
+    want: "extensions applied at the root; messages without the prefix; one command definer. Related: #955 moves the definers"
     created: 2026-11-22T00:00:00Z
   - id: BL-dc8e50
     title: Tool runs and linked sources resolve against the wrong base
@@ -62,22 +62,15 @@ entries:
     want: a closed stdout ends the run quietly.
     created: 2026-11-22T00:00:00Z
   - id: BL-4e55ba
-    title: Consumers duplicate the CLI helpers and run local scripts through per-project aliases
-    why: "Plan #945 Decisions settle placement: nexus owns command registration and optional entry discovery, engrenage resolves the scripts entry from its project map. Interscript keeps stand-ins (MI-50cdf9) and runs pnpm exec tsx scripts/executable.ts shop build"
-    want: defineGroup, defineLazyCommand and siblings move from workflows/cli into nexus and are exported, after deciding what of workflows/cli needs project knowledge; a shipped shortcut runs and lists any command of a project scripts tree, with no per-project entry, interpreter or alias
-    done: "Needs planning under #945"
+    title: Programs cannot mount commands from extensions they discover, so consumers run scripts through per-project aliases
+    why: A CLI runs on its own, so extensions must be self-discovered; interscript runs pnpm exec tsx scripts/executable.ts shop build
+    want: A safe nexus extension pattern (discovery, validation, name-conflict resolution) whose first case runs and lists any command of a project scripts tree through engrenage, with no per-project entry, interpreter or alias
+    done: "Item in #966 after #955; settles the scripts shortcut shape"
     created: 2026-11-26T10:59:20Z
   - id: BL-ab1893
-    title: Engrenage is awkward to install and invoke from consumers
-    why: "Plan #945, from interscript handoff engrenage-gaps.md: pnpm add replaces the engrenage link, bare engrenage is off PATH, devEngines breaks npx; the missing batiment bin is #953"
-    done: "Needs planning under #945; each case holds an item or is dropped"
+    title: Bare engrenage is not on PATH in consumers
+    why: "Seven interscript entries; the link and devEngines cases are #964, the batiment bin #953"
     created: 2026-11-26T10:59:20Z
-  - id: BL-e93942
-    title: The help command refuses a nested command path such as `metalbrain help backlog add`
-    sites:
-      - src/workflows/cli/operations/defineGroup.ts:95
-    want: help takes a command path, as `<group> <command> --help` does
-    created: 2026-11-26T11:05:38Z
   - id: BL-efac74
     title: Split CLIs need engrenage's config, sync and tools, so their split is more than a package switch
     sites:
@@ -85,24 +78,19 @@ entries:
       - bin/batiment/actions/map.ts:1
     why: "bin/metalbrain imports #workflows/config 32 times, #project/sync 16, #tools/* 17; batiment map needs #workflows/config and #project/structure reportStructure; only the command interface is settled"
     want: A decision on how a split CLI finds its host, or which commands stay in engrenage
+    done: "Settled in #966"
     created: 2026-11-26T11:19:47Z
   - id: BL-101628
     title: Command trees lack a canonical hot path apart from their heavy commands
     why: metalbrain mixes hooks that must start as fast as possible with commands that parse and discover, under one entry; lazy commands cover most of it without a stated pattern
-    want: A nexus pattern declaring one hot-path group inline in the program, loaded with nothing else, and a lazily loaded rest group
-    done: "Needs planning under #945 after #955"
-    created: 2026-11-26T12:03:38Z
-  - id: BL-0201fa
-    title: Programs cannot accept commands from extensions they discover themselves
-    why: A CLI runs on its own, so extensions must be self-discovered; the first case is a consumer scripts tree run through engrenage with no per-project alias, which BL-4e55ba holds
-    want: "Options for a safe nexus extension pattern: discovery, validation, name-conflict resolution"
-    done: "Needs planning under #945 after #955; settles the scripts shortcut shape"
+    want: A hot-path group declared inline in the main command, registered as the executable loads and matched before anything else loads; the rest lazy as a whole, one module registering every other command only when the hot path misses
+    done: "Item in #966 after #955"
     created: 2026-11-26T12:03:38Z
   - id: BL-4037bb
     title: Commands print one output shape for agents and humans
     why: "Agents need dense output structured for their reading; humans need colored, padded, structured output. Prior art: github.com/sdairs/is-ai-agent for detection"
     want: Different printers for the same command data, picked by detected audience; the rendering itself is a separate concern
-    done: "Needs planning under #945 after #955"
+    done: "Item in #966 after #955"
     created: 2026-11-26T12:03:38Z
   - id: BL-c7380b
     title: Commands an extension registers after program creation miss the run options
@@ -110,4 +98,5 @@ entries:
       - src/workflows/cli/operations/createProgram.ts:8
     why: createProgram adds --debug and --verbose to the commands present at creation, so commands mounted later by an extension likely refuse them; likely, not run
     want: Every mounted command takes the run options
+    done: "Verified in #966 command extensions"
     created: 2026-11-26T12:03:38Z

@@ -98,10 +98,8 @@ cli:
     - BL-a3ff44
     - BL-4e55ba
     - BL-ab1893
-    - BL-e93942
     - BL-efac74
     - BL-101628
-    - BL-0201fa
     - BL-4037bb
     - BL-c7380b
 coding-style:
@@ -162,7 +160,6 @@ eslint-conventions:
     - BL-119303
     - BL-58f13f
     - BL-e557f3
-    - BL-74872f
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:
@@ -184,7 +181,6 @@ extensions:
     - BL-910442
     - BL-e81759
     - BL-58a0bd
-    - BL-857148
 file-editing:
   purpose: In-memory editing of JSON and YAML files in the codegen tooling.
   entries:
@@ -360,7 +356,6 @@ structure:
     - BL-484321
     - BL-8fcd05
     - BL-ef4bed
-    - BL-a6f87c
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:
@@ -429,7 +424,6 @@ typescript:
     - BL-5b3268
     - BL-537ace
     - BL-e32b84
-    - BL-7333f0
     - BL-caadcb
     - BL-60438b
 utils:

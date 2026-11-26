@@ -44,8 +44,3 @@ entries:
     why: "a config load would otherwise import `tools/eslint`. Related: #616."
     done: "#331 injects the tools a run needs; then drop the loader."
     created: 2026-11-22T00:00:00Z
-  - id: BL-857148
-    title: Presets miss what consumer apps need
-    why: "Plan #945, from interscript handoff engrenage-gaps.md: shopify-app omits manifest.json, vite/client types reach one environment only, no extensions build target, no Vitest project per runtime"
-    done: "Needs planning under #945"
-    created: 2026-11-26T10:59:20Z
