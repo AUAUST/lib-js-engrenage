@@ -31,6 +31,7 @@ export type * from "#workflows/cli/types/ExtendCommand";
 export type * from "#workflows/cli/types/InvocationFailure";
 export type * from "#workflows/cli/types/RunContext";
 export type * from "#workflows/cli/types/ToolAction";
+export type * from "#workflows/cli/types/ToolRuns";
 // @end
 
 // @barrel config/sections

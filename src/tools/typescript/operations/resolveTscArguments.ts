@@ -24,9 +24,9 @@ async function listSkippedTsconfigs(
 }
 
 /**
- * The `tsc` arguments checking every instance tsconfig the base tsconfig
+ * The arguments of each `tsc` run checking an instance tsconfig the base tsconfig
  * references, with a description of each instance it skips; `args` naming a
- * project run as given, skipping none.
+ * project run alone, as given, skipping none.
  *
  * @throws When `args` name no project and no instance tsconfig is checked.
  */
@@ -34,7 +34,7 @@ export async function resolveTscArguments(
   config: LoadedConfig,
   args: readonly string[],
 ): Promise<{
-  args: string[];
+  runs: string[][];
   skipped: readonly string[];
 }> {
   const skipped = hasOption(args, [...tscBuildOptions, ...tscProjectOptions])
@@ -42,7 +42,7 @@ export async function resolveTscArguments(
     : await listSkippedTsconfigs(config);
 
   return {
-    args: await resolveTscProjectArguments(
+    runs: await resolveTscProjectArguments(
       config,
       args,
       await config.resolve("tsconfigPath"),

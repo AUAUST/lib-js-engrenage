@@ -989,3 +989,8 @@ entries:
     need: cross-directory boundary checks
     reason: member path feeds message rendering and root-file checks per directory
     created: 2026-11-25T19:19:46Z
+  - id: DS-93d5ab
+    subject: sequential tsc runs per environment
+    need: typecheck each instance tsconfig (#954)
+    reason: warm ~8s vs ~3.5s concurrent on engrenage
+    created: 2026-11-26T12:00:27Z

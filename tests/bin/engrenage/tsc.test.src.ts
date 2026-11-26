@@ -1,4 +1,4 @@
-import { symlinkSync } from "node:fs";
+import { statSync, symlinkSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { describe, expect, test, vi } from "vitest";
@@ -9,7 +9,9 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
+import { checkTypes } from "#tools/typescript/tsc/index";
 import { runContext } from "#workflows/cli/operations/runContext";
+import { loadValidatedConfig } from "#workflows/config/index";
 
 import tsc from "#bin/engrenage/actions/tsc";
 import engrenage from "#bin/engrenage/index";
@@ -118,8 +120,54 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
     expect(output()).toContain("tests/index.ts(3,14): error TS2322");
   });
 
-  test("builds a solution tsconfig without emitting", async () => {
-    createSolution("export {};\n");
+  test("reports a type error another environment's change causes after a passing run", async () => {
+    const output = await captureBinaryOutput();
+
+    const project = createSolution(
+      'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
+    );
+
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).toBe(0);
+
+    project.write("src/index.ts", 'export const value: string = "1";\n');
+
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).not.toBe(0);
+    expect(output()).toContain("tests/index.ts(3,14): error TS2322");
+
+    const result = await checkTypes(await loadValidatedConfig());
+
+    expect(result.ok).toBe(false);
+    expect(result.output).toContain("tests/index.ts(3,14): error TS2322");
+  });
+
+  test("passes a second run with no change, reusing each tsconfig's build info", async () => {
+    const project = createSolution(
+      'import { value } from "../src/index.ts";\n\nexport const number: number = value;\n',
+    );
+
+    await runDefinition(engrenage, "typecheck");
+
+    function readBuildInfoTimes() {
+      return [
+        ".cache/tsconfig/src.tsbuildinfo",
+        ".cache/tsconfig/tests.tsbuildinfo",
+      ].map((path) => statSync(project.resolve(path)).mtimeMs);
+    }
+
+    const buildInfoTimes = readBuildInfoTimes();
+
+    await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).toBe(0);
+    expect(readBuildInfoTimes()).toEqual(buildInfoTimes);
+  });
+
+  test("runs each referenced project without emitting", async () => {
+    const project = createSolution("export {};\n");
 
     expect(
       await runContext.run(
@@ -129,12 +177,22 @@ describe("engrenage typecheck", { timeout: binaryTimeout }, () => {
         },
         () => tsc(["--pretty"]),
       ),
-    ).toEqual([
-      "--build",
-      expect.stringContaining("tsconfig.json"),
-      "--pretty",
-      "--noEmit",
-    ]);
+    ).toEqual({
+      runs: [
+        [
+          "--project",
+          project.resolve("tsconfig.src.json"),
+          "--pretty",
+          "--noEmit",
+        ],
+        [
+          "--project",
+          project.resolve("tsconfig.tests.json"),
+          "--pretty",
+          "--noEmit",
+        ],
+      ],
+    });
   });
 });
 

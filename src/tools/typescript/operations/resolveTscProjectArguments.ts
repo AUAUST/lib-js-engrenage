@@ -9,40 +9,40 @@ import {
 import type { LoadedConfig } from "#project/config/index";
 import type { File } from "#types/File";
 
-async function isSolution(
+function withNoEmit(args: string[]): string[] {
+  ensureIncludes(args, "--noEmit");
+
+  return args;
+}
+
+/**
+ * The arguments of each `tsc` run checking `project`: one `--project` run per
+ * project it references, each against its own build info so it checks the files
+ * it imports from the others, or one for `project` itself when it references
+ * none; `args` naming a project run alone, as given.
+ */
+export async function resolveTscProjectArguments(
   config: LoadedConfig,
-  project: File,
-): Promise<boolean> {
+  args: readonly string[],
+  project: File | undefined,
+): Promise<string[][]> {
+  if (project === undefined) {
+    throw new Error(`No tsconfig found in ${config.context.root}`);
+  }
+
+  if (hasOption(args, [...tscBuildOptions, ...tscProjectOptions])) {
+    return [withNoEmit([...args])];
+  }
+
   const { references } = await createTsconfig({
     root: config.context.root,
     path: project,
     filesystem: config.context.filesystem,
   });
 
-  return isNonEmptyArray(references);
-}
+  const projects = isNonEmptyArray(references) ? references : [project];
 
-export async function resolveTscProjectArguments(
-  config: LoadedConfig,
-  args: readonly string[],
-  project: File | undefined,
-): Promise<string[]> {
-  if (project === undefined) {
-    throw new Error(`No tsconfig found in ${config.context.root}`);
-  }
-
-  const resolved = [...args];
-
-  // @debt `--build` judges a referenced project up to date by its root files' timestamps only, so a change in a file it imports from another environment (tests importing src) passes unchecked until the project's own files change
-  if (!hasOption(resolved, [...tscBuildOptions, ...tscProjectOptions])) {
-    const option = (await isSolution(config, project))
-      ? "--build"
-      : "--project";
-
-    resolved.unshift(option, project);
-  }
-
-  ensureIncludes(resolved, "--noEmit");
-
-  return resolved;
+  return projects.map((checked) => {
+    return withNoEmit(["--project", checked, ...args]);
+  });
 }

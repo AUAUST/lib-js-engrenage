@@ -1,18 +1,18 @@
 import { resolveTscArguments } from "#tools/typescript/index";
-import { getRunContext } from "#workflows/cli/index";
+import { getRunContext, type ToolRuns } from "#workflows/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function (args: string[]): Promise<readonly string[]> {
+export default async function (args: string[]): Promise<ToolRuns> {
   const { reporter } = getRunContext();
 
-  const resolved = await resolveTscArguments(
+  const { runs, skipped } = await resolveTscArguments(
     await loadValidatedConfig(undefined, { reporter }),
     args,
   );
 
-  if (resolved.skipped.length > 0) {
-    reporter.info(`Not type-checked: ${resolved.skipped.join(", ")}`);
+  if (skipped.length > 0) {
+    reporter.info(`Not type-checked: ${skipped.join(", ")}`);
   }
 
-  return resolved.args;
+  return { runs };
 }

@@ -4,16 +4,26 @@ import { resolveTscArguments } from "#tools/typescript/operations/resolveTscArgu
 import type { LoadedConfig } from "#project/config/index";
 
 export async function checkTypes(config: LoadedConfig): Promise<GateResult> {
-  const { args, skipped } = await resolveTscArguments(config, []);
+  const { runs, skipped } = await resolveTscArguments(config, []);
 
-  const result = await runGateBinary(
-    config.context.root,
-    packages.typescript,
-    args,
-    "tsc",
+  const results = await Promise.all(
+    runs.map((args) => {
+      return runGateBinary(
+        config.context.root,
+        packages.typescript,
+        args,
+        "tsc",
+      );
+    }),
   );
 
-  return skipped.length === 0
-    ? result
-    : { ...result, warnings: `Not type-checked: ${skipped.join(", ")}` };
+  const failed = results.filter(({ ok }) => !ok);
+
+  return {
+    ok: failed.length === 0,
+    output: failed.map(({ output }) => output).join("\n"),
+    ...(skipped.length === 0
+      ? {}
+      : { warnings: `Not type-checked: ${skipped.join(", ")}` }),
+  };
 }

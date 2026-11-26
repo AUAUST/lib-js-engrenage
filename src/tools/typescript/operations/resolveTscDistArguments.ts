@@ -5,7 +5,7 @@ import type { LoadedConfig } from "#project/config/index";
 export async function resolveTscDistArguments(
   config: LoadedConfig,
   args: readonly string[],
-): Promise<string[]> {
+): Promise<string[][]> {
   const project = await resolveDistTsconfig(config);
 
   if (project === undefined) {

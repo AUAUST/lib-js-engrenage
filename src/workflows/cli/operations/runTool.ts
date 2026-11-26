@@ -10,6 +10,7 @@ import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { ToolAction } from "#workflows/cli/types/ToolAction";
+import type { ToolRuns } from "#workflows/cli/types/ToolRuns";
 
 // @debt a glob given from a subdirectory is passed unchanged, so it still matches relative to the root
 async function rebasePaths(
@@ -63,8 +64,7 @@ function runBinary(
         process.kill(process.pid, exitSignal);
       }
 
-      process.exitCode = code ?? 1;
-      settle(process.exitCode);
+      settle(code ?? 1);
     });
   });
 }
@@ -93,13 +93,11 @@ export async function runTool(
 
   const rebased = root ? await rebasePaths(args, projectRoot) : args;
 
-  const resolved = action === undefined
-    ? rebased
-    : await action(rebased, config);
+  const resolved:
+    | readonly string[]
+    | ToolRuns = action === undefined ? rebased : await action(rebased, config);
 
-  if (resolved === undefined) {
-    return;
-  }
+  const runs = "runs" in resolved ? resolved.runs : [resolved];
 
   const binaryPath = await resolveBinary(projectRoot, packageName, binary);
 
@@ -107,14 +105,21 @@ export async function runTool(
     reporter.info(message);
   }
 
-  const exitCode = await runBinary(
-    binaryPath,
-    resolved,
-    root ? projectRoot : undefined,
-    signal,
+  // @debt concurrent runs share the terminal, so their diagnostics interleave with no label naming the run that reported them, and nothing bounds how many run at once
+  const exitCodes = await Promise.all(
+    runs.map((runArgs) => {
+      return runBinary(
+        binaryPath,
+        runArgs,
+        root ? projectRoot : undefined,
+        signal,
+      );
+    }),
   );
 
-  if (message !== undefined && exitCode === 0) {
+  process.exitCode = exitCodes.find((code) => code !== 0) ?? 0;
+
+  if (message !== undefined && process.exitCode === 0) {
     reporter.info(successMessage);
   }
 }
