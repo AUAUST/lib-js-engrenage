@@ -40,6 +40,7 @@ export type * from "#tools/eslint/ports/RoleRule";
 
 // @barrel apis
 export type * from "#tools/eslint/apis/ImportGraph";
+export type * from "#tools/eslint/apis/ModuleResolver";
 // @end
 
 // @barrel types
@@ -88,6 +89,7 @@ export { normalizeRuleSchema } from "#tools/eslint/utils/normalizeRuleSchema";
 export { visitImportSources } from "#tools/eslint/utils/visitImportSources";
 export type {
   Entity,
+  ImportEdge,
   LineageMember,
   NamespaceFileNames,
 } from "#batiment/structure/index";

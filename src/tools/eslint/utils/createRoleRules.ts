@@ -1,10 +1,12 @@
-import type { Linter } from "eslint";
+import type { Linter, Rule } from "eslint";
 
 import { isFunction, isObject } from "@auaust/toolkit";
 import { entries, getOwn, keys, values } from "@auaust/toolkit/object";
 
 import { pluginName, rolesPluginName } from "#tools/eslint/constants";
-import type { EntityIndex, ResolvedStructure } from "#batiment/structure/index";
+import { analyzeImports } from "#tools/eslint/utils/analyzeImports";
+import type { ImportEdge } from "#batiment/structure/index";
+import type { ImportGraph } from "#tools/eslint/apis/ImportGraph";
 import type { RoleRule } from "#tools/eslint/ports/RoleRule";
 import type { Config } from "#tools/eslint/types/Config";
 import type { Plugin } from "#tools/eslint/types/Plugin";
@@ -22,13 +24,13 @@ function isRoleRule(value: unknown): value is RoleRule {
 }
 
 export async function createRoleRules(
-  structure: ResolvedStructure,
-  entities: EntityIndex,
+  graph: ImportGraph,
   loaders: RoleRuleLoaders,
 ): Promise<{
   readonly plugin: Plugin;
   readonly configs: readonly Config[];
 }> {
+  const { structure, entities } = graph;
   const modules: Record<string, RuleModule> = {};
   const configs: Config[] = [];
 
@@ -48,10 +50,22 @@ export async function createRoleRules(
           return {};
         }
 
-        return rule.create(context, entity, {
-          indexFile: environment.indexFile,
-          entryFile: environment.entryFile,
-        });
+        function importOf(node: Rule.Node, specifier: string): ImportEdge {
+          return analyzeImports(graph, context).edgeOf(node, specifier);
+        }
+
+        return rule.create(
+          context,
+          entity,
+          {
+            indexFile: environment.indexFile,
+            entryFile: environment.entryFile,
+          },
+          {
+            entityOf: entities.entityOf,
+            importOf,
+          },
+        );
       },
     };
   }

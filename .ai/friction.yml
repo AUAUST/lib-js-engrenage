@@ -1260,3 +1260,8 @@ entries:
     tried: console.log and --project filter in a debug test
     stopped: wrote observations to a scratch file instead
     created: 2026-11-26T15:09:43Z
+  - id: FR-c045e2
+    subject: Done clause already tested
+    tried: wrote a new .tsx subpath test
+    stopped: found workspaceImports test covering it; reverted
+    created: 2026-11-26T15:13:27Z

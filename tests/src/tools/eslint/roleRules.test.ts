@@ -1,3 +1,5 @@
+import { dirname, resolve } from "node:path";
+
 import { describe, expect, test } from "vitest";
 
 import { createEslintConfig, defineRoleRule } from "@auaust/engrenage/eslint";
@@ -23,6 +25,49 @@ const sectionsRule = defineRoleRule({
             entryFile: files.entryFile ?? "",
           },
         });
+      },
+    };
+  },
+});
+
+const modulesRule = defineRoleRule({
+  description: "Reports the role and domain of each module a role rule meets.",
+  messages: {
+    module: "{{module}}: {{role}} in {{domain}}, {{kind}}",
+  },
+  create(context, _entity, _files, modules) {
+    function render(
+      module: string,
+      entity: ReturnType<typeof modules.entityOf>,
+      kind: string,
+    ) {
+      return {
+        messageId: "module",
+        data: {
+          module,
+          role: entity?.role ?? "none",
+          domain: entity?.domain ?? "none",
+          kind,
+        },
+      };
+    }
+
+    return {
+      ImportDeclaration(node) {
+        const specifier = String(node.source.value);
+        const { target, kind } = modules.importOf(node, specifier);
+
+        context.report({ node, ...render(specifier, target, kind) });
+      },
+      Program(node) {
+        const declaring = resolve(
+          dirname(context.filename),
+          "../utils/three.ts",
+        );
+
+        const entity = modules.entityOf(declaring);
+
+        context.report({ node, ...render("three.ts", entity, "path") });
       },
     };
   },
@@ -65,11 +110,14 @@ async function createLinter() {
         "config/sections": {
           entity: () => Promise.resolve(sectionsRule),
         },
+        "config": {
+          modules: () => Promise.resolve(modulesRule),
+        },
       },
     },
   );
 
-  return async (filePath: string) => {
+  return async (filePath: string, source = "console.log(1);\nalert(1);\n") => {
     return lint(
       filePath,
       (ruleId) => {
@@ -79,7 +127,7 @@ async function createLinter() {
           ruleId.startsWith("roles/")
         );
       },
-      "console.log(1);\nalert(1);\n",
+      source,
     );
   };
 }
@@ -118,7 +166,25 @@ describe("role rules", () => {
       }),
     ]);
 
-    expect(await lint("src/project/feature/config/four.ts")).toEqual([]);
+    expect(await lint("src/project/feature/config/four.ts")).toEqual([
+      expect.objectContaining({ ruleId: "roles/config/modules" }),
+    ]);
+  });
+
+  test("resolve the module paths and import specifiers a defineRoleRule module meets to their role and domain", async () => {
+    const lint = await createLinter();
+
+    const messages = await lint(
+      "src/project/feature/config/three.ts",
+      'import type { A } from "#project/feature/utils/three";\nimport "./four.ts";\nimport "eslint";\n',
+    );
+
+    expect(messages.map(({ message }) => message)).toEqual([
+      "three.ts: utils in project/feature, path",
+      "#project/feature/utils/three: utils in project/feature, type",
+      "./four.ts: config in project/feature, runtime",
+      "eslint: none in none, runtime",
+    ]);
   });
 
   test("reject a rule module in a role's contract, naming the roleRules option", async () => {

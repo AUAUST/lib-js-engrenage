@@ -113,15 +113,21 @@ export async function createScopeRules({
   recommended: boolean;
   roleRuleLoaders: RoleRuleLoaders;
 }): Promise<Config[]> {
-  const [scopes, traits, dependencies, structure, entities] = await Promise.all(
-    [
-      resolveScopeSources(config),
-      config.resolve("traits"),
-      config.resolve("dependencies"),
-      config.resolve("structure"),
-      config.resolve("entities"),
-    ],
-  );
+  const [
+    scopes,
+    traits,
+    dependencies,
+    structure,
+    entities,
+    resolveImport,
+  ] = await Promise.all([
+    resolveScopeSources(config),
+    config.resolve("traits"),
+    config.resolve("dependencies"),
+    config.resolve("structure"),
+    config.resolve("entities"),
+    config.resolve("importResolver"),
+  ]);
 
   const selected = selectConventions({
     categories,
@@ -136,7 +142,14 @@ export async function createScopeRules({
       config,
       map(selected, ({ convention }) => convention),
     ),
-    createRoleRules(structure, entities, roleRuleLoaders),
+    createRoleRules(
+      {
+        structure,
+        entities,
+        resolveImport,
+      },
+      roleRuleLoaders,
+    ),
   ]);
 
   // @debt the project-only `files` key lists the root scope's published, private and discovered files alone, so references to them, type-aware recommended rules included, reach no workspace file
