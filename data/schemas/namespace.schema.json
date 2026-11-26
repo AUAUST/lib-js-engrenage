@@ -15,13 +15,41 @@
         "type": "string"
       },
       "additionalProperties": {
-        "enum": [
-          "whole",
-          "surface"
-        ],
-        "type": "string"
+        "anyOf": [
+          {
+            "enum": [
+              "whole",
+              "surface"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "relation": {
+                "enum": [
+                  "whole",
+                  "surface"
+                ],
+                "type": "string"
+              },
+              "dirs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "relation",
+              "dirs"
+            ],
+            "additionalProperties": false
+          }
+        ]
       },
-      "description": "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.\nA relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.\n@default only its kind's `imports`; ignored below a top-level namespace"
+      "description": "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.\nA relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.\n`{ relation, dirs }` reaches only the listed directories of the target, relative to the scope, whatever grants its kind's `imports` give; a directory the target does not span is reported and ignored.\n@default only its kind's `imports`; ignored below a top-level namespace"
     },
     "layers": {
       "type": "array",

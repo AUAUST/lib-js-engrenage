@@ -59,5 +59,6 @@ export type StructureDiagnosticCode =
   | "unknown-namespace-kind"
   | "unknown-import-target"
   | "sealed-import-target"
+  | "unknown-import-directory"
   | "unknown-environment"
   | "environment-placement-conflict";

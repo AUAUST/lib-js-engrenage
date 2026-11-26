@@ -1,3 +1,5 @@
+import { posix } from "node:path";
+
 import { map } from "@auaust/toolkit/array";
 
 import { listStaticFileGlobs } from "#batiment/roles/index";
@@ -38,11 +40,18 @@ async function listSourceDeclarations(
   name: string,
   scope: Directory,
 ): Promise<readonly File[]> {
-  const { namespaces, entries } = await config.resolve("importGrants");
+  const {
+    namespaces,
+    directories,
+    entries,
+  } = await config.resolve("importGrants");
 
-  const forbidden = namespaces[getNamespaceId(scope, name)];
+  const importer = getNamespaceId(scope, name);
+  const target = getNamespaceId(scope, "src");
 
-  const source = getNamespaceCategory(getNamespaceId(scope, "src"), entries);
+  const forbidden = namespaces[importer];
+
+  const source = getNamespaceCategory(target, entries);
 
   if (name === "src" || forbidden === undefined || forbidden.includes(source)) {
     return [];
@@ -52,7 +61,10 @@ async function listSourceDeclarations(
     await config.context.scope(scope),
   );
 
+  const reached = directories[importer]?.[target];
+
   return declarations !== undefined &&
+    (reached === undefined || reached.includes(posix.dirname(declarations))) &&
     (await config.context.filesystem.exists(declarations))
     ? [declarations]
     : [];

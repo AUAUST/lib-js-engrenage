@@ -1,27 +1,19 @@
-import { freeze, record } from "@auaust/toolkit/object";
+import { freeze, keys, record } from "@auaust/toolkit/object";
 
 import { rootScope } from "#batiment/scopes/constants";
 import { getNamespaceCategory } from "#batiment/structure/utils/getNamespaceCategory";
 import type {
+  NamespaceGrant,
   NamespaceInstance,
   NamespaceRelation,
 } from "#batiment/scopes/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
 
-function resolveRelation(
-  importer: NamespaceInstance,
+function capRelation(
+  relation: NamespaceRelation | undefined,
   target: NamespaceInstance,
 ): NamespaceRelation | undefined {
-  if (importer.scope !== target.scope) {
-    return;
-  }
-
-  const granted = importer.kind.imports?.[target.kind.name];
-  const optedIn = importer.imports?.[target.name];
-
-  const relation = granted === "whole" ? granted : (optedIn ?? granted);
-
   switch (target.kind.inward) {
     case "open": {
       return relation;
@@ -35,12 +27,35 @@ function resolveRelation(
   }
 }
 
+function resolveGrant(
+  importer: NamespaceInstance,
+  target: NamespaceInstance,
+): NamespaceGrant | undefined {
+  if (importer.scope !== target.scope) {
+    return;
+  }
+
+  const granted = importer.kind.imports?.[target.kind.name];
+  const optedIn = importer.imports?.[target.name];
+
+  const relation = capRelation(
+    granted === "whole" ? granted : (optedIn?.relation ?? granted),
+    target,
+  );
+
+  if (relation !== undefined) {
+    return optedIn?.dirs === undefined
+      ? { relation }
+      : { relation, dirs: optedIn.dirs };
+  }
+}
+
 export function resolveNamespaceGrants(
   published: boolean,
   namespaces: readonly NamespaceInstance[],
 ): Pick<
   ImportGrants,
-  "namespaces" | "surface" | "elements" | "entries" | "variants"
+  "namespaces" | "surface" | "directories" | "elements" | "entries" | "variants"
 > {
   // @debt only the root scope's namespaces hold the package entries, since the `internal-aliases` category names the root's aliases; each scope's own entries wait on per-scope aliases
   const entries = freeze(
@@ -55,18 +70,29 @@ export function resolveNamespaceGrants(
     const targets = namespaces
       .filter((target) => target.id !== importer.id)
       .map((target) => {
-        return [target, resolveRelation(importer, target)] as const;
+        return [target, resolveGrant(importer, target)] as const;
       });
 
     const forbidden = targets
-      .filter(([, relation]) => relation === undefined)
+      .filter(([, grant]) => grant === undefined)
       .map(([target]) => getNamespaceCategory(target.id, entries));
 
     const surface = targets
-      .filter(([, relation]) => relation === "surface")
+      .filter(([, grant]) => grant?.relation === "surface")
       .map(([target]) => target.id);
 
-    return [importer.id, freeze(forbidden), freeze(surface)] as const;
+    const directories = targets.flatMap(([target, grant]) => {
+      return grant?.dirs === undefined
+        ? []
+        : [[target.id, grant.dirs] as const];
+    });
+
+    return [
+      importer.id,
+      freeze(forbidden),
+      freeze(surface),
+      freeze(record(directories)),
+    ] as const;
   });
 
   const consumers = relations
@@ -91,6 +117,13 @@ export function resolveNamespaceGrants(
         relations
           .filter(([, , surface]) => surface.length > 0)
           .map(([name, , surface]) => [name, surface] as const),
+      ),
+    ),
+    directories: freeze(
+      record(
+        relations
+          .filter(([, , , directories]) => keys(directories).length > 0)
+          .map(([name, , , directories]) => [name, directories] as const),
       ),
     ),
     elements: freeze(

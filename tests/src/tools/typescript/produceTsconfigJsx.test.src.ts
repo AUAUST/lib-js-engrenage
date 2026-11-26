@@ -137,6 +137,43 @@ describe("produceTsconfigJsx", () => {
     });
   });
 
+  test("gives a namespace granted only some directories of another the JSX settings of those alone", async () => {
+    const layered = {
+      layers: ["src", "*"],
+      domains: {
+        ui: { public: true },
+      },
+    };
+
+    const files = {
+      "scripts/run.ts": "export const run = 1;\n",
+      "src/a.ts": "export const a = 1;\n",
+    };
+
+    const scoped = await syncProject(
+      {},
+      {
+        ...files,
+        "scripts/.namespace.json": JSON.stringify({
+          imports: {
+            src: { relation: "surface", dirs: ["src"] },
+          },
+        }),
+      },
+      layered,
+    );
+
+    expect(
+      scoped.read("tsconfig.scripts.json").compilerOptions,
+    ).not.toHaveProperty("jsxImportSource");
+
+    const whole = await syncProject({}, files, layered);
+
+    expect(whole.read("tsconfig.scripts.json").compilerOptions).toMatchObject({
+      jsxImportSource: "preact",
+    });
+  });
+
   test("fails when the environments an environment may import set different JSX flavours", async () => {
     await expect(
       syncProject({

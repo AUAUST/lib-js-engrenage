@@ -1,5 +1,5 @@
 import type { NamespaceKind } from "#batiment/scopes/ports/NamespaceKind";
-import type { NamespaceImports } from "#batiment/scopes/types/NamespaceImports";
+import type { NamespaceGrant } from "#batiment/scopes/types/NamespaceGrant";
 import type { Directories } from "#types/Directories";
 
 /**
@@ -24,9 +24,9 @@ export interface NamespaceInstance {
   /**
    * The namespaces of its scope the namespace imports besides its kind's
    * `imports`, by name, from its `.namespace.json`: each names an existing
-   * namespace whose kind is not sealed.
+   * namespace whose kind is not sealed, and only directories of it.
    */
-  readonly imports?: NamespaceImports;
+  readonly imports?: Readonly<Record<string, NamespaceGrant>>;
   /**
    * The runtime and constraints the namespace maps to, from its `.namespace.json`,
    * for a namespace whose kind has no `structure`; a structured namespace's

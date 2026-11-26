@@ -13,9 +13,9 @@ import { freeze } from "@auaust/toolkit/object";
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import { declareNamespaceKind } from "#batiment/scopes/config/declarers/declareNamespaceKind";
 import { debtSchema } from "#batiment/scopes/config/schemas/debtSchema";
+import { namespaceImportsSchema } from "#batiment/scopes/config/schemas/namespaceImportsSchema";
 import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
 import { structureKeySchema } from "#batiment/scopes/config/schemas/structureKeySchema";
-import { namespaceKindFields } from "#batiment/scopes/constants";
 import {
   declare,
   declareObject,
@@ -171,10 +171,11 @@ const nodes = freeze({
       kind: declareNamespaceKind(
         "its config `kind` at the root, its directory name in a workspace; ignored below a top-level namespace",
       ),
-      imports: declare(namespaceKindFields.imports.wrapped, {
+      imports: declare(namespaceImportsSchema, {
         description: [
           "Top-level namespaces of the same scope the top-level namespace imports besides its kind's `imports`, by name, with a relation: `whole` any file, `surface` only a domain's `index`, `entry` and public roles.",
           "A relation stronger than its kind's replaces it; the target kind's `inward` caps it, and a sealed target is reported and ignored.",
+          "`{ relation, dirs }` reaches only the listed directories of the target, relative to the scope, whatever grants its kind's `imports` give; a directory the target does not span is reported and ignored.",
         ],
         optional: unset(
           "only its kind's `imports`; ignored below a top-level namespace",

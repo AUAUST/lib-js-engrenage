@@ -1,20 +1,26 @@
 import { posix } from "node:path";
 
+import { isString } from "@auaust/toolkit";
 import { entries, freeze, record } from "@auaust/toolkit/object";
 
 import {
   findMetafileField,
   type DiscoveredNamespace,
-  type NamespaceImports,
+  type NamespaceGrant,
+  type NamespaceImportsInput,
   type NamespaceKind,
-  type NamespaceRelation,
 } from "#batiment/scopes/index";
 import type { StructureDiagnostic } from "#batiment/report/index";
+import type { Directories } from "#types/Directories";
+import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
 function reportImport(
   diagnostics: StructureDiagnostic[],
-  code: "unknown-import-target" | "sealed-import-target",
+  code:
+    | "unknown-import-target"
+    | "sealed-import-target"
+    | "unknown-import-directory",
   file: File,
   message: string,
 ) {
@@ -22,11 +28,55 @@ function reportImport(
     freeze({
       severity: "error",
       code,
-      message: `${file} ${message}; ignoring the opt-in`,
+      message: `${file} ${message}; ignoring ${code === "unknown-import-directory" ? "that directory" : "the opt-in"}`,
       path: posix.dirname(file),
       files: freeze([file]),
     }),
   );
+}
+
+/**
+ * Resolves the grant a `.namespace.json` entry names into a target spanning
+ * `dirs`: its relation, and the listed directories resolved against `scopeDir`,
+ * each one the target does not span reported and ignored.
+ */
+function resolveGrant(
+  value: NamespaceImportsInput[string],
+  {
+    name,
+    dirs,
+    scopeDir,
+    file,
+    diagnostics,
+  }: {
+    name: string;
+    dirs: Directories;
+    scopeDir: Directory;
+    file: File;
+    diagnostics: StructureDiagnostic[];
+  },
+): NamespaceGrant {
+  if (isString(value)) {
+    return freeze({ relation: value });
+  }
+
+  const listed = value.dirs.map((directory) => posix.join(scopeDir, directory));
+
+  for (const directory of listed) {
+    if (!dirs.includes(directory)) {
+      reportImport(
+        diagnostics,
+        "unknown-import-directory",
+        file,
+        `imports "${directory}" of "${name}", which spans only ${dirs.join(", ")}`,
+      );
+    }
+  }
+
+  return freeze({
+    relation: value.relation,
+    dirs: freeze(listed.filter((directory) => dirs.includes(directory))),
+  });
 }
 
 /**
@@ -37,13 +87,19 @@ function reportImport(
  */
 export function resolveNamespaceImports({
   metafiles,
+  scopeDir,
   scope,
   diagnostics,
 }: {
   metafiles: readonly DiscoveredNamespace[];
-  scope: readonly { readonly name: string; readonly kind: NamespaceKind }[];
+  scopeDir: Directory;
+  scope: readonly {
+    readonly name: string;
+    readonly kind: NamespaceKind;
+    readonly dirs: Directories;
+  }[];
   diagnostics: StructureDiagnostic[];
-}): { readonly imports?: NamespaceImports } {
+}): { readonly imports?: Readonly<Record<string, NamespaceGrant>> } {
   const optIn = findMetafileField({
     metafiles,
     field: "imports",
@@ -55,9 +111,9 @@ export function resolveNamespaceImports({
   }
 
   const { value: imports, file } = optIn;
-  const kept: [string, NamespaceRelation][] = [];
+  const kept: [string, NamespaceGrant][] = [];
 
-  for (const [name, relation] of entries(imports)) {
+  for (const [name, value] of entries(imports)) {
     const target = scope.find((namespace) => namespace.name === name);
 
     if (target === undefined) {
@@ -75,7 +131,16 @@ export function resolveNamespaceImports({
         `imports "${name}", whose namespace kind "${target.kind.name}" is sealed`,
       );
     } else {
-      kept.push([name, relation]);
+      kept.push([
+        name,
+        resolveGrant(value, {
+          name,
+          dirs: target.dirs,
+          scopeDir,
+          file,
+          diagnostics,
+        }),
+      ]);
     }
   }
 

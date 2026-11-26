@@ -128,3 +128,10 @@ entries:
       - src/tools/typescript/operations/listInstanceTsconfigs.ts:1
     want: Such files type-checked or named as skipped, e.g. .tsx files when tsx is unset
     created: 2026-11-26T12:13:03Z
+  - id: BL-c94453
+    title: 'A program checks the modules it imports from another environment under its own API groups only, so a `src` module using `apis: ["fetch"]` types fails under `scripts`'
+    sites:
+      - src/tools/typescript/operations/produceTsconfigTypes.ts:20
+      - src/project/structure/operations/listImportableEnvironments.ts:59
+    want: Each program declares the API groups of the environments listImportableEnvironments reaches, as JSX settings already follow them
+    created: 2026-11-26T20:48:00Z

@@ -43,6 +43,7 @@ const separators = {
   "unknown-namespace-kind": "  ",
   "unknown-import-target": "  ",
   "sealed-import-target": "  ",
+  "unknown-import-directory": "  ",
   "unknown-environment": "  ",
   "environment-placement-conflict": "  ",
 } as const satisfies Record<StructureDiagnosticCode, string>;

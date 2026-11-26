@@ -13,7 +13,6 @@ import type {
   StructureDiagnosticCode,
 } from "#batiment/report/index";
 import type { NamespaceKind } from "#batiment/scopes/ports/NamespaceKind";
-import type { NamespaceImports } from "#batiment/scopes/types/NamespaceImports";
 import type { NamespaceInstance } from "#batiment/scopes/types/NamespaceInstance";
 import type { Scope } from "#batiment/scopes/types/Scope";
 import type { ScopeTree } from "#batiment/scopes/types/ScopeTree";
@@ -27,7 +26,7 @@ const noFiles = freeze([]);
 interface ScopeTreeNamespace {
   readonly name: string;
   readonly kind: NamespaceKind;
-  readonly imports?: NamespaceImports;
+  readonly imports?: NamespaceInstance["imports"];
   readonly purpose?: string;
   readonly debt?: string;
   readonly dirs: Directories;

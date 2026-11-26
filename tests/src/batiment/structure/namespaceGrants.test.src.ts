@@ -98,11 +98,15 @@ describe("resolveNamespaceGrants", () => {
     const grants = resolveNamespaceGrants(false, [
       {
         ...createInstance("bin", getKind("bin")),
-        imports: { src: "whole" },
+        imports: {
+          src: { relation: "whole" },
+        },
       },
       {
         ...createInstance("scripts", getKind("scripts")),
-        imports: { data: "surface" },
+        imports: {
+          data: { relation: "surface" },
+        },
       },
       createInstance("src", getKind("src")),
       createInstance("data", getKind("data")),
@@ -113,5 +117,36 @@ describe("resolveNamespaceGrants", () => {
     expect(grants.namespaces.bin).not.toContain("src");
 
     expect(grants.surface.scripts).toEqual(["src"]);
+  });
+
+  test("scopes an opt-in listing directories to them, even under a whole kind grant", () => {
+    const grants = resolveNamespaceGrants(false, [
+      {
+        ...createInstance("scripts", getKind("scripts")),
+        imports: {
+          src: { relation: "surface", dirs: ["src"] },
+        },
+      },
+      {
+        ...createInstance("bin", getKind("bin")),
+        imports: {
+          src: { relation: "whole", dirs: ["admin"] },
+        },
+      },
+      createInstance("tooling", getKind("tooling")),
+      {
+        ...createInstance("src", getKind("src")),
+        dirs: ["src", "admin"],
+      },
+    ]);
+
+    expect(grants.directories).toEqual({
+      scripts: { src: ["src"] },
+      bin: { src: ["admin"] },
+    });
+
+    expect(grants.surface.scripts).toEqual(["src"]);
+
+    expect(grants.namespaces.scripts).not.toContain("internal-aliases");
   });
 });

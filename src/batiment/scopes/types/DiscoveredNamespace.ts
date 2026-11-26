@@ -1,4 +1,4 @@
-import type { NamespaceImports } from "#batiment/scopes/types/NamespaceImports";
+import type { NamespaceImportsInput } from "#batiment/scopes/types/NamespaceImportsInput";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
@@ -10,7 +10,7 @@ export interface DiscoveredNamespace {
   readonly dir: Directory;
   readonly file: File;
   readonly kind?: string;
-  readonly imports?: NamespaceImports;
+  readonly imports?: NamespaceImportsInput;
   readonly purpose?: string;
   readonly debt?: string;
 }

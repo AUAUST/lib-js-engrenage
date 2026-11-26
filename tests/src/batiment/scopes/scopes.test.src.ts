@@ -459,6 +459,24 @@ describe("scopes", () => {
     expect(grants.namespaces.src).not.toContain("scripts");
   });
 
+  test("reports and ignores a directory an opt-in lists outside its target", async () => {
+    const { diagnostics, grants } = await resolveGrants({
+      "scripts/.namespace.json": JSON.stringify({
+        imports: {
+          src: { relation: "surface", dirs: ["src", "admin"] },
+        },
+      }),
+      "scripts/a.ts": "",
+      "src/a.ts": "",
+    });
+
+    expect(diagnostics).toEqual([
+      { code: "unknown-import-directory", path: "scripts" },
+    ]);
+
+    expect(grants.directories.scripts).toEqual({ src: ["src"] });
+  });
+
   test("reports and ignores an opt-in into a sealed namespace", async () => {
     const { diagnostics, grants } = await resolveGrants({
       "src/.namespace.json": JSON.stringify({

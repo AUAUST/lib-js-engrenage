@@ -244,9 +244,13 @@ export async function discoverContext(
     };
   });
 
-  const active = resolved.map(({ namespaces }) => {
+  const active = resolved.map(({ dir, namespaces }) => {
     const scope = map(namespaces, ({ placement, discovery }) => {
-      return { name: placement.name, kind: discovery.kind };
+      return {
+        name: placement.name,
+        kind: discovery.kind,
+        dirs: discovery.dirs,
+      };
     });
 
     return namespaces
@@ -273,6 +277,7 @@ export async function discoverContext(
             dirs: discovery.dirs,
             ...resolveNamespaceImports({
               metafiles,
+              scopeDir: dir,
               scope,
               diagnostics,
             }),

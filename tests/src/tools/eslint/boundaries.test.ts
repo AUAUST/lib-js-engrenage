@@ -760,6 +760,45 @@ describe("structure boundaries", () => {
     ).toEqual(["auaust/import-environments"]);
   });
 
+  test("keeps a namespace granted some directories of another from importing the rest", async () => {
+    const lint = await createLinter(
+      "auaust/import-environments",
+      createTemporaryProject({
+        "package.json": JSON.stringify({
+          name: "app",
+          type: "module",
+          imports: {
+            "#core/*": "./src/core/*.ts",
+            "#ui/*": "./admin/ui/*.ts",
+          },
+        }),
+        "engrenage.config.ts": 'export default { src: { dirs: ["src", "admin"], structure: { layers: ["src", "*"] } } };\n',
+        "tsconfig.json": "{}",
+        "src/core/index.ts": exported,
+        "admin/ui/index.ts": exported,
+        "scripts/run.ts": exported,
+        "scripts/.namespace.json": JSON.stringify({
+          imports: {
+            src: { relation: "surface", dirs: ["src"] },
+          },
+        }),
+      }),
+    );
+
+    expect(
+      await lint("scripts/run.ts", 'export { value } from "#core/index";\n'),
+    ).toEqual([]);
+
+    expect(
+      await lint.messages(
+        "scripts/run.ts",
+        'export { value } from "#ui/index";\n',
+      ),
+    ).toEqual([
+      "`scripts/run.ts` imports `admin/ui/index.ts`; `scripts` imports only `src` of `src`.",
+    ]);
+  });
+
   test("keeps bin from importing the data environment", async () => {
     const lint = await createLinter(
       "auaust/import-environments",

@@ -29,6 +29,7 @@ export const boundaryMessages = freeze({
   globalRole: "`{{file}}` belongs to a global role; global roles import domains only with `import type`.",
   entrySurface: "`{{file}}` is a package entry; it re-exports only the index and public roles of `{{domain}}`.",
   namespace: "`{{path}}` imports `{{targetPath}}`; `{{namespace}}` never imports {{category}}.",
+  namespaceDirectory: "`{{path}}` imports `{{targetPath}}`; `{{namespace}}` imports only {{directories}} of `{{targetNamespace}}`.",
   rootEntry: "`{{path}}` imports `{{targetPath}}`; only the environment's root executable imports its root file.",
   testVariant: "`{{path}}` imports `{{specifier}}`; {{variantReach}}. Move the case to {{variantMove}}.",
   scope: "`{{scope}}` imports `{{targetScope}}`, not a declared dependency of `{{scope}}`.",

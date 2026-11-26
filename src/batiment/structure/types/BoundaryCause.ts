@@ -7,6 +7,7 @@ export type BoundaryCause =
   | "globalRole"
   | "entrySurface"
   | "namespace"
+  | "namespaceDirectory"
   | "rootEntry"
   | "testVariant"
   | "scope"

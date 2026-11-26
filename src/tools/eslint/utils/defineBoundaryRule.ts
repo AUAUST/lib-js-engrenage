@@ -68,7 +68,13 @@ export function defineBoundaryRule({
   }
 
   function render(
-    { boundary, fix, category, unclassified = "" }: BoundaryViolation,
+    {
+      boundary,
+      fix,
+      category,
+      unclassified = "",
+      directories = [],
+    }: BoundaryViolation,
     edge: ImportEdge,
   ): Record<string, string> {
     const {
@@ -121,6 +127,8 @@ export function defineBoundaryRule({
       path,
       targetPath,
       namespace: importer?.namespace ?? "",
+      targetNamespace: target?.namespace ?? "",
+      directories: directories.map((each) => `\`${each}\``).join(", "),
       category: category === undefined ? "" : labelCategory(category),
       scope: importer?.scope ?? "",
       targetScope: getTargetScope(edge) ?? "",

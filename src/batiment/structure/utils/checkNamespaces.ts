@@ -28,9 +28,32 @@ function isRootFile(
   );
 }
 
+function checkDirectories(
+  { importer, target }: ImportEdge,
+  directories: ImportGrants["directories"],
+): BoundaryViolation | undefined {
+  if (importer?.namespace === undefined || target?.namespace === undefined) {
+    return;
+  }
+
+  const reached = directories[importer.namespace]?.[target.namespace];
+  const directory = getLineageDirectory(target.lineage);
+
+  return reached === undefined ||
+    directory === undefined ||
+    reached.includes(directory.path)
+    ? undefined
+    : freeze({
+        cause: "namespaceDirectory",
+        boundary: directory,
+        fix: undefined,
+        directories: reached,
+      });
+}
+
 export function checkNamespaces(
   edge: ImportEdge,
-  { namespaces, elements, entries }: ImportGrants,
+  { namespaces, directories, elements, entries }: ImportGrants,
 ): BoundaryViolation | undefined {
   const { importer, target } = edge;
 
@@ -59,14 +82,18 @@ export function checkNamespaces(
 
   const category = getImportCategory(edge, entries);
 
-  return category !== undefined &&
+  if (
+    category !== undefined &&
     importer.namespace !== undefined &&
     namespaces[importer.namespace]?.includes(category) === true
-    ? freeze({
-        cause: "namespace",
-        boundary: undefined,
-        fix: undefined,
-        category,
-      })
-    : undefined;
+  ) {
+    return freeze({
+      cause: "namespace",
+      boundary: undefined,
+      fix: undefined,
+      category,
+    });
+  }
+
+  return checkDirectories(edge, directories);
 }
