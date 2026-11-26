@@ -1,5 +1,8 @@
 import { getRunContext } from "#nexus/cli/index";
-import { resolveTscArguments } from "#tools/typescript/index";
+import {
+  describeUncheckedInstances,
+  resolveTscArguments,
+} from "#tools/typescript/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { ToolRuns } from "#workflows/cli/index";
 
@@ -11,8 +14,10 @@ export default async function (args: string[]): Promise<ToolRuns> {
     args,
   );
 
-  if (skipped.length > 0) {
-    reporter.info(`Not type-checked: ${skipped.join(", ")}`);
+  const notice = describeUncheckedInstances(skipped);
+
+  if (notice) {
+    reporter.info(notice);
   }
 
   return { runs };

@@ -40,7 +40,7 @@ entries:
     title: Tool runs and linked sources resolve against the wrong base
     sites:
       - src/workflows/cli/operations/runTool.ts:14
-      - src/workflows/cli/operations/enableLinkedSource.ts:30
+      - src/workflows/cli/operations/prepareLinkedRun.ts:95
     why: a glob given from a subdirectory still matches from the root; reading the link record through the pnpm surface loads built pnpm, GitHub and Git modules before the run defers to the sources.
     want: globs resolved from the cwd; the record read without loading built modules.
     created: 2026-11-22T00:00:00Z

@@ -16,6 +16,7 @@ export { resolveDistTsconfig } from "#tools/typescript/operations/resolveDistTsc
 export { resolveSourceDeclarationsFile } from "#tools/typescript/operations/resolveSourceDeclarationsFile";
 export { resolveTscArguments } from "#tools/typescript/operations/resolveTscArguments";
 export { resolveTscDistArguments } from "#tools/typescript/operations/resolveTscDistArguments";
+export { describeUncheckedInstances } from "#tools/typescript/utils/describeUncheckedInstances";
 export { inferType } from "#tools/typescript/utils/inferType";
 export { resolveImportSpecifier } from "#tools/typescript/utils/resolveImportSpecifier";
 export { typescript } from "#tools/typescript/utils/typescript";
