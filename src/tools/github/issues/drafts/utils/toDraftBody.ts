@@ -24,7 +24,9 @@ export function toDraftBody(
     .flatMap(({ lines }) => lines)
     .join("\n");
 
-  const stripped = stripExternalWriteMarker(stripHeaderChain(kept)).trim();
+  const unmarked = stripExternalWriteMarker(kept.trim());
+
+  const stripped = stripExternalWriteMarker(stripHeaderChain(unmarked)).trim();
 
   return localizeReferences(stripped, source, context);
 }

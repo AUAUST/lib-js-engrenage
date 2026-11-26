@@ -96,7 +96,7 @@ function parseRoadmapLine(text: string) {
 }
 
 export function parseIssueBody(body: string): ParsedIssueBody {
-  const normalized = body.replaceAll("\r\n", "\n");
+  const normalized = stripExternalWriteMarker(body.replaceAll("\r\n", "\n"));
   const [first = ""] = normalized.split("\n", 1);
   const hasHeader = headerPattern.test(first);
 

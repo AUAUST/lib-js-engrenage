@@ -99,7 +99,7 @@ function renderBodyHeader(
       });
 
   const marker = isExternalWrite(access.repository, context.repository)
-    ? [renderExternalWriteMarker(context.repository)]
+    ? [renderExternalWriteMarker(context.repository), ""]
     : [];
 
   if (chain.length === 0 && marker.length === 0) {
@@ -108,15 +108,11 @@ function renderBodyHeader(
 
   const [, ...sections] = splitBodySections(rendered);
 
-  return [
-    renderHeader(
-      chain,
-      ...marker,
-      ...(chain.length === 0 || header === undefined ? [] : [header]),
-    ),
-    "",
-    ...sections.flatMap(({ lines }) => lines),
-  ]
+  const headerLines = chain.length === 0 || header === undefined
+    ? []
+    : [renderHeader(chain, header), ""];
+
+  return [...marker, ...headerLines, ...sections.flatMap(({ lines }) => lines)]
     .join("\n")
     .trimEnd();
 }

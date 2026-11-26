@@ -5,6 +5,10 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { contractNamesSchema } from "#tools/github/config/schemas/contractNamesSchema";
 import { createGithubClient } from "#tools/github/issues/api/operations/createGithubClient";
+import {
+  externalWriteNotice,
+  externalWritePrefix,
+} from "#tools/github/issues/contract/constants";
 import { checkGithubWrite } from "#tools/github/issues/contract/operations/checkGithubWrite";
 import { checkIssue } from "#tools/github/issues/contract/operations/checkIssue";
 import { fetchIssue } from "#tools/github/issues/contract/operations/fetchIssue";
@@ -13,6 +17,7 @@ import { checkIssueBody } from "#tools/github/issues/contract/utils/checkIssueBo
 import { checkIssueContract } from "#tools/github/issues/contract/utils/checkIssueContract";
 import { formatIssueCheck } from "#tools/github/issues/contract/utils/formatIssueCheck";
 import { parseIssueBody } from "#tools/github/issues/contract/utils/parseIssueBody";
+import { renderExternalWriteMarker } from "#tools/github/issues/contract/utils/renderExternalWriteMarker";
 import { renderHeader } from "#tools/github/issues/contract/utils/renderHeader";
 import { stripHeaderChain } from "#tools/github/issues/contract/utils/stripHeaderChain";
 
@@ -21,6 +26,8 @@ vi.stubEnv("GH_TOKEN", "t");
 const contractNames = contractNamesSchema.resolve(undefined, {}, "contract");
 
 const repositoryUrl = "https://api.github.com/repos/o/r";
+
+const unquotedMarker = `${externalWritePrefix} o/app: ${externalWriteNotice}`;
 
 const access = {
   repository: "o/r",
@@ -112,6 +119,27 @@ describe("parseIssueBody", () => {
     ]);
 
     expect(parsed.references).toEqual([10, 11]);
+  });
+
+  test.each([
+    [
+      "quoted above the header",
+      `${renderExternalWriteMarker("o/app")}\n\n#10 · Compass: gist`,
+    ],
+    ["unquoted inside the header", `#10 · ${unquotedMarker} · Compass: gist`],
+  ])("reads the header past an external write marker %s", (_form, header) => {
+    expect(parseIssueBody(`${header}\n\n## Context\n\nc`)).toMatchObject({
+      header: {
+        ancestors: [{ repository: undefined, number: 10 }],
+        sections: ["Compass"],
+      },
+      sections: [
+        {
+          name: "Context",
+          content: "c",
+        },
+      ],
+    });
   });
 
   test("opens no section on a heading line inside a fence", () => {

@@ -10,7 +10,10 @@ import { max } from "@auaust/toolkit/math";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { externalWritePrefix } from "#tools/github/issues/contract/constants";
+import {
+  externalWriteNotice,
+  externalWritePrefix,
+} from "#tools/github/issues/contract/constants";
 import { renderExternalWriteMarker } from "#tools/github/issues/contract/utils/renderExternalWriteMarker";
 import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues";
 import { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
@@ -1648,37 +1651,45 @@ ${planBody}
 
     expect(findIssue(10).body).not.toContain(externalWritePrefix);
 
-    expect(findIssue(14).body.split("\n")[0]).toBe(
-      `#10 · ${renderExternalWriteMarker("AUAUST/toolkit")} · Compass: the need`,
-    );
+    expect(findIssue(14).body.split("\n").slice(0, 3)).toEqual([
+      renderExternalWriteMarker("AUAUST/toolkit"),
+      "",
+      "#10 · Compass: the need",
+    ]);
   });
 
-  test("drops the external write marker when the target repository republishes the issue", async () => {
-    findIssue(
-      45,
-      "toolkit",
-    ).body = `${renderExternalWriteMarker("AUAUST/app")}\n\n${taskBody.replace("#10 · Compass: the extra\n\n", "")}`;
+  test.each([
+    ["quoted", renderExternalWriteMarker("AUAUST/app")],
+    ["unquoted", `${externalWritePrefix} AUAUST/app: ${externalWriteNotice}`],
+  ])(
+    "drops the %s external write marker when the target repository republishes the issue",
+    async (_form, marker) => {
+      findIssue(
+        45,
+        "toolkit",
+      ).body = `${marker}\n\n${taskBody.replace("#10 · Compass: the extra\n\n", "")}`;
 
-    const root = createProject({
-      "package.json": JSON.stringify({
-        name: "@auaust/toolkit",
-        type: "module",
-        repository: "github:AUAUST/toolkit",
-      }),
-    });
+      const root = createProject({
+        "package.json": JSON.stringify({
+          name: "@auaust/toolkit",
+          type: "module",
+          repository: "github:AUAUST/toolkit",
+        }),
+      });
 
-    await claimIssues(await loadConfig(root), ["45"]);
+      await claimIssues(await loadConfig(root), ["45"]);
 
-    expect(read(root, "45.draft.md")).not.toContain(externalWritePrefix);
+      expect(read(root, "45.draft.md")).not.toContain(externalWritePrefix);
 
-    const { passed } = await publishIssues(await loadConfig(root), ["45"]);
+      const { passed } = await publishIssues(await loadConfig(root), ["45"]);
 
-    expect(passed).toBe(true);
+      expect(passed).toBe(true);
 
-    expect(findIssue(45, "toolkit").body).toBe(
-      taskBody.replace("#10 · Compass: the extra\n\n", ""),
-    );
-  });
+      expect(findIssue(45, "toolkit").body).toBe(
+        taskBody.replace("#10 · Compass: the extra\n\n", ""),
+      );
+    },
+  );
 
   test("claims a Plan's roadmap line naming a toolkit sub-issue and publishes it back unchanged", async () => {
     const body = planBody.replace(
@@ -1731,9 +1742,11 @@ ${planBody}
 
     expect(findIssue(11).toolkitSubIssues).toEqual([46]);
 
-    expect(findIssue(46, "toolkit").body.split("\n")[0]).toBe(
-      `AUAUST/app#10 › AUAUST/app#11 · ${renderExternalWriteMarker("AUAUST/app")} · Compass: the port`,
-    );
+    expect(findIssue(46, "toolkit").body.split("\n").slice(0, 3)).toEqual([
+      renderExternalWriteMarker("AUAUST/app"),
+      "",
+      "AUAUST/app#10 › AUAUST/app#11 · Compass: the port",
+    ]);
 
     const check = await checkIssues(
       await loadConfig(root),
