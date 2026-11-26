@@ -61,7 +61,6 @@ export default {
         },
       },
       "environments": {
-        scope: "inherited",
         input: "environments",
         async load() {
           const {
@@ -72,7 +71,6 @@ export default {
         },
       },
       "environments.tsconfig": {
-        scope: "inherited",
         input: "environments",
         async load() {
           const {

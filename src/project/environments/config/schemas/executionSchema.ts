@@ -44,7 +44,7 @@ export const executionSchema = declareObject(
     apis: declare(array(picklist(apiGroups)), {
       description: [
         "Extra API groups of an `isomorphic` host, added to its tsconfig `types` as `@auaust/engrenage/apis/<group>`.",
-        "Only valid beside a baseline snapshot in `syntax`.",
+        "A non-empty list is only valid beside a baseline snapshot in `syntax`; an empty one with any host.",
         `Groups with their root globals: ${describeApiGroups()}.`,
       ],
       optional: { value: undefined },

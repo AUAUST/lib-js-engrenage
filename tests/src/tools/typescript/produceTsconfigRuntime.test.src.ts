@@ -558,4 +558,120 @@ describe("runtime tsconfig fields", () => {
       });
     }).rejects.toThrow(/isomorphic globals/);
   });
+
+  test.each(["browser", "node"] as const)(
+    "accepts an empty API group list on %s globals",
+    async (globals) => {
+      const read = await syncCompilerOptions({
+        environments: {
+          src: {
+            execution: {
+              globals,
+              syntax: globals === "node" ? 24 : "2026-10",
+              apis: [],
+            },
+          },
+        },
+      });
+
+      expect(read("tsconfig.src.json").types ?? []).not.toContainEqual(
+        expect.stringContaining("@auaust/engrenage/apis/"),
+      );
+    },
+  );
+});
+
+describe("workspace environment tsconfig fields", () => {
+  function createWorkspaceProject(metafile: Record<string, unknown>) {
+    const project = createTemporaryProject();
+
+    project.write(
+      "theme/package.json",
+      JSON.stringify({ name: "theme", type: "module" }),
+    );
+
+    project.write("theme/.workspace.json", JSON.stringify(metafile));
+    project.write("theme/src/index.ts", "");
+
+    return project;
+  }
+
+  const workspaces = {
+    globs: {
+      theme: { name: "theme" },
+    },
+  };
+
+  test("leaves out the API groups of the root environment sharing its key", async () => {
+    const project = createWorkspaceProject({
+      environments: {
+        src: {
+          execution: { globals: "browser", syntax: "2026-10" },
+        },
+      },
+    });
+
+    const read = await syncCompilerOptions(
+      {
+        workspaces,
+        environments: {
+          src: {
+            execution: {
+              globals: "isomorphic",
+              syntax: "2026-10",
+              apis: ["timers"],
+            },
+          },
+        },
+      },
+      project,
+    );
+
+    expect(read("tsconfig.src.json").types).toEqual([
+      "@auaust/engrenage/apis/timers",
+    ]);
+
+    expect(read("theme/tsconfig.src.json").types ?? []).not.toContainEqual(
+      expect.stringContaining("@auaust/engrenage/apis/"),
+    );
+  });
+
+  test("appends the API groups of a root-declared preset the workspace environment selects", async () => {
+    const project = createWorkspaceProject({
+      environments: {
+        src: { preset: "shared" },
+      },
+    });
+
+    const read = await syncCompilerOptions(
+      {
+        workspaces,
+        extensions: [
+          {
+            name: "shared-preset-fixture",
+            contributes: {
+              environmentPresets: [
+                {
+                  name: "shared",
+                  tsconfig: true,
+                  languages: ["typescript"],
+                  execution: {
+                    globals: "isomorphic",
+                    module: "esm",
+                    syntax: "2026-10",
+                    apis: ["timers"],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+      project,
+    );
+
+    expect(read("theme/tsconfig.src.json").types).toEqual([
+      "@auaust/engrenage/apis/timers",
+    ]);
+  });
 });

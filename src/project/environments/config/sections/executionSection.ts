@@ -68,7 +68,7 @@ function assertExecution(
     );
   }
 
-  if (apis === undefined) {
+  if (apis === undefined || apis.length === 0) {
     return;
   }
 

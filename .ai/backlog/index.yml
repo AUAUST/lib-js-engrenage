@@ -139,6 +139,7 @@ configuration:
     - BL-c84fe4
     - BL-364f46
     - BL-d8c551
+    - BL-f66d9b
 docs:
   purpose: "`project/docs`: doc tag declarations and the readers of tagged source."
   entries:

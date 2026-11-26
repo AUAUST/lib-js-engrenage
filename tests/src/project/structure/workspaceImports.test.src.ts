@@ -55,7 +55,13 @@ function createFiles(
     }),
     "tsconfig.json": "{}",
     ...sources,
-    "extensions/home/.workspace.json": "{}",
+    "extensions/home/.workspace.json": JSON.stringify({
+      environments: {
+        src: {
+          execution: { globals: "node", syntax: 24 },
+        },
+      },
+    }),
     "extensions/home/package.json": JSON.stringify({
       name: "@project/home",
       type: "module",

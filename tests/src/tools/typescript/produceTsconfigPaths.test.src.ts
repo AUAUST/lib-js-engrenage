@@ -123,7 +123,13 @@ describe("produceTsconfigPaths", () => {
       "package.json": JSON.stringify({ name: "@scope/package" }),
       "src/index.ts": "",
       "theme/package.json": JSON.stringify({ name: "theme", type: "module" }),
-      "theme/.workspace.json": "{}",
+      "theme/.workspace.json": JSON.stringify({
+        environments: {
+          src: {
+            execution: { syntax: "2026-10" },
+          },
+        },
+      }),
       "theme/src/index.ts": "",
       "tsconfig.json": JSON.stringify({
         compilerOptions: {

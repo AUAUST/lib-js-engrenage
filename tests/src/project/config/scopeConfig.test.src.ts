@@ -224,7 +224,14 @@ describe("workspace child resolvers", () => {
         },
       },
       metafile: {
-        runtime: { node: 24 },
+        runtime: {
+          node: 24,
+        },
+        environments: {
+          src: {
+            execution: { globals: "node" },
+          },
+        },
       },
     });
 

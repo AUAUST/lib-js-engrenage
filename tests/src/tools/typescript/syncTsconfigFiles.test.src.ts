@@ -406,7 +406,13 @@ describe("syncTsconfigFiles", () => {
         "src/env.d.ts": "",
         "tests/a.test.ts": "",
         "theme/package.json": JSON.stringify({ name: "theme", type: "module" }),
-        "theme/.workspace.json": "{}",
+        "theme/.workspace.json": JSON.stringify({
+          environments: {
+            src: {
+              execution: { syntax: "2026-10" },
+            },
+          },
+        }),
         "theme/src/index.ts": "",
         "theme/src/env.d.ts": "",
         "theme/tests/a.test.ts": "",

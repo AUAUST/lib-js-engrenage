@@ -94,7 +94,7 @@ export interface BuiltinConfigInput {
         globals?: (("isomorphic" | "browser" | "node") | undefined)
         /**
          * Extra API groups of an `isomorphic` host, added to its tsconfig `types` as `@auaust/engrenage/apis/<group>`.
-         * Only valid beside a baseline snapshot in `syntax`.
+         * A non-empty list is only valid beside a baseline snapshot in `syntax`; an empty one with any host.
          * Groups with their root globals: `abort` (`AbortController`, `AbortSignal`), `blob` (`Blob`, `File`), `compression` (`CompressionStream`, `DecompressionStream`), `console` (`console`), `crypto` (`crypto`), `encoding` (`TextEncoder`, `TextDecoder`, `atob`, `btoa`), `events` (`Event`, `EventTarget`, `CustomEvent`), `exceptions` (`DOMException`), `microtasks` (`queueMicrotask`), `performance` (`performance`), `streams` (`ReadableStream`, `WritableStream`, `TransformStream`, `ByteLengthQueuingStrategy`, `CountQueuingStrategy`, `TextEncoderStream`, `TextDecoderStream`), `timers` (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`), `url` (`URL`, `URLSearchParams`), `disposable` (the whole `lib.esnext.disposable.d.ts` of TypeScript, only for a project whose own lib provides it), `float16` (the whole `lib.es2025.float16.d.ts` of TypeScript, only for a project whose own lib provides it).
          * @default none
          */

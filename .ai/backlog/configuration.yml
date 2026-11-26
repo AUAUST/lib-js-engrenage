@@ -168,11 +168,11 @@ entries:
     want: "Registry collection apart from resolver creation, so project/config imports no #workflows/* (#731 › Groundwork steps 1-3)"
     created: 2026-11-24T00:00:00Z
   - id: BL-9d892e
-    title: A workspace registration placed on a directory an inherited registration re-places, such as src, raises environment-placement-conflict unless the workspace unplaces the inherited one
+    title: A workspace registration placed on a directory a built-in registration re-places, such as src, raises environment-placement-conflict unless the workspace unplaces the built-in one
     sites:
       - src/batiment/environments/operations/discoverEnvironmentPlacements.ts:36
-    why: Inherited and built-in placements re-place relative to each workspace (#886); presets unplace built-in names themselves (#887 for shopify-app), but no workspace config or preset can know the root's own registration names
-    want: A scope's own registration replacing an inherited or default one on the same directory or file, or a decided reason to keep the conflict
+    why: "Built-in placements re-place relative to each workspace (#886); since #959 root registrations no longer reach workspaces, so only built-in names remain, which presets unplace themselves (#887)"
+    want: A scope's own registration replacing a default one on the same directory or file, or a decided reason to keep the conflict
     created: 2026-11-24T00:00:00Z
   - id: BL-c84fe4
     title: "A workspace's option diagnostics name the root option path: an unset syntax in a workspace glob's tests reports environments.tests.execution.syntax"
@@ -191,3 +191,10 @@ entries:
     why: "input layering merges records per key, so a written {} keeps every inherited key; no consumer needs it once #959 drops same-key inheritance"
     want: an empty object or record resolves empty; whether a non-empty record replaces stays open
     created: 2026-11-26T14:28:05Z
+  - id: BL-f66d9b
+    title: Environment presets cannot carry tsconfig options, dirs or files a workspace environment would share with the root
+    sites:
+      - src/project/environments/ports/EnvironmentPresetEntry.ts:5
+    why: "Since #959, presets are the only path from root to workspace environments; each workspace restates environments.<name>.tsconfig"
+    want: Decide whether presets carry shared tsconfig options, or state that workspaces write them
+    created: 2026-11-26T14:54:38Z

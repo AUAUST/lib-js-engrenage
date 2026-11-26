@@ -157,10 +157,12 @@ describe("scope contributions", () => {
     );
   });
 
-  test("resolve a workspace's inherited registration with a preset only the root activates", async () => {
+  test("resolve a workspace environment selecting a preset only the root activates", async () => {
     const config = loadProject({
       input: {
         preset: "library",
+      },
+      metafile: {
         environments: {
           edge: { preset: "theme-preset", dirs: ["edge"] },
         },
