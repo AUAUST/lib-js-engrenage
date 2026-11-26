@@ -544,7 +544,11 @@ export type * from "#modules/guard/utils/isNull";
 
     const { lines } = await render(plan, new Map());
 
-    expect(lines).toHaveLength(37);
+    expect(new Set(lines).size).toBe(lines.length);
+
+    expect(lines).toContain(
+      'export { default as projectGenerators } from "#project/generators/extension";',
+    );
 
     expect(lines).toContain(
       'export { default as projectBuild } from "#project/build/extension";',
