@@ -86,3 +86,28 @@ entries:
     why: "bin/metalbrain imports #workflows/config 32 times, #project/sync 16, #tools/* 17; batiment map needs #workflows/config and #project/structure reportStructure; only the command interface is settled"
     want: A decision on how a split CLI finds its host, or which commands stay in engrenage
     created: 2026-11-26T11:19:47Z
+  - id: BL-101628
+    title: Command trees lack a canonical hot path apart from their heavy commands
+    why: metalbrain mixes hooks that must start as fast as possible with commands that parse and discover, under one entry; lazy commands cover most of it without a stated pattern
+    want: A nexus pattern declaring one hot-path group inline in the program, loaded with nothing else, and a lazily loaded rest group
+    done: "Needs planning under #945 after #955"
+    created: 2026-11-26T12:03:38Z
+  - id: BL-0201fa
+    title: Programs cannot accept commands from extensions they discover themselves
+    why: A CLI runs on its own, so extensions must be self-discovered; the first case is a consumer scripts tree run through engrenage with no per-project alias, which BL-4e55ba holds
+    want: "Options for a safe nexus extension pattern: discovery, validation, name-conflict resolution"
+    done: "Needs planning under #945 after #955; settles the scripts shortcut shape"
+    created: 2026-11-26T12:03:38Z
+  - id: BL-4037bb
+    title: Commands print one output shape for agents and humans
+    why: "Agents need dense output structured for their reading; humans need colored, padded, structured output. Prior art: github.com/sdairs/is-ai-agent for detection"
+    want: Different printers for the same command data, picked by detected audience; the rendering itself is a separate concern
+    done: "Needs planning under #945 after #955"
+    created: 2026-11-26T12:03:38Z
+  - id: BL-c7380b
+    title: Commands an extension registers after program creation miss the run options
+    sites:
+      - src/workflows/cli/operations/createProgram.ts:8
+    why: createProgram adds --debug and --verbose to the commands present at creation, so commands mounted later by an extension likely refuse them; likely, not run
+    want: Every mounted command takes the run options
+    created: 2026-11-26T12:03:38Z

@@ -5,3 +5,27 @@ entries:
     why: "user consented; batched once #952 lands"
     owner: "#946"
     created: 2026-11-26T10:56:04Z
+  - id: PD-b6bbc6
+    subject: "backlog changes from #945 shaping"
+    what: "Merge BL-0201fa into BL-4e55ba reframed as command extensions; reduce BL-a6f87c to the effect level, BL-ab1893 to PATH, BL-364f46 to per-environment custom globals, BL-62e56b minus forwarding; close BL-857148, BL-74872f, BL-7333f0, BL-e93942; tap BL-9c8fb3 (#955 supersedes #385 definer move)"
+    why: auto mode refused the backlog batch in the shaping session
+    owner: "#945"
+    created: 2026-11-26T12:04:16Z
+  - id: PD-787b9a
+    subject: "stateless effect level vs #315"
+    what: "Answer the user: interscript definitions-role case against #315 side-effect imports; fold into #315 or keep BL-a6f87c"
+    why: user question pending at compaction
+    owner: BL-a6f87c
+    created: 2026-11-26T12:04:16Z
+  - id: PD-e783d2
+    subject: nexus CLI directions to shape
+    what: "Shape BL-101628 hot path, BL-4e55ba command extensions and scripts shortcut shape, BL-4037bb audience printers, BL-c7380b late run options: plan items or backlog by complexity"
+    why: user asked to discuss fresh after compaction
+    owner: "#945"
+    created: 2026-11-26T12:04:16Z
+  - id: PD-10e786
+    subject: architecture review trigger instruction
+    what: "BL-40b4ed: run the architecture review unasked when work adds, moves or duplicates a capability across owners"
+    why: user batches instruction changes into a later consolidated writer pass
+    owner: BL-40b4ed
+    created: 2026-11-26T12:04:16Z

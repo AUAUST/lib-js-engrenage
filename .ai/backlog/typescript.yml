@@ -122,3 +122,16 @@ entries:
     why: "#931 reads grants within one scope; Interscript extensions/* reach admin through hand-written paths and match Preact by coincidence"
     want: A workspace tsconfig takes the JSX settings of every scope it may import
     created: 2026-11-25T19:13:59Z
+  - id: BL-caadcb
+    title: Declaration files a data environment ships go unchecked by engrenage typecheck
+    sites:
+      - src/project/environments/constants.ts:159
+    why: the data preset has no tsconfig, so data/apis/*.d.ts are named as skipped on every typecheck and gate run
+    want: published .d.ts files a data environment holds type-checked, or the skip stated as intended
+    created: 2026-11-26T12:11:21Z
+  - id: BL-60438b
+    title: An environment with a tsconfig leaves its TypeScript files outside its configured languages unchecked and unmentioned
+    sites:
+      - src/tools/typescript/operations/listInstanceTsconfigs.ts:1
+    want: Such files type-checked or named as skipped, e.g. .tsx files when tsx is unset
+    created: 2026-11-26T12:13:03Z

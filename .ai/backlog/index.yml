@@ -100,6 +100,10 @@ cli:
     - BL-ab1893
     - BL-e93942
     - BL-efac74
+    - BL-101628
+    - BL-0201fa
+    - BL-4037bb
+    - BL-c7380b
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -426,6 +430,8 @@ typescript:
     - BL-537ace
     - BL-e32b84
     - BL-7333f0
+    - BL-caadcb
+    - BL-60438b
 utils:
   purpose: Shared helpers and their placement.
   entries:

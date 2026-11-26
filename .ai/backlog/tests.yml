@@ -1,6 +1,7 @@
 purpose: Test infrastructure and coverage gaps.
 taps:
   - {id: BL-adfd1d, at: 2026-11-26T12:00:26Z, note: "gate typecheck now runs one tsc per environment concurrently (#954), adding load beside vitest"}
+  - {id: BL-adfd1d, at: 2026-11-26T12:11:13Z, note: "barrelDirective.test.src.ts timed out at 5s under gate --worktree, twice"}
 entries:
   - id: BL-9a6dd1
     title: Test infrastructure gaps

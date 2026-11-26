@@ -1,5 +1,5 @@
-import { rootScope } from "#batiment/scopes/constants";
 import { listInstanceTsconfigs } from "#tools/typescript/operations/listInstanceTsconfigs";
+import { describeSkippedInstance } from "#tools/typescript/utils/describeSkippedInstance";
 import type { ConfigResolver } from "#project/config/index";
 import type { File } from "#types/File";
 
@@ -26,12 +26,11 @@ export async function partitionInstanceTsconfigs(
       continue;
     }
 
-    const name = instance.scope === rootScope
-      ? instance.environment
-      : `${instance.environment} in ${instance.scope}`;
-
     skipped.push(
-      `${name} (${file === undefined ? "tsconfig disabled" : "check: false"})`,
+      describeSkippedInstance(
+        instance,
+        file === undefined ? "tsconfig disabled" : "check: false",
+      ),
     );
   }
 

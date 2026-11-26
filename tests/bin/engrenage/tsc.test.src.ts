@@ -222,6 +222,24 @@ describe("engrenage typecheck environments", { timeout: binaryTimeout }, () => {
     );
   });
 
+  test("names an environment holding TypeScript files without a tsconfig as not type-checked", async () => {
+    createSolution("export {};\n", {
+      "data/values.json": "{}\n",
+      "data/fixture.ts": "export const text: string = 1;\n",
+    });
+
+    const reporter = await runDefinition(engrenage, "typecheck");
+
+    expect(process.exitCode).toBe(0);
+
+    expect(reporter.messages).toContainEqual(
+      expect.objectContaining({
+        level: "info",
+        text: "Not type-checked: data (no tsconfig)",
+      }),
+    );
+  });
+
   test("fails when no environment is checked", async () => {
     createSolution("export {};\n", {
       "engrenage.config.ts": "export default { environments: { src: { tsconfig: { check: false } }, tests: { tsconfig: { check: false } } }, tooling: false };\n",

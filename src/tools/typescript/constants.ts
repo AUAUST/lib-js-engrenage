@@ -11,6 +11,12 @@ export const tsxExtensions = freeze([".tsx"] as const);
 
 export const moduleExtensions = freeze([".mts", ".cts"] as const);
 
+export const everyTypescriptExtension = freeze([
+  ...typescriptExtensions,
+  ...tsxExtensions,
+  ...moduleExtensions,
+] as const);
+
 // @debt jsx flavours should be contributed by a typescript tsx extension that consumers can extend, not hard-coded
 export const jsxFlavours = freeze({
   solid: freeze({ jsx: "preserve", jsxImportSource: "solid-js" } as const),
