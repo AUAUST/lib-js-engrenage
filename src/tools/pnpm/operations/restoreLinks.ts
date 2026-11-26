@@ -1,6 +1,5 @@
 import { entries } from "@auaust/toolkit/object";
 
-import { unlinkCommand } from "#tools/pnpm/constants";
 import { inspectLink } from "#tools/pnpm/operations/inspectLink";
 import { pointPackageExecutables } from "#tools/pnpm/operations/pointPackageExecutables";
 import { pointSymlink } from "#tools/pnpm/operations/pointSymlink";
@@ -9,22 +8,26 @@ import { readPackageManifest } from "#tools/pnpm/operations/readPackageManifest"
 import type { Directory } from "#types/Directory";
 
 /**
- * Repoints every recorded package and its executables at its checkout, as
- * after an install.
+ * Repoints every recorded package whose checkout exists, and its executables, at
+ * that checkout, as after an install, adding the executables it gained since.
  *
- * @returns The short names of the restored links.
- * @throws {Error} When a recorded checkout no longer exists.
+ * @returns The short names of the restored links and of those whose
+ * checkout is missing.
  */
-export async function restoreLinks(root: Directory): Promise<string[]> {
+// @debt concurrent runs, such as two commands started right after an install, stage each symlink at the same path and can fail on each other's
+export async function restoreLinks(
+  root: Directory,
+): Promise<{ restored: string[]; missing: string[] }> {
   const restored: string[] = [];
+  const missing: string[] = [];
 
   for (const [short, link] of entries(await readLinks(root))) {
     const { path, present, holds } = await inspectLink(root, link);
 
     if (!present) {
-      throw new Error(
-        `The checkout ${link.directory} linked to ${short} is missing: run \`${unlinkCommand} ${short}\``,
-      );
+      missing.push(short);
+
+      continue;
     }
 
     if (holds) {
@@ -41,5 +44,5 @@ export async function restoreLinks(root: Directory): Promise<string[]> {
     restored.push(short);
   }
 
-  return restored;
+  return { restored, missing };
 }

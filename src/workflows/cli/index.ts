@@ -3,6 +3,7 @@ export { enableLinkedSource } from "#workflows/cli/operations/enableLinkedSource
 export { findSourceExecutable } from "#workflows/cli/operations/findSourceExecutable";
 export { launch } from "#workflows/cli/operations/launch";
 export { openHook } from "#workflows/cli/operations/openHook";
+export { restoreLinkedExecutable } from "#workflows/cli/operations/restoreLinkedExecutable";
 
 // @barrel types
 export type * from "#workflows/cli/types/ToolAction";

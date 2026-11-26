@@ -7,7 +7,7 @@ enableCompileCache();
 const [
   { createProgram },
   { runEngrenageProgram },
-  { enableLinkedSource, findSourceExecutable, launch },
+  { enableLinkedSource, findSourceExecutable, launch, restoreLinkedExecutable },
 ] = await Promise.all([
   import("#nexus/cli/index"),
   import("#tools/nexus/index"),
@@ -15,6 +15,12 @@ const [
 ]);
 
 await launch(async () => {
+  const checkout = await restoreLinkedExecutable(import.meta.url);
+
+  if (checkout !== undefined) {
+    return void (await import(checkout));
+  }
+
   await enableLinkedSource(import.meta.url);
 
   const source = await findSourceExecutable(

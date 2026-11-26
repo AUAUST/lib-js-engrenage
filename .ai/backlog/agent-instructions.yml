@@ -228,3 +228,8 @@ entries:
     want: "on a compaction notice, the agent sends a resume prompt shaped like a handoff: Markdown block, opening with the invoking skill command when there is one, naming the support files to reread"
     done: a bare "I will compact" yields such a prompt
     created: 2026-11-26T14:31:09Z
+  - id: BL-2799d1
+    title: Analysis of consumer reports planned tooling workarounds for defects owned by a rule, its fix or the consumer code
+    why: "#972 planned shielding suppressed code from ESLint fixes after a fix broke type checking, instead of reproducing that fix as the bug"
+    want: Before planning a change from a consumer symptom, agents locate the layer owning the defect and route it there
+    created: 2026-11-26T16:19:09Z

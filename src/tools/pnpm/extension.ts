@@ -3,7 +3,8 @@ import type { Extension, FileLocation } from "#project/config/index";
 
 /**
  * Owns the lockfile, `pnpm-workspace.yaml` and the uncommitted record of linked
- * checkouts, syncs the workspace settings and checks the linked symlinks.
+ * checkouts, syncs the workspace settings and the `prepare` script restoring the
+ * links, and checks the linked symlinks.
  */
 export default {
   name: "tools/pnpm",
@@ -44,6 +45,15 @@ export default {
           } = await import("#tools/pnpm/setup/syncWorkspaceFile");
 
           return syncWorkspaceFile;
+        },
+      },
+      {
+        name: "prepare",
+        stage: "write",
+        async load() {
+          const { syncPrepare } = await import("#tools/pnpm/setup/syncPrepare");
+
+          return syncPrepare;
         },
       },
       {

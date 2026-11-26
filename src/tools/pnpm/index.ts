@@ -33,6 +33,7 @@ export { writePnpmDeclaration } from "#tools/pnpm/operations/writePnpmDeclaratio
 export { checkLinks } from "#tools/pnpm/setup/checkLinks";
 export { createPnpmStep } from "#tools/pnpm/setup/createPnpmStep";
 export { createWorkspaceStep } from "#tools/pnpm/setup/createWorkspaceStep";
+export { syncPrepare } from "#tools/pnpm/setup/syncPrepare";
 export { syncWorkspaceFile } from "#tools/pnpm/setup/syncWorkspaceFile";
 // @end
 

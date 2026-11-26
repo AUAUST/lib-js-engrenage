@@ -62,6 +62,26 @@ async function list(root: string) {
   }
 }
 
+async function restoreAll(root: string) {
+  const { reporter } = getRunContext();
+
+  const { restored, missing } = await restoreLinks(root);
+
+  if (restored.length > 0) {
+    reporter.log(`Restored ${restored.join(", ")}.`);
+  }
+
+  if (missing.length > 0) {
+    throw new Error(
+      missing
+        .map((short) => {
+          return `The checkout linked to ${short} is missing: run \`${unlinkCommand} ${short}\``;
+        })
+        .join("\n"),
+    );
+  }
+}
+
 export default async function (
   repository: string | undefined,
   directory: string | undefined,
@@ -92,13 +112,7 @@ export default async function (
   }
 
   if (restore) {
-    const restored = await restoreLinks(root);
-
-    return void reporter.log(
-      restored.length === 0
-        ? "Every link holds."
-        : `Restored ${restored.join(", ")}.`,
-    );
+    return restoreAll(root);
   }
 
   return list(root);

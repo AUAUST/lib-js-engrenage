@@ -5,7 +5,6 @@ import { inspectLink } from "#tools/pnpm/operations/inspectLink";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
 import type { LoadedConfig } from "#project/config/index";
 
-// @debt reports a link an install or a new checkout executable broke instead of anything repairing it, so every install needs a manual restore
 /**
  * Fails when a recorded checkout is gone or an install repointed its link or
  * executables away from it.

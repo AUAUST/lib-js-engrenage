@@ -103,6 +103,17 @@ async function checkLinks(root: string) {
   }
 }
 
+async function expectRestored(root: string, message: string) {
+  expect(await checkLinks(root)).toEqual(
+    expect.objectContaining({ message: expect.stringContaining(message) }),
+  );
+
+  expect(await restoreLinks(root)).toEqual({
+    restored: ["engrenage"],
+    missing: [],
+  });
+}
+
 describe("links", () => {
   test("links a checkout, lists it, and restores the installed package on removal", async () => {
     const { consumer, checkout } = await linkEngrenage();
@@ -153,15 +164,10 @@ describe("links", () => {
 
     writeFileSync(consumer.resolve("node_modules/.bin/engrenage"), shim);
 
-    expect(await checkLinks(consumer.root)).toEqual(
-      expect.objectContaining({
-        message: expect.stringContaining(
-          `the executables of ${name} run another copy`,
-        ),
-      }),
+    await expectRestored(
+      consumer.root,
+      `the executables of ${name} run another copy`,
     );
-
-    expect(await restoreLinks(consumer.root)).toEqual(["engrenage"]);
 
     expect(readTarget(consumer.root, "node_modules/.bin/engrenage")).toBe(
       realpathSync(checkout.resolve("dist/bin/engrenage.mjs")),
@@ -177,15 +183,37 @@ describe("links", () => {
 
     symlinkSync(installed, consumer.resolve(linkPath));
 
-    expect(await checkLinks(consumer.root)).toEqual(
-      expect.objectContaining({
-        message: expect.stringContaining("run `engrenage link --restore`"),
+    await expectRestored(consumer.root, "run `engrenage link --restore`");
+
+    expect(await checkLinks(consumer.root)).toBeUndefined();
+  });
+
+  test("restores an executable the checkout gained since linking", async () => {
+    const { consumer, checkout } = await linkEngrenage();
+
+    writeFileSync(
+      checkout.resolve("package.json"),
+      JSON.stringify({
+        name,
+        version: "1.2.0",
+        bin: {
+          engrenage: "./dist/bin/engrenage.mjs",
+          metalbrain: "./dist/bin/metalbrain.mjs",
+          batiment: "./dist/bin/batiment.mjs",
+        },
       }),
     );
 
-    expect(await restoreLinks(consumer.root)).toEqual(["engrenage"]);
+    writeFileSync(checkout.resolve("dist/bin/batiment.mjs"), "export {};\n");
 
-    expect(await checkLinks(consumer.root)).toBeUndefined();
+    await expectRestored(
+      consumer.root,
+      `the executables of ${name} run another copy`,
+    );
+
+    expect(readTarget(consumer.root, "node_modules/.bin/batiment")).toBe(
+      realpathSync(checkout.resolve("dist/bin/batiment.mjs")),
+    );
   });
 
   test("refuses a checkout of another repository or a package the consumer does not depend on", async () => {
@@ -231,6 +259,11 @@ describe("links", () => {
     expect(await listLinks(consumer.root)).toEqual([
       expect.objectContaining({ short: "engrenage", present: false }),
     ]);
+
+    expect(await restoreLinks(consumer.root)).toEqual({
+      restored: [],
+      missing: ["engrenage"],
+    });
 
     await unlinkCheckout(consumer.root, "engrenage");
 

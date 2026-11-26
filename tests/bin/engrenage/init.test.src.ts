@@ -186,6 +186,9 @@ describe("engrenage init", () => {
         imports: {
           "#package.json": "./package.json",
         },
+        scripts: {
+          prepare: "pnpm engrenage link --restore",
+        },
         devEngines: {
           runtime: {
             name: "node",
@@ -285,7 +288,10 @@ describe("engrenage init", () => {
       },
     );
 
-    expect(packageJson).toHaveProperty("scripts.prepare", "lefthook install");
+    expect(packageJson).toHaveProperty(
+      "scripts.prepare",
+      "lefthook install && pnpm engrenage link --restore",
+    );
 
     expect(project.read("lefthook.yml")).toContain("$CLAUDECODE");
 
@@ -404,6 +410,20 @@ describe("engrenage init", () => {
       expect(spawnProcess).not.toHaveBeenCalled();
     },
   );
+
+  test("adds lefthook's install to a prepare sync already wrote, once", async () => {
+    const project = createProject({
+      "engrenage.config.ts": "export default {};\n",
+      "package.json": '{\n  "name": "project",\n  "type": "module",\n  "scripts": {\n    "prepare": "pnpm engrenage link --restore"\n  }\n}\n',
+    });
+
+    await run("init", "--yes");
+
+    expect(JSON.parse(project.read("package.json"))).toHaveProperty(
+      "scripts.prepare",
+      "pnpm engrenage link --restore && lefthook install",
+    );
+  });
 
   test("leaves a complete project untouched", async () => {
     const project = createProject({

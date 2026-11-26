@@ -994,3 +994,8 @@ entries:
     need: typecheck each instance tsconfig (#954)
     reason: warm ~8s vs ~3.5s concurrent on engrenage
     created: 2026-11-26T12:00:27Z
+  - id: DS-5db9f8
+    subject: findLinksRoot in engrenage launcher
+    need: cheap link lookup before every run
+    reason: pnpm surface import costs ~370ms from source
+    created: 2026-11-26T16:28:37Z

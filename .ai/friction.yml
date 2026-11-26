@@ -22,6 +22,7 @@ taps:
   - {id: FR-bf941d, at: 2026-11-26T15:27:32Z, note: "cause: npm checks devEngines on every command, npm/cli#10301; tracked by #971"}
   - {id: FR-1eb8aa, at: 2026-11-26T15:27:32Z, note: "cause: npm checks devEngines on every command, npm/cli#10301; tracked by #971"}
   - {id: FR-26dc34, at: 2026-11-26T15:35:28Z, note: "syncWorkspaceFile test, same 5s timeout"}
+  - {id: FR-26dc34, at: 2026-11-26T16:40:23Z, note: "bin/engrenage sync, pnpm, eslint suites too"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

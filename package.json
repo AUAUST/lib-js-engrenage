@@ -34,7 +34,7 @@
     "lint:fix": "pnpm run engrenage eslint:fix",
     "lint:suppress": "pnpm run engrenage eslint:suppress",
     "metalbrain": "node bin/metalbrain/executable.ts",
-    "prepare": "lefthook install",
+    "prepare": "lefthook install && pnpm engrenage link --restore",
     "ready": "pnpm install --frozen-lockfile && pnpm run support codegen && pnpm run engrenage sync && pnpm run ci && echo 'Ready!'",
     "support": "node scripts/executable.ts",
     "test": "pnpm run engrenage vitest && pnpm run engrenage typecheck",

@@ -1,10 +1,16 @@
 import { runProcess } from "#foundation/processes/index";
+import { restoreLinks } from "#tools/pnpm/operations/restoreLinks";
 import type { Directory } from "#types/Directory";
 
-// @debt the install repoints every package `.engrenage/links.json` links back at its installed copy and leaves it so
+/**
+ * Installs the dependencies of `root`, then restores the links the install
+ * replaced, as its synced `prepare` script would.
+ */
 export async function installDependencies(root: Directory): Promise<void> {
   await runProcess("pnpm", ["install"], {
     cwd: root,
     stdio: "inherit",
   });
+
+  await restoreLinks(root);
 }

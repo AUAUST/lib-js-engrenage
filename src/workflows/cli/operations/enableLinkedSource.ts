@@ -1,12 +1,10 @@
 import { realpath } from "node:fs/promises";
 import { findPackageJSON, registerHooks } from "node:module";
 import { dirname } from "node:path";
-import { pathToFileURL } from "node:url";
 
-import { pathExists, resolve } from "#foundation/filesystem/index";
 import { hasNodeCondition } from "#foundation/processes/index";
 import { sourceCondition } from "#project/package/constants";
-import { linksFile } from "#tools/pnpm/constants";
+import { findLinkedConsumer } from "#workflows/cli/operations/findLinkedConsumer";
 import type { Directory } from "#types/Directory";
 
 async function readRealpath(directory: Directory) {
@@ -17,13 +15,12 @@ async function readRealpath(directory: Directory) {
   }
 }
 
-async function isLinked(consumer: Directory, executableUrl: string) {
+async function isLinked(executableUrl: string) {
   const running = findPackageJSON(executableUrl);
 
-  if (
-    running === undefined ||
-    !(await pathExists(resolve(consumer, linksFile)))
-  ) {
+  const consumer = await findLinkedConsumer();
+
+  if (running === undefined || consumer === undefined) {
     return false;
   }
 
@@ -50,16 +47,7 @@ async function isLinked(consumer: Directory, executableUrl: string) {
  * a checkout, so the run loads that checkout's sources instead of its build.
  */
 export async function enableLinkedSource(executableUrl: string): Promise<void> {
-  if (hasNodeCondition(sourceCondition)) {
-    return;
-  }
-
-  const manifest = findPackageJSON(pathToFileURL(`${process.cwd()}/`).href);
-
-  if (
-    manifest === undefined ||
-    !(await isLinked(dirname(manifest), executableUrl))
-  ) {
+  if (hasNodeCondition(sourceCondition) || !(await isLinked(executableUrl))) {
     return;
   }
 
