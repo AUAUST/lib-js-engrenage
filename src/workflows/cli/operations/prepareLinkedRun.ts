@@ -10,8 +10,7 @@ import { entries } from "@auaust/toolkit/object";
 import { pathExists, readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
 import { createConsoleReporter } from "#foundation/reports/index";
-import { unlinkCommand } from "#tools/pnpm/constants";
-import { enableSourceCondition } from "#workflows/cli/operations/enableSourceCondition";
+import { rebuildCommand, unlinkCommand } from "#tools/pnpm/constants";
 import { findLinkedConsumer } from "#workflows/cli/operations/findLinkedConsumer";
 import type { Link, Links } from "#tools/pnpm/index";
 import type { Directory } from "#types/Directory";
@@ -54,11 +53,33 @@ async function findCheckoutExecutable(
 
   if (!(await pathExists(target))) {
     throw new Error(
-      `The checkout ${directory} linked to ${short} has no built ${file}: run \`pnpm build\` in it`,
+      `The checkout ${directory} linked to ${short} has no built ${file}: run \`${rebuildCommand}\` in it`,
     );
   }
 
   return pathToFileURL(target).href;
+}
+
+// @debt digests every source the build consumed on each run, and twice when the run defers to the checkout's executable, which checks again
+async function assertFreshBuild(
+  checkout: string,
+  [short, { directory }]: readonly [string, Link],
+) {
+  const { checkBuildSources } = await import("#project/build/index");
+
+  const state = await checkBuildSources(checkout);
+
+  if (state === "unrecorded") {
+    throw new Error(
+      `The checkout ${directory} linked to ${short} has no record of the sources its build consumed, so its build may be stale: run \`${rebuildCommand}\` in it`,
+    );
+  }
+
+  if (state === "stale") {
+    throw new Error(
+      `The build of the checkout ${directory} linked to ${short} is older than its sources, so this run stops before running stale code: run \`${rebuildCommand}\` in it`,
+    );
+  }
 }
 
 async function findLinkedPackage(manifest: string, links: Links) {
@@ -73,14 +94,14 @@ async function findLinkedPackage(manifest: string, links: Links) {
 
 /**
  * Restores the links the project in the working directory records, which an
- * install may have replaced, then finds the executable of the linked checkout to
- * run instead of the running one when that one is another copy of its package,
- * or switches the `source` condition on when the running package is a linked
- * checkout, so the run loads its sources instead of its build; loads nothing
- * more when the project records no link.
+ * install may have replaced, then, when the running package is linked, checks that
+ * the checkout's build matches its sources and finds the checkout's executable to
+ * run instead of the running one when that one is another copy of its package;
+ * loads nothing more when the project records no link.
  *
  * @returns The checkout executable's URL, or `undefined` to run on.
- * @throws {Error} When the checkout to run lacks the running executable's file.
+ * @throws {Error} When the checkout's build is older than its sources or
+ * unrecorded, or lacks the running executable's file.
  */
 export async function prepareLinkedRun(
   executableUrl: string,
@@ -91,7 +112,7 @@ export async function prepareLinkedRun(
     return;
   }
 
-  // @debt reading the record through the pnpm surface loads its built modules, and GitHub's and Git's, before the run defers to the sources
+  // @debt reading the record through the pnpm surface loads its modules, and GitHub's and Git's, on every run of a project recording links
   const { readLinks, restoreLinks } = await import("#tools/pnpm/index");
 
   const { restored, missing } = await restoreLinks(consumer);
@@ -109,23 +130,21 @@ export async function prepareLinkedRun(
     running,
   ] = await Promise.all([readLinks(consumer), realpath(dirname(manifest))]);
 
-  const checkouts = new Map(
-    await Promise.all(
-      entries(links).map(async ([short, { directory }]) => {
-        return [short, await readRealpath(directory)] as const;
-      }),
-    ),
-  );
-
   const linked = await findLinkedPackage(manifest, links);
 
-  const checkout = linked && checkouts.get(linked[0]);
-
-  if (linked && checkout !== undefined && checkout !== running) {
-    return findCheckoutExecutable(executableUrl, running, checkout, linked);
+  if (linked === undefined) {
+    return;
   }
 
-  if ([...checkouts.values()].includes(running)) {
-    enableSourceCondition();
+  const checkout = await readRealpath(linked[1].directory);
+
+  if (checkout === undefined) {
+    return;
   }
+
+  await assertFreshBuild(checkout, linked);
+
+  return checkout === running
+    ? undefined
+    : findCheckoutExecutable(executableUrl, running, checkout, linked);
 }

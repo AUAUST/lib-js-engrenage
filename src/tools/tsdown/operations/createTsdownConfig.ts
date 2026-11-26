@@ -29,6 +29,7 @@ import {
 } from "#tools/tsdown/constants";
 import { resolveCommandEntries } from "#tools/tsdown/operations/resolveCommandEntries";
 import { resolveSourceEntries } from "#tools/tsdown/operations/resolveSourceEntries";
+import { createBuildSourcesPlugins } from "#tools/tsdown/plugins/createBuildSourcesPlugins";
 import { createEmittedManifestPlugins } from "#tools/tsdown/plugins/createEmittedManifestPlugins";
 import { createEmptyNamespacesPlugins } from "#tools/tsdown/plugins/createEmptyNamespacesPlugins";
 import { createEntrySelfReferencesPlugins } from "#tools/tsdown/plugins/createEntrySelfReferencesPlugins";
@@ -270,6 +271,10 @@ export async function createTsdownConfig(
             internalTags,
           )
         : []),
+      ...createBuildSourcesPlugins(`${pluginPrefix}:build-sources`, {
+        root,
+        inputs: [packageJsonFile],
+      }),
       ...(clean === "emitted"
         ? createEmittedManifestPlugins(`${pluginPrefix}:emitted-manifest`, {
             manifest: join(resources.path("cache.tsdown"), emittedManifestFile),

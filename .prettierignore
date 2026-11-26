@@ -50,6 +50,9 @@ bun.lockb
 # Linked checkouts
 /.engrenage/links.json
 
+# Build sources
+/.engrenage/build-sources.json
+
 # Codegen
 /src/project/baseline/editions/constants.ts
 /data/apis/**/*.d.ts

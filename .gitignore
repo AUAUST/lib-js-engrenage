@@ -58,4 +58,7 @@ ehthumbs.db
 # Linked checkouts
 /.engrenage/links.json
 
+# Build sources
+/.engrenage/build-sources.json
+
 # @end

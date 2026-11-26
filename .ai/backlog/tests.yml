@@ -59,7 +59,7 @@ entries:
       - tests/src/tools/eslint/boundaries.test.ts:141
       - tests/src/tools/eslint/noComplexConciseArrows.test.ts:11
       - tests/src/tools/typescript/produceTsconfigInclude.test.src.ts:12
-    why: temporary projects, ESLint instances and `syncProject` helpers are repeated; jscpd finds 18 test clones, also in `createEslintConfig`, `syncLefthookConfig`, `issueContract`, `issueTree`, `runGateLocalFiles`, `produceTsconfigRuntime` and `enableLinkedSource`/`findSourceExecutable`.
+    why: temporary projects, ESLint instances and `syncProject` helpers are repeated; jscpd finds test clones, also in `createEslintConfig`, `syncLefthookConfig`, `issueContract`, `issueTree`, `runGateLocalFiles` and `produceTsconfigRuntime`.
     want: shared builders in `tests/utils`, starting with the marked sites.
     created: 2026-11-22T00:00:00Z
   - id: BL-b3c1c5

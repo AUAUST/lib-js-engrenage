@@ -1,6 +1,5 @@
 import { packages } from "#constants";
 import { runGateBinary, type GateResult } from "#project/gate/index";
-import { resolveSourcePrettierConfig } from "#tools/prettier/operations/resolveSourcePrettierConfig";
 import type { LoadedConfig } from "#project/config/index";
 import type { Files } from "#types/Files";
 
@@ -10,12 +9,9 @@ export async function fixWithPrettier(
   config: LoadedConfig,
   files: Files,
 ): Promise<GateResult> {
-  const configFile = await resolveSourcePrettierConfig(config);
-
   return runGateBinary(config.context.root, packages.prettier, [
     "--write",
     "--ignore-unknown",
-    ...(configFile === undefined ? [] : ["--config", configFile]),
     "--",
     ...files,
   ]);

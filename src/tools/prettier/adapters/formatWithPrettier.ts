@@ -1,5 +1,4 @@
 import { loadPrettier } from "#tools/prettier/operations/loadPrettier";
-import { resolveSourcePrettierConfig } from "#tools/prettier/operations/resolveSourcePrettierConfig";
 import type { Formatter } from "#project/format/ports/Formatter";
 
 /**
@@ -17,12 +16,9 @@ export const formatWithPrettier: Formatter = async (
     return;
   }
 
-  const [resources, configFile] = await Promise.all([
-    config.resolve("resources"),
-    resolveSourcePrettierConfig(config),
-  ]);
+  const resources = await config.resolve("resources");
 
-  const options = await prettier.resolveConfig(path, { config: configFile });
+  const options = await prettier.resolveConfig(path);
 
   const { ignored, inferredParser } = await prettier.getFileInfo(path, {
     ignorePath: resources.get("prettierignore") === undefined

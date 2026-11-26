@@ -1,10 +1,10 @@
-import { tsdown } from "#tools/tsdown/constants";
+import { buildSourcesFile, tsdown } from "#tools/tsdown/constants";
 import type { Extension, FileLocation } from "#project/config/index";
 
 // @debt the extension owns no config key, so its options come only from definer arguments
 /**
- * Active when `tsdown` is installed; owns its cache and registers tsdown
- * as a build tool.
+ * Active when `tsdown` is installed; owns its cache and the record of the sources
+ * its builds consumed, and registers tsdown as a build tool.
  */
 export default {
   name: "tools/tsdown",
@@ -20,6 +20,13 @@ export default {
           const cache = await config.resolve("cache");
 
           return { directory: cache.for(tsdown) };
+        },
+      },
+      "state.build-sources": {
+        title: "Build sources",
+        committed: false,
+        locate(): FileLocation {
+          return { file: buildSourcesFile };
         },
       },
     },

@@ -4,7 +4,6 @@ export type * from "#foundation/processes/types/ProcessResult";
 // @end
 
 // @barrel operations
-export { hasNodeCondition } from "#foundation/processes/operations/hasNodeCondition";
 export { resolveBinary } from "#foundation/processes/operations/resolveBinary";
 export { runProcess } from "#foundation/processes/operations/runProcess";
 export { spawnProcess } from "#foundation/processes/operations/spawnProcess";

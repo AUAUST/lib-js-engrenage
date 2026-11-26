@@ -23,7 +23,7 @@ const [
 ]);
 
 await launch(async () => {
-  await runExecutable(import.meta, "#bin/engrenage/executable", async () => {
+  await runExecutable(import.meta.url, async () => {
     const { default: engrenage } = await import("#bin/engrenage/index");
 
     await runEngrenageProgram(createProgram("engrenage", engrenage));

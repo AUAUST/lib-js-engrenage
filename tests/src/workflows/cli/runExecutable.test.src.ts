@@ -4,6 +4,7 @@ import { promisify } from "node:util";
 
 import { describe, expect, test } from "vitest";
 
+import { createBuildSources } from "#project/build/operations/createBuildSources";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
@@ -18,18 +19,13 @@ const installed = "../.pnpm/fixture/node_modules/fixture";
 const manifest = JSON.stringify({
   name: "fixture",
   type: "module",
-  imports: {
-    "#bin/*": "./bin/*.ts",
-  },
-  exports: {
-    ".": { source: "./src/index.ts", default: "./dist/index.mjs" },
-  },
+  exports: { ".": "./dist/index.mjs" },
 });
 
 function createExecutable(copy: string) {
   return `import { runExecutable } from ${JSON.stringify(operation)};
 
-await runExecutable(import.meta, "#bin/cli", async () => {
+await runExecutable(import.meta.url, async () => {
   console.log(${JSON.stringify(copy)});
 });
 `;
@@ -40,9 +36,13 @@ async function runInstalled(linked: boolean) {
     "package.json": manifest,
     "src/index.ts": "export {};\n",
     "dist/index.mjs": "export {};\n",
-    "bin/cli.ts": 'console.log("checkout source");\n',
     "dist/bin/cli.mjs": createExecutable("checkout build"),
   });
+
+  await createBuildSources({
+    root: checkout.root,
+    inputs: ["package.json", "src/index.ts"],
+  }).write();
 
   const consumer = createTemporaryProject({
     "package.json": JSON.stringify({ name: "app", type: "module" }),
@@ -77,8 +77,8 @@ async function runInstalled(linked: boolean) {
 }
 
 describe("runExecutable", { timeout: binaryTimeout }, () => {
-  test("runs the linked checkout's source executable instead of the installed build", async () => {
-    expect(await runInstalled(true)).toBe("checkout source");
+  test("runs the linked checkout's build instead of the installed build", async () => {
+    expect(await runInstalled(true)).toBe("checkout build");
   });
 
   test("runs the installed build without a link", async () => {

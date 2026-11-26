@@ -89,7 +89,7 @@ export const buildSchema = declareObject(
     }),
     sourceExports: declare(boolean(), {
       description: [
-        "Whether tsdown adds a `source` export condition resolving each entry to its source file, and the `engrenage` command runs from its sources when Node runs with `--conditions=source`.",
+        "Whether tsdown adds a `source` export condition resolving each entry to its source file, for tools that load the package from its sources.",
         "The published manifest keeps only the built files, through `publishConfig.exports`, which pnpm honors and npm ignores.",
       ],
       optional: { value: false },

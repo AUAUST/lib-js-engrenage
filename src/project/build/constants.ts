@@ -1,7 +1,12 @@
 import { array, boolean, looseObject, optional, string } from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
+import { stateDirectory } from "#project/config/constants";
+import type { File } from "#types/File";
+
 export const emittedManifestFile = "emitted.json";
+
+export const buildSourcesFile = `${stateDirectory}/build-sources.json` satisfies File;
 
 export const defaultBuildClean = "all" as const;
 

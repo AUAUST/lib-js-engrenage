@@ -43,7 +43,7 @@ async function runMetalbrain(
 
 if (isHook) {
   try {
-    await runExecutable(import.meta, "#bin/metalbrain/executable", () => {
+    await runExecutable(import.meta.url, () => {
       return runMetalbrain({
         onError(error) {
           openHook("metalbrain", error);
@@ -55,7 +55,7 @@ if (isHook) {
   }
 } else {
   await launch(() => {
-    return runExecutable(import.meta, "#bin/metalbrain/executable", () => {
+    return runExecutable(import.meta.url, () => {
       return runMetalbrain();
     });
   });

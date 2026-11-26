@@ -1,5 +1,6 @@
 // @barrel types
 export type * from "#project/build/types/BuildInput";
+export type * from "#project/build/types/BuildSourcesState";
 export type * from "#project/build/types/ResolvedBuild";
 // @end
 
@@ -9,7 +10,10 @@ export { buildToolNameSchema } from "#project/build/config/schemas/buildToolName
 // @end
 
 // @barrel operations
+export { checkBuildSources } from "#project/build/operations/checkBuildSources";
+export { createBuildSources } from "#project/build/operations/createBuildSources";
 export { createEmittedManifest } from "#project/build/operations/createEmittedManifest";
+export { digestSources } from "#project/build/operations/digestSources";
 // @end
 
 // @barrel setup

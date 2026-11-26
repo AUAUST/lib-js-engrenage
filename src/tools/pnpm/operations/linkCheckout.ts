@@ -14,7 +14,7 @@ import {
   findRegisteredRepository,
   readOriginRepository,
 } from "#tools/github/index";
-import { linkedExecutables } from "#tools/pnpm/constants";
+import { linkedExecutables, rebuildCommand } from "#tools/pnpm/constants";
 import { pointPackageExecutables } from "#tools/pnpm/operations/pointPackageExecutables";
 import { pointSymlink } from "#tools/pnpm/operations/pointSymlink";
 import { readLinks } from "#tools/pnpm/operations/readLinks";
@@ -85,7 +85,7 @@ export async function linkCheckout(
 
   if (!(await pathExists(join(checkout, linkedExecutables)))) {
     throw new Error(
-      `The checkout ${checkout} has no built ${linkedExecutables}: run \`pnpm build\` in it`,
+      `The checkout ${checkout} has no built ${linkedExecutables}: run \`${rebuildCommand}\` in it`,
     );
   }
 

@@ -1,5 +1,9 @@
 import { getRunContext } from "#nexus/cli/index";
-import { restoreLinksCommand, unlinkCommand } from "#tools/pnpm/constants";
+import {
+  rebuildCommand,
+  restoreLinksCommand,
+  unlinkCommand,
+} from "#tools/pnpm/constants";
 import {
   findLinksRoot,
   linkCheckout,
@@ -50,7 +54,7 @@ async function list(root: string) {
 
     if (stale) {
       reporter.warn(
-        `${short}: the checkout's build predates its HEAD commit: run \`pnpm build\` in it`,
+        `${short}: the checkout's build is older than its sources: run \`${rebuildCommand}\` in it`,
       );
     }
 

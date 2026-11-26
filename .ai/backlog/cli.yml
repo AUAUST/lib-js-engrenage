@@ -16,9 +16,8 @@ entries:
     title: Every action repeats the validated config load
     sites:
       - src/nexus/cli/operations/getRunContext.ts:4
-      - bin/engrenage/actions/vite.ts:5
-    why: "each bin and scripts action calls `loadValidatedConfig(…, { reporter: getRunContext().reporter })`, cloned across actions (jscpd: `structure`, codegen `editions`, `rules`, `schemas`); the Vite action repeats the native config loader choice of `ensureNativeConfigLoader` in `#tools/vitest`."
-    want: a run-scoped config loader in the run context; one source config loader.
+    why: "each bin and scripts action calls `loadValidatedConfig(…, { reporter: getRunContext().reporter })`, cloned across actions (jscpd: `structure`, codegen `editions`, `rules`, `schemas`)."
+    want: a run-scoped config loader in the run context.
     created: 2026-11-22T00:00:00Z
   - id: BL-97905e
     title: The run context and abort signal stay optional

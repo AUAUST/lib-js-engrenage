@@ -14,3 +14,5 @@ export const pluginNames = freeze([
 export const builtExtension = ".mjs";
 
 export { project as pluginPrefix, tsdown } from "#constants";
+
+export { buildSourcesFile } from "#project/build/constants";
