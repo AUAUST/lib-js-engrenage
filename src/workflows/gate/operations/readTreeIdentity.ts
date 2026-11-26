@@ -1,6 +1,6 @@
 import { listIgnoredOutputs } from "#project/generators/index";
 import {
-  hashTree,
+  hashTrees,
   listChangedFiles,
   listLocalFiles,
   readHead,
@@ -30,19 +30,18 @@ export async function readTreeIdentity(
 
   const local = await listLocalFiles(git, root, patterns, changed);
 
-  const [head = "-", committable, checked] = await Promise.all([
+  const [head = "-", { selected, worktree }] = await Promise.all([
     readHead(root),
-    hashTree(root, {
-      mode: "worktree",
+    hashTrees(root, {
+      mode,
       exclude: local,
       include,
     }),
-    hashTree(root, { mode, include }),
   ]);
 
   return {
     head,
-    committable,
-    checked,
+    committable: worktree,
+    checked: selected,
   };
 }

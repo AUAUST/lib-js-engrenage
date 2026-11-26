@@ -18,7 +18,7 @@ export { fillAttributesBlock } from "#tools/git/operations/fillAttributesBlock";
 export { fillIgnoreBlock } from "#tools/git/operations/fillIgnoreBlock";
 export { findHookBypass } from "#tools/git/operations/findHookBypass";
 export { findRepositoryRoot } from "#tools/git/operations/findRepositoryRoot";
-export { hashTree } from "#tools/git/operations/hashTree";
+export { hashTrees } from "#tools/git/operations/hashTrees";
 export { listChangedFiles } from "#tools/git/operations/listChangedFiles";
 export { listExcludeFiles } from "#tools/git/operations/listExcludeFiles";
 export { listIgnoredGlobs } from "#tools/git/operations/listIgnoredGlobs";
@@ -55,4 +55,5 @@ export type * from "#tools/git/types/GitInput";
 export type * from "#tools/git/types/IssueCommit";
 export type * from "#tools/git/types/ResolvedGit";
 export type * from "#tools/git/types/StagedChanges";
+export type * from "#tools/git/types/TreeHashes";
 // @end

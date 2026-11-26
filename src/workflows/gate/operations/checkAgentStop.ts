@@ -3,7 +3,7 @@ import { mkdir, rm, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
-import { hashTree } from "#tools/git/index";
+import { hashTrees } from "#tools/git/index";
 import { runGate } from "#workflows/gate/operations/runGate";
 import { formatGateEntry } from "#workflows/gate/utils/formatGateEntry";
 import type { LoadedConfig } from "#project/config/index";
@@ -31,7 +31,7 @@ export async function checkAgentStop(
   }
 
   // @debt the failing-tree marker hashes the worktree after the gate released its lock, so another gate's fixes can land in between
-  const tree = await hashTree(root, { mode: "worktree" });
+  const { worktree: tree } = await hashTrees(root, { mode: "worktree" });
 
   const stopped = await readTextFile(marker);
 
