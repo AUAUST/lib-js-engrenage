@@ -69,12 +69,13 @@ The matrix states top-level namespace grants; domain and role boundaries still a
 
 ## Roles
 
-Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role's level caps both what its modules do while they evaluate and what their exports do once invoked, unless it states its `evaluation` and `invocation` ceilings apart. A role with an invocation ceiling imports at runtime only roles whose invocation ceiling is that level or a purer one. Global roles import each other, and domains only with `import type`. Other domains import a role's modules one by one only when it is `public`, otherwise only through its domain's index. They import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces, and a `modules` role's directly; no index lists them.
+Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `effectful`. A role's level caps both what its modules do while they evaluate and what their exports do once invoked, unless it states its `evaluation` and `invocation` ceilings apart. A role with an invocation ceiling imports at runtime only roles whose invocation ceiling is that level or a purer one. Global roles import each other, and domains only with `import type`. Other domains import a role's modules one by one only when it is `public`, otherwise only through its domain's index. They import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces, and a `modules` role's directly; no index lists them.
 
 - `pure`: Compute from arguments only, without observable changes.
-- `confined`: Mutate caller-owned values or maintain a private memo cache.
-- `observing`: Read the context or write diagnostics without changing state later operations read.
-- `effectful`: Change state later operations can read, including staged writes and spawned processes.
+- `printing`: Do what `pure` does, and append to an output channel the runtime gives the program no way to read: the console, stdout or stderr.
+- `confined`: Do what `printing` does, and mutate values the caller owns, as created or received by it, or keep a memo cache no caller can observe, holding values callers do not mutate.
+- `observing`: Do what `confined` does, and read state that changes between calls, the clock or randomness, or observe garbage collection.
+- `effectful`: Do what `observing` does, and change state later operations can read, including staged writes, spawned processes and scheduled work: timers, microtasks and finalization callbacks.
 
 | Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |
 | --- | --- | --- | --- | --- | --- | --- | --- |

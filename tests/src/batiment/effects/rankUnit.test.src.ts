@@ -13,7 +13,7 @@ import { resolveDataFile } from "#foundation/data/index";
 import { readJsonFile } from "#foundation/filesystem/index";
 
 describe("effect levels", () => {
-  test("requires the four default levels in order", () => {
+  test("requires the default levels in order", () => {
     expect(parse(effectLevelsSchema, defaultEffectLevels)).toEqual(
       defaultEffectLevels,
     );
@@ -21,6 +21,7 @@ describe("effect levels", () => {
     expect(
       parse(effectLevelsSchema, [
         "pure",
+        "printing",
         "confined",
         { name: "custom", purpose: "Custom." },
         "observing",
@@ -35,6 +36,16 @@ describe("effect levels", () => {
     expect(() => {
       return parse(effectLevelsSchema, [
         "pure",
+        "confined",
+        "observing",
+        "effectful",
+      ]);
+    }).toThrow("pure, printing, confined");
+
+    expect(() => {
+      return parse(effectLevelsSchema, [
+        "pure",
+        "printing",
         "observing",
         "confined",
         "effectful",
@@ -47,6 +58,7 @@ describe("effect levels", () => {
       levels: [
         "pure",
         { name: "logging", purpose: "Write logs." },
+        "printing",
         "confined",
         "observing",
         "effectful",
@@ -56,6 +68,7 @@ describe("effect levels", () => {
     expect(levels).toEqual([
       "pure",
       "logging",
+      "printing",
       "confined",
       "observing",
       "effectful",
@@ -66,7 +79,14 @@ describe("effect levels", () => {
 
     expect(() => {
       return resolveEffects({
-        levels: ["pure", "custom", "confined", "observing", "effectful"],
+        levels: [
+          "pure",
+          "custom",
+          "printing",
+          "confined",
+          "observing",
+          "effectful",
+        ],
       });
     }).toThrow("needs a purpose");
   });
@@ -107,6 +127,7 @@ describe("unit ranks", () => {
     expect(rankMember(effects, "node:fs", "readFileSync")).toBe("observing");
     expect(rankMember(effects, "node:fs", "writeFileSync")).toBe("effectful");
     expect(rankMember(effects, "node:path", "join")).toBe("pure");
+    expect(rankMember(effects, "node:console", "timeEnd")).toBe("printing");
     expect(rankUnit(effects, "unknown-package").level).toBeUndefined();
   });
 

@@ -186,6 +186,7 @@ describe("resolveRoles", () => {
       levels: [
         "pure",
         { name: "logging", purpose: "Write logs." },
+        "printing",
         "confined",
         "observing",
         "effectful",

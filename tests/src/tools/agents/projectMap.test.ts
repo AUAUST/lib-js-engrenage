@@ -178,6 +178,7 @@ describe("project map", () => {
         structure: { effects: { levels: [
           "pure",
           { name: "logging", purpose: "Write logs only." },
+          "printing",
           "confined",
           "observing",
           "effectful",
@@ -190,7 +191,7 @@ describe("project map", () => {
     const overview = project.read(overviewFile);
 
     expect(overview).toContain(
-      "Effect levels, purest first: `pure` < `logging` < `confined` < `observing` < `effectful`.",
+      "Effect levels, purest first: `pure` < `logging` < `printing` < `confined` < `observing` < `effectful`.",
     );
 
     expect(overview).toContain("- `logging`: Write logs only.");

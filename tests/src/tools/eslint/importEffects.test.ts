@@ -48,6 +48,7 @@ async function createLinter({
       'declare module "node:fs" { export const readFileSync: number; }',
       'declare module "node:fs" { export const writeFileSync: number; }',
       'declare module "node:path" { export const join: number; }',
+      'declare module "node:console" { export const log: number; }',
     ].join("\n"),
     "node_modules/my-db/package.json": JSON.stringify({
       name: "my-db",
@@ -160,6 +161,7 @@ describe("import effects", () => {
     expect(message).toContain("effectful");
 
     expect(await lint(utility, importing("node:path", "join"))).toEqual([]);
+    expect(await lint(utility, importing("node:console", "log"))).toEqual([]);
 
     expect(
       await lint(utility, importing("node:fs", "readFileSync")),
@@ -185,7 +187,7 @@ describe("import effects", () => {
     ).toHaveLength(1);
 
     const inserted = await createLinter({
-      effects: 'levels: ["pure", { name: "logging", purpose: "Write logs." }, "confined", "observing", "effectful"]',
+      effects: 'levels: ["pure", { name: "logging", purpose: "Write logs." }, "printing", "confined", "observing", "effectful"]',
       roles: [
         createRolePreset({
           name: "logging",

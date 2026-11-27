@@ -8,8 +8,10 @@ export const structureSchema = declareObject(
     effects: declareObject(
       {
         levels: declare(effectLevelsSchema, {
-          description: "Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.",
-          optional: unset("`pure`, `confined`, `observing`, `effectful`"),
+          description: "Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `printing`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.",
+          optional: unset(
+            "`pure`, `printing`, `confined`, `observing`, `effectful`",
+          ),
         }),
         // @debt the `modules` ranks, keyed by import specifier and ranking exports, describe JavaScript modules, unlike the level scale and the role ceilings, until the language port splits them out (#740, #684)
         modules: declare(effectRanksSchema, {

@@ -5,7 +5,7 @@
   "node:buffer": "confined",
   "node:child_process": "effectful",
   "node:cluster": "effectful",
-  "node:console": "observing",
+  "node:console": "printing",
   "node:crypto": {
     "level": "confined",
     "symbols": {

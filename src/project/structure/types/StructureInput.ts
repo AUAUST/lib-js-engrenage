@@ -10,8 +10,8 @@ export interface StructureInput {
    */
   effects?: ({
     /**
-     * Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.
-     * @default `pure`, `confined`, `observing`, `effectful`
+     * Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `printing`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.
+     * @default `pure`, `printing`, `confined`, `observing`, `effectful`
      */
     levels?: ((string | {
       name: string
