@@ -46,8 +46,9 @@ export function resolveEffects({
   defaults?: EffectRanks | undefined;
   fallback?: string | undefined;
 }): ResolvedEffects {
-  const purposes = record(declared.map(describeLevel));
-  const levels = declared.map((level) => describeLevel(level)[0]);
+  const described = declared.map(describeLevel);
+  const purposes = record(described);
+  const levels = described.map(([name]) => name);
 
   const sources = [ranks, defaults].filter((source) => {
     return source !== undefined;
