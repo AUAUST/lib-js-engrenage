@@ -300,6 +300,7 @@ export async function resolveInvocation(
     if (level.request === "version" && declaration.version !== undefined) {
       return {
         kind: "version",
+        path,
         version: declaration.version,
         runOptions: readRunOptions(runOptions, runValues),
       };

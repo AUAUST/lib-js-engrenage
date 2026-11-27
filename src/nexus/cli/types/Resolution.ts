@@ -23,6 +23,10 @@ interface ResolvedHelp {
 
 interface ResolvedVersion {
   readonly kind: "version";
+  /**
+   * The path of the command giving the version.
+   */
+  readonly path: CommandPath;
   readonly version: string;
   readonly runOptions: RunOptionValues;
 }

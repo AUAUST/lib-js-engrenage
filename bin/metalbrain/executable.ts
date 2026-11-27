@@ -18,41 +18,39 @@ const {
   runExecutable,
 } = await import("#workflows/cli/index");
 
-// @debt finds the command path by the first argument instead of from Commander's parse, so a run option before `hook` makes the hook fail loudly
-const isHook = process.argv[2] === "hook";
-
-async function runMetalbrain(
-  options: { onError?(error: unknown): void } = {},
-): Promise<void> {
+async function runMetalbrain(): Promise<void> {
   const [
-    { createProgram },
+    { program },
     { runEngrenageProgram },
     { default: metalbrain },
+    { default: hook },
   ] = await Promise.all([
     import("#nexus/cli/index"),
     import("#tools/nexus/index"),
     import("#bin/metalbrain/index"),
+    import("#bin/metalbrain/hook/index"),
   ]);
 
-  await runEngrenageProgram(createProgram(metalbrain), undefined, options);
-}
+  await runEngrenageProgram(program({ root: metalbrain }), undefined, {
+    onError(error, { path, report }) {
+      if (path?.[0] === hook.name) {
+        return void openHook("metalbrain", error);
+      }
 
-if (isHook) {
-  try {
-    await runExecutable(import.meta.url, () => {
-      return runMetalbrain({
-        onError(error) {
-          openHook("metalbrain", error);
-        },
-      });
-    });
-  } catch (error) {
-    openHook("metalbrain", error);
-  }
-} else {
-  await launch(() => {
-    return runExecutable(import.meta.url, () => {
-      return runMetalbrain();
-    });
+      return report();
+    },
   });
 }
+
+await launch(async () => {
+  try {
+    await runExecutable(import.meta.url, runMetalbrain);
+  } catch (error) {
+    // @debt a failure before the run resolves, such as the program failing to load, finds a hook by the first argument, so a run option before `hook` makes it fail loudly
+    if (process.argv[2] !== "hook") {
+      throw error;
+    }
+
+    openHook("metalbrain", error);
+  }
+});

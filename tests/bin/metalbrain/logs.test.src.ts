@@ -5,9 +5,8 @@ import { parse } from "yaml";
 
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { logKinds } from "#metalbrain/logs/constants";
-import { createProgram } from "#nexus/cli/index";
+import { CommandUsageError, findSubcommand } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
-import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
@@ -303,20 +302,21 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
   test("add without --owner is a usage error, writing nothing", async () => {
     const project = createProject({ ".ai/pending.yml": entries });
 
-    const output: string[] = [];
-
-    const program = createProgram(metalbrain);
-
-    captureCommandOutput(program, output);
-
     await expect(
-      program.parseAsync(
-        ["pending", "add", "--subject", "a", "--what", "b", "--why", "c"],
-        { from: "user" },
+      runCommand(
+        "pending",
+        defineLogGroup({ name: "pending", taps: false }),
+        "add",
+        "--subject",
+        "a",
+        "--what",
+        "b",
+        "--why",
+        "c",
       ),
-    ).rejects.toMatchObject({ code: "commander.missingMandatoryOptionValue" });
-
-    expect(output.join("")).toContain("'--owner <text>' not specified");
+    ).rejects.toThrow(
+      new CommandUsageError("required option '--owner <text>' not specified"),
+    );
 
     expect(project.read(".ai/pending.yml")).toBe(entries);
   });
@@ -324,18 +324,18 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
   test("offers no tap or merge, its entries without an owner still valid", async () => {
     createProject({ ".ai/pending.yml": entries });
 
-    const program = createProgram(metalbrain);
-
     for (const kind of logKinds) {
-      const names = program.commands
-        .find((command) => command.name() === kind.name)
-        ?.commands.map((command) => command.name());
+      const group = findSubcommand(metalbrain, kind.name);
+
+      const names = group?.kind === "parsing"
+        ? group.subcommands.map(({ name }) => name)
+        : [];
 
       expect(names).toContain("close");
 
-      expect(names?.includes("tap")).toBe(kind.name !== "pending");
+      expect(names.includes("tap")).toBe(kind.name !== "pending");
 
-      expect(names?.includes("merge")).toBe(kind.name !== "pending");
+      expect(names.includes("merge")).toBe(kind.name !== "pending");
     }
 
     await runCommand(

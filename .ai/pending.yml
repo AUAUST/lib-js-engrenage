@@ -5,15 +5,21 @@ entries:
     why: user batches instruction changes at plan end
     owner: "#1003"
     created: 2026-11-27T13:17:32Z
-  - id: PD-b635c8
-    subject: metalbrain hook onError on engine
-    what: "hook onError gets no Commander stderr echo: write what it shows; tests/bin/metalbrain/help.test.src.ts should pass with engine wording"
-    why: engine prints nothing itself, onError gets usage errors (#1020)
-    owner: "#1022"
-    created: 2026-11-27T16:23:36Z
   - id: PD-3a573a
     subject: Commander path removal sites
     what: remove runCommanderProgram, instanceof dispatch, scenarios/detectors settings in runProgram and runEngrenageProgram, readOutputFlag, overrideExits, listVerbosityFlags, rejectVerbosityConflict
     why: dual path kept until every program is on the engine (#1020)
     owner: "#1024"
     created: 2026-11-27T16:23:42Z
+  - id: PD-8cc38d
+    subject: chain generalization sites
+    what: "replace checkChain in src/nexus/cli/operations/resolveRun.ts and the chain kind in RunResolution; keep agreeRunOptions and invocation N: naming"
+    why: "transitional same-command batch from #1021"
+    owner: "#1016"
+    created: 2026-11-27T16:35:22Z
+  - id: PD-5994c5
+    subject: debug variable derived from program name
+    what: drop debugVariable from RunSettings; engine derives upper(root name)_DEBUG (ENGRENAGE_DEBUG, METALBRAIN_DEBUG, BATIMENT_DEBUG); remove debugEnvironmentVariable override in runEngrenageProgram and launch.ts
+    why: user decision 2026-11-27; trivial, batched into next dispatch
+    owner: "#1023"
+    created: 2026-11-27T16:43:52Z

@@ -5,7 +5,7 @@ import { text } from "node:stream/consumers";
 import { literal, object, parse, string } from "valibot";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { createProgram, runProgram } from "#nexus/cli/index";
+import { program, runProgram } from "#nexus/cli/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createGitRepository } from "#tests/utils/createGitRepository";
@@ -57,7 +57,7 @@ async function runStop(): Promise<{ block?: string; output: string }> {
   let failure: unknown;
 
   await runProgram(
-    createProgram(metalbrain),
+    program({ root: metalbrain }),
     ["node", "metalbrain", "hook", "claude", "Stop", "gateStop"],
     {
       onError(error) {

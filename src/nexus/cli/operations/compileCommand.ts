@@ -314,7 +314,6 @@ function compileAction(
       });
     },
     printers: declaration.printers,
-    chain: declaration.chain,
   });
 }
 
@@ -352,6 +351,8 @@ function compileForwarding({
  * Compiles a command declaration into the definition registering it on a Commander
  * command, its subcommands and their aliases included.
  *
+ * @throws {TypeError} When the declaration or one of its subcommands chains
+ * invocations or declares neither an action nor subcommands.
  * @pure
  */
 export function compileCommand(
@@ -362,6 +363,12 @@ export function compileCommand(
   }
 
   const { action, subcommands } = declaration;
+
+  if (declaration.chain) {
+    throw new TypeError(
+      `The ${declaration.name} command chains invocations, which only nexus's engine runs`,
+    );
+  }
 
   if (subcommands.length === 0) {
     if (action === undefined) {

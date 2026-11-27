@@ -13,6 +13,7 @@ import {
 import { runContext } from "#nexus/cli/operations/runContext";
 import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 import { createTestReporter } from "#tests/utils/createTestReporter";
+import { runCommand } from "#tests/utils/runCommand";
 
 function run(declaration: CommandDeclaration, ...args: string[]) {
   const program = createProgram(
@@ -414,41 +415,38 @@ describe("command subcommands", () => {
 });
 
 describe("command chain", () => {
-  function runChain(
+  function declareChain(
     action: (invocations: readonly [string, string][]) => void,
-    ...args: string[]
   ) {
-    return run(
-      command({
-        name: "leaf",
-        chain: true,
-        arguments: [argument({ name: "words", variadic: true })],
-        options: [
-          option({
-            name: "note",
-            type: "string",
-            required: true,
-          }),
-        ],
-        action: () => Promise.resolve(action),
-        parse(words, { note }, _invocation) {
-          return [words.join(" "), note];
-        },
-      }),
-      "leaf",
-      ...args,
-    ).parsing;
+    return command({
+      name: "leaf",
+      chain: true,
+      arguments: [argument({ name: "words", variadic: true })],
+      options: [
+        option({
+          name: "note",
+          type: "string",
+          required: true,
+        }),
+      ],
+      action: () => Promise.resolve(action),
+      parse(words, { note }, _invocation) {
+        return [words.join(" "), note];
+      },
+    });
   }
 
   test("keeps --next after -- in the last invocation", async () => {
     const action = vi.fn();
 
-    await runChain(
-      action,
+    await runCommand(
+      "leaf",
+      declareChain(action),
       "a",
       "--note",
       "x",
       "--next",
+      "leaf",
       "b",
       "--note",
       "y",
@@ -462,35 +460,13 @@ describe("command chain", () => {
     ]);
   });
 
-  test("runs no invocation when one fails to parse, naming its position", async () => {
-    const action = vi.fn();
-
-    await expect(
-      runChain(
-        action,
-        "a",
-        "--note",
-        "x",
-        "--next",
-        "b",
-        "--next",
-        "c",
-        "--note",
-        "z",
-      ),
-    ).rejects.toThrow(
-      "1 of 3 invocations failed, so none took effect:\ninvocation 2: required option '--note <value>' not specified",
-    );
-
-    expect(action).not.toHaveBeenCalled();
-  });
-
   test("passes every invocation, each argument reduced", async () => {
     const action = vi.fn<
       (invocations: readonly [string[], CommandPath][]) => void
     >();
 
-    await run(
+    await runCommand(
+      "leaf",
       command({
         name: "leaf",
         chain: true,
@@ -506,16 +482,28 @@ describe("command chain", () => {
           return [ids, path];
         },
       }),
-      "leaf",
       "a,b",
       "c",
       "--next",
+      "leaf",
       "d",
-    ).parsing;
+    );
 
     expect(action).toHaveBeenCalledWith([
       [["a", "b", "c"], ["leaf"]],
       [["d"], ["leaf"]],
     ]);
+  });
+
+  test("cannot compile to a Commander program", () => {
+    expect(() => {
+      return createProgram(
+        command({ name: "program", subcommands: [declareChain(vi.fn())] }),
+      );
+    }).toThrow(
+      new TypeError(
+        "The leaf command chains invocations, which only nexus's engine runs",
+      ),
+    );
   });
 });

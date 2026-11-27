@@ -102,9 +102,26 @@ describe("runProgram", () => {
 
     expect(onError).toHaveBeenCalledWith(
       new CommandUsageError("unknown command 'nope'"),
+      { path: [], report: expect.any(Function) },
     );
 
     expect(process.exitCode).toBeUndefined();
+  });
+
+  test("hands onError the resolved command path and the default report", async () => {
+    let path: unknown;
+
+    await runProgram(createProgram(), ["node", "program", "failing"], {
+      onError(_error, failure) {
+        ({ path } = failure);
+
+        return failure.report();
+      },
+    });
+
+    expect(path).toEqual(["failing"]);
+    expect(printed()).toContain("outer");
+    expect(process.exitCode).toBe(1);
   });
 
   test("prints a group's help when no command is named", async () => {
@@ -360,6 +377,7 @@ describe("runProgram", () => {
         new TypeError(
           "The program command declares the --next option, which nexus reserves to separate invocations",
         ),
+        { path: undefined, report: expect.any(Function) },
       );
     });
   });

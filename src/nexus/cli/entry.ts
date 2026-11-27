@@ -43,6 +43,7 @@ export type {
   PrinterLoader,
   ProgramDeclaration,
   RunContext,
+  RunFailure,
   RunSettings,
   ScenarioDetector,
   ScenarioPrinters,

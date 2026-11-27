@@ -138,15 +138,15 @@ function checkChain(
 }
 
 /**
- * Resolves `args`, the arguments after a program's name, against `program`
- * without loading any action: splits them into invocations on each bare
- * `--next`, a `--` ending the split, and resolves each from the program's root,
- * each naming its full command path. Several invocations must all name the same
- * chaining command; their run options apply to the whole run, a verbosity flag
- * conflicting with another given in an earlier invocation, or an `--output`
- * disagreeing with an earlier one, failing it. A chaining command resolves to
- * its invocations, even one alone. With several invocations, each usage error
- * names the invocation holding it.
+ * Resolves `args`, the arguments after a program's name, against `program` without
+ * loading any action: splits them into invocations on each bare `--next`, a `--`
+ * ending the split, and resolves each from the program's root, each naming its
+ * full command path. Several invocations must all name the same chaining command;
+ * their run options apply to the whole run, a verbosity flag conflicting with
+ * another given in an earlier invocation, or an `--output` disagreeing with an
+ * earlier one, failing it. A chaining command resolves to its invocations, even
+ * one alone. With several invocations, each usage error names the invocation
+ * holding it, and the resolution carries the first one's path.
  */
 export async function resolveRun(
   program: ProgramDeclaration,
@@ -168,6 +168,7 @@ export async function resolveRun(
     return first.kind === "invocation" && isChaining(first.declaration)
       ? {
           kind: "chain",
+          path: first.path,
           declaration: first.declaration,
           invocations: freeze([first.parameters]),
           runOptions: first.runOptions,
@@ -205,6 +206,7 @@ export async function resolveRun(
   if (chained === undefined || errors.length > 0) {
     return {
       kind: "failure",
+      path: first.path,
       errors: freeze(errors),
       runOptions: values,
     };
@@ -212,6 +214,7 @@ export async function resolveRun(
 
   return {
     kind: "chain",
+    path: first.path,
     declaration: chained.declaration,
     invocations: freeze(invocations),
     runOptions: values,

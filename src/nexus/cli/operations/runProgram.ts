@@ -36,6 +36,7 @@ import {
   type ScenarioDetector,
   type ScenarioPrinters,
 } from "#nexus/scenarios/index";
+import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
 import type { RunSettings } from "#nexus/cli/types/RunSettings";
@@ -203,10 +204,15 @@ async function runDeclaredProgram(
 
   const output = createPendingPrinter();
 
+  let path: CommandPath | undefined;
+
   async function settle(
     runOptions: RunOptionValues | undefined,
     bindings: ScenarioPrinters | undefined,
+    resolved?: CommandPath,
   ): Promise<void> {
+    path = resolved;
+
     flag = keys(verbosityFlags)
       .filter((name) => {
         return runOptions?.[name] === true;
@@ -238,25 +244,25 @@ async function runDeclaredProgram(
       await settle(undefined, undefined);
     }
 
-    if (onError !== undefined) {
-      return void onError(error);
+    async function report(): Promise<void> {
+      if (
+        flag === undefined &&
+        unflagged !== "debug" &&
+        !(error instanceof CommandUsageError) &&
+        (await isDebugResolved(resolveDebug, runReporter))
+      ) {
+        unflagged = "debug";
+      }
+
+      reportFailure(error, {
+        reporter: runReporter,
+        debug: getVerbosity() === "debug",
+        debugVariable,
+        explain,
+      });
     }
 
-    if (
-      flag === undefined &&
-      unflagged !== "debug" &&
-      !(error instanceof CommandUsageError) &&
-      (await isDebugResolved(resolveDebug, runReporter))
-    ) {
-      unflagged = "debug";
-    }
-
-    reportFailure(error, {
-      reporter: runReporter,
-      debug: getVerbosity() === "debug",
-      debugVariable,
-      explain,
-    });
+    await (onError === undefined ? report() : onError(error, { path, report }));
   } finally {
     stopListening();
   }
@@ -364,32 +370,34 @@ async function runCommanderProgram(
 
     await settleUnbound();
 
-    if (onError !== undefined) {
-      if (!(error instanceof CommanderError)) {
-        return void onError(error);
+    async function report(): Promise<void> {
+      if (
+        getFlag() === undefined &&
+        unflagged !== "debug" &&
+        (await isDebugResolved(resolveDebug, runReporter))
+      ) {
+        unflagged = "debug";
       }
 
-      if (error.exitCode !== 0) {
-        onError(toUsageError(error));
-      }
-
-      return;
+      reportFailure(error, {
+        reporter: runReporter,
+        debug: getVerbosity() === "debug",
+        debugVariable,
+        explain,
+      });
     }
 
-    if (
-      getFlag() === undefined &&
-      unflagged !== "debug" &&
-      (await isDebugResolved(resolveDebug, runReporter))
-    ) {
-      unflagged = "debug";
+    if (onError === undefined) {
+      return void (await report());
     }
 
-    reportFailure(error, {
-      reporter: runReporter,
-      debug: getVerbosity() === "debug",
-      debugVariable,
-      explain,
-    });
+    if (!(error instanceof CommanderError)) {
+      return void (await onError(error, { path: undefined, report }));
+    }
+
+    if (error.exitCode !== 0) {
+      await onError(toUsageError(error), { path: undefined, report });
+    }
   } finally {
     stopListening();
   }
@@ -403,16 +411,17 @@ async function runCommanderProgram(
  * options set shows, else `debug` when `debugVariable` is on, else `default`,
  * each completion line with the run's total time, and on failure sets the exit
  * code to 1 and prints its error, a usage error alone, any other led by what
- * `explain` returns for it, with its stack at `debug`, which `resolveDebug` also
- * sets when no flag does; the failure handler, when given, receives the error
- * instead of any of this. A declared program runs on nexus's engine, printing
- * for the scenario `--output` names, else the first of its scenarios one of its
- * detectors names, through the printer the resolved command binds to it, else
- * the one the program declares, loaded once the run resolves, before any action
- * loads, and holding the entries reported until then. A Commander program prints
- * for `scenarios` and `detectors` alike, reporting an `--output` naming none of
- * `scenarios` as a usage error, and lets Commander print its usage errors and
- * exit unless the failure handler is given.
+ * `explain` returns for it, with its stack at `debug`, which `resolveDebug`
+ * also sets when no flag does; the failure handler, when given, receives the
+ * error instead, with the command path the run resolved to and this report to
+ * run. A declared program runs on nexus's engine, printing for the scenario
+ * `--output` names, else the first of its scenarios one of its detectors names,
+ * through the printer the resolved command binds to it, else the one the program
+ * declares, loaded once the run resolves, before any action loads, and holding
+ * the entries reported until then. A Commander program prints for `scenarios`
+ * and `detectors` alike, reporting an `--output` naming none of `scenarios` as
+ * a usage error, and lets Commander print its usage errors and exit unless the
+ * failure handler is given.
  */
 // @debt `scenarios` and `detectors` apply only to a Commander program, a declared one carrying its own, until every program runs on the engine
 export async function runProgram(

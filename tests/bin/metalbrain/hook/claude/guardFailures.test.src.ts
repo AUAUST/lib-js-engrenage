@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 
 import { afterEach, expect, test, vi } from "vitest";
 
-import { createProgram, runProgram } from "#nexus/cli/index";
+import { program, runProgram } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
@@ -105,7 +105,7 @@ test("a dispatch guard failing to load reaches the fail-open handler", async () 
   let failure: unknown;
 
   await runProgram(
-    createProgram(metalbrain),
+    program({ root: metalbrain }),
     ["node", "metalbrain", "hook", "claude", "PreToolUse", "guardToolUse"],
     {
       onError(error) {

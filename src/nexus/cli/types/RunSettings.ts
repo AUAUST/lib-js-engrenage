@@ -1,3 +1,4 @@
+import type { RunFailure } from "#nexus/cli/types/RunFailure";
 import type { Reporter } from "#nexus/reports/index";
 
 /**
@@ -5,7 +6,7 @@ import type { Reporter } from "#nexus/reports/index";
  */
 export interface RunSettings {
   readonly signal?: AbortSignal;
-  onError?(error: unknown): void;
+  onError?(error: unknown, failure: RunFailure): Promise<void> | void;
   readonly debugVariable?: string;
   resolveDebug?(reporter: Reporter): Promise<boolean>;
   explain?(error: unknown): string | undefined;

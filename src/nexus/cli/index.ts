@@ -51,6 +51,7 @@ export type * from "#nexus/cli/types/ParsingCommandDeclaration";
 export type * from "#nexus/cli/types/ProgramDeclaration";
 export type * from "#nexus/cli/types/Resolution";
 export type * from "#nexus/cli/types/RunContext";
+export type * from "#nexus/cli/types/RunFailure";
 export type * from "#nexus/cli/types/RunOptionValues";
 export type * from "#nexus/cli/types/RunResolution";
 export type * from "#nexus/cli/types/RunSettings";
