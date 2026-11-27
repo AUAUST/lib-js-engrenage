@@ -391,7 +391,6 @@ sync:
     - BL-5ad68f
     - BL-545a6d
     - BL-472b1f
-    - BL-facbc7
 tests:
   purpose: Test infrastructure and coverage gaps.
   entries:

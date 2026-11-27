@@ -235,15 +235,17 @@ function mergeSources(
         return owner !== undefined;
       });
 
+      if (taken.includes(provided.name)) {
+        continue;
+      }
+
       for (const name of provided.names) {
         if (!owners.has(name)) {
           owners.set(name, { source, label: provided.label });
         }
       }
 
-      if (!taken.includes(provided.name)) {
-        merged.push(provided);
-      }
+      merged.push(provided);
     }
   }
 
@@ -310,7 +312,8 @@ export function createCommandLookup(
    * The subcommand of `group`, at `path` from the program's name, that `name`
    * names, by its name or an alias, from the first of its subcommands and loaders
    * providing it, calling a loader only when every earlier one misses and loading
-   * a mount only once it matches.
+   * a mount only once it matches; a shadowable source's command whose name an
+   * earlier one provides yields whole, its aliases included.
    *
    * @throws {Error} When a loader it calls or the mount it matches fails.
    * @effectful
@@ -320,15 +323,29 @@ export function createCommandLookup(
     path: CommandPath,
     name: string,
   ): Promise<CommandDeclaration | undefined> {
-    for (const source of readSources(group)) {
-      const { entries } = await provide(source, path);
+    const earlier = new Set<string>();
 
-      const found = entries.find((entry) => {
+    for (const source of readSources(group)) {
+      const { entries, shadowable } = await provide(source, path);
+
+      const kept = shadowable
+        ? entries.filter((entry) => {
+            return !earlier.has(entry.name);
+          })
+        : entries;
+
+      const found = kept.find((entry) => {
         return names(entry).includes(name);
       });
 
       if (found !== undefined) {
         return declare(found, path);
+      }
+
+      for (const entry of kept) {
+        for (const each of names(entry)) {
+          earlier.add(each);
+        }
       }
     }
   }

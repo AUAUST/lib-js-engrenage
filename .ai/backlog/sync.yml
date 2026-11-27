@@ -43,10 +43,3 @@ entries:
     why: "in #769, `reportStructure`, imported by `bin` through `#project/structure/index`, never got its export line; typecheck failed until it was added by hand."
     want: barrel blocks counting imports from every environment.
     created: 2026-11-22T00:00:00Z
-  - id: BL-facbc7
-    title: settleChanges reports failure only through process.exitCode
-    sites:
-      - src/project/sync/operations/settleChanges.ts:1
-    why: a chain cannot stop at a failed segment without reading exitCode
-    done: "Tracked by #1016 (chain stops on exit code)"
-    created: 2026-11-27T13:25:03Z

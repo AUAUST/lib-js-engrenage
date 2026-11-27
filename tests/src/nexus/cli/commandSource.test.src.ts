@@ -110,6 +110,43 @@ describe("command loaders", () => {
     expect(printed()).toContain("commands  x, z, help");
   });
 
+  test("yields a shadowed command's aliases with its name", async () => {
+    const shadowed = vi.fn();
+
+    const shadowable = vi.fn<CommandLoader>(() => {
+      return Promise.resolve(
+        commandSource({
+          commands: [
+            command({
+              name: "x",
+              aliases: ["w"],
+              action: () => {
+                return Promise.resolve(shadowed);
+              },
+            }),
+          ],
+          shadowable: true,
+        }),
+      );
+    });
+
+    await run(
+      [createCommand("x"), shadowable, createLoader(createCommand("w"))],
+      "w",
+    );
+
+    expect(shadowed).not.toHaveBeenCalled();
+    expect(process.exitCode).toBeUndefined();
+
+    await run(
+      [createCommand("x"), shadowable, createLoader(createCommand("w"))],
+      "--help",
+    );
+
+    expect(printed()).not.toContain("comes from both");
+    expect(process.exitCode).toBeUndefined();
+  });
+
   test("reports a loader failing as a command error", async () => {
     await run(
       [
