@@ -56,16 +56,20 @@ export type * from "#nexus/cli/types/VerbosityFlag";
 
 export {
   completionEntry,
+  createReporter,
   dataEntry,
   densePrinter,
   lineEntry,
   listEntry,
+  readReportText,
+  renderDenseEntry,
   stackEntry,
   styled,
   tableEntry,
   titleEntry,
   treeEntry,
 } from "#nexus/reports/index";
+
 export {
   detectPrinter,
   nexusDetectors,
@@ -96,6 +100,7 @@ export type {
   TreeEntry,
   TreeNode,
 } from "#nexus/reports/index";
+
 export type {
   PrinterLoader,
   ScenarioDetector,

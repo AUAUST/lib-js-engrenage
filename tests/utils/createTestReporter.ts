@@ -1,7 +1,6 @@
-import { mapValues } from "@auaust/toolkit/object";
-
 import {
   createReporter,
+  nexusScenarios,
   readReportText,
   renderDenseEntry,
   type Printer,
@@ -9,8 +8,9 @@ import {
   type ReportEntry,
   type Reporter,
   type ReportKind,
-} from "#nexus/reports/index";
-import { nexusScenarios, type ScenarioPrinters } from "#nexus/scenarios/index";
+  type ScenarioPrinters,
+} from "@auaust/engrenage/future/nexus/cli";
+import { mapValues } from "@auaust/toolkit/object";
 
 interface ReportedMessage {
   readonly level: ReportKind;

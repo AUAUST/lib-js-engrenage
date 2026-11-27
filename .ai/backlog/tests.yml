@@ -103,10 +103,3 @@ entries:
     want: Split module loading from whole-project work in that cost, then make the operations or their fixtures cheap enough for vitest's default timeout under load
     done: No test file uses workflowTimeout
     created: 2026-11-27T15:01:19Z
-  - id: BL-4aef2d
-    title: Dist test runs fail on createTestReporter importing source aliases
-    sites:
-      - tests/utils/createTestReporter.ts:1
-    why: "pnpm build fails: environments.test.ts, projectMap.test.ts and syncAgentFiles.test.ts import createTestReporter, which imports #nexus/reports/index, rejected by the source guard"
-    done: pnpm build passes its dist tests
-    created: 2026-11-27T17:11:45Z

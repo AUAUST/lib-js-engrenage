@@ -16,10 +16,13 @@ export {
 } from "#nexus/cli/index";
 export {
   completionEntry,
+  createReporter,
   dataEntry,
   densePrinter,
   lineEntry,
   listEntry,
+  readReportText,
+  renderDenseEntry,
   stackEntry,
   styled,
   tableEntry,
