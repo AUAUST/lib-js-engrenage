@@ -24,6 +24,7 @@ export { collectListArgument } from "#nexus/cli/utils/collectListArgument";
 export { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 export { helpEntry } from "#nexus/cli/utils/helpEntry";
 export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
+export { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 export { suggestName } from "#nexus/cli/utils/suggestName";
 export { toUsageError } from "#nexus/cli/utils/toUsageError";
 // @end
@@ -51,6 +52,7 @@ export type * from "#nexus/cli/types/ProgramDeclaration";
 export type * from "#nexus/cli/types/Resolution";
 export type * from "#nexus/cli/types/RunContext";
 export type * from "#nexus/cli/types/RunOptionValues";
+export type * from "#nexus/cli/types/RunResolution";
 export type * from "#nexus/cli/types/RunSettings";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end

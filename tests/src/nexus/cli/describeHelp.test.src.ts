@@ -128,11 +128,13 @@ describe("describeHelp", () => {
     expect(help).toMatch(/^ {2}friction add:\n {4}--subject <text>/mu);
 
     expect(help).toMatch(
-      /^\{friction,discarded,pending,missing\} add \[options\] {2}Add an entry and print its ID\.\n {2}--keywords .*\n {2}--next <arguments\.\.\.> +chains another invocation of this command$/mu,
+      /^\{friction,discarded,pending,missing\} add \[options\] {2}Add an entry and print its ID\. {2}\(chains\)\n {2}--keywords .*\n {2}friction add:/mu,
     );
 
+    expect(help).toMatch(/^ {2}--next +start another invocation/mu);
+
     expect(help).toContain(
-      "Chaining: <command path> <arguments> --next <arguments>",
+      "Chaining: <command path> <arguments> --next <command path> <arguments>",
     );
 
     expect(help).toMatch(

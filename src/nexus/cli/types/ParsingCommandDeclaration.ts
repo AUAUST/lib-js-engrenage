@@ -23,8 +23,8 @@ export interface ParsingCommandDeclaration {
   readonly subcommands: readonly CommandDeclaration[];
   readonly printers?: ScenarioPrinters;
   /**
-   * Whether a call chains invocations separated by `--next`, its action
-   * receiving them all.
+   * Whether a run chains several invocations of the command separated by `--next`,
+   * its action receiving them all.
    */
   readonly chain: boolean;
   action?(): Promise<unknown>;

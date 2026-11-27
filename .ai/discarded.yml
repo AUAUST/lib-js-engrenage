@@ -1094,3 +1094,8 @@ entries:
     need: did-you-mean on unknown commands and options
     reason: closest has no distance cap, last release 2022; leven 4 has closestMatch with maxDistance
     created: 2026-11-27T15:30:10Z
+  - id: DS-cd5c26
+    subject: run values map shared across invocations
+    need: run options agreeing across --next invocations
+    reason: overwrites --output silently and attributes no conflict to its invocation
+    created: 2026-11-27T16:33:54Z

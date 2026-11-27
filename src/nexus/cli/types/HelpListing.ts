@@ -15,7 +15,7 @@ export interface HelpListing extends HelpFacts {
    */
   readonly usage: string;
   /**
-   * Whether a call chains invocations separated by `--next`.
+   * Whether a run chains several invocations of the command separated by `--next`.
    */
   readonly chains: boolean;
   readonly mounts: readonly HelpMount[];

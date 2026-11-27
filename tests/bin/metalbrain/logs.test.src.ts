@@ -5,16 +5,10 @@ import { parse } from "yaml";
 
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { logKinds } from "#metalbrain/logs/constants";
-import {
-  command,
-  createProgram,
-  type CommandDeclaration,
-} from "#nexus/cli/index";
-import { runContext } from "#nexus/cli/operations/runContext";
+import { createProgram } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
-import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
@@ -31,26 +25,6 @@ function createProject(files: Readonly<Record<string, string>> = {}) {
   mockCwd(project.root);
 
   return project;
-}
-
-// @debt chains on Commander, since the engine splits --next only once #1021 lands
-async function runChained(
-  name: string,
-  declaration: CommandDeclaration,
-  ...args: string[]
-): Promise<ReturnType<typeof createTestReporter>> {
-  const reporter = createTestReporter();
-
-  await runContext.run(
-    { signal: new AbortController().signal, reporter },
-    () => {
-      return createProgram(
-        command({ name: "program", subcommands: [declaration] }),
-      ).parseAsync([name, ...args], { from: "user" });
-    },
-  );
-
-  return reporter;
 }
 
 function addFriction(subject: string) {
@@ -107,7 +81,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
   test("add chains invocations with --next, printing each ID in order", async () => {
     const project = createProject();
 
-    const { messages } = await runChained(
+    const { messages } = await runCommand(
       "friction",
       defineLogGroup({ name: "friction", taps: true }),
       "add",
@@ -117,6 +91,8 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
       "ran it",
       "--stopped=--next",
       "--next",
+      "friction",
+      "add",
       "--subject",
       "zsh globs",
       "--tried",
@@ -141,7 +117,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     const project = createProject();
 
     await expect(
-      runChained(
+      runCommand(
         "friction",
         defineLogGroup({ name: "friction", taps: true }),
         "add",
@@ -152,6 +128,8 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
         "--stopped",
         "it failed",
         "--next",
+        "friction",
+        "add",
         "--subject",
         "zsh globs",
         "--tried",

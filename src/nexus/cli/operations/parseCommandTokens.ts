@@ -2,6 +2,7 @@ import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
 import { keys, record } from "@auaust/toolkit/object";
 
+import { invocationSeparator } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { parseUsageValue } from "#nexus/cli/operations/parseUsageValue";
@@ -31,6 +32,12 @@ function indexOptions(
   const known = new Map<string, OptionDeclaration>();
 
   for (const option of options) {
+    if (`--${option.name}` === invocationSeparator) {
+      throw new TypeError(
+        `The ${declaration.name} command declares the ${invocationSeparator} option, which nexus reserves to separate invocations`,
+      );
+    }
+
     if (known.has(option.name) || option.name in reservedOptions) {
       throw new TypeError(
         `The ${declaration.name} command declares the --${option.name} option twice, run and reserved options included`,
@@ -82,8 +89,8 @@ function suggestOption(
  * when it declares one; an unknown option, a missing or invalid value adds a
  * usage error to `errors`.
  *
- * @throws {TypeError} When two options, run and reserved ones included,
- * share a name.
+ * @throws {TypeError} When two options, run and reserved ones included, share a
+ * name, or one is named after the `--next` separator.
  * @observing
  */
 export function parseCommandTokens(

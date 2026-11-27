@@ -4,9 +4,9 @@ import {
   argument,
   command,
   CommandUsageError,
-  createProgram as createDefinedProgram,
   program as declareProgram,
   getRunContext,
+  option,
   type ProgramDeclaration,
 } from "#nexus/cli/index";
 import { runProgram } from "#nexus/cli/operations/runProgram";
@@ -199,8 +199,8 @@ describe("runProgram", () => {
       .spyOn(process.stderr, "write")
       .mockImplementation(() => true);
 
-    const program = createDefinedProgram(
-      command({
+    const program = declareProgram({
+      root: command({
         name: "program",
         subcommands: [
           command({
@@ -218,17 +218,9 @@ describe("runProgram", () => {
           }),
         ],
       }),
-    );
+    });
 
-    await runProgram(program, [
-      "node",
-      "program",
-      "progress",
-      "a",
-      "--verbose",
-      "--next",
-      "b",
-    ]);
+    await run(program, "progress", "a", "--verbose", "--next", "progress", "b");
 
     expect(stderr.mock.calls.map(String).join("")).toContain("progressing a b");
   });
@@ -236,8 +228,8 @@ describe("runProgram", () => {
   test("rejects verbosity flags set by two chained invocations", async () => {
     const action = vi.fn<(steps: readonly [string][]) => void>();
 
-    const program = createDefinedProgram(
-      command({
+    const program = declareProgram({
+      root: command({
         name: "program",
         chain: true,
         arguments: [argument({ name: "step" })],
@@ -246,19 +238,130 @@ describe("runProgram", () => {
           return [step];
         },
       }),
-    );
+      scenarios: getReporter().scenarios,
+    });
 
-    await runProgram(
-      program,
-      ["node", "program", "a", "--quiet", "--next", "b", "--verbose"],
-      { scenarios: getReporter().scenarios },
-    );
+    await run(program, "a", "--quiet", "--next", "b", "--verbose");
 
-    expect(printed()).toContain(
-      "invocation 2: option '--quiet' cannot be used with option '--verbose'",
+    expect(printed()).toBe(
+      "invocation 2: option '--verbose' cannot be used with option '--quiet'",
     );
 
     expect(action).not.toHaveBeenCalled();
+  });
+
+  describe("chaining", () => {
+    function createChainProgram(action: (notes: readonly [string][]) => void) {
+      const load = vi.fn(() => Promise.resolve(action));
+      const show = vi.fn(() => Promise.resolve(() => {}));
+
+      const declared = declareProgram({
+        root: command({
+          name: "program",
+          subcommands: [
+            command({
+              name: "add",
+              chain: true,
+              options: [
+                option({
+                  name: "text",
+                  type: "string",
+                  required: true,
+                }),
+              ],
+              action: load,
+              parse({ text = "" }, _invocation) {
+                return [text];
+              },
+            }),
+            command({ name: "show", action: show }),
+          ],
+        }),
+        scenarios: getReporter().scenarios,
+      });
+
+      return {
+        declared,
+        load,
+        show,
+      };
+    }
+
+    test("runs nothing when a later invocation fails, naming it", async () => {
+      const { declared, load } = createChainProgram(vi.fn());
+
+      await run(declared, "add", "--text", "a", "--next", "add", "--nope");
+
+      expect(printed()).toBe(
+        "invocation 2: unknown option '--nope'\ninvocation 2: required option '--text <value>' not specified",
+      );
+
+      expect(load).not.toHaveBeenCalled();
+      expect(process.exitCode).toBe(1);
+    });
+
+    test("takes --next as an option's value only when written inline", async () => {
+      const action = vi.fn<(notes: readonly [string][]) => void>();
+
+      const { declared } = createChainProgram(action);
+
+      await run(
+        declared,
+        "add",
+        "--text=--next",
+        "--next",
+        "add",
+        "--text",
+        "b",
+      );
+
+      expect(action).toHaveBeenCalledWith([["--next"], ["b"]]);
+    });
+
+    test("rejects an invocation naming no command path or another command", async () => {
+      const { declared, load, show } = createChainProgram(vi.fn());
+
+      await run(
+        declared,
+        "add",
+        "--text",
+        "a",
+        "--next",
+        "--text",
+        "b",
+        "--next",
+        "show",
+      );
+
+      expect(printed()).toContain("invocation 2: unknown option '--text'");
+
+      expect(printed()).toContain(
+        "invocation 3: command 'program show' cannot be chained",
+      );
+
+      expect(load).not.toHaveBeenCalled();
+      expect(show).not.toHaveBeenCalled();
+    });
+
+    test("rejects a command declaring --next", async () => {
+      const declared = declareProgram({
+        root: command({
+          name: "program",
+          options: [option({ name: "next", type: "boolean" })],
+          action: () => Promise.resolve(() => {}),
+        }),
+      });
+
+      const onError = vi.fn();
+
+      await runProgram(declared, ["node", "program"], { onError });
+
+      expect(onError).toHaveBeenCalledWith(
+        new TypeError(
+          "The program command declares the --next option, which nexus reserves to separate invocations",
+        ),
+      );
+    });
   });
 
   test.each([

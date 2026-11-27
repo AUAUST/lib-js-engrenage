@@ -40,14 +40,14 @@ interface CommandInput<
  * options known only at run time; loaders, those of argument choices and of
  * `help.after` included, run before the command parses or shows its help.
  *
- * With `chain`, a call chains several invocations separated by `--next` arguments
- * before any `--`, and the action receives every invocation's parsed parameters
- * in order once all of them parse.
+ * With `chain`, a run chains several invocations of the command separated by
+ * `--next`, each naming its full command path, and the action receives every
+ * invocation's parsed parameters in order once all of them resolve.
  *
  * @pure
  */
 // @debt a `parse` must name every parameter, the invocation included, since `NoInfer` around its whole parameter tuple keeps TypeScript from accepting a shorter list
-// @debt `chain` stays per command until the program chains any command
+// @debt `chain` stays per command, a run chaining only invocations of one such command, until the program chains any command
 export function command<
   const Arguments extends readonly ArgumentDeclaration[] = [],
   const Options extends readonly OptionEntry[] = [],

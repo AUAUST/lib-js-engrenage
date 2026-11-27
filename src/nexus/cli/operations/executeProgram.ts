@@ -2,11 +2,12 @@ import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { describeHelp } from "#nexus/cli/operations/describeHelp";
 import { getRunContext } from "#nexus/cli/operations/getRunContext";
 import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
-import { resolveInvocation } from "#nexus/cli/operations/resolveInvocation";
+import { resolveRun } from "#nexus/cli/operations/resolveRun";
 import { helpEntry } from "#nexus/cli/utils/helpEntry";
+import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
-import type { Resolution } from "#nexus/cli/types/Resolution";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
+import type { RunResolution } from "#nexus/cli/types/RunResolution";
 import type { ScenarioPrinters } from "#nexus/scenarios/index";
 
 function joinErrors(errors: readonly CommandUsageError[]): CommandUsageError {
@@ -27,10 +28,9 @@ function joinErrors(errors: readonly CommandUsageError[]): CommandUsageError {
       );
 }
 
-async function invoke({
-  declaration,
-  parameters,
-}: Extract<Resolution, { kind: "invocation" }>): Promise<void> {
+async function loadAction(
+  declaration: CommandDeclaration,
+): Promise<(...parameters: unknown[]) => unknown> {
   const { action } = declaration;
 
   if (action === undefined) {
@@ -43,18 +43,32 @@ async function invoke({
 
   getRunContext().signal.throwIfAborted();
 
-  await (declaration.kind === "parsing" && declaration.chain
-    ? run([parameters])
-    : run(...parameters));
+  return run;
+}
+
+function readPrinters(resolution: RunResolution): ScenarioPrinters | undefined {
+  switch (resolution.kind) {
+    case "invocation": {
+      return resolution.declaration.kind === "parsing"
+        ? resolution.declaration.printers
+        : undefined;
+    }
+
+    case "chain": {
+      return resolution.declaration.printers;
+    }
+
+    default:
+  }
 }
 
 /**
  * Runs `args`, the arguments after a program's name, against `program` within
- * the caller's run context: resolves them, then hands `settle` the run options
- * and the printers the resolved command binds before any action loads, then
- * prints the help or version they request through the run's reporter, or loads
- * the command's action and runs it, a chaining command's receiving its one
- * invocation. Never exits the process.
+ * the caller's run context: resolves every invocation they hold, then hands
+ * `settle` the run options and the printers the resolved command binds before
+ * any action loads, then prints the help or version they request through the
+ * run's reporter, or loads the command's action and runs it, a chaining command's
+ * receiving every invocation. Never exits the process.
  *
  * @throws {CommandUsageError} Every usage error the arguments hold, joined in
  * one when several, after the help of a group they name no command of.
@@ -68,15 +82,9 @@ export async function executeProgram(
     printers: ScenarioPrinters | undefined,
   ) => Promise<void>,
 ): Promise<void> {
-  const resolution = await resolveInvocation(program, args);
+  const resolution = await resolveRun(program, args);
 
-  await settle(
-    resolution.runOptions,
-    resolution.kind === "invocation" &&
-      resolution.declaration.kind === "parsing"
-      ? resolution.declaration.printers
-      : undefined,
-  );
+  await settle(resolution.runOptions, readPrinters(resolution));
 
   const { reporter } = getRunContext();
 
@@ -100,7 +108,15 @@ export async function executeProgram(
     }
 
     case "invocation": {
-      return invoke(resolution);
+      const run = await loadAction(resolution.declaration);
+
+      return void (await run(...resolution.parameters));
+    }
+
+    case "chain": {
+      const run = await loadAction(resolution.declaration);
+
+      return void (await run(resolution.invocations));
     }
   }
 }

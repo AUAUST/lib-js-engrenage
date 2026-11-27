@@ -161,7 +161,7 @@ function afterRows({ after }: HelpFacts, depth: number): TableRow[] {
 }
 
 function describeTitle(
-  { paths, usage, description, kind }: HelpListing,
+  { paths, usage, description, kind, chains }: HelpListing,
   program: string,
 ): ReportSpan[] {
   const named = paths.map((path) => {
@@ -172,6 +172,7 @@ function describeTitle(
     styled("command", describePaths(named)),
     ...(usage === "" ? [] : [` ${usage}`]),
     ...(description === undefined ? [] : ["  ", styled("muted", description)]),
+    ...(chains ? ["  ", styled("muted", "(chains)")] : []),
     ...(kind === "forwarding"
       ? [
           "  ",
@@ -187,16 +188,6 @@ function describeTitle(
 function listingEntry(listing: HelpListing, program: string): ReportContent {
   const rows = [
     ...factRows({ ...listing, aliases: [] }, 0),
-    ...(listing.chains
-      ? [
-          {
-            cells: [
-              `${invocationSeparator} <arguments...>`,
-              "chains another invocation of this command",
-            ],
-          },
-        ]
-      : []),
     ...afterRows(listing, 0),
     ...listing.mounts.flatMap(({ paths, description = "", ...facts }) => {
       return [
@@ -224,9 +215,10 @@ function listingEntry(listing: HelpListing, program: string): ReportContent {
 
 /**
  * The entry reporting `contract`, a program's help: its value for machines, and
- * for people and agents the usage line, the run options, the chaining syntax when
- * a listed command chains, then each listing with its paths in brace notation, its
- * usage, arguments and options, and below each mount's paths what only they state.
+ * for people and agents the usage line, the run options, `--next` and the reserved
+ * flags among them, the chaining syntax when a listed command chains, then each
+ * listing, a chaining one marked so, with its paths in brace notation, its usage,
+ * arguments and options, and below each mount's paths what only they state.
  *
  * @pure
  */
@@ -247,7 +239,7 @@ export function helpEntry(contract: HelpContract): DataEntry {
     ...(chains
       ? [
           lineEntry(
-            `Chaining: <command path> <arguments> ${invocationSeparator} <arguments> ... runs a command marked ${invocationSeparator} once per invocation, each taking its own arguments and options; nothing takes effect unless every invocation succeeds; write --<option>=${invocationSeparator} for the text ${invocationSeparator}.`,
+            `Chaining: <command path> <arguments> ${invocationSeparator} <command path> <arguments> ... runs several invocations of one command marked (chains), each naming its full command path and taking its own arguments and options; nothing takes effect unless every invocation succeeds.`,
           ),
         ]
       : []),

@@ -1,7 +1,7 @@
 import { isArray, isFunction } from "@auaust/toolkit";
 import { freeze, keys } from "@auaust/toolkit/object";
 
-import { helpCommandName } from "#nexus/cli/constants";
+import { helpCommandName, invocationSeparator } from "#nexus/cli/constants";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { loadCommandLayer } from "#nexus/cli/operations/loadCommandLayer";
@@ -312,6 +312,13 @@ export async function describeHelp(
       description: "print the contract of every command under the path it follows",
       required: false,
       multiple: false,
+      conflicts: [],
+    },
+    {
+      flags: invocationSeparator,
+      description: `start another invocation, naming its full command path; write --<option>=${invocationSeparator} for the text ${invocationSeparator}`,
+      required: false,
+      multiple: true,
       conflicts: [],
     },
     ...(program.root.kind === "parsing" && program.root.version !== undefined

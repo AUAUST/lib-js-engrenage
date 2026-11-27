@@ -1,4 +1,4 @@
-import { isFunction, isString } from "@auaust/toolkit";
+import { isFunction } from "@auaust/toolkit";
 import { freeze, keys, record } from "@auaust/toolkit/object";
 
 import { helpCommandName } from "#nexus/cli/constants";
@@ -8,6 +8,7 @@ import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { loadCommandLayer } from "#nexus/cli/operations/loadCommandLayer";
 import { parseCommandTokens } from "#nexus/cli/operations/parseCommandTokens";
 import { readCommandArguments } from "#nexus/cli/operations/readCommandArguments";
+import { readRunOptions } from "#nexus/cli/operations/readRunOptions";
 import { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 import { suggestName } from "#nexus/cli/utils/suggestName";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
@@ -16,9 +17,6 @@ import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { Resolution } from "#nexus/cli/types/Resolution";
-import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
-
-type RunOptions = ReturnType<typeof createRunOptions>;
 
 type GivenValues = ReadonlyMap<OptionDeclaration, unknown>;
 
@@ -104,21 +102,6 @@ function checkConflicts(
       );
     }
   }
-}
-
-function readRunOptions(
-  [silent, quiet, verbose, debug, output]: RunOptions,
-  values: GivenValues,
-): RunOptionValues {
-  const scenario = values.get(output);
-
-  return freeze({
-    silent: values.has(silent) ? true : undefined,
-    quiet: values.has(quiet) ? true : undefined,
-    verbose: values.has(verbose) ? true : undefined,
-    debug: values.has(debug) ? true : undefined,
-    output: isString(scenario) ? scenario : undefined,
-  });
 }
 
 function recordValues(

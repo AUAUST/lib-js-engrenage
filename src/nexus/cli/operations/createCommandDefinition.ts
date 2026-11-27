@@ -14,6 +14,7 @@ import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
 import { outputSettling } from "#nexus/cli/operations/outputSettling";
 import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { runContext } from "#nexus/cli/operations/runContext";
+import { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 import type { InvocationFailure } from "#nexus/cli/types/InvocationFailure";
@@ -23,26 +24,6 @@ type ParseParameters = (
   parameters: readonly unknown[],
   command: Command,
 ) => readonly unknown[];
-
-function splitInvocations(args: readonly string[]): string[][] {
-  const invocations: string[][] = [[]];
-
-  for (const [index, arg] of args.entries()) {
-    if (arg === "--") {
-      invocations.at(-1)?.push(...args.slice(index));
-
-      break;
-    }
-
-    if (arg === invocationSeparator) {
-      invocations.push([]);
-    } else {
-      invocations.at(-1)?.push(arg);
-    }
-  }
-
-  return invocations;
-}
 
 // @debt each later invocation parses on a twin under stand-ins named after the command's ancestors, so parse and extensions read the group names without running the ancestors' hooks; a parse contract receiving the group names would spare them
 function createTwin(command: Command): Command {

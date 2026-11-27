@@ -1380,3 +1380,8 @@ entries:
     tried: documenting runProgram onError in JSDoc
     stopped: rule matches any "Error" substring; reworded as failure handler
     created: 2026-11-27T16:22:10Z
+  - id: FR-62d7bd
+    subject: pending add chained with --next add
+    tried: pending add … --next add … in one call
+    stopped: neither record written, no error; ran each add alone
+    created: 2026-11-27T16:24:08Z

@@ -5,21 +5,15 @@ entries:
     why: user batches instruction changes at plan end
     owner: "#1003"
     created: 2026-11-27T13:17:32Z
-  - id: PD-3a2afc
-    subject: "group without subcommand: help vs no command given"
-    what: "match Commander: a group with no action and no subcommand prints its help (exit code too), or decide the change"
-    why: resolver (#1018) returns failure no command given; matters once programs switch
-    owner: "#1020"
-    created: 2026-11-27T15:46:28Z
-  - id: PD-509a4b
-    subject: help chaining line names old --next syntax
-    what: rewrite the chaining line and --next option row in src/nexus/cli/utils/helpEntry.ts for full-path segments
-    why: help (#1019) describes per-command chain syntax
-    owner: "#1021"
-    created: 2026-11-27T16:05:42Z
-  - id: PD-8367a9
-    subject: help wording and group help on the engine
-    what: unknown command in a help path names its group like Commander ('in metalbrain backlog'); help reserved at the root only, group help dropped; move Commander help tests
-    why: help (#1019) built on engine path only
-    owner: "#1020"
-    created: 2026-11-27T16:05:42Z
+  - id: PD-b635c8
+    subject: metalbrain hook onError on engine
+    what: "hook onError gets no Commander stderr echo: write what it shows; tests/bin/metalbrain/help.test.src.ts should pass with engine wording"
+    why: engine prints nothing itself, onError gets usage errors (#1020)
+    owner: "#1022"
+    created: 2026-11-27T16:23:36Z
+  - id: PD-3a573a
+    subject: Commander path removal sites
+    what: remove runCommanderProgram, instanceof dispatch, scenarios/detectors settings in runProgram and runEngrenageProgram, readOutputFlag, overrideExits, listVerbosityFlags, rejectVerbosityConflict
+    why: dual path kept until every program is on the engine (#1020)
+    owner: "#1024"
+    created: 2026-11-27T16:23:42Z
