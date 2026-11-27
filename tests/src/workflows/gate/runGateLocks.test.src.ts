@@ -24,10 +24,23 @@ async function readLockFile(root: string): Promise<string> {
   return `${cache.for("gate")}/lock`;
 }
 
-async function waitForLock(root: string): Promise<string> {
+async function waitForLock(
+  root: string,
+  holder: Promise<unknown>,
+): Promise<string> {
   const lock = await readLockFile(root);
 
+  let ended = false;
+
+  void holder.finally(() => {
+    ended = true;
+  });
+
   while (!existsSync(lock)) {
+    if (ended) {
+      throw new Error("The gate ended without taking its lock");
+    }
+
     await setTimeout(50);
   }
 
@@ -80,7 +93,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     try {
       const stop = checkAgentStop(config, gateIdentity);
 
-      await waitForLock(project.root);
+      await waitForLock(project.root, stop);
 
       git("add", "src/index.ts");
 
@@ -96,8 +109,7 @@ describe("runGate", { timeout: binaryTimeout }, () => {
     expect(git("status", "--porcelain")).toContain("?? .ai/");
   });
 
-  // @debt exceeds its timeout under gate load, passing alone (BL-69c9a1)
-  test.skip("releases the lock of a cancelled gate and breaks a dead holder", async () => {
+  test("releases the lock of a cancelled gate and breaks a dead holder", async () => {
     const { project } = await createGateRepository([slowCommand]);
 
     project.write("src/index.ts", "export const value: number = 2;\n");
@@ -111,11 +123,13 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       },
     );
 
-    const lock = await waitForLock(project.root);
+    const exit = once(child, "exit");
+
+    const lock = await waitForLock(project.root, exit);
 
     child.kill("SIGTERM");
 
-    const [code, signal] = await once(child, "exit");
+    const [code, signal] = await exit;
 
     expect({ code, signal }).toEqual({
       code: null,

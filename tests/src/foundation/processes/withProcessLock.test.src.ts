@@ -9,6 +9,21 @@ import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError"
 import { withProcessLock } from "#foundation/processes/operations/withProcessLock";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 
+const signalListenersAtLink = vi.hoisted((): number[] => []);
+
+vi.mock(import("node:fs/promises"), async (importOriginal) => {
+  const original = await importOriginal();
+
+  return {
+    ...original,
+    async link(...args: Parameters<typeof original.link>) {
+      await original.link(...args);
+
+      signalListenersAtLink.push(process.listenerCount("SIGTERM"));
+    },
+  };
+});
+
 const source = fileURLToPath(
   new URL(
     "../../../../src/foundation/processes/operations/withProcessLock.ts",
@@ -169,6 +184,26 @@ describe("withProcessLock", () => {
     ).rejects.toThrow("failed");
 
     expect(existsSync(file)).toBe(false);
+  });
+
+  test("listens for the release signals before the lock file exists", async () => {
+    const project = createTemporaryProject();
+
+    const listening = process.listenerCount("SIGTERM") + 1;
+
+    signalListenersAtLink.length = 0;
+
+    await withProcessLock(
+      project.resolve("lock"),
+      {
+        label: "test",
+        timeout: 1000,
+        onWait: vi.fn(),
+      },
+      async () => {},
+    );
+
+    expect(signalListenersAtLink).toEqual([listening]);
   });
 
   test("releases the lock and exits by the signal it receives", async () => {

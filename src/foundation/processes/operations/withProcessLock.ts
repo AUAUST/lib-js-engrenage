@@ -60,8 +60,12 @@ function isAlive(pid: number): boolean {
   }
 }
 
+function temporaryOf(file: File, token: string): File {
+  return `${file}.${token}`;
+}
+
 async function tryCreate(file: File, holder: LockHolder): Promise<boolean> {
-  const temporary = `${file}.${holder.token}`;
+  const temporary = temporaryOf(file, holder.token);
 
   await writeFile(temporary, JSON.stringify(holder));
 
@@ -159,6 +163,8 @@ async function acquire(
 }
 
 function release(file: File, token: string): void {
+  rmSync(temporaryOf(file, token), { force: true });
+
   let content: string;
 
   try {
@@ -176,7 +182,6 @@ function release(file: File, token: string): void {
   }
 }
 
-// @debt a signal arriving after the lock file exists but before the release listeners are registered leaves the lock behind
 export async function withProcessLock<T>(
   file: File,
   {
@@ -196,8 +201,6 @@ export async function withProcessLock<T>(
     label,
     started: new Date().toISOString(),
   };
-
-  await acquire(file, holder, { timeout, onWait });
 
   function settle() {
     process.off("exit", settle);
@@ -222,6 +225,8 @@ export async function withProcessLock<T>(
   }
 
   try {
+    await acquire(file, holder, { timeout, onWait });
+
     return await run();
   } finally {
     settle();
