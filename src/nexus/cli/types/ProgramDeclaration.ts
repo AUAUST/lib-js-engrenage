@@ -9,6 +9,7 @@ import type {
  * detectors resolving one when `--output` names none.
  */
 export interface ProgramDeclaration {
+  readonly kind: "program";
   readonly root: CommandDeclaration;
   readonly scenarios: ScenarioPrinters;
   readonly detectors: readonly ScenarioDetector[];

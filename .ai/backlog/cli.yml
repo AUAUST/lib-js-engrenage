@@ -92,3 +92,13 @@ entries:
       - src/nexus/cli/operations/runProgram.ts:36
     want: "one completion line per segment, then the run's total time, per plan #1003 Chain"
     created: 2026-11-27T19:28:33Z
+  - id: BL-ecb4e5
+    title: Engrenage's executables wrap their run beyond nexus's launch
+    sites:
+      - bin/engrenage/executable.ts:21
+      - bin/metalbrain/executable.ts:27
+      - bin/batiment/executable.ts:21
+      - scripts/executable.ts:8
+    why: compile cache, linked checkouts, stale barrels, configured debug and hook failures live in each executable, so these programs behave differently mounted
+    want: each executable only hands its program to launch from nexus/cli
+    created: 2026-11-27T19:41:32Z

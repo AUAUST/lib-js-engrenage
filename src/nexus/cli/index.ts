@@ -1,11 +1,14 @@
 export { argument } from "#nexus/cli/operations/argument";
 export { command } from "#nexus/cli/operations/command";
+export { commandMount } from "#nexus/cli/operations/commandMount";
 export { commandSource } from "#nexus/cli/operations/commandSource";
 export { describeHelp } from "#nexus/cli/operations/describeHelp";
+export { directorySource } from "#nexus/cli/operations/directorySource";
 export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
+export { launch } from "#nexus/cli/operations/launch";
 export { option } from "#nexus/cli/operations/option";
 export { program } from "#nexus/cli/operations/program";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
@@ -29,8 +32,10 @@ export { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 // @barrel types
 export type * from "#nexus/cli/types/ArgumentDeclaration";
 export type * from "#nexus/cli/types/CommandDeclaration";
+export type * from "#nexus/cli/types/CommandEntry";
 export type * from "#nexus/cli/types/CommandInvocation";
 export type * from "#nexus/cli/types/CommandLoader";
+export type * from "#nexus/cli/types/CommandMount";
 export type * from "#nexus/cli/types/CommandPath";
 export type * from "#nexus/cli/types/CommandSource";
 export type * from "#nexus/cli/types/CommandTokens";

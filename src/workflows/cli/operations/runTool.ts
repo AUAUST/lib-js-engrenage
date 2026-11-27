@@ -1,13 +1,11 @@
-import { spawn } from "node:child_process";
 import { relative } from "node:path";
 
 import { successMessage } from "#constants";
 import { pathExists, resolve, toPosixPath } from "#foundation/filesystem/index";
-import { resolveBinary } from "#foundation/processes/index";
+import { resolveBinary, runNodeFile } from "#foundation/processes/index";
 import { getRunContext } from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { Directory } from "#types/Directory";
-import type { File } from "#types/File";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { ToolAction } from "#workflows/cli/types/ToolAction";
 import type { ToolRuns } from "#workflows/cli/types/ToolRuns";
@@ -34,39 +32,6 @@ async function rebasePaths(
       return toPosixPath(relative(root, path)) || ".";
     }),
   );
-}
-
-function runBinary(
-  file: File,
-  args: readonly string[],
-  cwd: Directory | undefined,
-  signal: AbortSignal,
-): Promise<number> {
-  const child = spawn(process.execPath, [file, ...args], {
-    stdio: "inherit",
-    signal,
-    ...(cwd === undefined ? {} : { cwd }),
-  });
-
-  return new Promise((settle, fail) => {
-    child.once("error", (error) => {
-      if (!child.killed) {
-        fail(error);
-      }
-    });
-
-    child.once("exit", (code, exitSignal) => {
-      if (signal.aborted) {
-        return void fail(signal.reason);
-      }
-
-      if (exitSignal !== null) {
-        process.kill(process.pid, exitSignal);
-      }
-
-      settle(code ?? 1);
-    });
-  });
 }
 
 export async function runTool(
@@ -108,12 +73,10 @@ export async function runTool(
   // @debt concurrent runs share the terminal, so their diagnostics interleave with no label naming the run that reported them, and nothing bounds how many run at once
   const exitCodes = await Promise.all(
     runs.map((runArgs) => {
-      return runBinary(
-        binaryPath,
-        runArgs,
-        root ? projectRoot : undefined,
+      return runNodeFile(binaryPath, runArgs, {
+        ...(root && { cwd: projectRoot }),
         signal,
-      );
+      });
     }),
   );
 

@@ -1099,3 +1099,8 @@ entries:
     need: run options agreeing across --next invocations
     reason: overwrites --output silently and attributes no conflict to its invocation
     created: 2026-11-27T16:33:54Z
+  - id: DS-6f2bf8
+    subject: run settings on ProgramDeclaration
+    need: executables only calling nexus launch
+    reason: "mounted programs drop them anyway; reshapes runProgram beyond #1028"
+    created: 2026-11-27T19:41:09Z

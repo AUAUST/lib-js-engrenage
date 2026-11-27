@@ -1,5 +1,5 @@
 import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
-import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
+import type { CommandEntry } from "#nexus/cli/types/CommandEntry";
 import type { CommandLoader } from "#nexus/cli/types/CommandLoader";
 import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
@@ -22,10 +22,10 @@ export interface ParsingCommandDeclaration {
     readonly after?: string | LayerLoader<string>;
   };
   /**
-   * The group's subcommands and the loaders of those known only once loaded, in
-   * the order routing tries them.
+   * The group's subcommands, mounted ones included, and the loaders of those
+   * known only once loaded, in the order routing tries them.
    */
-  readonly subcommands: readonly (CommandDeclaration | CommandLoader)[];
+  readonly subcommands: readonly (CommandEntry | CommandLoader)[];
   readonly printers?: ScenarioPrinters;
   /**
    * The output scenario a run invoking the command or one below it prints for

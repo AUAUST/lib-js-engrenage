@@ -5,6 +5,7 @@ export type * from "#foundation/processes/types/ProcessResult";
 
 // @barrel operations
 export { resolveBinary } from "#foundation/processes/operations/resolveBinary";
+export { runNodeFile } from "#foundation/processes/operations/runNodeFile";
 export { runProcess } from "#foundation/processes/operations/runProcess";
 export { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 export { withProcessLock } from "#foundation/processes/operations/withProcessLock";

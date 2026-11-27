@@ -105,6 +105,7 @@ cli:
     - BL-58e88e
     - BL-d71eff
     - BL-6ebbd8
+    - BL-ecb4e5
 coding-style:
   purpose: Local coding conventions and linting.
   entries:

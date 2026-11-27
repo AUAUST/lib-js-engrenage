@@ -1,16 +1,19 @@
 import { isArray, isFunction, isObject } from "@auaust/toolkit";
 import { join } from "@auaust/toolkit/array";
+import { freeze, get } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
+import type { CommandEntry } from "#nexus/cli/types/CommandEntry";
 import type { CommandLoader } from "#nexus/cli/types/CommandLoader";
+import type { CommandMount } from "#nexus/cli/types/CommandMount";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
 
 type GroupSource =
   | {
       readonly kind: "declared";
-      readonly commands: readonly CommandDeclaration[];
+      readonly entries: readonly CommandEntry[];
     }
   | {
       readonly kind: "loader";
@@ -21,15 +24,24 @@ type GroupSource =
       readonly position: number;
     };
 
-interface LoadedCommands {
-  readonly commands: readonly CommandDeclaration[];
+interface LoadedEntries {
+  readonly entries: readonly CommandEntry[];
   readonly shadowable: boolean;
 }
 
-interface ProvidedNames {
+interface ProvidedEntry {
+  /**
+   * The entry, or `undefined` for a name the program's own commands reserve.
+   */
+  readonly entry: CommandEntry | undefined;
+  readonly name: string;
+  readonly names: readonly string[];
   readonly label: string;
+}
+
+interface ProvidedNames {
   readonly shadowable: boolean;
-  readonly commands: readonly Pick<CommandDeclaration, "name" | "aliases">[];
+  readonly entries: readonly ProvidedEntry[];
 }
 
 function readSources({
@@ -37,7 +49,7 @@ function readSources({
 }: ParsingCommandDeclaration): readonly GroupSource[] {
   const sources: GroupSource[] = [];
 
-  let declared: CommandDeclaration[] | undefined;
+  let declared: CommandEntry[] | undefined;
 
   for (const [index, entry] of subcommands.entries()) {
     if (isFunction(entry)) {
@@ -50,7 +62,7 @@ function readSources({
       });
     } else if (declared === undefined) {
       declared = [entry];
-      sources.push({ kind: "declared", commands: declared });
+      sources.push({ kind: "declared", entries: declared });
     } else {
       declared.push(entry);
     }
@@ -67,27 +79,31 @@ function isCommand(value: unknown): value is CommandDeclaration {
   );
 }
 
-function isSource(value: unknown): value is { readonly kind: "source" } {
-  return isObject(value) && "kind" in value && value.kind === "source";
+function isEntry(value: unknown): value is CommandEntry {
+  return isCommand(value) || get(value, "kind") === "mount";
 }
 
-// @debt configuration errors name a loader by its position among the group's subcommands, since an inline loader carries no name
+function isSource(value: unknown): value is { readonly kind: "source" } {
+  return get(value, "kind") === "source";
+}
+
+// @debt configuration errors name a loader loading commands rather than mounts by its position among the group's subcommands, since an inline loader carries no name
 function describeLoader(position: number): string {
   return `the loader at position ${position}`;
 }
 
 /**
- * Loads the commands a loader of the group at `path` provides.
+ * Loads the entries a loader of the group at `path` provides.
  *
  * @throws {Error} When the loader fails, its error as the cause.
  * @throws {TypeError} When it loads neither a command, a list of commands
  * nor a command source.
  */
-async function loadCommands(
+async function loadEntries(
   load: CommandLoader,
   position: number,
   path: CommandPath,
-): Promise<LoadedCommands> {
+): Promise<LoadedEntries> {
   let loaded: unknown;
 
   try {
@@ -103,16 +119,16 @@ async function loadCommands(
 
   const source = isSource(loaded) && "commands" in loaded ? loaded : undefined;
   const listed = source === undefined ? loaded : source.commands;
-  const commands: readonly unknown[] = isArray(listed) ? listed : [listed];
+  const entries: readonly unknown[] = isArray(listed) ? listed : [listed];
 
-  if (!commands.every(isCommand)) {
+  if (!entries.every(isEntry)) {
     throw new TypeError(
       `The loader at position ${position} of '${join(path, " ")}' loads neither a command, a list of commands nor a command source`,
     );
   }
 
   return {
-    commands,
+    entries,
     shadowable: (
       source !== undefined &&
       "shadowable" in source &&
@@ -121,57 +137,112 @@ async function loadCommands(
   };
 }
 
-function names({
-  name,
-  aliases,
-}: Pick<CommandDeclaration, "name" | "aliases">) {
+/**
+ * Loads the declaration `mount`, a subcommand of the group at `path`, mounts
+ * under its name and aliases.
+ *
+ * @throws {Error} When its loader fails, its error as the cause.
+ * @throws {TypeError} When it loads no command.
+ */
+async function loadMount(
+  mount: CommandMount,
+  path: CommandPath,
+): Promise<CommandDeclaration> {
+  const described = `The '${mount.name}' command of '${join(path, " ")}'`;
+
+  let loaded: unknown;
+
+  try {
+    loaded = await loadLazy<unknown>({ load: mount.load });
+  } catch (error) {
+    throw new Error(`${described} failed to load from ${mount.origin}`, {
+      cause: error,
+    });
+  }
+
+  if (!isCommand(loaded)) {
+    throw new TypeError(`${described} loads no command from ${mount.origin}`);
+  }
+
+  return freeze({
+    ...loaded,
+    name: mount.name,
+    aliases: mount.aliases,
+  });
+}
+
+function names({ name, aliases }: Pick<CommandEntry, "name" | "aliases">) {
   return [name, ...aliases];
+}
+
+function provideEntries(
+  { entries, shadowable }: LoadedEntries,
+  label: string,
+): ProvidedNames {
+  return {
+    shadowable,
+    entries: entries.map((entry) => {
+      return {
+        entry,
+        name: entry.name,
+        names: names(entry),
+        label: entry.kind === "mount" ? entry.origin : label,
+      };
+    }),
+  };
 }
 
 /**
  * Checks that no two of `sources`, provided in order by the group at `path`,
  * provide one name, unless the later one is shadowable.
  *
- * @returns The commands each name leads to, earlier sources winning.
+ * @returns The entries each name leads to, earlier sources winning.
  * @throws {TypeError} When two sources provide one name, the later not shadowable,
  * or one source provides a name twice.
  */
 function mergeSources(
   sources: readonly ProvidedNames[],
   path: CommandPath,
-): readonly Pick<CommandDeclaration, "name" | "aliases">[] {
-  const owners = new Map<string, ProvidedNames>();
-  const merged: Pick<CommandDeclaration, "name" | "aliases">[] = [];
+): readonly ProvidedEntry[] {
+  const owners = new Map<
+    string,
+    { readonly source: ProvidedNames; readonly label: string }
+  >();
+
+  const merged: ProvidedEntry[] = [];
   const group = join(path, " ");
 
   for (const source of sources) {
-    for (const command of source.commands) {
-      const taken = names(command).filter((name) => {
+    for (const provided of source.entries) {
+      const taken = provided.names.filter((name) => {
         const owner = owners.get(name);
 
-        if (owner === source) {
+        if (owner?.source === source && owner.label === provided.label) {
           throw new TypeError(
-            `The '${name}' command in '${group}' comes twice from ${source.label}`,
+            `The '${name}' command in '${group}' comes twice from ${provided.label}`,
           );
         }
 
-        if (owner !== undefined && !source.shadowable) {
+        if (
+          owner !== undefined &&
+          (owner.source === source || !source.shadowable)
+        ) {
           throw new TypeError(
-            `The '${name}' command in '${group}' comes from both ${owner.label} and ${source.label}`,
+            `The '${name}' command in '${group}' comes from both ${owner.label} and ${provided.label}`,
           );
         }
 
         return owner !== undefined;
       });
 
-      for (const name of names(command)) {
+      for (const name of provided.names) {
         if (!owners.has(name)) {
-          owners.set(name, source);
+          owners.set(name, { source, label: provided.label });
         }
       }
 
-      if (!taken.includes(command.name)) {
-        merged.push(command);
+      if (!taken.includes(provided.name)) {
+        merged.push(provided);
       }
     }
   }
@@ -180,8 +251,8 @@ function mergeSources(
 }
 
 /**
- * Creates a lookup of the subcommands groups provide, calling each loader once,
- * through `track` when given.
+ * Creates a lookup of the subcommands groups provide, calling each loader and
+ * loading each mount once, through `track` when given.
  *
  * @pure
  */
@@ -190,21 +261,22 @@ export function createCommandLookup(
     return load();
   },
 ) {
-  const loaded = new Map<CommandLoader, Promise<LoadedCommands>>();
+  const loaded = new Map<CommandLoader, Promise<LoadedEntries>>();
+  const mounted = new Map<CommandMount, Promise<CommandDeclaration>>();
 
   /** @effectful */
   function provide(
     source: GroupSource,
     path: CommandPath,
-  ): Promise<LoadedCommands> {
+  ): Promise<LoadedEntries> {
     if (source.kind === "declared") {
-      return Promise.resolve({ commands: source.commands, shadowable: false });
+      return Promise.resolve({ entries: source.entries, shadowable: false });
     }
 
     const pending = (
       loaded.get(source.load) ??
       track(() => {
-        return loadCommands(source.load, source.position, path);
+        return loadEntries(source.load, source.position, path);
       })
     );
 
@@ -213,12 +285,34 @@ export function createCommandLookup(
     return pending;
   }
 
+  /** @effectful */
+  function declare(
+    entry: CommandEntry,
+    path: CommandPath,
+  ): Promise<CommandDeclaration> {
+    if (entry.kind !== "mount") {
+      return Promise.resolve(entry);
+    }
+
+    const pending = (
+      mounted.get(entry) ??
+      track(() => {
+        return loadMount(entry, path);
+      })
+    );
+
+    mounted.set(entry, pending);
+
+    return pending;
+  }
+
   /**
    * The subcommand of `group`, at `path` from the program's name, that `name`
    * names, by its name or an alias, from the first of its subcommands and loaders
-   * providing it, calling a loader only when every earlier one misses.
+   * providing it, calling a loader only when every earlier one misses and loading
+   * a mount only once it matches.
    *
-   * @throws {Error} When a loader it calls fails.
+   * @throws {Error} When a loader it calls or the mount it matches fails.
    * @effectful
    */
   async function find(
@@ -227,26 +321,26 @@ export function createCommandLookup(
     name: string,
   ): Promise<CommandDeclaration | undefined> {
     for (const source of readSources(group)) {
-      const { commands } = await provide(source, path);
+      const { entries } = await provide(source, path);
 
-      const found = commands.find((command) => {
-        return names(command).includes(name);
+      const found = entries.find((entry) => {
+        return names(entry).includes(name);
       });
 
       if (found !== undefined) {
-        return found;
+        return declare(found, path);
       }
     }
   }
 
   /**
    * Every subcommand of `group`, at `path` from the program's name, calling all
-   * its loaders: the name of each from the first source providing it, after the
-   * `reserved` names of the program's own commands.
+   * its loaders and loading all its mounts: the name of each from the first source
+   * providing it, after the `reserved` names of the program's own commands.
    *
    * @throws {TypeError} When two sources provide one name, the later not
    * shadowable, or one source provides a name twice.
-   * @throws {Error} When a loader fails.
+   * @throws {Error} When a loader or a mount fails.
    * @effectful
    */
   async function list(
@@ -257,40 +351,39 @@ export function createCommandLookup(
     const sources = readSources(group);
 
     const provided = await Promise.all(
-      sources.map((source) => {
-        return provide(source, path);
+      sources.map(async (source) => {
+        return provideEntries(
+          await provide(source, path),
+          source.kind === "declared"
+            ? "the declared commands"
+            : describeLoader(source.position),
+        );
       }),
     );
 
     const merged = mergeSources(
       [
         {
-          label: "the program's own commands",
           shadowable: false,
-          commands: reserved.map((name) => {
-            return { name, aliases: [] };
+          entries: reserved.map((name) => {
+            return {
+              entry: undefined,
+              name,
+              names: [name],
+              label: "the program's own commands",
+            };
           }),
         },
-        ...sources.map((source, index): ProvidedNames => {
-          return {
-            label: source.kind === "declared"
-              ? "the declared commands"
-              : describeLoader(source.position),
-            shadowable: provided[index]?.shadowable ?? false,
-            commands: provided[index]?.commands ?? [],
-          };
-        }),
+        ...provided,
       ],
       path,
     );
 
-    return provided
-      .flatMap(({ commands }) => {
-        return commands;
-      })
-      .filter((command) => {
-        return merged.includes(command);
-      });
+    return Promise.all(
+      merged.flatMap(({ entry }) => {
+        return entry === undefined ? [] : [declare(entry, path)];
+      }),
+    );
   }
 
   return {

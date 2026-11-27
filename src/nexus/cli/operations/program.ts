@@ -35,6 +35,7 @@ export function program({
   }
 
   return freeze({
+    kind: "program",
     root,
     scenarios,
     detectors: freeze([...detectors]),
