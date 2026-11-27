@@ -1,5 +1,5 @@
-import { createConsoleReporter } from "#foundation/reports/index";
 import { isDebugEnvironment, reportCommandError } from "#nexus/cli/index";
+import { createConsoleReporter } from "#nexus/reports/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/index";
 

@@ -2,10 +2,10 @@ import { isArray, isPlainObject } from "@auaust/toolkit";
 import { difference, isNonEmptyArray } from "@auaust/toolkit/array";
 import type { MaybeArray } from "@auaust/toolkit/types";
 
+import type { WarningReporter } from "#foundation/options/ports/WarningReporter";
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
 import type { ListOption } from "#foundation/options/types/ListOption";
 import type { ManagedListOption } from "#foundation/options/types/ManagedListOption";
-import type { Reporter } from "#foundation/reports/index";
 
 function toItems<Item extends string>(
   value: MaybeArray<Item> | undefined,
@@ -41,7 +41,7 @@ function findDuplicates<Item extends string>(items: readonly Item[]): Item[] {
 function warnDuplicates<Item extends string>(
   items: readonly Item[],
   subject: string,
-  reporter: Reporter,
+  reporter: WarningReporter,
 ): readonly Item[] {
   const duplicates = findDuplicates(items);
 
@@ -56,19 +56,19 @@ export function resolveListOption<Item extends string>(
   option: ListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
-  reporter: Reporter,
+  reporter: WarningReporter,
 ): readonly Item[];
 export function resolveListOption<Item extends string>(
   option: ManagedListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
-  reporter: Reporter,
+  reporter: WarningReporter,
 ): readonly Item[] | false;
 export function resolveListOption<Item extends string>(
   option: ManagedListOption<Item> | undefined,
   defaults: () => readonly Item[],
   subject: string,
-  reporter: Reporter,
+  reporter: WarningReporter,
 ): readonly Item[] | false {
   if (option === false) {
     return false;

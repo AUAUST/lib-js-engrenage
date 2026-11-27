@@ -1,4 +1,4 @@
-import type { Verbosity } from "#foundation/reports/types/Verbosity";
+import type { Verbosity } from "#nexus/reports/types/Verbosity";
 
 /**
  * The least verbose level showing a report.

@@ -1,7 +1,7 @@
 import type { MatchedWorkspace } from "#batiment/context/index";
 import type { Registry } from "#foundation/extensions/index";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Reporter, ReportingContext } from "#foundation/reports/index";
+import type { Reporter, ReportingContext } from "#nexus/reports/index";
 import type { ConfigResolver } from "#project/config/types/ConfigResolver";
 import type { Extension } from "#project/config/types/Extension";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";

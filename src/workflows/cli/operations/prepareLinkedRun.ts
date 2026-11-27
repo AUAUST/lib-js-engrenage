@@ -9,7 +9,7 @@ import { entries } from "@auaust/toolkit/object";
 
 import { pathExists, readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
-import { createConsoleReporter } from "#foundation/reports/index";
+import { createConsoleReporter } from "#nexus/reports/index";
 import { rebuildCommand, unlinkCommand } from "#tools/pnpm/constants";
 import { findLinkedConsumer } from "#workflows/cli/operations/findLinkedConsumer";
 import type { Link, Links } from "#tools/pnpm/index";

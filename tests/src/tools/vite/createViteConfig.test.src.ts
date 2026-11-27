@@ -8,7 +8,7 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { createViteConfig } from "#tools/vite/operations/createViteConfig";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 
 const viteManifest = JSON.stringify({
   type: "module",

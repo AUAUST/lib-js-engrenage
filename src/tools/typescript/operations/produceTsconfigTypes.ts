@@ -13,7 +13,7 @@ import { resolveTsconfigExecution } from "#tools/typescript/operations/resolveTs
 import { resolveTsconfigLibrary } from "#tools/typescript/operations/resolveTsconfigLibrary";
 import { toTsconfigOptionPath } from "#tools/typescript/utils/toTsconfigOptionPath";
 import type { JsonEdit } from "#foundation/json/index";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { LoadedConfig } from "#project/config/index";
 import type { ResolvedExecution } from "#project/environments/index";
 

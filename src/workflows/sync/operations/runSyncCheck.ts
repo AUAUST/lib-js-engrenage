@@ -8,7 +8,7 @@ import {
   formatReport,
   type ReportData,
   type Reporter,
-} from "#foundation/reports/index";
+} from "#nexus/reports/index";
 import {
   collectChanges,
   formatSyncFailure,

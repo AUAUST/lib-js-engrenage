@@ -1,0 +1,3 @@
+{
+  "purpose": "Report typed messages to the handler the running program chooses, showing only those the run's verbosity allows."
+}

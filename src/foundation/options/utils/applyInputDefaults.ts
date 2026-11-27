@@ -3,9 +3,9 @@ import { difference, toDeduplicated } from "@auaust/toolkit/array";
 import { entries, keys } from "@auaust/toolkit/object";
 
 import { resolveListOption } from "#foundation/options/utils/resolveListOption";
+import type { WarningReporter } from "#foundation/options/ports/WarningReporter";
 import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { ListAdjustment } from "#foundation/options/types/ListAdjustment";
-import type { Reporter } from "#foundation/reports/index";
 
 const adjustmentKeys = new Set(["prepend", "append", "exclude"]);
 
@@ -56,7 +56,7 @@ interface Placement {
   readonly path: string;
   readonly layer: string;
   readonly origins: Map<string, string>;
-  readonly reporter: Reporter;
+  readonly reporter: WarningReporter;
 }
 
 // @debt a list adjustment is recognized by its shape and the default's, not by the option declared at the path
@@ -122,7 +122,7 @@ export function applyInputDefaults(
   input: unknown,
   name: string,
   layers: readonly InputLayer[],
-  reporter: Reporter,
+  reporter: WarningReporter,
 ): { readonly value: unknown; readonly origins: ReadonlyMap<string, string> } {
   const origins = new Map<string, string>();
 

@@ -2,7 +2,7 @@ import type { JSONPath } from "jsonc-parser";
 
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { JsonValue } from "#foundation/json/index";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type {
   ConfigKey,
   ConfigSections,

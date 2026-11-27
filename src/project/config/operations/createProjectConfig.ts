@@ -21,10 +21,7 @@ import {
   type InputLayer,
   type KeyedSection,
 } from "#foundation/options/index";
-import {
-  createConsoleReporter,
-  type Reporter,
-} from "#foundation/reports/index";
+import { createConsoleReporter, type Reporter } from "#nexus/reports/index";
 import { extensionsSchema } from "#project/config/config/schemas/extensionsSchema";
 import { unpresettable } from "#project/config/constants";
 import { checkCompatibility } from "#project/config/utils/checkCompatibility";

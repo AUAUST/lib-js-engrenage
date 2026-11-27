@@ -4,11 +4,11 @@ import { keys } from "@auaust/toolkit/object";
 import { createInputReader } from "#foundation/options/utils/createInputReader";
 import type { InputResolver } from "#foundation/options/apis/InputResolver";
 import type { Resolver } from "#foundation/options/apis/Resolver";
+import type { WarningReporter } from "#foundation/options/ports/WarningReporter";
 import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { KeyedSection } from "#foundation/options/types/KeyedSection";
 import type { SectionSource } from "#foundation/options/types/SectionSource";
 import type { ValueOrigin } from "#foundation/options/types/ValueOrigin";
-import type { Reporter } from "#foundation/reports/index";
 
 interface Reading {
   readonly value: unknown;
@@ -46,7 +46,7 @@ export function createResolver<
     ): Promise<readonly InputLayer[]>;
     unknownNote?: string;
     describeUnknown?(key: string, value: unknown): string | undefined;
-    reporter: Reporter;
+    reporter: WarningReporter;
     parent?: {
       readonly resolver: Resolver<Context>;
       delegates(key: string): boolean;

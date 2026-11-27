@@ -3,7 +3,7 @@ import { formatReferenceMarker } from "#metalbrain/instructions/utils/formatRefe
 import { listReferences } from "#metalbrain/instructions/utils/listReferences";
 import { relocateInstructionReference } from "#metalbrain/instructions/utils/relocateInstructionReference";
 import type { Filesystem } from "#foundation/filesystem/index";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { Directory } from "#types/Directory";
 import type { Globs } from "#types/Globs";
 

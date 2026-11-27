@@ -3,12 +3,6 @@ import {
   type CommandUnknownOpts,
 } from "@commander-js/extra-typings";
 
-import {
-  createConsoleReporter,
-  filterReports,
-  type Reporter,
-  type Verbosity,
-} from "#foundation/reports/index";
 import { verbosityFlags } from "#nexus/cli/constants";
 import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
 import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
@@ -17,6 +11,12 @@ import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityCo
 import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
+import {
+  createConsoleReporter,
+  filterReports,
+  type Reporter,
+  type Verbosity,
+} from "#nexus/reports/index";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 

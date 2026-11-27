@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { formatReport } from "#foundation/reports/index";
+import { formatReport } from "#nexus/reports/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";

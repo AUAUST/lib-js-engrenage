@@ -1,6 +1,6 @@
 import { join } from "@auaust/toolkit/array";
 
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 
 function describe(value: unknown): string {
   return value instanceof Error ? value.message : String(value);

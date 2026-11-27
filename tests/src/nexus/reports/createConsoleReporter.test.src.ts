@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import {
-  createConsoleReporter,
-  type Verbosity,
-} from "#foundation/reports/index";
+import { createConsoleReporter, type Verbosity } from "#nexus/reports/index";
 
 function written(stream: NodeJS.WriteStream): string {
   return vi

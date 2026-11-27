@@ -1,8 +1,8 @@
-import { filterReports } from "#foundation/reports/operations/filterReports";
-import { formatReport } from "#foundation/reports/utils/formatReport";
-import type { Reporter } from "#foundation/reports/ports/Reporter";
-import type { ReportData } from "#foundation/reports/types/ReportData";
-import type { Verbosity } from "#foundation/reports/types/Verbosity";
+import { filterReports } from "#nexus/reports/operations/filterReports";
+import { formatReport } from "#nexus/reports/utils/formatReport";
+import type { Reporter } from "#nexus/reports/ports/Reporter";
+import type { ReportData } from "#nexus/reports/types/ReportData";
+import type { Verbosity } from "#nexus/reports/types/Verbosity";
 
 function render(text: string, data?: ReportData): string {
   return `${formatReport(text, data)}\n`;

@@ -23,7 +23,7 @@ import {
 import { fetchRepositoryLabels } from "#tools/github/issues/api/operations/fetchRepositoryLabels";
 import { checkTokenScopes } from "#tools/github/issues/api/utils/checkTokenScopes";
 import { splitRepository } from "#tools/github/issues/api/utils/splitRepository";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { GithubClient } from "#tools/github/issues/api/types/GithubClient";
 import type { GithubSnapshot } from "#tools/github/issues/api/types/GithubSnapshot";

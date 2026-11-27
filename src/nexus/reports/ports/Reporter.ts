@@ -1,4 +1,4 @@
-import type { ReportData } from "#foundation/reports/types/ReportData";
+import type { ReportData } from "#nexus/reports/types/ReportData";
 
 export interface Reporter {
   /**

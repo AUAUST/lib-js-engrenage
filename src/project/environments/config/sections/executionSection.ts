@@ -27,7 +27,7 @@ import {
   moduleFormats,
 } from "#project/environments/constants";
 import { listNamespaceEnvironments } from "#project/environments/operations/listNamespaceEnvironments";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { ConfigResolver } from "#project/config/index";
 import type { Execution } from "#project/environments/types/Execution";
 import type { ResolvedExecution } from "#project/environments/types/ResolvedExecution";

@@ -1,4 +1,4 @@
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 
 export interface RunContext {
   readonly signal: AbortSignal;

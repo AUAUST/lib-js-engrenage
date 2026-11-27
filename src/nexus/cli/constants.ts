@@ -1,4 +1,4 @@
-import type { Verbosity } from "#foundation/reports/index";
+import type { Verbosity } from "#nexus/reports/index";
 
 export const commandRegistration = Symbol.for(
   "@auaust/nexus/cli/commandRegistration",

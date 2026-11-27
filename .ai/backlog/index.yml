@@ -103,6 +103,7 @@ cli:
     - BL-b46a5f
     - BL-26fcd2
     - BL-6c9693
+    - BL-58e88e
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -398,6 +399,7 @@ tests:
     - BL-456d16
     - BL-a279d0
     - BL-0f2376
+    - BL-69c9a1
 toolkit:
   purpose: Upstream @auaust/toolkit decisions that may affect engrenage.
   entries:

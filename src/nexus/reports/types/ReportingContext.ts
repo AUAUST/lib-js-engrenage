@@ -1,4 +1,4 @@
-import type { Reporter } from "#foundation/reports/ports/Reporter";
+import type { Reporter } from "#nexus/reports/ports/Reporter";
 
 /**
  * A context carrying the reporter its holder reports through.

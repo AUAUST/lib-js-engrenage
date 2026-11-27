@@ -1,5 +1,5 @@
-import type { Reporter } from "#foundation/reports/ports/Reporter";
-import type { ReportLevel } from "#foundation/reports/types/ReportLevel";
+import type { Reporter } from "#nexus/reports/ports/Reporter";
+import type { ReportLevel } from "#nexus/reports/types/ReportLevel";
 
 export const verbosityLevels = [
   "silent",

@@ -1,7 +1,7 @@
-import { reportLevels } from "#foundation/reports/constants";
-import { isReportShown } from "#foundation/reports/utils/isReportShown";
-import type { Reporter } from "#foundation/reports/ports/Reporter";
-import type { Verbosity } from "#foundation/reports/types/Verbosity";
+import { reportLevels } from "#nexus/reports/constants";
+import { isReportShown } from "#nexus/reports/utils/isReportShown";
+import type { Reporter } from "#nexus/reports/ports/Reporter";
+import type { Verbosity } from "#nexus/reports/types/Verbosity";
 
 /**
  * Wraps `reporter` so it receives only the reports `verbosity` shows,

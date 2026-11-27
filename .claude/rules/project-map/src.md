@@ -27,7 +27,6 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  ├─ modules  Load lazily imported modules and resolve the export they provide.
 │  ├─ options  Declare and validate configuration options.
 │  ├─ processes  Run external processes.
-│  ├─ reports  Report typed messages to the handler the running context chooses.
 │  └─ shell  Parse shell commands into the simple commands they run, and quote words for them.
 ├─ metalbrain/  #metalbrain/…  facts < records < * < instructions < runtimes  The agent layer the `metalbrain` commands serve: the facts instructions render from, agent records and their kinds, instruction files and runtime hooks.  [debt: An agent layer of its own, beyond the agent setup engrenage syncs, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ backlog*  The backlog record kind: its declaration, its categories, how its entries list, and the migration of legacy Markdown categories.
@@ -39,8 +38,9 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  ├─ records*  The record core: the kind contract, its YAML store, entry IDs, creation times, taps, schema and word-cap checks, ranked search, and the generated index.
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
-├─ nexus/  #nexus/…  Shared program-building tooling: command definition and grouping, program runs and interop helpers that know nothing of the project engrenage orchestrates.  [debt: A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split.]
-│  └─ cli*  Define commands and command groups, create programs from them and run those programs with their run context, run options and error output.
+├─ nexus/  #nexus/…  Shared program-building tooling: command definition and grouping, program runs, reporting and interop helpers that know nothing of the project engrenage orchestrates.  [debt: A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split.]
+│  ├─ cli*  Define commands and command groups, create programs from them and run those programs with their run context, run options and error output.
+│  └─ reports  Report typed messages to the handler the running program chooses, showing only those the run's verbosity allows.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < generators < structure  Tool-agnostic project models and contract domains.
 │  ├─ baseline*{editions}  Resolve browser support targets from Baseline editions.
 │  │  └─ editions  Browser targets for each Baseline edition.

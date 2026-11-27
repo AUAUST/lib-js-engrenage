@@ -5,7 +5,7 @@ import { findCurrentMonth } from "#project/baseline/utils/findCurrentMonth";
 import { listEsSelections } from "#project/baseline/utils/listEsSelections";
 import { resolveBaselineMinimums } from "#project/baseline/utils/resolveBaselineMinimums";
 import { selectEsLibraries } from "#project/baseline/utils/selectEsLibraries";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { Runtime } from "#project/baseline/types/Runtime";
 
 /**

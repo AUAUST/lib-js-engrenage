@@ -1,6 +1,6 @@
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { validateConfig } from "#project/config/operations/validateConfig";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 

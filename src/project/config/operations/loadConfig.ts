@@ -1,10 +1,7 @@
 import { assign } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";
-import {
-  createConsoleReporter,
-  type Reporter,
-} from "#foundation/reports/index";
+import { createConsoleReporter, type Reporter } from "#nexus/reports/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { readRawConfig } from "#project/config/operations/readRawConfig";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";

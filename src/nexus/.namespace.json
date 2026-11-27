@@ -1,4 +1,4 @@
 {
-  "purpose": "Shared program-building tooling: command definition and grouping, program runs and interop helpers that know nothing of the project engrenage orchestrates.",
+  "purpose": "Shared program-building tooling: command definition and grouping, program runs, reporting and interop helpers that know nothing of the project engrenage orchestrates.",
   "debt": "A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split."
 }

@@ -7,7 +7,7 @@ import type { Declaration } from "#foundation/options/ports/Declaration";
 import type { Default } from "#foundation/options/ports/Default";
 import type { Description } from "#foundation/options/types/Description";
 import type { ListOption } from "#foundation/options/types/ListOption";
-import type { ReportingContext } from "#foundation/reports/index";
+import type { WarningContext } from "#foundation/options/types/WarningContext";
 
 /**
  * Declares a list option: a missing input resolves to the `optional` default, an
@@ -26,11 +26,11 @@ export function declareList<Item extends string, Context = unknown>(
 ): Declaration<
   ListOption<Item> | undefined,
   readonly Item[],
-  NoInfer<Context> & ReportingContext
+  NoInfer<Context> & WarningContext
 > {
   return declare(listOptionSchema(item), {
     ...options,
-    adjust(input, fallback, context: Context & ReportingContext, path) {
+    adjust(input, fallback, context: Context & WarningContext, path) {
       return resolveListOption(input, fallback, path, context.reporter);
     },
   });

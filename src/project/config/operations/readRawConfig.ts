@@ -14,7 +14,7 @@ import {
   relativeWithin,
   resolve,
 } from "#foundation/filesystem/index";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";

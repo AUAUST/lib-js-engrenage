@@ -93,3 +93,9 @@ entries:
       - src/nexus/cli/index.ts:1
     want: document createProgram, getRunContext, CommandDefinition and the 10 other flagged exports
     created: 2026-11-27T10:22:22Z
+  - id: BL-58e88e
+    title: Commands still format their own output lines
+    why: "moved from #1003 Planning; waits on #1005"
+    want: "remaining commands report through #1005 entries, split by bin"
+    done: no command formats lines for reporter.log itself
+    created: 2026-11-27T12:02:30Z

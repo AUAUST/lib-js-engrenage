@@ -53,7 +53,7 @@ export type {
   ReportData,
   Reporter,
   ReportingContext,
-} from "#foundation/reports/index";
+} from "#nexus/reports/index";
 export type {
   Extension,
   ExtensionSections,

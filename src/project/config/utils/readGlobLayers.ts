@@ -4,7 +4,7 @@ import { entries, getOwn, record } from "@auaust/toolkit/object";
 
 import { applyInputDefaults, type InputLayer } from "#foundation/options/index";
 import { flattenInput } from "#project/config/utils/flattenInput";
-import type { Reporter } from "#foundation/reports/index";
+import type { Reporter } from "#nexus/reports/index";
 import type { InputScope } from "#project/config/types/InputScope";
 import type { RawConfig } from "#project/config/types/RawConfig";
 import type { Glob } from "#types/Glob";

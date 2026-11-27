@@ -1,4 +1,4 @@
-import type { ReportData } from "#foundation/reports/types/ReportData";
+import type { ReportData } from "#nexus/reports/types/ReportData";
 
 /** @pure */
 export function formatReport(text: string, { source, fix }: ReportData = {}) {

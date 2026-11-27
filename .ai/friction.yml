@@ -14,8 +14,6 @@ taps:
   - {id: FR-990e2d, at: 2026-11-25T21:54:59Z, note: barrel export before sync}
   - {id: FR-990e2d, at: 2026-11-25T22:08:01Z, note: "Again for listMirrorRoots, listTestsRootDiagnostics and MirrorRoot in batiment/structure"}
   - {id: FR-dc82e8, at: 2026-11-25T22:29:18Z, note: vitest console output silenced}
-  - {id: FR-253f10, at: 2026-11-26T11:33:55Z, note: also tests/bin/engrenage/pnpm.test.src.ts upgrade test}
-  - {id: FR-253f10, at: 2026-11-26T12:00:24Z, note: "again on #954, first gate run; second passed"}
   - {id: FR-e10b9b, at: 2026-11-26T12:11:06Z, note: also barrelDirective.test.src.ts}
   - {id: FR-dc82e8, at: 2026-11-26T13:12:28Z, note: vitest hides test console output}
   - {id: FR-46be1a, at: 2026-11-26T13:34:38Z, note: metalbrain show on closed backlog IDs}
@@ -1059,11 +1057,6 @@ entries:
     tried: echo ====== as separator
     stopped: bash hook refused; quoted the separator
     created: 2026-11-24T00:00:00Z
-  - id: FR-253f10
-    subject: worktree gate test timeout under load
-    tried: pnpm engrenage gate --worktree
-    stopped: barrelDirective test hit 5s timeout, 1.5s alone; rerun passed
-    created: 2026-11-24T00:00:00Z
   - id: FR-2da325
     subject: workspace barrel fixture
     tried: role dirs in a workspace to get a generated barrel
@@ -1334,3 +1327,8 @@ entries:
     tried: chain conflict test under a group
     stopped: group consumed run flags of every invocation; tested on a root chained command
     created: 2026-11-27T11:57:59Z
+  - id: FR-7bd821
+    subject: dispatch refuses items under a plan with open Planning
+    tried: "dispatch ready #1010 under #1003"
+    stopped: dispatch gate refused; rolling wave blocked, asked user
+    created: 2026-11-27T12:00:19Z

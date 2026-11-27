@@ -4,9 +4,9 @@ import { validate } from "#foundation/options/utils/validate";
 import type { InputReader } from "#foundation/options/apis/InputReader";
 import type { Resolver } from "#foundation/options/apis/Resolver";
 import type { Declaration } from "#foundation/options/ports/Declaration";
+import type { WarningReporter } from "#foundation/options/ports/WarningReporter";
 import type { InputLayer } from "#foundation/options/types/InputLayer";
 import type { ValueOrigin } from "#foundation/options/types/ValueOrigin";
-import type { Reporter } from "#foundation/reports/index";
 
 interface ValidatedInput {
   readonly value: unknown;
@@ -28,7 +28,7 @@ export function createInputReader<Context>(
           reader: Resolver<Context>,
         ) => Promise<readonly InputLayer[]>)
       | undefined;
-    reporter: Reporter;
+    reporter: WarningReporter;
   },
 ): InputReader<Context> {
   const inputs = new Map<

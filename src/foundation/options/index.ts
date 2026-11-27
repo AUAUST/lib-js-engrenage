@@ -42,6 +42,7 @@ export type * from "#foundation/options/apis/Resolver";
 export type * from "#foundation/options/ports/Declaration";
 export type * from "#foundation/options/ports/Default";
 export type * from "#foundation/options/ports/Section";
+export type * from "#foundation/options/ports/WarningReporter";
 // @end
 
 // @barrel types
@@ -63,4 +64,5 @@ export type * from "#foundation/options/types/OutputOf";
 export type * from "#foundation/options/types/ResolvedLocation";
 export type * from "#foundation/options/types/SectionSource";
 export type * from "#foundation/options/types/ValueOrigin";
+export type * from "#foundation/options/types/WarningContext";
 // @end

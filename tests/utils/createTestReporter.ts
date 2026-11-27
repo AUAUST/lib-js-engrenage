@@ -1,4 +1,4 @@
-import type { ReportData, Reporter } from "#foundation/reports/index";
+import type { ReportData, Reporter } from "#nexus/reports/index";
 
 interface ReportedMessage {
   readonly level: keyof Reporter;
