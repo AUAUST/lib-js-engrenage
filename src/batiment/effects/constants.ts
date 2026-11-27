@@ -1,6 +1,8 @@
 import { freeze } from "@auaust/toolkit/object";
 import type { DeepReadonly } from "@auaust/toolkit/types";
 
+import type { EffectPosition } from "#batiment/effects/types/EffectPosition";
+import type { EffectState } from "#batiment/effects/types/EffectState";
 import type { ResolvedEffects } from "#batiment/effects/types/ResolvedEffects";
 
 export const defaultEffectLevels = freeze([
@@ -25,3 +27,39 @@ export const noEffects = freeze({
   ranks: freeze([]),
   fallback: undefined,
 }) satisfies DeepReadonly<ResolvedEffects>;
+
+/**
+ * The level reading or writing state charges, by who owns it and the position
+ * running the operation; nothing where none is listed. Reads apply to
+ * reassignable bindings only.
+ */
+export const stateLevels: Readonly<
+  Record<
+    "read" | "write",
+    Readonly<
+      Partial<
+        Record<
+          EffectState,
+          Readonly<
+            Partial<
+              Record<EffectPosition, (typeof defaultEffectLevels)[number]>
+            >
+          >
+        >
+      >
+    >
+  >
+> = freeze({
+  read: freeze({
+    "closure": freeze({ evaluation: "observing", invocation: "observing" }),
+    "unit-private": freeze({ invocation: "observing" }),
+    "unit-shared": freeze({ invocation: "observing" }),
+  }),
+  write: freeze({
+    "received": freeze({ evaluation: "confined", invocation: "confined" }),
+    "closure": freeze({ evaluation: "confined", invocation: "confined" }),
+    "unit-private": freeze({ invocation: "confined" }),
+    "unit-shared": freeze({ invocation: "effectful" }),
+    "external": freeze({ evaluation: "effectful", invocation: "effectful" }),
+  }),
+});

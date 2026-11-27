@@ -12,10 +12,12 @@ import {
   classNodeTypes,
   functionNodeTypes,
 } from "#tools/eslint/effects/constants";
+import { chargeAccesses } from "#tools/eslint/effects/operations/chargeAccesses";
 import { chargeThrough } from "#tools/eslint/effects/operations/chargeThrough";
 import { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
 import { createGlobalCharger } from "#tools/eslint/effects/operations/createGlobalCharger";
-import { accessOf } from "#tools/eslint/effects/utils/accessOf";
+import { createStateCharger } from "#tools/eslint/effects/operations/createStateCharger";
+import { accessesOf } from "#tools/eslint/effects/utils/accessesOf";
 import { appendEntry } from "#tools/eslint/effects/utils/appendEntry";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
@@ -46,9 +48,11 @@ function isGenerator(node: SyntaxNode): boolean {
  * carrying an effect doc tag is passed to `declare`, and what its own body runs
  * at invocation carries its tag. A static member path of a global `globals` or
  * the ECMAScript data rank, reached directly or through `globalThis` or a host
- * alias `aliases` names, charges its rank once invoked and its member's rank
- * once read. A module a bundler erases ranks by `erased`, keyed by glob over its
- * specifier's last segment, and a module nothing resolves charges `fallback`.
+ * alias `aliases` names, charges its rank once invoked and its member's rank once
+ * read, as does a member path the data ranks of an external binding. A write
+ * charges by who owns the state it changes, and a read of a `let` or `var` by who
+ * declares it. A module a bundler erases ranks by `erased`, keyed by glob over
+ * its specifier's last segment, and a module nothing resolves charges `fallback`.
  */
 export function collectEffectCharges({
   context,
@@ -88,6 +92,7 @@ export function collectEffectCharges({
     rankUnrankable,
     rankModule,
     rankBinding,
+    rankAccess,
     rankDeclared,
   } = createEffectRanker({
     program,
@@ -101,6 +106,10 @@ export function collectEffectCharges({
 
   const runs = new Map<SyntaxNode | undefined, PendingCharge[]>();
   const calls = new Map<SyntaxNode | undefined, LocalCall[]>();
+
+  function append(runner: SyntaxNode | undefined, pending: PendingCharge) {
+    appendEntry(runs, runner, pending);
+  }
 
   // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
   function symbolOf(node: object): Symbol | undefined {
@@ -160,52 +169,13 @@ export function collectEffectCharges({
     });
   }
 
-  function* invocationsOf(variables: readonly Scope.Variable[]) {
-    for (const { references } of variables) {
-      for (const { identifier } of references) {
-        if (identifier.type === "JSXIdentifier") {
-          continue;
-        }
-
-        const access = accessOf(
-          sourceCode.getAncestors(identifier),
-          identifier,
-        );
-
-        if (access?.invoked === true) {
-          yield access;
-        }
-      }
-    }
-  }
-
-  function chargeInvocations(
-    variables: readonly Scope.Variable[],
-    rank: (
-      members: readonly string[],
-    ) => (RankedUnit & { binding: string }) | undefined,
-  ) {
-    for (const invocation of invocationsOf(variables)) {
-      const ranked = rank(invocation.members);
-
-      if (ranked !== undefined) {
-        appendEntry(runs, invocation.runner, {
-          node: invocation.site,
-          operation: "invoke",
-          sideEffect: false,
-          ...ranked,
-        });
-      }
-    }
-  }
-
   function recordLocal(
     variables: readonly Scope.Variable[],
     callee: SyntaxNode,
     name: string,
   ) {
-    for (const invocation of invocationsOf(variables)) {
-      if (invocation.members.length === 0) {
+    for (const invocation of accessesOf(sourceCode, variables)) {
+      if (invocation.invoked && invocation.members.length === 0) {
         appendEntry(calls, invocation.runner, {
           callee,
           node: invocation.site,
@@ -220,9 +190,12 @@ export function collectEffectCharges({
     effects,
     globals,
     aliases,
-    append(runner, pending) {
-      appendEntry(runs, runner, pending);
-    },
+    append,
+  });
+
+  const stateCharger = createStateCharger({
+    sourceCode,
+    append,
   });
 
   return {
@@ -252,20 +225,31 @@ export function collectEffectCharges({
         if (imported.type === "ImportNamespaceSpecifier") {
           const module = moduleOf(symbol);
 
-          chargeInvocations(variables, (members) => {
+          chargeAccesses(sourceCode, variables, append, (members, invoked) => {
             const [member] = members;
 
-            if (member === undefined || module === undefined) {
+            if (
+              member === undefined ||
+              module === undefined ||
+              (!invoked && members.length === 1)
+            ) {
               return;
             }
 
-            const ranked = rankBinding(
+            // @debt a read takes the rank of a member key alone, so reading a ranked method through a namespace import without calling it (`fs.existsSync`) charges what calling it does
+            const ranked = rankAccess(
               checker.tryGetMemberInModuleExports(member, module),
               specifier,
               members,
+              invoked,
             );
 
-            return ranked && { ...ranked, binding: `${local}.${member}` };
+            return (
+              ranked && {
+                ...ranked,
+                binding: [local, ...(invoked ? [member] : members)].join("."),
+              }
+            );
           });
 
           continue;
@@ -277,10 +261,24 @@ export function collectEffectCharges({
             ? imported.imported.name
             : String(imported.imported.value);
 
-        chargeInvocations(variables, (members) => {
-          const ranked = rankBinding(symbol, specifier, [name, ...members]);
+        chargeAccesses(sourceCode, variables, append, (members, invoked) => {
+          if (!invoked && members.length === 0) {
+            return;
+          }
 
-          return ranked && { ...ranked, binding: local };
+          const ranked = rankAccess(
+            symbol,
+            specifier,
+            [name, ...members],
+            invoked,
+          );
+
+          return (
+            ranked && {
+              ...ranked,
+              binding: invoked ? local : [local, ...members].join("."),
+            }
+          );
         });
       }
     },
@@ -379,8 +377,10 @@ export function collectEffectCharges({
       }
     },
     "MetaProperty": globalCharger.meta,
+    "ThisExpression": stateCharger.receiver,
     "Program:exit"() {
       globalCharger.charge();
+      stateCharger.charge();
 
       for (const [runner, ran] of runs) {
         const declared = runner === undefined ? undefined : declaredOf(runner);

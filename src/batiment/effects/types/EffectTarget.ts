@@ -1,7 +1,7 @@
+import type { RankedTarget } from "#batiment/effects/types/RankedTarget";
+import type { StateTarget } from "#batiment/effects/types/StateTarget";
+
 /**
- * A ranked unit or member: the level of evaluating it and of invoking it.
+ * What an operation applies to: a ranked unit or member, or state.
  */
-export interface EffectTarget {
-  readonly evaluation: string | undefined;
-  readonly invocation: string | undefined;
-}
+export type EffectTarget = RankedTarget | StateTarget;

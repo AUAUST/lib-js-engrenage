@@ -32,6 +32,12 @@ const handlers = createRolePreset({
   effects: { evaluation: "confined", invocation: "effectful" },
 });
 
+const printing = createRolePreset({
+  name: "printing",
+  exports: "named-match",
+  effects: "printing",
+});
+
 const computing = createRolePreset({
   name: "computing",
   exports: "named-match",
@@ -81,6 +87,7 @@ async function createLinter({
       'declare module "node:fs" { export function writeFileSync(): void; }',
       'declare module "node:path" { export function join(): void; }',
       'declare module "node:console" { export function log(): void; }',
+      'declare module "node:process" { export const env: Record<string, string | undefined>; }',
     ].join("\n"),
     "node_modules/my-db/package.json": JSON.stringify({
       name: "my-db",
@@ -108,6 +115,7 @@ async function createLinter({
     "src/project/feature/observing/read.ts": "export function read() {}\n",
     "src/project/feature/handlers/run.ts": "export function run() {}\n",
     "src/project/feature/computing/now.ts": "export function now() {}\n",
+    "src/project/feature/printing/print.ts": "export function print() {}\n",
     "src/project/feature/inert/none.ts": "export {};\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
@@ -674,5 +682,115 @@ describe("import effects", () => {
         "export function now(name: string) {\n  return Math.max(1, 2) + String(globalThis[name]);\n}\n",
       ),
     ).toEqual([]);
+  });
+
+  test("charge a write the level of the state it changes, by position", async () => {
+    const lint = await createLinter({
+      environments: 'src: { execution: { globals: "node", syntax: 24 } }',
+      roles: [observing(), printing(), computing()],
+    });
+
+    const printed = "src/project/feature/printing/print.ts";
+    const read = "src/project/feature/observing/read.ts";
+    const computed = "src/project/feature/computing/now.ts";
+
+    for (const [file, source, level] of [
+      [
+        printed,
+        "export function print(box: { x: number }) {\n  box.x = 1;\n}\n",
+        "confined",
+      ],
+      [
+        printed,
+        "export function print() {\n  let n = 0;\n  return () => {\n    n = 1;\n  };\n}\n",
+        "confined",
+      ],
+      [
+        printed,
+        "const box = { x: 0 };\n\nexport function print() {\n  box.x = 1;\n}\n",
+        "confined",
+      ],
+      [
+        read,
+        "export const box = { x: 0 };\n\nexport function read() {\n  box.x = 1;\n}\n",
+        "effectful",
+      ],
+      [
+        read,
+        'export function read() {\n  process.env.X = "1";\n}\n',
+        "effectful",
+      ],
+      [computed, "globalThis.x = 1;\n", "effectful"],
+    ] as const) {
+      expect(await lint(file, source)).toEqual([
+        expect.stringContaining(`(${level})`),
+      ]);
+    }
+
+    expect(
+      await lint(
+        computed,
+        "const box = { x: 0 };\nbox.x = 1;\n\nexport class Now {\n  x = 0;\n\n  constructor(list: number[]) {\n    this.x = 1;\n    let n = 0;\n    n += 1;\n    list.push(n);\n  }\n}\n",
+      ),
+    ).toEqual([]);
+
+    for (const target of ["for (x.y of list) {\n  }", "[x.y] = list;"]) {
+      expect(
+        await lint(
+          computed,
+          `export function now(x: { y: number }, list: [number]) {\n  ${target}\n}\n`,
+        ),
+      ).toEqual([expect.stringContaining("(confined) during invocation")]);
+    }
+
+    expect(
+      await lint(
+        computed,
+        "export function now(options: { list: { x: number }[] }, a: { x: number }, b: { x: number }) {\n  const { list } = options;\n\n  for (const item of list) {\n    item.x = 1;\n  }\n\n  (a.x > 0 ? a : b).x = 1;\n}\n",
+      ),
+    ).toEqual([expect.stringContaining("`item.x`")]);
+
+    expect(
+      await lint(
+        computed,
+        "function makeLogger() {\n  return { log: (value: unknown) => value };\n}\n\nconst console = makeLogger();\nconsole.log = (value) => value;\n",
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        computed,
+        "export function now(start: number) {\n  return () => {\n    start += 1;\n\n    return start;\n  };\n}\n\nexport const next = now(0);\n",
+      ),
+    ).toEqual([expect.stringContaining("(confined) during invocation")]);
+  });
+
+  test("charge reading a variable another function declares, and a ranked member of an import", async () => {
+    const lint = await createLinter({ roles: [observing(), computing()] });
+
+    expect(
+      await lint(utility, "let n = 0;\n\nexport const own = () => ++n;\n"),
+    ).toEqual([
+      expect.stringContaining(
+        "`n` from its module's unexported state (observing)",
+      ),
+    ]);
+
+    expect(
+      await lint(
+        utility,
+        "const cache: Record<string, number> = {};\n\nfunction compute(key: string) {\n  return key.length;\n}\n\nexport const own = (key: string) => (cache[key] ??= compute(key));\n",
+      ),
+    ).toEqual([]);
+
+    const home = 'import { env } from "node:process";\n\nexport function now() {\n  return env.HOME;\n}\n';
+
+    expect(await lint("src/project/feature/computing/now.ts", home)).toEqual([
+      expect.stringContaining("`env.HOME`"),
+    ]);
+
+    expect(await lint("src/project/feature/observing/read.ts", home)).toEqual(
+      [],
+    );
   });
 });

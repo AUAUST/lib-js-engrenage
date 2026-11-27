@@ -13,7 +13,7 @@ import {
   rankMember,
   rankUnit,
   type EffectRanks,
-  type EffectTarget,
+  type RankedTarget,
   type ResolvedEffects,
 } from "#batiment/effects/index";
 import { relativeWithin } from "#foundation/filesystem/index";
@@ -53,7 +53,7 @@ export function createEffectRanker({
     fallback: undefined,
   };
 
-  function rankedModule(specifier: string, target: EffectTarget): RankedUnit {
+  function rankedModule(specifier: string, target: RankedTarget): RankedUnit {
     return { unit: `the module \`${specifier}\``, target };
   }
 
@@ -217,11 +217,44 @@ export function createEffectRanker({
         });
   }
 
+  /**
+   * The rank of invoking, else reading, the member path `path` of the binding
+   * `specifier` exports, its export's name first, that `symbol` declares: a read
+   * ranks by the longest member path the configured and shipped ranks key that
+   * starts it, `undefined` when none does or the binding is internal.
+   */
+  function rankAccess(
+    symbol: Symbol | undefined,
+    specifier: string,
+    path: readonly string[],
+    invoked: boolean,
+  ): RankedUnit | undefined {
+    if (invoked) {
+      return rankBinding(symbol, specifier, path);
+    }
+
+    const declaration = declarationOf(symbol);
+
+    if (declaration === undefined || !isExternal(declaration.getSourceFile())) {
+      return;
+    }
+
+    const { member } = rankMember(effects, specifier, path);
+
+    return member === undefined
+      ? undefined
+      : rankedModule(specifier, {
+          evaluation: rankUnit(effects, specifier).evaluation,
+          invocation: member,
+        });
+  }
+
   return {
     rankErased,
     rankUnrankable,
     rankModule,
     rankBinding,
+    rankAccess,
     rankDeclared,
   };
 }

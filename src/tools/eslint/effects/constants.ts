@@ -1,6 +1,6 @@
 import { freeze } from "@auaust/toolkit/object";
 
-import type { EffectGlobals } from "#batiment/effects/index";
+import type { EffectGlobals, EffectState } from "#batiment/effects/index";
 
 export const functionNodeTypes: readonly string[] = freeze([
   "FunctionDeclaration",
@@ -13,6 +13,15 @@ export const classNodeTypes: readonly string[] = freeze([
   "ClassExpression",
 ]);
 
+export const typeNodeTypes: ReadonlySet<string> = new Set([
+  "TSTypeAnnotation",
+  "TSTypeQuery",
+  "TSTypeReference",
+  "TSTypeAliasDeclaration",
+  "TSInterfaceDeclaration",
+  "TSTypeParameterInstantiation",
+]);
+
 export const globalObject = "globalThis";
 
 export const ecmascriptGlobals = freeze({
@@ -23,3 +32,12 @@ export const ecmascriptGlobals = freeze({
     symbols: freeze({ now: "observing", timeOrigin: "observing" }),
   }),
 }) satisfies EffectGlobals;
+
+export const stateUnits = freeze({
+  "own": "its own state",
+  "received": "a value its caller passes",
+  "closure": "a variable of an enclosing function",
+  "unit-private": "its module's unexported state",
+  "unit-shared": "its module's exported state",
+  "external": "state outside its module",
+}) satisfies Readonly<Record<EffectState, string>>;

@@ -18,9 +18,12 @@ export type * from "#batiment/effects/types/EffectOperation";
 export type * from "#batiment/effects/types/EffectPosition";
 export type * from "#batiment/effects/types/EffectRank";
 export type * from "#batiment/effects/types/EffectRanks";
+export type * from "#batiment/effects/types/EffectState";
 export type * from "#batiment/effects/types/EffectTarget";
 export type * from "#batiment/effects/types/MemberRank";
+export type * from "#batiment/effects/types/RankedTarget";
 export type * from "#batiment/effects/types/ResolvedEffects";
+export type * from "#batiment/effects/types/StateTarget";
 export type * from "#batiment/effects/types/UnitRank";
 // @end
 

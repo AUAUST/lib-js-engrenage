@@ -8,19 +8,11 @@ import {
 import {
   ecmascriptGlobals,
   globalObject,
+  typeNodeTypes,
 } from "#tools/eslint/effects/constants";
 import { accessOf } from "#tools/eslint/effects/utils/accessOf";
 import type { PendingCharge } from "#tools/eslint/effects/types/PendingCharge";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
-
-const typeNodeTypes: ReadonlySet<string> = new Set([
-  "TSTypeAnnotation",
-  "TSTypeQuery",
-  "TSTypeReference",
-  "TSTypeAliasDeclaration",
-  "TSInterfaceDeclaration",
-  "TSTypeParameterInstantiation",
-]);
 
 /**
  * Collects the `import.meta` uses `meta` is passed and, once `charge` runs,

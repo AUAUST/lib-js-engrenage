@@ -72,10 +72,13 @@ export interface AuaustRules {
    * evaluates, side-effect imports included, and what invoking a binding does
    * against the ceiling of the position invoking it, inside a function the level
    * its effect doc tag declares, else the invocation ceiling. An effect doc tag
-   * stays within the invocation ceiling, and invoking a tagged binding costs
-   * its tag. A global the environment ranks costs its rank once invoked, and
-   * its member's rank once read. A module nothing resolves costs the configured
-   * fallback, and one the environment's bundler erases costs nothing.
+   * stays within the invocation ceiling, and invoking a tagged binding costs its
+   * tag. A global the environment ranks costs its rank once invoked, and its
+   * member's rank once read, as does a ranked member path of an external binding.
+   * A write costs a fixed level by who owns the state it changes, and reading a
+   * `let` or `var` another function declares costs `observing`. A module nothing
+   * resolves costs the configured fallback, and one the environment's bundler
+   * erases costs nothing.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**

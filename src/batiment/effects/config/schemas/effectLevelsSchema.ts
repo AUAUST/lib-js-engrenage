@@ -13,15 +13,10 @@ function nameOf(level: EffectLevel): string {
 function keepsDefaultLevels(levels: EffectLevel[]): boolean {
   const names = levels.map(nameOf);
 
-  let position = -1;
+  const positions = defaultEffectLevels.map((level) => names.indexOf(level));
 
-  return defaultEffectLevels.every((level) => {
-    const index = names.indexOf(level);
-    const found = index > position;
-
-    position = index;
-
-    return found;
+  return positions.every((position, index) => {
+    return position > (positions[index - 1] ?? -1);
   });
 }
 

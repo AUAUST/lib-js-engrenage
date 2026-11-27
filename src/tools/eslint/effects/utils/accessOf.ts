@@ -2,6 +2,7 @@ import { isString } from "@auaust/toolkit";
 
 import { classNodeTypes } from "#tools/eslint/effects/constants";
 import { isInvokedBy } from "#tools/eslint/effects/utils/isInvokedBy";
+import { isWritten } from "#tools/eslint/effects/utils/isWritten";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 
@@ -24,14 +25,6 @@ function memberName(member: SyntaxNode): string | undefined {
   return computed && property.type === "Literal" && isString(property.value)
     ? property.value
     : undefined;
-}
-
-function isWritten(parent: SyntaxNode, child: SyntaxNode): boolean {
-  return (
-    (parent.type === "AssignmentExpression" && parent.left === child) ||
-    parent.type === "UpdateExpression" ||
-    (parent.type === "UnaryExpression" && parent.operator === "delete")
-  );
 }
 
 /**
@@ -60,7 +53,7 @@ export function accessOf(
     if (name !== undefined) {
       members.push(name);
     } else if (named || !transparentTypes.has(parent.type)) {
-      if (isWritten(parent, child)) {
+      if (isWritten([...ancestors.slice(0, index + 1), child])) {
         return;
       }
 

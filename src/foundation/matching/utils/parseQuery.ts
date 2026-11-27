@@ -1,3 +1,4 @@
+/* eslint-disable auaust/import-effects -- #986 */
 import { min } from "@auaust/toolkit/math";
 
 import { stopwords } from "#foundation/matching/constants";

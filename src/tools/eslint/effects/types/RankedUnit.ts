@@ -1,6 +1,6 @@
-import type { EffectTarget } from "#batiment/effects/index";
+import type { RankedTarget } from "#batiment/effects/index";
 
 export interface RankedUnit {
   unit: string;
-  target: EffectTarget;
+  target: RankedTarget;
 }
