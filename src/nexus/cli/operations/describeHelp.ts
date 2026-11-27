@@ -1,10 +1,12 @@
 import { isArray, isFunction } from "@auaust/toolkit";
+import { join } from "@auaust/toolkit/array";
 import { freeze, keys } from "@auaust/toolkit/object";
 
 import {
   helpCommandFacts,
   helpCommandName,
-  invocationSeparator,
+  reservedHelpOptions,
+  versionHelpOption,
 } from "#nexus/cli/constants";
 import { createCommandLookup } from "#nexus/cli/operations/createCommandLookup";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
@@ -19,6 +21,7 @@ import type { HelpDescription } from "#nexus/cli/types/HelpDescription";
 import type { HelpFacts } from "#nexus/cli/types/HelpFacts";
 import type { HelpListing } from "#nexus/cli/types/HelpListing";
 import type { HelpOption } from "#nexus/cli/types/HelpOption";
+import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 
@@ -181,13 +184,13 @@ function collectListings(
 }
 
 /**
- * Loads every source of each group under `declaration` at `path`, the program's
- * own command names reserved at its root, recording in `provided` the subcommands
- * each provides and in `failures` the error of each mount failing to load.
+ * Loads every source of each group under `declaration` at `path`, the
+ * program's own command names reserved at its root, recording in `provided`
+ * the subcommands each provides and in `failures` the error of each loader and
+ * mount failing to load.
  *
- * @throws {TypeError} When two sources of a group provide one name, the
- * later not shadowable.
- * @throws {Error} When a loader fails to load.
+ * @throws {TypeError} When two sources of a group that load provide one name,
+ * the later not shadowable.
  */
 async function loadGroups(
   lookup: ReturnType<typeof createCommandLookup>,
@@ -229,10 +232,36 @@ async function loadGroups(
   );
 }
 
+/**
+ * Loads the `kind` layer of the `name` command at `path`, `program` its root's
+ * name, through `loader`, recording its error in `failures` when it fails so one
+ * failing layer hides no other fact of the help.
+ *
+ * @returns The layer, or `undefined` when it fails to load.
+ */
+async function loadLayer<Value>(
+  loader: LayerLoader<Value>,
+  { path, program, name }: { path: CommandPath; program: string; name: string },
+  kind: string,
+  failures: unknown[],
+): Promise<Value | undefined> {
+  try {
+    return await loadCommandLayer(loader, path, name, kind);
+  } catch (error) {
+    failures.push(
+      new Error(
+        `The ${kind} of '${join([program, ...path], " ")}' failed to load`,
+        { cause: error },
+      ),
+    );
+  }
+}
+
 async function loadFacts(
   { declaration, path }: Mounted,
   isRoot: boolean,
   provided: Provided,
+  { program, failures }: { program: string; failures: unknown[] },
 ): Promise<HelpFacts> {
   const { name, description, aliases } = declaration;
 
@@ -246,23 +275,29 @@ async function loadFacts(
     });
   }
 
+  const layer = {
+    path,
+    program,
+    name,
+  };
+
   const [options, choices, after] = await Promise.all([
     Promise.all(
-      declaration.options.map((entry) => {
+      declaration.options.map(async (entry) => {
         return isFunction(entry)
-          ? loadCommandLayer(entry, path, name, "options")
+          ? ((await loadLayer(entry, layer, "options", failures)) ?? [])
           : [entry];
       }),
     ),
     Promise.all(
       declaration.arguments.map((argument) => {
         return isFunction(argument.choices)
-          ? loadCommandLayer(argument.choices, path, name, "choices")
+          ? loadLayer(argument.choices, layer, "choices", failures)
           : argument.choices;
       }),
     ),
     isFunction(declaration.help.after)
-      ? loadCommandLayer(declaration.help.after, path, name, "help")
+      ? loadLayer(declaration.help.after, layer, "help", failures)
       : declaration.help.after,
   ]);
 
@@ -310,15 +345,14 @@ function readKind({ declaration }: Mounted): HelpListing["kind"] {
  * Describes the contract of every command under the command `declaration` at
  * `path` of `program`, from their declarations, the sources of each group, the
  * layers each command loads at each of its paths and the program's run options,
- * loading no action: each declaration listed once with every path mounting
- * it, sibling groups mounting the same commands folded into one listing, and
- * nexus's `help` command listed last when `path` is the program's root; apart
- * from it, the error of each mount failing to load, once each, the contract
- * listing every other command.
+ * loading no action: each declaration listed once with every path mounting it,
+ * sibling groups mounting the same commands folded into one listing, and nexus's
+ * `help` command listed last when `path` is the program's root; apart from it,
+ * the error of each loader, mount and layer failing to load, once each, the
+ * contract listing every other command and fact.
  *
- * @throws {TypeError} When two sources of a group provide one name, the later
- * not shadowable, or one source provides a name twice.
- * @throws {Error} When a loader fails to load.
+ * @throws {TypeError} When two sources of a group that load provide one name,
+ * the later not shadowable, or one source provides a name twice.
  */
 export async function describeHelp(
   program: ProgramDeclaration,
@@ -351,6 +385,7 @@ export async function describeHelp(
               member,
               isRoot && member.path.length === 0,
               provided,
+              { program: program.root.name, failures },
             );
           }),
         );
@@ -374,41 +409,14 @@ export async function describeHelp(
     ),
   );
 
-  const reserved: HelpOption[] = [
-    {
-      flags: "-h, --help",
-      description: "print the contract of every command under the path it follows",
-      required: false,
-      multiple: false,
-      conflicts: [],
-    },
-    {
-      flags: invocationSeparator,
-      description: `chain another invocation as ${invocationSeparator} <command path> [arguments] [options], run in order in one process; the first failure stops the rest, earlier ones keeping their effects; write --<option>=${invocationSeparator} for the text ${invocationSeparator}`,
-      required: false,
-      multiple: true,
-      conflicts: [],
-    },
-    ...(program.root.kind === "parsing" && program.root.version !== undefined
-      ? [
-          {
-            flags: "-V, --version",
-            description: "print the version",
-            required: false,
-            multiple: false,
-            conflicts: [],
-          },
-        ]
-      : []),
-  ];
-
   const contract = freeze({
     program: program.root.name,
     runOptions: freeze([
       ...createRunOptions(keys(program.scenarios)).map(describeOption),
-      ...reserved.map((option) => {
-        return freeze(option);
-      }),
+      ...reservedHelpOptions,
+      ...(program.root.kind === "parsing" && program.root.version !== undefined
+        ? [versionHelpOption]
+        : []),
     ]),
     listings: freeze([
       ...listings,

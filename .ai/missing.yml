@@ -59,3 +59,8 @@ entries:
     need: time gate tasks into the performance timeline
     instead: measureGateTask in src/workflows/gate/operations/measureGateTask.ts
     created: 2026-11-27T17:58:24Z
+  - id: MI-6d327a
+    subject: partition settled promise results
+    need: split loader and mount results into values and failures
+    instead: splitSettled in src/nexus/cli/operations/createCommandLookup.ts
+    created: 2026-11-27T20:39:45Z

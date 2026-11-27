@@ -189,6 +189,40 @@ describe("resolveInvocation", () => {
     });
   });
 
+  test("lists a command whose options layer fails, apart from its error", async () => {
+    const root = command({
+      name: "program",
+      subcommands: [
+        command({
+          name: "x",
+          options: [
+            option({ name: "kept", type: "boolean" }),
+            () => {
+              return Promise.reject(new Error("unreadable"));
+            },
+          ],
+          action: vi.fn(),
+        }),
+      ],
+    });
+
+    const { contract, failures } = await describeHelp(program({ root }), {
+      path: [],
+      declaration: root,
+    });
+
+    expect(renderDenseEntry(helpEntry(contract)).join("\n")).toMatch(
+      /^x \[options\]\n {2}--kept$/mu,
+    );
+
+    expect(failures).toMatchObject([
+      {
+        message: "The options of 'program x' failed to load",
+        cause: { message: "unreadable" },
+      },
+    ]);
+  });
+
   test("reserves the help command", () => {
     expect(() => {
       return program({

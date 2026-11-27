@@ -9,6 +9,7 @@ import type { CommandLoader } from "#nexus/cli/types/CommandLoader";
 import type { CommandMount } from "#nexus/cli/types/CommandMount";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
+import type { SubcommandMatch } from "#nexus/cli/types/SubcommandMatch";
 
 type GroupSource =
   | {
@@ -42,7 +43,7 @@ interface ProvidedEntry {
 interface SubcommandListing {
   readonly commands: readonly CommandDeclaration[];
   /**
-   * The error of each mount that failed to load.
+   * The error of each loader and mount that failed to load.
    */
   readonly failures: readonly unknown[];
 }
@@ -177,6 +178,24 @@ async function loadMount(
     name: mount.name,
     aliases: mount.aliases,
   });
+}
+
+function splitSettled<Value>(results: readonly PromiseSettledResult<Value>[]): {
+  readonly values: readonly Value[];
+  readonly failures: readonly unknown[];
+} {
+  const values: Value[] = [];
+  const failures: unknown[] = [];
+
+  for (const result of results) {
+    if (result.status === "fulfilled") {
+      values.push(result.value);
+    } else {
+      failures.push(result.reason);
+    }
+  }
+
+  return { values, failures };
 }
 
 function names({ name, aliases }: Pick<CommandEntry, "name" | "aliases">) {
@@ -321,33 +340,49 @@ export function createCommandLookup(
    * names, by its name or an alias, from the first of its subcommands and loaders
    * providing it, calling a loader only when every earlier one misses and loading
    * a mount only once it matches; a shadowable source's command whose name an
-   * earlier one provides yields whole, its aliases included.
+   * earlier one provides yields whole, its aliases included. A failing loader
+   * leaves the name unresolved, never missing, since its source may provide it.
    *
-   * @throws {Error} When a loader it calls or the mount it matches fails.
+   * @throws {Error} When a later source provides the name after a loader fails,
+   * that loader's error; when the mount it matches fails.
    * @effectful
    */
   async function find(
     group: ParsingCommandDeclaration,
     path: CommandPath,
     name: string,
-  ): Promise<CommandDeclaration | undefined> {
+  ): Promise<SubcommandMatch> {
     const earlier = new Set<string>();
 
-    for (const source of readSources(group)) {
-      const { entries, shadowable } = await provide(source, path);
+    let failure: { readonly error: unknown } | undefined;
 
-      const kept = shadowable
-        ? entries.filter((entry) => {
+    for (const source of readSources(group)) {
+      let provided: LoadedEntries;
+
+      try {
+        provided = await provide(source, path);
+      } catch (error) {
+        failure ??= { error };
+
+        continue;
+      }
+
+      const kept = provided.shadowable
+        ? provided.entries.filter((entry) => {
             return !earlier.has(entry.name);
           })
-        : entries;
+        : provided.entries;
 
       const found = kept.find((entry) => {
         return names(entry).includes(name);
       });
 
       if (found !== undefined) {
-        return declare(found, path);
+        if (failure !== undefined) {
+          throw failure.error;
+        }
+
+        return { kind: "found", command: await declare(found, path) };
       }
 
       for (const entry of kept) {
@@ -356,18 +391,19 @@ export function createCommandLookup(
         }
       }
     }
+
+    return { kind: failure === undefined ? "missing" : "unresolved" };
   }
 
   /**
-   * Every subcommand of `group`, at `path` from the program's name, calling
-   * all its loaders and loading all its mounts: the name of each from the
-   * first source providing it, after the `reserved` names of the program's own
-   * commands, apart from the error of each mount failing to load, so one failing
-   * mount hides no other subcommand.
+   * Every subcommand of `group`, at `path` from the program's name, calling all
+   * its loaders and loading all its mounts: the name of each from the first source
+   * providing it, after the `reserved` names of the program's own commands,
+   * among the sources that load, apart from the error of each loader and mount
+   * failing to load, so one failing source hides no other subcommand.
    *
-   * @throws {TypeError} When two sources provide one name, the later not
-   * shadowable, or one source provides a name twice.
-   * @throws {Error} When a loader fails.
+   * @throws {TypeError} When two sources that load provide one name, the later
+   * not shadowable, or one source provides a name twice.
    * @effectful
    */
   async function list(
@@ -377,15 +413,17 @@ export function createCommandLookup(
   ): Promise<SubcommandListing> {
     const sources = readSources(group);
 
-    const provided = await Promise.all(
-      sources.map(async (source) => {
-        return provideEntries(
-          await provide(source, path),
-          source.kind === "declared"
-            ? "the declared commands"
-            : describeLoader(source.position),
-        );
-      }),
+    const loaded = splitSettled(
+      await Promise.allSettled(
+        sources.map(async (source) => {
+          return provideEntries(
+            await provide(source, path),
+            source.kind === "declared"
+              ? "the declared commands"
+              : describeLoader(source.position),
+          );
+        }),
+      ),
     );
 
     const merged = mergeSources(
@@ -401,29 +439,23 @@ export function createCommandLookup(
             };
           }),
         },
-        ...provided,
+        ...loaded.values,
       ],
       path,
     );
 
-    const declared = await Promise.allSettled(
-      merged.flatMap(({ entry }) => {
-        return entry === undefined ? [] : [declare(entry, path)];
-      }),
+    const declared = splitSettled(
+      await Promise.allSettled(
+        merged.flatMap(({ entry }) => {
+          return entry === undefined ? [] : [declare(entry, path)];
+        }),
+      ),
     );
 
-    const commands: CommandDeclaration[] = [];
-    const failures: unknown[] = [];
-
-    for (const result of declared) {
-      if (result.status === "fulfilled") {
-        commands.push(result.value);
-      } else {
-        failures.push(result.reason);
-      }
-    }
-
-    return { commands, failures };
+    return {
+      commands: declared.values,
+      failures: [...loaded.failures, ...declared.failures],
+    };
   }
 
   return {

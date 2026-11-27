@@ -9,14 +9,13 @@ import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 
 /**
- * The usage error for `name`, which no subcommand of `declaration` at `path` from
- * the program's name provides, suggesting the closest name among those every
- * subcommand and loader of it provides, named in `group` when given, followed by
- * the error of each of its mounts failing to load.
+ * The usage error for `name`, which no subcommand of `declaration` at `path`
+ * from the program's name provides, suggesting the closest name among those its
+ * subcommands and the loaders that load provide, named in `group` when given,
+ * followed by the error of each of its loaders and mounts failing to load.
  *
- * @throws {TypeError} When two sources of the group provide one name, the
- * later not shadowable.
- * @throws {Error} When a loader of the group fails.
+ * @throws {TypeError} When two sources of the group that load provide one name,
+ * the later not shadowable.
  */
 export async function rejectCommand(
   lookup: ReturnType<typeof createCommandLookup>,

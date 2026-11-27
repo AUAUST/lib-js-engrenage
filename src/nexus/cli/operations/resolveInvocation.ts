@@ -267,12 +267,14 @@ async function resolvePath(
 
     const { candidate } = routed;
 
-    const route = (
+    const match = (
       candidate === undefined ||
       (names.length === 0 && candidate.name === helpCommandName)
     )
       ? undefined
       : await lookup.find(current, [root.name, ...names], candidate.name);
+
+    const route = match?.kind === "found" ? match.command : undefined;
 
     let level = routed;
 
@@ -343,7 +345,7 @@ async function resolvePath(
       continue;
     }
 
-    if (declaration.action === undefined) {
+    if (declaration.action === undefined || match?.kind === "unresolved") {
       const [name] = level.positionals;
 
       if (level.blocked) {
@@ -412,13 +414,16 @@ async function resolvePath(
  * itself so, a request for help or the version, or every usage error found, an
  * unknown command or option suggesting the closest known name, and one below the
  * root of a help path naming the group it was looked up in, once every source
- * of its group loads; a path stopping at a group without an action that names
+ * of its group loads, failing sources apart; a name no source provides after
+ * a loader fails is unknown even to a group with an action, since the failing
+ * source may provide it; a path stopping at a group without an action that names
  * no command fails with that group's help. Measures routing, source and layer
  * loading and validation in the performance timeline, behind `scope` if given.
  *
- * @throws {TypeError} When two sources of a group whose every source loads
- * provide one name, the later not shadowable.
- * @throws {Error} When a source fails to load.
+ * @throws {TypeError} When two sources of a group that load provide one name,
+ * the later not shadowable.
+ * @throws {Error} When a source provides a name after a loader fails, that
+ * loader's error; when the mount a name matches fails to load.
  */
 export async function resolveInvocation(
   program: ProgramDeclaration,

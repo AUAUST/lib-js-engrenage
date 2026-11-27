@@ -59,6 +59,7 @@ export type * from "#nexus/cli/types/RunFailure";
 export type * from "#nexus/cli/types/RunOptionValues";
 export type * from "#nexus/cli/types/RunResolution";
 export type * from "#nexus/cli/types/RunSettings";
+export type * from "#nexus/cli/types/SubcommandMatch";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end
 

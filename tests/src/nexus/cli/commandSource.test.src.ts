@@ -147,7 +147,7 @@ describe("command loaders", () => {
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("reports a loader failing as a command error", async () => {
+  test("reports a failing loader after the usage error of a name no other source provides", async () => {
     await run(
       [
         () => {
@@ -158,10 +158,64 @@ describe("command loaders", () => {
     );
 
     expect(printed()).toContain(
-      "The loader at position 1 of 'program' failed to load\nCaused by: unreadable",
+      "unknown command 'x'\nThe loader at position 1 of 'program' failed to load\nCaused by: unreadable",
     );
 
     expect(process.exitCode).toBe(1);
+  });
+
+  describe("isolates a failing loader from every other source", () => {
+    const action = vi.fn();
+
+    const subcommands = [
+      createCommand("w"),
+      () => {
+        return Promise.reject(new Error("unreadable"));
+      },
+      createLoader(createCommand("x", action)),
+    ];
+
+    test("lists every other source's commands, warning once", async () => {
+      await run(subcommands, "--help");
+
+      expect(printed()).toContain("commands  w, x, help");
+
+      expect(
+        printed().match(
+          /The loader at position 2 of 'program' failed to load/gu,
+        ),
+      ).toHaveLength(1);
+
+      expect(process.exitCode).toBeUndefined();
+    });
+
+    test("reports the usage error, then the failure", async () => {
+      await run(subcommands, "y");
+
+      expect(printed()).toMatch(
+        /unknown command 'y'(?:.*)\nThe loader at position 2 of 'program' failed to load\nCaused by: unreadable/u,
+      );
+
+      expect(process.exitCode).toBe(1);
+    });
+
+    test("fails a name a later source provides with the loader's error", async () => {
+      await run(subcommands, "x");
+
+      expect(printed()).toContain(
+        "The loader at position 2 of 'program' failed to load\nCaused by: unreadable",
+      );
+
+      expect(printed()).not.toContain("unknown command");
+      expect(action).not.toHaveBeenCalled();
+      expect(process.exitCode).toBe(1);
+    });
+
+    test("runs a name an earlier source provides", async () => {
+      await run(subcommands, "w");
+
+      expect(process.exitCode).toBeUndefined();
+    });
   });
 });
 

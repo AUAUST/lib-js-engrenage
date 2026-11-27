@@ -101,3 +101,10 @@ entries:
     why: "compile cache, linked checkouts, stale barrels, configured debug and hook failures live in each bin executable, so nexus launch alone cannot run these programs; scripts executables move onto launch in #1029"
     want: each executable only hands its program to launch from nexus/cli
     created: 2026-11-27T19:41:32Z
+  - id: BL-bf599d
+    title: An invalid project config warns once per failing command loader and layer, repeating the same config error
+    sites:
+      - src/nexus/cli/operations/executeProgram.ts:73
+    why: "engrenage --help warns four times: the extensions and scripts loaders and the sync options and choices layers each load config"
+    want: one warning per distinct root cause, naming every source and layer it hides
+    created: 2026-11-27T20:40:03Z
