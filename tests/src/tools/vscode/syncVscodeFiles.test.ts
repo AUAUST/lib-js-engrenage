@@ -2,14 +2,17 @@ import { relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { array, looseObject, strictObject, string } from "valibot";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { loadConfig } from "@auaust/engrenage/extensions";
 import { validate } from "@auaust/engrenage/options/internals";
 import { syncVscodeFiles } from "@auaust/engrenage/vscode";
 
-import { eslintPackageJson } from "#tests/constants";
+import { eslintPackageJson, workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
+
+// @debt fixed budget for cold module loading and whole-project work under machine load (BL-adfd1d)
+vi.setConfig({ testTimeout: workflowTimeout });
 
 function schemaUrl(root: string, name: string): string {
   return `./${relative(root, fileURLToPath(new URL(`../../../../data/schemas/${name}.schema.json`, import.meta.url)))}`;

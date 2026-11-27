@@ -5,6 +5,7 @@ taps:
   - {id: BL-adfd1d, at: 2026-11-26T17:32:15Z, note: "codegen/config resolved: whole-output test dropped for renderConfigType unit tests; apis tests (1.2 s, 1.7 s) keep measured budgets"}
   - {id: BL-adfd1d, at: 2026-11-27T14:44:18Z, note: "BL-69c9a1 sites now budget workflowTimeout (tests/constants.ts): the load-sensitive part is a file first test paying cold lazy imports and whole-project work, 5-6x slower beside other suites; gate alone passed 4/4"}
   - {id: BL-adfd1d, at: 2026-11-27T14:55:04Z, note: also tests/src/tools/github/issues/drafts/publish.test.src.ts "still reports a body conflict when GitHub changed another section" timed out at 5s in a full suite beside a gate}
+  - {id: BL-adfd1d, at: 2026-11-27T14:59:14Z, note: "checkAgents, createEslintConfig, syncVscodeFiles, drafts/publish now budget workflowTimeout per file; hookFailures test not found under that name"}
 entries:
   - id: BL-9a6dd1
     title: Test infrastructure gaps

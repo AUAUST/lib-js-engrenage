@@ -426,6 +426,9 @@ import * as v from "valibot";
 import * as things from "#things";
 import * as alias from "$lib/thing";
 
+// @debt fixed budget for cold module loading and whole-project work under machine load (BL-adfd1d)
+vi.setConfig({ testTimeout: workflowTimeout });
+
 export * as valibot from "valibot";
 export * from "valibot";
 

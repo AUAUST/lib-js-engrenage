@@ -5,11 +5,15 @@ import { addAgentSkills } from "#metalbrain/runtimes/operations/addAgentSkills";
 import { checkAgents } from "#metalbrain/runtimes/operations/checkAgents";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { formatChanges } from "#project/sync/index";
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkPrettier } from "#tests/utils/linkPrettier";
 import { syncClaudeSettings } from "#tools/metalbrain/claude/index";
 import { loadAgentInputs } from "#tools/metalbrain/operations/loadAgentInputs";
 import { loadInstructionFormatter } from "#tools/metalbrain/operations/loadInstructionFormatter";
+
+// @debt fixed budget for cold module loading and whole-project work under machine load (BL-adfd1d)
+vi.setConfig({ testTimeout: workflowTimeout });
 
 vi.mock("#foundation/processes/operations/spawnProcess", async () => {
   const {

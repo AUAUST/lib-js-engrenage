@@ -9,6 +9,7 @@ import { isString } from "@auaust/toolkit";
 import { max } from "@auaust/toolkit/math";
 
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import {
   externalWriteNotice,
@@ -19,6 +20,9 @@ import { checkIssues } from "#tools/github/issues/drafts/operations/checkIssues"
 import { claimIssues } from "#tools/github/issues/drafts/operations/claimIssues";
 import { publishIssues } from "#tools/github/issues/drafts/operations/publishIssues";
 import { releaseIssues } from "#tools/github/issues/drafts/operations/releaseIssues";
+
+// @debt fixed budget for cold module loading and whole-project work under machine load (BL-adfd1d)
+vi.setConfig({ testTimeout: workflowTimeout });
 
 type MockRepository = "app" | "toolkit";
 
