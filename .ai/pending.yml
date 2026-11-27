@@ -1,0 +1,7 @@
+entries:
+  - id: PD-bd0565
+    subject: debt --json instruction sites
+    what: "writer: --json to --output json in environment.md, curation skill"
+    why: user batches instruction changes at plan end
+    owner: "#1003"
+    created: 2026-11-27T13:17:32Z

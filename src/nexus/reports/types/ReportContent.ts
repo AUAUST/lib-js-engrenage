@@ -1,3 +1,4 @@
+import type { DataEntry } from "#nexus/reports/types/DataEntry";
 import type { LineEntry } from "#nexus/reports/types/LineEntry";
 import type { ListEntry } from "#nexus/reports/types/ListEntry";
 import type { StackEntry } from "#nexus/reports/types/StackEntry";
@@ -14,4 +15,5 @@ export type ReportContent =
   | ListEntry
   | TableEntry
   | TreeEntry
-  | StackEntry;
+  | StackEntry
+  | DataEntry;

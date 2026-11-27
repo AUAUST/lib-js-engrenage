@@ -104,6 +104,7 @@ cli:
     - BL-26fcd2
     - BL-6c9693
     - BL-58e88e
+    - BL-870fb0
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -387,6 +388,7 @@ sync:
     - BL-5ad68f
     - BL-545a6d
     - BL-472b1f
+    - BL-facbc7
 tests:
   purpose: Test infrastructure and coverage gaps.
   entries:

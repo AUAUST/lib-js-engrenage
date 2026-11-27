@@ -1,3 +1,5 @@
+import { mapValues } from "@auaust/toolkit/object";
+
 import {
   createReporter,
   readReportText,
@@ -8,6 +10,7 @@ import {
   type Reporter,
   type ReportKind,
 } from "#nexus/reports/index";
+import { nexusScenarios, type ScenarioPrinters } from "#nexus/scenarios/index";
 
 interface ReportedMessage {
   readonly level: ReportKind;
@@ -34,6 +37,7 @@ function readData(entry: ReportEntry): ReportData | undefined {
 
 export function createTestReporter(): Reporter & {
   readonly printer: Printer;
+  readonly scenarios: ScenarioPrinters;
   readonly entries: readonly ReportEntry[];
   readonly messages: readonly ReportedMessage[];
   readonly warnings: readonly string[];
@@ -67,6 +71,9 @@ export function createTestReporter(): Reporter & {
   return {
     ...createReporter(printer),
     printer,
+    scenarios: mapValues(nexusScenarios, () => {
+      return () => printer;
+    }),
     entries,
     messages,
     warnings,

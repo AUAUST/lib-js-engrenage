@@ -1,5 +1,6 @@
 import { isDebugEnvironment, reportCommandError } from "#nexus/cli/index";
-import { createConsoleReporter } from "#nexus/reports/index";
+import { createReporter, filterReports } from "#nexus/reports/index";
+import { detectPrinter } from "#nexus/scenarios/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/index";
 
@@ -15,12 +16,14 @@ export async function launch(run: () => Promise<void>): Promise<void> {
 
     const debug = isDebugEnvironment(debugEnvironmentVariable);
 
+    const printer = await detectPrinter();
+
     reportCommandError(error, {
-      reporter: createConsoleReporter({
-        verbosity: () => {
+      reporter: createReporter(
+        filterReports(printer, () => {
           return debug ? "debug" : "default";
-        },
-      }),
+        }),
+      ),
       debug,
       debugVariable: debugEnvironmentVariable,
       explanation,

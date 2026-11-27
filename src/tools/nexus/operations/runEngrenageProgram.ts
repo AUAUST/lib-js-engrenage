@@ -3,7 +3,11 @@ import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 import { runProgram } from "#nexus/cli/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/operations/explainStaleBarrel";
-import type { Printer, Reporter } from "#nexus/reports/index";
+import type { Reporter } from "#nexus/reports/index";
+import type {
+  ScenarioDetector,
+  ScenarioPrinters,
+} from "#nexus/scenarios/index";
 
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
 async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
@@ -23,7 +27,8 @@ export function runEngrenageProgram(
   argv?: readonly string[],
   options: {
     signal?: AbortSignal;
-    printer?: Printer;
+    scenarios?: ScenarioPrinters;
+    detectors?: readonly ScenarioDetector[];
     onError?(error: unknown): void;
   } = {},
 ): Promise<void> {

@@ -15,7 +15,7 @@ const { getReporter, createProgram, printed } = useFailingProgram();
 
 function run(program: Command, ...args: string[]) {
   return runProgram(program, ["node", "program", ...args], {
-    printer: getReporter().printer,
+    scenarios: getReporter().scenarios,
   });
 }
 
@@ -41,7 +41,7 @@ describe("runProgram", () => {
     vi.stubEnv("PROGRAM_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      printer: getReporter().printer,
+      scenarios: getReporter().scenarios,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -52,7 +52,7 @@ describe("runProgram", () => {
     vi.stubEnv("ENGRENAGE_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      printer: getReporter().printer,
+      scenarios: getReporter().scenarios,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -62,7 +62,7 @@ describe("runProgram", () => {
 
   test("leads its error with the explanation it is given", async () => {
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      printer: getReporter().printer,
+      scenarios: getReporter().scenarios,
       explain: () => "the fix",
     });
 

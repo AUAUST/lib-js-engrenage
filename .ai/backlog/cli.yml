@@ -10,6 +10,7 @@ entries:
       - src/tools/nexus/operations/runEngrenageProgram.ts:8
     why: Commander exposes no action getter, so mounting wraps action to detect a call; a failing run resolves the config again
     want: No action wrapping to detect a call; the failing command config reused
+    done: "Tracked by #1015 (own engine)"
     created: 2026-11-22T00:00:00Z
   - id: BL-39182b
     title: Every action repeats the validated config load
@@ -34,6 +35,7 @@ entries:
       - src/nexus/cli/operations/defineCommand.ts:1
     why: "the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text; `defineCommand` and `defineLazyCommand` clone each other (jscpd)."
     want: extensions applied at the root; messages without the prefix; one command definer
+    done: "Tracked by #1015 (own engine)"
     created: 2026-11-22T00:00:00Z
   - id: BL-dc8e50
     title: Tool runs and linked runs resolve against the wrong base
@@ -70,7 +72,7 @@ entries:
       - src/nexus/cli/operations/defineGroup.ts:1
     why: createProgram adds --debug and --verbose to the commands present at creation, so commands mounted later by an extension likely refuse them; likely, not run
     want: Every mounted command takes the run options
-    done: "Verified in #966 command extensions"
+    done: "Resolved by #1015: run options belong to the engine"
     created: 2026-11-26T12:03:38Z
   - id: BL-b46a5f
     title: A command defined through another nexus/cli module instance cannot read the run context
@@ -99,3 +101,11 @@ entries:
     want: "remaining commands report through #1005 entries, split by bin"
     done: no command formats lines for reporter.log itself
     created: 2026-11-27T12:02:30Z
+  - id: BL-870fb0
+    title: Sync options type a Commander Option below the CLI layer
+    sites:
+      - src/project/sync/types/SyncOption.ts:1
+      - src/project/sync/operations/listSyncOptions.ts:1
+    want: sync declares options as data the CLI layer compiles
+    done: "Tracked by #1012"
+    created: 2026-11-27T13:25:03Z

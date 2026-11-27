@@ -3,6 +3,7 @@ taps:
   - {id: BL-adfd1d, at: 2026-11-26T12:00:26Z, note: "gate typecheck now runs one tsc per environment concurrently (#954), adding load beside vitest"}
   - {id: BL-adfd1d, at: 2026-11-26T12:11:13Z, note: "barrelDirective.test.src.ts timed out at 5s under gate --worktree, twice"}
   - {id: BL-adfd1d, at: 2026-11-26T17:32:15Z, note: "codegen/config resolved: whole-output test dropped for renderConfigType unit tests; apis tests (1.2 s, 1.7 s) keep measured budgets"}
+  - {id: BL-69c9a1, at: 2026-11-27T13:30:57Z, note: also runEngrenageProgram sync --check info test and runGateLocks cancelled-gate test; skipped}
 entries:
   - id: BL-9a6dd1
     title: Test infrastructure gaps

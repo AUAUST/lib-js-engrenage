@@ -5,6 +5,8 @@ export type * from "#nexus/reports/ports/Reporter";
 
 // @barrel types
 export type * from "#nexus/reports/types/CompletionEntry";
+export type * from "#nexus/reports/types/DataEntry";
+export type * from "#nexus/reports/types/EntryPainter";
 export type * from "#nexus/reports/types/LineEntry";
 export type * from "#nexus/reports/types/ListEntry";
 export type * from "#nexus/reports/types/Report";
@@ -37,12 +39,14 @@ export { filterReports } from "#nexus/reports/operations/filterReports";
 
 // @barrel utils
 export { completionEntry } from "#nexus/reports/utils/completionEntry";
+export { dataEntry } from "#nexus/reports/utils/dataEntry";
 export { formatDuration } from "#nexus/reports/utils/formatDuration";
 export { isReportShown } from "#nexus/reports/utils/isReportShown";
 export { lineEntry } from "#nexus/reports/utils/lineEntry";
 export { listEntry } from "#nexus/reports/utils/listEntry";
 export { readReportText } from "#nexus/reports/utils/readReportText";
 export { renderDenseEntry } from "#nexus/reports/utils/renderDenseEntry";
+export { renderEntry } from "#nexus/reports/utils/renderEntry";
 export { stackEntry } from "#nexus/reports/utils/stackEntry";
 export { styled } from "#nexus/reports/utils/styled";
 export { tableEntry } from "#nexus/reports/utils/tableEntry";

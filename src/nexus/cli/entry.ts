@@ -8,13 +8,18 @@ export {
   defineForwardingCommand,
   defineGroup,
   defineLazyCommand,
+  detectPrinter,
+  findRunContext,
   getRunContext,
   InvocationsError,
+  nexusDetectors,
+  nexusScenarios,
   runInvocations,
   runProgram,
 } from "#nexus/cli/index";
 export {
   completionEntry,
+  dataEntry,
   densePrinter,
   lineEntry,
   listEntry,
@@ -30,10 +35,14 @@ export type {
   DefaultActionParameters,
   ExtendCommand,
   InvocationFailure,
+  PrinterLoader,
   RunContext,
+  ScenarioDetector,
+  ScenarioPrinters,
 } from "#nexus/cli/index";
 export type {
   CompletionEntry,
+  DataEntry,
   LineEntry,
   ListEntry,
   Printer,

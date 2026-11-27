@@ -334,6 +334,7 @@
     "minimatch": "^10.2.6",
     "semver": "^7.8.5",
     "sh-syntax": "^0.8.7",
+    "std-env": "^4.3.0",
     "ts-api-utils": "^2.5.0",
     "typescript-eslint": "^8.72.0",
     "valibot": "^1.5.0",

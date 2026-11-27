@@ -30,19 +30,20 @@ describe("metalbrain debt", { timeout: binaryTimeout }, () => {
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("prints the markers as JSON", async () => {
-    const { messages } = await runDefinition(debt, "--json");
+  test("states the markers as data", async () => {
+    const { entries } = await runDefinition(debt);
 
-    expect(messages).toHaveLength(1);
-
-    expect(messages[0]?.level).toBe("log");
-
-    expect(JSON.parse(messages[0]?.text ?? "")).toEqual([
+    expect(entries).toMatchObject([
       {
-        file: "src/marked.ts",
-        line: 1,
-        column: 1,
-        statement: "first marker in a source file",
+        kind: "data",
+        value: [
+          {
+            file: "src/marked.ts",
+            line: 1,
+            column: 1,
+            statement: "first marker in a source file",
+          },
+        ],
       },
     ]);
   });

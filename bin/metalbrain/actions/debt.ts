@@ -1,21 +1,20 @@
 import { getRunContext } from "#nexus/cli/index";
+import { dataEntry, lineEntry } from "#nexus/reports/index";
 import { listDebtMarkers } from "#tools/eslint/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function ({ json }: { json: boolean }): Promise<void> {
+export default async function (): Promise<void> {
+  const { reporter } = getRunContext();
+
   const markers = await listDebtMarkers(
-    await loadValidatedConfig(undefined, {
-      reporter: getRunContext().reporter,
-    }),
+    await loadValidatedConfig(undefined, { reporter }),
   );
 
-  if (json) {
-    getRunContext().reporter.log(JSON.stringify(markers, null, 2));
-  } else if (markers.length === 0) {
-    getRunContext().reporter.log("No debt markers.");
-  } else {
-    for (const { file, line, statement } of markers) {
-      getRunContext().reporter.log(`${file}:${line}  ${statement}`);
-    }
-  }
+  const lines = markers.length === 0
+    ? [lineEntry("No debt markers.")]
+    : markers.map(({ file, line, statement }) => {
+        return lineEntry(`${file}:${line}  ${statement}`);
+      });
+
+  reporter.log(dataEntry(markers, lines));
 }

@@ -16,11 +16,13 @@ import {
 import { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 import { addRunOptions } from "#nexus/cli/operations/addRunOptions";
 import { configureCommand } from "#nexus/cli/operations/configureCommand";
+import { outputSettling } from "#nexus/cli/operations/outputSettling";
 import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 import type { InvocationFailure } from "#nexus/cli/types/InvocationFailure";
+import type { ScenarioPrinters } from "#nexus/scenarios/index";
 
 type ParseParameters = (...parameters: unknown[]) => readonly unknown[];
 
@@ -165,12 +167,14 @@ export function createCommandDefinition({
   load,
   extend,
   parse,
+  printers,
   chain = false,
 }: {
   configure: ((command: Command) => CommandUnknownOpts) | undefined;
   load(): unknown;
   extend: (() => Promise<unknown>) | undefined;
   parse: ParseParameters | undefined;
+  printers: ScenarioPrinters | undefined;
   chain?: boolean;
 }): CommandDefinition {
   const extension = extend === undefined ? undefined : createExtension(extend);
@@ -284,6 +288,8 @@ export function createCommandDefinition({
         const invocations = chain
           ? await parseChain(command, parameters, rest)
           : undefined;
+
+        await outputSettling.getStore()?.(printers);
 
         const action = await loadFunction(load, command.name(), "action");
 

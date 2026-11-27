@@ -3,22 +3,37 @@ import {
   type CommandUnknownOpts,
 } from "@commander-js/extra-typings";
 
+import { isString } from "@auaust/toolkit";
+import { join } from "@auaust/toolkit/array";
+import { hasOwn, keys } from "@auaust/toolkit/object";
+
 import { verbosityFlags } from "#nexus/cli/constants";
+import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
 import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 import { listVerbosityFlags } from "#nexus/cli/operations/listVerbosityFlags";
+import { outputSettling } from "#nexus/cli/operations/outputSettling";
 import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import {
   createReporter,
-  densePrinter,
   filterReports,
   type Printer,
+  type ReportEntry,
   type Reporter,
+  type ReportKind,
   type Verbosity,
 } from "#nexus/reports/index";
+import {
+  detectScenario,
+  loadScenarioPrinter,
+  nexusDetectors,
+  nexusScenarios,
+  type ScenarioDetector,
+  type ScenarioPrinters,
+} from "#nexus/scenarios/index";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
@@ -44,6 +59,51 @@ function timeCompletions(printer: Printer): Printer {
   return { print };
 }
 
+function readOutputFlag(
+  command: CommandUnknownOpts | null,
+): string | undefined {
+  for (let current = command; current !== null; current = current.parent) {
+    const value: unknown = current.getOptionValue("output");
+
+    if (isString(value)) {
+      return value;
+    }
+  }
+}
+
+function createPendingPrinter(): Printer & {
+  readonly settled: boolean;
+  settle(printer: Printer): void;
+} {
+  const pending: (readonly [ReportEntry, ReportKind])[] = [];
+
+  let target: Printer | undefined;
+
+  function print(entry: ReportEntry, kind: ReportKind) {
+    if (target === undefined) {
+      pending.push([entry, kind]);
+    } else {
+      target.print(entry, kind);
+    }
+  }
+
+  function settle(printer: Printer) {
+    target = printer;
+
+    for (const [entry, kind] of pending.splice(0)) {
+      printer.print(entry, kind);
+    }
+  }
+
+  return {
+    get settled() {
+      return target !== undefined;
+    },
+    print,
+    settle,
+  };
+}
+
 async function isDebugResolved(
   resolveDebug: ((reporter: Reporter) => Promise<boolean>) | undefined,
   reporter: Reporter,
@@ -56,26 +116,33 @@ async function isDebugResolved(
 }
 
 /**
- * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
- * hands `printer`, `densePrinter` by default, every entry the verbosity its
- * flags set shows, else `debug` when `debugVariable` is on, else `default`,
+ * Runs a program within its run context: aborts it on SIGHUP, SIGINT and
+ * SIGTERM, hands the printer of its output scenario every entry the verbosity
+ * its flags set shows, else `debug` when `debugVariable` is on, else `default`,
  * each completion line with the run's total time, and on failure prints its
  * error, led by what `explain` returns for it, with its stack at `debug`, which
- * `resolveDebug` also sets when no flag does.
+ * `resolveDebug` also sets when no flag does. The scenario is the one `--output`
+ * names, else the first of `scenarios` one of `detectors` names; its printer is
+ * the one the running command binds to it, else the one `scenarios` declares,
+ * loaded once every invocation of the command parses, before its action loads,
+ * and holding the entries reported until then; an `--output` naming none of
+ * `scenarios` fails as a usage error.
  */
 export async function runProgram(
   program: CommandUnknownOpts,
   argv?: readonly string[],
   {
     signal,
-    printer = densePrinter,
+    scenarios = nexusScenarios,
+    detectors = nexusDetectors,
     onError,
     debugVariable,
     resolveDebug,
     explain,
   }: {
     signal?: AbortSignal;
-    printer?: Printer;
+    scenarios?: ScenarioPrinters;
+    detectors?: readonly ScenarioDetector[];
     onError?(error: unknown): void;
     debugVariable?: string;
     resolveDebug?(reporter: Reporter): Promise<boolean>;
@@ -93,11 +160,46 @@ export async function runProgram(
     ? "debug"
     : "default";
 
+  const output = createPendingPrinter();
+
+  async function settleOutput(
+    scenario: string,
+    bindings?: ScenarioPrinters,
+  ): Promise<void> {
+    output.settle(await loadScenarioPrinter(scenario, { scenarios, bindings }));
+  }
+
+  async function settleUnbound(): Promise<void> {
+    if (output.settled) {
+      return;
+    }
+
+    const flag = readOutputFlag(running);
+
+    await settleOutput(
+      flag !== undefined && hasOwn(scenarios, flag)
+        ? flag
+        : detectScenario(detectors, scenarios),
+    );
+  }
+
   program.hook("preAction", (_command, action) => {
     running = action;
 
     rejectVerbosityConflict(action);
   });
+
+  async function settleBound(bindings: ScenarioPrinters | undefined) {
+    const flag = readOutputFlag(running);
+
+    if (flag !== undefined && !hasOwn(scenarios, flag)) {
+      throw new CommandUsageError(
+        `option '--output <scenario>' argument '${flag}' is invalid. Allowed choices are ${join(keys(scenarios), ", ")}.`,
+      );
+    }
+
+    await settleOutput(flag ?? detectScenario(detectors, scenarios), bindings);
+  }
 
   function getFlag() {
     return listVerbosityFlags(running).at(-1);
@@ -110,7 +212,7 @@ export async function runProgram(
   }
 
   const runReporter = createReporter(
-    timeCompletions(filterReports(printer, getVerbosity)),
+    timeCompletions(filterReports(output, getVerbosity)),
   );
 
   const controller = new AbortController();
@@ -141,13 +243,20 @@ export async function runProgram(
   }
 
   try {
-    await runContext.run({ signal: runSignal, reporter: runReporter }, () => {
-      return program.parseAsync(argv);
+    await outputSettling.run(settleBound, () => {
+      return runContext.run(
+        { signal: runSignal, reporter: runReporter },
+        () => {
+          return program.parseAsync(argv);
+        },
+      );
     });
   } catch (error) {
     if (runSignal.aborted) {
       return;
     }
+
+    await settleUnbound();
 
     if (onError !== undefined) {
       if (!(error instanceof CommanderError)) {
@@ -181,4 +290,6 @@ export async function runProgram(
   } finally {
     stopListening();
   }
+
+  await settleUnbound();
 }

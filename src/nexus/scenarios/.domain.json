@@ -1,0 +1,3 @@
+{
+  "purpose": "Resolve the output scenario a run prints for, from a flag or the program's ordered detectors, and load the printer bound to it."
+}

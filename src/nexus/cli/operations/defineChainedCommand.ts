@@ -5,6 +5,7 @@ import type { Loadable } from "#foundation/modules/index";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 import type { CommandParameters } from "#nexus/cli/types/CommandParameters";
 import type { ExtendCommand } from "#nexus/cli/types/ExtendCommand";
+import type { ScenarioPrinters } from "#nexus/scenarios/index";
 
 /**
  * Defines a lazily loaded command whose call chains several invocations, separated
@@ -24,6 +25,7 @@ export function defineChainedCommand<
     Loadable<(invocations: readonly ActionParameters[]) => unknown>
   >;
   extend?(): Promise<Loadable<ExtendCommand>>;
+  printers?: ScenarioPrinters;
   parse(
     ...parameters: CommandParameters<NoInfer<Configured>>
   ): NoInfer<ActionParameters>;
@@ -33,10 +35,12 @@ export function defineChainedCommand({
   action,
   extend,
   parse,
+  printers,
 }: {
   configure(command: Command): CommandUnknownOpts;
   action(): Promise<unknown>;
   extend?(): Promise<Loadable<ExtendCommand>>;
+  printers?: ScenarioPrinters;
   parse(...parameters: unknown[]): readonly unknown[];
 }): CommandDefinition {
   return createCommandDefinition({
@@ -44,6 +48,7 @@ export function defineChainedCommand({
     load: action,
     extend,
     parse,
+    printers,
     chain: true,
   });
 }

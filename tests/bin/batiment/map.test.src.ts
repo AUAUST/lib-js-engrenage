@@ -71,16 +71,16 @@ describe("batiment map", () => {
     expect(process.exitCode).toBeUndefined();
   });
 
-  test("prints the report's facts and diagnostics as JSON", async () => {
+  test("states the report's facts and diagnostics as data", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    const { messages } = await runDefinition(map, "--json");
+    const { entries } = await runDefinition(map);
 
-    expect(messages).toHaveLength(1);
+    const data = entries.find((entry) => {
+      return entry.kind === "data";
+    });
 
-    const [message] = messages;
-
-    expect(JSON.parse(message?.text ?? "")).toMatchObject({
+    expect(data?.value).toMatchObject({
       facts: {
         structure: {
           src: { name: "src" },

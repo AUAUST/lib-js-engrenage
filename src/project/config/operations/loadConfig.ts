@@ -1,6 +1,8 @@
 import { assign } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";
+// @debt reads the run context through the whole `nexus/cli` surface, loading Commander into every config load outside a run
+import { findRunContext } from "#nexus/cli/index";
 import { createConsoleReporter, type Reporter } from "#nexus/reports/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";
 import { readRawConfig } from "#project/config/operations/readRawConfig";
@@ -74,7 +76,7 @@ function load(
   cwd: Directory | URL = process.cwd(),
   {
     searchParents = true,
-    reporter = defaultReporter,
+    reporter = findRunContext()?.reporter ?? defaultReporter,
   }: { searchParents?: boolean; reporter?: Reporter } = {},
 ): Promise<LoadedConfig> {
   const start = resolve(cwd);
@@ -122,9 +124,10 @@ function refresh(root: Directory): void {
  * `package.json`, else `cwd`; with `searchParents: false`, `cwd` only. Warns
  * once per root and reporter when no config file is found and rejects when the
  * file exports no object. Sections are validated only when resolved. The config
- * reports through `reporter`, a shared console reporter by default. Memoized per
- * reporter and project root, concurrent loads sharing one read; `refresh(root)`
- * drops the root's entries under every reporter so the next load reads it again.
+ * reports through `reporter`, by default the reporter of the program run it loads
+ * within, else a shared console reporter. Memoized per reporter and project root,
+ * concurrent loads sharing one read; `refresh(root)` drops the root's entries
+ * under every reporter so the next load reads it again.
  *
  * @stable
  */

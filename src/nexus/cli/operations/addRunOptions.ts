@@ -17,4 +17,9 @@ export function addRunOptions(command: CommandUnknownOpts): void {
     "--debug",
     "also print debugging details, stack traces included",
   );
+
+  command.option(
+    "--output <scenario>",
+    "print for the output scenario <scenario> instead of the detected one",
+  );
 }

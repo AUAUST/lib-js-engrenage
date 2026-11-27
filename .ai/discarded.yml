@@ -1054,3 +1054,38 @@ entries:
     need: filter entries before printers
     reason: overloaded methods cannot forward unions; filter wraps printers
     created: 2026-11-27T12:41:42Z
+  - id: DS-e72659
+    subject: "@stricli/core as CLI core"
+    need: ordered lazy command sources
+    reason: needs the same pre-parse resolution; rewrites definers
+    created: 2026-11-27T12:53:37Z
+  - id: DS-8094c5
+    subject: per-scenario output flags
+    need: choose output scenario per run
+    reason: --agent clashes with dispatch --agent
+    created: 2026-11-27T13:13:49Z
+  - id: DS-4cf69d
+    subject: action branching on scenario
+    need: scenario-specific command output
+    reason: scenario leaks into commands
+    created: 2026-11-27T13:13:50Z
+  - id: DS-941c2c
+    subject: program loading in runProgram
+    need: run options reaching launch errors
+    reason: "deferred-executable nesting, beyond #1008"
+    created: 2026-11-27T13:13:50Z
+  - id: DS-9ea334
+    subject: Command-keyed printer bindings
+    need: bind printers per command
+    reason: Commander instances may go; definition-keyed
+    created: 2026-11-27T13:28:09Z
+  - id: DS-7ac9ab
+    subject: public rich and JSON printer exports
+    need: nexus exports its printers
+    reason: entry via cli index loads them each run
+    created: 2026-11-27T13:28:10Z
+  - id: DS-69b6e0
+    subject: commander choices for --output
+    need: reject undeclared scenario
+    reason: scenarios known only at runProgram
+    created: 2026-11-27T13:28:10Z

@@ -9,7 +9,8 @@ import { entries } from "@auaust/toolkit/object";
 
 import { pathExists, readJsonFile } from "#foundation/filesystem/index";
 import { validate } from "#foundation/options/index";
-import { createConsoleReporter } from "#nexus/reports/index";
+import { createReporter } from "#nexus/reports/index";
+import { detectPrinter } from "#nexus/scenarios/index";
 import { rebuildCommand, unlinkCommand } from "#tools/pnpm/constants";
 import { findLinkedConsumer } from "#workflows/cli/operations/findLinkedConsumer";
 import type { Link, Links } from "#tools/pnpm/index";
@@ -25,8 +26,15 @@ async function readRealpath(directory: Directory) {
   }
 }
 
-function warnRestored(restored: readonly string[], missing: readonly string[]) {
-  const reporter = createConsoleReporter();
+async function warnRestored(
+  restored: readonly string[],
+  missing: readonly string[],
+) {
+  if (restored.length === 0 && missing.length === 0) {
+    return;
+  }
+
+  const reporter = createReporter(await detectPrinter());
 
   if (restored.length > 0) {
     reporter.warn(
@@ -117,7 +125,7 @@ export async function prepareLinkedRun(
 
   const { restored, missing } = await restoreLinks(consumer);
 
-  warnRestored(restored, missing);
+  await warnRestored(restored, missing);
 
   const manifest = findPackageJSON(executableUrl);
 

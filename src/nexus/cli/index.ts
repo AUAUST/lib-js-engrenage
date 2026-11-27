@@ -4,6 +4,7 @@ export { defineCommand } from "#nexus/cli/operations/defineCommand";
 export { defineForwardingCommand } from "#nexus/cli/operations/defineForwardingCommand";
 export { defineGroup } from "#nexus/cli/operations/defineGroup";
 export { defineLazyCommand } from "#nexus/cli/operations/defineLazyCommand";
+export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
@@ -33,6 +34,7 @@ export type * from "#nexus/cli/types/VerbosityFlag";
 
 export {
   completionEntry,
+  dataEntry,
   densePrinter,
   lineEntry,
   listEntry,
@@ -42,8 +44,15 @@ export {
   titleEntry,
   treeEntry,
 } from "#nexus/reports/index";
+export {
+  detectPrinter,
+  nexusDetectors,
+  nexusScenarios,
+} from "#nexus/scenarios/index";
+
 export type {
   CompletionEntry,
+  DataEntry,
   LineEntry,
   ListEntry,
   Printer,
@@ -65,3 +74,8 @@ export type {
   TreeEntry,
   TreeNode,
 } from "#nexus/reports/index";
+export type {
+  PrinterLoader,
+  ScenarioDetector,
+  ScenarioPrinters,
+} from "#nexus/scenarios/index";
