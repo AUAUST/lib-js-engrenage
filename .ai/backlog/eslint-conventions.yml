@@ -169,3 +169,10 @@ entries:
     why: rankBinding reads a binding's effect tag only for internal symbols; an external binding ranks from configured effects data alone, so a published package's tagged declarations go unused
     want: A dependency's tagged declarations rank its bindings where no data ranks them
     created: 2026-11-27T01:24:40Z
+  - id: BL-38bbb2
+    title: No report flags a side-effect import whose target evaluates pure
+    sites:
+      - src/tools/eslint/conventions/structure/importEffects.ts:1
+    why: "#989's drop suggestion rides the ceiling report, which a pure target never triggers under the default scale"
+    want: A side-effect import of a non-erased module ranked pure by its role is reported as droppable, erased and string-ranked externals excluded
+    created: 2026-11-27T03:28:43Z

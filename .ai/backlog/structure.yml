@@ -350,3 +350,18 @@ entries:
     why: "#986 charges only assignment syntax: levelling mutating methods (push, Map#set) and static mutators (Object.assign) is wanted but not needed for its completion, a gap TypeScript accepts without known harm"
     want: "charged as a data addition once #986 lands, its write operation left open to sources other than assignment syntax"
     created: 2026-11-26T22:33:21Z
+  - id: BL-0d5ce5
+    title: A configured `node:` glob key twins into a bare glob ranking every external module
+    sites:
+      - src/project/structure/config/sections/effectsSection.ts:17
+    why: "`withBareTwins` strips `node:` from glob keys too, so `node:*` yields `*`, matching any bare specifier"
+    want: Bare twins rank only Node built-in specifiers
+    created: 2026-11-27T03:33:14Z
+  - id: BL-a3d287
+    title: Global ranks are never checked against the effect level scale
+    sites:
+      - src/project/environments/config/sections/environmentGlobalsSection.ts:37
+      - src/project/build/constants.ts:30
+    why: A level typo in `data/effects/globals.json` or a build tool `globals`/`imports` entry ranks below every level, so lint passes it silently
+    want: Global and erased-import ranks are checked against the scale as `resolveEffects` checks module ranks
+    created: 2026-11-27T03:33:14Z

@@ -13,6 +13,7 @@ import {
   rankMember,
   rankUnit,
   type EffectRanks,
+  type EffectTarget,
   type ResolvedEffects,
 } from "#batiment/effects/index";
 import { relativeWithin } from "#foundation/filesystem/index";
@@ -52,6 +53,10 @@ export function createEffectRanker({
     fallback: undefined,
   };
 
+  function rankedModule(specifier: string, target: EffectTarget): RankedUnit {
+    return { unit: `the module \`${specifier}\``, target };
+  }
+
   /**
    * The rank of the module `specifier` loads when a bundler erases it,
    * `undefined` for any other.
@@ -61,10 +66,7 @@ export function createEffectRanker({
 
     return level === undefined
       ? undefined
-      : {
-          unit: `the module \`${specifier}\``,
-          target: { evaluation, invocation: level },
-        };
+      : rankedModule(specifier, { evaluation, invocation: level });
   }
 
   /**
@@ -172,10 +174,7 @@ export function createEffectRanker({
 
     return evaluation === undefined
       ? undefined
-      : {
-          unit: `the module \`${specifier}\``,
-          target: { evaluation, invocation: level },
-        };
+      : rankedModule(specifier, { evaluation, invocation: level });
   }
 
   /**
@@ -212,13 +211,10 @@ export function createEffectRanker({
 
     return invocation === undefined
       ? undefined
-      : {
-          unit: `the module \`${specifier}\``,
-          target: {
-            evaluation: rankUnit(effects, specifier).evaluation,
-            invocation,
-          },
-        };
+      : rankedModule(specifier, {
+          evaluation: rankUnit(effects, specifier).evaluation,
+          invocation,
+        });
   }
 
   return {
