@@ -80,6 +80,7 @@ export type {
   BarrelExportsEntry,
   BarrelExportsResolver,
 } from "#tools/typescript/index";
+export type { CommandContribution } from "#workflows/cli/index";
 
 // @barrel utils
 export { defineExtension } from "#workflows/extensions/utils/defineExtension";

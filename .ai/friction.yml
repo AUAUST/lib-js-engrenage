@@ -1394,3 +1394,8 @@ entries:
     tried: gate durations read from performance.measure entries
     stopped: faked measure returns a fixed 100ms entry; computed durations from performance.now instead
     created: 2026-11-27T17:58:24Z
+  - id: FR-6b0384
+    subject: slot entry type invisible across domains
+    tried: reading cli.commands from tools/nexus
+    stopped: global Engrenage.Slots only holds ports some barrel reaches; exported the port
+    created: 2026-11-27T20:20:00Z

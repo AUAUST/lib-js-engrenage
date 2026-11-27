@@ -1,5 +1,6 @@
 import { command } from "#nexus/cli/index";
 
+import extensions from "#bin/engrenage/extensions";
 import scripts from "#bin/engrenage/scripts";
 import packageJson from "#package.json" with { type: "json" };
 
@@ -11,6 +12,7 @@ export default command({
     () => {
       return import("#bin/engrenage/builtins");
     },
+    extensions,
     scripts,
   ],
 });

@@ -124,16 +124,22 @@ export function createRegistry<Extension extends ExtensionShape, Scope>(
     return active;
   }
 
-  async function activeOrder(
-    slot: string,
-    scope: Scope,
-    policy?: "bucket" | "hook",
-  ): Promise<readonly Contribution<Extension, EntryShape>[]> {
+  function slotRecord(slot: string) {
     const record = slots.get(slot);
 
     if (record === undefined) {
       throw new Error(`Unknown slot "${slot}"`);
     }
+
+    return record;
+  }
+
+  async function activeOrder(
+    slot: string,
+    scope: Scope,
+    policy?: "bucket" | "hook",
+  ): Promise<readonly Contribution<Extension, EntryShape>[]> {
+    const record = slotRecord(slot);
 
     if (policy !== undefined && record.policy !== policy) {
       throw new Error(`Slot "${slot}" is not a ${policy}`);
@@ -171,6 +177,16 @@ export function createRegistry<Extension extends ExtensionShape, Scope>(
         Extension,
         DeclarationOf<Extension, Kind>
       >[],
+    );
+  }
+
+  function registered<Slot extends SlotOf<Extension>>(
+    slot: Slot,
+  ): readonly Contribution<Extension, EntryOf<Extension, Slot>>[] {
+    const { order } = slotRecord(slot);
+
+    return freeze(
+      order as readonly Contribution<Extension, EntryOf<Extension, Slot>>[],
     );
   }
 
@@ -240,6 +256,7 @@ export function createRegistry<Extension extends ExtensionShape, Scope>(
     owner,
     get,
     list,
+    registered,
     contributions,
     select,
     emit,

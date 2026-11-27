@@ -511,6 +511,8 @@ describe("collectExtensions", () => {
     expect(active.map(({ entry }) => entry.name)).toEqual(["target"]);
     expect(inactive).toEqual([]);
 
+    expect(registry.registered("targets")).toEqual(active);
+
     expect(isActive).toHaveBeenCalledWith(active[0]?.extension, installed);
   });
 

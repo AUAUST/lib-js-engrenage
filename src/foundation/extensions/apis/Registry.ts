@@ -33,6 +33,14 @@ export interface Registry<Extension extends ExtensionShape, Scope = unknown> {
     kind: Kind,
   ): readonly OwnedDeclaration<Extension, DeclarationOf<Extension, Kind>>[];
   /**
+   * Every contribution to `slot`, in the slot's order, active or not.
+   *
+   * @throws When `slot` is unknown.
+   */
+  registered<Slot extends SlotOf<Extension>>(
+    slot: Slot,
+  ): readonly Contribution<Extension, EntryOf<Extension, Slot>>[];
+  /**
    * The contributions to `slot` whose extensions are active in `scope`, in the
    * slot's order: a list slot orders them by stage, then by edges; other slots
    * keep registration order. Each extension's activation is evaluated on its

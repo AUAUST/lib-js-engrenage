@@ -1,26 +1,17 @@
-import { pathToFileURL } from "node:url";
-
 import { describe, expect, test } from "vitest";
 
-import { program } from "#nexus/cli/index";
-import { runProgram } from "#nexus/cli/operations/runProgram";
+import { nexusModule } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { useFailingProgram } from "#tests/utils/useFailingProgram";
+import { useEngrenageProgram } from "#tests/utils/useEngrenageProgram";
 
-import engrenage from "#bin/engrenage/index";
-
-const { getReporter, printed } = useFailingProgram();
-
-const nexus = pathToFileURL(
-  new URL("../../../src/nexus/cli/index.ts", import.meta.url).pathname,
-).href;
+const { run, printed } = useEngrenageProgram();
 
 function useScripts() {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({ name: "project", type: "module" }),
     "engrenage.config.ts": "export default {};\n",
-    "scripts/pnpm/index.ts": `import { command, program } from "${nexus}";
+    "scripts/pnpm/index.ts": `import { command, program } from "${nexusModule}";
 
 export default program({
   root: command({
@@ -36,13 +27,6 @@ export default program({
   });
 
   mockCwd(project.root);
-}
-
-function run(...args: string[]) {
-  return runProgram(
-    program({ root: engrenage, scenarios: getReporter().scenarios }),
-    ["node", "engrenage", ...args],
-  );
 }
 
 describe("engrenage run", () => {

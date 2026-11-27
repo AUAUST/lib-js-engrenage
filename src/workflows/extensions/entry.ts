@@ -17,6 +17,7 @@ export type {
   BarrelExportsEntry,
   BarrelExportsResolver,
   CardinalityViolation,
+  CommandContribution,
   EnvironmentPreset,
   Extension,
   ExtensionSections,
