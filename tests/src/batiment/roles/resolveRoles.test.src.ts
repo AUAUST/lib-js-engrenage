@@ -198,7 +198,7 @@ describe("resolveRoles", () => {
     });
 
     expect(resolved.roles.adapters).toMatchObject({
-      effects: { evaluation: "effectful", invocation: "effectful" },
+      effects: { evaluation: "confined", invocation: "effectful" },
     });
 
     expect(resolved.effects.levels).toContain("logging");

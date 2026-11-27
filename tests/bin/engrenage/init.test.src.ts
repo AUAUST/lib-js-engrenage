@@ -807,7 +807,7 @@ export default defineConfig({
 `);
 });
 
-test("ranks the operations role of an empty library's project map as effectful", async () => {
+test("ranks the operations role of an empty library's project map as invoking effectful", async () => {
   const project = createProject({
     "package.json": '{\n  "name": "library",\n  "type": "module"\n}\n',
   });
@@ -830,7 +830,7 @@ test("ranks the operations role of an empty library's project map as effectful",
     .split("\n")
     .find((line) => line.startsWith("| `operations`"));
 
-  expect(row).toContain("| effectful |");
+  expect(row).toContain("| evaluation confined, invocation effectful |");
 });
 
 test("does not generate agent setup without selected agents", async () => {
