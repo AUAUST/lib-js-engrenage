@@ -5,13 +5,13 @@ import { parse } from "yaml";
 
 import { defineLogGroup } from "#bin/metalbrain/logs/index";
 import { logKinds } from "#metalbrain/logs/constants";
-import { CommandUsageError, findSubcommand } from "#nexus/cli/index";
+import { CommandUsageError } from "#nexus/cli/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
-import metalbrain from "#bin/metalbrain/index";
+import builtins from "#bin/metalbrain/builtins";
 
 function createProject(files: Readonly<Record<string, string>> = {}) {
   const project = createTemporaryProject({
@@ -325,7 +325,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
     createProject({ ".ai/pending.yml": entries });
 
     for (const kind of logKinds) {
-      const group = findSubcommand(metalbrain, kind.name);
+      const group = builtins.find(({ name }) => name === kind.name);
 
       const names = group?.kind === "parsing"
         ? group.subcommands.map(({ name }) => name)

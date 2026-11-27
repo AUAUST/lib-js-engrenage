@@ -11,3 +11,9 @@ entries:
     why: "transitional same-command batch from #1021"
     owner: "#1016"
     created: 2026-11-27T16:35:22Z
+  - id: PD-153cae
+    subject: named command entries
+    what: nexus entry kind with name and aliases known up front, declaration loaded on match; conflict errors label it instead of loader position (debt in createCommandLookup.ts)
+    why: directory and extension sources need it
+    owner: "#1028"
+    created: 2026-11-27T18:49:19Z

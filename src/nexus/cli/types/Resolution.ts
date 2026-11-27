@@ -11,6 +11,10 @@ interface ResolvedInvocation {
    * The parameters the command's action receives.
    */
   readonly parameters: readonly unknown[];
+  /**
+   * The scenario the deepest command of the path declaring one prints for.
+   */
+  readonly scenario?: string;
   readonly runOptions: RunOptionValues;
 }
 
@@ -43,6 +47,11 @@ interface ResolutionFailure {
    * without naming a command.
    */
   readonly help?: Pick<ResolvedHelp, "path" | "declaration">;
+  /**
+   * The scenario the deepest command of the path as far as it resolved
+   * declaring one prints for.
+   */
+  readonly scenario?: string;
   readonly runOptions: RunOptionValues;
 }
 

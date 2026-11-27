@@ -9,7 +9,6 @@ import {
   constrainsFileRole,
   getStructureCardinality,
   groupRoleFiles,
-  listCommandGroupModules,
   listNamedFileRoles,
   listStrayFiles,
   type StructureNode,
@@ -32,7 +31,6 @@ export function createStructureDomainResolver({
   filesystem,
   options,
   group,
-  indexFile,
   entryFile,
   internals,
   rolesFor,
@@ -42,7 +40,6 @@ export function createStructureDomainResolver({
   filesystem: Filesystem;
   options: StructureOptions;
   group: boolean;
-  indexFile: File;
   entryFile: File | undefined;
   internals: boolean;
   rolesFor(scopes: readonly string[]): ResolvedRoles;
@@ -201,11 +198,11 @@ export function createStructureDomainResolver({
       return !unknown.includes(role);
     });
 
-    const listed = await assignRoleFiles(filesystem, path, roles);
+    const assigned = group
+      ? []
+      : await assignRoleFiles(filesystem, path, roles);
 
-    const assigned = group ? [] : listed;
-    const strays = listStrayFiles(listed);
-    const modules = group ? listCommandGroupModules(strays, indexFile) : [];
+    const strays = listStrayFiles(assigned);
 
     const owned = listNamedFileRoles(
       keys(contracts),
@@ -222,7 +219,6 @@ export function createStructureDomainResolver({
     return {
       ...(group ? { group: true as const } : {}),
       ...(strays.length === 0 ? {} : { strays }),
-      ...(modules.length === 0 ? {} : { modules }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
       public: isPublic,

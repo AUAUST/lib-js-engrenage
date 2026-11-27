@@ -17,6 +17,10 @@ interface ResolvedChain {
    * The parameters of each invocation, in order.
    */
   readonly invocations: readonly (readonly unknown[])[];
+  /**
+   * The scenario the chaining command or a group above it declares.
+   */
+  readonly scenario?: string;
   readonly runOptions: RunOptionValues;
 }
 

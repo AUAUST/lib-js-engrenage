@@ -69,11 +69,11 @@ describe("command trees", () => {
     }
   });
 
-  test("reject a module beside a group's index", async () => {
+  test("accept any module beside a group's index", async () => {
     const { lint } = await createLinter();
 
     for (const file of ["scripts/pnpm.ts", "scripts/codegen/apis.ts"]) {
-      expect(await lint(file, command)).toEqual(["auaust/domain-content"]);
+      expect(await lint(file, "export const apis = 1;\n")).toEqual([]);
     }
   });
 });

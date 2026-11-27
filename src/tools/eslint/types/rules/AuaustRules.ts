@@ -63,7 +63,7 @@ export interface AuaustRules {
   "auaust/documented"?: Rule<[]>;
   /**
    * A domain holds only roles, sub-domains and namespaces, and a namespace only
-   * domains and namespaces.
+   * domains and namespaces; a command group holds any module besides its roles.
    */
   "auaust/domain-content"?: Rule<[]>;
   /**

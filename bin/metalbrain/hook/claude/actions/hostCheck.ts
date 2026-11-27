@@ -1,39 +1,16 @@
 import { text } from "node:stream/consumers";
 
 import {
-  blockStop,
-  denyToolUse,
   resolveMainWorktree,
-  writeHookContext,
+  toHookOutput,
 } from "#metalbrain/runtimes/hooks/index";
+import { getRunContext } from "#nexus/cli/index";
+import { dataEntry, lineEntry } from "#nexus/reports/index";
 import type {
   HookEvent,
-  HookVerdict,
   HostCheck,
   HostChecks,
 } from "#metalbrain/runtimes/index";
-
-function writeVerdict(verdict: HookVerdict, event: HookEvent) {
-  if (verdict.decision === "context") {
-    return void writeHookContext({
-      event,
-      context: verdict.context,
-      notify: verdict.notify === true,
-    });
-  }
-
-  if (event === "PreToolUse") {
-    return void denyToolUse(verdict.reason);
-  }
-
-  if (event === "Stop" || event === "SubagentStop") {
-    return void blockStop(verdict.reason);
-  }
-
-  throw new Error(
-    `metalbrain renders no Claude Code ${event} denial: ${verdict.reason}`,
-  );
-}
 
 // @debt engrenage's host checks are composed in metalbrain's hook runner, because the gate runs in workflows/gate above tools/metalbrain's adapter; a host-provided check registry would keep the runner host-agnostic
 async function loadHostCheck(check: keyof HostChecks): Promise<HostCheck> {
@@ -65,7 +42,15 @@ export default async function (
     time,
   });
 
-  if (verdict !== undefined) {
-    writeVerdict(verdict, event);
+  if (verdict === undefined) {
+    return;
   }
+
+  getRunContext().reporter.log(
+    dataEntry(toHookOutput(verdict, event), [
+      lineEntry(
+        verdict.decision === "context" ? verdict.context : verdict.reason,
+      ),
+    ]),
+  );
 }

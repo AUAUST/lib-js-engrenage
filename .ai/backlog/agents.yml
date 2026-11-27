@@ -49,12 +49,11 @@ entries:
     want: a SubagentStop check blocking the first stop when the transcript holds refused or failed tool results and `.ai/friction.md` is unchanged, leaving out failures the agent's own changes caused.
     created: 2026-11-22T00:00:00Z
   - id: BL-f4dee6
-    title: Hook routers duplicate payload handling and output writing
+    title: Hook settings checks duplicate the hook schemas
     sites:
-      - bin/metalbrain/hook/claude/actions/thoroughness.ts:28
       - src/metalbrain/runtimes/operations/checkAgentHooks.ts:15
-    why: the thoroughness hook writes its own stdout JSON beside the host-check runner's verdict rendering; `checkAgentHooks` clones `syncHooks`' schema (jscpd).
-    want: one hook-output writer and shared hook schemas.
+    why: "`checkAgentHooks` clones `syncHooks`' schema (jscpd)."
+    want: shared hook schemas.
     created: 2026-11-22T00:00:00Z
   - id: BL-8b47db
     title: The hook directory is resolved twice, in shell and in Node
@@ -220,3 +219,10 @@ entries:
       - .claude/rules/modules.md:21
     want: the bundled-dependency rule naming only packages still bundled
     created: 2026-11-27T17:21:42Z
+  - id: BL-c2027e
+    title: The thoroughness hook allows the tool call it warns about, skipping Claude Code's permission prompt
+    sites:
+      - bin/metalbrain/hook/claude/actions/thoroughness.ts:34
+    why: "its PreToolUse output sets `permissionDecision: allow` beside the warning context."
+    want: a warning leaving the permission decision to Claude Code.
+    created: 2026-11-27T19:07:37Z

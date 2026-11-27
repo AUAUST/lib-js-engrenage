@@ -88,7 +88,6 @@ export { isPlaced } from "#batiment/structure/utils/isPlaced";
 export { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 export { isViolatingNode } from "#batiment/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingDiagnostics";
-export { listCommandGroupModules } from "#batiment/structure/utils/listCommandGroupModules";
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";
 export { listDirectoriesRootDiagnostics } from "#batiment/structure/utils/listDirectoriesRootDiagnostics";
 export { listDirectoryLineages } from "#batiment/structure/utils/listDirectoryLineages";

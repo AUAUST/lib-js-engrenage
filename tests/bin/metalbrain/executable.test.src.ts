@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { object, parse, string } from "valibot";
@@ -8,7 +8,6 @@ import { expect, test } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { getExecutable } from "#tests/utils/getExecutable";
-import { readHookOutput } from "#tests/utils/readHookOutput";
 
 const hookCore = "#metalbrain/runtimes/hooks/";
 
@@ -24,14 +23,11 @@ const allowedPrefixes = [
   "node:",
   "#workflows/cli/",
   "#nexus/cli/",
+  "#nexus/reports/",
   "#tools/nexus/",
 ];
 
 const runtimeImport = /^(?:import|export)\s+(?!type\b)[^;]*?\bfrom\s+"(?<specifier>[^"]+)"|\bimport\("(?<loaded>[^"]+)"\)/gmv;
-
-const openHookSource = fileURLToPath(
-  import.meta.resolve("#workflows/cli/operations/openHook"),
-);
 
 const outputSchema = object({
   systemMessage: string(),
@@ -57,10 +53,15 @@ function listRuntimeImports(file: string): string[] {
     });
 }
 
-function runHook(cwd: string, event: string, input: string) {
+function runHook(
+  cwd: string,
+  event: string,
+  input: string,
+  options: readonly string[] = [],
+) {
   return spawnSync(
     process.execPath,
-    [getExecutable("metalbrain"), "hook", "claude", event],
+    [...options, getExecutable("metalbrain"), "hook", "claude", event],
     {
       cwd,
       input,
@@ -118,13 +119,13 @@ test("the hook's module graph loads only its domain, the cli domains and Node bu
   expect(visited.size).toBeGreaterThan(5);
 });
 
-test("the call-log and budget actions load only the hook core and Node builtins", () => {
+test("the call-log and budget actions load only the hook core, the run's reporting and Node builtins", () => {
   const { outside } = listOutsideImports(
     ["postToolUse", "preToolUse", "thoroughness"].map((action) => {
       return resolveSource(`#bin/metalbrain/hook/claude/actions/${action}`);
     }),
     ["#bin/metalbrain/hook/", hookCore],
-    ["node:"],
+    ["node:", "#nexus/cli/", "#nexus/reports/"],
   );
 
   expect(outside).toEqual([]);
@@ -198,46 +199,31 @@ test(
 );
 
 test(
-  "a hook whose program fails to load opens with a message",
+  "a hook run loads no registration module but the hooks'",
   () => {
     const project = createTemporaryProject({
-      "package.json": JSON.stringify({
-        type: "module",
-        imports: {
-          "#bin/*": "./bin/*.ts",
-          "#nexus/*": "./nexus/*.ts",
-          "#tools/*": "./tools/*.ts",
-          "#workflows/*": "./workflows/*.ts",
-        },
-      }),
-      "bin/metalbrain/index.ts": 'throw new Error("program is broken");\n',
-      "bin/metalbrain/hook/index.ts": "export default {};\n",
-      "nexus/cli/index.ts": "export function program() {}\n",
-      "tools/nexus/index.ts": "export function runEngrenageProgram() {}\n",
-      "workflows/cli/index.ts": `export async function launch(program, run) {\n  await run();\n}\nexport async function runExecutable(executableUrl, run) {\n  await run();\n}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
+      "trace.mjs": 'import { registerHooks } from "node:module";\nregisterHooks({ load(url, context, next) { process.stderr.write(`loaded ${url}\\n`); return next(url, context); } });\n',
     });
 
-    cpSync(
-      getExecutable("metalbrain"),
-      project.resolve("bin/metalbrain/executable.ts"),
-    );
+    const result = runHook(project.root, "Stop", "{}", [
+      "--import",
+      project.resolve("trace.mjs"),
+    ]);
 
-    const result = spawnSync(
-      process.execPath,
-      [
-        project.resolve("bin/metalbrain/executable.ts"),
-        "hook",
-        "claude",
-        "Stop",
-      ],
-      { input: "{}", encoding: "utf-8" },
-    );
+    const loaded = result.stderr
+      .split("\n")
+      .filter((line) => {
+        return line.startsWith("loaded ") && line.includes("/bin/");
+      })
+      .map((line) => line.slice(line.indexOf("/bin/")));
 
-    expect(result.status, result.stderr).toBe(0);
+    expect(loaded).toContain("/bin/metalbrain/hook/claude/index.ts");
 
-    expect(readHookOutput(result.stdout).systemMessage).toBe(
-      "metalbrain hook claude Stop did not run, so its checks are off: program is broken",
-    );
+    expect(
+      loaded.filter((file) => {
+        return !file.startsWith("/bin/metalbrain/hook/");
+      }),
+    ).toEqual(["/bin/metalbrain/executable.ts", "/bin/metalbrain/index.ts"]);
   },
   binaryTimeout,
 );

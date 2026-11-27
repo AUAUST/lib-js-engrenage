@@ -38,15 +38,6 @@ function listNodeErrors(
         files: violation.files,
       };
     }),
-    ...(node.modules ?? []).map((module) => {
-      return {
-        ...located,
-        path: module,
-        code: "command-group-module" as const,
-        message: "sits in a command group outside its roles: declare its commands in the group's index and move the rest into a role.",
-        files: [module],
-      };
-    }),
   ];
 }
 

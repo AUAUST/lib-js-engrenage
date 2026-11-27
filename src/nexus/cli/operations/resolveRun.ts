@@ -89,6 +89,12 @@ async function measureInvocation(
   }
 }
 
+function readScenario(resolution: Resolution): string | undefined {
+  return resolution.kind === "invocation" || resolution.kind === "failure"
+    ? resolution.scenario
+    : undefined;
+}
+
 function describePath(root: CommandDeclaration, path: CommandPath): string {
   return join([root.name, ...path], " ");
 }
@@ -192,6 +198,7 @@ export async function resolveRun(
           path: first.path,
           declaration: first.declaration,
           invocations: freeze([first.parameters]),
+          ...(first.scenario !== undefined && { scenario: first.scenario }),
           runOptions: first.runOptions,
         }
       : first;
@@ -224,11 +231,14 @@ export async function resolveRun(
 
   const values = readRunOptions(runOptions, given);
 
+  const scenario = readScenario(first);
+
   if (chained === undefined || errors.length > 0) {
     return {
       kind: "failure",
       path: first.path,
       errors: freeze(errors),
+      ...(scenario !== undefined && { scenario }),
       runOptions: values,
     };
   }
@@ -238,6 +248,7 @@ export async function resolveRun(
     path: first.path,
     declaration: chained.declaration,
     invocations: freeze(invocations),
+    ...(scenario !== undefined && { scenario }),
     runOptions: values,
   };
 }

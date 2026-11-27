@@ -7,7 +7,6 @@ export function isViolatingNode(
 ): boolean {
   return (
     (strictness === "strict" && node.kind === "unclassified") ||
-    node.cardinality !== undefined ||
-    node.modules !== undefined
+    node.cardinality !== undefined
   );
 }

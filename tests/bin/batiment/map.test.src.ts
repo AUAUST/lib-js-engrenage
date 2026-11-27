@@ -126,28 +126,20 @@ describe("batiment map", () => {
   });
 
   test.each([
-    ["fails", "beside the root group's index", { "scripts/bar.ts": "" }, 1],
-    ["fails", "beside a nested group's index", { "scripts/bar/baz.ts": "" }, 1],
-    [
-      "passes",
-      "in a group's actions",
-      { "scripts/bar/actions/baz.ts": "" },
-      undefined,
-    ],
-  ] as const)(
-    "%s the check on a module %s",
-    async (_verdict, _place, extra, exitCode) => {
-      createProject('{ src: { strictness: "loose" } }', {
-        "scripts/index.ts": "",
-        "scripts/bar/index.ts": "",
-        ...extra,
-      });
+    ["beside the root group's index", { "scripts/bar.ts": "" }],
+    ["beside a nested group's index", { "scripts/bar/baz.ts": "" }],
+    ["in a group's actions", { "scripts/bar/actions/baz.ts": "" }],
+  ] as const)("passes the check on a module %s", async (_place, extra) => {
+    createProject('{ src: { strictness: "loose" } }', {
+      "scripts/index.ts": "",
+      "scripts/bar/index.ts": "",
+      ...extra,
+    });
 
-      await runDefinition(batiment, "map", "--check");
+    await runDefinition(batiment, "map", "--check");
 
-      expect(process.exitCode).toBe(exitCode);
-    },
-  );
+    expect(process.exitCode).toBeUndefined();
+  });
 
   test("fails the check on a mirror directory lacking its counterpart", async () => {
     createProject('{ src: { strictness: "loose" }, tests: { mirror: true } }', {

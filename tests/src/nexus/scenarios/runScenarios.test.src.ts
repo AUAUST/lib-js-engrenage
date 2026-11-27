@@ -128,6 +128,48 @@ describe("runProgram scenarios", () => {
     expect(printed).toStrictEqual(["bound json"]);
   });
 
+  test.each([
+    [["report"], "json"],
+    [["nope"], "json"],
+    [["report", "--output", "human"], "human"],
+  ])(
+    "prints %j below a group declaring a scenario as %s",
+    async (args, scenario) => {
+      const { printed, recordAs } = createRecorder();
+
+      const detect = vi.fn(() => "agent");
+
+      const declared = program({
+        root: command({
+          name: "program",
+          subcommands: [
+            command({
+              name: "group",
+              scenario: "json",
+              subcommands: [
+                command({
+                  name: "report",
+                  action() {
+                    return Promise.resolve(() => {
+                      getRunContext().reporter.log("result");
+                    });
+                  },
+                }),
+              ],
+            }),
+          ],
+        }),
+        scenarios: createScenarios(recordAs),
+        detectors: [detect],
+      });
+
+      await runProgram(declared, ["node", "program", "group", ...args]);
+
+      expect(printed[0]).toBe(scenario);
+      expect(detect).not.toHaveBeenCalled();
+    },
+  );
+
   test("fails an undeclared scenario as a usage error", async () => {
     const { printed, recordAs } = createRecorder();
 

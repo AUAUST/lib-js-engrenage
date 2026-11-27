@@ -9,7 +9,7 @@ export function declareLayout() {
   return declare(string(), {
     description: [
       "The layout shaping the environment's tree, by name: one the `layouts` slot holds, or `domains` for the namespace and domain walk.",
-      "`commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares its commands, each loading its own action module from `actions/`, and may mount commands another group's `index.ts` exports; the root group's `executable.ts` runs it; a group holds no other module.",
+      "`commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares it, the root group's `executable.ts` runs it and `actions/` holds one action module per command; any other module holds a command, several or a group, which a group's `index.ts` declares or loads.",
     ],
     schema(context: LayoutContext) {
       return picklist([domainsLayout, ...context.layouts]);

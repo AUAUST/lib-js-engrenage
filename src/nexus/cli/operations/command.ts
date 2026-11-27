@@ -30,6 +30,7 @@ interface CommandInput<
   };
   readonly subcommands?: readonly (CommandDeclaration | CommandLoader)[];
   readonly printers?: ScenarioPrinters;
+  readonly scenario?: string;
 }
 
 /**
@@ -39,8 +40,11 @@ interface CommandInput<
  * the parameters `parse` maps from the declared values and the invocation, else
  * the declared values themselves: each argument's, then the options' keyed by
  * name when any is declared. An `options` element is an option, or a loader of
- * the options known only at run time; loaders, those of argument choices and of
- * `help.after` included, run before the command parses or shows its help.
+ * the options known only at run time; loaders, those of argument choices and
+ * of `help.after` included, run before the command parses or shows its help.
+ * With `scenario`, a run invoking the command or one below it, or failing
+ * on their usage, prints for that scenario unless `--output` names another,
+ * skipping detection.
  *
  * With `chain`, a run chains several invocations of the command separated by
  * `--next`, each naming its full command path, and the action receives every
@@ -105,6 +109,7 @@ export function command({
   help = {},
   subcommands = [],
   printers,
+  scenario,
   chain = false,
   action,
   parse,
@@ -130,6 +135,7 @@ export function command({
     help: freeze({ ...help }),
     subcommands: freeze([...subcommands]),
     ...(printers !== undefined && { printers }),
+    ...(scenario !== undefined && { scenario }),
     chain,
     ...(action !== undefined && { action }),
     ...(parse !== undefined && { parse }),

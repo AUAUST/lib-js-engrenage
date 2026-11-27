@@ -1,7 +1,5 @@
 export {
-  blockStop,
   checkThoroughness,
-  denyToolUse,
   findCommandFamily,
   findModelFact,
   findPriceTier,
@@ -21,8 +19,8 @@ export {
   resolveHookDirectory,
   thoroughnessExtension,
   thoroughnessLevels,
+  toHookOutput,
   weighAgentUsage,
-  writeHookContext,
 } from "#metalbrain/runtimes/index";
 export type {
   Agent,

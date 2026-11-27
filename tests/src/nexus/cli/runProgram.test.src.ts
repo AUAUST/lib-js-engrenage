@@ -113,7 +113,12 @@ describe("runProgram", () => {
 
     expect(onError).toHaveBeenCalledWith(
       new CommandUsageError("unknown command 'nope'"),
-      { path: [], report: expect.any(Function) },
+      {
+        args: ["nope"],
+        path: [],
+        reporter: expect.any(Object),
+        report: expect.any(Function),
+      },
     );
 
     expect(process.exitCode).toBeUndefined();
@@ -453,7 +458,12 @@ describe("runProgram", () => {
         new TypeError(
           "The program command declares the --next option, which nexus reserves to separate invocations",
         ),
-        { path: undefined, report: expect.any(Function) },
+        {
+          args: [],
+          path: undefined,
+          reporter: expect.any(Object),
+          report: expect.any(Function),
+        },
       );
     });
   });

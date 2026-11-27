@@ -1,7 +1,5 @@
 export {
-  blockStop,
   checkThoroughness,
-  denyToolUse,
   findIssuingMessage,
   findModelFact,
   findPriceTier,
@@ -36,7 +34,8 @@ export {
   statsDirectory,
   thoroughnessExtension,
   thoroughnessLevels,
-  writeHookContext,
+  toFailOpenOutput,
+  toHookOutput,
 } from "#metalbrain/runtimes/hooks/index";
 
 // @barrel operations
@@ -89,6 +88,7 @@ export type * from "#metalbrain/runtimes/types/AgentTranscript";
 export type * from "#metalbrain/runtimes/types/AgentUsage";
 export type * from "#metalbrain/runtimes/types/AssistantMessage";
 export type * from "#metalbrain/runtimes/types/Effort";
+export type * from "#metalbrain/runtimes/types/FailOpenOutput";
 export type * from "#metalbrain/runtimes/types/Gate";
 export type * from "#metalbrain/runtimes/types/HookAction";
 export type * from "#metalbrain/runtimes/types/HookContext";

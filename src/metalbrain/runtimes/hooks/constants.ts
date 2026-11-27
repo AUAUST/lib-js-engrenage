@@ -18,3 +18,9 @@ export const thoroughnessLimitsSpecifier = "@auaust/engrenage/metalbrain/thoroug
 export const thoroughnessLevels = ["scoped", "standard"] as const;
 
 export const thoroughnessExtension = ".thoroughness.json";
+
+export const contextEvents: readonly string[] = [
+  "PreToolUse",
+  "PostToolUse",
+  "SubagentStart",
+];

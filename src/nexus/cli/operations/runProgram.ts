@@ -92,6 +92,12 @@ function createPendingPrinter(): Printer & {
   };
 }
 
+function readScenario(resolution: RunResolution): string | undefined {
+  return resolution.kind === "help" || resolution.kind === "version"
+    ? undefined
+    : resolution.scenario;
+}
+
 function readPrinters(resolution: RunResolution): ScenarioPrinters | undefined {
   switch (resolution.kind) {
     case "invocation": {
@@ -184,21 +190,22 @@ function reportFailure(
  * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
  * hands the printer of its output scenario every entry the verbosity its run
  * options set shows, else `debug` when `<ROOT>_DEBUG`, `<ROOT>` its root's name
- * in upper case, is `1` or `true`, else `default`, each completion line with
- * the run's total time, and on failure sets the exit code to 1 and prints its
- * error, a usage error alone, any other led by what `explain` returns for it,
- * with its stack at `debug`, which `resolveDebug` also sets when no flag does;
- * the failure handler, when given, receives the error instead, with the command
- * path the run resolved to and this report to run. It prints for the scenario
- * `--output` names, else the first of its scenarios one of its detectors names,
- * through the printer the resolved command binds to it, else the one the program
- * declares, loaded once the run resolves, before any action loads, and holding
- * the entries reported until then. Once the run ends unaborted, it reports the
- * marks and measures of the performance timeline since it started, behind the
- * time from process start to the run's, as a table: with `--timings` at any
- * verbosity but `silent`, otherwise as a debug report; it measures its own
- * phases, each invocation's routing, source and layer loading and validation,
- * then the action's loading and execution.
+ * in upper case, is `1` or `true`, else `default`, each completion line with the
+ * run's total time, and on failure sets the exit code to 1 and prints its error,
+ * a usage error alone, any other led by what `explain` returns for it, with its
+ * stack at `debug`, which `resolveDebug` also sets when no flag does; the failure
+ * handler, when given, receives the error instead, with the command path the
+ * run resolved to, its arguments, the run's reporter and this report to run. It
+ * prints for the scenario `--output` names, else, unless the run asks for help or
+ * the version, the one the deepest command of its path declares, else the first
+ * of its scenarios one of its detectors names, through the printer the resolved
+ * command binds to it, else the one the program declares, loaded once the run
+ * resolves, before any action loads, and holding the entries reported until
+ * then. Once the run ends unaborted, it reports the marks and measures of the
+ * performance timeline since it started, behind the time from process start to the
+ * run's, as a table: with `--timings` at any verbosity but `silent`, otherwise as
+ * a debug report; it measures its own phases, each invocation's routing, source
+ * and layer loading and validation, then the action's loading and execution.
  */
 export async function runProgram(
   program: ProgramDeclaration,
@@ -225,6 +232,8 @@ export async function runProgram(
     return flag === undefined ? unflagged : verbosityFlags[flag];
   }
 
+  const args = (argv ?? process.argv).slice(2);
+
   const output = createPendingPrinter();
 
   let path: CommandPath | undefined;
@@ -235,7 +244,13 @@ export async function runProgram(
 
   async function settle(
     runOptions: RunOptionValues | undefined,
-    bindings: ScenarioPrinters | undefined,
+    {
+      scenario,
+      bindings,
+    }: {
+      scenario?: string | undefined;
+      bindings?: ScenarioPrinters | undefined;
+    } = {},
   ): Promise<void> {
     flag = keys(verbosityFlags)
       .filter((name) => {
@@ -246,7 +261,7 @@ export async function runProgram(
     timed = runOptions?.timings === true;
 
     printer = await loadScenarioPrinter(
-      runOptions?.output ?? detectScenario(detectors, scenarios),
+      runOptions?.output ?? scenario ?? detectScenario(detectors, scenarios),
       { scenarios, bindings },
     );
 
@@ -271,14 +286,14 @@ export async function runProgram(
     await runContext.run(
       { signal: runSignal, reporter: runReporter },
       async () => {
-        const resolution = await resolveRun(
-          program,
-          (argv ?? process.argv).slice(2),
-        );
+        const resolution = await resolveRun(program, args);
 
         path = resolution.path;
 
-        await settle(resolution.runOptions, readPrinters(resolution));
+        await settle(resolution.runOptions, {
+          scenario: readScenario(resolution),
+          bindings: readPrinters(resolution),
+        });
 
         await executeProgram(program, resolution);
       },
@@ -289,7 +304,7 @@ export async function runProgram(
     }
 
     if (!output.settled) {
-      await settle(undefined, undefined);
+      await settle(undefined);
     }
 
     async function report(): Promise<void> {
@@ -310,7 +325,14 @@ export async function runProgram(
       });
     }
 
-    await (onError === undefined ? report() : onError(error, { path, report }));
+    await (onError === undefined
+      ? report()
+      : onError(error, {
+          args,
+          path,
+          reporter: runReporter,
+          report,
+        }));
   } finally {
     stopListening();
   }

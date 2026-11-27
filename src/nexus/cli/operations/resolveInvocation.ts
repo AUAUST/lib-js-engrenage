@@ -172,6 +172,8 @@ async function resolvePath(
   const errors: CommandUsageError[] = [];
   const names: string[] = [];
 
+  let scenario: string | undefined;
+
   const lookup = createCommandLookup((load) => {
     return timer.timeAsync(runPhases.sources, load);
   });
@@ -194,6 +196,7 @@ async function resolvePath(
         path: freeze([...names]),
         errors: freeze(errors),
         ...(help !== undefined && { help }),
+        ...(scenario !== undefined && { scenario }),
         runOptions: values,
       };
     }
@@ -201,6 +204,7 @@ async function resolvePath(
     return {
       kind: "invocation",
       ...invocation,
+      ...(scenario !== undefined && { scenario }),
       runOptions: values,
     };
   }
@@ -220,6 +224,8 @@ async function resolvePath(
     }
 
     const current = declaration;
+
+    scenario = current.scenario ?? scenario;
 
     const layers = await timer.timeAsync(runPhases.layers, () => {
       return loadLayers(current, path);

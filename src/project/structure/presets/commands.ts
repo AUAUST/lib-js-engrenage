@@ -11,6 +11,6 @@ export const commands: RecursiveLayout = {
   roles: [index(), executable(), actions()],
   node: {
     label: "command group",
-    description: "one directory per command group, whose `index.ts` declares its commands, each loading its own action module from `actions/`, and may mount commands another group's `index.ts` exports; the root group's `executable.ts` runs it; a group holds no other module.",
+    description: "one directory per command group, whose `index.ts` declares it; the root group's `executable.ts` runs it and `actions/` holds one action module per command; any other module holds a command, several or a group, which a group's `index.ts` declares or loads.",
   },
 };

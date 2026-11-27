@@ -75,6 +75,7 @@ agents:
     - BL-559e80
     - BL-71865f
     - BL-10a58c
+    - BL-c2027e
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:

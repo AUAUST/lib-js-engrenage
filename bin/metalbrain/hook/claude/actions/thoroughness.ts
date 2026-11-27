@@ -6,6 +6,8 @@ import {
   parseToolPayload,
   resolveMainWorktree,
 } from "#metalbrain/runtimes/hooks/index";
+import { getRunContext } from "#nexus/cli/index";
+import { dataEntry, lineEntry } from "#nexus/reports/index";
 
 export default async function ({ level }: { level: string }): Promise<void> {
   if (!isThoroughnessLevel(level)) {
@@ -25,13 +27,14 @@ export default async function ({ level }: { level: string }): Promise<void> {
     return;
   }
 
-  process.stdout.write(
-    `${JSON.stringify({
-      hookSpecificOutput: {
-        hookEventName: "PreToolUse",
-        permissionDecision: "allow",
-        additionalContext: context,
-      },
-    })}\n`,
-  );
+  // @debt states Claude Code's PreToolUse output beside `toHookOutput`, which renders no `allow` decision
+  const output = {
+    hookSpecificOutput: {
+      hookEventName: "PreToolUse",
+      permissionDecision: "allow",
+      additionalContext: context,
+    },
+  };
+
+  getRunContext().reporter.log(dataEntry(output, [lineEntry(context)]));
 }

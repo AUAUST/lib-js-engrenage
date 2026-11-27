@@ -60,7 +60,7 @@ export interface BinInput {
   discovered?: (ListOption<string> | undefined)
   /**
    * The layout shaping the environment's tree, by name: one the `layouts` slot holds, or `domains` for the namespace and domain walk.
-   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares its commands, each loading its own action module from `actions/`, and may mount commands another group's `index.ts` exports; the root group's `executable.ts` runs it; a group holds no other module.
+   * `commands` makes the environment root and every directory that is not a role a command group: its `index.ts` declares it, the root group's `executable.ts` runs it and `actions/` holds one action module per command; any other module holds a command, several or a group, which a group's `index.ts` declares or loads.
    * @default the layout of the environment's namespace kind, otherwise `domains`
    */
   layout?: (string | undefined)

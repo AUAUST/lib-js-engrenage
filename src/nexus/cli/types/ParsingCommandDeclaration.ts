@@ -28,6 +28,11 @@ export interface ParsingCommandDeclaration {
   readonly subcommands: readonly (CommandDeclaration | CommandLoader)[];
   readonly printers?: ScenarioPrinters;
   /**
+   * The output scenario a run invoking the command or one below it prints for
+   * when `--output` names none, instead of the detected one.
+   */
+  readonly scenario?: string;
+  /**
    * Whether a run chains several invocations of the command separated by `--next`,
    * its action receiving them all.
    */

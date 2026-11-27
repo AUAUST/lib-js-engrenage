@@ -11,46 +11,40 @@ if (
   process.env.NODE_COMPILE_CACHE = directory;
 }
 
-// @debt a failure loading the cli barrel crashes a hook instead of failing open, since openHook lives behind it
-const {
-  launch,
-  openHook,
-  runExecutable,
-} = await import("#workflows/cli/index");
+const [
+  { program },
+  { dataEntry, lineEntry },
+  { runEngrenageProgram },
+  { launch, runExecutable },
+] = await Promise.all([
+  import("#nexus/cli/index"),
+  import("#nexus/reports/index"),
+  import("#tools/nexus/index"),
+  import("#workflows/cli/index"),
+]);
 
-async function runMetalbrain(): Promise<void> {
-  const [
-    { program },
-    { runEngrenageProgram },
-    { default: metalbrain },
-    { default: hook },
-  ] = await Promise.all([
-    import("#nexus/cli/index"),
-    import("#tools/nexus/index"),
-    import("#bin/metalbrain/index"),
-    import("#bin/metalbrain/hook/index"),
-  ]);
-
-  await runEngrenageProgram(program({ root: metalbrain }), undefined, {
-    onError(error, { path, report }) {
-      if (path?.[0] === hook.name) {
-        return void openHook("metalbrain", error);
-      }
-
-      return report();
-    },
-  });
-}
-
+// @debt a hook whose program fails to load exits 1 instead of failing open with a message, since the failure handler runs only once the program loads
 await launch("metalbrain", async () => {
-  try {
-    await runExecutable(import.meta.url, runMetalbrain);
-  } catch (error) {
-    // @debt a failure before the run resolves, such as the program failing to load, finds a hook by the first argument, so a run option before `hook` makes it fail loudly
-    if (process.argv[2] !== "hook") {
-      throw error;
-    }
+  await runExecutable(import.meta.url, async () => {
+    const [{ default: metalbrain }, { default: hook }] = await Promise.all([
+      import("#bin/metalbrain/index"),
+      import("#bin/metalbrain/hook/index"),
+    ]);
 
-    openHook("metalbrain", error);
-  }
+    await runEngrenageProgram(program({ root: metalbrain }), undefined, {
+      async onError(error, { args, path, reporter, report }) {
+        if (path?.[0] !== hook.name) {
+          return report();
+        }
+
+        const {
+          toFailOpenOutput,
+        } = await import("#metalbrain/runtimes/hooks/index");
+
+        const output = toFailOpenOutput([metalbrain.name, ...args], error);
+
+        reporter.log(dataEntry(output, [lineEntry(output.systemMessage)]));
+      },
+    });
+  });
 });

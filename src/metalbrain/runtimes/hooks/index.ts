@@ -6,9 +6,7 @@ export {
 } from "#metalbrain/runtimes/hooks/constants";
 
 // @barrel operations
-export { blockStop } from "#metalbrain/runtimes/hooks/operations/blockStop";
 export { checkThoroughness } from "#metalbrain/runtimes/hooks/operations/checkThoroughness";
-export { denyToolUse } from "#metalbrain/runtimes/hooks/operations/denyToolUse";
 export { logToolCall } from "#metalbrain/runtimes/hooks/operations/logToolCall";
 export { readAppendedLines } from "#metalbrain/runtimes/hooks/operations/readAppendedLines";
 export { readFirstPrompt } from "#metalbrain/runtimes/hooks/operations/readFirstPrompt";
@@ -19,7 +17,6 @@ export { readThoroughnessLimits } from "#metalbrain/runtimes/hooks/operations/re
 export { recordCallStart } from "#metalbrain/runtimes/hooks/operations/recordCallStart";
 export { resolveMainWorktree } from "#metalbrain/runtimes/hooks/operations/resolveMainWorktree";
 export { scanTranscriptTail } from "#metalbrain/runtimes/hooks/operations/scanTranscriptTail";
-export { writeHookContext } from "#metalbrain/runtimes/hooks/operations/writeHookContext";
 // @end
 
 // @barrel utils
@@ -43,4 +40,6 @@ export { priceTokens } from "#metalbrain/runtimes/hooks/utils/priceTokens";
 export { readPromptText } from "#metalbrain/runtimes/hooks/utils/readPromptText";
 export { resolveStartFile } from "#metalbrain/runtimes/hooks/utils/resolveStartFile";
 export { resolveTranscript } from "#metalbrain/runtimes/hooks/utils/resolveTranscript";
+export { toFailOpenOutput } from "#metalbrain/runtimes/hooks/utils/toFailOpenOutput";
+export { toHookOutput } from "#metalbrain/runtimes/hooks/utils/toHookOutput";
 // @end
