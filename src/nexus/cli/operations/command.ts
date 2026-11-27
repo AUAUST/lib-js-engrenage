@@ -22,7 +22,6 @@ interface CommandInput<
   readonly aliases?: readonly string[];
   readonly description?: string;
   readonly version?: string;
-  readonly positionalOptions?: boolean;
   readonly arguments?: Arguments;
   readonly options?: Options;
   readonly help?: {
@@ -99,7 +98,6 @@ export function command({
   aliases = [],
   description,
   version,
-  positionalOptions = false,
   arguments: declared = [],
   options = [],
   help = {},
@@ -125,7 +123,6 @@ export function command({
     aliases: freeze([...aliases]),
     ...(description !== undefined && { description }),
     ...(version !== undefined && { version }),
-    positionalOptions,
     arguments: freeze([...declared]),
     options: freeze([...options]),
     help: freeze({ ...help }),

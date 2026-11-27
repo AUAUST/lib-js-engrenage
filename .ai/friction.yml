@@ -1370,3 +1370,8 @@ entries:
     tried: mocking an action module with a factory returning { default }
     stopped: "loadLazy returned the object, action load failed; added __esModule: true"
     created: 2026-11-27T15:19:31Z
+  - id: FR-0bf908
+    subject: eslint fix return undefined vs array-callback-return
+    tried: returning undefined from a map callback
+    stopped: autofix rewrote it to bare return, which array-callback-return rejects; moved the callback into a named function
+    created: 2026-11-27T15:45:30Z

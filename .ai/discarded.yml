@@ -1089,3 +1089,8 @@ entries:
     need: reject undeclared scenario
     reason: scenarios known only at runProgram
     created: 2026-11-27T13:28:10Z
+  - id: DS-173f1f
+    subject: fastest-levenshtein for CLI suggestions
+    need: did-you-mean on unknown commands and options
+    reason: closest has no distance cap, last release 2022; leven 4 has closestMatch with maxDistance
+    created: 2026-11-27T15:30:10Z

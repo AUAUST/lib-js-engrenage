@@ -5,3 +5,9 @@ entries:
     why: user batches instruction changes at plan end
     owner: "#1003"
     created: 2026-11-27T13:17:32Z
+  - id: PD-3a2afc
+    subject: "group without subcommand: help vs no command given"
+    what: "match Commander: a group with no action and no subcommand prints its help (exit code too), or decide the change"
+    why: resolver (#1018) returns failure no command given; matters once programs switch
+    owner: "#1020"
+    created: 2026-11-27T15:46:28Z

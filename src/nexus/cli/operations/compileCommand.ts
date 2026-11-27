@@ -14,6 +14,7 @@ import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { bindExtension } from "#nexus/cli/operations/bindExtension";
 import { createCommandDefinition } from "#nexus/cli/operations/createCommandDefinition";
 import { createGroupDefinition } from "#nexus/cli/operations/createGroupDefinition";
+import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
 import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
@@ -78,15 +79,10 @@ function toAttributeName(name: string): string {
 }
 
 function createOption(declaration: OptionDeclaration): Option {
-  const long = declaration.type === "string"
-    ? `--${declaration.name} <${declaration.placeholder ?? "value"}>`
-    : `--${declaration.name}`;
-
-  const flags = declaration.short === undefined
-    ? long
-    : `-${declaration.short}, ${long}`;
-
-  const option = new Option(flags, declaration.description);
+  const option = new Option(
+    describeOptionFlags(declaration),
+    declaration.description,
+  );
 
   if (declaration.default !== undefined) {
     option.default(declaration.default);
@@ -185,18 +181,16 @@ function readOptionValues(
 
 function declareMeta(
   command: Command,
-  { description, version, positionalOptions }: ParsingCommandDeclaration,
+  { description, version }: ParsingCommandDeclaration,
 ): void {
+  command.enablePositionalOptions();
+
   if (description !== undefined) {
     command.description(description);
   }
 
   if (version !== undefined) {
     command.version(version);
-  }
-
-  if (positionalOptions) {
-    command.enablePositionalOptions();
   }
 }
 

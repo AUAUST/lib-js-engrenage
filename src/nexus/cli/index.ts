@@ -6,7 +6,9 @@ export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 export { option } from "#nexus/cli/operations/option";
+export { program } from "#nexus/cli/operations/program";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
+export { resolveInvocation } from "#nexus/cli/operations/resolveInvocation";
 export { runInvocations } from "#nexus/cli/operations/runInvocations";
 export { runProgram } from "#nexus/cli/operations/runProgram";
 
@@ -27,13 +29,17 @@ export type * from "#nexus/cli/types/CommandDeclaration";
 export type * from "#nexus/cli/types/CommandDefinition";
 export type * from "#nexus/cli/types/CommandInvocation";
 export type * from "#nexus/cli/types/CommandPath";
+export type * from "#nexus/cli/types/CommandTokens";
 export type * from "#nexus/cli/types/DeclaredParameters";
 export type * from "#nexus/cli/types/ForwardingCommandDeclaration";
 export type * from "#nexus/cli/types/InvocationFailure";
 export type * from "#nexus/cli/types/LayerLoader";
 export type * from "#nexus/cli/types/OptionDeclaration";
 export type * from "#nexus/cli/types/ParsingCommandDeclaration";
+export type * from "#nexus/cli/types/ProgramDeclaration";
+export type * from "#nexus/cli/types/Resolution";
 export type * from "#nexus/cli/types/RunContext";
+export type * from "#nexus/cli/types/RunOptionValues";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end
 

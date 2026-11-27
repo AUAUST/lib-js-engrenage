@@ -13,7 +13,6 @@ export interface ParsingCommandDeclaration {
   readonly aliases: readonly string[];
   readonly description?: string;
   readonly version?: string;
-  readonly positionalOptions: boolean;
   readonly arguments: readonly ArgumentDeclaration[];
   readonly options: readonly (
     OptionDeclaration | LayerLoader<readonly OptionDeclaration[]>

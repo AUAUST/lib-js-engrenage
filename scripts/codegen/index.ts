@@ -9,7 +9,6 @@ import schemas from "#scripts/codegen/schemas";
 export default command({
   name: "codegen",
   description: "Generate sources of the package from its tooling, running every generator without a subcommand.",
-  positionalOptions: true,
   options: [
     option({
       name: "check",

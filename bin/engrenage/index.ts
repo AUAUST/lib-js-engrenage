@@ -27,7 +27,6 @@ export default command({
   name: "engrenage",
   description: packageJson.description,
   version: packageJson.version,
-  positionalOptions: true,
   subcommands: [
     init,
     sync,
