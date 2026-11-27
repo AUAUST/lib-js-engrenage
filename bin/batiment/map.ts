@@ -1,11 +1,16 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { command, option } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description("Print how batiment classifies the project directories.")
-      .option("--check", "exit non-zero on any error diagnostic", false);
-  },
+export default command({
+  name: "map",
+  description: "Print how batiment classifies the project directories.",
+  options: [
+    option({
+      name: "check",
+      type: "boolean",
+      description: "exit non-zero on any error diagnostic",
+      default: false,
+    }),
+  ],
   action() {
     return import("#bin/batiment/actions/map");
   },

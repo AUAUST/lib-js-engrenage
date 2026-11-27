@@ -1,15 +1,25 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { argument, command, option } from "#nexus/cli/index";
 import { apiSourceLibrary } from "#project/baseline/constants";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        `Generate the execution API declaration groups from the ${apiSourceLibrary} of TypeScript.`,
-      )
-      .argument("[groups...]", "groups to generate (all by default)")
-      .option("--check", "report outdated groups without writing them", false);
-  },
+export default command({
+  name: "apis",
+  description: `Generate the execution API declaration groups from the ${apiSourceLibrary} of TypeScript.`,
+  arguments: [
+    argument({
+      name: "groups",
+      description: "groups to generate (all by default)",
+      optional: true,
+      variadic: true,
+    }),
+  ],
+  options: [
+    option({
+      name: "check",
+      type: "boolean",
+      description: "report outdated groups without writing them",
+      default: false,
+    }),
+  ],
   action() {
     return import("#scripts/codegen/actions/apis");
   },

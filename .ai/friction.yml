@@ -1365,3 +1365,8 @@ entries:
     tried: migrating metalbrain command files one by one
     stopped: PreToolUse guard hook crashed and failed open mid-migration; finished migration quickly
     created: 2026-11-27T15:13:23Z
+  - id: FR-608ba5
+    subject: vi.mock module not a namespace for loadLazy
+    tried: mocking an action module with a factory returning { default }
+    stopped: "loadLazy returned the object, action load failed; added __esModule: true"
+    created: 2026-11-27T15:19:31Z

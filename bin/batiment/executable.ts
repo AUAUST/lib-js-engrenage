@@ -26,6 +26,6 @@ await launch(async () => {
   await runExecutable(import.meta.url, async () => {
     const { default: batiment } = await import("#bin/batiment/index");
 
-    await runEngrenageProgram(createProgram("batiment", batiment));
+    await runEngrenageProgram(createProgram(batiment));
   });
 });

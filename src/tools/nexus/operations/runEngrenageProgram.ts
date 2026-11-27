@@ -1,5 +1,3 @@
-import type { CommandUnknownOpts } from "@commander-js/extra-typings";
-
 import { runProgram } from "#nexus/cli/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/operations/explainStaleBarrel";
@@ -23,7 +21,7 @@ async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
  * turning debug on, with the hand fix of a stale barrel leading its error.
  */
 export function runEngrenageProgram(
-  program: CommandUnknownOpts,
+  program: Parameters<typeof runProgram>[0],
   argv?: readonly string[],
   options: {
     signal?: AbortSignal;

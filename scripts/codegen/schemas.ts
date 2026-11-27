@@ -1,13 +1,16 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { command, option } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Generate the JSON Schemas of the structure metadata files from their validation schemas.",
-      )
-      .option("--check", "report an outdated file without writing it", false);
-  },
+export default command({
+  name: "schemas",
+  description: "Generate the JSON Schemas of the structure metadata files from their validation schemas.",
+  options: [
+    option({
+      name: "check",
+      type: "boolean",
+      description: "report an outdated file without writing it",
+      default: false,
+    }),
+  ],
   action() {
     return import("#scripts/codegen/actions/schemas");
   },

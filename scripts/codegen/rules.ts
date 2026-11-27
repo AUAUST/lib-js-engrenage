@@ -1,13 +1,16 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { command, option } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Generate the typed ESLint rules interfaces from the plugins the shipped configuration registers.",
-      )
-      .option("--check", "report outdated files without writing them", false);
-  },
+export default command({
+  name: "rules",
+  description: "Generate the typed ESLint rules interfaces from the plugins the shipped configuration registers.",
+  options: [
+    option({
+      name: "check",
+      type: "boolean",
+      description: "report outdated files without writing them",
+      default: false,
+    }),
+  ],
   action() {
     return import("#scripts/codegen/actions/rules");
   },

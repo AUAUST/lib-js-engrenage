@@ -5,4 +5,4 @@ import { runEngrenageProgram } from "#tools/nexus/index";
 
 import support from "#scripts/index";
 
-await runEngrenageProgram(createProgram("support", support));
+await runEngrenageProgram(createProgram(support));

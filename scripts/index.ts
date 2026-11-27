@@ -1,17 +1,11 @@
 import { engrenage } from "#constants";
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import codegen from "#scripts/codegen/index";
 import pnpm from "#scripts/pnpm";
 
-export default defineGroup({
-  configure(command) {
-    return command.description(
-      `Maintain generated sources of ${engrenage} itself.`,
-    );
-  },
-  commands: {
-    codegen,
-    pnpm,
-  },
+export default command({
+  name: "support",
+  description: `Maintain generated sources of ${engrenage} itself.`,
+  subcommands: [codegen, pnpm],
 });

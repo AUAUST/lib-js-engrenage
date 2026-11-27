@@ -6,35 +6,28 @@ import codegen from "#scripts/codegen/index";
 
 const { runs } = vi.hoisted(() => {
   return {
-    runs: [] as { name: string; check: boolean }[],
+    runs: [] as { name: string; parameters: unknown[] }[],
   };
 });
 
-async function createGenerator(name: string) {
-  const { defineCommand } = await import("#nexus/cli/index");
-
+function createGenerator(name: string) {
   return {
-    default: defineCommand({
-      configure(command) {
-        return command.option("--check", "", false);
-      },
-      action({ check }) {
-        runs.push({
-          name,
-          check,
-        });
-      },
-    }),
+    __esModule: true,
+    default(...parameters: unknown[]) {
+      runs.push({ name, parameters });
+    },
   };
 }
 
-vi.mock("#scripts/codegen/editions", () => createGenerator("editions"));
+vi.mock("#scripts/codegen/actions/editions", () => createGenerator("editions"));
 
-vi.mock("#scripts/codegen/apis", () => createGenerator("apis"));
+vi.mock("#scripts/codegen/actions/apis", () => createGenerator("apis"));
 
-vi.mock("#scripts/codegen/config", () => createGenerator("config"));
+vi.mock("#scripts/codegen/actions/config", () => createGenerator("config"));
 
-vi.mock("#scripts/codegen/rules", () => createGenerator("rules"));
+vi.mock("#scripts/codegen/actions/rules", () => createGenerator("rules"));
+
+vi.mock("#scripts/codegen/actions/schemas", () => createGenerator("schemas"));
 
 describe("support codegen", () => {
   test("runs every generator in order, forwarding the check", async () => {
@@ -43,10 +36,11 @@ describe("support codegen", () => {
     await runDefinition(codegen, "--check");
 
     expect(runs).toEqual([
-      { name: "editions", check: true },
-      { name: "apis", check: true },
-      { name: "config", check: true },
-      { name: "rules", check: true },
+      { name: "editions", parameters: [{ check: true }] },
+      { name: "apis", parameters: [[], { check: true }] },
+      { name: "config", parameters: [{ check: true }] },
+      { name: "rules", parameters: [{ check: true }] },
+      { name: "schemas", parameters: [{ check: true }] },
     ]);
   });
 
@@ -55,6 +49,6 @@ describe("support codegen", () => {
 
     await runDefinition(codegen, "rules", "--check");
 
-    expect(runs).toEqual([{ name: "rules", check: true }]);
+    expect(runs).toEqual([{ name: "rules", parameters: [{ check: true }] }]);
   });
 });
