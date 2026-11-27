@@ -1,17 +1,12 @@
-import { defineGroup, defineLazyCommand } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/agents/skills/add";
 
-export default defineGroup({
-  configure(command) {
-    return command.description("Select and install shared agent skills.");
+export default command({
+  name: "skills",
+  description: "Select and install shared agent skills.",
+  subcommands: [add],
+  action() {
+    return import("#bin/metalbrain/agents/skills/actions/add");
   },
-  commands: {
-    add,
-  },
-  command: defineLazyCommand({
-    action() {
-      return import("#bin/metalbrain/agents/skills/actions/add");
-    },
-  }),
 });

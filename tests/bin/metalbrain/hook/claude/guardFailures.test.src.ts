@@ -105,7 +105,7 @@ test("a dispatch guard failing to load reaches the fail-open handler", async () 
   let failure: unknown;
 
   await runProgram(
-    createProgram("metalbrain", metalbrain),
+    createProgram(metalbrain),
     ["node", "metalbrain", "hook", "claude", "PreToolUse", "guardToolUse"],
     {
       onError(error) {

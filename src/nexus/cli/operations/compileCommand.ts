@@ -320,6 +320,7 @@ function compileAction(
       });
     },
     printers: declaration.printers,
+    chain: declaration.chain,
   });
 }
 

@@ -34,11 +34,7 @@ async function runMetalbrain(
     import("#bin/metalbrain/index"),
   ]);
 
-  await runEngrenageProgram(
-    createProgram("metalbrain", metalbrain),
-    undefined,
-    options,
-  );
+  await runEngrenageProgram(createProgram(metalbrain), undefined, options);
 }
 
 if (isHook) {

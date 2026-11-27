@@ -1,15 +1,12 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command.description(
-      "Count the entries per subject, flagging recurring subjects.",
-    );
-  },
+export default command({
+  name: "stats",
+  description: "Count the entries per subject, flagging recurring subjects.",
   action() {
     return import("#bin/metalbrain/logs/actions/stats");
   },
-  parse(_options, command) {
-    return [command.parent?.name() ?? ""];
+  parse({ path }) {
+    return [path.at(-2) ?? ""];
   },
 });

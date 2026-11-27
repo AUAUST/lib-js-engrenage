@@ -60,7 +60,11 @@ function selectSession(
 
 export default async function (
   requested: string | undefined,
-  { all, since, outcome }: { all: boolean; since?: string; outcome: boolean },
+  {
+    all,
+    since,
+    outcome,
+  }: { all: boolean; since?: string | undefined; outcome: boolean },
 ): Promise<void> {
   const config = await loadValidatedConfig(
     await resolveMainWorktree(process.cwd()),

@@ -95,3 +95,11 @@ entries:
       - tests/src/batiment/structure/entityIndex.test.src.ts:34
     want: One testutil exporting the repository root, reused by each site
     created: 2026-11-24T00:00:00Z
+  - id: BL-c2ca61
+    title: Workflow tests pay cold module loading and whole-project sync or init in each file's first test
+    sites:
+      - tests/constants.ts:18
+    why: First test takes 1-2s alone and 5-9s beside other suites while later tests take milliseconds; preloading the pnpm action cut its first test from 2s to 28ms; each workflowTimeout budget (BL-adfd1d) hides this cost
+    want: Split module loading from whole-project work in that cost, then make the operations or their fixtures cheap enough for vitest's default timeout under load
+    done: No test file uses workflowTimeout
+    created: 2026-11-27T15:01:19Z

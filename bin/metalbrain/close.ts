@@ -1,21 +1,17 @@
-import { collectListArgument, defineLazyCommand } from "#nexus/cli/index";
+import { argument, collectListArgument, command } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Remove entries of any record kind, none when an ID is unknown.",
-      )
-      .argument(
-        "<ids...>",
-        "the entries' IDs of any kinds, comma- or space-separated",
-        collectListArgument,
-      );
-  },
+export default command({
+  name: "close",
+  description: "Remove entries of any record kind, none when an ID is unknown.",
+  arguments: [
+    argument({
+      name: "ids",
+      description: "the entries' IDs of any kinds, comma- or space-separated",
+      variadic: true,
+      reduce: collectListArgument,
+    }),
+  ],
   action() {
     return import("#bin/metalbrain/actions/close");
-  },
-  parse(ids) {
-    return [ids];
   },
 });

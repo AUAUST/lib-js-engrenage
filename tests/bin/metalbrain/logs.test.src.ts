@@ -30,7 +30,7 @@ function createProject(files: Readonly<Record<string, string>> = {}) {
 function addFriction(subject: string) {
   return runCommand(
     "friction",
-    defineLogGroup({ taps: true }),
+    defineLogGroup({ name: "friction", taps: true }),
     "add",
     "--subject",
     subject,
@@ -83,7 +83,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "add",
       "--subject",
       "git add",
@@ -117,7 +117,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
     await expect(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "add",
         "--subject",
         "git add",
@@ -151,9 +151,11 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     await addFriction("zsh globs");
 
-    const {
-      messages,
-    } = await runCommand("friction", defineLogGroup({ taps: true }), "stats");
+    const { messages } = await runCommand(
+      "friction",
+      defineLogGroup({ name: "friction", taps: true }),
+      "stats",
+    );
 
     expect(messages.map(({ text }) => text)).toEqual([
       "3 git add (recurring)",
@@ -170,7 +172,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "update",
       id,
       "--stopped",
@@ -191,7 +193,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     const { messages: shown } = await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "show",
       id,
     );
@@ -210,9 +212,11 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
       ".ai/pending.yml": "entries:\n  - id: PD-0a0a0a\n    created: 2026-11-20T00:00:00Z\n    subject: docs\n    what: write them\n    why: out of scope\n",
     });
 
-    const {
-      messages,
-    } = await runCommand("pending", defineLogGroup({ taps: false }), "list");
+    const { messages } = await runCommand(
+      "pending",
+      defineLogGroup({ name: "pending", taps: false }),
+      "list",
+    );
 
     expect(messages.map(({ text }) => text)).toEqual([
       "pending:",
@@ -221,7 +225,7 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "pending",
-      defineLogGroup({ taps: false }),
+      defineLogGroup({ name: "pending", taps: false }),
       "close",
       "PD-0a0a0a",
     );
@@ -238,7 +242,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "pending",
-      defineLogGroup({ taps: false }),
+      defineLogGroup({ name: "pending", taps: false }),
       "add",
       "--subject",
       "changeset",
@@ -263,7 +267,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     const listed = await runCommand(
       "pending",
-      defineLogGroup({ taps: false }),
+      defineLogGroup({ name: "pending", taps: false }),
       "list",
       "--owner",
       "AUAUST/lib-js-engrenage#913",
@@ -276,7 +280,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     const searched = await runCommand(
       "pending",
-      defineLogGroup({ taps: false }),
+      defineLogGroup({ name: "pending", taps: false }),
       "search",
       "owner:BL-0c0c0c",
     );
@@ -297,7 +301,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     const output: string[] = [];
 
-    const program = createProgram("metalbrain", metalbrain);
+    const program = createProgram(metalbrain);
 
     captureCommandOutput(program, output);
 
@@ -316,7 +320,7 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
   test("offers no tap or merge, its entries without an owner still valid", async () => {
     createProject({ ".ai/pending.yml": entries });
 
-    const program = createProgram("metalbrain", metalbrain);
+    const program = createProgram(metalbrain);
 
     for (const kind of logKinds) {
       const names = program.commands
@@ -332,16 +336,18 @@ describe("metalbrain pending", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "pending",
-      defineLogGroup({ taps: false }),
+      defineLogGroup({ name: "pending", taps: false }),
       "update",
       "PD-0b0b0b",
       "--what",
       "add a case",
     );
 
-    const {
-      messages,
-    } = await runCommand("pending", defineLogGroup({ taps: false }), "list");
+    const { messages } = await runCommand(
+      "pending",
+      defineLogGroup({ name: "pending", taps: false }),
+      "list",
+    );
 
     expect(messages.map(({ text }) => text)).toContain(
       "└ PD-0b0b0b tests: add a case — out of scope",
@@ -355,7 +361,7 @@ describe("metalbrain missing", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "missing",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "missing", taps: true }),
       "add",
       "--subject",
       "deep object merge",

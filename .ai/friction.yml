@@ -28,6 +28,7 @@ taps:
   - {id: FR-20c216, at: 2026-11-27T11:46:38Z, note: zsh `=` word in echo separator}
   - {id: FR-990e2d, at: 2026-11-27T13:28:18Z, note: engrenage sync needs filled barrels}
   - {id: FR-59f2d0, at: 2026-11-27T14:08:57Z, note: countDeclarations is not defined in every hook while createCommandDefinition.ts was mid-edit}
+  - {id: FR-a80e57, at: 2026-11-27T15:13:58Z, note: also broke the analyser and main session metalbrain calls}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1359,3 +1360,8 @@ entries:
     tried: rerun gate --worktree to reproduce load timeouts
     stopped: stamp skipped unchanged trees; varied an untracked probe test per run
     created: 2026-11-27T14:37:54Z
+  - id: FR-a80e57
+    subject: hooks run working-tree metalbrain
+    tried: migrating metalbrain command files one by one
+    stopped: PreToolUse guard hook crashed and failed open mid-migration; finished migration quickly
+    created: 2026-11-27T15:13:23Z

@@ -1,4 +1,4 @@
-import { defineGroup, type CommandDefinition } from "#nexus/cli/index";
+import { command, type CommandDeclaration } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/logs/add";
 import close from "#bin/metalbrain/logs/close";
@@ -11,23 +11,24 @@ import search from "#bin/metalbrain/search";
 import tap from "#bin/metalbrain/tap";
 
 export function defineLogGroup({
+  name,
   taps,
 }: {
+  name: string;
   taps?: boolean;
-}): CommandDefinition {
-  return defineGroup({
-    configure(command) {
-      return command.description(`Manage the ${command.name()} log's entries.`);
-    },
-    commands: {
+}): CommandDeclaration {
+  return command({
+    name,
+    description: `Manage the ${name} log's entries.`,
+    subcommands: [
       add,
       list,
       search,
       show,
-      ...(taps && { tap, merge }),
+      ...(taps === true ? [tap, merge] : []),
       update,
       close,
       stats,
-    },
+    ],
   });
 }

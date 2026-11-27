@@ -50,7 +50,7 @@ function git(root: string, ...args: string[]) {
 function addFriction(subject: string) {
   return runCommand(
     "friction",
-    defineLogGroup({ taps: true }),
+    defineLogGroup({ name: "friction", taps: true }),
     "add",
     "--subject",
     subject,
@@ -67,7 +67,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "tap",
       "FR-0a0a0a",
       "--note",
@@ -76,14 +76,16 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "tap",
       "FR-0a0a0a",
     );
 
-    const {
-      messages: listed,
-    } = await runCommand("friction", defineLogGroup({ taps: true }), "list");
+    const { messages: listed } = await runCommand(
+      "friction",
+      defineLogGroup({ name: "friction", taps: true }),
+      "list",
+    );
 
     expect(listed.map(({ text }) => text)).toEqual([
       "friction:",
@@ -92,7 +94,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     const { messages: shown } = await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "show",
       "FR-0a0a0a",
     );
@@ -103,9 +105,11 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
       expect.stringMatching(/^ {2}└ \S+Z$/u),
     ]);
 
-    const {
-      messages: counted,
-    } = await runCommand("friction", defineLogGroup({ taps: true }), "stats");
+    const { messages: counted } = await runCommand(
+      "friction",
+      defineLogGroup({ name: "friction", taps: true }),
+      "stats",
+    );
 
     expect(counted.map(({ text }) => text)).toEqual(["3 git add (recurring)"]);
 
@@ -113,7 +117,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "close",
       "FR-0a0a0a",
     );
@@ -127,7 +131,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
     await expect(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "tap",
         "FR-0a0a0a",
         "--note",
@@ -156,7 +160,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "tap",
       "FR-0a0a0a",
       "--note",
@@ -173,7 +177,7 @@ describe("metalbrain tap", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "tap",
       "FR-0a0a0a",
       "--note",

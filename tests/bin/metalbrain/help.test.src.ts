@@ -10,7 +10,7 @@ test("help of an unknown command in a group names it and the group", async () =>
   const onError = vi.fn();
 
   await runProgram(
-    createProgram("metalbrain", metalbrain),
+    createProgram(metalbrain),
     ["node", "metalbrain", "help", "backlog", "nope"],
     { onError },
   );

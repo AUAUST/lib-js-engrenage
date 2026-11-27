@@ -5,3 +5,9 @@ entries:
     why: user batches instruction changes at plan end
     owner: "#1003"
     created: 2026-11-27T13:17:32Z
+  - id: PD-3c0027
+    subject: BL-62e56b second half
+    what: reduce entry to config re-resolved after failure
+    why: "waits on #1015 landing"
+    owner: "#1015"
+    created: 2026-11-27T15:12:33Z

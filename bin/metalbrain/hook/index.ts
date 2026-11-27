@@ -1,14 +1,9 @@
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import claude from "#bin/metalbrain/hook/claude/index";
 
-export default defineGroup({
-  configure(command) {
-    return command.description(
-      "Run the metalbrain agent hooks, reading each runtime's hook payload from stdin.",
-    );
-  },
-  commands: {
-    claude,
-  },
+export default command({
+  name: "hook",
+  description: "Run the metalbrain agent hooks, reading each runtime's hook payload from stdin.",
+  subcommands: [claude],
 });

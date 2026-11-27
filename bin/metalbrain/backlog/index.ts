@@ -1,4 +1,4 @@
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import add from "#bin/metalbrain/backlog/add";
 import categories from "#bin/metalbrain/backlog/categories";
@@ -13,11 +13,10 @@ import merge from "#bin/metalbrain/merge";
 import search from "#bin/metalbrain/search";
 import tap from "#bin/metalbrain/tap";
 
-export default defineGroup({
-  configure(command) {
-    return command.description("Manage the backlog's categories and entries.");
-  },
-  commands: {
+export default command({
+  name: "backlog",
+  description: "Manage the backlog's categories and entries.",
+  subcommands: [
     categories,
     list,
     search,
@@ -30,5 +29,5 @@ export default defineGroup({
     move,
     relocate,
     close,
-  },
+  ],
 });

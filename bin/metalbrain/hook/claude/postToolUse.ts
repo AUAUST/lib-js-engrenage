@@ -1,20 +1,16 @@
-import { Argument } from "@commander-js/extra-typings";
+import { argument, command } from "#nexus/cli/index";
 
-import { defineLazyCommand } from "#nexus/cli/index";
-
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Log the tool call in Claude's PostToolUse payload from stdin, with its duration, output size and cost; instead, with `limitOutput`, notice a shell output past the project's output limit, or with `lintEdit`, suggest the info lint messages of the edited file.",
-      )
-      .addArgument(
-        new Argument("[check]", "host check to run instead").choices([
-          "limitOutput",
-          "lintEdit",
-        ] as const),
-      );
-  },
+export default command({
+  name: "PostToolUse",
+  description: "Log the tool call in Claude's PostToolUse payload from stdin, with its duration, output size and cost; instead, with `limitOutput`, notice a shell output past the project's output limit, or with `lintEdit`, suggest the info lint messages of the edited file.",
+  arguments: [
+    argument({
+      name: "check",
+      description: "host check to run instead",
+      optional: true,
+      choices: ["limitOutput", "lintEdit"],
+    }),
+  ],
   action() {
     return import("#bin/metalbrain/hook/claude/actions/postToolUse");
   },

@@ -1,27 +1,33 @@
-import { Option, type CommandUnknownOpts } from "@commander-js/extra-typings";
-
 import { findLogKind } from "#metalbrain/logs/index";
-import { collectArgument } from "#nexus/cli/index";
+import {
+  collectArgument,
+  option,
+  type CommandPath,
+  type OptionDeclaration,
+} from "#nexus/cli/index";
 import type { RecordFields } from "#metalbrain/records/index";
 
-export default function (command: CommandUnknownOpts): void {
-  const kind = findLogKind(command.parent?.name() ?? "");
+export default function (path: CommandPath): readonly OptionDeclaration[] {
+  const kind = findLogKind(path.at(-2) ?? "");
 
-  const adding = command.name() === "add";
+  const adding = path.at(-1) === "add";
 
   const fields: RecordFields = kind.fields;
 
-  for (const [key, { type, description, requiredOnAdd }] of Object.entries(
-    fields,
-  )) {
-    const option = new Option(`--${key} <text>`, description);
+  return Object.entries(fields).map(
+    ([key, { type, description, requiredOnAdd }]) => {
+      const collects = type === "sites" || type === "detail";
 
-    if (type === "sites" || type === "detail") {
-      option.argParser(collectArgument);
-    } else if (adding && (type === "text" || requiredOnAdd === true)) {
-      option.makeOptionMandatory();
-    }
-
-    command.addOption(option);
-  }
+      return option({
+        name: key,
+        type: "string",
+        placeholder: "text",
+        description,
+        required: (
+          !collects && adding && (type === "text" || requiredOnAdd === true)
+        ),
+        ...(collects && { parse: collectArgument }),
+      });
+    },
+  );
 }

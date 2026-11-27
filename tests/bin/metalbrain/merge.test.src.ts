@@ -52,7 +52,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "add",
       "--subject",
       "offline pnpm install",
@@ -87,7 +87,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     const { messages } = await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "add",
       "--subject",
       "shell refused the command",
@@ -123,7 +123,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "tap",
       "FR-0b0b0b",
       "--note",
@@ -132,7 +132,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
 
     await runCommand(
       "friction",
-      defineLogGroup({ taps: true }),
+      defineLogGroup({ name: "friction", taps: true }),
       "merge",
       "FR-0b0b0b",
       "FR-0a0a0a",
@@ -169,7 +169,7 @@ describe("metalbrain merge", { timeout: binaryTimeout }, () => {
     await expect(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "merge",
         "FR-0b0b0b,FR-0c0c0c",
         "FR-0a0a0a",

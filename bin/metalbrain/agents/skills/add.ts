@@ -1,11 +1,11 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { argument, command } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description("Install a shared agent skill by name.")
-      .argument("<name>", "skill name, for example planning");
-  },
+export default command({
+  name: "add",
+  description: "Install a shared agent skill by name.",
+  arguments: [
+    argument({ name: "name", description: "skill name, for example planning" }),
+  ],
   action() {
     return import("#bin/metalbrain/agents/skills/actions/add");
   },

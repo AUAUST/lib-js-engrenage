@@ -1,44 +1,65 @@
 import {
+  argument,
   collectArgument,
   collectListArgument,
-  defineChainedCommand,
+  command,
+  option,
 } from "#nexus/cli/index";
 
-export default defineChainedCommand({
-  configure(command) {
-    return command
-      .description("Add a backlog entry and print its ID.")
-      .argument("<category>", "an existing category's name")
-      .argument("<title>", "the problem or need")
-      .option(
-        "--sites <sites>",
-        "code sites as `<path>:<line>`, each naming an existing file; comma-separated or repeated",
-        collectListArgument,
-      )
-      .option("--why <text>", "context; repeat for a list", collectArgument)
-      .option(
-        "--want <text>",
-        "expected outcome; repeat for a list",
-        collectArgument,
-      )
-      .option(
-        "--done <text>",
-        "completion or obsolescence condition; repeat for a list",
-        collectArgument,
-      )
-      .option(
-        "--keywords <keywords>",
-        "extra terms for the similar-entry search, not stored; comma-separated or repeated",
-        collectListArgument,
-      );
-  },
-  extend() {
-    return import("#bin/metalbrain/backlog/actions/wordCapHelp");
+export default command({
+  name: "add",
+  description: "Add a backlog entry and print its ID.",
+  chain: true,
+  arguments: [
+    argument({ name: "category", description: "an existing category's name" }),
+    argument({ name: "title", description: "the problem or need" }),
+  ],
+  options: [
+    option({
+      name: "sites",
+      type: "string",
+      placeholder: "sites",
+      description: "code sites as `<path>:<line>`, each naming an existing file; comma-separated or repeated",
+      parse: collectListArgument,
+    }),
+    option({
+      name: "why",
+      type: "string",
+      placeholder: "text",
+      description: "context; repeat for a list",
+      parse: collectArgument,
+    }),
+    option({
+      name: "want",
+      type: "string",
+      placeholder: "text",
+      description: "expected outcome; repeat for a list",
+      parse: collectArgument,
+    }),
+    option({
+      name: "done",
+      type: "string",
+      placeholder: "text",
+      description: "completion or obsolescence condition; repeat for a list",
+      parse: collectArgument,
+    }),
+    option({
+      name: "keywords",
+      type: "string",
+      placeholder: "keywords",
+      description: "extra terms for the similar-entry search, not stored; comma-separated or repeated",
+      parse: collectListArgument,
+    }),
+  ],
+  help: {
+    after() {
+      return import("#bin/metalbrain/backlog/actions/wordCapHelp");
+    },
   },
   action() {
     return import("#bin/metalbrain/backlog/actions/add");
   },
-  parse(category, title, options) {
+  parse(category, title, options, _invocation) {
     return [category, title, options];
   },
 });

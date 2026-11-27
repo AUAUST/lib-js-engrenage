@@ -57,7 +57,7 @@ async function runStop(): Promise<{ block?: string; output: string }> {
   let failure: unknown;
 
   await runProgram(
-    createProgram("metalbrain", metalbrain),
+    createProgram(metalbrain),
     ["node", "metalbrain", "hook", "claude", "Stop", "gateStop"],
     {
       onError(error) {

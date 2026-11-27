@@ -1,21 +1,20 @@
-import { collectListArgument, defineLazyCommand } from "#nexus/cli/index";
+import { argument, collectListArgument, command } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Remove backlog entries, none when an ID is unknown; deletes a category left empty.",
-      )
-      .argument(
-        "<ids...>",
-        "the entries' IDs, comma- or space-separated",
-        collectListArgument,
-      );
-  },
+export default command({
+  name: "close",
+  description: "Remove backlog entries, none when an ID is unknown; deletes a category left empty.",
+  arguments: [
+    argument({
+      name: "ids",
+      description: "the entries' IDs, comma- or space-separated",
+      variadic: true,
+      reduce: collectListArgument,
+    }),
+  ],
   action() {
     return import("#bin/metalbrain/actions/close");
   },
-  parse(ids) {
+  parse(ids, _invocation) {
     return [ids, "backlog"];
   },
 });

@@ -41,8 +41,31 @@ interface CommandInput<
  * options known only at run time; loaders, those of argument choices and of
  * `help.after` included, run before the command parses or shows its help.
  *
+ * With `chain`, a call chains several invocations separated by `--next` arguments
+ * before any `--`, and the action receives every invocation's parsed parameters
+ * in order once all of them parse.
+ *
  * @pure
  */
+// @debt a `parse` must name every parameter, the invocation included, since `NoInfer` around its whole parameter tuple keeps TypeScript from accepting a shorter list
+// @debt `chain` stays per command until the program chains any command
+export function command<
+  const Arguments extends readonly ArgumentDeclaration[] = [],
+  const Options extends readonly OptionEntry[] = [],
+  ActionParameters extends unknown[] | [] = [],
+>(
+  input: Omit<CommandInput<Arguments, Options>, "subcommands"> & {
+    chain: true;
+    action(): Promise<
+      Loadable<(invocations: readonly ActionParameters[]) => unknown>
+    >;
+    parse(
+      ...parameters: NoInfer<
+        [...DeclaredParameters<Arguments, Options>, CommandInvocation]
+      >
+    ): NoInfer<ActionParameters>;
+  },
+): ParsingCommandDeclaration;
 export function command<
   const Arguments extends readonly ArgumentDeclaration[] = [],
   const Options extends readonly OptionEntry[] = [],
@@ -82,9 +105,11 @@ export function command({
   help = {},
   subcommands = [],
   printers,
+  chain = false,
   action,
   parse,
 }: CommandInput<readonly ArgumentDeclaration[], readonly OptionEntry[]> & {
+  chain?: boolean;
   action?(): Promise<unknown>;
   parse?(...parameters: unknown[]): readonly unknown[];
 }): ParsingCommandDeclaration {
@@ -106,6 +131,7 @@ export function command({
     help: freeze({ ...help }),
     subcommands: freeze([...subcommands]),
     ...(printers !== undefined && { printers }),
+    chain,
     ...(action !== undefined && { action }),
     ...(parse !== undefined && { parse }),
   });

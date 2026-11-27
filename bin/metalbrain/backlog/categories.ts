@@ -1,11 +1,8 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command.description(
-      "List the backlog categories with their purposes.",
-    );
-  },
+export default command({
+  name: "categories",
+  description: "List the backlog categories with their purposes.",
   action() {
     return import("#bin/metalbrain/backlog/actions/categories");
   },

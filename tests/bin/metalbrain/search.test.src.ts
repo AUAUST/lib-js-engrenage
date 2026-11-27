@@ -64,7 +64,7 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     const lines = await readLines(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "search",
         '"git ls-files"',
       ),
@@ -104,7 +104,7 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     const lines = await readLines(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "search",
         "add",
         "nowhere",
@@ -124,7 +124,7 @@ describe("metalbrain search", { timeout: binaryTimeout }, () => {
     const lines = await readLines(
       runCommand(
         "friction",
-        defineLogGroup({ taps: true }),
+        defineLogGroup({ name: "friction", taps: true }),
         "search",
         "--text",
         "listed `git ls-files --others` (OR",

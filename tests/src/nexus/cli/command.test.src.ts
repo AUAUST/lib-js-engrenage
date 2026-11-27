@@ -2,6 +2,7 @@ import { describe, expect, test, vi } from "vitest";
 
 import {
   argument,
+  collectListArgument,
   command,
   CommandUsageError,
   createProgram,
@@ -117,5 +118,41 @@ describe("command", () => {
     await expect(invalid.parsing).rejects.toMatchObject({ exitCode: 1 });
 
     expect(invalid.output.join("")).toContain("expected a number");
+  });
+});
+
+describe("command chain", () => {
+  test("passes every invocation, each argument reduced", async () => {
+    const action = vi.fn<
+      (invocations: readonly [string[], CommandPath][]) => void
+    >();
+
+    await run(
+      command({
+        name: "leaf",
+        chain: true,
+        arguments: [
+          argument({
+            name: "ids",
+            variadic: true,
+            reduce: collectListArgument,
+          }),
+        ],
+        action: () => Promise.resolve(action),
+        parse(ids, { path }) {
+          return [ids, path];
+        },
+      }),
+      "leaf",
+      "a,b",
+      "c",
+      "--next",
+      "d",
+    ).parsing;
+
+    expect(action).toHaveBeenCalledWith([
+      [["a", "b", "c"], ["leaf"]],
+      [["d"], ["leaf"]],
+    ]);
   });
 });
