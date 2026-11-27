@@ -7,5 +7,9 @@ export interface HelpArgument {
   readonly description?: string;
   readonly optional: boolean;
   readonly variadic: boolean;
+  /**
+   * The text splitting each value given into items.
+   */
+  readonly separator?: string;
   readonly choices?: readonly string[];
 }

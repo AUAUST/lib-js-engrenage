@@ -4,25 +4,15 @@ import { freeze } from "@auaust/toolkit/object";
 import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
 import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
 
-interface BaseArgumentInput {
+interface ArgumentInput {
   readonly name: string;
   readonly description?: string;
   readonly optional?: boolean;
   readonly variadic?: boolean;
+  readonly separator?: string;
   readonly choices?: readonly string[] | LayerLoader<readonly string[]>;
+  parse?(item: string): unknown;
 }
-
-interface MappedArgumentInput extends BaseArgumentInput {
-  parse?(value: string): unknown;
-}
-
-interface ReducedArgumentInput extends BaseArgumentInput {
-  reduce(value: string, previous: unknown): unknown;
-}
-
-type ArgumentInput = MappedArgumentInput | ReducedArgumentInput;
-
-type ArgumentField = keyof MappedArgumentInput | keyof ReducedArgumentInput;
 
 type ArgumentItem<Input> = Input extends {
   parse(...parameters: never): infer Parsed;
@@ -32,48 +22,29 @@ type ArgumentItem<Input> = Input extends {
     ? Choice
     : string;
 
-type ArgumentValues<Input> = Input extends {
-  reduce(...parameters: never): infer Reduced;
-}
-  ? Reduced
-  : Input extends { readonly variadic: true }
-    ? ArgumentItem<Input>[]
-    : ArgumentItem<Input>;
+type IsList<Input> = Input extends
+  { readonly variadic: true } | { readonly separator: string }
+  ? true
+  : false;
 
-type ArgumentValue<Input> = Input extends { readonly variadic: true }
-  ? ArgumentValues<Input>
-  : Input extends { readonly optional: true }
-    ? ArgumentValues<Input> | undefined
-    : ArgumentValues<Input>;
+type IsOptional<Input> = Input extends { readonly optional: true }
+  ? true
+  : false;
 
 /**
- * Declares a positional argument, required unless `optional`, whose value `parse`
- * maps from the value given, or from each one given when `variadic`; or `reduce`
- * reduces from each value given, with its value so far.
+ * Declares a positional argument, required unless `optional`, whose value lists
+ * its items when `variadic` or given a `separator`: each value given, split by
+ * the `separator` into trimmed items, empty ones dropped, each item in `choices`
+ * when it has them and mapped by `parse`.
  *
  * @pure
  */
 export function argument<const Input extends ArgumentInput>(
-  input: Input & Readonly<Record<Exclude<keyof Input, ArgumentField>, never>>,
-): ArgumentDeclaration<ArgumentValue<Input>>;
+  input: Input &
+    Readonly<Record<Exclude<keyof Input, keyof ArgumentInput>, never>>,
+): ArgumentDeclaration<ArgumentItem<Input>, IsList<Input>, IsOptional<Input>>;
 export function argument(input: ArgumentInput): ArgumentDeclaration {
   const variadic = input.variadic === true;
-
-  function map(value: string): unknown {
-    return "parse" in input && input.parse !== undefined
-      ? input.parse(value)
-      : value;
-  }
-
-  function parse(value: string, previous: unknown): unknown {
-    if ("reduce" in input) {
-      return input.reduce(value, previous);
-    }
-
-    return variadic
-      ? [...(isArray(previous) ? previous : []), map(value)]
-      : map(value);
-  }
 
   return freeze({
     name: input.name,
@@ -82,11 +53,13 @@ export function argument(input: ArgumentInput): ArgumentDeclaration {
     }),
     optional: input.optional === true,
     variadic,
+    ...(input.separator !== undefined && { separator: input.separator }),
+    list: variadic || input.separator !== undefined,
     ...(input.choices !== undefined && {
       choices: isArray(input.choices)
         ? freeze([...input.choices])
         : input.choices,
     }),
-    parse,
+    ...(input.parse !== undefined && { parse: input.parse }),
   });
 }

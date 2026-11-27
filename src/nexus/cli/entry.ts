@@ -1,6 +1,5 @@
 export {
   argument,
-  collectListArgument,
   command,
   CommandUsageError,
   detectPrinter,

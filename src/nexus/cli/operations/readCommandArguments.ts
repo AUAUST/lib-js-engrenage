@@ -1,4 +1,3 @@
-import { isArray } from "@auaust/toolkit";
 import { join } from "@auaust/toolkit/array";
 
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
@@ -11,58 +10,46 @@ import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandD
 function readArgument(
   argument: ArgumentDeclaration,
   choices: readonly string[] | undefined,
-  items: readonly string[],
+  values: readonly string[],
   errors: CommandUsageError[],
 ): unknown {
-  function read(value: string, previous: unknown): unknown {
+  const parsed = values.map((value) => {
     return parseUsageValue(
       {
-        invalid: `command-argument value '${value}' is invalid for argument '${argument.name}'.`,
+        invalid(item) {
+          return `command-argument value '${item}' is invalid for argument '${argument.name}'.`;
+        },
+        separator: argument.separator,
         choices,
         parse: argument.parse,
       },
       value,
-      previous,
       errors,
     );
-  }
+  });
 
-  const missing = new CommandUsageError(
-    `missing required argument '${argument.name}'`,
-  );
-
-  if (argument.variadic) {
-    const value = items.length === 0
-      ? []
-      : items.reduce<unknown>((previous, item) => {
-          return read(item, previous);
-        }, undefined);
-
-    if (!argument.optional && isArray(value) && value.length === 0) {
-      errors.push(missing);
-    }
-
-    return value;
-  }
-
-  const [item] = items;
-
-  if (item === undefined) {
-    if (!argument.optional) {
-      errors.push(missing);
-    }
-
+  if (parsed.includes(undefined)) {
     return;
   }
 
-  return read(item, undefined);
+  const items = parsed.flatMap((list) => {
+    return list ?? [];
+  });
+
+  if (items.length === 0 && !argument.optional) {
+    errors.push(
+      new CommandUsageError(`missing required argument '${argument.name}'`),
+    );
+  }
+
+  return argument.list ? items : items[0];
 }
 
 /**
  * Reads the value of each argument the command at `path` declares from its
- * positional arguments, each in `choices` when the argument has them, a variadic
- * one taking every remaining value, adding a usage error to `errors` for each
- * one missing, invalid or in excess.
+ * positional arguments, each item in `choices` when the argument has them, a
+ * variadic one taking every remaining value, adding a usage error to `errors`
+ * for each one missing, invalid or in excess.
  *
  * @confined
  */

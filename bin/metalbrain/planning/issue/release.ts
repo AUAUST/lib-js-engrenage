@@ -1,4 +1,4 @@
-import { argument, collectListArgument, command } from "#nexus/cli/index";
+import { argument, command } from "#nexus/cli/index";
 
 export default command({
   name: "release",
@@ -6,9 +6,9 @@ export default command({
   arguments: [
     argument({
       name: "refs",
-      description: "issue numbers, comma- or space-separated, such as `123,124` or `123 124`",
+      description: "issue numbers",
       variadic: true,
-      reduce: collectListArgument,
+      separator: ",",
     }),
   ],
   action() {

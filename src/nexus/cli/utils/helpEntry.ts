@@ -114,6 +114,12 @@ function describeChoices(
   return choices === undefined ? undefined : `choices: ${join(choices, ", ")}`;
 }
 
+function describeSeparator(separator: string | undefined): string | undefined {
+  return separator === undefined
+    ? undefined
+    : `separated by ${JSON.stringify(separator)}`;
+}
+
 function optionRow(option: HelpOption, depth: number): TableRow {
   return {
     cells: [
@@ -121,6 +127,7 @@ function optionRow(option: HelpOption, depth: number): TableRow {
       `${option.description ?? ""}${describeRules([
         option.required && "required",
         option.multiple && "repeatable",
+        describeSeparator(option.separator),
         option.default !== undefined && `default: ${option.default}`,
         describeChoices(option.choices),
         option.conflicts.length > 0 &&
@@ -136,6 +143,7 @@ function argumentRow(argument: HelpArgument, depth: number): TableRow {
     cells: [
       argument.usage,
       `${argument.description ?? ""}${describeRules([
+        describeSeparator(argument.separator),
         describeChoices(argument.choices),
       ])}`.trim(),
     ],

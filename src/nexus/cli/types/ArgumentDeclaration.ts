@@ -1,13 +1,25 @@
 import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
 
-export interface ArgumentDeclaration<Value = unknown> {
+export interface ArgumentDeclaration<
+  Item = unknown,
+  List extends boolean = boolean,
+  Optional extends boolean = boolean,
+> {
   readonly name: string;
   readonly description?: string;
-  readonly optional: boolean;
+  readonly optional: Optional;
   readonly variadic: boolean;
+  /**
+   * The text splitting each value given into items.
+   */
+  readonly separator?: string;
+  /**
+   * Whether its value lists its items: it is variadic or has a separator.
+   */
+  readonly list: List;
   readonly choices?: readonly string[] | LayerLoader<readonly string[]>;
   /**
-   * Reduces each value given, with the argument's value so far.
+   * Maps each item given.
    */
-  parse(value: string, previous: Value | undefined): Value;
+  parse?(item: string): Item;
 }

@@ -1,4 +1,4 @@
-import { argument, collectListArgument, command } from "#nexus/cli/index";
+import { argument, command } from "#nexus/cli/index";
 
 export default command({
   name: "claim",
@@ -6,9 +6,9 @@ export default command({
   arguments: [
     argument({
       name: "refs",
-      description: "issue numbers of the current repository or `<repo>.<n>` of a registered repository, comma- or space-separated, such as `123,toolkit.124` or `123 toolkit.124`",
+      description: "issue numbers of the current repository or `<repo>.<n>` of a registered repository, such as `toolkit.124`",
       variadic: true,
-      reduce: collectListArgument,
+      separator: ",",
     }),
   ],
   action() {

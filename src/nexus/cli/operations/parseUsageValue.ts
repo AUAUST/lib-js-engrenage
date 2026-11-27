@@ -1,47 +1,71 @@
 import { join } from "@auaust/toolkit/array";
+import { split, trim } from "@auaust/toolkit/string";
 
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 
+function splitValue(value: string, separator: string | undefined): string[] {
+  if (separator === undefined) {
+    return [value];
+  }
+
+  return split(value, separator)
+    .map((item) => trim(item))
+    .filter((item) => item !== "");
+}
+
 /**
- * Parses `value` given to an option or argument, with its value so far; a value
- * outside `choices`, or one `parse` rejects with a usage error, adds a usage
- * error led by `invalid` to `errors` and keeps the value so far.
+ * Parses `value` given to an option or argument into its items: split by
+ * `separator` into trimmed items, empty ones dropped, each item in `choices`
+ * and mapped by `parse`. An item outside `choices`, or one `parse` rejects with
+ * a usage error, adds a usage error led by `invalid` with that item to `errors`
+ * and leaves the items `undefined`.
  *
  * @confined
  */
 export function parseUsageValue(
   {
     invalid,
+    separator,
     choices,
     parse,
   }: {
-    invalid: string;
+    invalid(item: string): string;
+    separator: string | undefined;
     choices: readonly string[] | undefined;
-    parse(value: string, previous: unknown): unknown;
+    parse: ((item: string) => unknown) | undefined;
   },
   value: string,
-  previous: unknown,
   errors: CommandUsageError[],
-): unknown {
-  if (choices !== undefined && !choices.includes(value)) {
-    errors.push(
-      new CommandUsageError(
-        `${invalid} Allowed choices are ${join(choices, ", ")}.`,
-      ),
-    );
+): unknown[] | undefined {
+  const items: unknown[] = [];
 
-    return previous;
-  }
+  let failed = false;
 
-  try {
-    return parse(value, previous);
-  } catch (error) {
-    if (error instanceof CommandUsageError) {
-      errors.push(new CommandUsageError(`${invalid} ${error.message}`));
+  for (const item of splitValue(value, separator)) {
+    if (choices !== undefined && !choices.includes(item)) {
+      errors.push(
+        new CommandUsageError(
+          `${invalid(item)} Allowed choices are ${join(choices, ", ")}.`,
+        ),
+      );
 
-      return previous;
+      failed = true;
+
+      continue;
     }
 
-    throw error;
+    try {
+      items.push(parse === undefined ? item : parse(item));
+    } catch (error) {
+      if (!(error instanceof CommandUsageError)) {
+        throw error;
+      }
+
+      errors.push(new CommandUsageError(`${invalid(item)} ${error.message}`));
+
+      failed = true;
+    }
   }
+
+  return failed ? undefined : items;
 }

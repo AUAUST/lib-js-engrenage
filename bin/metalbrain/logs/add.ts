@@ -1,4 +1,4 @@
-import { collectListArgument, command, option } from "#nexus/cli/index";
+import { command, option } from "#nexus/cli/index";
 
 export default command({
   name: "add",
@@ -9,8 +9,9 @@ export default command({
       name: "keywords",
       type: "string",
       placeholder: "keywords",
-      description: "extra terms for the similar-entry search, not stored; comma-separated or repeated",
-      parse: collectListArgument,
+      description: "extra terms for the similar-entry search, not stored",
+      multiple: true,
+      separator: ",",
     }),
     () => {
       return import("#bin/metalbrain/logs/actions/fieldOptions");

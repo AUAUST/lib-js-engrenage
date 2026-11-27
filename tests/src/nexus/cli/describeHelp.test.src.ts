@@ -141,6 +141,18 @@ describe("describeHelp", () => {
       /^ {2}missing add:\n(?: {4}.*\n)*? {4}--instead <text>/mu,
     );
   });
+
+  test("states the separator of an argument and an option", async () => {
+    const help = await printHelp(program({ root: metalbrain }), "help");
+
+    expect(help).toMatch(
+      /^ {2}<ids\.\.\.> +the entries' IDs \(separated by ","\)$/mu,
+    );
+
+    expect(help).toMatch(
+      /^ {2}--keywords <keywords> +.*\(repeatable; separated by ","\)$/mu,
+    );
+  });
 });
 
 describe("resolveInvocation", () => {

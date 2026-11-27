@@ -13,13 +13,22 @@ export interface OptionDeclaration<
   readonly default?: Value;
   readonly required: boolean;
   readonly multiple: boolean;
+  /**
+   * The text splitting each value given into items.
+   */
+  readonly separator?: string;
+  /**
+   * Whether its value lists its items: it is `multiple` or has a separator.
+   */
+  readonly list: boolean;
   readonly choices?: readonly string[];
   /**
    * The names of the options it cannot be used with.
    */
   readonly conflicts: readonly string[];
+  // @debt the item `parse` returns is untyped, unlike an argument's: typing it needs `Value` split into item, list and presence as `ArgumentDeclaration` does
   /**
-   * Reduces each value given to a string option, with its value so far.
+   * Maps each item given to a string option.
    */
-  parse?(value: string, previous: Value | undefined): Value;
+  parse?(item: string): unknown;
 }

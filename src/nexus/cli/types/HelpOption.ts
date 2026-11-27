@@ -8,6 +8,10 @@ export interface HelpOption {
   readonly required: boolean;
   readonly multiple: boolean;
   /**
+   * The text splitting each value given into items.
+   */
+  readonly separator?: string;
+  /**
    * The default value, written as JSON.
    */
   readonly default?: string;

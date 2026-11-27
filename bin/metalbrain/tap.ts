@@ -1,9 +1,4 @@
-import {
-  argument,
-  collectListArgument,
-  command,
-  option,
-} from "#nexus/cli/index";
+import { argument, command, option } from "#nexus/cli/index";
 
 export default command({
   name: "tap",
@@ -11,9 +6,9 @@ export default command({
   arguments: [
     argument({
       name: "ids",
-      description: "the entries' IDs, comma- or space-separated",
+      description: "the entries' IDs",
       variadic: true,
-      reduce: collectListArgument,
+      separator: ",",
     }),
   ],
   options: [

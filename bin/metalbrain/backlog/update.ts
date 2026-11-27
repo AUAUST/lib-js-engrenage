@@ -1,9 +1,4 @@
-import {
-  argument,
-  collectListArgument,
-  command,
-  option,
-} from "#nexus/cli/index";
+import { argument, command, option } from "#nexus/cli/index";
 
 export default command({
   name: "update",
@@ -21,8 +16,9 @@ export default command({
       name: "sites",
       type: "string",
       placeholder: "sites",
-      description: "code sites as `<path>:<line>`, each naming an existing file; comma-separated or repeated",
-      parse: collectListArgument,
+      description: "code sites as `<path>:<line>`, each naming an existing file",
+      multiple: true,
+      separator: ",",
     }),
     option({
       name: "why",
@@ -49,9 +45,10 @@ export default command({
       name: "unset",
       type: "string",
       placeholder: "field",
-      description: "fields to remove: `sites`, `why`, `want` or `done`; comma-separated or repeated",
+      description: "fields to remove: `sites`, `why`, `want` or `done`",
       default: [],
-      parse: collectListArgument,
+      multiple: true,
+      separator: ",",
     }),
   ],
   action() {

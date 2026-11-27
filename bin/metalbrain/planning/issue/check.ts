@@ -1,9 +1,4 @@
-import {
-  argument,
-  collectListArgument,
-  command,
-  option,
-} from "#nexus/cli/index";
+import { argument, command, option } from "#nexus/cli/index";
 
 export default command({
   name: "check",
@@ -11,9 +6,9 @@ export default command({
   arguments: [
     argument({
       name: "refs",
-      description: "draft file stems or issue numbers, comma- or space-separated, such as `123,new-foo` or `123 new-foo`",
+      description: "draft file stems or issue numbers",
       variadic: true,
-      reduce: collectListArgument,
+      separator: ",",
     }),
   ],
   options: [

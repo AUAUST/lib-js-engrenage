@@ -1,10 +1,22 @@
 import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 
+type ArgumentValue<Item, List, Optional> = List extends true
+  ? Item[]
+  : Optional extends true
+    ? Item | undefined
+    : Item;
+
 type ArgumentValues<Arguments extends readonly ArgumentDeclaration[]> = {
   -readonly [
     Index in keyof Arguments
-  ]: Arguments[Index] extends ArgumentDeclaration<infer Value> ? Value : never;
+  ]: Arguments[Index] extends ArgumentDeclaration<
+    infer Item,
+    infer List,
+    infer Optional
+  >
+    ? ArgumentValue<Item, List, Optional>
+    : never;
 };
 
 type OptionValues<Options extends readonly unknown[]> = {

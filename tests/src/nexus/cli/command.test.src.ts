@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from "vitest";
 
 import {
   argument,
-  collectListArgument,
   command,
   CommandUsageError,
   option,
@@ -420,7 +419,7 @@ describe("command chain", () => {
     ]);
   });
 
-  test("passes every invocation, each argument reduced", async () => {
+  test("passes every invocation, each argument split", async () => {
     const action = vi.fn<
       (invocations: readonly [string[], CommandPath][]) => void
     >();
@@ -434,7 +433,7 @@ describe("command chain", () => {
           argument({
             name: "ids",
             variadic: true,
-            reduce: collectListArgument,
+            separator: ",",
           }),
         ],
         action: () => Promise.resolve(action),

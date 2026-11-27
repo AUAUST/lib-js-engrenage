@@ -48,6 +48,7 @@ function describeOption(option: OptionDeclaration): HelpOption {
     }),
     required: option.required,
     multiple: option.multiple,
+    ...(option.separator !== undefined && { separator: option.separator }),
     ...(shown && { default: JSON.stringify(option.default) }),
     ...(option.choices !== undefined && { choices: option.choices }),
     conflicts: freeze(
@@ -235,6 +236,9 @@ async function loadFacts(
           }),
           optional: argument.optional,
           variadic: argument.variadic,
+          ...(argument.separator !== undefined && {
+            separator: argument.separator,
+          }),
           ...(isArray(listed) && { choices: listed }),
         });
       }),

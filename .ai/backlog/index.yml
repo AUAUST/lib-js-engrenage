@@ -104,7 +104,6 @@ cli:
     - BL-6c9693
     - BL-58e88e
     - BL-d71eff
-    - BL-454c9e
     - BL-142c18
 coding-style:
   purpose: Local coding conventions and linting.
@@ -315,6 +314,7 @@ records:
   entries:
     - BL-511109
     - BL-3aa775
+    - BL-0429eb
 spec-migration:
   purpose: "Breakage the #809 spec-leaf migration knowingly causes (S.18): what is expected to break and what must be handled before walks resume."
   entries:

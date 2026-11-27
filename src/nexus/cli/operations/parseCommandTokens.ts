@@ -1,5 +1,6 @@
 import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
+import { isArray } from "@auaust/toolkit";
 import { keys, record } from "@auaust/toolkit/object";
 
 import { invocationSeparator } from "#nexus/cli/constants";
@@ -18,10 +19,6 @@ const reservedOptions = {
 } as const satisfies ParseArgsOptionsConfig;
 
 const negativeNumber = /^-(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?$/u;
-
-function keepValue(value: string): string {
-  return value;
-}
 
 /** @confined */
 function indexOptions(
@@ -213,18 +210,30 @@ export function parseCommandTokens(
       continue;
     }
 
+    const items = parseUsageValue(
+      {
+        invalid(item) {
+          return `option '${flags}' argument '${item}' is invalid.`;
+        },
+        separator: option.separator,
+        choices: option.choices,
+        parse: option.parse,
+      },
+      token.value,
+      errors,
+    );
+
+    if (items === undefined) {
+      continue;
+    }
+
+    const previous = target.get(option);
+
     target.set(
       option,
-      parseUsageValue(
-        {
-          invalid: `option '${flags}' argument '${token.value}' is invalid.`,
-          choices: option.choices,
-          parse: option.parse ?? keepValue,
-        },
-        token.value,
-        target.has(option) ? target.get(option) : option.default,
-        errors,
-      ),
+      option.list
+        ? [...(option.multiple && isArray(previous) ? previous : []), ...items]
+        : items[0],
     );
   }
 
