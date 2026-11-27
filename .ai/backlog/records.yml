@@ -23,3 +23,11 @@ entries:
     why: jscpd flags the two option blocks
     want: one declaration of the shared entry-field options both commands use
     created: 2026-11-27T17:31:54Z
+  - id: BL-459f7b
+    title: Record write actions repeat the load, rename-warning and settle sequence
+    sites:
+      - bin/metalbrain/backlog/actions/move.ts:18
+      - bin/metalbrain/backlog/actions/update.ts:31
+      - bin/metalbrain/actions/tap.ts:10
+    want: one shared step every record write action calls
+    created: 2026-11-27T19:28:32Z

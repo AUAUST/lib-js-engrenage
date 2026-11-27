@@ -128,13 +128,15 @@ describe("describeHelp", () => {
     expect(help).toMatch(/^ {2}friction add:\n {4}--subject <text>/mu);
 
     expect(help).toMatch(
-      /^\{friction,discarded,pending,missing\} add \[options\] {2}Add an entry and print its ID\. {2}\(chains\)\n {2}--keywords .*\n {2}friction add:/mu,
+      /^\{friction,discarded,pending,missing\} add \[options\] {2}Add an entry and print its ID\.\n {2}--keywords .*\n {2}friction add:/mu,
     );
 
-    expect(help).toMatch(/^ {2}--next +start another invocation/mu);
+    expect(help).toMatch(
+      /^ {2}--next +chain another invocation as --next <command path> \[arguments\] \[options\]/mu,
+    );
 
-    expect(help).toContain(
-      "Chaining: <command path> <arguments> --next <command path> <arguments>",
+    expect(help).toMatch(
+      /^hook <command> +Run the metalbrain agent hooks.* {2}\(never chains, nor does any command below it\)$/mu,
     );
 
     expect(help).toMatch(

@@ -26,6 +26,7 @@ import {
 } from "#nexus/scenarios/index";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
+import type { Resolution } from "#nexus/cli/types/Resolution";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
 import type { RunResolution } from "#nexus/cli/types/RunResolution";
 import type { RunSettings } from "#nexus/cli/types/RunSettings";
@@ -99,19 +100,24 @@ function readScenario(resolution: RunResolution): string | undefined {
 }
 
 function readPrinters(resolution: RunResolution): ScenarioPrinters | undefined {
-  switch (resolution.kind) {
-    case "invocation": {
-      return resolution.declaration.kind === "parsing"
-        ? resolution.declaration.printers
-        : undefined;
-    }
+  return resolution.kind === "invocation" &&
+    resolution.declaration.kind === "parsing"
+    ? resolution.declaration.printers
+    : undefined;
+}
 
-    case "chain": {
-      return resolution.declaration.printers;
-    }
+function isFailingExitCode(code: typeof process.exitCode): boolean {
+  return code != null && Number(code) !== 0;
+}
 
-    default:
-  }
+function describeStop(position: number, total: number): string {
+  const skipped = position + 1 === total
+    ? `invocation ${total}`
+    : `invocations ${position + 1} to ${total}`;
+
+  return position === total
+    ? `invocation ${position} failed`
+    : `invocation ${position} failed; ${skipped} did not run`;
 }
 
 async function isDebugResolved(
@@ -190,21 +196,26 @@ function reportFailure(
  * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
  * hands the printer of its output scenario every entry the verbosity its run
  * options set shows, else `debug` when `<ROOT>_DEBUG`, `<ROOT>` its root's name
- * in upper case, is `1` or `true`, else `default`, each completion line with the
- * run's total time, and on failure sets the exit code to 1 and prints its error,
- * a usage error alone, any other led by what `explain` returns for it, with its
- * stack at `debug`, which `resolveDebug` also sets when no flag does; the failure
- * handler, when given, receives the error instead, with the command path the
- * run resolved to, its arguments, the run's reporter and this report to run. It
- * prints for the scenario `--output` names, else, unless the run asks for help or
- * the version, the one the deepest command of its path declares, else the first
- * of its scenarios one of its detectors names, through the printer the resolved
- * command binds to it, else the one the program declares, loaded once the run
- * resolves, before any action loads, and holding the entries reported until
- * then. Once the run ends unaborted, it reports the marks and measures of the
- * performance timeline since it started, behind the time from process start to the
- * run's, as a table: with `--timings` at any verbosity but `silent`, otherwise as
- * a debug report; it measures its own phases, each invocation's routing, source
+ * in upper case, is `1` or `true`, else `default`, each completion line with
+ * the run's total time, and on failure sets the exit code to 1 and prints its
+ * error, a usage error alone, any other led by what `explain` returns for it,
+ * with its stack at `debug`, which `resolveDebug` also sets when no flag does;
+ * the failure handler, when given, receives the error instead, with the command
+ * path the run resolved to, its arguments, the run's reporter and this report to
+ * run. It prints for the scenario `--output` names, else, unless the run asks
+ * for help or the version, the one the deepest command of its first invocation's
+ * path declares, else the first of its scenarios one of its detectors names,
+ * through the printer the resolved command binds to it, else the one the program
+ * declares, loaded once the run resolves, before any action loads, and holding
+ * the entries reported until then. A chain runs its invocations in order, each
+ * in a run context of its own whose reporter prints through the printer its
+ * command binds to the run's scenario, so a memo keyed by reporter reads afresh
+ * what earlier invocations wrote; the first one failing, by an error or a failing
+ * exit code, stops the rest, with a warning naming it and those it skips. Once
+ * the run ends unaborted, it reports the marks and measures of the performance
+ * timeline since it started, behind the time from process start to the run's,
+ * as a table: with `--timings` at any verbosity but `silent`, otherwise as a
+ * debug report; it measures its own phases, each invocation's routing, source
  * and layer loading and validation, then the action's loading and execution.
  */
 export async function runProgram(
@@ -240,15 +251,17 @@ export async function runProgram(
 
   let printer: Printer | undefined;
 
+  let scenario: string | undefined;
+
   let timed = false;
 
   async function settle(
     runOptions: RunOptionValues | undefined,
     {
-      scenario,
+      declared,
       bindings,
     }: {
-      scenario?: string | undefined;
+      declared?: string | undefined;
       bindings?: ScenarioPrinters | undefined;
     } = {},
   ): Promise<void> {
@@ -260,12 +273,31 @@ export async function runProgram(
 
     timed = runOptions?.timings === true;
 
-    printer = await loadScenarioPrinter(
-      runOptions?.output ?? scenario ?? detectScenario(detectors, scenarios),
-      { scenarios, bindings },
+    scenario = (
+      runOptions?.output ?? declared ?? detectScenario(detectors, scenarios)
     );
 
+    printer = await loadScenarioPrinter(scenario, { scenarios, bindings });
+
     output.settle(timeCompletions(filterReports(printer, getVerbosity)));
+  }
+
+  async function createSegmentReporter(
+    invocation: Resolution,
+  ): Promise<Reporter> {
+    if (printer === undefined || scenario === undefined) {
+      throw new Error("A chain runs before its run settles its printer");
+    }
+
+    const bindings = readPrinters(invocation);
+
+    const segmentPrinter = bindings === undefined
+      ? printer
+      : await loadScenarioPrinter(scenario, { scenarios, bindings });
+
+    return createReporter(
+      timeCompletions(filterReports(segmentPrinter, getVerbosity)),
+    );
   }
 
   const runReporter = createReporter(output);
@@ -282,6 +314,41 @@ export async function runProgram(
 
   const { signal: runSignal, stopListening } = listenForAborts(signal);
 
+  async function runChain(invocations: readonly Resolution[]): Promise<void> {
+    const segments = await Promise.all(
+      invocations.map(async (invocation) => {
+        return {
+          invocation,
+          reporter: await createSegmentReporter(invocation),
+        };
+      }),
+    );
+
+    for (const [index, { invocation, reporter }] of segments.entries()) {
+      const position = index + 1;
+
+      try {
+        await runContext.run({ signal: runSignal, reporter }, () => {
+          return executeProgram(program, invocation, {
+            scope: `invocation ${position}`,
+          });
+        });
+      } catch (error) {
+        if (!runSignal.aborted) {
+          runReporter.warn(describeStop(position, invocations.length));
+        }
+
+        throw error;
+      }
+
+      if (isFailingExitCode(process.exitCode)) {
+        return void runReporter.warn(
+          describeStop(position, invocations.length),
+        );
+      }
+    }
+  }
+
   try {
     await runContext.run(
       { signal: runSignal, reporter: runReporter },
@@ -291,11 +358,13 @@ export async function runProgram(
         path = resolution.path;
 
         await settle(resolution.runOptions, {
-          scenario: readScenario(resolution),
+          declared: readScenario(resolution),
           bindings: readPrinters(resolution),
         });
 
-        await executeProgram(program, resolution);
+        await (resolution.kind === "chain"
+          ? runChain(resolution.invocations)
+          : executeProgram(program, resolution));
       },
     );
   } catch (error) {

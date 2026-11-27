@@ -8,7 +8,6 @@ import {
 export const search = command({
   name: "search",
   description: "Rank entries against a query; at the top level, across every record kind.",
-  chain: true,
   arguments: [
     argument({
       name: "query",
@@ -33,7 +32,6 @@ export const search = command({
 export const merge = command({
   name: "merge",
   description: "Remove a new entry recording what another does, and tap the kept one.",
-  chain: true,
   arguments: [
     argument({ name: "new-id", description: "the entry to remove" }),
     argument({ name: "kept-id", description: "the entry to keep and tap" }),
@@ -84,7 +82,6 @@ export const tap = command({
 const add = command({
   name: "add",
   description: "Add an entry and print its ID.",
-  chain: true,
   options: [
     option({
       name: "keywords",
@@ -144,7 +141,6 @@ const show = command({
 const update = command({
   name: "update",
   description: "Replace fields of an entry.",
-  chain: true,
   arguments: [argument({ name: "id", description: "the entry's ID" })],
   options: [
     () => {

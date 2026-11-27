@@ -15,6 +15,11 @@ interface ResolvedInvocation {
    * The scenario the deepest command of the path declaring one prints for.
    */
   readonly scenario?: string;
+  /**
+   * Whether a run may chain the invocation with others: neither a forwarding
+   * command nor below a command declaring itself unchainable.
+   */
+  readonly chainable: boolean;
   readonly runOptions: RunOptionValues;
 }
 

@@ -15,8 +15,10 @@ export interface HelpListing extends HelpFacts {
    */
   readonly usage: string;
   /**
-   * Whether a run chains several invocations of the command separated by `--next`.
+   * Whether a run may chain the command with others through `--next`: `false`
+   * for a forwarding command or one declaring itself unchainable, which makes
+   * every command below it unchainable too.
    */
-  readonly chains: boolean;
+  readonly chainable: boolean;
   readonly mounts: readonly HelpMount[];
 }

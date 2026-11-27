@@ -33,10 +33,10 @@ export interface ParsingCommandDeclaration {
    */
   readonly scenario?: string;
   /**
-   * Whether a run chains several invocations of the command separated by `--next`,
-   * its action receiving them all.
+   * Whether a run may chain an invocation of the command with others through
+   * `--next`; `false` also makes every command below the group unchainable.
    */
-  readonly chain: boolean;
+  readonly chainable: boolean;
   action?(): Promise<unknown>;
   parse?(...parameters: unknown[]): readonly unknown[];
 }

@@ -1,21 +1,22 @@
 import { backlog } from "#metalbrain/backlog/constants";
 import { formatRecordRename, updateRecord } from "#metalbrain/records/index";
-import { getRunContext, runInvocations } from "#nexus/cli/index";
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
-  invocations: readonly [
-    given: string,
-    options: {
-      title?: string | undefined;
-      sites?: string[] | undefined;
-      why?: string[] | undefined;
-      want?: string[] | undefined;
-      done?: string[] | undefined;
-      unset: string[];
-    },
-  ][],
+  given: string,
+  {
+    unset,
+    ...values
+  }: {
+    title?: string | undefined;
+    sites?: string[] | undefined;
+    why?: string[] | undefined;
+    want?: string[] | undefined;
+    done?: string[] | undefined;
+    unset: string[];
+  },
 ): Promise<void> {
   const { reporter } = getRunContext();
 
@@ -23,25 +24,18 @@ export default async function (
 
   const agents = await config.resolve("agents");
 
-  const renames = await runInvocations(
-    invocations,
-    async (given, { unset, ...values }) => {
-      const id = await updateRecord(
-        config.context.filesystem,
-        backlog,
-        given,
-        { values, unset },
-        { wordCap: agents.wordCaps[backlog.wordCap] },
-      );
-
-      return formatRecordRename(given, id);
-    },
+  const id = await updateRecord(
+    config.context.filesystem,
+    backlog,
+    given,
+    { values, unset },
+    { wordCap: agents.wordCaps[backlog.wordCap] },
   );
 
-  for (const rename of renames) {
-    if (rename !== undefined) {
-      reporter.warn(rename);
-    }
+  const rename = formatRecordRename(given, id);
+
+  if (rename !== undefined) {
+    reporter.warn(rename);
   }
 
   await settleChanges(config, { check: false });

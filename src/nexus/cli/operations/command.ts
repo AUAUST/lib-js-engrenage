@@ -31,6 +31,7 @@ interface CommandInput<
   readonly subcommands?: readonly (CommandDeclaration | CommandLoader)[];
   readonly printers?: ScenarioPrinters;
   readonly scenario?: string;
+  readonly chainable?: boolean;
 }
 
 /**
@@ -40,37 +41,17 @@ interface CommandInput<
  * the parameters `parse` maps from the declared values and the invocation, else
  * the declared values themselves: each argument's, then the options' keyed by
  * name when any is declared. An `options` element is an option, or a loader of
- * the options known only at run time; loaders, those of argument choices and
- * of `help.after` included, run before the command parses or shows its help.
- * With `scenario`, a run invoking the command or one below it, or failing
- * on their usage, prints for that scenario unless `--output` names another,
- * skipping detection.
- *
- * With `chain`, a run chains several invocations of the command separated by
- * `--next`, each naming its full command path, and the action receives every
- * invocation's parsed parameters in order once all of them resolve.
+ * the options known only at run time; loaders, those of argument choices and of
+ * `help.after` included, run before the command parses or shows its help. With
+ * `scenario`, a run invoking the command or one below it, or failing on their
+ * usage, prints for that scenario unless `--output` names another, skipping
+ * detection. With `chainable: false`, a run never chains an invocation of the
+ * command or one below it with others through `--next`, such as one reading
+ * its input from stdin.
  *
  * @pure
  */
 // @debt a `parse` must name every parameter, the invocation included, since `NoInfer` around its whole parameter tuple keeps TypeScript from accepting a shorter list
-// @debt `chain` stays per command, a run chaining only invocations of one such command, until the program chains any command
-export function command<
-  const Arguments extends readonly ArgumentDeclaration[] = [],
-  const Options extends readonly OptionEntry[] = [],
-  ActionParameters extends unknown[] | [] = [],
->(
-  input: Omit<CommandInput<Arguments, Options>, "subcommands"> & {
-    chain: true;
-    action(): Promise<
-      Loadable<(invocations: readonly ActionParameters[]) => unknown>
-    >;
-    parse(
-      ...parameters: NoInfer<
-        [...DeclaredParameters<Arguments, Options>, CommandInvocation]
-      >
-    ): NoInfer<ActionParameters>;
-  },
-): ParsingCommandDeclaration;
 export function command<
   const Arguments extends readonly ArgumentDeclaration[] = [],
   const Options extends readonly OptionEntry[] = [],
@@ -110,11 +91,10 @@ export function command({
   subcommands = [],
   printers,
   scenario,
-  chain = false,
+  chainable = true,
   action,
   parse,
 }: CommandInput<readonly ArgumentDeclaration[], readonly OptionEntry[]> & {
-  chain?: boolean;
   action?(): Promise<unknown>;
   parse?(...parameters: unknown[]): readonly unknown[];
 }): ParsingCommandDeclaration {
@@ -136,7 +116,7 @@ export function command({
     subcommands: freeze([...subcommands]),
     ...(printers !== undefined && { printers }),
     ...(scenario !== undefined && { scenario }),
-    chain,
+    chainable,
     ...(action !== undefined && { action }),
     ...(parse !== undefined && { parse }),
   });

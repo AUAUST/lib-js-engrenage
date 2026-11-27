@@ -7,7 +7,7 @@ import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
 import { helpEntry } from "#nexus/cli/utils/helpEntry";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
-import type { RunResolution } from "#nexus/cli/types/RunResolution";
+import type { Resolution } from "#nexus/cli/types/Resolution";
 
 function joinErrors(errors: readonly CommandUsageError[]): CommandUsageError {
   const [first, ...others] = errors;
@@ -47,7 +47,7 @@ async function loadAction(
 
 async function execute(
   program: ProgramDeclaration,
-  resolution: RunResolution,
+  resolution: Resolution,
   timer: ReturnType<typeof createPhaseTimer>,
 ): Promise<void> {
   const { reporter } = getRunContext();
@@ -80,26 +80,15 @@ async function execute(
         await run(...resolution.parameters);
       });
     }
-
-    case "chain": {
-      const run = await timer.timeAsync(runPhases.action, () => {
-        return loadAction(resolution.declaration);
-      });
-
-      return timer.timeAsync(runPhases.execution, async () => {
-        await run(resolution.invocations);
-      });
-    }
   }
 }
 
 /**
- * Runs `resolution`, what a run's arguments resolve to against `program`,
- * within the caller's run context: prints the help or version it requests
- * through the run's reporter, or loads the command's action and runs it, a
- * chaining command's receiving every invocation; records the time spent loading
- * the action and executing as one measure each in the performance timeline.
- * Never exits the process.
+ * Runs `resolution`, what an invocation resolves to against `program`, within
+ * the caller's run context: prints the help or version it requests through the
+ * run's reporter, or loads the command's action and runs it; records the time
+ * spent loading the action and executing as one measure each in the performance
+ * timeline, behind `scope` when given. Never exits the process.
  *
  * @throws {CommandUsageError} Every usage error the resolution holds, joined in
  * one when several, after the help of a group it names no command of.
@@ -107,9 +96,10 @@ async function execute(
  */
 export async function executeProgram(
   program: ProgramDeclaration,
-  resolution: RunResolution,
+  resolution: Resolution,
+  { scope }: { scope?: string } = {},
 ): Promise<void> {
-  const timer = createPhaseTimer();
+  const timer = createPhaseTimer(scope);
 
   try {
     await execute(program, resolution, timer);

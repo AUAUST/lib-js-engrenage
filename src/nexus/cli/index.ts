@@ -10,12 +10,10 @@ export { option } from "#nexus/cli/operations/option";
 export { program } from "#nexus/cli/operations/program";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 export { resolveInvocation } from "#nexus/cli/operations/resolveInvocation";
-export { runInvocations } from "#nexus/cli/operations/runInvocations";
 export { runProgram } from "#nexus/cli/operations/runProgram";
 
 // @barrel errors
 export { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
-export { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 // @end
 
 // @barrel utils
@@ -44,7 +42,6 @@ export type * from "#nexus/cli/types/HelpFacts";
 export type * from "#nexus/cli/types/HelpListing";
 export type * from "#nexus/cli/types/HelpMount";
 export type * from "#nexus/cli/types/HelpOption";
-export type * from "#nexus/cli/types/InvocationFailure";
 export type * from "#nexus/cli/types/LayerLoader";
 export type * from "#nexus/cli/types/OptionDeclaration";
 export type * from "#nexus/cli/types/ParsingCommandDeclaration";

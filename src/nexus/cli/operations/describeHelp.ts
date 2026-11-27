@@ -368,8 +368,8 @@ export async function describeHelp(
           paths,
           kind: readKind(first),
           usage: describeUsage(first.declaration),
-          chains: (
-            first.declaration.kind === "parsing" && first.declaration.chain
+          chainable: (
+            first.declaration.kind === "parsing" && first.declaration.chainable
           ),
           ...splitHelpFacts(paths, all),
         });
@@ -387,7 +387,7 @@ export async function describeHelp(
     },
     {
       flags: invocationSeparator,
-      description: `start another invocation, naming its full command path; write --<option>=${invocationSeparator} for the text ${invocationSeparator}`,
+      description: `chain another invocation as ${invocationSeparator} <command path> [arguments] [options], run in order in one process; the first failure stops the rest, earlier ones keeping their effects; write --<option>=${invocationSeparator} for the text ${invocationSeparator}`,
       required: false,
       multiple: true,
       conflicts: [],
@@ -422,7 +422,7 @@ export async function describeHelp(
               paths: freeze([freeze([helpCommandName])]),
               kind: "command" as const,
               usage: "[path...]",
-              chains: false,
+              chainable: false,
               mounts: freeze([]),
             }),
           ]

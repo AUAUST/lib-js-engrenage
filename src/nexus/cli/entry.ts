@@ -7,12 +7,10 @@ export {
   findRunContext,
   forwardingCommand,
   getRunContext,
-  InvocationsError,
   nexusDetectors,
   nexusScenarios,
   option,
   program,
-  runInvocations,
   runProgram,
 } from "#nexus/cli/index";
 export {
@@ -39,7 +37,6 @@ export type {
   CommandSource,
   DeclaredParameters,
   ForwardingCommandDeclaration,
-  InvocationFailure,
   LayerLoader,
   OptionDeclaration,
   ParsingCommandDeclaration,

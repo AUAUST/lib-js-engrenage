@@ -374,12 +374,9 @@ describe("command subcommands", () => {
 });
 
 describe("command chain", () => {
-  function declareChain(
-    action: (invocations: readonly [string, string][]) => void,
-  ) {
+  function declareChain(action: (words: string, note: string) => void) {
     return command({
       name: "leaf",
-      chain: true,
       arguments: [argument({ name: "words", variadic: true })],
       options: [
         option({
@@ -413,22 +410,19 @@ describe("command chain", () => {
       "--next",
     );
 
-    expect(action).toHaveBeenCalledWith([
+    expect(action.mock.calls).toEqual([
       ["a", "x"],
       ["b --next", "y"],
     ]);
   });
 
-  test("passes every invocation, each argument split", async () => {
-    const action = vi.fn<
-      (invocations: readonly [string[], CommandPath][]) => void
-    >();
+  test("runs every invocation, each argument split", async () => {
+    const action = vi.fn<(ids: string[], path: CommandPath) => void>();
 
     await runCommand(
       "leaf",
       command({
         name: "leaf",
-        chain: true,
         arguments: [
           argument({
             name: "ids",
@@ -448,7 +442,7 @@ describe("command chain", () => {
       "d",
     );
 
-    expect(action).toHaveBeenCalledWith([
+    expect(action.mock.calls).toEqual([
       [["a", "b", "c"], ["leaf"]],
       [["d"], ["leaf"]],
     ]);

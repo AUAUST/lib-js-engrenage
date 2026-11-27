@@ -173,6 +173,7 @@ async function resolvePath(
   const names: string[] = [];
 
   let scenario: string | undefined;
+  let chainable = true;
 
   const lookup = createCommandLookup((load) => {
     return timer.timeAsync(runPhases.sources, load);
@@ -220,12 +221,15 @@ async function resolvePath(
         path,
         declaration,
         parameters: freeze([freeze([...rest])]),
+        chainable: false,
       });
     }
 
     const current = declaration;
 
     scenario = current.scenario ?? scenario;
+
+    chainable &&= current.chainable;
 
     const layers = await timer.timeAsync(runPhases.layers, () => {
       return loadLayers(current, path);
@@ -390,6 +394,7 @@ async function resolvePath(
       path,
       declaration,
       parameters: freeze([...parameters]),
+      chainable,
     });
   }
 }
@@ -403,13 +408,13 @@ async function resolvePath(
  * each command on the path; then parses and validates each option and argument,
  * the run options at any level of the path. A root group reserves the `help`
  * command, whose arguments name the path of the command whose help it requests.
- * Resolves to the invocation, a request for help or the version, or every usage
- * error found, an unknown command or option suggesting the closest known name,
- * and one below the root of a help path naming the group it was looked up in,
- * once every source of its group loads; a path stopping at a group without an
- * action that names no command fails with that group's help. Records the time
- * spent routing, loading sources and layers and validating as one measure each
- * in the performance timeline, behind `scope` when given.
+ * Resolves to the invocation, unchainable when forwarding or on a path declaring
+ * itself so, a request for help or the version, or every usage error found, an
+ * unknown command or option suggesting the closest known name, and one below the
+ * root of a help path naming the group it was looked up in, once every source
+ * of its group loads; a path stopping at a group without an action that names
+ * no command fails with that group's help. Measures routing, source and layer
+ * loading and validation in the performance timeline, behind `scope` if given.
  *
  * @throws {TypeError} When two sources of a group whose every source loads
  * provide one name, the later not shadowable.

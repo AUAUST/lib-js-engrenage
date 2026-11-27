@@ -24,16 +24,12 @@ function createGroupProgram(name: string, action: () => void) {
   });
 }
 
-function createStepProgram(action: (steps: readonly [string][]) => void) {
+function createStepProgram(action: (step: string) => void) {
   return declareProgram({
     root: command({
       name: "program",
-      chain: true,
       arguments: [argument({ name: "step" })],
       action: () => Promise.resolve(action),
-      parse(step, _invocation) {
-        return [step];
-      },
     }),
     scenarios: getReporter().scenarios,
   });
@@ -238,15 +234,11 @@ describe("runProgram", () => {
         subcommands: [
           command({
             name: "progress",
-            chain: true,
             arguments: [argument({ name: "step" })],
             action() {
-              return Promise.resolve((steps: readonly [string][]) => {
-                getRunContext().reporter.info(`progressing ${steps.join(" ")}`);
+              return Promise.resolve((step: string) => {
+                getRunContext().reporter.info(`progressing ${step}`);
               });
-            },
-            parse(step, _invocation) {
-              return [step];
             },
           }),
         ],
@@ -255,11 +247,13 @@ describe("runProgram", () => {
 
     await run(program, "progress", "a", "--verbose", "--next", "progress", "b");
 
-    expect(stderr.mock.calls.map(String).join("")).toContain("progressing a b");
+    expect(stderr.mock.calls.map(String).join("")).toMatch(
+      /progressing a\n.*progressing b/su,
+    );
   });
 
   test("rejects verbosity flags set by two chained invocations", async () => {
-    const action = vi.fn<(steps: readonly [string][]) => void>();
+    const action = vi.fn<(step: string) => void>();
 
     const program = createStepProgram(action);
 
@@ -336,7 +330,7 @@ describe("runProgram", () => {
     });
 
     test("names each chained invocation's phases after it", async () => {
-      const action = vi.fn<(steps: readonly [string][]) => void>();
+      const action = vi.fn<(step: string) => void>();
 
       const program = createStepProgram(action);
 
@@ -345,13 +339,15 @@ describe("runProgram", () => {
       expect(printed()).toMatch(
         /^ {2}invocation 2 .*\n {4}layer loading .*\n {4}routing /mu,
       );
+
+      expect(printed()).toMatch(/^ {4}action loading /mu);
     });
   });
 
   describe("chaining", () => {
-    function createChainProgram(action: (notes: readonly [string][]) => void) {
+    function createChainProgram(action: (note: string) => unknown) {
       const load = vi.fn(() => Promise.resolve(action));
-      const show = vi.fn(() => Promise.resolve(() => {}));
+      const event = vi.fn(() => Promise.resolve(() => {}));
 
       const declared = declareProgram({
         root: command({
@@ -359,7 +355,6 @@ describe("runProgram", () => {
           subcommands: [
             command({
               name: "add",
-              chain: true,
               options: [
                 option({
                   name: "text",
@@ -372,7 +367,19 @@ describe("runProgram", () => {
                 return [text];
               },
             }),
-            command({ name: "show", action: show }),
+            command({
+              name: "hook",
+              chainable: false,
+              subcommands: [command({ name: "event", action: event })],
+            }),
+            command({
+              name: "fail",
+              action() {
+                return Promise.resolve(() => {
+                  process.exitCode = 2;
+                });
+              },
+            }),
           ],
         }),
         scenarios: getReporter().scenarios,
@@ -381,9 +388,74 @@ describe("runProgram", () => {
       return {
         declared,
         load,
-        show,
+        event,
       };
     }
+
+    test("runs each invocation in its own run context, stopping at the first throwing", async () => {
+      const reporters = new Set<unknown>();
+
+      const action = vi.fn((note: string) => {
+        reporters.add(getRunContext().reporter);
+
+        if (note === "b") {
+          throw new Error("second failed");
+        }
+      });
+
+      const { declared } = createChainProgram(action);
+
+      await run(
+        declared,
+        "add",
+        "--text",
+        "a",
+        "--next",
+        "add",
+        "--text",
+        "b",
+        "--next",
+        "add",
+        "--text",
+        "c",
+      );
+
+      expect(action.mock.calls).toEqual([["a"], ["b"]]);
+      expect(reporters.size).toBe(2);
+
+      expect(printed()).toMatch(
+        /^invocation 2 failed; invocation 3 did not run\nsecond failed\n/u,
+      );
+
+      expect(process.exitCode).toBe(1);
+    });
+
+    test("stops at an invocation leaving a failing exit code", async () => {
+      const action = vi.fn();
+
+      const { declared } = createChainProgram(action);
+
+      await run(
+        declared,
+        "fail",
+        "--next",
+        "add",
+        "--text",
+        "a",
+        "--next",
+        "add",
+        "--text",
+        "b",
+      );
+
+      expect(action).not.toHaveBeenCalled();
+
+      expect(printed()).toBe(
+        "invocation 1 failed; invocations 2 to 3 did not run",
+      );
+
+      expect(process.exitCode).toBe(2);
+    });
 
     test("runs nothing when a later invocation fails, naming it", async () => {
       const { declared, load } = createChainProgram(vi.fn());
@@ -399,7 +471,7 @@ describe("runProgram", () => {
     });
 
     test("takes --next as an option's value only when written inline", async () => {
-      const action = vi.fn<(notes: readonly [string][]) => void>();
+      const action = vi.fn<(note: string) => void>();
 
       const { declared } = createChainProgram(action);
 
@@ -413,11 +485,11 @@ describe("runProgram", () => {
         "b",
       );
 
-      expect(action).toHaveBeenCalledWith([["--next"], ["b"]]);
+      expect(action.mock.calls).toEqual([["--next"], ["b"]]);
     });
 
-    test("rejects an invocation naming no command path or another command", async () => {
-      const { declared, load, show } = createChainProgram(vi.fn());
+    test("rejects an invocation naming no command path or an unchainable one", async () => {
+      const { declared, load, event } = createChainProgram(vi.fn());
 
       await run(
         declared,
@@ -428,17 +500,18 @@ describe("runProgram", () => {
         "--text",
         "b",
         "--next",
-        "show",
+        "hook",
+        "event",
       );
 
       expect(printed()).toContain("invocation 2: unknown option '--text'");
 
       expect(printed()).toContain(
-        "invocation 3: command 'program show' cannot be chained",
+        "invocation 3: command 'program hook event' cannot be chained",
       );
 
       expect(load).not.toHaveBeenCalled();
-      expect(show).not.toHaveBeenCalled();
+      expect(event).not.toHaveBeenCalled();
     });
 
     test("rejects a command declaring --next", async () => {

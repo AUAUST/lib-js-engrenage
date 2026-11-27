@@ -1,7 +1,6 @@
 import { isString } from "@auaust/toolkit";
 import { join } from "@auaust/toolkit/array";
 
-import { invocationSeparator } from "#nexus/cli/constants";
 import {
   dataEntry,
   lineEntry,
@@ -169,7 +168,7 @@ function afterRows({ after }: HelpFacts, depth: number): TableRow[] {
 }
 
 function describeTitle(
-  { paths, usage, description, kind, chains }: HelpListing,
+  { paths, usage, description, kind, chainable }: HelpListing,
   program: string,
 ): ReportSpan[] {
   const named = paths.map((path) => {
@@ -180,16 +179,20 @@ function describeTitle(
     styled("command", describePaths(named)),
     ...(usage === "" ? [] : [` ${usage}`]),
     ...(description === undefined ? [] : ["  ", styled("muted", description)]),
-    ...(chains ? ["  ", styled("muted", "(chains)")] : []),
     ...(kind === "forwarding"
       ? [
           "  ",
           styled(
             "muted",
-            "(passes every argument after its name as given, --help included; takes no run options)",
+            "(passes every argument after its name as given, --help included; takes no run options and never chains)",
           ),
         ]
-      : []),
+      : chainable
+        ? []
+        : [
+            "  ",
+            styled("muted", "(never chains, nor does any command below it)"),
+          ]),
   ];
 }
 
@@ -222,18 +225,16 @@ function listingEntry(listing: HelpListing, program: string): ReportContent {
 }
 
 /**
- * The entry reporting `contract`, a program's help: its value for machines, and
- * for people and agents the usage line, the run options, `--next` and the reserved
- * flags among them, the chaining syntax when a listed command chains, then each
- * listing, a chaining one marked so, with its paths in brace notation, its usage,
- * arguments and options, and below each mount's paths what only they state.
+ * The entry reporting `contract`, a program's help: its value for machines,
+ * and for people and agents the usage line, the run options, `--next` and the
+ * reserved flags among them, then each listing, an unchainable one marked so,
+ * with its paths in brace notation, its usage, arguments and options, and below
+ * each mount's paths what only they state.
  *
  * @pure
  */
 export function helpEntry(contract: HelpContract): DataEntry {
   const { program, runOptions, listings } = contract;
-
-  const chains = listings.some((listing) => listing.chains);
 
   return dataEntry(contract, [
     lineEntry(
@@ -244,13 +245,6 @@ export function helpEntry(contract: HelpContract): DataEntry {
       columns,
       rows: runOptions.map((option) => optionRow(option, 0)),
     }),
-    ...(chains
-      ? [
-          lineEntry(
-            `Chaining: <command path> <arguments> ${invocationSeparator} <command path> <arguments> ... runs several invocations of one command marked (chains), each naming its full command path and taking its own arguments and options; nothing takes effect unless every invocation succeeds.`,
-          ),
-        ]
-      : []),
     ...listings.map((listing) => listingEntry(listing, program)),
   ]);
 }

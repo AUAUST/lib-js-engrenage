@@ -8,7 +8,6 @@ import {
   CommandUsageError,
   getRunContext,
   lineEntry,
-  runInvocations,
   type ReportContent,
 } from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
@@ -106,30 +105,22 @@ async function search(
 }
 
 export default async function (
-  invocations: readonly [
-    words: readonly string[],
-    options: Readonly<Record<string, unknown>>,
-    kindName: string | undefined,
-  ][],
+  words: readonly string[],
+  options: Readonly<Record<string, unknown>>,
+  kindName: string | undefined,
 ): Promise<void> {
   const { reporter } = getRunContext();
 
   const config = await loadValidatedConfig(process.cwd(), { reporter });
 
-  const outputs = await runInvocations(
-    invocations,
-    (words, options, kindName) => {
-      return search(config.context.filesystem, words, options, kindName);
-    },
+  const reports = await search(
+    config.context.filesystem,
+    words,
+    options,
+    kindName,
   );
 
-  for (const [index, reports] of outputs.entries()) {
-    if (index > 0) {
-      reporter.log("");
-    }
-
-    for (const report of reports) {
-      reporter.log(report);
-    }
+  for (const report of reports) {
+    reporter.log(report);
   }
 }

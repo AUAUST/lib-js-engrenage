@@ -5,16 +5,14 @@ import {
   pickRecordValues,
   type RecordKind,
 } from "#metalbrain/records/index";
-import { getRunContext, runInvocations } from "#nexus/cli/index";
+import { getRunContext } from "#nexus/cli/index";
 import { settleChanges } from "#project/sync/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
 export default async function (
-  invocations: readonly [
-    name: string,
-    options: Readonly<Record<string, unknown>>,
-    keywords: readonly string[],
-  ][],
+  name: string,
+  options: Readonly<Record<string, unknown>>,
+  keywords: readonly string[],
 ): Promise<void> {
   const { reporter } = getRunContext();
 
@@ -24,38 +22,25 @@ export default async function (
 
   const agents = await config.resolve("agents");
 
-  const added = await runInvocations(
-    invocations,
-    async (name, options, keywords) => {
-      const logKind = findLogKind(name);
+  const logKind = findLogKind(name);
 
-      const kind: RecordKind = logKind;
+  const kind: RecordKind = logKind;
 
-      const id = await addRecord(
-        filesystem,
-        kind,
-        kind.name,
-        pickRecordValues(kind, options),
-        { wordCap: agents.wordCaps[logKind.wordCap] },
-      );
-
-      return {
-        kind,
-        id,
-        keywords,
-      };
-    },
+  const id = await addRecord(
+    filesystem,
+    kind,
+    kind.name,
+    pickRecordValues(kind, options),
+    { wordCap: agents.wordCaps[logKind.wordCap] },
   );
 
   await settleChanges(config, { check: false });
 
-  for (const { kind, id, keywords } of added) {
-    reporter.log(id);
+  reporter.log(id);
 
-    const hints = await listMergeHints(filesystem, kind, id, { keywords });
+  const hints = await listMergeHints(filesystem, kind, id, { keywords });
 
-    for (const line of hints) {
-      reporter.log(line);
-    }
+  for (const line of hints) {
+    reporter.log(line);
   }
 }

@@ -10,22 +10,10 @@ import { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
-import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { Resolution } from "#nexus/cli/types/Resolution";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
 import type { RunResolution } from "#nexus/cli/types/RunResolution";
-
-interface Chained {
-  readonly declaration: ParsingCommandDeclaration;
-  readonly name: string;
-}
-
-function isChaining(
-  declaration: CommandDeclaration,
-): declaration is ParsingCommandDeclaration {
-  return declaration.kind === "parsing" && declaration.chain;
-}
 
 // @debt an `--output` given twice in one invocation keeps the last value, while two invocations giving different ones fail the run
 /**
@@ -100,76 +88,59 @@ function describePath(root: CommandDeclaration, path: CommandPath): string {
 }
 
 /**
- * Checks that `resolution`, one invocation of several, resolves to a chaining
- * command, the same as `chained` when an earlier one did, adding a usage error
- * to `errors` otherwise.
+ * Adds to `errors` the usage errors keeping `resolution`, one invocation of
+ * several, from chaining.
  *
  * @confined
  */
-function checkChain(
+function checkChainable(
   resolution: Resolution,
   root: CommandDeclaration,
-  chained: Chained | undefined,
   errors: CommandUsageError[],
-): Chained | undefined {
+): void {
   switch (resolution.kind) {
     case "failure": {
       errors.push(...resolution.errors);
 
-      return chained;
+      break;
     }
 
     case "help": {
       errors.push(new CommandUsageError("help cannot be chained"));
 
-      return chained;
+      break;
     }
 
     case "version": {
       errors.push(new CommandUsageError("--version cannot be chained"));
 
-      return chained;
+      break;
     }
 
     case "invocation": {
-      const name = describePath(root, resolution.path);
-
-      if (!isChaining(resolution.declaration)) {
-        errors.push(
-          new CommandUsageError(`command '${name}' cannot be chained`),
-        );
-
-        return chained;
-      }
-
-      if (
-        chained !== undefined &&
-        chained.declaration !== resolution.declaration
-      ) {
+      if (!resolution.chainable) {
         errors.push(
           new CommandUsageError(
-            `command '${name}' cannot be chained with '${chained.name}'`,
+            `command '${describePath(root, resolution.path)}' cannot be chained`,
           ),
         );
       }
-
-      return chained ?? { declaration: resolution.declaration, name };
     }
   }
 }
 
 /**
- * Resolves `args`, the arguments after a program's name, against `program` without
- * loading any action: splits them into invocations on each bare `--next`, a `--`
- * ending the split, and resolves each from the program's root, each naming its
- * full command path. Several invocations must all name the same chaining command;
- * their run options apply to the whole run, a verbosity flag conflicting with
- * another given in an earlier invocation, or an `--output` disagreeing with an
- * earlier one, failing it. A chaining command resolves to its invocations, even
- * one alone. With several invocations, each usage error names the invocation
- * holding it, and the resolution carries the first one's path. With several
- * invocations, each one's resolution is measured in the performance timeline as
- * `invocation <n>`, holding the measures of its phases.
+ * Resolves `args`, the arguments after a program's name, against `program`
+ * without loading any action: splits them into invocations on each bare `--next`,
+ * a `--` ending the split, and resolves each from the program's root, each
+ * naming its full command path. A run of one invocation resolves as it alone
+ * does; several resolve to their chain, each one chainable. Their run options
+ * apply to the whole run, a verbosity flag conflicting with another given in an
+ * earlier invocation, or an `--output` disagreeing with an earlier one, failing
+ * it. With several invocations, each usage error names the invocation holding
+ * it, the resolution carries the first one's path and scenario, and each one's
+ * resolution is measured in the performance timeline as `invocation <n>`, holding
+ * the measures of its phases.
  */
 export async function resolveRun(
   program: ProgramDeclaration,
@@ -192,34 +163,23 @@ export async function resolveRun(
   }
 
   if (resolutions.length === 1) {
-    return first.kind === "invocation" && isChaining(first.declaration)
-      ? {
-          kind: "chain",
-          path: first.path,
-          declaration: first.declaration,
-          invocations: freeze([first.parameters]),
-          ...(first.scenario !== undefined && { scenario: first.scenario }),
-          runOptions: first.runOptions,
-        }
-      : first;
+    return first;
   }
 
   const runOptions = createRunOptions(keys(program.scenarios));
   const given = new Map<OptionDeclaration, unknown>();
   const errors: CommandUsageError[] = [];
-  const invocations: (readonly unknown[])[] = [];
-
-  let chained: Chained | undefined;
+  const invocations: Extract<Resolution, { kind: "invocation" }>[] = [];
 
   for (const [index, resolution] of resolutions.entries()) {
     const found: CommandUsageError[] = [];
 
-    chained = checkChain(resolution, program.root, chained, found);
+    checkChainable(resolution, program.root, found);
 
     agreeRunOptions(runOptions, resolution.runOptions, given, found);
 
     if (resolution.kind === "invocation") {
-      invocations.push(resolution.parameters);
+      invocations.push(resolution);
     }
 
     errors.push(
@@ -233,7 +193,7 @@ export async function resolveRun(
 
   const scenario = readScenario(first);
 
-  if (chained === undefined || errors.length > 0) {
+  if (errors.length > 0) {
     return {
       kind: "failure",
       path: first.path,
@@ -246,7 +206,6 @@ export async function resolveRun(
   return {
     kind: "chain",
     path: first.path,
-    declaration: chained.declaration,
     invocations: freeze(invocations),
     ...(scenario !== undefined && { scenario }),
     runOptions: values,

@@ -107,12 +107,12 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
       { subject: "zsh globs", stopped: "it matched" },
     ]);
 
-    expect(messages.slice(-2).map(({ text }) => text)).toEqual(
-      entries.map(({ id }: { id: string }) => id),
-    );
+    expect(
+      messages.map(({ text }) => text).filter((text) => text.startsWith("FR-")),
+    ).toEqual(entries.map(({ id }: { id: string }) => id));
   });
 
-  test("add writes nothing when a chained invocation fails, naming its position", async () => {
+  test("add keeps an earlier invocation's entry when a later one fails", async () => {
     const project = createProject();
 
     await expect(
@@ -136,11 +136,11 @@ describe("metalbrain friction", { timeout: binaryTimeout }, () => {
         "--stopped",
         "word ".repeat(200),
       ),
-    ).rejects.toThrow(
-      /^1 of 2 invocations failed, so none took effect:\ninvocation 2: /u,
-    );
+    ).rejects.toThrow(/^The entry would break the friction file/u);
 
-    expect(existsSync(project.resolve(".ai/friction.yml"))).toBe(false);
+    expect(parse(project.read(".ai/friction.yml")).entries).toMatchObject([
+      { subject: "git add" },
+    ]);
   });
 
   test("stats flags a subject with three entries as recurring", async () => {

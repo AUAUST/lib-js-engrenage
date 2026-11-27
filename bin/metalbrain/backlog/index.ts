@@ -67,7 +67,6 @@ export default command({
     command({
       name: "add",
       description: "Add a backlog entry and print its ID.",
-      chain: true,
       arguments: [
         argument({
           name: "category",
@@ -129,7 +128,6 @@ export default command({
     command({
       name: "update",
       description: "Replace or remove fields of a backlog entry.",
-      chain: true,
       arguments: [argument({ name: "id", description: "the entry's ID" })],
       options: [
         option({
@@ -187,7 +185,6 @@ export default command({
     command({
       name: "move",
       description: "Move a backlog entry to another category, keeping its ID; deletes a category left empty.",
-      chain: true,
       arguments: [
         argument({ name: "id", description: "the entry's ID" }),
         argument({

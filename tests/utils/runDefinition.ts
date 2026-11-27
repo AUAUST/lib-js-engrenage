@@ -20,7 +20,15 @@ export async function runDefinition(
   const declared = program({ root: declaration });
 
   await runContext.run({ signal: controller.signal, reporter }, async () => {
-    await executeProgram(declared, await resolveRun(declared, args));
+    const resolution = await resolveRun(declared, args);
+
+    const invocations = resolution.kind === "chain"
+      ? resolution.invocations
+      : [resolution];
+
+    for (const invocation of invocations) {
+      await executeProgram(declared, invocation);
+    }
   });
 
   return reporter;
