@@ -1,10 +1,5 @@
-import {
-  SymbolFlags,
-  type Symbol,
-  type Node as TsNode,
-  type TypeChecker,
-} from "typescript";
 import type { Rule, Scope } from "eslint";
+import type { Symbol, Node as TsNode, TypeChecker } from "typescript";
 
 import { isString } from "@auaust/toolkit";
 
@@ -12,7 +7,7 @@ import {
   classNodeTypes,
   functionNodeTypes,
 } from "#tools/eslint/effects/constants";
-import { chargeAccesses } from "#tools/eslint/effects/operations/chargeAccesses";
+import { chargeImportBindings } from "#tools/eslint/effects/operations/chargeImportBindings";
 import { chargeThrough } from "#tools/eslint/effects/operations/chargeThrough";
 import { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
 import { createGlobalCharger } from "#tools/eslint/effects/operations/createGlobalCharger";
@@ -122,10 +117,21 @@ export function collectEffectCharges({
     return rankDeclared(esTreeNodeToTSNodeMap.get(runner) as TsNode);
   }
 
-  function moduleOf(symbol: Symbol | undefined) {
-    return symbol !== undefined && (symbol.flags & SymbolFlags.Alias) !== 0
-      ? checker.getAliasedSymbol(symbol)
-      : symbol;
+  function creatorOf(runner: SyntaxNode): string | undefined {
+    for (const ancestor of sourceCode.getAncestors(runner).toReversed()) {
+      if (!(
+        functionNodeTypes.includes(ancestor.type) ||
+        classNodeTypes.includes(ancestor.type)
+      )) {
+        continue;
+      }
+
+      const level = declaredOf(ancestor);
+
+      if (level !== undefined) {
+        return level;
+      }
+    }
   }
 
   function chargeModule({
@@ -147,6 +153,7 @@ export function collectEffectCharges({
         operation: "evaluate",
         binding: specifier,
         sideEffect,
+        hint: undefined,
         ...loaded,
       });
     }
@@ -204,8 +211,6 @@ export function collectEffectCharges({
         return;
       }
 
-      const specifier = String(declaration.source.value);
-
       chargeSource(
         declaration,
         declaration.source,
@@ -213,74 +218,14 @@ export function collectEffectCharges({
         declaration.specifiers.length === 0,
       );
 
-      for (const imported of declaration.specifiers) {
-        if (isTypeOnlyNode(imported)) {
-          continue;
-        }
-
-        const local = imported.local.name;
-        const symbol = symbolOf(imported.local);
-        const variables = sourceCode.getDeclaredVariables(imported);
-
-        if (imported.type === "ImportNamespaceSpecifier") {
-          const module = moduleOf(symbol);
-
-          chargeAccesses(sourceCode, variables, append, (members, invoked) => {
-            const [member] = members;
-
-            if (
-              member === undefined ||
-              module === undefined ||
-              (!invoked && members.length === 1)
-            ) {
-              return;
-            }
-
-            // @debt a read takes the rank of a member key alone, so reading a ranked method through a namespace import without calling it (`fs.existsSync`) charges what calling it does
-            const ranked = rankAccess(
-              checker.tryGetMemberInModuleExports(member, module),
-              specifier,
-              members,
-              invoked,
-            );
-
-            return (
-              ranked && {
-                ...ranked,
-                binding: [local, ...(invoked ? [member] : members)].join("."),
-              }
-            );
-          });
-
-          continue;
-        }
-
-        const name = imported.type === "ImportDefaultSpecifier"
-          ? "default"
-          : imported.imported.type === "Identifier"
-            ? imported.imported.name
-            : String(imported.imported.value);
-
-        chargeAccesses(sourceCode, variables, append, (members, invoked) => {
-          if (!invoked && members.length === 0) {
-            return;
-          }
-
-          const ranked = rankAccess(
-            symbol,
-            specifier,
-            [name, ...members],
-            invoked,
-          );
-
-          return (
-            ranked && {
-              ...ranked,
-              binding: invoked ? local : [local, ...members].join("."),
-            }
-          );
-        });
-      }
+      chargeImportBindings({
+        sourceCode,
+        checker,
+        declaration,
+        symbolOf,
+        rankAccess,
+        append,
+      });
     },
     "ImportExpression"(expression) {
       const runner = runnerOf([
@@ -317,6 +262,7 @@ export function collectEffectCharges({
             operation: "invoke",
             binding: exported.name,
             sideEffect: false,
+            hint: undefined,
             ...ranked,
           });
         }
@@ -385,6 +331,10 @@ export function collectEffectCharges({
       for (const [runner, ran] of runs) {
         const declared = runner === undefined ? undefined : declaredOf(runner);
 
+        const creator = runner === undefined || declared !== undefined
+          ? undefined
+          : creatorOf(runner);
+
         for (const pending of ran) {
           charge({
             ...pending,
@@ -392,6 +342,16 @@ export function collectEffectCharges({
             through: undefined,
             declared,
           });
+
+          if (creator !== undefined && pending.hint === undefined) {
+            charge({
+              ...pending,
+              position: "invocation",
+              through: undefined,
+              declared: creator,
+              hint: "escape",
+            });
+          }
         }
       }
 

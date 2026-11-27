@@ -128,13 +128,17 @@ async function createLinter({
     overrideConfig: await createEslintConfig(await loadConfig(project.root)),
   });
 
-  return async (filePath: string, source: string) => {
+  return async (
+    filePath: string,
+    source: string,
+    rule = "auaust/import-effects",
+  ) => {
     const [result] = await eslint.lintText(source, {
       filePath: project.resolve(filePath),
     });
 
     return (result?.messages ?? [])
-      .filter(({ ruleId }) => ruleId === "auaust/import-effects")
+      .filter(({ ruleId }) => ruleId === rule)
       .flatMap(({ message, suggestions = [] }) => {
         return [message, ...suggestions.map(({ desc }) => `suggest: ${desc}`)];
       });
@@ -792,5 +796,36 @@ describe("import effects", () => {
     expect(await lint("src/project/feature/observing/read.ts", home)).toEqual(
       [],
     );
+  });
+
+  test("hint at effects lint cannot prove, reporting none as an error", async () => {
+    const lint = await createLinter({ roles: [computing()] });
+
+    const hints = "auaust/import-effect-hints";
+
+    const factory = `${act}/**\n * @pure\n */\nexport function value() {\n  return () => act();\n}\n`;
+
+    expect(await lint(handler, factory)).toEqual([]);
+
+    expect(await lint(handler, factory, hints)).toEqual([
+      expect.stringContaining("created inside one tagged pure invokes `act`"),
+    ]);
+
+    const passing = 'import { act, helper } from "#foundation/base/index";\n\nfunction register(fn: () => void) {\n  return fn;\n}\n\nregister(act);\nregister(helper);\n';
+
+    expect(await lint(utility, passing)).toEqual([]);
+
+    expect(await lint(utility, passing, hints)).toEqual([
+      expect.stringContaining("passes `act`"),
+    ]);
+
+    const computed = "src/project/feature/computing/now.ts";
+    const hidden = "function pick(value: { x: number }) {\n  return value;\n}\n\nexport function now(param: { x: number }) {\n  const target = pick(param);\n  const fresh = { x: 0 };\n\n  target.x = 1;\n  fresh.x = 1;\n}\n";
+
+    expect(await lint(computed, hidden)).toEqual([]);
+
+    expect(await lint(computed, hidden, hints)).toEqual([
+      expect.stringContaining("writes `target.x`"),
+    ]);
   });
 });

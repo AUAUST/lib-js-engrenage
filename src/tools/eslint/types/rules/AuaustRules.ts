@@ -67,18 +67,28 @@ export interface AuaustRules {
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
+   * Hints at effects `auaust/import-effects` cannot prove: code a function or
+   * class created inside a tagged one runs above that tag, a callable binding
+   * passed or stored without being invoked whose invocation costs more than the
+   * ceiling of the code holding it, and a write to a value a call result or a
+   * reassignment hides, which would cost more than its ceiling if the state
+   * were outside its module.
+   */
+  "auaust/import-effect-hints"?: Rule<[]>;
+  /**
    * Code of a ranked role runs only what its ceilings allow where it runs:
    * what loading a module does against its evaluation ceiling while the module
    * evaluates, side-effect imports included, and what invoking a binding does
    * against the ceiling of the position invoking it, inside a function the level
    * its effect doc tag declares, else the invocation ceiling. An effect doc tag
-   * stays within the invocation ceiling, and invoking a tagged binding costs its
-   * tag. A global the environment ranks costs its rank once invoked, and its
-   * member's rank once read, as does a ranked member path of an external binding.
-   * A write costs a fixed level by who owns the state it changes, and reading a
-   * `let` or `var` another function declares costs `observing`. A module nothing
-   * resolves costs the configured fallback, and one the environment's bundler
-   * erases costs nothing.
+   * stays within the invocation ceiling, and invoking a tagged binding costs
+   * its tag. A global the environment ranks costs its rank once invoked, and
+   * its member's rank once read, as does a ranked member path of an external
+   * binding. A write costs a fixed level by who owns the state it changes,
+   * and reading a `let` or `var` another function declares costs `observing`.
+   * A module nothing resolves costs the configured fallback, and one the
+   * environment's bundler erases costs nothing. What lint cannot prove passes,
+   * left to `auaust/import-effect-hints`.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**
