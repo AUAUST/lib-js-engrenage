@@ -48,15 +48,15 @@ describe("engrenage eslint", () => {
     ]);
   });
 
-  test("passes --debug to ESLint", async () => {
+  test.each(["--debug", "--silent"])("passes %s to ESLint", async (flag) => {
     const project = createProject();
 
-    await runDefinition(engrenage, "eslint", "--debug");
+    await runDefinition(engrenage, "eslint", flag);
 
     expect(readRecordedArgs(project)).toEqual([
       "--flag",
       "unstable_native_nodejs_ts_config",
-      "--debug",
+      flag,
     ]);
   });
 });

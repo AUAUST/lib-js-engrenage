@@ -34,5 +34,6 @@ export function createTestReporter(): Reporter & {
     warn: record("warn"),
     info: record("info"),
     log: record("log"),
+    debug: record("debug"),
   };
 }

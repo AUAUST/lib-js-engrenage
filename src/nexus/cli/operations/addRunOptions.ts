@@ -1,6 +1,16 @@
 import type { CommandUnknownOpts } from "@commander-js/extra-typings";
 
 export function addRunOptions(command: CommandUnknownOpts): void {
-  command.option("--debug", "print the stack trace of errors");
-  command.option("--verbose", "print progress and details");
+  command.option(
+    "--silent",
+    "print nothing; the exit code carries the outcome",
+  );
+
+  command.option("--quiet", "print only errors and warnings");
+  command.option("--verbose", "also print progress and details");
+
+  command.option(
+    "--debug",
+    "also print debugging details, stack traces included",
+  );
 }

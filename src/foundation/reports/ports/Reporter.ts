@@ -17,4 +17,8 @@ export interface Reporter {
    * Reports the command's result or an instruction the user must act on.
    */
   log(text: string, data?: ReportData): void;
+  /**
+   * Reports a fact that helps understanding a run, such as a stack trace.
+   */
+  debug(text: string, data?: ReportData): void;
 }

@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { createConsoleReporter } from "#foundation/reports/index";
+import {
+  createConsoleReporter,
+  type Verbosity,
+} from "#foundation/reports/index";
 
 function written(stream: NodeJS.WriteStream): string {
   return vi
@@ -34,22 +37,31 @@ describe("createConsoleReporter", () => {
     expect(written(process.stdout)).toBe("done\n");
   });
 
-  test("writes progress only while verbose", () => {
-    let verbose = false;
+  test("writes each report only while its level is shown", () => {
+    let verbosity: Verbosity = "default";
 
     const reporter = createConsoleReporter({
-      isVerbose: () => {
-        return verbose;
+      verbosity: () => {
+        return verbosity;
       },
     });
 
-    reporter.info("quiet");
+    reporter.info("hidden");
+    reporter.debug("hidden");
 
     expect(written(process.stderr)).toBe("");
 
-    verbose = true;
-    reporter.info("loud");
+    verbosity = "silent";
+    reporter.error("hidden");
+    reporter.log("hidden");
 
-    expect(written(process.stderr)).toBe("loud\n");
+    expect(written(process.stderr)).toBe("");
+    expect(written(process.stdout)).toBe("");
+
+    verbosity = "debug";
+    reporter.info("progress");
+    reporter.debug("stack");
+
+    expect(written(process.stderr)).toBe("progress\nstack\n");
   });
 });

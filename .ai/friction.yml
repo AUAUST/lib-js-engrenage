@@ -27,6 +27,7 @@ taps:
   - {id: FR-0c1650, at: 2026-11-27T00:02:40Z, note: "also on moving files out of a domain: its stale barrel breaks config loading, sync and the lint hook until rewritten by hand (#995)"}
   - {id: FR-169e5d, at: 2026-11-27T04:37:25Z, note: "also with --no-inline-config during #1000"}
   - {id: FR-169e5d, at: 2026-11-27T04:44:14Z, note: pnpm exec eslint crashes on typescriptOptionsSchema}
+  - {id: FR-20c216, at: 2026-11-27T11:46:38Z, note: zsh `=` word in echo separator}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1323,3 +1324,13 @@ entries:
     tried: check() then a u-flagged regex in domainExportsSchema
     stopped: toJsonSchema throws on both; used an unflagged regex
     created: 2026-11-27T11:06:11Z
+  - id: FR-d03473
+    subject: zsh grep with unquoted --include glob
+    tried: grep -rn ... --include=*.ts src
+    stopped: zsh no matches found; reran grep with the glob quoted or without --include
+    created: 2026-11-27T11:48:00Z
+  - id: FR-03f0fe
+    subject: Commander parent options parsed after subcommand
+    tried: chain conflict test under a group
+    stopped: group consumed run flags of every invocation; tested on a root chained command
+    created: 2026-11-27T11:57:59Z

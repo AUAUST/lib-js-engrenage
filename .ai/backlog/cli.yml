@@ -1,7 +1,6 @@
 purpose: Command definitions, registration and program runs.
 taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
-  - {id: BL-4e55ba, at: 2026-11-26T12:21:26Z, note: Reframed as command extensions (PD-b6bbc6)}
   - {id: BL-39182b, at: 2026-11-26T17:04:02Z, note: "jscpd:new over the #945 range lists the metalbrain close/show, issue claim/publish/release and codegen editions/schemas actions for it"}
 entries:
   - id: BL-62e56b
@@ -51,12 +50,6 @@ entries:
     why: After moving src/tools/agents/claude/extension.ts, the message for src/workflows/builtins/entry.ts said to delete the projectBuild line
     want: The message quotes the line whose specifier resolves to the missing module
     created: 2026-11-22T00:00:00Z
-  - id: BL-4e55ba
-    title: Programs cannot mount commands from extensions they discover, so consumers run scripts through per-project aliases
-    why: A CLI runs on its own, so extensions must be self-discovered; interscript runs pnpm exec tsx scripts/executable.ts shop build
-    want: A safe nexus extension pattern (discovery, validation, name-conflict resolution) whose first case runs and lists any command of a project scripts tree through engrenage, with no per-project entry, interpreter or alias
-    done: "Item in #966 after #955; settles the scripts shortcut shape"
-    created: 2026-11-26T10:59:20Z
   - id: BL-ab1893
     title: Bare engrenage is not on PATH in consumers
     why: "Seven interscript entries; the link and devEngines cases are #964, the batiment bin #953"
@@ -68,20 +61,8 @@ entries:
       - bin/batiment/actions/map.ts:1
     why: "bin/metalbrain imports #workflows/config 32 times, #project/sync 16, #tools/* 17; batiment map needs #workflows/config and #project/structure reportStructure; only the command interface is settled"
     want: A decision on how a split CLI finds its host, or which commands stay in engrenage
-    done: "Settled in #966"
+    done: "Planning item of #1003, moved from #966"
     created: 2026-11-26T11:19:47Z
-  - id: BL-101628
-    title: Command trees lack a canonical hot path apart from their heavy commands
-    why: metalbrain mixes hooks that must start as fast as possible with commands that parse and discover, under one entry; lazy commands cover most of it without a stated pattern
-    want: A hot-path group declared inline in the main command, registered as the executable loads and matched before anything else loads; the rest lazy as a whole, one module registering every other command only when the hot path misses
-    done: "Item in #966 after #955"
-    created: 2026-11-26T12:03:38Z
-  - id: BL-4037bb
-    title: Commands print one output shape for agents and humans
-    why: "Agents need dense output structured for their reading; humans need colored, padded, structured output. Prior art: github.com/sdairs/is-ai-agent for detection"
-    want: Different printers for the same command data, picked by detected audience; the rendering itself is a separate concern
-    done: "Item in #966 after #955"
-    created: 2026-11-26T12:03:38Z
   - id: BL-c7380b
     title: Commands an extension registers after program creation miss the run options
     sites:

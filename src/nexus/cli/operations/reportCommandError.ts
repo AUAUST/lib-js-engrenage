@@ -1,26 +1,30 @@
 import { join } from "@auaust/toolkit/array";
 
+import type { Reporter } from "#foundation/reports/index";
+
 function describe(value: unknown): string {
   return value instanceof Error ? value.message : String(value);
 }
 
 /**
- * Formats a failed run's error with its causes, led by `explanation` when
- * one is given, and with its stack only when `debug` is on, otherwise with
- * how to turn it on.
+ * Reports a failed run's error with its causes, led by `explanation` when one is
+ * given, and followed by how to print its stack unless `debug` is on; its stack
+ * goes to the reporter's debug level.
  */
-export function formatCommandError(
+export function reportCommandError(
   error: unknown,
   {
+    reporter,
     debug,
     debugVariable,
     explanation,
   }: {
+    reporter: Reporter;
     debug: boolean;
     debugVariable?: string | undefined;
     explanation?: string | undefined;
   },
-): string {
+): void {
   const lines = explanation === undefined
     ? [describe(error)]
     : [explanation, `Caused by: ${describe(error)}`];
@@ -42,9 +46,11 @@ export function formatCommandError(
         ? "Run with --debug to print the stack trace"
         : `Run with --debug or set ${debugVariable}=1 to print the stack trace`,
     );
-  } else if (error instanceof Error && error.stack !== undefined) {
-    lines.push(error.stack);
   }
 
-  return join(lines, "\n");
+  reporter.error(join(lines, "\n"));
+
+  if (error instanceof Error && error.stack !== undefined) {
+    reporter.debug(error.stack);
+  }
 }

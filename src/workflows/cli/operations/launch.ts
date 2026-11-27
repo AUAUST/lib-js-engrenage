@@ -1,5 +1,5 @@
 import { createConsoleReporter } from "#foundation/reports/index";
-import { formatCommandError, isDebugEnvironment } from "#nexus/cli/index";
+import { isDebugEnvironment, reportCommandError } from "#nexus/cli/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/index";
 
@@ -13,13 +13,18 @@ export async function launch(run: () => Promise<void>): Promise<void> {
       throw error;
     }
 
-    createConsoleReporter().error(
-      formatCommandError(error, {
-        debug: isDebugEnvironment(debugEnvironmentVariable),
-        debugVariable: debugEnvironmentVariable,
-        explanation,
+    const debug = isDebugEnvironment(debugEnvironmentVariable);
+
+    reportCommandError(error, {
+      reporter: createConsoleReporter({
+        verbosity: () => {
+          return debug ? "debug" : "default";
+        },
       }),
-    );
+      debug,
+      debugVariable: debugEnvironmentVariable,
+      explanation,
+    });
 
     process.exitCode = 1;
   }

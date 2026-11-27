@@ -69,6 +69,44 @@ describe("runProgram", () => {
     expect(printed()).toContain("the fix\nCaused by: outer");
   });
 
+  test("prints nothing for a failing command under --silent", async () => {
+    await run(createProgram(), "failing", "--silent");
+
+    expect(getReporter().messages).toEqual([]);
+    expect(process.exitCode).toBe(1);
+  });
+
+  test("prints a warning but not the result under --quiet", async () => {
+    const program = createDefinedProgram(
+      "program",
+      defineGroup({
+        commands: {
+          reporting: defineCommand({
+            action() {
+              getRunContext().reporter.warn("warning");
+              getRunContext().reporter.log("result");
+            },
+          }),
+        },
+      }),
+    );
+
+    await run(program, "reporting", "--quiet");
+
+    expect(getReporter().messages.map(({ text }) => text)).toEqual(["warning"]);
+  });
+
+  test.each([
+    ["--quiet", "failing", "--verbose"],
+    ["--silent", "failing", "--debug"],
+  ])("rejects two verbosity flags (%s %s %s)", async (...argv) => {
+    await run(createProgram(), ...argv);
+
+    expect(printed()).toContain("cannot be used with option");
+    expect(printed()).not.toContain("outer");
+    expect(process.exitCode).toBe(1);
+  });
+
   test("prints progress only with --verbose", async () => {
     const stderr = vi
       .spyOn(process.stderr, "write")
@@ -135,6 +173,33 @@ describe("runProgram", () => {
     ]);
 
     expect(stderr.mock.calls.map(String).join("")).toContain("progressing a b");
+  });
+
+  test("rejects verbosity flags set by two chained invocations", async () => {
+    const action = vi.fn();
+
+    const program = createDefinedProgram(
+      "program",
+      defineChainedCommand({
+        configure(command) {
+          return command.argument("<step>");
+        },
+        action() {
+          return Promise.resolve(action);
+        },
+        parse(step) {
+          return [step];
+        },
+      }),
+    );
+
+    await run(program, "a", "--quiet", "--next", "b", "--verbose");
+
+    expect(printed()).toContain(
+      "invocation 2: option '--quiet' cannot be used with option '--verbose'",
+    );
+
+    expect(action).not.toHaveBeenCalled();
   });
 
   test.each([

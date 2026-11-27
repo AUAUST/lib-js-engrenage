@@ -120,14 +120,6 @@ entries:
     why: an unreadable tsconfig hides the output directory, so the alias is generated and the index skips instead of failing; aliases target the language named `typescript` only, looked up apart from `readSelectedLanguage`; a `#…` import of a `.tsx` module resolves to the alias's `.ts` target; `syncAliases` strips the first extension to recover a stem.
     want: output directory resolved without the tsconfig; aliases reading their language through `readSelectedLanguage`; an `Alias` carrying its stem and every extension.
     created: 2026-11-22T00:00:00Z
-  - id: BL-eebc78
-    title: Map and tree renderers are ad hoc
-    sites:
-      - src/batiment/structure/utils/renderNamespaceMap.ts:10
-      - src/batiment/structure/utils/renderStructureTree.ts:15
-    why: map renderers repeat code; one `detailed` flag branches every tree helper.
-    want: one structured renderer shared by the map renderers; two row policies over one drawing.
-    created: 2026-11-22T00:00:00Z
   - id: BL-2d95c9
     title: Namespaces declared under a domain glob are ignored
     sites:

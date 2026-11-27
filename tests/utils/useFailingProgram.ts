@@ -45,10 +45,7 @@ export function useFailingProgram() {
   }
 
   function printed() {
-    return reporter.messages
-      .filter(({ level }) => level === "error")
-      .map(({ text }) => text)
-      .join("\n");
+    return reporter.messages.map(({ text }) => text).join("\n");
   }
 
   return {

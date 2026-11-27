@@ -5,25 +5,20 @@ import {
 
 import {
   createConsoleReporter,
+  filterReports,
   type Reporter,
+  type Verbosity,
 } from "#foundation/reports/index";
+import { verbosityFlags } from "#nexus/cli/constants";
 import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
-import { formatCommandError } from "#nexus/cli/operations/formatCommandError";
 import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
+import { listVerbosityFlags } from "#nexus/cli/operations/listVerbosityFlags";
+import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
+import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
-
-function isFlagSet(command: CommandUnknownOpts | null, name: string): boolean {
-  for (let current = command; current !== null; current = current.parent) {
-    if (current.getOptionValue(name) === true) {
-      return true;
-    }
-  }
-
-  return false;
-}
 
 function overrideExits(command: CommandUnknownOpts): void {
   command.exitOverride();
@@ -45,10 +40,11 @@ async function isDebugResolved(
 }
 
 /**
- * Runs a program within its run context: aborts it on SIGHUP, SIGINT and
- * SIGTERM, and on failure prints its error, with its stack when the `--debug`
- * flag, `debugVariable` or `resolveDebug` turns debug on, led by what
- * `explain` returns for it.
+ * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
+ * filters every report by the verbosity its flags set, else `debug` when
+ * `debugVariable` is on, else `default`, and on failure prints its error, led by
+ * what `explain` returns for it, with its stack at `debug`, which `resolveDebug`
+ * also sets when no flag does.
  */
 export async function runProgram(
   program: CommandUnknownOpts,
@@ -74,18 +70,31 @@ export async function runProgram(
 
   let running: CommandUnknownOpts | null = program;
 
+  let unflagged: Verbosity = (
+    debugVariable !== undefined && isDebugEnvironment(debugVariable)
+  )
+    ? "debug"
+    : "default";
+
   program.hook("preAction", (_command, action) => {
     running = action;
+
+    rejectVerbosityConflict(action);
   });
 
-  const runReporter = (
-    reporter ??
-    createConsoleReporter({
-      isVerbose: () => {
-        return isFlagSet(running, "verbose");
-      },
-    })
-  );
+  function getFlag() {
+    return listVerbosityFlags(running).at(-1);
+  }
+
+  function getVerbosity(): Verbosity {
+    const flag = getFlag();
+
+    return flag === undefined ? unflagged : verbosityFlags[flag];
+  }
+
+  const runReporter = reporter === undefined
+    ? createConsoleReporter({ verbosity: getVerbosity })
+    : filterReports(reporter, getVerbosity);
 
   const controller = new AbortController();
 
@@ -135,19 +144,21 @@ export async function runProgram(
       return;
     }
 
-    const debug = (
-      isFlagSet(running, "debug") ||
-      (debugVariable !== undefined && isDebugEnvironment(debugVariable)) ||
+    // @debt `resolveDebug` raises the level only once the run fails, so a configured debug never shows the debug reports printed before
+    if (
+      getFlag() === undefined &&
+      unflagged !== "debug" &&
       (await isDebugResolved(resolveDebug, runReporter))
-    );
+    ) {
+      unflagged = "debug";
+    }
 
-    runReporter.error(
-      formatCommandError(error, {
-        debug,
-        debugVariable,
-        explanation: explain?.(error),
-      }),
-    );
+    reportCommandError(error, {
+      reporter: runReporter,
+      debug: getVerbosity() === "debug",
+      debugVariable,
+      explanation: explain?.(error),
+    });
 
     process.exitCode = 1;
   } finally {

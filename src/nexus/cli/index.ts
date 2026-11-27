@@ -4,9 +4,9 @@ export { defineCommand } from "#nexus/cli/operations/defineCommand";
 export { defineForwardingCommand } from "#nexus/cli/operations/defineForwardingCommand";
 export { defineGroup } from "#nexus/cli/operations/defineGroup";
 export { defineLazyCommand } from "#nexus/cli/operations/defineLazyCommand";
-export { formatCommandError } from "#nexus/cli/operations/formatCommandError";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
+export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 export { runInvocations } from "#nexus/cli/operations/runInvocations";
 export { runProgram } from "#nexus/cli/operations/runProgram";
 
@@ -28,4 +28,5 @@ export type * from "#nexus/cli/types/DefaultActionParameters";
 export type * from "#nexus/cli/types/ExtendCommand";
 export type * from "#nexus/cli/types/InvocationFailure";
 export type * from "#nexus/cli/types/RunContext";
+export type * from "#nexus/cli/types/VerbosityFlag";
 // @end

@@ -1,3 +1,5 @@
+import type { Verbosity } from "#foundation/reports/index";
+
 export const commandRegistration = Symbol.for(
   "@auaust/nexus/cli/commandRegistration",
 );
@@ -11,3 +13,10 @@ export const commandForwarding = Symbol.for(
 );
 
 export const invocationSeparator = "--next";
+
+export const verbosityFlags = {
+  silent: "silent",
+  quiet: "important",
+  verbose: "info",
+  debug: "debug",
+} as const satisfies Record<string, Verbosity>;

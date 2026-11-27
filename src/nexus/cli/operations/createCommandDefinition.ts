@@ -16,6 +16,7 @@ import {
 import { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 import { addRunOptions } from "#nexus/cli/operations/addRunOptions";
 import { configureCommand } from "#nexus/cli/operations/configureCommand";
+import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
@@ -218,6 +219,9 @@ export function createCommandDefinition({
         );
       }
     }
+
+    // @debt checks verbosity conflicts again after the merge, apart from runProgram's preAction check, since later invocations' run options reach the command only here
+    rejectVerbosityConflict(command);
 
     return parsed;
   }

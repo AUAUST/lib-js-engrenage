@@ -30,6 +30,7 @@ function createRecordingReporter(problems: string[]): Reporter {
     warn: record,
     info: ignore,
     log: ignore,
+    debug: ignore,
   };
 }
 
