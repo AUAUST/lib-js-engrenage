@@ -35,6 +35,7 @@ describe("engrenage run", () => {
 
     await run("pnpm");
 
+    expect(printed()).toContain("Manage the pnpm version of the project.");
     expect(process.exitCode).not.toBe(7);
 
     process.exitCode = undefined;

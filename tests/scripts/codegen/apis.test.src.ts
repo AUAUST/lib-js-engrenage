@@ -22,7 +22,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("support codegen apis", { timeout: binaryTimeout }, () => {
+describe("codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the timers group from the declarations of the worker lib", async () => {
     const project = createProject();
 
