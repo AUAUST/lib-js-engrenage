@@ -72,12 +72,47 @@ describe("extension commands", () => {
     expect(process.exitCode).toBe(1);
   });
 
-  test("names the package an inactive extension's command needs, running no action", async () => {
-    useExtension("fixture", 'when: { installed: "absent-package" },');
+  describe("an inactive extension's command", () => {
+    test("names the package it needs, running no action", async () => {
+      useExtension("fixture", 'when: { installed: "absent-package" },');
 
-    await run("fixture");
+      await run("fixture");
 
-    expect(printed()).toContain("install absent-package");
-    expect(process.exitCode).toBe(1);
+      expect(printed()).toContain(
+        "The 'fixture' command of 'engrenage' is unavailable: the fixture extension is inactive, install absent-package to activate it",
+      );
+
+      expect(process.exitCode).toBe(1);
+    });
+
+    test("lists only from the info level, with its activation, warning nothing", async () => {
+      useExtension("fixture", 'when: { installed: "absent-package" },');
+
+      await run("--help");
+
+      expect(printed()).not.toMatch(/\bfixture\b/u);
+      expect(printed()).not.toContain("inactive");
+      expect(process.exitCode).toBeUndefined();
+
+      await run("--verbose", "--help");
+
+      expect(printed()).toContain(
+        "fixture  the fixture extension is inactive, install absent-package to activate it",
+      );
+
+      expect(process.exitCode).toBeUndefined();
+    });
+
+    test("is suggested for a close name, adding no failure", async () => {
+      useExtension("fixture", 'when: { installed: "absent-package" },');
+
+      await run("fixtur");
+
+      expect(printed()).toBe(
+        "unknown command 'fixtur'\n(Did you mean fixture?)",
+      );
+
+      expect(process.exitCode).toBe(1);
+    });
   });
 });

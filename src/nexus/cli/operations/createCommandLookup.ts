@@ -3,13 +3,16 @@ import { join } from "@auaust/toolkit/array";
 import { freeze, get } from "@auaust/toolkit/object";
 
 import { loadLazy } from "#foundation/modules/index";
+import { mergeCommandSources } from "#nexus/cli/utils/mergeCommandSources";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandEntry } from "#nexus/cli/types/CommandEntry";
 import type { CommandLoader } from "#nexus/cli/types/CommandLoader";
 import type { CommandMount } from "#nexus/cli/types/CommandMount";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
+import type { ProvidedSource } from "#nexus/cli/types/ProvidedSource";
 import type { SubcommandMatch } from "#nexus/cli/types/SubcommandMatch";
+import type { UnavailableCommand } from "#nexus/cli/types/UnavailableCommand";
 
 type GroupSource =
   | {
@@ -30,28 +33,21 @@ interface LoadedEntries {
   readonly shadowable: boolean;
 }
 
-interface ProvidedEntry {
-  /**
-   * The entry, or `undefined` for a name the program's own commands reserve.
-   */
-  readonly entry: CommandEntry | undefined;
-  readonly name: string;
-  readonly names: readonly string[];
-  readonly label: string;
-}
-
 interface SubcommandListing {
   readonly commands: readonly CommandDeclaration[];
   /**
-   * The error of each loader and mount that failed to load.
+   * Each mount its check reports unavailable, its declaration never loaded.
+   */
+  readonly unavailable: readonly UnavailableCommand[];
+  /**
+   * The error of each loader, check and mount that failed to load.
    */
   readonly failures: readonly unknown[];
 }
 
-interface ProvidedNames {
-  readonly shadowable: boolean;
-  readonly entries: readonly ProvidedEntry[];
-}
+type DeclaredEntry =
+  | { readonly kind: "available"; readonly command: CommandDeclaration }
+  | { readonly kind: "unavailable"; readonly command: UnavailableCommand };
 
 function readSources({
   subcommands,
@@ -205,7 +201,7 @@ function names({ name, aliases }: Pick<CommandEntry, "name" | "aliases">) {
 function provideEntries(
   { entries, shadowable }: LoadedEntries,
   label: string,
-): ProvidedNames {
+): ProvidedSource {
   return {
     shadowable,
     entries: entries.map((entry) => {
@@ -220,66 +216,6 @@ function provideEntries(
 }
 
 /**
- * Checks that no two of `sources`, provided in order by the group at `path`,
- * provide one name, unless the later one is shadowable.
- *
- * @returns The entries each name leads to, earlier sources winning.
- * @throws {TypeError} When two sources provide one name, the later not shadowable,
- * or one source provides a name twice.
- */
-function mergeSources(
-  sources: readonly ProvidedNames[],
-  path: CommandPath,
-): readonly ProvidedEntry[] {
-  const owners = new Map<
-    string,
-    { readonly source: ProvidedNames; readonly label: string }
-  >();
-
-  const merged: ProvidedEntry[] = [];
-  const group = join(path, " ");
-
-  for (const source of sources) {
-    for (const provided of source.entries) {
-      const taken = provided.names.filter((name) => {
-        const owner = owners.get(name);
-
-        if (owner?.source === source && owner.label === provided.label) {
-          throw new TypeError(
-            `The '${name}' command in '${group}' comes twice from ${provided.label}`,
-          );
-        }
-
-        if (
-          owner !== undefined &&
-          (owner.source === source || !source.shadowable)
-        ) {
-          throw new TypeError(
-            `The '${name}' command in '${group}' comes from both ${owner.label} and ${provided.label}`,
-          );
-        }
-
-        return owner !== undefined;
-      });
-
-      if (taken.includes(provided.name)) {
-        continue;
-      }
-
-      for (const name of provided.names) {
-        if (!owners.has(name)) {
-          owners.set(name, { source, label: provided.label });
-        }
-      }
-
-      merged.push(provided);
-    }
-  }
-
-  return merged;
-}
-
-/**
  * Creates a lookup of the subcommands groups provide, calling each loader and
  * loading each mount once, through `track` when given.
  *
@@ -291,6 +227,7 @@ export function createCommandLookup(
   },
 ) {
   const loaded = new Map<CommandLoader, Promise<LoadedEntries>>();
+  const checked = new Map<CommandMount, Promise<string | undefined>>();
   const mounted = new Map<CommandMount, Promise<CommandDeclaration>>();
 
   /** @effectful */
@@ -314,13 +251,55 @@ export function createCommandLookup(
     return pending;
   }
 
+  /**
+   * The reason `mount` is unavailable, or `undefined` when it is available.
+   *
+   * @throws {Error} When its check fails, its error as the cause.
+   * @effectful
+   */
+  function check(
+    mount: CommandMount,
+    path: CommandPath,
+  ): Promise<string | undefined> {
+    const pending = (
+      checked.get(mount) ??
+      track(async () => {
+        try {
+          return await mount.check?.();
+        } catch (error) {
+          throw new Error(
+            `The '${mount.name}' command of '${join(path, " ")}' failed to check its availability from ${mount.origin}`,
+            { cause: error },
+          );
+        }
+      })
+    );
+
+    checked.set(mount, pending);
+
+    return pending;
+  }
+
   /** @effectful */
-  function declare(
+  async function inspect(
     entry: CommandEntry,
     path: CommandPath,
-  ): Promise<CommandDeclaration> {
+  ): Promise<DeclaredEntry> {
     if (entry.kind !== "mount") {
-      return Promise.resolve(entry);
+      return { kind: "available", command: entry };
+    }
+
+    const reason = await check(entry, path);
+
+    if (reason !== undefined) {
+      return {
+        kind: "unavailable",
+        command: freeze({
+          name: entry.name,
+          aliases: entry.aliases,
+          reason,
+        }),
+      };
     }
 
     const pending = (
@@ -332,7 +311,27 @@ export function createCommandLookup(
 
     mounted.set(entry, pending);
 
-    return pending;
+    return { kind: "available", command: await pending };
+  }
+
+  /**
+   * @throws {Error} When `entry` is an unavailable mount, naming its reason;
+   * when its check or its declaration fails to load.
+   * @effectful
+   */
+  async function declare(
+    entry: CommandEntry,
+    path: CommandPath,
+  ): Promise<CommandDeclaration> {
+    const inspected = await inspect(entry, path);
+
+    if (inspected.kind === "unavailable") {
+      throw new Error(
+        `The '${entry.name}' command of '${join(path, " ")}' is unavailable: ${inspected.command.reason}`,
+      );
+    }
+
+    return inspected.command;
   }
 
   /**
@@ -344,7 +343,8 @@ export function createCommandLookup(
    * leaves the name unresolved, never missing, since its source may provide it.
    *
    * @throws {Error} When a later source provides the name after a loader fails,
-   * that loader's error; when the mount it matches fails.
+   * that loader's error; when the mount it matches is unavailable, naming
+   * its reason, or fails.
    * @effectful
    */
   async function find(
@@ -397,10 +397,11 @@ export function createCommandLookup(
 
   /**
    * Every subcommand of `group`, at `path` from the program's name, calling all
-   * its loaders and loading all its mounts: the name of each from the first source
-   * providing it, after the `reserved` names of the program's own commands,
-   * among the sources that load, apart from the error of each loader and mount
-   * failing to load, so one failing source hides no other subcommand.
+   * its loaders and loading all its available mounts: the name of each from the
+   * first source providing it, after the `reserved` names of the program's own
+   * commands, among the sources that load, apart from each mount its check reports
+   * unavailable and from the error of each loader, check and mount failing to
+   * load, so one failing source hides no other subcommand.
    *
    * @throws {TypeError} When two sources that load provide one name, the later
    * not shadowable, or one source provides a name twice.
@@ -426,7 +427,7 @@ export function createCommandLookup(
       ),
     );
 
-    const merged = mergeSources(
+    const merged = mergeCommandSources(
       [
         {
           shadowable: false,
@@ -447,13 +448,25 @@ export function createCommandLookup(
     const declared = splitSettled(
       await Promise.allSettled(
         merged.flatMap(({ entry }) => {
-          return entry === undefined ? [] : [declare(entry, path)];
+          return entry === undefined ? [] : [inspect(entry, path)];
         }),
       ),
     );
 
+    const commands: CommandDeclaration[] = [];
+    const unavailable: UnavailableCommand[] = [];
+
+    for (const each of declared.values) {
+      if (each.kind === "available") {
+        commands.push(each.command);
+      } else {
+        unavailable.push(each.command);
+      }
+    }
+
     return {
-      commands: declared.values,
+      commands,
+      unavailable,
       failures: [...loaded.failures, ...declared.failures],
     };
   }

@@ -20,28 +20,30 @@ async function mountContributions(): Promise<readonly CommandMount[]> {
       name: entry.name,
       aliases: entry.aliases ?? [],
       origin: `the ${extension.name} extension`,
-      async load() {
-        if (!(await registry.isActive(extension.name, config))) {
-          const explanation = explainInactive(extension);
-
-          throw new Error(
-            explanation === undefined
-              ? `${extension.name} is inactive`
-              : `${extension.name} is inactive: ${explanation}`,
-          );
+      async check() {
+        if (await registry.isActive(extension.name, config)) {
+          return;
         }
 
-        return entry.load();
+        const explanation = explainInactive(extension);
+
+        return explanation === undefined
+          ? `the ${extension.name} extension is inactive`
+          : `the ${extension.name} extension is inactive, ${explanation} to activate it`;
+      },
+      load() {
+        return Promise.resolve(entry.load());
       },
     });
   });
 }
 
 /**
- * Declares the loader of the commands registered extensions contribute to the
- * `cli.commands` slot, loading the project's config only once called: each mounts
- * under its name and aliases, loading its declaration only on a match, and fails
- * to load while its extension is inactive, naming how to activate it.
+ * Declares the loader of the commands registered extensions contribute to
+ * the `cli.commands` slot, loading the project's config only once called:
+ * each mounts under its name and aliases, loading its declaration only on a
+ * match, and is unavailable while its extension is inactive, its reason naming
+ * how to activate it.
  *
  * @pure
  */

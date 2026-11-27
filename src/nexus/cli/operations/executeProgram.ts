@@ -6,6 +6,7 @@ import { getRunContext } from "#nexus/cli/operations/getRunContext";
 import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
 import { describeError } from "#nexus/cli/utils/describeError";
 import { helpEntry } from "#nexus/cli/utils/helpEntry";
+import { unavailableEntry } from "#nexus/cli/utils/unavailableEntry";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { Resolution } from "#nexus/cli/types/Resolution";
@@ -66,9 +67,17 @@ async function execute(
 
     case "help": {
       return timer.timeAsync(runPhases.execution, async () => {
-        const { contract, failures } = await describeHelp(program, resolution);
+        const {
+          contract,
+          unavailable,
+          failures,
+        } = await describeHelp(program, resolution);
 
         reporter.log(helpEntry(contract));
+
+        if (unavailable.length > 0) {
+          reporter.info(unavailableEntry(unavailable));
+        }
 
         for (const failure of failures) {
           reporter.warn(describeError(failure));
@@ -93,12 +102,13 @@ async function execute(
 }
 
 /**
- * Runs `resolution`, what an invocation resolves to against `program`, within the
- * caller's run context: prints the help or version it requests through the run's
- * reporter, the help followed by a warning for each command failing to load, or
- * loads the command's action and runs it; records the time spent loading the
- * action and executing as one measure each in the performance timeline, behind
- * `scope` when given. Never exits the process.
+ * Runs `resolution`, what an invocation resolves to against `program`, within
+ * the caller's run context: prints the help or version it requests through the
+ * run's reporter, the help followed, from the `info` level, by the commands
+ * unavailable with their reasons, then by a warning for each command failing to
+ * load, or loads the command's action and runs it; records the time spent loading
+ * the action and executing as one measure each in the performance timeline,
+ * behind `scope` when given. Never exits the process.
  *
  * @throws {CommandUsageError} Every usage error the resolution holds, joined in
  * one when several, after the help of a group it names no command of.

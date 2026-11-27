@@ -23,11 +23,13 @@ export { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 export { describeError } from "#nexus/cli/utils/describeError";
 export { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 export { helpEntry } from "#nexus/cli/utils/helpEntry";
+export { mergeCommandSources } from "#nexus/cli/utils/mergeCommandSources";
 export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
 export { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 export { suggestName } from "#nexus/cli/utils/suggestName";
 export { timingsEntry } from "#nexus/cli/utils/timingsEntry";
 export { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
+export { unavailableEntry } from "#nexus/cli/utils/unavailableEntry";
 // @end
 
 // @barrel types
@@ -49,10 +51,13 @@ export type * from "#nexus/cli/types/HelpFacts";
 export type * from "#nexus/cli/types/HelpListing";
 export type * from "#nexus/cli/types/HelpMount";
 export type * from "#nexus/cli/types/HelpOption";
+export type * from "#nexus/cli/types/HelpUnavailable";
 export type * from "#nexus/cli/types/LayerLoader";
 export type * from "#nexus/cli/types/OptionDeclaration";
 export type * from "#nexus/cli/types/ParsingCommandDeclaration";
 export type * from "#nexus/cli/types/ProgramDeclaration";
+export type * from "#nexus/cli/types/ProvidedEntry";
+export type * from "#nexus/cli/types/ProvidedSource";
 export type * from "#nexus/cli/types/Resolution";
 export type * from "#nexus/cli/types/RunContext";
 export type * from "#nexus/cli/types/RunFailure";
@@ -60,6 +65,7 @@ export type * from "#nexus/cli/types/RunOptionValues";
 export type * from "#nexus/cli/types/RunResolution";
 export type * from "#nexus/cli/types/RunSettings";
 export type * from "#nexus/cli/types/SubcommandMatch";
+export type * from "#nexus/cli/types/UnavailableCommand";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end
 

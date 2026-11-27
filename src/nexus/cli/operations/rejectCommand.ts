@@ -25,11 +25,15 @@ export async function rejectCommand(
 ): Promise<CommandUsageError> {
   const isRoot = path.length === 1;
 
-  const { commands, failures } = declaration.kind === "parsing"
+  const { commands, unavailable, failures } = declaration.kind === "parsing"
     ? await lookup.list(declaration, path, isRoot ? [helpCommandName] : [])
-    : { commands: [], failures: [] };
+    : {
+        commands: [],
+        unavailable: [],
+        failures: [],
+      };
 
-  const known = commands.flatMap((subcommand) => {
+  const known = [...commands, ...unavailable].flatMap((subcommand) => {
     return [subcommand.name, ...subcommand.aliases];
   });
 

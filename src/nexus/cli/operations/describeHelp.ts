@@ -1,5 +1,4 @@
 import { isArray, isFunction } from "@auaust/toolkit";
-import { join } from "@auaust/toolkit/array";
 import { freeze, keys } from "@auaust/toolkit/object";
 
 import {
@@ -11,7 +10,7 @@ import {
 import { createCommandLookup } from "#nexus/cli/operations/createCommandLookup";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
-import { loadCommandLayer } from "#nexus/cli/operations/loadCommandLayer";
+import { loadHelpLayer } from "#nexus/cli/operations/loadHelpLayer";
 import { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
 import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
@@ -21,7 +20,7 @@ import type { HelpDescription } from "#nexus/cli/types/HelpDescription";
 import type { HelpFacts } from "#nexus/cli/types/HelpFacts";
 import type { HelpListing } from "#nexus/cli/types/HelpListing";
 import type { HelpOption } from "#nexus/cli/types/HelpOption";
-import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
+import type { HelpUnavailable } from "#nexus/cli/types/HelpUnavailable";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 
@@ -34,6 +33,14 @@ interface Mounted {
  * The subcommands each group under a command provides, every source loaded.
  */
 type Provided = ReadonlyMap<CommandDeclaration, readonly CommandDeclaration[]>;
+
+/**
+ * What loading every group under a command records apart from the subcommands.
+ */
+interface Omitted {
+  readonly unavailable: HelpUnavailable[];
+  readonly failures: unknown[];
+}
 
 function describeOption(option: OptionDeclaration): HelpOption {
   const shown = option.default !== undefined && option.default !== false;
@@ -184,10 +191,10 @@ function collectListings(
 }
 
 /**
- * Loads every source of each group under `declaration` at `path`, the
- * program's own command names reserved at its root, recording in `provided`
- * the subcommands each provides and in `failures` the error of each loader and
- * mount failing to load.
+ * Loads every source of each group under `declaration` at `path`, the program's
+ * own command names reserved at its root, recording in `provided` the subcommands
+ * each provides, in `omitted` each mount its check reports unavailable and the
+ * error of each loader, check and mount failing to load.
  *
  * @throws {TypeError} When two sources of a group that load provide one name,
  * the later not shadowable.
@@ -197,7 +204,7 @@ async function loadGroups(
   { declaration, path }: Mounted,
   program: ProgramDeclaration,
   provided: Map<CommandDeclaration, readonly CommandDeclaration[]>,
-  failures: unknown[],
+  omitted: Omitted,
 ): Promise<void> {
   if (
     declaration.kind !== "parsing" ||
@@ -217,7 +224,17 @@ async function loadGroups(
 
   provided.set(declaration, listed.commands);
 
-  failures.push(...listed.failures);
+  omitted.unavailable.push(
+    ...listed.unavailable.map(({ name, aliases, reason }) => {
+      return freeze({
+        path: freeze([...path, name]),
+        aliases,
+        reason,
+      });
+    }),
+  );
+
+  omitted.failures.push(...listed.failures);
 
   await Promise.all(
     listed.commands.map((subcommand) => {
@@ -226,35 +243,10 @@ async function loadGroups(
         { declaration: subcommand, path: freeze([...path, subcommand.name]) },
         program,
         provided,
-        failures,
+        omitted,
       );
     }),
   );
-}
-
-/**
- * Loads the `kind` layer of the `name` command at `path`, `program` its root's
- * name, through `loader`, recording its error in `failures` when it fails so one
- * failing layer hides no other fact of the help.
- *
- * @returns The layer, or `undefined` when it fails to load.
- */
-async function loadLayer<Value>(
-  loader: LayerLoader<Value>,
-  { path, program, name }: { path: CommandPath; program: string; name: string },
-  kind: string,
-  failures: unknown[],
-): Promise<Value | undefined> {
-  try {
-    return await loadCommandLayer(loader, path, name, kind);
-  } catch (error) {
-    failures.push(
-      new Error(
-        `The ${kind} of '${join([program, ...path], " ")}' failed to load`,
-        { cause: error },
-      ),
-    );
-  }
 }
 
 async function loadFacts(
@@ -285,19 +277,19 @@ async function loadFacts(
     Promise.all(
       declaration.options.map(async (entry) => {
         return isFunction(entry)
-          ? ((await loadLayer(entry, layer, "options", failures)) ?? [])
+          ? ((await loadHelpLayer(entry, layer, "options", failures)) ?? [])
           : [entry];
       }),
     ),
     Promise.all(
       declaration.arguments.map((argument) => {
         return isFunction(argument.choices)
-          ? loadLayer(argument.choices, layer, "choices", failures)
+          ? loadHelpLayer(argument.choices, layer, "choices", failures)
           : argument.choices;
       }),
     ),
     isFunction(declaration.help.after)
-      ? loadLayer(declaration.help.after, layer, "help", failures)
+      ? loadHelpLayer(declaration.help.after, layer, "help", failures)
       : declaration.help.after,
   ]);
 
@@ -348,8 +340,9 @@ function readKind({ declaration }: Mounted): HelpListing["kind"] {
  * loading no action: each declaration listed once with every path mounting it,
  * sibling groups mounting the same commands folded into one listing, and nexus's
  * `help` command listed last when `path` is the program's root; apart from it,
- * the error of each loader, mount and layer failing to load, once each, the
- * contract listing every other command and fact.
+ * each command a mount's check reports unavailable, and the error of each loader,
+ * check, mount and layer failing to load, once each, the contract listing every
+ * other command and fact.
  *
  * @throws {TypeError} When two sources of a group that load provide one name,
  * the later not shadowable, or one source provides a name twice.
@@ -360,6 +353,7 @@ export async function describeHelp(
 ): Promise<HelpDescription> {
   const isRoot = path.length === 0 && isFoldable(declaration);
   const provided = new Map<CommandDeclaration, readonly CommandDeclaration[]>();
+  const unavailable: HelpUnavailable[] = [];
   const failures: unknown[] = [];
 
   await loadGroups(
@@ -367,7 +361,7 @@ export async function describeHelp(
     { declaration, path },
     program,
     provided,
-    failures,
+    { unavailable, failures },
   );
 
   const listings = await Promise.all(
@@ -435,5 +429,9 @@ export async function describeHelp(
     ]),
   });
 
-  return freeze({ contract, failures: freeze([...new Set(failures)]) });
+  return freeze({
+    contract,
+    unavailable: freeze(unavailable),
+    failures: freeze([...new Set(failures)]),
+  });
 }
