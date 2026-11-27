@@ -26,12 +26,20 @@ function memberName(member: SyntaxNode): string | undefined {
     : undefined;
 }
 
+function isWritten(parent: SyntaxNode, child: SyntaxNode): boolean {
+  return (
+    (parent.type === "AssignmentExpression" && parent.left === child) ||
+    parent.type === "UpdateExpression" ||
+    (parent.type === "UnaryExpression" && parent.operator === "delete")
+  );
+}
+
 /**
- * The node invoking `identifier`, `ancestors` its ancestors, directly or through
- * the static members it names, with the function or class running that invocation;
- * `undefined` when the reference only reads it.
+ * How `identifier`, `ancestors` its ancestors, is used through the static
+ * members it names: the outermost node naming them, whether it is invoked, and
+ * the function or class running that use; `undefined` when it is written.
  */
-export function invocationOf(
+export function accessOf(
   ancestors: readonly SyntaxNode[],
   identifier: SyntaxNode,
 ) {
@@ -46,25 +54,25 @@ export function invocationOf(
       return;
     }
 
-    if (parent.type === "MemberExpression" && parent.object === child) {
-      const name = memberName(parent);
+    const named = parent.type === "MemberExpression" && parent.object === child;
+    const name = named ? memberName(parent) : undefined;
 
-      if (name === undefined) {
-        return;
-      }
-
+    if (name !== undefined) {
       members.push(name);
-    } else if (!transparentTypes.has(parent.type)) {
-      if (!isInvokedBy(parent, child)) {
+    } else if (named || !transparentTypes.has(parent.type)) {
+      if (isWritten(parent, child)) {
         return;
       }
+
+      const invoked = isInvokedBy(parent, child);
 
       return {
-        site: parent,
+        site: invoked ? parent : child,
         members,
-        runner: classNodeTypes.includes(parent.type)
+        invoked,
+        runner: invoked && classNodeTypes.includes(parent.type)
           ? parent
-          : runnerOf(ancestors.slice(0, index + 1)),
+          : runnerOf([...ancestors.slice(0, index + 1), child]),
       };
     }
 

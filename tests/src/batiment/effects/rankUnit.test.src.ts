@@ -5,6 +5,7 @@ import { defaultEffectLevels } from "#batiment/effects/constants";
 import {
   effectLevelsSchema,
   effectRanksSchema,
+  rankGlobal,
   rankMember,
   rankUnit,
   resolveEffects,
@@ -128,10 +129,20 @@ describe("unit ranks", () => {
 
     const effects = resolveEffects({ defaults });
 
-    expect(rankMember(effects, "node:fs", "readFileSync")).toBe("observing");
-    expect(rankMember(effects, "node:fs", "writeFileSync")).toBe("effectful");
-    expect(rankMember(effects, "node:path", "join")).toBe("pure");
-    expect(rankMember(effects, "node:console", "timeEnd")).toBe("printing");
+    expect(rankMember(effects, "node:fs", ["readFileSync"]).level).toBe(
+      "observing",
+    );
+
+    expect(rankMember(effects, "node:fs", ["writeFileSync"]).level).toBe(
+      "effectful",
+    );
+
+    expect(rankMember(effects, "node:path", ["join"]).level).toBe("pure");
+
+    expect(rankMember(effects, "node:console", ["timeEnd"]).level).toBe(
+      "printing",
+    );
+
     expect(rankUnit(effects, "unknown-package").level).toBeUndefined();
   });
 
@@ -153,9 +164,13 @@ describe("unit ranks", () => {
       fallback: "confined",
     });
 
-    expect(rankMember(effects, "custom", "default")).toBe("pure");
-    expect(rankMember(effects, "custom", "readFileSync")).toBe("observing");
-    expect(rankMember(effects, "custom", "unlisted")).toBe("effectful");
+    expect(rankMember(effects, "custom", ["default"]).level).toBe("pure");
+
+    expect(rankMember(effects, "custom", ["readFileSync"]).level).toBe(
+      "observing",
+    );
+
+    expect(rankMember(effects, "custom", ["unlisted"]).level).toBe("effectful");
     expect(rankUnit(effects, "custom").level).toBe("effectful");
     expect(rankUnit(effects, "custom/pure").level).toBe("pure");
     expect(rankUnit(effects, "unknown").level).toBe("confined");
@@ -174,8 +189,8 @@ describe("unit ranks", () => {
 
     expect(rankUnit(effects, "library").level).toBe("pure");
     expect(rankUnit(effects, "libs").level).toBe("effectful");
-    expect(rankMember(effects, "library", "constructor")).toBe("pure");
-    expect(rankMember(effects, "library", "toString")).toBe("pure");
+    expect(rankMember(effects, "library", ["constructor"]).level).toBe("pure");
+    expect(rankMember(effects, "library", ["toString"]).level).toBe("pure");
   });
 
   test("evaluates a unit at the first source stating it, else at the purest level", () => {
@@ -197,5 +212,45 @@ describe("unit ranks", () => {
 
     expect(rankUnit(effects, "bare").evaluation).toBe("pure");
     expect(rankUnit(effects, "unknown").evaluation).toBe("confined");
+  });
+
+  test("ranks a global by the longest key starting its path, a member path read included", async () => {
+    const defaults = parse(
+      effectRanksSchema,
+      await readJsonFile(
+        resolveDataFile("@auaust/engrenage/effects/modules.json"),
+      ),
+    );
+
+    const effects = resolveEffects({ defaults });
+
+    const globals = [
+      {
+        "process.env.NODE_ENV": "pure",
+      },
+      {
+        process: { unit: "node:process" },
+      },
+    ];
+
+    expect(rankGlobal(effects, globals, ["process", "env", "HOME"])).toEqual({
+      level: "observing",
+      member: "observing",
+    });
+
+    expect(
+      rankGlobal(effects, globals, ["process", "env", "NODE_ENV"])?.member,
+    ).toBe("pure");
+
+    expect(rankGlobal(effects, globals, ["process", "exitCode"])).toEqual({
+      level: "effectful",
+      member: undefined,
+    });
+
+    expect(
+      rankGlobal(effects, globals, ["process", "stdout", "write"])?.level,
+    ).toBe("printing");
+
+    expect(rankGlobal(effects, globals, ["unknown"])).toBeUndefined();
   });
 });

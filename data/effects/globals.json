@@ -1,0 +1,94 @@
+{
+  "apis": {
+    "console": {
+      "console": {
+        "unit": "node:console"
+      }
+    },
+    "crypto": {
+      "crypto": {
+        "level": "confined",
+        "symbols": {
+          "getRandomValues": "observing",
+          "randomUUID": "observing"
+        }
+      }
+    },
+    "fetch": {
+      "fetch": "effectful"
+    },
+    "microtasks": {
+      "queueMicrotask": "effectful"
+    },
+    "timers": {
+      "clearInterval": {
+        "unit": "node:timers",
+        "member": "clearInterval"
+      },
+      "clearTimeout": {
+        "unit": "node:timers",
+        "member": "clearTimeout"
+      },
+      "setInterval": {
+        "unit": "node:timers",
+        "member": "setInterval"
+      },
+      "setTimeout": {
+        "unit": "node:timers",
+        "member": "setTimeout"
+      }
+    }
+  },
+  "hosts": {
+    "isomorphic": {
+      "aliases": [],
+      "globals": {}
+    },
+    "browser": {
+      "aliases": ["self", "window"],
+      "globals": {
+        "alert": "printing",
+        "cancelAnimationFrame": "effectful",
+        "confirm": "effectful",
+        "localStorage": {
+          "level": "effectful",
+          "symbols": {
+            "getItem": "observing",
+            "key": "observing",
+            "length": "observing"
+          }
+        },
+        "prompt": "effectful",
+        "requestAnimationFrame": "effectful",
+        "sessionStorage": {
+          "level": "effectful",
+          "symbols": {
+            "getItem": "observing",
+            "key": "observing",
+            "length": "observing"
+          }
+        }
+      }
+    },
+    "node": {
+      "aliases": ["global"],
+      "globals": {
+        "clearImmediate": {
+          "unit": "node:timers",
+          "member": "clearImmediate"
+        },
+        "performance": {
+          "unit": "node:perf_hooks",
+          "member": "performance"
+        },
+        "process": {
+          "unit": "node:process"
+        },
+        "setImmediate": {
+          "unit": "node:timers",
+          "member": "setImmediate"
+        }
+      }
+    }
+  }
+}

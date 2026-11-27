@@ -32,6 +32,10 @@ export default {
         outDir: "dist",
         bundled: true,
         types: ["vite/client"],
+        globals: {
+          "import.meta.env": "pure",
+          "process.env.NODE_ENV": "pure",
+        },
       },
     ],
   },

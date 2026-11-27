@@ -1034,3 +1034,8 @@ entries:
     need: rank a pure factory returning an effectful function
     reason: needs type checking to follow returned values; too complex for an edge case
     created: 2026-11-26T23:21:43Z
+  - id: DS-c617a0
+    subject: reads charging a global unit level
+    need: charge reads of ranked globals
+    reason: flags passing fetch or reading localStorage.length
+    created: 2026-11-27T03:12:55Z

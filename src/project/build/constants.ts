@@ -1,4 +1,12 @@
-import { array, boolean, looseObject, optional, string } from "valibot";
+import {
+  array,
+  boolean,
+  looseObject,
+  optional,
+  record,
+  string,
+  unknown,
+} from "valibot";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 
 import { stateDirectory } from "#project/config/constants";
@@ -19,4 +27,6 @@ export const buildToolEntry: StandardSchemaV1 = looseObject({
   outDir: optional(string()),
   bundled: optional(boolean()),
   types: optional(array(string())),
+  // @debt `globals` is checked only as a record here, since constants cannot load the effects schemas; its ranks reach lint unvalidated
+  globals: optional(record(string(), unknown())),
 });

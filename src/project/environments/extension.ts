@@ -15,11 +15,11 @@ import type { Extension, FileLocation } from "#project/config/index";
  * `languages` slots, the config keys of each built-in environment and its
  * options, `namespaceKinds`, `namespaceKinds.overrides`, `environmentPresets`,
  * `environments`, `environments.claims`, `environments.execution`,
- * `environments.tsconfig`, `define` and `runtime`, the uncommitted coverage
- * directory and the unlinted static directories. Contributes the `src`, `tests`,
- * `bin`, `scripts`, `tooling`, `data` and `static` namespace kinds and environment
- * presets, one environment of each, named after it, the `shipped` namespace kind
- * and the `javascript` and `json` languages.
+ * `environments.tsconfig`, `environments.globals`, `define` and `runtime`, the
+ * uncommitted coverage directory and the unlinted static directories. Contributes
+ * the `src`, `tests`, `bin`, `scripts`, `tooling`, `data` and `static` namespace
+ * kinds and environment presets, one environment of each, named after it, the
+ * `shipped` namespace kind and the `javascript` and `json` languages.
  */
 export default {
   name: "project/environments",
@@ -87,6 +87,15 @@ export default {
           } = await import("#project/environments/config/sections/executionSection");
 
           return executionSection;
+        },
+      },
+      "environments.globals": {
+        async load() {
+          const {
+            environmentGlobalsSection,
+          } = await import("#project/environments/config/sections/environmentGlobalsSection");
+
+          return environmentGlobalsSection;
         },
       },
       "environments.claims": {

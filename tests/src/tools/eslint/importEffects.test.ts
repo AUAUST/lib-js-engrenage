@@ -32,10 +32,21 @@ const handlers = createRolePreset({
   effects: { evaluation: "confined", invocation: "effectful" },
 });
 
+const computing = createRolePreset({
+  name: "computing",
+  exports: "named-match",
+  effects: "pure",
+});
+
 async function createLinter({
   effects = "",
+  environments = "",
   roles = [],
-}: { effects?: string; roles?: readonly Role[] } = {}) {
+}: {
+  effects?: string;
+  environments?: string;
+  roles?: readonly Role[];
+} = {}) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
@@ -45,7 +56,7 @@ async function createLinter({
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), bootstrap(), handlers(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", environments: { ${environments} }, structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), bootstrap(), handlers(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -92,6 +103,7 @@ async function createLinter({
     "src/project/feature/logging/trace.ts": "export function trace() {}\n",
     "src/project/feature/observing/read.ts": "export function read() {}\n",
     "src/project/feature/handlers/run.ts": "export function run() {}\n",
+    "src/project/feature/computing/now.ts": "export function now() {}\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
     "src/project/feature/config/defineFeatureConfig.ts": "export const value = 1;\n",
@@ -547,6 +559,52 @@ describe("import effects", () => {
       await lint(
         utility,
         "/**\n * @effect pure\n */\nexport function own() {}\n",
+      ),
+    ).toEqual([]);
+  });
+
+  test("rank the globals a module references, through host aliases too", async () => {
+    const lint = await createLinter({
+      environments: 'src: { execution: { globals: "node", syntax: 24 } }',
+      roles: [observing(), computing()],
+    });
+
+    expect(
+      await lint(
+        constants,
+        'export const direct = fetch("/");\nexport const aliased = globalThis.fetch("/");\n',
+      ),
+    ).toEqual([
+      expect.stringContaining("(effectful)"),
+      expect.stringContaining("`globalThis.fetch`"),
+    ]);
+
+    const reading = "src/project/feature/observing/read.ts";
+
+    expect(
+      await lint(
+        reading,
+        "export function read() {\n  return process.env.HOME;\n}\n",
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(reading, "export function read() {\n  process.exit(1);\n}\n"),
+    ).toEqual([expect.stringContaining("`process.exit`")]);
+
+    const computed = "src/project/feature/computing/now.ts";
+
+    expect(
+      await lint(
+        computed,
+        "export function now() {\n  return Date.now();\n}\n",
+      ),
+    ).toEqual([expect.stringContaining("(observing) during invocation")]);
+
+    expect(
+      await lint(
+        computed,
+        "export function now(name: string) {\n  return Math.max(1, 2) + String(globalThis[name]);\n}\n",
       ),
     ).toEqual([]);
   });

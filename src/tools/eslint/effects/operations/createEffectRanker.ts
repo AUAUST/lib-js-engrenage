@@ -137,13 +137,14 @@ export function createEffectRanker({
   }
 
   /**
-   * The rank of the binding `imported` from `specifier` that `symbol` declares,
-   * `undefined` for an external binding nothing ranks.
+   * The rank of the member path `path` of the binding `specifier` exports, its
+   * export's name first, that `symbol` declares, `undefined` for an external
+   * binding nothing ranks.
    */
   function rankBinding(
     symbol: Symbol | undefined,
     specifier: string,
-    imported: string,
+    path: readonly string[],
   ): RankedUnit | undefined {
     const declaration = declarationOf(symbol);
 
@@ -165,7 +166,7 @@ export function createEffectRanker({
           };
     }
 
-    const invocation = rankMember(effects, specifier, imported);
+    const { level: invocation } = rankMember(effects, specifier, path);
 
     return invocation === undefined
       ? undefined

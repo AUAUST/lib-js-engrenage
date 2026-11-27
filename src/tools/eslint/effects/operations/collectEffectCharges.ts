@@ -12,27 +12,23 @@ import {
   classNodeTypes,
   functionNodeTypes,
 } from "#tools/eslint/effects/constants";
+import { chargeThrough } from "#tools/eslint/effects/operations/chargeThrough";
 import { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
+import { createGlobalCharger } from "#tools/eslint/effects/operations/createGlobalCharger";
+import { accessOf } from "#tools/eslint/effects/utils/accessOf";
 import { appendEntry } from "#tools/eslint/effects/utils/appendEntry";
-import { invocationOf } from "#tools/eslint/effects/utils/invocationOf";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type { ResolvedEffects } from "#batiment/effects/index";
+import type { EffectGlobals, ResolvedEffects } from "#batiment/effects/index";
 import type { EntityIndex } from "#batiment/structure/index";
 import type { TagDeclaration } from "#project/docs/index";
 import type { EffectCharge } from "#tools/eslint/effects/types/EffectCharge";
 import type { EffectDeclaration } from "#tools/eslint/effects/types/EffectDeclaration";
+import type { LocalCall } from "#tools/eslint/effects/types/LocalCall";
+import type { PendingCharge } from "#tools/eslint/effects/types/PendingCharge";
 import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 import type { Directory } from "#types/Directory";
-
-type PendingCharge = Omit<EffectCharge, "position" | "through" | "declared">;
-
-interface LocalCall {
-  callee: SyntaxNode;
-  node: SyntaxNode;
-  name: string;
-}
 
 function isGenerator(node: SyntaxNode): boolean {
   return "generator" in node && node.generator === true;
@@ -43,14 +39,18 @@ function isGenerator(node: SyntaxNode): boolean {
  * it: a charge belongs to the innermost function whose body runs it, and a local
  * function or class invoked while the module evaluates charges there what its
  * own body runs, through the local calls it makes in turn. A function or class
- * carrying an effect doc tag is passed to `declare`, and what its own body runs
- * at invocation carries its tag.
+ * carrying an effect doc tag is passed to `declare`, and what its own body runs at
+ * invocation carries its tag. A static member path of a global `globals` or the
+ * ECMAScript data rank, reached directly or through `globalThis` or a host alias
+ * `aliases` names, charges its rank once invoked and its member's rank once read.
  */
 export function collectEffectCharges({
   context,
   entities,
   effects,
   tags,
+  globals,
+  aliases,
   root,
   charge,
   declare,
@@ -59,6 +59,8 @@ export function collectEffectCharges({
   entities: EntityIndex;
   effects: ResolvedEffects;
   tags: readonly TagDeclaration[];
+  globals: readonly EffectGlobals[];
+  aliases: readonly string[];
   root: Directory;
   charge(found: EffectCharge): void;
   declare(found: EffectDeclaration): void;
@@ -132,13 +134,13 @@ export function collectEffectCharges({
           continue;
         }
 
-        const invocation = invocationOf(
+        const access = accessOf(
           sourceCode.getAncestors(identifier),
           identifier,
         );
 
-        if (invocation !== undefined) {
-          yield invocation;
+        if (access?.invoked === true) {
+          yield access;
         }
       }
     }
@@ -179,36 +181,15 @@ export function collectEffectCharges({
     }
   }
 
-  function chargeThrough({ callee, node, name }: LocalCall) {
-    const visited = new Set<SyntaxNode>();
-    const pending = [callee];
-
-    for (
-      let runner = pending.pop();
-      runner !== undefined;
-      runner = pending.pop()
-    ) {
-      if (visited.has(runner)) {
-        continue;
-      }
-
-      visited.add(runner);
-
-      for (const ran of runs.get(runner) ?? []) {
-        charge({
-          ...ran,
-          node,
-          position: "evaluation",
-          through: name,
-          declared: undefined,
-        });
-      }
-
-      for (const call of calls.get(runner) ?? []) {
-        pending.push(call.callee);
-      }
-    }
-  }
+  const globalCharger = createGlobalCharger({
+    sourceCode,
+    effects,
+    globals,
+    aliases,
+    append(runner, pending) {
+      appendEntry(runs, runner, pending);
+    },
+  });
 
   return {
     "ImportDeclaration"(declaration) {
@@ -237,7 +218,9 @@ export function collectEffectCharges({
         if (imported.type === "ImportNamespaceSpecifier") {
           const module = moduleOf(symbol);
 
-          chargeInvocations(variables, ([member]) => {
+          chargeInvocations(variables, (members) => {
+            const [member] = members;
+
             if (member === undefined || module === undefined) {
               return;
             }
@@ -245,7 +228,7 @@ export function collectEffectCharges({
             const ranked = rankBinding(
               checker.tryGetMemberInModuleExports(member, module),
               specifier,
-              member,
+              members,
             );
 
             return ranked && { ...ranked, binding: `${local}.${member}` };
@@ -260,13 +243,11 @@ export function collectEffectCharges({
             ? imported.imported.name
             : String(imported.imported.value);
 
-        const ranked = rankBinding(symbol, specifier, name);
+        chargeInvocations(variables, (members) => {
+          const ranked = rankBinding(symbol, specifier, [name, ...members]);
 
-        if (ranked !== undefined) {
-          chargeInvocations(variables, () => {
-            return { ...ranked, binding: local };
-          });
-        }
+          return ranked && { ...ranked, binding: local };
+        });
       }
     },
     "ImportExpression"(expression) {
@@ -308,7 +289,7 @@ export function collectEffectCharges({
       }
 
       for (const exported of checker.getExportsOfModule(module)) {
-        const ranked = rankBinding(exported, specifier, exported.name);
+        const ranked = rankBinding(exported, specifier, [exported.name]);
 
         if (ranked !== undefined) {
           appendEntry(runs, runner, {
@@ -384,7 +365,10 @@ export function collectEffectCharges({
         declare({ node, level });
       }
     },
+    "MetaProperty": globalCharger.meta,
     "Program:exit"() {
+      globalCharger.charge();
+
       for (const [runner, ran] of runs) {
         const declared = runner === undefined ? undefined : declaredOf(runner);
 
@@ -399,7 +383,12 @@ export function collectEffectCharges({
       }
 
       for (const call of calls.get(undefined) ?? []) {
-        chargeThrough(call);
+        chargeThrough({
+          call,
+          runs,
+          calls,
+          charge,
+        });
       }
     },
   };

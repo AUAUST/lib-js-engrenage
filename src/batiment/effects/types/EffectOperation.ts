@@ -1,1 +1,1 @@
-export type EffectOperation = "evaluate" | "invoke";
+export type EffectOperation = "evaluate" | "invoke" | "read";

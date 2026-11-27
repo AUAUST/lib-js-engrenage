@@ -1,15 +1,25 @@
 import { rankUnit } from "#batiment/effects/utils/rankUnit";
+import type { MemberRank } from "#batiment/effects/types/MemberRank";
 import type { ResolvedEffects } from "#batiment/effects/types/ResolvedEffects";
 
 /**
- * Ranks `member` of `unit` by its own rank, else by its unit's.
+ * Ranks the member `path` of `unit` by the longest member path its ranks key
+ * that starts it, else by its unit's rank.
  */
 export function rankMember(
   effects: ResolvedEffects,
   unit: string,
-  member: string,
-): string | undefined {
+  path: readonly string[],
+): MemberRank {
   const { level, members } = rankUnit(effects, unit);
 
-  return members.get(member) ?? level;
+  for (let length = path.length; length > 0; length -= 1) {
+    const member = members.get(path.slice(0, length).join("."));
+
+    if (member !== undefined) {
+      return { level: member, member };
+    }
+  }
+
+  return { level, member: undefined };
 }

@@ -28,6 +28,7 @@ export type * from "#project/environments/types/ContributedEnvironmentEntry";
 export type * from "#project/environments/types/DataInput";
 export type * from "#project/environments/types/DefineContext";
 export type * from "#project/environments/types/DefineInput";
+export type * from "#project/environments/types/EnvironmentGlobals";
 export type * from "#project/environments/types/EnvironmentLanguage";
 export type * from "#project/environments/types/Execution";
 export type * from "#project/environments/types/ExecutionGlobals";
@@ -104,6 +105,7 @@ export { dataOptionsSection } from "#project/environments/config/sections/dataOp
 export { dataSection } from "#project/environments/config/sections/dataSection";
 export { defineSection } from "#project/environments/config/sections/defineSection";
 export { environmentClaimsSection } from "#project/environments/config/sections/environmentClaimsSection";
+export { environmentGlobalsSection } from "#project/environments/config/sections/environmentGlobalsSection";
 export { environmentPresetsSection } from "#project/environments/config/sections/environmentPresetsSection";
 export { environmentsSection } from "#project/environments/config/sections/environmentsSection";
 export { environmentTsconfigsSection } from "#project/environments/config/sections/environmentTsconfigsSection";

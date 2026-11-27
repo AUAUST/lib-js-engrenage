@@ -72,7 +72,8 @@ export interface AuaustRules {
    * evaluates, and what invoking a binding does against the ceiling of the
    * position invoking it, inside a function the level its effect doc tag declares,
    * else the invocation ceiling. An effect doc tag stays within the invocation
-   * ceiling, and invoking a tagged binding costs its tag.
+   * ceiling, and invoking a tagged binding costs its tag. A global the environment
+   * ranks costs its rank once invoked, and its member's rank once read.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**

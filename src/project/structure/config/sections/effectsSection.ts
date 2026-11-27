@@ -5,6 +5,7 @@ import { object } from "@auaust/toolkit";
 import {
   effectRanksSchema,
   resolveEffects,
+  type EffectRanks,
   type ResolvedEffects,
 } from "#batiment/effects/index";
 import { engrenage } from "#constants";
@@ -13,20 +14,21 @@ import { readJsonFile } from "#foundation/filesystem/index";
 import { declareSection } from "#foundation/options/index";
 import type { ConfigResolver } from "#project/config/index";
 
+function withBareTwins(ranks: EffectRanks): EffectRanks {
+  return object.record([
+    ...object.entries(ranks).flatMap(([specifier, entry]) => {
+      return specifier.startsWith("node:")
+        ? [[specifier.slice(5), entry] as const]
+        : [];
+    }),
+    ...object.entries(ranks),
+  ]);
+}
+
 async function readShippedRanks() {
   const file = resolveDataFile(`${engrenage}/effects/modules.json`);
-  const modules = parse(effectRanksSchema, await readJsonFile(file));
 
-  return object.record(
-    object.entries(modules).flatMap(([specifier, entry]) => {
-      return specifier.startsWith("node:")
-        ? ([
-            [specifier, entry],
-            [specifier.slice(5), entry],
-          ] as const)
-        : ([[specifier, entry]] as const);
-    }),
-  );
+  return withBareTwins(parse(effectRanksSchema, await readJsonFile(file)));
 }
 
 export const effectsSection = declareSection({
@@ -38,7 +40,9 @@ export const effectsSection = declareSection({
 
     return resolveEffects({
       levels: effects?.levels,
-      ranks: effects?.modules,
+      ranks: effects?.modules === undefined
+        ? undefined
+        : withBareTwins(effects.modules),
       defaults,
       fallback: effects?.fallback,
     });
