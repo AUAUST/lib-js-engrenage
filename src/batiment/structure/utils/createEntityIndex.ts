@@ -20,6 +20,7 @@ import {
   type TestVariant,
 } from "#batiment/scopes/index";
 import { classifyEntityFile } from "#batiment/structure/utils/classifyEntityFile";
+import { createRootFileLocator } from "#batiment/structure/utils/createRootFileLocator";
 import { createStructureEntity } from "#batiment/structure/utils/createStructureEntity";
 import { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
 import { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";
@@ -37,14 +38,14 @@ import type { NamedFileRole } from "#batiment/structure/types/NamedFileRole";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { ResolvedAliases } from "#batiment/structure/types/ResolvedAliases";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
+import type { RootFilesPlacement } from "#batiment/structure/types/RootFilesPlacement";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 import type { Directories } from "#types/Directories";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 import type { Globs } from "#types/Globs";
 
-interface CodeNamespace {
-  readonly active: boolean;
+interface CodeNamespace extends RootFilesPlacement {
   readonly dirs: Directories;
 }
 
@@ -314,6 +315,8 @@ export function createEntityIndex({
     });
   }
 
+  const locateRootFile = createRootFileLocator(namespacePlacements, rolesOf);
+
   const nearest = memoize(
     (
       directory: Directory,
@@ -350,7 +353,7 @@ export function createEntityIndex({
   const describe = memoize((file: File): Entity | undefined => {
     const path = toProjectPath(file);
     const directory = posix.dirname(path);
-    const located = locate(directory);
+    const located = locateRootFile(path) ?? locate(directory);
 
     if (located === undefined) {
       return;

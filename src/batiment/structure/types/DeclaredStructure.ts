@@ -1,6 +1,7 @@
 import type { ReexportMode } from "#batiment/roles/index";
 import type { StructureRelation } from "#batiment/structure/types/StructureRelation";
 import type { Directory } from "#types/Directory";
+import type { File } from "#types/File";
 
 export interface DeclaredStructure {
   readonly namespaces: Readonly<
@@ -21,6 +22,7 @@ export interface DeclaredStructure {
       string,
       {
         readonly specifier: string | undefined;
+        readonly exports: Readonly<Record<string, File>> | undefined;
         readonly purpose: string | undefined;
         readonly debt: string | undefined;
         readonly internals: boolean | undefined;

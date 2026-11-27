@@ -10,6 +10,7 @@ export {
   entrypoint as entry,
   enums,
   errors,
+  evaluated,
   executable,
   fixtures,
   hooks,

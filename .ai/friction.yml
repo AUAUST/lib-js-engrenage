@@ -1318,3 +1318,8 @@ entries:
     tried: pnpm engrenage eslint src in interscript
     stopped: "build guard: linked build older than sources; needs pnpm build first"
     created: 2026-11-27T10:23:13Z
+  - id: FR-6eeddc
+    subject: metafile JSON schema codegen rejects valibot check and regex flags
+    tried: check() then a u-flagged regex in domainExportsSchema
+    stopped: toJsonSchema throws on both; used an unflagged regex
+    created: 2026-11-27T11:06:11Z

@@ -1039,3 +1039,8 @@ entries:
     need: charge reads of ranked globals
     reason: flags passing fetch or reading localStorage.length
     created: 2026-11-27T03:12:55Z
+  - id: DS-2cbffd
+    subject: package entry flag on role contracts
+    need: serve an evaluated module as a package export
+    reason: src.exports already declares extra subpaths; keeps publicity apart from role
+    created: 2026-11-27T10:52:08Z

@@ -117,6 +117,7 @@ export function flattenStructure({
 
       domains[child] = freeze({
         specifier: domain.specifier,
+        exports: domain.exports,
         purpose: domain.purpose,
         debt: domain.debt,
         internals: domain.internals,

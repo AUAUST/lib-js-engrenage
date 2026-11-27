@@ -27,6 +27,7 @@ export type * from "#batiment/structure/types/NamespaceStructure";
 export type * from "#batiment/structure/types/ResolvedAliases";
 export type * from "#batiment/structure/types/ResolvedSpecifier";
 export type * from "#batiment/structure/types/ResolvedStructure";
+export type * from "#batiment/structure/types/RootFilesPlacement";
 export type * from "#batiment/structure/types/StructureKind";
 export type * from "#batiment/structure/types/StructureMetadata";
 export type * from "#batiment/structure/types/StructureMirror";
@@ -62,6 +63,7 @@ export { collectStructureNodes } from "#batiment/structure/utils/collectStructur
 export { constrainsFileRole } from "#batiment/structure/utils/constrainsFileRole";
 export { createEntityIndex } from "#batiment/structure/utils/createEntityIndex";
 export { createMirrorClassifier } from "#batiment/structure/utils/createMirrorClassifier";
+export { createRootFileLocator } from "#batiment/structure/utils/createRootFileLocator";
 export { createStructureEntity } from "#batiment/structure/utils/createStructureEntity";
 export { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
 export { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";

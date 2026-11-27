@@ -51,6 +51,15 @@ function collectRoleSubpaths(
   });
 }
 
+function collectDeclaredExports(
+  subpath: string,
+  node: StructureNode,
+): (readonly [string, File])[] {
+  return entries(node.exports ?? {}).map(([name, file]) => {
+    return [`${subpath}/${name}`, `${node.path}/${file}`] as const;
+  });
+}
+
 function collectRoleBarrels(
   subpath: string,
   node: StructureNode,
@@ -102,6 +111,7 @@ function collectEntries(
             [subpath, `${child.path}/${files.entryFile}`] as const,
             ...collectRoleSubpaths(subpath, child, roles),
             ...collectRoleBarrels(subpath, child, files, roles),
+            ...collectDeclaredExports(subpath, child),
           ]
         : []),
       ...(child.internals === true

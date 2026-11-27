@@ -71,7 +71,7 @@ describe("roles", () => {
 
     await expect(
       (await loadConfig(duplicated.root)).resolve("environmentRoles"),
-    ).rejects.toThrow("src.roles[9] and src.roles[10] are both named utils");
+    ).rejects.toThrow("src.roles[10] and src.roles[11] are both named utils");
 
     const helpers = createRolePreset({
       name: "helpers",

@@ -26,6 +26,7 @@ export interface StructureOptions {
       string,
       {
         readonly specifier: string | undefined;
+        readonly exports: Readonly<Record<string, File>> | undefined;
         readonly purpose: string | undefined;
         readonly debt: string | undefined;
         readonly internals: boolean | undefined;
@@ -37,7 +38,7 @@ export interface StructureOptions {
         readonly sources: Readonly<
           Partial<
             Record<
-              "collects" | "publicRoles",
+              "exports" | "collects" | "publicRoles",
               {
                 readonly files: readonly File[];
                 readonly config?: OptionSource;

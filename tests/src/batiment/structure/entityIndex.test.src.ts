@@ -60,6 +60,8 @@ async function createIndex(indexFile = "index.ts", definers = staticDefiners) {
     "package.json": '{ "name": "library", "type": "module" }',
     "tsconfig.json": "{}",
     "engrenage.config.ts": `export default { preset: "library", environments: { src: { execution: { globals: "node", syntax: 24 } } }, src: { roles: ${renderRoles(indexFile, definers)}, structure: { layers: ["foundation", "project"] } } };\n`,
+    "vitest.config.ts": "",
+    "root.ts": "",
     "src/entry.ts": "",
     "src/foundation/base/index.ts": "",
     "src/project/feature/index.ts": "",
@@ -286,5 +288,17 @@ describe("createEntityIndex", () => {
       role: "entrypoint",
       fileRole: "entrypoint",
     });
+  });
+
+  test("classifies a root file of the tooling environment by its role, and no other root file", async () => {
+    const index = await createIndex();
+
+    expect(index.entityOf("vitest.config.ts")).toMatchObject({
+      namespace: "tooling",
+      role: "evaluated",
+      effects: { evaluation: "effectful", invocation: "effectful" },
+    });
+
+    expect(index.entityOf("root.ts")).toBeUndefined();
   });
 });

@@ -31,6 +31,7 @@ export interface StructureNode {
   readonly group?: true;
   readonly public?: boolean;
   readonly specifier?: string;
+  readonly exports?: Readonly<Record<string, File>>;
   readonly internals?: boolean;
   readonly reexport?: readonly ReexportMode[];
   readonly collects?: readonly string[];

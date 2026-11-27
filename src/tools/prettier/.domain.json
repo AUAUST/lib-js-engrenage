@@ -1,3 +1,4 @@
 {
-  "purpose": "Configure code formatting."
+  "purpose": "Configure code formatting.",
+  "exports": { "config": "preset.config.ts" }
 }

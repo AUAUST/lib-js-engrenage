@@ -9,6 +9,13 @@ export interface DomainInput {
    */
   specifier?: (string | undefined)
   /**
+   * Extra package exports of a public domain, each subpath under the domain's specifier mapped to its file, relative to the domain's directory.
+   * @default none
+   */
+  exports?: ({
+    [k: string]: string
+  } | undefined)
+  /**
    * One line stating the domain's concern.
    * @default none
    */

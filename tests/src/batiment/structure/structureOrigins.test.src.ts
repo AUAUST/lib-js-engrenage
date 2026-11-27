@@ -224,6 +224,7 @@ describe("structure origins", () => {
         domains: {
           feature: {
             specifier: undefined,
+            exports: undefined,
             purpose: "Feature.",
             debt: undefined,
             internals: undefined,

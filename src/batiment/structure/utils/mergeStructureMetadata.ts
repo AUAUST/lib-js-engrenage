@@ -20,7 +20,7 @@ import type { Directory } from "#types/Directory";
 
 const namespaceRoot = ".";
 
-const sourcedFields = freeze(["collects", "publicRoles"] as const);
+const sourcedFields = freeze(["exports", "collects", "publicRoles"] as const);
 
 type Finding = Pick<StructureDiagnostic, "code" | "message" | "files">;
 
@@ -214,6 +214,7 @@ export function mergeStructureMetadata({
 
     domains.set(path, {
       specifier: pick("specifier", existing?.specifier, fields.specifier),
+      exports: pick("exports", existing?.exports, fields.exports),
       purpose: pick("purpose", existing?.purpose, fields.purpose),
       debt: pick("debt", existing?.debt, fields.debt),
       internals: pick("internals", existing?.internals, fields.internals),

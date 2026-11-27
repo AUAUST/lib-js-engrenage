@@ -1,4 +1,0 @@
-{
-  "specifier": "prettier/config",
-  "purpose": "The ready-made Prettier config, for Prettier to load from `package.json`."
-}

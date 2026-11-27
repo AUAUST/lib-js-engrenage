@@ -28,6 +28,7 @@ const separators = {
   "nested-namespace-directory": "  ",
   "shared-structure-path": "  ",
   "private-domain-entry": "  ",
+  "private-domain-exports": "  ",
   "collected-role-not-public": "  ",
   "unknown-public-role": "  ",
   "shared-specifier": "  ",

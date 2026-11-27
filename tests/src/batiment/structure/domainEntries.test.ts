@@ -93,6 +93,45 @@ describe("domain entries", () => {
     ).toMatchObject({ "./first": "src/tools/alpha/entry.ts" });
   });
 
+  test("a public domain's declared exports sit under its specifier", async () => {
+    expect(
+      await exposed(`{ structure: { namespaces: { tools: {} } } }`, {
+        "src/tools/alpha/.domain.json": '{ "specifier": "first", "exports": { "config": "alpha.config.ts" } }',
+        "src/tools/alpha/alpha.config.ts": "",
+      }),
+    ).toMatchObject({
+      "./first": "src/tools/alpha/entry.ts",
+      "./first/config": "src/tools/alpha/alpha.config.ts",
+    });
+  });
+
+  test("a non-public domain declaring exports reports a blocking diagnostic and exposes none", async () => {
+    const extra = {
+      "src/hidden/.domain.json": '{ "exports": { "config": "a.config.ts" } }',
+      "src/hidden/a.config.ts": "",
+    };
+
+    const config = await loadSource("{}", extra);
+
+    const { src } = await config.resolve("structure");
+
+    expect(
+      (src?.diagnostics ?? []).filter(({ code }) => {
+        return code === "private-domain-exports";
+      }),
+    ).toMatchObject([
+      {
+        severity: "error",
+        blocking: true,
+        files: ["src/hidden/.domain.json"],
+      },
+    ]);
+
+    expect(await config.resolve("src.exports")).not.toHaveProperty(
+      "./hidden/config",
+    );
+  });
+
   test("two public domains with one specifier report a blocking diagnostic, the first kept", async () => {
     const source = `{
       structure: {

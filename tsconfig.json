@@ -2,6 +2,9 @@
   "extends": "./data/tsconfig/library.json",
   "compilerOptions": {
     "paths": {
+      "@auaust/engrenage/prettier/config": [
+        "./src/tools/prettier/preset.config.ts"
+      ],
       "@auaust/engrenage": ["./src/entry.ts"],
       "@auaust/engrenage/constants": ["./src/constants.ts"],
       "@auaust/engrenage/blocks/internals": [
@@ -89,9 +92,6 @@
       "@auaust/engrenage/prettier": ["./src/tools/prettier/entry.ts"],
       "@auaust/engrenage/prettier/constants": [
         "./src/tools/prettier/constants.ts"
-      ],
-      "@auaust/engrenage/prettier/config": [
-        "./src/tools/prettier/preset/entry.ts"
       ],
       "@auaust/engrenage/tsdown": ["./src/tools/tsdown/entry.ts"],
       "@auaust/engrenage/tsdown/constants": ["./src/tools/tsdown/constants.ts"],

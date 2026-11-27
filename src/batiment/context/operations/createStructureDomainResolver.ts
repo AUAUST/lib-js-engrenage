@@ -18,9 +18,13 @@ import {
   getStructureCardinality,
   groupRoleFiles,
   listNamedFileRoles,
+  type StructureNode,
   type StructureOptions,
 } from "#batiment/structure/index";
-import type { StructureDiagnostic } from "#batiment/report/index";
+import type {
+  StructureDiagnostic,
+  StructureDiagnosticCode,
+} from "#batiment/report/index";
 import type { Filesystem } from "#foundation/filesystem/index";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
@@ -80,6 +84,9 @@ export function createStructureDomainResolver({
             ...(declared.specifier === undefined
               ? {}
               : { specifier: declared.specifier }),
+            ...(declared.exports === undefined
+              ? {}
+              : { exports: declared.exports }),
             ...(declared.purpose === undefined
               ? {}
               : { purpose: declared.purpose }),
@@ -131,6 +138,47 @@ export function createStructureDomainResolver({
     return declared ?? exists;
   }
 
+  // @debt builds its diagnostic like `collected-role-not-public` in `resolveNamespaceStructure`; one helper reporting a dropped option with its source would serve both
+  function reportDroppedField(
+    code: StructureDiagnosticCode,
+    message: string,
+    source: FieldSources[keyof FieldSources],
+  ) {
+    report(
+      freeze({
+        severity: "error",
+        code,
+        message,
+        blocking: true,
+        namespace: name,
+        files: freeze([...(source?.files ?? [])]),
+        ...(source?.config === undefined ? {} : { config: source.config }),
+      }),
+    );
+  }
+
+  function resolveExports(
+    path: Directory,
+    isPublic: boolean,
+    metadata: Partial<DomainDeclaration>,
+  ): Pick<StructureNode, "exports"> {
+    if (metadata.exports === undefined) {
+      return {};
+    }
+
+    if (isPublic) {
+      return { exports: metadata.exports };
+    }
+
+    reportDroppedField(
+      "private-domain-exports",
+      `${path} declares exports, but only a public domain has a specifier to scope them under; dropping them`,
+      metadata.sources?.exports,
+    );
+
+    return {};
+  }
+
   async function metadataForDomain(
     path: Directory,
     scopes: readonly string[],
@@ -147,20 +195,11 @@ export function createStructureDomainResolver({
       return !hasOwn(contracts, role);
     });
 
-    // @debt builds its diagnostic like `collected-role-not-public` in `resolveNamespaceStructure`; a helper reporting a dropped role option with its source would serve both
     for (const role of unknown) {
-      const source = metadata.sources?.publicRoles;
-
-      report(
-        freeze({
-          severity: "error",
-          code: "unknown-public-role",
-          message: `${path} lists ${role} in its publicRoles, but ${name} has no such role there; dropping it`,
-          blocking: true,
-          namespace: name,
-          files: freeze([...(source?.files ?? [])]),
-          ...(source?.config === undefined ? {} : { config: source.config }),
-        }),
+      reportDroppedField(
+        "unknown-public-role",
+        `${path} lists ${role} in its publicRoles, but ${name} has no such role there; dropping it`,
+        metadata.sources?.publicRoles,
       );
     }
 
@@ -201,16 +240,19 @@ export function createStructureDomainResolver({
 
     const twin = `${path}${extname(indexFile)}`;
 
+    const isPublic = await resolvePublic(path, metadata.public);
+
     return {
       ...(group ? { group: true as const } : {}),
       ...(group && (await filesystem.exists(twin)) ? { twin } : {}),
       ...(strays.length === 0 ? {} : { strays }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
-      public: await resolvePublic(path, metadata.public),
+      public: isPublic,
       ...(metadata.specifier === undefined
         ? {}
         : { specifier: metadata.specifier }),
+      ...resolveExports(path, isPublic, metadata),
       internals: metadata.internals ?? internals,
       reexport: listReexportModes(metadata.reexport ?? defaultReexport),
       ...(metadata.collects === undefined

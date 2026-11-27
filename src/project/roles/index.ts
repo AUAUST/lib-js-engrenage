@@ -16,6 +16,7 @@ export { declarations } from "#project/roles/presets/declarations";
 export { entrypoint } from "#project/roles/presets/entrypoint";
 export { enums } from "#project/roles/presets/enums";
 export { errors } from "#project/roles/presets/errors";
+export { evaluated } from "#project/roles/presets/evaluated";
 export { executable } from "#project/roles/presets/executable";
 export { fixtures } from "#project/roles/presets/fixtures";
 export { hooks } from "#project/roles/presets/hooks";

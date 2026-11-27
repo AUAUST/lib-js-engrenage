@@ -170,6 +170,18 @@ export default {
         languages: typescript,
         traits: ["published"],
       },
+      {
+        name: "evaluated",
+        async load() {
+          const {
+            evaluated,
+          } = await import("#project/roles/presets/evaluated");
+
+          return evaluated;
+        },
+        environments: ["src", "tooling"],
+        languages: typescript,
+      },
     ],
   },
 } satisfies Extension;

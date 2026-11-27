@@ -236,7 +236,7 @@
       "default": "./dist/prettier.mjs"
     },
     "./prettier/config": {
-      "source": "./src/tools/prettier/preset/entry.ts",
+      "source": "./src/tools/prettier/preset.config.ts",
       "default": "./dist/prettier/config.mjs"
     },
     "./prettier/constants": {
@@ -450,7 +450,7 @@
     "universal-user-agent": "7.0.3"
   },
   "sideEffects": false,
-  "prettier": "#tools/prettier/preset/entry",
+  "prettier": "#tools/prettier/preset.config",
   "engines": {
     "node": ">=24"
   },

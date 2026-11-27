@@ -17,6 +17,7 @@ export interface StructureMetadata {
     readonly roles:
       MetadataField<{ readonly enable: readonly string[] }> | undefined;
     readonly specifier: MetadataField<string> | undefined;
+    readonly exports: MetadataField<Readonly<Record<string, File>>> | undefined;
     readonly internals: MetadataField<boolean> | undefined;
     readonly reexport:
       MetadataField<ReexportMode | readonly ReexportMode[]> | undefined;

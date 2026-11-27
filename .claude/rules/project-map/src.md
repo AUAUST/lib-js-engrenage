@@ -6,7 +6,7 @@ paths:
 # Project map: src
 
 ```
-src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
+src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts *.config.ts extension.ts)
 ├─ batiment/  #batiment/…  report < effects < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.  [debt: An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ context  The context port a host answers with root and scope facts, and the driver running discovery and each scope's walk over its answers.
 │  ├─ effects  The effect model: the level scale and its purposes, ranks of units and their members, and the charges a use costs against a ceiling.
@@ -80,8 +80,7 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  │  └─ claude*  Engrenage's Claude glue: Claude's init steps, settings sync and word-cap check.
 │  ├─ nexus  Engrenage's wrapper around nexus: the debug variable, configured debug and stale-barrel explanation its programs run with.
 │  ├─ pnpm*  Configure package management and dependency policies.
-│  ├─ prettier*{preset*}  Configure code formatting.
-│  │  └─ preset*  The ready-made Prettier config, for Prettier to load from `package.json`.
+│  ├─ prettier*  Configure code formatting.
 │  ├─ shopify{theme{preset}}  Configure Shopify apps and themes.
 │  │  └─ theme{preset}  Format Shopify theme files and contribute the `shopify-theme` preset.
 │  │     └─ preset  The `shopify-theme` preset's structure in each scope selecting it: the theme's namespaces, Liquid environment and Vite output.

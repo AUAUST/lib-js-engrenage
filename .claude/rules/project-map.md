@@ -89,6 +89,7 @@ Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `e
 | `adapters` | Implementations of other domains' ports, importable module by module. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful | public | `src`, `tests`, `scripts`, `tooling` |
 | `operations` | Effectful logic of the domain. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src`, `tests`, `scripts`, `tooling` |
 | `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  | evaluation confined |  | `src` |
+| `evaluated` | A module whose evaluation is its behavior. | `*.config.ts` |  |  | effectful |  | `src`, `tooling` |
 | `apis` | Interfaces of the objects the domain creates and hands out, one per module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
 | `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | evaluation pure, invocation effectful | public, collected | `src` |
 | `utils` | Confined functions, one per module. |  |  | values `named-match`, types `none` | confined |  | `src`, `scripts`, `tooling` |

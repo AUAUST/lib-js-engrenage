@@ -13,6 +13,7 @@ import { freeze } from "@auaust/toolkit/object";
 import { reexportSchema, roleSchema } from "#batiment/roles/index";
 import { declareNamespaceKind } from "#batiment/scopes/config/declarers/declareNamespaceKind";
 import { debtSchema } from "#batiment/scopes/config/schemas/debtSchema";
+import { domainExportsSchema } from "#batiment/scopes/config/schemas/domainExportsSchema";
 import { namespaceImportsSchema } from "#batiment/scopes/config/schemas/namespaceImportsSchema";
 import { schemaReferenceSchema } from "#batiment/scopes/config/schemas/schemaReferenceSchema";
 import { structureKeySchema } from "#batiment/scopes/config/schemas/structureKeySchema";
@@ -89,10 +90,14 @@ const namespaceFields = freeze({
   debt: debtSchema,
 });
 
-// @debt `specifier`, `reexport`, `public`, `collects` and `publicRoles` are JavaScript package fields, split out with the language port (#740)
+// @debt `specifier`, `exports`, `reexport`, `public`, `collects` and `publicRoles` are JavaScript package fields, split out with the language port (#740)
 const domainFields = freeze({
   specifier: declare(string(), {
     description: "Public specifier of the domain, overriding the one derived from its path.",
+    optional: { value: undefined },
+  }),
+  exports: declare(domainExportsSchema, {
+    description: "Extra package exports of a public domain, each subpath under the domain's specifier mapped to its file, relative to the domain's directory.",
     optional: { value: undefined },
   }),
   purpose: declare(string(), {

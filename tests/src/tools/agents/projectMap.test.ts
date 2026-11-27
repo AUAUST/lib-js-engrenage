@@ -160,7 +160,7 @@ describe("project map", () => {
     );
 
     expect(project.read(sourceFile)).toContain(
-      "(global roles: *.d.ts constants.ts)",
+      "(global roles: *.d.ts *.config.ts constants.ts)",
     );
 
     expect(project.read(".claude/rules/project-map/tooling.md")).toContain(

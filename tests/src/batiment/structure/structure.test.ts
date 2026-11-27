@@ -737,7 +737,7 @@ describe("inline roles", () => {
     await expect(
       describeProject(`{ src: { roles: ${twice} } }`),
     ).rejects.toThrow(
-      "src.roles[10].roles[0] and src.roles[10].roles[1] are both named types",
+      "src.roles[11].roles[0] and src.roles[11].roles[1] are both named types",
     );
 
     const owners = renderCodeRoles(
