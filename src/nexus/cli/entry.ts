@@ -1,6 +1,5 @@
 export {
   argument,
-  collectArgument,
   collectListArgument,
   command,
   CommandUsageError,

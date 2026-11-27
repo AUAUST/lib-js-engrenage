@@ -85,7 +85,7 @@ describe("resolveInvocation", () => {
     expect(load).not.toHaveBeenCalled();
   });
 
-  test("reports every usage error in Commander's wording", async () => {
+  test("reports every usage error the arguments hold", async () => {
     const group = command({ name: "program", subcommands: [createLeaf()] });
 
     const resolution = await resolve(

@@ -74,6 +74,7 @@ agents:
     - BL-aab2db
     - BL-559e80
     - BL-71865f
+    - BL-10a58c
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:
@@ -103,6 +104,8 @@ cli:
     - BL-6c9693
     - BL-58e88e
     - BL-d71eff
+    - BL-454c9e
+    - BL-142c18
 coding-style:
   purpose: Local coding conventions and linting.
   entries:

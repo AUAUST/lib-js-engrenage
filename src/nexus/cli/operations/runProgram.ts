@@ -6,6 +6,7 @@ import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
 import { executeProgram } from "#nexus/cli/operations/executeProgram";
 import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
+import { resolveRun } from "#nexus/cli/operations/resolveRun";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 import {
@@ -25,6 +26,7 @@ import {
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
+import type { RunResolution } from "#nexus/cli/types/RunResolution";
 import type { RunSettings } from "#nexus/cli/types/RunSettings";
 import type { VerbosityFlag } from "#nexus/cli/types/VerbosityFlag";
 
@@ -75,6 +77,22 @@ function createPendingPrinter(): Printer & {
     print,
     settle,
   };
+}
+
+function readPrinters(resolution: RunResolution): ScenarioPrinters | undefined {
+  switch (resolution.kind) {
+    case "invocation": {
+      return resolution.declaration.kind === "parsing"
+        ? resolution.declaration.printers
+        : undefined;
+    }
+
+    case "chain": {
+      return resolution.declaration.printers;
+    }
+
+    default:
+  }
 }
 
 async function isDebugResolved(
@@ -193,10 +211,7 @@ export async function runProgram(
   async function settle(
     runOptions: RunOptionValues | undefined,
     bindings: ScenarioPrinters | undefined,
-    resolved?: CommandPath,
   ): Promise<void> {
-    path = resolved;
-
     flag = keys(verbosityFlags)
       .filter((name) => {
         return runOptions?.[name] === true;
@@ -216,9 +231,21 @@ export async function runProgram(
   const { signal: runSignal, stopListening } = listenForAborts(signal);
 
   try {
-    await runContext.run({ signal: runSignal, reporter: runReporter }, () => {
-      return executeProgram(program, (argv ?? process.argv).slice(2), settle);
-    });
+    await runContext.run(
+      { signal: runSignal, reporter: runReporter },
+      async () => {
+        const resolution = await resolveRun(
+          program,
+          (argv ?? process.argv).slice(2),
+        );
+
+        path = resolution.path;
+
+        await settle(resolution.runOptions, readPrinters(resolution));
+
+        await executeProgram(program, resolution);
+      },
+    );
   } catch (error) {
     if (runSignal.aborted) {
       return;

@@ -19,7 +19,7 @@ entries:
     sites:
       - tsdown.config.ts:5
       - src/project/build/setup/createBuildToolStep.ts:4
-    why: commander and @clack transitive dependencies are mirrored in `inlinedDependencies`; build tools are not read from `build.tools` contributions.
+    why: "@clack and Octokit transitive dependencies are mirrored in `inlinedDependencies`; build tools are not read from `build.tools` contributions."
     want: the bundled dependency closure derived from the package; build tools read from their contributions.
     created: 2026-11-22T00:00:00Z
   - id: BL-9b6e76

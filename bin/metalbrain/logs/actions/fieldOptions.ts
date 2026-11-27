@@ -1,6 +1,5 @@
 import { findLogKind } from "#metalbrain/logs/index";
 import {
-  collectArgument,
   option,
   type CommandPath,
   type OptionDeclaration,
@@ -26,7 +25,7 @@ export default function (path: CommandPath): readonly OptionDeclaration[] {
         required: (
           !collects && adding && (type === "text" || requiredOnAdd === true)
         ),
-        ...(collects && { parse: collectArgument }),
+        ...(collects && { multiple: true }),
       });
     },
   );

@@ -17,7 +17,6 @@ const reservedOptions = {
   version: { type: "boolean", short: "V" },
 } as const satisfies ParseArgsOptionsConfig;
 
-// @debt a leaf takes a negative number as an argument even when one of its options has a digit as short flag, where Commander would take it as that option
 const negativeNumber = /^-(?:\d+|\d*\.\d+)(?:e[+-]?\d+)?$/u;
 
 function keepValue(value: string): string {

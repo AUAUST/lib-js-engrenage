@@ -216,14 +216,14 @@ function findHelpTarget(
  * Resolves `args`, the arguments after a program's name, against `program`
  * without loading any action: routes them to a command, each option binding to
  * the command it follows and every argument after a forwarding command's name
- * reaching it raw; loads the layers of each command on the path; then parses and
- * validates each option and argument, the run options at any level of the path.
- * A root group reserves the `help` command, whose arguments name the path of the
- * command whose help it requests. Resolves to the invocation, a request for help
- * or the version, or every usage error found, worded as Commander words them, an
- * unknown command or option suggesting the closest known name, and one below the
- * root of a help path naming the group it was looked up in; a path stopping at
- * a group without an action that names no command fails with that group's help.
+ * reaching it raw; loads the layers of each command on the path; then parses
+ * and validates each option and argument, the run options at any level of the
+ * path. A root group reserves the `help` command, whose arguments name the path
+ * of the command whose help it requests. Resolves to the invocation, a request
+ * for help or the version, or every usage error found, an unknown command or
+ * option suggesting the closest known name, and one below the root of a help
+ * path naming the group it was looked up in; a path stopping at a group without
+ * an action that names no command fails with that group's help.
  */
 export async function resolveInvocation(
   { root, scenarios }: ProgramDeclaration,

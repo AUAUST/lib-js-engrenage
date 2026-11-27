@@ -18,7 +18,6 @@ export { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 // @end
 
 // @barrel utils
-export { collectArgument } from "#nexus/cli/utils/collectArgument";
 export { collectListArgument } from "#nexus/cli/utils/collectListArgument";
 export { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 export { helpEntry } from "#nexus/cli/utils/helpEntry";

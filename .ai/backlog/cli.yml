@@ -87,3 +87,19 @@ entries:
     why: batiment mpa suggested map on Commander, prints none now; map --check=x suggested --check, now only unknown option '--check=x'
     want: Suggestions catching transpositions and a boolean flag given an inline value
     created: 2026-11-27T17:01:18Z
+  - id: BL-454c9e
+    title: Argument `reduce`, option `parse` reducers and `collectListArgument` keep the reducer model ported from Commander argParser
+    sites:
+      - src/nexus/cli/operations/argument.ts:19
+      - src/nexus/cli/operations/option.ts:26
+      - src/nexus/cli/utils/collectListArgument.ts:1
+    want: a declared separator splitting each value before choices and parse, `parse` mapping one item on options and arguments alike, help stating the separator
+    done: reduce, collectListArgument and hand-written "comma-separated" help wording gone
+    created: 2026-11-27T17:21:40Z
+  - id: BL-142c18
+    title: A negative number spanning an option short flag both sets that option and becomes an argument
+    sites:
+      - src/nexus/cli/operations/parseCommandTokens.ts:20
+    why: parseArgs splits `-12` into `-1 -2`; with `-1` declared, the option is set and `-12` is also pushed as a positional; `-1e5` likewise sets a declared `-e`
+    want: "one rule: a leaf takes the whole token as an argument, or every flag in it as options"
+    created: 2026-11-27T17:21:51Z

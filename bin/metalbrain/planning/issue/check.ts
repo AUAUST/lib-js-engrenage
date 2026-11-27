@@ -1,6 +1,5 @@
 import {
   argument,
-  collectArgument,
   collectListArgument,
   command,
   option,
@@ -30,9 +29,9 @@ export default command({
       name: "checkout",
       type: "string",
       placeholder: "checkout",
-      description: "checkout whose commits up to `<ref>`, `HEAD` by default, count for its repository's issues, as `<registered short name>=<directory>[@<ref>]`, repeatable; the current directory counts for its own repository unless a checkout names it; end with `@HEAD` when the directory holds an `@`",
+      description: "checkout whose commits up to `<ref>`, `HEAD` by default, count for its repository's issues, as `<registered short name>=<directory>[@<ref>]`; the current directory counts for its own repository unless a checkout names it; end with `@HEAD` when the directory holds an `@`",
       default: [],
-      parse: collectArgument,
+      multiple: true,
     }),
   ],
   action() {
