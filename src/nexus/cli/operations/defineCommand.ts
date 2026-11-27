@@ -7,6 +7,13 @@ import type { CommandParameters } from "#nexus/cli/types/CommandParameters";
 import type { DefaultActionParameters } from "#nexus/cli/types/DefaultActionParameters";
 import type { ExtendCommand } from "#nexus/cli/types/ExtendCommand";
 
+/**
+ * Defines a command running `action` with the parameters `parse` maps from
+ * Commander's, or Commander's own when `configure` declares any, and `extend`
+ * loading what extends the command before it parses.
+ *
+ * @pure
+ */
 export function defineCommand<
   Configured,
   ActionParameters extends unknown[] | [],

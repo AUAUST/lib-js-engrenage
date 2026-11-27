@@ -7,6 +7,12 @@ import type { CommandParameters } from "#nexus/cli/types/CommandParameters";
 import type { DefaultActionParameters } from "#nexus/cli/types/DefaultActionParameters";
 import type { ExtendCommand } from "#nexus/cli/types/ExtendCommand";
 
+/**
+ * Defines a command loading its action through `action` only when it runs, then
+ * running it as `defineCommand` would.
+ *
+ * @pure
+ */
 export function defineLazyCommand<
   Configured,
   ActionParameters extends unknown[] | [],

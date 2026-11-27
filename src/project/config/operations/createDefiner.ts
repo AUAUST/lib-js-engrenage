@@ -23,11 +23,16 @@ function directoryOf(root: Directory | URL): Directory {
  * Creates a definer running `define` with a `load` resolving the config of the
  * working directory at load time, its `at(root)` with the config of the project
  * holding `root`: a directory, or a file URL such as `import.meta.url`.
+ *
+ * @pure
  */
 export function createDefiner<Args extends readonly unknown[], Result>(
   define: (load: () => Promise<LoadedConfig>, ...args: Args) => Result,
 ): Definer<Args, Result> {
   // @debt an unbound definer, and Prettier's `package.json` reference, load the config of `process.cwd()`, not of the project owning the tool config file
+  /**
+   * @effectful
+   */
   function unbound(...args: Args): Result {
     return define(() => loadConfig(), ...args);
   }
@@ -36,9 +41,14 @@ export function createDefiner<Args extends readonly unknown[], Result>(
     at(root: Directory | URL) {
       const directory = directoryOf(root);
 
-      return (...args: Args): Result => {
+      /**
+       * @effectful
+       */
+      function bound(...args: Args): Result {
         return define(() => loadConfig(directory), ...args);
-      };
+      }
+
+      return bound;
     },
   });
 }

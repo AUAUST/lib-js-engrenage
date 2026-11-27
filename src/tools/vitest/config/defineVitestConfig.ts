@@ -11,7 +11,6 @@ import type { Resolvable } from "#types/Resolvable";
  * config, then merging `configs` over it in order. `.at(root)` roots both at the
  * project holding `root`, a directory or a file URL such as `import.meta.url`.
  */
-// eslint-disable-next-line auaust/import-effects -- #986
 export const defineVitestConfig = createDefiner(defineVitestConfigAt);
 
 function defineVitestConfigAt(

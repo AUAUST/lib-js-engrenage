@@ -1,7 +1,14 @@
 {
   "node:assert": "pure",
   "node:assert/strict": "pure",
-  "node:async_hooks": "effectful",
+  "node:async_hooks": {
+    "level": "effectful",
+    "symbols": {
+      "AsyncLocalStorage": "pure",
+      "AsyncLocalStorage.bind": "observing",
+      "AsyncLocalStorage.snapshot": "observing"
+    }
+  },
   "node:buffer": "confined",
   "node:child_process": "effectful",
   "node:cluster": "effectful",

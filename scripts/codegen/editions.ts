@@ -1,6 +1,5 @@
 import { defineLazyCommand } from "#nexus/cli/index";
 
-// eslint-disable-next-line auaust/import-effects -- #986
 export default defineLazyCommand({
   configure(command) {
     return command

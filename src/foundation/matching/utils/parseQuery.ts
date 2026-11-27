@@ -1,4 +1,3 @@
-/* eslint-disable auaust/import-effects -- #986 */
 import { min } from "@auaust/toolkit/math";
 
 import { stopwords } from "#foundation/matching/constants";
@@ -14,6 +13,11 @@ type Atom =
   | { readonly kind: "node"; readonly node: QueryNode | undefined };
 
 type Token = Atom | { readonly kind: "open" | "close" };
+
+interface Parsed {
+  readonly node: QueryNode | undefined;
+  readonly next: number;
+}
 
 interface Segment {
   readonly openers: number;
@@ -296,27 +300,27 @@ function startsOperand(token: Token | undefined) {
 }
 
 function buildTree(tokens: readonly Token[]) {
-  let index = 0;
-
-  function readLiteral(operator: Operator) {
-    index++;
-
-    return createLiteralLeaf("term", operator);
+  function readLiteral(operator: Operator, at: number): Parsed {
+    return { node: createLiteralLeaf("term", operator), next: at + 1 };
   }
 
-  function parseAny(): QueryNode | undefined {
-    const branches = [parseAll()];
+  function parseAny(at: number): Parsed {
+    let parsed = parseAll(at);
 
-    while (isOperatorToken(tokens[index], "OR")) {
-      index++;
-      branches.push(parseAll());
+    const branches = [parsed.node];
+
+    while (isOperatorToken(tokens[parsed.next], "OR")) {
+      parsed = parseAll(parsed.next + 1);
+      branches.push(parsed.node);
     }
 
-    return combine("any", branches);
+    return { node: combine("any", branches), next: parsed.next };
   }
 
-  function parseAll() {
+  function parseAll(at: number): Parsed {
     const operands: (QueryNode | undefined)[] = [];
+
+    let index = at;
 
     for (
       let token = tokens[index];
@@ -324,7 +328,10 @@ function buildTree(tokens: readonly Token[]) {
       token = tokens[index]
     ) {
       if (token.kind !== "operator" || token.operator === "NOT") {
-        operands.push(parseNot());
+        const operand = parseNot(index);
+
+        operands.push(operand.node);
+        index = operand.next;
 
         continue;
       }
@@ -342,44 +349,45 @@ function buildTree(tokens: readonly Token[]) {
       if (joins) {
         index++;
       } else {
-        operands.push(readLiteral(token.operator));
+        const literal = readLiteral(token.operator, index);
+
+        operands.push(literal.node);
+        index = literal.next;
       }
     }
 
-    return combine("all", operands);
+    return { node: combine("all", operands), next: index };
   }
 
-  function parseNot(negated = false): QueryNode | undefined {
-    const token = tokens[index];
+  function parseNot(at: number, negated = false): Parsed {
+    const token = tokens[at];
 
     if (token?.kind === "open") {
-      index++;
+      const inner = parseAny(at + 1);
 
-      const inner = parseAny();
-
-      index++;
-
-      return inner;
+      return { node: inner.node, next: inner.next + 1 };
     }
 
     if (token?.kind === "operator") {
-      if (negated || !startsOperand(tokens[index + 1])) {
-        return readLiteral(token.operator);
+      if (negated || !startsOperand(tokens[at + 1])) {
+        return readLiteral(token.operator, at);
       }
 
-      index++;
+      const { node: child, next } = parseNot(at + 1, true);
 
-      const child = parseNot(true);
-
-      return child == null ? undefined : { kind: "not", child };
+      return {
+        node: child == null ? undefined : { kind: "not", child },
+        next,
+      };
     }
 
-    index++;
-
-    return token?.kind === "node" ? token.node : undefined;
+    return {
+      node: token?.kind === "node" ? token.node : undefined,
+      next: at + 1,
+    };
   }
 
-  return parseAny();
+  return parseAny(0).node;
 }
 
 function isBareStopword(leaf: QueryLeaf) {

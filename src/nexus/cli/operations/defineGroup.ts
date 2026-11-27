@@ -99,6 +99,14 @@ function createHelpCommand(
     });
 }
 
+/**
+ * Defines a command group registering `commands` under their names and aliases,
+ * `configure` and `command` applying to the group itself, and a help command
+ * loading the extensions of the commands it describes when the group has no
+ * command of its own.
+ *
+ * @pure
+ */
 export function defineGroup({
   configure,
   commands,
@@ -109,6 +117,9 @@ export function defineGroup({
   command?: CommandDefinition;
 }): CommandDefinition {
   return freeze({
+    /**
+     * @effectful
+     */
     [commandRegistration](command: Command) {
       if (configure !== undefined) {
         configureCommand(command, configure);

@@ -18,7 +18,6 @@ import type { Resolvable } from "#types/Resolvable";
  * context. `.at(root)` loads the config of the project holding `root` instead,
  * a directory or a file URL such as `import.meta.url`.
  */
-// eslint-disable-next-line auaust/import-effects -- #986
 export const defineTsdownConfig = createDefiner(defineTsdownConfigAt);
 
 function defineTsdownConfigAt(

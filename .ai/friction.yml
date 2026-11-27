@@ -26,6 +26,7 @@ taps:
   - {id: FR-675ee6, at: 2026-11-26T21:31:20Z, note: debugger dispatch on a plan issue}
   - {id: FR-0c1650, at: 2026-11-27T00:02:40Z, note: "also on moving files out of a domain: its stale barrel breaks config loading, sync and the lint hook until rewritten by hand (#995)"}
   - {id: FR-169e5d, at: 2026-11-27T04:37:25Z, note: "also with --no-inline-config during #1000"}
+  - {id: FR-169e5d, at: 2026-11-27T04:44:14Z, note: pnpm exec eslint crashes on typescriptOptionsSchema}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1307,3 +1308,8 @@ entries:
     tried: lint with forced pure ceilings
     stopped: no report of charged levels per role; patched createRolePreset temporarily and aggregated JSON output
     created: 2026-11-27T04:37:19Z
+  - id: FR-22ab8e
+    subject: macOS lacks timeout
+    tried: timeout 120 node script
+    stopped: hook refused; used Bash timeout parameter
+    created: 2026-11-27T04:54:15Z
