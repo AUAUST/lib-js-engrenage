@@ -46,22 +46,18 @@ describe("runProgram", () => {
     expect(printed()).toContain("    at ");
   });
 
-  test("prints the stack with the program's own debug variable", async () => {
+  test("prints the stack with the debug variable named after its root", async () => {
     vi.stubEnv("PROGRAM_DEBUG", "1");
 
-    await runProgram(createProgram(), ["node", "program", "failing"], {
-      debugVariable: "PROGRAM_DEBUG",
-    });
+    await run(createProgram(), "failing");
 
     expect(printed()).toContain("    at ");
   });
 
-  test("ignores ENGRENAGE_DEBUG for a program naming its own variable", async () => {
+  test("ignores another program's debug variable, naming its own in the hint", async () => {
     vi.stubEnv("ENGRENAGE_DEBUG", "1");
 
-    await runProgram(createProgram(), ["node", "program", "failing"], {
-      debugVariable: "PROGRAM_DEBUG",
-    });
+    await run(createProgram(), "failing");
 
     expect(printed()).not.toContain("    at ");
     expect(printed()).toContain("set PROGRAM_DEBUG=1");

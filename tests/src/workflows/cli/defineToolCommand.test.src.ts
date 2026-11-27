@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { createProgram } from "#nexus/cli/index";
+import { program } from "#nexus/cli/index";
 import { runProgram } from "#nexus/cli/operations/runProgram";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -164,8 +164,8 @@ describe("defineToolCommand", () => {
     const controller = new AbortController();
 
     const running = runProgram(
-      createProgram(commands.fake),
-      ["node", "program"],
+      program({ root: commands.fake }),
+      ["node", "fake"],
       { signal: controller.signal },
     );
 

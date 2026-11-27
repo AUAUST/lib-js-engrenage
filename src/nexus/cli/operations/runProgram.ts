@@ -18,6 +18,7 @@ import { outputSettling } from "#nexus/cli/operations/outputSettling";
 import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { runContext } from "#nexus/cli/operations/runContext";
+import { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import {
   createReporter,
@@ -165,7 +166,7 @@ function reportFailure(
   }: {
     reporter: Reporter;
     debug: boolean;
-    debugVariable: string | undefined;
+    debugVariable: string;
     explain: ((error: unknown) => string | undefined) | undefined;
   },
 ): void {
@@ -186,15 +187,15 @@ function reportFailure(
 async function runDeclaredProgram(
   program: ProgramDeclaration,
   argv: readonly string[] | undefined,
-  { signal, onError, debugVariable, resolveDebug, explain }: RunSettings,
+  { signal, onError, resolveDebug, explain }: RunSettings,
 ): Promise<void> {
-  const { scenarios, detectors } = program;
+  const { root, scenarios, detectors } = program;
+
+  const debugVariable = toDebugVariable(root.name);
 
   let flag: VerbosityFlag | undefined;
 
-  let unflagged: Verbosity = (
-    debugVariable !== undefined && isDebugEnvironment(debugVariable)
-  )
+  let unflagged: Verbosity = isDebugEnvironment(debugVariable)
     ? "debug"
     : "default";
 
@@ -277,7 +278,6 @@ async function runCommanderProgram(
     scenarios = nexusScenarios,
     detectors = nexusDetectors,
     onError,
-    debugVariable,
     resolveDebug,
     explain,
   }: RunSettings & {
@@ -287,9 +287,9 @@ async function runCommanderProgram(
 ): Promise<void> {
   let running: CommandUnknownOpts | null = program;
 
-  let unflagged: Verbosity = (
-    debugVariable !== undefined && isDebugEnvironment(debugVariable)
-  )
+  const debugVariable = toDebugVariable(program.name());
+
+  let unflagged: Verbosity = isDebugEnvironment(debugVariable)
     ? "debug"
     : "default";
 
@@ -408,20 +408,20 @@ async function runCommanderProgram(
 /**
  * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
  * hands the printer of its output scenario every entry the verbosity its run
- * options set shows, else `debug` when `debugVariable` is on, else `default`,
- * each completion line with the run's total time, and on failure sets the exit
- * code to 1 and prints its error, a usage error alone, any other led by what
- * `explain` returns for it, with its stack at `debug`, which `resolveDebug`
- * also sets when no flag does; the failure handler, when given, receives the
- * error instead, with the command path the run resolved to and this report to
- * run. A declared program runs on nexus's engine, printing for the scenario
- * `--output` names, else the first of its scenarios one of its detectors names,
- * through the printer the resolved command binds to it, else the one the program
- * declares, loaded once the run resolves, before any action loads, and holding
- * the entries reported until then. A Commander program prints for `scenarios`
- * and `detectors` alike, reporting an `--output` naming none of `scenarios` as
- * a usage error, and lets Commander print its usage errors and exit unless the
- * failure handler is given.
+ * options set shows, else `debug` when `<ROOT>_DEBUG`, `<ROOT>` its root's name
+ * in upper case, is `1` or `true`, else `default`, each completion line with
+ * the run's total time, and on failure sets the exit code to 1 and prints its
+ * error, a usage error alone, any other led by what `explain` returns for it,
+ * with its stack at `debug`, which `resolveDebug` also sets when no flag does;
+ * the failure handler, when given, receives the error instead, with the command
+ * path the run resolved to and this report to run. A declared program runs on
+ * nexus's engine, printing for the scenario `--output` names, else the first of
+ * its scenarios one of its detectors names, through the printer the resolved
+ * command binds to it, else the one the program declares, loaded once the run
+ * resolves, before any action loads, and holding the entries reported until then.
+ * A Commander program prints for `scenarios` and `detectors` alike, reporting
+ * an `--output` naming none of `scenarios` as a usage error, and lets Commander
+ * print its usage errors and exit unless the failure handler is given.
  */
 // @debt `scenarios` and `detectors` apply only to a Commander program, a declared one carrying its own, until every program runs on the engine
 export async function runProgram(

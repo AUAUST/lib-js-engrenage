@@ -1,5 +1,4 @@
 import { runProgram } from "#nexus/cli/index";
-import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/operations/explainStaleBarrel";
 import type { Reporter } from "#nexus/reports/index";
 
@@ -13,20 +12,20 @@ async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
 }
 
 /**
- * Runs one of engrenage's programs, `ENGRENAGE_DEBUG` and the `debug` config key
- * turning debug on, with the hand fix of a stale barrel leading its error.
+ * Runs one of engrenage's programs, the `debug` config key turning debug on
+ * besides the program's own debug variable, with the hand fix of a stale
+ * barrel leading its error.
  */
 export function runEngrenageProgram(
   program: Parameters<typeof runProgram>[0],
   argv?: readonly string[],
   settings: Omit<
     NonNullable<Parameters<typeof runProgram>[2]>,
-    "debugVariable" | "resolveDebug" | "explain"
+    "resolveDebug" | "explain"
   > = {},
 ): Promise<void> {
   return runProgram(program, argv, {
     ...settings,
-    debugVariable: debugEnvironmentVariable,
     resolveDebug: resolveConfiguredDebug,
     explain: explainStaleBarrel,
   });

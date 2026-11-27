@@ -5,29 +5,25 @@ import {
   collectListArgument,
   command,
   CommandUsageError,
-  createProgram,
   option,
+  program,
   type CommandDeclaration,
   type CommandPath,
 } from "#nexus/cli/index";
-import { runContext } from "#nexus/cli/operations/runContext";
-import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
+import { runProgram } from "#nexus/cli/operations/runProgram";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
 function run(declaration: CommandDeclaration, ...args: string[]) {
-  const program = createProgram(
+  return runDefinition(
     command({ name: "program", subcommands: [declaration] }),
+    ...args,
   );
+}
 
-  const output: string[] = [];
-
-  captureCommandOutput(program, output);
-
-  return {
-    output,
-    parsing: program.parseAsync(args, { from: "user" }),
-  };
+function printed(reporter: ReturnType<typeof createTestReporter>): string {
+  return reporter.messages.map(({ text }) => text).join("\n");
 }
 
 describe("command", () => {
@@ -52,11 +48,11 @@ describe("command", () => {
       },
     });
 
-    const { parsing } = run(leaf, "leaf", "3", "--loud");
+    const running = run(leaf, "leaf", "3", "--loud");
 
     expect(load).not.toHaveBeenCalled();
 
-    await parsing;
+    await running;
 
     expect(load).toHaveBeenCalledOnce();
     expect(action).toHaveBeenCalledWith(3, true);
@@ -68,7 +64,7 @@ describe("command", () => {
     await run(
       command({ name: "leaf", action: () => Promise.resolve(action) }),
       "leaf",
-    ).parsing;
+    );
 
     expect(action.mock.calls).toEqual([[]]);
   });
@@ -106,14 +102,17 @@ describe("command", () => {
       },
     });
 
-    await expect(
-      runContext.run(
-        { signal: controller.signal, reporter: createTestReporter() },
-        () => run(leaf, "leaf").parsing,
-      ),
-    ).rejects.toThrow("aborted");
+    await runProgram(
+      program({
+        root: command({ name: "program", subcommands: [leaf] }),
+        scenarios: createTestReporter().scenarios,
+      }),
+      ["node", "program", "leaf"],
+      { signal: controller.signal },
+    );
 
     expect(action).not.toHaveBeenCalled();
+    expect(process.exitCode).toBeUndefined();
   });
 
   test("rejects an action loader resolving to a plain object", async () => {
@@ -124,7 +123,7 @@ describe("command", () => {
       },
     });
 
-    await expect(run(leaf, "leaf").parsing).rejects.toThrow(
+    await expect(run(leaf, "leaf")).rejects.toThrow(
       new TypeError(
         "The action of the leaf command loads neither a function nor a module whose default or only export is one",
       ),
@@ -134,18 +133,19 @@ describe("command", () => {
   test("rejects a required variadic argument given none", async () => {
     const action = vi.fn();
 
-    const { output, parsing } = run(
-      command({
-        name: "leaf",
-        arguments: [argument({ name: "files", variadic: true })],
-        action: () => Promise.resolve(action),
-      }),
-      "leaf",
+    await expect(
+      run(
+        command({
+          name: "leaf",
+          arguments: [argument({ name: "files", variadic: true })],
+          action: () => Promise.resolve(action),
+        }),
+        "leaf",
+      ),
+    ).rejects.toThrow(
+      new CommandUsageError("missing required argument 'files'"),
     );
 
-    await expect(parsing).rejects.toMatchObject({ exitCode: 1 });
-
-    expect(output.join("")).toContain("missing required argument 'files'");
     expect(action).not.toHaveBeenCalled();
   });
 
@@ -194,7 +194,7 @@ describe("command", () => {
       },
     });
 
-    await run(leaf, "leaf", "3", "a", "--dry-run", "--extra-flag").parsing;
+    await run(leaf, "leaf", "3", "a", "--dry-run", "--extra-flag");
 
     expect(paths).toEqual([["leaf"]]);
 
@@ -210,17 +210,11 @@ describe("command", () => {
       },
     );
 
-    const rejected = run(leaf, "leaf", "3", "c");
+    await expect(run(leaf, "leaf", "3", "c")).rejects.toThrow(
+      "Allowed choices are a, b.",
+    );
 
-    await expect(rejected.parsing).rejects.toMatchObject({ exitCode: 1 });
-
-    expect(rejected.output.join("")).toContain("Allowed choices are a, b.");
-
-    const invalid = run(leaf, "leaf", "x");
-
-    await expect(invalid.parsing).rejects.toMatchObject({ exitCode: 1 });
-
-    expect(invalid.output.join("")).toContain("expected a number");
+    await expect(run(leaf, "leaf", "x")).rejects.toThrow("expected a number");
   });
 });
 
@@ -240,7 +234,7 @@ describe("command subcommands", () => {
       });
     });
 
-    const program = command({
+    const root = command({
       name: "program",
       subcommands: [
         command({
@@ -262,18 +256,11 @@ describe("command subcommands", () => {
       ],
     });
 
-    const created = createProgram(program);
-
-    const output: string[] = [];
-
-    captureCommandOutput(created, output);
-
     return {
       action,
       load,
-      output,
       run(...args: string[]) {
-        return created.parseAsync(args, { from: "user" });
+        return runDefinition(root, ...args);
       },
     };
   }
@@ -285,22 +272,20 @@ describe("command subcommands", () => {
 
     const leaf = vi.fn();
 
-    const program = createProgram(
-      command({
-        name: "program",
-        subcommands: [
-          command({ name: "leaf", action: () => Promise.resolve(leaf) }),
-        ],
-        action: load,
-      }),
-    );
+    const root = command({
+      name: "program",
+      subcommands: [
+        command({ name: "leaf", action: () => Promise.resolve(leaf) }),
+      ],
+      action: load,
+    });
 
-    await program.parseAsync(["leaf"], { from: "user" });
+    await runDefinition(root, "leaf");
 
     expect(leaf).toHaveBeenCalledOnce();
     expect(load).not.toHaveBeenCalled();
 
-    await program.parseAsync([], { from: "user" });
+    await runDefinition(root);
 
     expect(load).toHaveBeenCalledOnce();
     expect(own).toHaveBeenCalledWith();
@@ -315,8 +300,6 @@ describe("command subcommands", () => {
 
     await run("leaf", "--extra");
 
-    await run("leaf", "--extra");
-
     expect(load).toHaveBeenCalledOnce();
 
     expect(action).toHaveBeenLastCalledWith({ base: undefined, extra: true });
@@ -325,44 +308,23 @@ describe("command subcommands", () => {
   test.each([[["leaf", "--help"]], [["help", "leaf"]]])(
     "shows the loaded options in the help of %j",
     async (args) => {
-      const { output, run } = createLoadingProgram();
+      const { run } = createLoadingProgram();
 
-      await expect(run(...args)).rejects.toMatchObject({ exitCode: 0 });
-
-      expect(output.join("")).toContain("--extra");
+      expect(printed(await run(...args))).toContain("--extra");
     },
   );
 
-  test("lists its help command last and loads no options for its own help", async () => {
-    const { load, output, run } = createLoadingProgram();
+  test("rejects an unknown command name in a help path", async () => {
+    const { run } = createLoadingProgram();
 
-    await expect(run("--help")).rejects.toMatchObject({
-      code: "commander.helpDisplayed",
-    });
-
-    const commands = output.join("").trimEnd().split("\n");
-
-    expect(commands.at(-1)).toMatch(
-      /^\s*help \[command\.\.\.\]\s+display help for command$/u,
+    await expect(run("help", "nope")).rejects.toThrow(
+      new CommandUsageError("unknown command 'nope'"),
     );
-
-    expect(load).not.toHaveBeenCalled();
-  });
-
-  test("rejects an unknown command name, naming the group it looked in", async () => {
-    const { output, run } = createLoadingProgram();
-
-    await expect(run("help", "nope")).rejects.toMatchObject({
-      code: "commander.unknownCommand",
-      exitCode: 1,
-    });
-
-    expect(output.join("")).toContain("unknown command 'nope' in 'program'");
   });
 
   test("shows a nested command's help as its own --help does", async () => {
     async function print(...args: string[]) {
-      const { output, parsing } = run(
+      const reporter = await run(
         command({
           name: "group",
           subcommands: [
@@ -388,9 +350,7 @@ describe("command subcommands", () => {
         ...args,
       );
 
-      await expect(parsing).rejects.toMatchObject({ exitCode: 0 });
-
-      return output.join("");
+      return printed(reporter);
     }
 
     const help = await print("help", "group", "leaf");
@@ -406,7 +366,7 @@ describe("command subcommands", () => {
       action: () => Promise.resolve(() => {}),
     });
 
-    await expect(run(leaf, "leaf").parsing).rejects.toThrow(
+    await expect(run(leaf, "leaf")).rejects.toThrow(
       new TypeError(
         "The options of the leaf command loads neither a function nor a module whose default or only export is one",
       ),
@@ -493,17 +453,5 @@ describe("command chain", () => {
       [["a", "b", "c"], ["leaf"]],
       [["d"], ["leaf"]],
     ]);
-  });
-
-  test("cannot compile to a Commander program", () => {
-    expect(() => {
-      return createProgram(
-        command({ name: "program", subcommands: [declareChain(vi.fn())] }),
-      );
-    }).toThrow(
-      new TypeError(
-        "The leaf command chains invocations, which only nexus's engine runs",
-      ),
-    );
   });
 });

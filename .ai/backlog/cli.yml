@@ -91,3 +91,10 @@ entries:
     want: "remaining commands report through #1005 entries, split by bin"
     done: no command formats lines for reporter.log itself
     created: 2026-11-27T12:02:30Z
+  - id: BL-d71eff
+    title: "The engine's usage errors suggest less than Commander did: no suggestion for a transposed command name or an inline value on a boolean flag"
+    sites:
+      - src/nexus/cli/utils/suggestName.ts:1
+    why: batiment mpa suggested map on Commander, prints none now; map --check=x suggested --check, now only unknown option '--check=x'
+    want: Suggestions catching transpositions and a boolean flag given an inline value
+    created: 2026-11-27T17:01:18Z

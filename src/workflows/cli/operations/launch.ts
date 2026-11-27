@@ -1,10 +1,24 @@
-import { isDebugEnvironment, reportCommandError } from "#nexus/cli/index";
+import {
+  isDebugEnvironment,
+  reportCommandError,
+  toDebugVariable,
+} from "#nexus/cli/index";
 import { createReporter, filterReports } from "#nexus/reports/index";
 import { detectPrinter } from "#nexus/scenarios/index";
-import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/index";
 
-export async function launch(run: () => Promise<void>): Promise<void> {
+// @debt takes the program's name apart from its root declaration's, since a stale barrel can keep that declaration from loading
+/**
+ * Runs `run`, launching the program named `program`, and reports a stale
+ * barrel it fails on with its hand fix, its stack shown when the program's
+ * debug variable is on.
+ *
+ * @throws {unknown} What `run` throws other than a stale barrel.
+ */
+export async function launch(
+  program: string,
+  run: () => Promise<void>,
+): Promise<void> {
   try {
     await run();
   } catch (error) {
@@ -14,7 +28,9 @@ export async function launch(run: () => Promise<void>): Promise<void> {
       throw error;
     }
 
-    const debug = isDebugEnvironment(debugEnvironmentVariable);
+    const debugVariable = toDebugVariable(program);
+
+    const debug = isDebugEnvironment(debugVariable);
 
     const printer = await detectPrinter();
 
@@ -25,7 +41,7 @@ export async function launch(run: () => Promise<void>): Promise<void> {
         }),
       ),
       debug,
-      debugVariable: debugEnvironmentVariable,
+      debugVariable,
       explanation,
     });
 

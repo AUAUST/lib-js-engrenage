@@ -215,7 +215,7 @@ test(
       "bin/metalbrain/hook/index.ts": "export default {};\n",
       "nexus/cli/index.ts": "export function program() {}\n",
       "tools/nexus/index.ts": "export function runEngrenageProgram() {}\n",
-      "workflows/cli/index.ts": `export async function launch(run) {\n  await run();\n}\nexport async function runExecutable(executableUrl, run) {\n  await run();\n}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
+      "workflows/cli/index.ts": `export async function launch(program, run) {\n  await run();\n}\nexport async function runExecutable(executableUrl, run) {\n  await run();\n}\nexport { openHook } from ${JSON.stringify(openHookSource)};\n`,
     });
 
     cpSync(

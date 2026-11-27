@@ -79,7 +79,7 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  ├─ lefthook  Configure local Git hooks.
 │  ├─ metalbrain*{claude*}  Engrenage's wrapper around metalbrain: the agents config section, init steps, sync targets and the host checks agent hooks call.  [debt: Wraps metalbrain beyond the agent setup engrenage syncs, such as the host checks agent hooks call, only because metalbrain lives here by an earlier decision outside engrenage's Compass.]
 │  │  └─ claude*  Engrenage's Claude glue: Claude's init steps, settings sync and word-cap check.
-│  ├─ nexus  Engrenage's wrapper around nexus: the debug variable, configured debug and stale-barrel explanation its programs run with.
+│  ├─ nexus  Engrenage's wrapper around nexus: the configured debug and stale-barrel explanation its programs run with.
 │  ├─ pnpm*  Configure package management and dependency policies.
 │  ├─ prettier*  Configure code formatting.
 │  ├─ shopify{theme{preset}}  Configure Shopify apps and themes.

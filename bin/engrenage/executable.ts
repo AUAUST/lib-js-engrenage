@@ -22,7 +22,7 @@ const [
   import("#workflows/cli/index"),
 ]);
 
-await launch(async () => {
+await launch("engrenage", async () => {
   await runExecutable(import.meta.url, async () => {
     const { default: engrenage } = await import("#bin/engrenage/index");
 

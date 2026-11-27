@@ -42,7 +42,7 @@ async function runMetalbrain(): Promise<void> {
   });
 }
 
-await launch(async () => {
+await launch("metalbrain", async () => {
   try {
     await runExecutable(import.meta.url, runMetalbrain);
   } catch (error) {

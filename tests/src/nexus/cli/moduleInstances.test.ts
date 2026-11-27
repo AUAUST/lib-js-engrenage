@@ -1,6 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { command, createProgram } from "@auaust/engrenage/future/nexus/cli";
+import {
+  command,
+  program,
+  runProgram,
+} from "@auaust/engrenage/future/nexus/cli";
 
 describe("declarations from another module instance", () => {
   test("a group declared through a second import runs its commands", async () => {
@@ -12,8 +16,8 @@ describe("declarations from another module instance", () => {
 
     const action = vi.fn();
 
-    const program = createProgram(
-      command({
+    const declared = program({
+      root: command({
         name: "program",
         subcommands: [
           second.command({
@@ -27,9 +31,9 @@ describe("declarations from another module instance", () => {
           }),
         ],
       }),
-    );
+    });
 
-    await program.parseAsync(["group", "leaf", "--debug"], { from: "user" });
+    await runProgram(declared, ["node", "program", "group", "leaf", "--debug"]);
 
     expect(action).toHaveBeenCalledOnce();
   });

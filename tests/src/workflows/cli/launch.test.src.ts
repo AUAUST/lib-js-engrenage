@@ -85,20 +85,25 @@ describe("launch", () => {
       },
       message: 'src/main.ts imports `b` from "#src/d/index", but the barrel src/d/index.ts does not export it yet',
     },
-  ])("a command failing on $stale", async ({ barrel, files, message }) => {
-    const { load } = createStaleProject(barrel, files);
+  ])(
+    "a command failing on $stale, naming its program's debug variable",
+    async ({ barrel, files, message }) => {
+      const { load } = createStaleProject(barrel, files);
 
-    const failed = load("src/main.ts");
+      const failed = load("src/main.ts");
 
-    const error = vi.spyOn(process.stderr, "write").mockImplementation(() => {
-      return true;
-    });
+      const error = vi.spyOn(process.stderr, "write").mockImplementation(() => {
+        return true;
+      });
 
-    await launch(() => Promise.reject(failed));
+      await launch("program", () => Promise.reject(failed));
 
-    expect(process.exitCode).toBe(1);
-    expect(String(error.mock.calls[0]?.[0])).toContain(message);
-  });
+      expect(process.exitCode).toBe(1);
+      expect(String(error.mock.calls[0]?.[0])).toContain(message);
+
+      expect(String(error.mock.calls[0]?.[0])).toContain("set PROGRAM_DEBUG=1");
+    },
+  );
 
   test("a command failing on a missing module a hand-written file imports rethrows", async () => {
     const {
@@ -109,10 +114,14 @@ describe("launch", () => {
 
     const failed = load("src/main.ts");
 
-    await expect(launch(() => Promise.reject(failed))).rejects.toBe(failed);
+    await expect(
+      launch("program", () => {
+        return Promise.reject(failed);
+      }),
+    ).rejects.toBe(failed);
   });
 
   test("any other command rethrows", async () => {
-    await expect(launch(run)).rejects.toBe(failure);
+    await expect(launch("program", run)).rejects.toBe(failure);
   });
 });

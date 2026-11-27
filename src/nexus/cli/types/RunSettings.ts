@@ -7,7 +7,6 @@ import type { Reporter } from "#nexus/reports/index";
 export interface RunSettings {
   readonly signal?: AbortSignal;
   onError?(error: unknown, failure: RunFailure): Promise<void> | void;
-  readonly debugVariable?: string;
   resolveDebug?(reporter: Reporter): Promise<boolean>;
   explain?(error: unknown): string | undefined;
 }

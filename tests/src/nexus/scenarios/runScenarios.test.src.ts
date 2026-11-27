@@ -1,12 +1,11 @@
 import { afterEach, describe, expect, onTestFinished, test, vi } from "vitest";
 
+import { command, getRunContext, program, runProgram } from "#nexus/cli/index";
 import {
-  command,
-  createProgram,
-  getRunContext,
-  runProgram,
-} from "#nexus/cli/index";
-import { nexusDetectors, type ScenarioPrinters } from "#nexus/scenarios/index";
+  nexusDetectors,
+  type ScenarioDetector,
+  type ScenarioPrinters,
+} from "#nexus/scenarios/index";
 import type { Printer } from "#nexus/reports/index";
 
 afterEach(() => {
@@ -40,9 +39,18 @@ function createScenarios(recordAs: (scenario: string) => () => Printer) {
   } satisfies ScenarioPrinters;
 }
 
-function createReportingProgram(printers?: ScenarioPrinters) {
-  return createProgram(
-    command({
+function createReportingProgram(
+  scenarios: ScenarioPrinters,
+  {
+    printers,
+    detectors = nexusDetectors,
+  }: {
+    printers?: ScenarioPrinters;
+    detectors?: readonly ScenarioDetector[];
+  } = {},
+) {
+  return program({
+    root: command({
       name: "program",
       subcommands: [
         command({
@@ -56,7 +64,9 @@ function createReportingProgram(printers?: ScenarioPrinters) {
         }),
       ],
     }),
-  );
+    scenarios,
+    detectors,
+  });
 }
 
 describe("runProgram scenarios", () => {
@@ -78,11 +88,12 @@ describe("runProgram scenarios", () => {
 
       const { printed, recordAs } = createRecorder();
 
-      await runProgram(
-        createReportingProgram(),
-        ["node", "program", "report", ...flags],
-        { scenarios: createScenarios(recordAs), detectors: nexusDetectors },
-      );
+      await runProgram(createReportingProgram(createScenarios(recordAs)), [
+        "node",
+        "program",
+        "report",
+        ...flags,
+      ]);
 
       expect(printed).toStrictEqual([scenario]);
     },
@@ -94,9 +105,10 @@ describe("runProgram scenarios", () => {
     const unused = vi.fn(recordAs("bound human"));
 
     await runProgram(
-      createReportingProgram({ human: unused }),
+      createReportingProgram(createScenarios(recordAs), {
+        printers: { human: unused },
+      }),
       ["node", "program", "report", "--output", "json"],
-      { scenarios: createScenarios(recordAs) },
     );
 
     expect(printed).toStrictEqual(["json"]);
@@ -107,9 +119,10 @@ describe("runProgram scenarios", () => {
     const { printed, recordAs } = createRecorder();
 
     await runProgram(
-      createReportingProgram({ json: recordAs("bound json") }),
+      createReportingProgram(createScenarios(recordAs), {
+        printers: { json: recordAs("bound json") },
+      }),
       ["node", "program", "report", "--output", "json"],
-      { scenarios: createScenarios(recordAs) },
     );
 
     expect(printed).toStrictEqual(["bound json"]);
@@ -118,23 +131,12 @@ describe("runProgram scenarios", () => {
   test("fails an undeclared scenario as a usage error", async () => {
     const { printed, recordAs } = createRecorder();
 
-    const action = vi.fn();
-
-    const program = createProgram(
-      command({
-        name: "program",
-        subcommands: [
-          command({ name: "report", action: () => Promise.resolve(action) }),
-        ],
-      }),
-    );
-
-    await runProgram(program, ["node", "program", "report", "--output", "x"], {
-      scenarios: createScenarios(recordAs),
+    const declared = createReportingProgram(createScenarios(recordAs), {
       detectors: [() => "agent"],
     });
 
-    expect(action).not.toHaveBeenCalled();
+    await runProgram(declared, ["node", "program", "report", "--output", "x"]);
+
     expect(printed).toStrictEqual(["agent"]);
     expect(process.exitCode).toBe(1);
   });

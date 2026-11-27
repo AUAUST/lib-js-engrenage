@@ -11,9 +11,9 @@ if (
   process.env.NODE_COMPILE_CACHE = directory;
 }
 
-// @debt runs through engrenage's launch and run wrapper, reading engrenage's debug variable and config, until a split CLI finds its host (BL-efac74)
+// @debt runs through engrenage's launch and run wrapper, reading engrenage's config, until a split CLI finds its host (BL-efac74)
 const [
-  { createProgram },
+  { program },
   { runEngrenageProgram },
   { launch, runExecutable },
 ] = await Promise.all([
@@ -22,10 +22,10 @@ const [
   import("#workflows/cli/index"),
 ]);
 
-await launch(async () => {
+await launch("batiment", async () => {
   await runExecutable(import.meta.url, async () => {
     const { default: batiment } = await import("#bin/batiment/index");
 
-    await runEngrenageProgram(createProgram(batiment));
+    await runEngrenageProgram(program({ root: batiment }));
   });
 });

@@ -4,35 +4,28 @@ import {
   argument,
   collectListArgument,
   command,
-  createProgram,
+  CommandUsageError,
 } from "#nexus/cli/index";
-import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
+import { runCommand } from "#tests/utils/runCommand";
 
 async function parse(...args: string[]): Promise<unknown> {
   const action = vi.fn();
 
-  const program = createProgram(
+  await runCommand(
+    "command",
     command({
-      name: "program",
-      subcommands: [
-        command({
-          name: "command",
-          arguments: [
-            argument({
-              name: "refs",
-              variadic: true,
-              reduce: collectListArgument,
-            }),
-          ],
-          action: () => Promise.resolve(action),
+      name: "command",
+      arguments: [
+        argument({
+          name: "refs",
+          variadic: true,
+          reduce: collectListArgument,
         }),
       ],
+      action: () => Promise.resolve(action),
     }),
+    ...args,
   );
-
-  captureCommandOutput(program, []);
-
-  await program.parseAsync(["command", ...args], { from: "user" });
 
   return action.mock.calls[0]?.[0];
 }
@@ -48,7 +41,7 @@ test("drops empty items around stray commas and spaces", async () => {
 });
 
 test("rejects a list left empty as a missing argument", async () => {
-  await expect(parse(",", " ")).rejects.toMatchObject({
-    code: "commander.missingArgument",
-  });
+  await expect(parse(",", " ")).rejects.toThrow(
+    new CommandUsageError("missing required argument 'refs'"),
+  );
 });

@@ -21,7 +21,7 @@ export function reportCommandError(
   }: {
     reporter: Reporter;
     debug: boolean;
-    debugVariable?: string | undefined;
+    debugVariable: string;
     explanation?: string | undefined;
   },
 ): void {
@@ -42,9 +42,7 @@ export function reportCommandError(
 
   if (!debug) {
     lines.push(
-      debugVariable === undefined
-        ? "Run with --debug to print the stack trace"
-        : `Run with --debug or set ${debugVariable}=1 to print the stack trace`,
+      `Run with --debug or set ${debugVariable}=1 to print the stack trace`,
     );
   }
 

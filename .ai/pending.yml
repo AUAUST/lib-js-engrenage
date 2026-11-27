@@ -17,9 +17,3 @@ entries:
     why: "transitional same-command batch from #1021"
     owner: "#1016"
     created: 2026-11-27T16:35:22Z
-  - id: PD-5994c5
-    subject: debug variable derived from program name
-    what: drop debugVariable from RunSettings; engine derives upper(root name)_DEBUG (ENGRENAGE_DEBUG, METALBRAIN_DEBUG, BATIMENT_DEBUG); remove debugEnvironmentVariable override in runEngrenageProgram and launch.ts
-    why: user decision 2026-11-27; trivial, batched into next dispatch
-    owner: "#1023"
-    created: 2026-11-27T16:43:52Z

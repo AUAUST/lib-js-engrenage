@@ -131,12 +131,6 @@ describe("runEngrenageProgram", () => {
     expect(printed()).toContain("    at ");
   });
 
-  test("names ENGRENAGE_DEBUG in its hint", async () => {
-    await run(createProgram(), "failing");
-
-    expect(printed()).toContain("set ENGRENAGE_DEBUG=1");
-  });
-
   test("prints the validation summary of an invalid config without a stack", async () => {
     mockCwd(
       createTemporaryProject({
@@ -176,7 +170,7 @@ describe("runEngrenageProgram", () => {
   });
 
   test("prints the stack with the environment variable without loading the config", async () => {
-    vi.stubEnv("ENGRENAGE_DEBUG", "1");
+    vi.stubEnv("PROGRAM_DEBUG", "1");
 
     vi.resetModules();
 
