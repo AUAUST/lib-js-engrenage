@@ -1,4 +1,4 @@
-import type { EffectGlobals } from "#batiment/effects/index";
+import type { EffectGlobals, EffectRanks } from "#batiment/effects/index";
 import type { EntryShape } from "#foundation/extensions/index";
 import type { Directory } from "#types/Directory";
 import type { PackageName } from "#types/PackageName";
@@ -33,6 +33,12 @@ export interface BuildTool extends EntryShape {
    * the host's ranks in the environments it bundles.
    */
   readonly globals?: EffectGlobals;
+  /**
+   * Ranks of the imports its bundler pass erases, keyed by glob over the
+   * specifier's last segment, over every other rank in the environments
+   * it bundles.
+   */
+  readonly imports?: EffectRanks;
 }
 
 declare global {

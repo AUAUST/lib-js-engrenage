@@ -36,6 +36,20 @@ export default {
           "import.meta.env": "pure",
           "process.env.NODE_ENV": "pure",
         },
+        imports: {
+          "*.{css,less,sass,scss,styl,stylus,pcss,postcss,sss}": {
+            level: "pure",
+            evaluation: "pure",
+          },
+          "*[?]url": {
+            level: "pure",
+            evaluation: "pure",
+          },
+          "*[?]raw": {
+            level: "pure",
+            evaluation: "pure",
+          },
+        },
       },
     ],
   },

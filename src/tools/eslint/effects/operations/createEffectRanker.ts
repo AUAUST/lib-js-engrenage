@@ -1,4 +1,4 @@
-import { join } from "node:path";
+import { join, posix } from "node:path";
 
 import {
   SymbolFlags,
@@ -12,6 +12,7 @@ import {
 import {
   rankMember,
   rankUnit,
+  type EffectRanks,
   type ResolvedEffects,
 } from "#batiment/effects/index";
 import { relativeWithin } from "#foundation/filesystem/index";
@@ -22,15 +23,17 @@ import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { Directory } from "#types/Directory";
 
 /**
- * Ranks the modules and bindings a file imports: an internal one by its entity's
- * ceilings, a binding its effect doc tag invokes at, an external one by the
- * configured and shipped ranks.
+ * Ranks the modules and bindings a file imports: one a bundler erases by
+ * `erased`, keyed by glob over its specifier's last segment, an internal one by
+ * its entity's ceilings, a binding its effect doc tag invokes at, an external one
+ * by the configured and shipped ranks, and one nothing resolves at `fallback`.
  */
 export function createEffectRanker({
   program,
   checker,
   entities,
   effects,
+  erased,
   tags,
   root,
 }: {
@@ -38,9 +41,47 @@ export function createEffectRanker({
   checker: TypeChecker;
   entities: EntityIndex;
   effects: ResolvedEffects;
+  erased: EffectRanks;
   tags: readonly TagDeclaration[];
   root: Directory;
 }) {
+  // @debt erased ranks match the specifier's last segment, not the whole specifier as other unit globs do, since `matchesGlob`'s `**` skips `.` and `..` segments; a bundler erasing by directory cannot be stated
+  const erasing: ResolvedEffects = {
+    ...effects,
+    ranks: [erased],
+    fallback: undefined,
+  };
+
+  /**
+   * The rank of the module `specifier` loads when a bundler erases it,
+   * `undefined` for any other.
+   */
+  function rankErased(specifier: string): RankedUnit | undefined {
+    const { level, evaluation } = rankUnit(erasing, posix.basename(specifier));
+
+    return level === undefined
+      ? undefined
+      : {
+          unit: `the module \`${specifier}\``,
+          target: { evaluation, invocation: level },
+        };
+  }
+
+  /**
+   * The configured `fallback` rank of code lint cannot rank, `undefined`
+   * while unset.
+   */
+  function rankUnrankable(): RankedUnit | undefined {
+    const { fallback } = effects;
+
+    return fallback === undefined
+      ? undefined
+      : {
+          unit: "a module lint cannot rank",
+          target: { evaluation: fallback, invocation: fallback },
+        };
+  }
+
   function isExternal(file: SourceFile) {
     // @debt A `/node_modules/` substring decides what is external; a symlinked workspace package resolves to its real path and may fall through `entityOf` unranked and unreported.
     return (
@@ -109,8 +150,9 @@ export function createEffectRanker({
   }
 
   /**
-   * The rank of the module `specifier` loads: its role's ceilings, else its
-   * configured rank, `undefined` for an external module nothing ranks.
+   * The rank of the module `specifier` loads, `module` once resolved: its role's
+   * ceilings, else its configured rank, `undefined` for an external module
+   * nothing ranks; `fallback` when nothing resolves it.
    */
   function rankModule(
     module: Symbol | undefined,
@@ -119,7 +161,7 @@ export function createEffectRanker({
     const file = module?.declarations?.[0]?.getSourceFile();
 
     if (file === undefined) {
-      return;
+      return rankUnrankable();
     }
 
     if (!isExternal(file)) {
@@ -180,6 +222,8 @@ export function createEffectRanker({
   }
 
   return {
+    rankErased,
+    rankUnrankable,
     rankModule,
     rankBinding,
     rankDeclared,

@@ -75,6 +75,7 @@ export function createGlobalCharger({
       append(access.runner, {
         node: access.site,
         operation: access.invoked ? "invoke" : "read",
+        sideEffect: false,
         binding: written.join("."),
         unit: `the global \`${path[0] ?? name}\``,
         target: { evaluation: effects.levels[0], invocation: level },

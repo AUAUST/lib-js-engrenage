@@ -27,6 +27,7 @@ export const buildToolEntry: StandardSchemaV1 = looseObject({
   outDir: optional(string()),
   bundled: optional(boolean()),
   types: optional(array(string())),
-  // @debt `globals` is checked only as a record here, since constants cannot load the effects schemas; its ranks reach lint unvalidated
+  // @debt `globals` and `imports` are checked only as records here, since constants cannot load the effects schemas; their ranks reach lint unvalidated
   globals: optional(record(string(), unknown())),
+  imports: optional(record(string(), unknown())),
 });

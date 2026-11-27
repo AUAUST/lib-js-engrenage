@@ -162,3 +162,10 @@ entries:
     why: In the importEffects fixture, utils/own.ts importing trace from a logging role without effects gives no message, while the rule description says an unranked role is imported at runtime only by unranked roles
     want: Either the charge reaches the judge as unranked, or the description states why it is exempt
     created: 2026-11-27T00:15:37Z
+  - id: BL-2e5c48
+    title: Effect doc tags on external packages' symbols are never read
+    sites:
+      - src/tools/eslint/effects/operations/createEffectRanker.ts:143
+    why: rankBinding reads a binding's effect tag only for internal symbols; an external binding ranks from configured effects data alone, so a published package's tagged declarations go unused
+    want: A dependency's tagged declarations rank its bindings where no data ranks them
+    created: 2026-11-27T01:24:40Z

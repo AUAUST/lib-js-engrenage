@@ -69,11 +69,13 @@ export interface AuaustRules {
   /**
    * Code of a ranked role runs only what its ceilings allow where it runs:
    * what loading a module does against its evaluation ceiling while the module
-   * evaluates, and what invoking a binding does against the ceiling of the
-   * position invoking it, inside a function the level its effect doc tag declares,
-   * else the invocation ceiling. An effect doc tag stays within the invocation
-   * ceiling, and invoking a tagged binding costs its tag. A global the environment
-   * ranks costs its rank once invoked, and its member's rank once read.
+   * evaluates, side-effect imports included, and what invoking a binding does
+   * against the ceiling of the position invoking it, inside a function the level
+   * its effect doc tag declares, else the invocation ceiling. An effect doc tag
+   * stays within the invocation ceiling, and invoking a tagged binding costs
+   * its tag. A global the environment ranks costs its rank once invoked, and
+   * its member's rank once read. A module nothing resolves costs the configured
+   * fallback, and one the environment's bundler erases costs nothing.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**

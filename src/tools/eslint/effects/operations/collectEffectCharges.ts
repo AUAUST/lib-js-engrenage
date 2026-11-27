@@ -19,7 +19,11 @@ import { accessOf } from "#tools/eslint/effects/utils/accessOf";
 import { appendEntry } from "#tools/eslint/effects/utils/appendEntry";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
-import type { EffectGlobals, ResolvedEffects } from "#batiment/effects/index";
+import type {
+  EffectGlobals,
+  EffectRanks,
+  ResolvedEffects,
+} from "#batiment/effects/index";
 import type { EntityIndex } from "#batiment/structure/index";
 import type { TagDeclaration } from "#project/docs/index";
 import type { EffectCharge } from "#tools/eslint/effects/types/EffectCharge";
@@ -39,15 +43,18 @@ function isGenerator(node: SyntaxNode): boolean {
  * it: a charge belongs to the innermost function whose body runs it, and a local
  * function or class invoked while the module evaluates charges there what its
  * own body runs, through the local calls it makes in turn. A function or class
- * carrying an effect doc tag is passed to `declare`, and what its own body runs at
- * invocation carries its tag. A static member path of a global `globals` or the
- * ECMAScript data rank, reached directly or through `globalThis` or a host alias
- * `aliases` names, charges its rank once invoked and its member's rank once read.
+ * carrying an effect doc tag is passed to `declare`, and what its own body runs
+ * at invocation carries its tag. A static member path of a global `globals` or
+ * the ECMAScript data rank, reached directly or through `globalThis` or a host
+ * alias `aliases` names, charges its rank once invoked and its member's rank
+ * once read. A module a bundler erases ranks by `erased`, keyed by glob over its
+ * specifier's last segment, and a module nothing resolves charges `fallback`.
  */
 export function collectEffectCharges({
   context,
   entities,
   effects,
+  erased,
   tags,
   globals,
   aliases,
@@ -58,6 +65,7 @@ export function collectEffectCharges({
   context: Rule.RuleContext;
   entities: EntityIndex;
   effects: ResolvedEffects;
+  erased: EffectRanks;
   tags: readonly TagDeclaration[];
   globals: readonly EffectGlobals[];
   aliases: readonly string[];
@@ -75,11 +83,18 @@ export function collectEffectCharges({
   const { program, esTreeNodeToTSNodeMap } = services;
   const checker: TypeChecker = program.getTypeChecker();
 
-  const { rankModule, rankBinding, rankDeclared } = createEffectRanker({
+  const {
+    rankErased,
+    rankUnrankable,
+    rankModule,
+    rankBinding,
+    rankDeclared,
+  } = createEffectRanker({
     program,
     checker,
     entities,
     effects,
+    erased,
     tags,
     root,
   });
@@ -106,25 +121,43 @@ export function collectEffectCharges({
 
   function chargeModule({
     node,
-    source,
     specifier,
+    loaded,
     runner,
+    sideEffect = false,
   }: {
     node: SyntaxNode;
-    source: SyntaxNode;
     specifier: string;
+    loaded: RankedUnit | undefined;
     runner: SyntaxNode | undefined;
+    sideEffect?: boolean;
   }) {
-    const loaded = rankModule(symbolOf(source), specifier);
-
     if (loaded !== undefined) {
       appendEntry(runs, runner, {
         node,
         operation: "evaluate",
         binding: specifier,
+        sideEffect,
         ...loaded,
       });
     }
+  }
+
+  function chargeSource(
+    node: SyntaxNode,
+    source: SyntaxNode & { value?: unknown },
+    runner: SyntaxNode | undefined,
+    sideEffect = false,
+  ) {
+    const specifier = String(source.value);
+
+    chargeModule({
+      node,
+      specifier,
+      loaded: rankErased(specifier) ?? rankModule(symbolOf(source), specifier),
+      runner,
+      sideEffect,
+    });
   }
 
   function* invocationsOf(variables: readonly Scope.Variable[]) {
@@ -159,6 +192,7 @@ export function collectEffectCharges({
         appendEntry(runs, invocation.runner, {
           node: invocation.site,
           operation: "invoke",
+          sideEffect: false,
           ...ranked,
         });
       }
@@ -199,12 +233,12 @@ export function collectEffectCharges({
 
       const specifier = String(declaration.source.value);
 
-      chargeModule({
-        node: declaration,
-        source: declaration.source,
-        specifier,
-        runner: undefined,
-      });
+      chargeSource(
+        declaration,
+        declaration.source,
+        undefined,
+        declaration.specifiers.length === 0,
+      );
 
       for (const imported of declaration.specifiers) {
         if (isTypeOnlyNode(imported)) {
@@ -259,32 +293,20 @@ export function collectEffectCharges({
       const { source } = expression;
 
       if (source.type !== "Literal" || !isString(source.value)) {
-        const { fallback } = effects;
-
-        if (fallback !== undefined) {
-          appendEntry(runs, runner, {
-            node: expression,
-            operation: "evaluate",
-            binding: sourceCode.getText(source),
-            unit: "a module lint cannot rank",
-            target: { evaluation: fallback, invocation: fallback },
-          });
-        }
-
-        return;
+        return void chargeModule({
+          node: expression,
+          specifier: sourceCode.getText(source),
+          loaded: rankUnrankable(),
+          runner,
+        });
       }
 
       const specifier = source.value;
       const module = symbolOf(source);
 
-      chargeModule({
-        node: expression,
-        source,
-        specifier,
-        runner,
-      });
+      chargeSource(expression, source, runner);
 
-      if (module === undefined) {
+      if (module === undefined || rankErased(specifier) !== undefined) {
         return;
       }
 
@@ -296,6 +318,7 @@ export function collectEffectCharges({
             node: expression,
             operation: "invoke",
             binding: exported.name,
+            sideEffect: false,
             ...ranked,
           });
         }
@@ -303,22 +326,12 @@ export function collectEffectCharges({
     },
     "ExportAllDeclaration"(declaration) {
       if (!isTypeOnlyNode(declaration)) {
-        chargeModule({
-          node: declaration,
-          source: declaration.source,
-          specifier: String(declaration.source.value),
-          runner: undefined,
-        });
+        chargeSource(declaration, declaration.source, undefined);
       }
     },
     "ExportNamedDeclaration"(declaration) {
       if (declaration.source != null && !isTypeOnlyNode(declaration)) {
-        chargeModule({
-          node: declaration,
-          source: declaration.source,
-          specifier: String(declaration.source.value),
-          runner: undefined,
-        });
+        chargeSource(declaration, declaration.source, undefined);
       }
     },
     "FunctionDeclaration"(declaration) {

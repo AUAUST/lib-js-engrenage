@@ -51,3 +51,8 @@ entries:
     need: group effect charges by runner
     instead: appendEntry in src/tools/eslint/effects/utils/appendEntry.ts
     created: 2026-11-27T01:22:14Z
+  - id: MI-d894e0
+    subject: glob matching dot segments
+    need: match relative import specifiers by glob
+    instead: basename glob in createEffectRanker.rankErased
+    created: 2026-11-27T03:26:59Z

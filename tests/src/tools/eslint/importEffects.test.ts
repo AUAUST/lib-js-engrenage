@@ -42,15 +42,18 @@ async function createLinter({
   effects = "",
   environments = "",
   roles = [],
+  devDependencies = {},
 }: {
   effects?: string;
   environments?: string;
   roles?: readonly Role[];
+  devDependencies?: Readonly<Record<string, string>>;
 } = {}) {
   const project = createTemporaryProject({
     "package.json": JSON.stringify({
       name: "library",
       type: "module",
+      devDependencies,
       imports: {
         "#foundation/*": "./src/foundation/*.ts",
         "#project/*": "./src/project/*.ts",
@@ -97,6 +100,7 @@ async function createLinter({
     "src/foundation/base/utils/helper.ts": "export function helper() {}\n",
     "src/foundation/base/operations/act.ts": "export function act() {}\n",
     "src/foundation/base/bootstrap/boot.ts": "export function boot() {}\n",
+    "src/foundation/base/bootstrap/polyfill.ts": "Object.assign(globalThis, { polyfilled: true });\n",
     "src/project/feature/index.ts": "export {};\n",
     "src/project/feature/utils/own.ts": "export function own() {}\n",
     "src/project/feature/utils/index.ts": "export function index() {}\n",
@@ -104,6 +108,7 @@ async function createLinter({
     "src/project/feature/observing/read.ts": "export function read() {}\n",
     "src/project/feature/handlers/run.ts": "export function run() {}\n",
     "src/project/feature/computing/now.ts": "export function now() {}\n",
+    "src/project/feature/inert/none.ts": "export {};\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
     "src/project/feature/config/defineFeatureConfig.ts": "export const value = 1;\n",
@@ -122,7 +127,9 @@ async function createLinter({
 
     return (result?.messages ?? [])
       .filter(({ ruleId }) => ruleId === "auaust/import-effects")
-      .map(({ message }) => message);
+      .flatMap(({ message, suggestions = [] }) => {
+        return [message, ...suggestions.map(({ desc }) => `suggest: ${desc}`)];
+      });
   };
 }
 
@@ -501,6 +508,66 @@ describe("import effects", () => {
     expect(
       await lint(utility, 'import "#foundation/base/operations/missing";\n'),
     ).toEqual([]);
+  });
+
+  test("report a side-effect import above the evaluation ceiling, and charge an unresolved one the fallback", async () => {
+    const lint = await createLinter({ effects: 'fallback: "effectful"' });
+
+    const polyfill = 'import "#foundation/base/bootstrap/polyfill";\n';
+
+    expect(
+      await lint("src/foundation/base/bootstrap/boot.ts", polyfill),
+    ).toEqual([]);
+
+    expect(await lint(utility, polyfill)).toEqual([
+      expect.stringMatching(
+        /imports bootstrap .*raise the role's evaluation ceiling/,
+      ),
+    ]);
+
+    expect(
+      await lint(utility, 'import "#foundation/base/operations/missing";\n'),
+    ).toEqual([expect.stringContaining("a module lint cannot rank")]);
+  });
+
+  test("charge nothing for the imports a Vite project's bundler erases", async () => {
+    const lint = await createLinter({
+      effects: 'fallback: "effectful"',
+      devDependencies: { vite: "*" },
+    });
+
+    expect(
+      await lint(
+        utility,
+        'import "./styles.css";\nimport "./theme.scss";\nimport icon from "./icon.svg?url";\n\nexport const own = icon;\n',
+      ),
+    ).toEqual([]);
+
+    expect(await lint(utility, 'import "./styles.js";\n')).toHaveLength(1);
+  });
+
+  test("offer to drop a reported side-effect import whose target evaluates pure", async () => {
+    const lint = await createLinter({
+      effects: 'levels: [{ name: "inert", purpose: "Run nothing." }, "pure", "printing", "confined", "observing", "effectful"]',
+      roles: [
+        createRolePreset({
+          name: "inert",
+          exports: "named-match",
+          effects: "inert",
+          nesting: 0,
+        })(),
+      ],
+    });
+
+    expect(
+      await lint(
+        "src/project/feature/inert/none.ts",
+        'import "#project/feature/constants";\n',
+      ),
+    ).toEqual([
+      expect.stringContaining("(pure evaluation)"),
+      expect.stringContaining("suggest: Drop the import"),
+    ]);
   });
 
   test("rank a file at a role's root by the nested role its name matches", async () => {
