@@ -2,32 +2,26 @@ import type { Scope, SourceCode } from "eslint";
 
 import { isObject } from "@auaust/toolkit";
 
-import { stateUnits, typeNodeTypes } from "#tools/eslint/effects/constants";
+import {
+  freshTypes,
+  reassignableKinds,
+  stateUnits,
+  typeNodeTypes,
+  wrapperTypes,
+} from "#tools/eslint/effects/constants";
+import { isHidden } from "#tools/eslint/effects/utils/isHidden";
 import { isWritten } from "#tools/eslint/effects/utils/isWritten";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
+import { unwrapExpression } from "#tools/eslint/effects/utils/unwrapExpression";
 import type { EffectState } from "#batiment/effects/index";
 import type { PendingCharge } from "#tools/eslint/effects/types/PendingCharge";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 
-const transparentTypes: ReadonlySet<string> = new Set([
-  "ChainExpression",
-  "TSNonNullExpression",
-  "TSAsExpression",
-  "TSSatisfiesExpression",
-  "TSTypeAssertion",
-]);
-
-const reassignableKinds: ReadonlySet<string> = new Set(["let", "var"]);
-
-const freshTypes: ReadonlySet<string> = new Set([
-  "ObjectExpression",
-  "ArrayExpression",
-  "NewExpression",
-  "Literal",
-  "TemplateLiteral",
-  "FunctionExpression",
-  "ArrowFunctionExpression",
-  "ClassExpression",
+const namedRootTypes: ReadonlySet<string> = new Set([
+  "Identifier",
+  "ThisExpression",
+  "Super",
+  "MetaProperty",
 ]);
 
 const unitScopeTypes: ReadonlySet<string> = new Set(["module", "global"]);
@@ -45,13 +39,15 @@ const exportTypes: ReadonlySet<string> = new Set([
 type StateRoot = { variable: Scope.Variable | null } | { receiver: SyntaxNode };
 
 /**
- * Collects the `this` expressions `receiver` is passed and, once `charge` runs,
- * passes to `append` what each read and write of state charges, by the function
- * or class running it: a write by who owns the state it changes, the root of a
- * `const` alias or loop variable followed to what its initializer or iterated
- * expression names, and a read of a `let` or `var` by who declares it. A write
- * to its own variable holding a value a call result or a reassignment hides is
- * hinted as `hidden`, charged as writing state outside its module.
+ * Collects the `this` expressions `receiver` is passed and the member expressions
+ * `member` is passed and, once `charge` runs, passes to `append` what each read
+ * and write of state charges, by the function or class running it: a write by
+ * who owns the state it changes, the root of a `const` alias or loop variable
+ * followed to what its initializer or iterated expression names, and a read of a
+ * `let` or `var` by who declares it. A write to its own variable holding a value
+ * a call result or a reassignment hides, or to a member of an expression naming
+ * no variable, such as a call result, is hinted as `hidden`, charged as writing
+ * state outside its module; a fresh value charges nothing.
  */
 export function createStateCharger({
   sourceCode,
@@ -61,6 +57,7 @@ export function createStateCharger({
   append(runner: SyntaxNode | undefined, pending: PendingCharge): void;
 }) {
   const receivers: SyntaxNode[] = [];
+  const expressions: SyntaxNode[] = [];
   const references = new Map<object, Scope.Reference>();
 
   function chainOf(node: SyntaxNode): SyntaxNode[] {
@@ -185,39 +182,6 @@ export function createStateCharger({
     return "own";
   }
 
-  function isFresh(expression: SyntaxNode | null | undefined): boolean {
-    let node = expression;
-
-    while (
-      node != null &&
-      transparentTypes.has(node.type) &&
-      "expression" in node &&
-      isObject(node.expression)
-    ) {
-      node = node.expression;
-    }
-
-    return node != null && freshTypes.has(node.type);
-  }
-
-  function hiddenOf(
-    variable: Scope.Variable | null,
-  ): Scope.Variable | undefined {
-    const definition = variable?.defs[0];
-
-    if (variable === null || definition?.type !== "Variable") {
-      return;
-    }
-
-    const hidden = reassignableKinds.has(definition.parent.kind)
-      ? variable.references.some(({ writeExpr }) => {
-          return writeExpr != null && !isFresh(writeExpr);
-        })
-      : !isFresh(definition.node.init);
-
-    return hidden ? variable : undefined;
-  }
-
   function pathRoot(expression: SyntaxNode): SyntaxNode | undefined {
     let node = expression;
 
@@ -232,7 +196,7 @@ export function createStateCharger({
       ) {
         node = node.object;
       } else if (
-        transparentTypes.has(node.type) &&
+        wrapperTypes.has(node.type) &&
         "expression" in node &&
         isObject(node.expression)
       ) {
@@ -311,7 +275,10 @@ export function createStateCharger({
     return { variable: root };
   }
 
-  function chargeWrite(node: SyntaxNode, variable?: Scope.Variable | null) {
+  function chargeWrite(
+    node: SyntaxNode,
+    origin: Scope.Variable | null | "receiver" | "expression",
+  ) {
     const ancestors = sourceCode.getAncestors(node);
 
     let site = node;
@@ -326,7 +293,7 @@ export function createStateCharger({
 
       if (parent.type === "MemberExpression" && parent.object === site) {
         reached = true;
-      } else if (!transparentTypes.has(parent.type)) {
+      } else if (!wrapperTypes.has(parent.type)) {
         if (!isWritten([...ancestors.slice(0, index + 1), site])) {
           return;
         }
@@ -339,19 +306,36 @@ export function createStateCharger({
 
     const runner = runnerOf([...ancestors, node]);
 
-    const root = variable === undefined
+    if (origin === "expression") {
+      return void append(runner, {
+        node: site,
+        operation: "write",
+        sideEffect: false,
+        hint: "hidden",
+        binding: sourceCode.getText(site),
+        unit: `the value \`${sourceCode.getText(node)}\` gives`,
+        target: { state: "external" },
+      });
+    }
+
+    const root = origin === "receiver"
       ? { receiver: node }
       : reached
-        ? rootOf(variable)
-        : { variable };
+        ? rootOf(origin)
+        : { variable: origin };
 
     const state = "receiver" in root
       ? stateOfReceiver(root.receiver)
       : stateOfVariable(root.variable, runner, reached);
 
-    // @debt a write rooted in no variable, such as `pick(param).x = 1` or `(a ? b : c).x = 1`, is neither charged nor hinted
-    const hidden = reached && state === "own" && "variable" in root
-      ? hiddenOf(root.variable)
+    const hidden = (
+      reached &&
+      state === "own" &&
+      "variable" in root &&
+      root.variable !== null &&
+      isHidden(root.variable)
+    )
+      ? root.variable
       : undefined;
 
     append(runner, {
@@ -405,6 +389,22 @@ export function createStateCharger({
     receivers.push(node);
   }
 
+  function member(node: SyntaxNode) {
+    if (node.type !== "MemberExpression") {
+      return;
+    }
+
+    const root = unwrapExpression(node.object);
+
+    if (
+      root.type !== "MemberExpression" &&
+      !namedRootTypes.has(root.type) &&
+      !freshTypes.has(root.type)
+    ) {
+      expressions.push(root);
+    }
+  }
+
   function charge() {
     const scopes = sourceCode.scopeManager?.scopes ?? [];
 
@@ -431,12 +431,17 @@ export function createStateCharger({
     }
 
     for (const node of receivers) {
-      chargeWrite(node);
+      chargeWrite(node, "receiver");
+    }
+
+    for (const node of expressions) {
+      chargeWrite(node, "expression");
     }
   }
 
   return {
     receiver,
+    member,
     charge,
   };
 }

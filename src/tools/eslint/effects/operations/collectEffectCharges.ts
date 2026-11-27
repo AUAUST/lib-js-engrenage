@@ -324,6 +324,7 @@ export function collectEffectCharges({
     },
     "MetaProperty": globalCharger.meta,
     "ThisExpression": stateCharger.receiver,
+    "MemberExpression": stateCharger.member,
     "Program:exit"() {
       globalCharger.charge();
       stateCharger.charge();

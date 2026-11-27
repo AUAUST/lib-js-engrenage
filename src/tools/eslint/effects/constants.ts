@@ -41,3 +41,24 @@ export const stateUnits = freeze({
   "unit-shared": "its module's exported state",
   "external": "state outside its module",
 }) satisfies Readonly<Record<EffectState, string>>;
+
+export const wrapperTypes: ReadonlySet<string> = new Set([
+  "ChainExpression",
+  "TSNonNullExpression",
+  "TSAsExpression",
+  "TSSatisfiesExpression",
+  "TSTypeAssertion",
+]);
+
+export const freshTypes: ReadonlySet<string> = new Set([
+  "ObjectExpression",
+  "ArrayExpression",
+  "NewExpression",
+  "Literal",
+  "TemplateLiteral",
+  "FunctionExpression",
+  "ArrowFunctionExpression",
+  "ClassExpression",
+]);
+
+export const reassignableKinds: ReadonlySet<string> = new Set(["let", "var"]);

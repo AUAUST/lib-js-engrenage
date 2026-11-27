@@ -827,5 +827,14 @@ describe("import effects", () => {
     expect(await lint(computed, hidden, hints)).toEqual([
       expect.stringContaining("writes `target.x`"),
     ]);
+
+    const rootless = "function pick(value: { x: number }) {\n  return value;\n}\n\nclass Box {\n  x = 0;\n}\n\nexport function now(param: { x: number }, other: { x: number }) {\n  pick(param).x = 1;\n  (param.x > 0 ? param : other).x = 1;\n  new Box().x = 1;\n}\n";
+
+    expect(await lint(computed, rootless)).toEqual([]);
+
+    expect(await lint(computed, rootless, hints)).toEqual([
+      expect.stringContaining("writes `pick(param).x`"),
+      expect.stringContaining("writes `(param.x > 0 ? param : other).x`"),
+    ]);
   });
 });
