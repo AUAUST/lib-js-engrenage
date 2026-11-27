@@ -78,10 +78,7 @@ export function createStructureRoleResolver({
     return {
       ...(purpose === undefined ? {} : { purpose }),
       ...(debt === undefined ? {} : { debt }),
-      ...(effects === undefined ||
-      (effects.evaluation === undefined && effects.invocation === undefined)
-        ? {}
-        : { effects }),
+      ...(effects === undefined ? {} : { effects }),
     };
   }
 
