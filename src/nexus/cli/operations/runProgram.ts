@@ -197,8 +197,8 @@ function reportFailure(
  * marks and measures of the performance timeline since it started, behind the
  * time from process start to the run's, as a table: with `--timings` at any
  * verbosity but `silent`, otherwise as a debug report; it measures its own
- * phases, each invocation's routing, layer loading and validation, then the
- * action's loading and execution.
+ * phases, each invocation's routing, source and layer loading and validation,
+ * then the action's loading and execution.
  */
 export async function runProgram(
   program: ProgramDeclaration,

@@ -1,5 +1,6 @@
 export { argument } from "#nexus/cli/operations/argument";
 export { command } from "#nexus/cli/operations/command";
+export { commandSource } from "#nexus/cli/operations/commandSource";
 export { describeHelp } from "#nexus/cli/operations/describeHelp";
 export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
@@ -31,7 +32,9 @@ export { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 export type * from "#nexus/cli/types/ArgumentDeclaration";
 export type * from "#nexus/cli/types/CommandDeclaration";
 export type * from "#nexus/cli/types/CommandInvocation";
+export type * from "#nexus/cli/types/CommandLoader";
 export type * from "#nexus/cli/types/CommandPath";
+export type * from "#nexus/cli/types/CommandSource";
 export type * from "#nexus/cli/types/CommandTokens";
 export type * from "#nexus/cli/types/DeclaredParameters";
 export type * from "#nexus/cli/types/ForwardingCommandDeclaration";

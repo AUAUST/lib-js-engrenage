@@ -1,6 +1,7 @@
 export {
   argument,
   command,
+  commandSource,
   CommandUsageError,
   detectPrinter,
   findRunContext,
@@ -33,7 +34,9 @@ export type {
   ArgumentDeclaration,
   CommandDeclaration,
   CommandInvocation,
+  CommandLoader,
   CommandPath,
+  CommandSource,
   DeclaredParameters,
   ForwardingCommandDeclaration,
   InvocationFailure,

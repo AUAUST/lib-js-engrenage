@@ -7,7 +7,6 @@ import { invocationSeparator } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { parseUsageValue } from "#nexus/cli/operations/parseUsageValue";
-import { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 import { suggestName } from "#nexus/cli/utils/suggestName";
 import type { CommandTokens } from "#nexus/cli/types/CommandTokens";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
@@ -111,9 +110,10 @@ function suggestOption(
 }
 
 /**
- * Parses the tokens `args` holds for one command, up to the name of a subcommand
- * when it is a group: its own `options` and the `runOptions`, whose values
- * `runValues` collects across the command path, `--help`, and `--version`
+ * Parses the tokens `args` holds for one command, with `routing` up to its
+ * first positional argument, the name of a subcommand it may route to, unless
+ * an unknown option comes first: its own `options` and the `runOptions`, whose
+ * values `runValues` collects across the command path, `--help`, and `--version`
  * when it declares one; an unknown option, a missing or invalid value adds a
  * usage error to `errors`.
  *
@@ -127,10 +127,12 @@ export function parseCommandTokens(
     options,
     runOptions,
     runValues,
+    routing,
   }: {
     options: readonly OptionDeclaration[];
     runOptions: readonly OptionDeclaration[];
     runValues: Map<OptionDeclaration, unknown>;
+    routing: boolean;
   },
   args: readonly string[],
   errors: CommandUsageError[],
@@ -163,14 +165,10 @@ export function parseCommandTokens(
     }
 
     if (token.kind === "positional") {
-      const subcommand = isGroup && !blocked && positionals.length === 0
-        ? findSubcommand(declaration, token.value)
-        : undefined;
-
-      if (subcommand !== undefined) {
+      if (routing && !blocked && positionals.length === 0) {
         return {
-          route: {
-            declaration: subcommand,
+          candidate: {
+            name: token.value,
             args: args.slice(token.index + 1),
           },
           given,

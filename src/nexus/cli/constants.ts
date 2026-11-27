@@ -14,6 +14,7 @@ export const verbosityFlags = {
 export const runPhases = {
   startup: "startup",
   routing: "routing",
+  sources: "source loading",
   layers: "layer loading",
   validation: "validation",
   action: "action loading",
