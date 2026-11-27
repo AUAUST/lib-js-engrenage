@@ -140,7 +140,7 @@ describe("resolveInvocation", () => {
 
   test("binds an option to the command it follows", async () => {
     const resolveCodegen = (...args: string[]) => {
-      return resolveInvocation(program({ root: codegen }), args);
+      return resolveInvocation(codegen, args);
     };
 
     await expect(resolveCodegen("rules", "--check")).resolves.toMatchObject({

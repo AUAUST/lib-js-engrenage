@@ -212,6 +212,28 @@ describe("directory sources", () => {
     expect(process.exitCode).toBe(1);
   });
 
+  test("isolates an entry failing to load from every other command", async () => {
+    const mixed = directorySource({
+      directories: [getFixture("nexus/invalid"), getFixture("nexus/scripts")],
+      entry: "index.ts",
+      executable: "executable.ts",
+    });
+
+    await run([mixed], "--help");
+
+    expect(printed()).toContain("commands  greet, spawned, help");
+    expect(printed()).toContain("default-exports no program");
+    expect(process.exitCode).toBeUndefined();
+
+    await run([mixed], "nope");
+
+    expect(printed()).toMatch(
+      /unknown command 'nope'\nThe 'broken' command of 'program' failed to load from .+\nCaused by: .+ default-exports no program/u,
+    );
+
+    expect(process.exitCode).toBe(1);
+  });
+
   test("lists only subdirectories holding an entry or an executable", async () => {
     await run([scripts], "--help");
 

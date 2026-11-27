@@ -26,7 +26,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the timers group from the declarations of the worker lib", async () => {
     const project = createProject();
 
-    await runDefinition(codegen, "apis", "timers");
+    await runDefinition(codegen.root, "apis", "timers");
 
     const content = project.read("data/apis/timers.d.ts");
 
@@ -42,7 +42,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
   test("generates the fetch group without the browser-only declarations its init types reach in the DOM lib", async () => {
     const project = createProject();
 
-    await runDefinition(codegen, "apis", "fetch");
+    await runDefinition(codegen.root, "apis", "fetch");
 
     const content = [
       project.read("data/apis/fetch.d.ts"),
@@ -64,7 +64,7 @@ describe("support codegen apis", { timeout: binaryTimeout }, () => {
       "data/apis/timers.d.ts": "declare const edited: 1;\n",
     });
 
-    await runDefinition(codegen, "apis", "timers", "--check");
+    await runDefinition(codegen.root, "apis", "timers", "--check");
 
     expect(process.exitCode).toBe(1);
 

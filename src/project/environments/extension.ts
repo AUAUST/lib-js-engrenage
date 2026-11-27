@@ -318,7 +318,7 @@ export default {
         name: "scripts",
         level: "enforced",
         structure: "domains",
-        layout: "commands",
+        layout: "programs",
         code: "private",
         imports: { src: "surface", data: "whole" },
         inward: "open",

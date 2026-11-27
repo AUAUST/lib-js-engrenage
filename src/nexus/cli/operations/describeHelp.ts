@@ -1,7 +1,11 @@
 import { isArray, isFunction } from "@auaust/toolkit";
 import { freeze, keys } from "@auaust/toolkit/object";
 
-import { helpCommandName, invocationSeparator } from "#nexus/cli/constants";
+import {
+  helpCommandFacts,
+  helpCommandName,
+  invocationSeparator,
+} from "#nexus/cli/constants";
 import { createCommandLookup } from "#nexus/cli/operations/createCommandLookup";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
@@ -11,7 +15,7 @@ import type { ArgumentDeclaration } from "#nexus/cli/types/ArgumentDeclaration";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
 import type { HelpArgument } from "#nexus/cli/types/HelpArgument";
-import type { HelpContract } from "#nexus/cli/types/HelpContract";
+import type { HelpDescription } from "#nexus/cli/types/HelpDescription";
 import type { HelpFacts } from "#nexus/cli/types/HelpFacts";
 import type { HelpListing } from "#nexus/cli/types/HelpListing";
 import type { HelpOption } from "#nexus/cli/types/HelpOption";
@@ -27,21 +31,6 @@ interface Mounted {
  * The subcommands each group under a command provides, every source loaded.
  */
 type Provided = ReadonlyMap<CommandDeclaration, readonly CommandDeclaration[]>;
-
-const helpCommandFacts: HelpFacts = freeze({
-  description: "print the contract of every command under <path>, the whole program without one",
-  aliases: freeze([]),
-  arguments: freeze([
-    freeze({
-      usage: "[path...]",
-      description: "the names of a command path",
-      optional: true,
-      variadic: true,
-    }),
-  ]),
-  options: freeze([]),
-  subcommands: freeze([]),
-});
 
 function describeOption(option: OptionDeclaration): HelpOption {
   const shown = option.default !== undefined && option.default !== false;
@@ -193,18 +182,19 @@ function collectListings(
 
 /**
  * Loads every source of each group under `declaration` at `path`, the program's
- * own command names reserved at its root, recording in `provided` the
- * subcommands each provides.
+ * own command names reserved at its root, recording in `provided` the subcommands
+ * each provides and in `failures` the error of each mount failing to load.
  *
  * @throws {TypeError} When two sources of a group provide one name, the
  * later not shadowable.
- * @throws {Error} When a source fails to load.
+ * @throws {Error} When a loader fails to load.
  */
 async function loadGroups(
   lookup: ReturnType<typeof createCommandLookup>,
   { declaration, path }: Mounted,
   program: ProgramDeclaration,
   provided: Map<CommandDeclaration, readonly CommandDeclaration[]>,
+  failures: unknown[],
 ): Promise<void> {
   if (
     declaration.kind !== "parsing" ||
@@ -216,21 +206,24 @@ async function loadGroups(
 
   provided.set(declaration, []);
 
-  const subcommands = await lookup.list(
+  const listed = await lookup.list(
     declaration,
     [program.root.name, ...path],
     path.length === 0 ? [helpCommandName] : [],
   );
 
-  provided.set(declaration, subcommands);
+  provided.set(declaration, listed.commands);
+
+  failures.push(...listed.failures);
 
   await Promise.all(
-    subcommands.map((subcommand) => {
+    listed.commands.map((subcommand) => {
       return loadGroups(
         lookup,
         { declaration: subcommand, path: freeze([...path, subcommand.name]) },
         program,
         provided,
+        failures,
       );
     }),
   );
@@ -317,26 +310,30 @@ function readKind({ declaration }: Mounted): HelpListing["kind"] {
  * Describes the contract of every command under the command `declaration` at
  * `path` of `program`, from their declarations, the sources of each group, the
  * layers each command loads at each of its paths and the program's run options,
- * loading no action: each declaration listed once with every path mounting it,
- * sibling groups mounting the same commands folded into one listing, and nexus's
- * `help` command listed last when `path` is the program's root.
+ * loading no action: each declaration listed once with every path mounting
+ * it, sibling groups mounting the same commands folded into one listing, and
+ * nexus's `help` command listed last when `path` is the program's root; apart
+ * from it, the error of each mount failing to load, once each, the contract
+ * listing every other command.
  *
  * @throws {TypeError} When two sources of a group provide one name, the later
  * not shadowable, or one source provides a name twice.
- * @throws {Error} When a source fails to load.
+ * @throws {Error} When a loader fails to load.
  */
 export async function describeHelp(
   program: ProgramDeclaration,
   { path, declaration }: { path: CommandPath; declaration: CommandDeclaration },
-): Promise<HelpContract> {
+): Promise<HelpDescription> {
   const isRoot = path.length === 0 && isFoldable(declaration);
   const provided = new Map<CommandDeclaration, readonly CommandDeclaration[]>();
+  const failures: unknown[] = [];
 
   await loadGroups(
     createCommandLookup(),
     { declaration, path },
     program,
     provided,
+    failures,
   );
 
   const listings = await Promise.all(
@@ -405,7 +402,7 @@ export async function describeHelp(
       : []),
   ];
 
-  return freeze({
+  const contract = freeze({
     program: program.root.name,
     runOptions: freeze([
       ...createRunOptions(keys(program.scenarios)).map(describeOption),
@@ -429,4 +426,6 @@ export async function describeHelp(
         : []),
     ]),
   });
+
+  return freeze({ contract, failures: freeze([...new Set(failures)]) });
 }

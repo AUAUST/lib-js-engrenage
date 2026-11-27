@@ -29,11 +29,11 @@ vi.mock("#scripts/codegen/actions/rules", () => createGenerator("rules"));
 
 vi.mock("#scripts/codegen/actions/schemas", () => createGenerator("schemas"));
 
-describe("support codegen", () => {
+describe("codegen", () => {
   test("runs every generator in order, forwarding the check", async () => {
     runs.length = 0;
 
-    await runDefinition(codegen, "--check");
+    await runDefinition(codegen.root, "--check");
 
     expect(runs).toEqual([
       { name: "editions", parameters: [{ check: true }] },
@@ -47,7 +47,7 @@ describe("support codegen", () => {
   test("leaves the check of a named generator to that generator", async () => {
     runs.length = 0;
 
-    await runDefinition(codegen, "rules", "--check");
+    await runDefinition(codegen.root, "rules", "--check");
 
     expect(runs).toEqual([{ name: "rules", parameters: [{ check: true }] }]);
   });

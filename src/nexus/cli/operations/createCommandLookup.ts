@@ -39,6 +39,14 @@ interface ProvidedEntry {
   readonly label: string;
 }
 
+interface SubcommandListing {
+  readonly commands: readonly CommandDeclaration[];
+  /**
+   * The error of each mount that failed to load.
+   */
+  readonly failures: readonly unknown[];
+}
+
 interface ProvidedNames {
   readonly shadowable: boolean;
   readonly entries: readonly ProvidedEntry[];
@@ -351,20 +359,22 @@ export function createCommandLookup(
   }
 
   /**
-   * Every subcommand of `group`, at `path` from the program's name, calling all
-   * its loaders and loading all its mounts: the name of each from the first source
-   * providing it, after the `reserved` names of the program's own commands.
+   * Every subcommand of `group`, at `path` from the program's name, calling
+   * all its loaders and loading all its mounts: the name of each from the
+   * first source providing it, after the `reserved` names of the program's own
+   * commands, apart from the error of each mount failing to load, so one failing
+   * mount hides no other subcommand.
    *
    * @throws {TypeError} When two sources provide one name, the later not
    * shadowable, or one source provides a name twice.
-   * @throws {Error} When a loader or a mount fails.
+   * @throws {Error} When a loader fails.
    * @effectful
    */
   async function list(
     group: ParsingCommandDeclaration,
     path: CommandPath,
     reserved: readonly string[] = [],
-  ): Promise<readonly CommandDeclaration[]> {
+  ): Promise<SubcommandListing> {
     const sources = readSources(group);
 
     const provided = await Promise.all(
@@ -396,11 +406,24 @@ export function createCommandLookup(
       path,
     );
 
-    return Promise.all(
+    const declared = await Promise.allSettled(
       merged.flatMap(({ entry }) => {
         return entry === undefined ? [] : [declare(entry, path)];
       }),
     );
+
+    const commands: CommandDeclaration[] = [];
+    const failures: unknown[] = [];
+
+    for (const result of declared) {
+      if (result.status === "fulfilled") {
+        commands.push(result.value);
+      } else {
+        failures.push(result.reason);
+      }
+    }
+
+    return { commands, failures };
   }
 
   return {

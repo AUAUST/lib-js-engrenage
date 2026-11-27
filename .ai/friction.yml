@@ -32,6 +32,7 @@ taps:
   - {id: FR-a80e57, at: 2026-11-27T17:32:06Z, note: BL-454c9e removed collectListArgument; hooks failed open until the tree was whole}
   - {id: FR-46be1a, at: 2026-11-27T17:58:37Z, note: one missing ID suppresses the found entries too; git log -S finds the closing commit}
   - {id: FR-a80e57, at: 2026-11-27T19:07:45Z, note: removing hook writers broke the hooks barrel until sync and hostCheck caught up}
+  - {id: FR-990e2d, at: 2026-11-27T20:08:03Z, note: sync needs barrels the bin already imports}
 entries:
   - id: FR-bf941d
     subject: npm in the repository

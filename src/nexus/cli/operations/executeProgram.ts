@@ -4,6 +4,7 @@ import { createPhaseTimer } from "#nexus/cli/operations/createPhaseTimer";
 import { describeHelp } from "#nexus/cli/operations/describeHelp";
 import { getRunContext } from "#nexus/cli/operations/getRunContext";
 import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
+import { describeError } from "#nexus/cli/utils/describeError";
 import { helpEntry } from "#nexus/cli/utils/helpEntry";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
@@ -55,7 +56,9 @@ async function execute(
   switch (resolution.kind) {
     case "failure": {
       if (resolution.help !== undefined) {
-        reporter.error(helpEntry(await describeHelp(program, resolution.help)));
+        const { contract } = await describeHelp(program, resolution.help);
+
+        reporter.error(helpEntry(contract));
       }
 
       throw joinErrors(resolution.errors);
@@ -63,7 +66,13 @@ async function execute(
 
     case "help": {
       return timer.timeAsync(runPhases.execution, async () => {
-        reporter.log(helpEntry(await describeHelp(program, resolution)));
+        const { contract, failures } = await describeHelp(program, resolution);
+
+        reporter.log(helpEntry(contract));
+
+        for (const failure of failures) {
+          reporter.warn(describeError(failure));
+        }
       });
     }
 
@@ -84,11 +93,12 @@ async function execute(
 }
 
 /**
- * Runs `resolution`, what an invocation resolves to against `program`, within
- * the caller's run context: prints the help or version it requests through the
- * run's reporter, or loads the command's action and runs it; records the time
- * spent loading the action and executing as one measure each in the performance
- * timeline, behind `scope` when given. Never exits the process.
+ * Runs `resolution`, what an invocation resolves to against `program`, within the
+ * caller's run context: prints the help or version it requests through the run's
+ * reporter, the help followed by a warning for each command failing to load, or
+ * loads the command's action and runs it; records the time spent loading the
+ * action and executing as one measure each in the performance timeline, behind
+ * `scope` when given. Never exits the process.
  *
  * @throws {CommandUsageError} Every usage error the resolution holds, joined in
  * one when several, after the help of a group it names no command of.

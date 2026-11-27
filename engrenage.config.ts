@@ -123,15 +123,14 @@ export default defineConfig({
     preferred: ["claude"],
     attribution: false,
     gate: {
-      commands: ["pnpm run support pnpm --check"],
+      commands: ["pnpm run engrenage run pnpm --check"],
     },
   },
   generators: {
     codegen: {
-      command: "pnpm run support codegen",
+      command: "pnpm run engrenage run codegen",
       inputs: [
         "src/**",
-        "scripts/index.ts",
         "scripts/codegen/**",
         "engrenage.config.ts",
         "package.json",

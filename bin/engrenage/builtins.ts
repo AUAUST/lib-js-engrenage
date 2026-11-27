@@ -8,6 +8,7 @@ import {
 import { defineToolCommand } from "#workflows/cli/index";
 
 import pnpm from "#bin/engrenage/pnpm/index";
+import scripts from "#bin/engrenage/scripts";
 
 const builtins: readonly CommandDeclaration[] = [
   command({
@@ -99,6 +100,11 @@ const builtins: readonly CommandDeclaration[] = [
     },
   }),
   pnpm,
+  command({
+    name: "run",
+    description: "Run a project script: a program a directory of the scripts environment holds, whatever engrenage's own commands are named.",
+    subcommands: [scripts],
+  }),
   command({
     name: "link",
     description: "Link a registered repository's installed package to its local checkout without changing tracked files, or list the links with their state.",

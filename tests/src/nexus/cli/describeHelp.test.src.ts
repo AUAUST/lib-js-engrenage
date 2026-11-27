@@ -70,7 +70,7 @@ async function printHelp(
     throw new Error(`${args.join(" ")} requests no help`);
   }
 
-  const contract = await runContext.run(
+  const { contract } = await runContext.run(
     {
       signal: new AbortController().signal,
       reporter: createReporter({ print() {} }),

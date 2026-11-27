@@ -1,10 +1,7 @@
 import { join } from "@auaust/toolkit/array";
 
+import { describeError } from "#nexus/cli/utils/describeError";
 import { stackEntry, type Reporter } from "#nexus/reports/index";
-
-function describe(value: unknown): string {
-  return value instanceof Error ? value.message : String(value);
-}
 
 /**
  * Reports a failed run's error with its causes, led by `explanation` when one is
@@ -25,20 +22,11 @@ export function reportCommandError(
     explanation?: string | undefined;
   },
 ): void {
+  const described = describeError(error);
+
   const lines = explanation === undefined
-    ? [describe(error)]
-    : [explanation, `Caused by: ${describe(error)}`];
-
-  const seen = new Set<unknown>([error]);
-
-  for (
-    let cause = error instanceof Error ? error.cause : undefined;
-    cause !== undefined && !seen.has(cause);
-    cause = cause instanceof Error ? cause.cause : undefined
-  ) {
-    seen.add(cause);
-    lines.push(`Caused by: ${describe(cause)}`);
-  }
+    ? [described]
+    : [explanation, `Caused by: ${described}`];
 
   if (!debug) {
     lines.push(

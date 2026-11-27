@@ -1,3 +1,3 @@
 {
-  "purpose": "The repository's own maintenance CLI, `pnpm support`: Node programs run only in this repository, never published."
+  "purpose": "The repository's own maintenance programs, which engrenage runs as project scripts: Node programs run only in this repository, never published."
 }

@@ -1,5 +1,8 @@
+import { join } from "@auaust/toolkit/array";
+
 import { helpCommandName } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
+import { describeError } from "#nexus/cli/utils/describeError";
 import { suggestName } from "#nexus/cli/utils/suggestName";
 import type { createCommandLookup } from "#nexus/cli/operations/createCommandLookup";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
@@ -8,7 +11,8 @@ import type { CommandPath } from "#nexus/cli/types/CommandPath";
 /**
  * The usage error for `name`, which no subcommand of `declaration` at `path` from
  * the program's name provides, suggesting the closest name among those every
- * subcommand and loader of it provides, named in `group` when given.
+ * subcommand and loader of it provides, named in `group` when given, followed by
+ * the error of each of its mounts failing to load.
  *
  * @throws {TypeError} When two sources of the group provide one name, the
  * later not shadowable.
@@ -22,15 +26,23 @@ export async function rejectCommand(
 ): Promise<CommandUsageError> {
   const isRoot = path.length === 1;
 
-  const subcommands = declaration.kind === "parsing"
+  const { commands, failures } = declaration.kind === "parsing"
     ? await lookup.list(declaration, path, isRoot ? [helpCommandName] : [])
-    : [];
+    : { commands: [], failures: [] };
 
-  const known = subcommands.flatMap((subcommand) => {
+  const known = commands.flatMap((subcommand) => {
     return [subcommand.name, ...subcommand.aliases];
   });
 
   return new CommandUsageError(
-    `unknown command '${name}'${group === undefined ? "" : ` in '${group.join(" ")}'`}${suggestName(name, isRoot ? [...known, helpCommandName] : known)}`,
+    join(
+      [
+        `unknown command '${name}'${group === undefined ? "" : ` in '${group.join(" ")}'`}${suggestName(name, isRoot ? [...known, helpCommandName] : known)}`,
+        ...failures.map((failure) => {
+          return describeError(failure);
+        }),
+      ],
+      "\n",
+    ),
   );
 }

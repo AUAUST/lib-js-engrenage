@@ -11,3 +11,9 @@ entries:
     why: "instruction change waits for #1017"
     owner: "#1017"
     created: 2026-11-27T19:29:40Z
+  - id: PD-1603c4
+    subject: support codegen wording
+    what: .claude/rules/modules.md says pnpm support codegen config; now pnpm engrenage run codegen config
+    why: "instruction change waits for #1017 writer"
+    owner: "#1017"
+    created: 2026-11-27T20:08:38Z

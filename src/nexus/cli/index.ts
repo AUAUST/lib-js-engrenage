@@ -20,6 +20,7 @@ export { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 // @end
 
 // @barrel utils
+export { describeError } from "#nexus/cli/utils/describeError";
 export { findSubcommand } from "#nexus/cli/utils/findSubcommand";
 export { helpEntry } from "#nexus/cli/utils/helpEntry";
 export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
@@ -43,6 +44,7 @@ export type * from "#nexus/cli/types/DeclaredParameters";
 export type * from "#nexus/cli/types/ForwardingCommandDeclaration";
 export type * from "#nexus/cli/types/HelpArgument";
 export type * from "#nexus/cli/types/HelpContract";
+export type * from "#nexus/cli/types/HelpDescription";
 export type * from "#nexus/cli/types/HelpFacts";
 export type * from "#nexus/cli/types/HelpListing";
 export type * from "#nexus/cli/types/HelpMount";

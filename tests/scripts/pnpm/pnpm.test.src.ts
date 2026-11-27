@@ -5,7 +5,7 @@ import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange"
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 
-import checkPnpm from "#scripts/actions/pnpm";
+import checkPnpm from "#scripts/pnpm/actions/pnpm";
 
 vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 
@@ -30,7 +30,7 @@ function bump(part: "major" | "minor" | "patch", by = 1): string {
     : `${major}.${minor}.${patch + by}`;
 }
 
-describe("support pnpm", () => {
+describe("pnpm", () => {
   test.each([
     ["patch", bump("patch"), "info", false],
     ["minor", bump("minor"), "warn", false],

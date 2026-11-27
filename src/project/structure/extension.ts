@@ -7,8 +7,8 @@ import type { Extension } from "#project/config/index";
  * `environmentRoles`, `files`, `importGrants`, `importResolver` and `src.exports`
  * config keys. Contributes the project map and environment map agent fillers, the
  * project map rule files, the `batiment map --check` gate step run for agents
- * only, the effect doc tags over the configured levels, and the `commands`
- * and `mirror` layouts.
+ * only, the effect doc tags over the configured levels, and the `commands`,
+ * `programs` and `mirror` layouts.
  */
 export default {
   name: "project/structure",
@@ -160,6 +160,16 @@ export default {
           } = await import("#project/structure/presets/commands");
 
           return commands;
+        },
+      },
+      {
+        name: "programs",
+        async load() {
+          const {
+            programs,
+          } = await import("#project/structure/presets/programs");
+
+          return programs;
         },
       },
       {
