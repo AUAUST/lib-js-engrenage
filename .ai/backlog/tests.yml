@@ -92,3 +92,11 @@ entries:
       - tests/src/batiment/structure/entityIndex.test.src.ts:34
     want: One testutil exporting the repository root, reused by each site
     created: 2026-11-24T00:00:00Z
+  - id: BL-69c9a1
+    title: Sync --check tests exceed the 5s test timeout under gate load
+    sites:
+      - tests/src/tools/typescript/barrelDirective.test.src.ts:1
+      - tests/src/tools/typescript/syncBarrelFiles.test.src.ts:1
+    why: "FR-253f10: 4 hits; 1.5-3.2s alone, same at base; blocks commit gate"
+    want: un-skip the two tests once they pass reliably in the worktree and commit gates
+    created: 2026-11-27T12:15:17Z
