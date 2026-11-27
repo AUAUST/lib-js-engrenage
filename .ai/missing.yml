@@ -1,3 +1,5 @@
+taps:
+  - {id: MI-6d327a, at: 2026-11-27T20:59:09Z, note: twin in src/metalbrain/records/operations/findRecords.ts}
 entries:
   - id: MI-3ab438
     subject: commander invocation chaining

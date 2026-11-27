@@ -97,6 +97,10 @@ function describeLoader(position: number): string {
   return `the loader at position ${position}`;
 }
 
+function describeEntry({ name }: CommandEntry, path: CommandPath) {
+  return `The '${name}' command of '${join(path, " ")}'`;
+}
+
 /**
  * Loads the entries a loader of the group at `path` provides.
  *
@@ -153,7 +157,7 @@ async function loadMount(
   mount: CommandMount,
   path: CommandPath,
 ): Promise<CommandDeclaration> {
-  const described = `The '${mount.name}' command of '${join(path, " ")}'`;
+  const described = describeEntry(mount, path);
 
   let loaded: unknown;
 
@@ -268,7 +272,7 @@ export function createCommandLookup(
           return await mount.check?.();
         } catch (error) {
           throw new Error(
-            `The '${mount.name}' command of '${join(path, " ")}' failed to check its availability from ${mount.origin}`,
+            `${describeEntry(mount, path)} failed to check its availability from ${mount.origin}`,
             { cause: error },
           );
         }
@@ -327,7 +331,7 @@ export function createCommandLookup(
 
     if (inspected.kind === "unavailable") {
       throw new Error(
-        `The '${entry.name}' command of '${join(path, " ")}' is unavailable: ${inspected.command.reason}`,
+        `${describeEntry(entry, path)} is unavailable: ${inspected.command.reason}`,
       );
     }
 

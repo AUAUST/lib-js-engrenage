@@ -108,3 +108,10 @@ entries:
     why: "engrenage --help warns four times: the extensions and scripts loaders and the sync options and choices layers each load config"
     want: one warning per distinct root cause, naming every source and layer it hides
     created: 2026-11-27T20:40:03Z
+  - id: BL-8b4933
+    title: A command's own help fails whole when one of its layers fails to load, though the root help lists it apart
+    sites:
+      - src/nexus/cli/operations/resolveInvocation.ts:40
+    why: with an invalid config, engrenage sync --help prints only the config error, while engrenage --help lists sync and warns
+    want: a command's help describing every fact that loads, warning for each failing layer
+    created: 2026-11-27T20:59:19Z

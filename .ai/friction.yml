@@ -1399,3 +1399,8 @@ entries:
     tried: reading cli.commands from tools/nexus
     stopped: global Engrenage.Slots only holds ports some barrel reaches; exported the port
     created: 2026-11-27T20:20:00Z
+  - id: FR-0d5e52
+    subject: backlog add positional args
+    tried: --category and --title flags
+    stopped: unknown option; read backlog add --help
+    created: 2026-11-27T20:59:21Z
