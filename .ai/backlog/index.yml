@@ -74,7 +74,6 @@ agents:
     - BL-aab2db
     - BL-559e80
     - BL-71865f
-    - BL-10a58c
 c12:
   purpose: Upstream c12 configuration loader issues.
   entries:

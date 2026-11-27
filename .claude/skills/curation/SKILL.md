@@ -61,7 +61,7 @@ Run every stage, in this order; each feeds the next.
 
 0. **Load.**
    - Run `pnpm metalbrain backlog categories`, `pnpm metalbrain friction stats` and `pnpm metalbrain missing stats`, and read `.ai/scratchpad.md`.
-   - Write the output of `pnpm metalbrain debt --json`, one `{ file, line, column, statement }` per marker, and of `pnpm engrenage jscpd`, which lists code clones, to temporary files outside the repository; keep in context only the marker count per directory, to cut the debt batches.
+   - Write the output of `pnpm metalbrain debt --output json`, one `{ file, line, column, statement }` per marker, and of `pnpm engrenage jscpd`, which lists code clones, to temporary files outside the repository; keep in context only the marker count per directory, to cut the debt batches.
    - Dispatch the records and debt analysers.
 1. **Notes**, from the records report:
    1. Ignore the sentence following `<!-- scratchpad-placeholder -->`.

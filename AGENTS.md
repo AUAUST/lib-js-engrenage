@@ -147,7 +147,7 @@ Under Claude Code, before your first dispatch and after each compaction, read `.
 | Run tests and type checking                                                                                         | `pnpm engrenage vitest`, `pnpm engrenage typecheck` |
 | Build and test the output, after changing entries, exports or bundling                                              | `pnpm build`                                        |
 | Regenerate synced files, after adding, renaming or removing a module or changing what engrenage syncs               | `pnpm engrenage sync`                               |
-| List `@debt` markers                                                                                                | `pnpm metalbrain debt --json`                       |
+| List `@debt` markers                                                                                                | `pnpm metalbrain debt`                              |
 | Make a user-facing change, one altering what a published package gives its users, where the project uses changesets | Add a changeset in `.changeset/` with it            |
 | Any other engrenage task                                                                                            | `pnpm engrenage --help`                             |
 

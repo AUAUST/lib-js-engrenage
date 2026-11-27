@@ -1,4 +1,6 @@
 purpose: "Agent runtime integrations: hooks, runtime names and skill rendering."
+taps:
+  - {id: BL-aab2db, at: 2026-11-27T20:52:16Z, note: "met again on #1017; fitted the cap by cutting instead"}
 entries:
   - id: BL-14f06a
     title: Agent runtime names are checked only by type narrowing
@@ -213,9 +215,3 @@ entries:
     why: "seen at the #881 walk's end, 2026-11-24: the command aborts, so walk reports lose their agent-run table"
     want: agents stats tolerates or reports per file a thoroughness state lacking a numeric limit
     created: 2026-11-24T00:00:00Z
-  - id: BL-10a58c
-    title: Modules rule still names commander among bundled devDependencies, though the engine replaced it
-    sites:
-      - .claude/rules/modules.md:21
-    want: the bundled-dependency rule naming only packages still bundled
-    created: 2026-11-27T17:21:42Z

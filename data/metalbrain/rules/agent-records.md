@@ -15,7 +15,7 @@ Each record but debt goes to its agent log, `<log>` below:
 Every log and the backlog take the same commands, `<kind>` naming a log or `backlog`:
 
 ```sh
-pnpm metalbrain <log> add --<field> '<text>' … [--keywords '<terms>']  # prints the ID, then similar entries
+pnpm metalbrain <log> add --<field> '<text>' … [--keywords '<terms>']
 pnpm metalbrain <kind> update <id> --<field> '<text>' …
 pnpm metalbrain <kind> tap <id…> [--note '<text>']
 pnpm metalbrain <kind> merge <new-id> <kept-id> [--note '<text>']
@@ -30,7 +30,7 @@ pnpm metalbrain [<kind>] show|close <id…>                               # with
 - Telling anyone a finding records nothing: record it first, under this rule or Backlog, and name where. Report unrecorded only a finding Backlog leaves to your caller.
 - Before your final report as a subagent, or ending a turn in the main session, ahead of any closing step your harness asks for, write each record and backlog entry due since your dispatch, resume or turn began.
 - Read and change the agent logs only through these commands. Keep each log field to a few words, so mentions of one subject match.
-- Chain several `add`, `update` or `merge` invocations on one kind into one call with `--next` between them; `tap`, `show` and `close` take several IDs.
+- Chain several of these commands as one call, `pnpm metalbrain <kind> <command> … --next <kind> <command> …`: a failure stops the rest, undoing none; `tap`, `show` and `close` take several IDs.
 - Add entries without searching first; when `add` lists one recording the same thing, run the `merge` or `close` it prints and update the kept entry with anything yours adds. Pass `--keywords` with the subject's other names when you expect a duplicate worded otherwise.
 - An entry you know records what you met again: tap it instead of adding one, its note holding what the entry lacks.
 - Before weighing a solution, search the discarded log for it. A subject its `stats` flags as recurring is a candidate: report it with its entry count and the needs its entries record.
