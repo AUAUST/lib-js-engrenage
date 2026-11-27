@@ -1,4 +1,4 @@
-import type { ResolvedEffects } from "#batiment/roles/types/ResolvedEffects";
+import type { ResolvedEffects } from "#batiment/effects/index";
 import type { ResolvedRoleContract } from "#batiment/roles/types/ResolvedRoleContract";
 
 export interface ResolvedRoles {

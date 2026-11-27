@@ -11,6 +11,7 @@ import {
 } from "#batiment/structure/constants";
 import { renderProjectMapRoles } from "#batiment/structure/utils/renderProjectMapRoles";
 import { renderPurpose } from "#batiment/structure/utils/renderPurpose";
+import type { ResolvedEffects } from "#batiment/effects/index";
 import type { ResolvedRoles } from "#batiment/roles/index";
 import type { ImportCategory } from "#batiment/structure/types/ImportCategory";
 import type { ImportGrants } from "#batiment/structure/types/ImportGrants";
@@ -91,6 +92,7 @@ export function renderProjectMap({
   grants,
   patterns,
   roles,
+  effects,
   directory,
 }: {
   structure: ResolvedStructure;
@@ -98,6 +100,7 @@ export function renderProjectMap({
   grants: ImportGrants;
   patterns: Readonly<Partial<Record<string, Globs>>>;
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>;
+  effects: ResolvedEffects;
   directory: Directory;
 }): string {
   const namespaces = listNamespaces(tree);
@@ -229,6 +232,6 @@ export function renderProjectMap({
             return `| ${code(scope)} | ${renderPurpose({ purpose, debt })} | ${dependencies.length === 0 ? "none" : list(dependencies)} |`;
           }),
         ]),
-    ...renderProjectMapRoles(structure, roles),
+    ...renderProjectMapRoles(structure, roles, effects),
   ].join("\n");
 }

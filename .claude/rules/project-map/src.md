@@ -7,8 +7,9 @@ paths:
 
 ```
 src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  The published library: ESM-only Node tooling modules the package entries expose to the projects installing it, never browser runtime code.  (global roles: types constants.ts *.d.ts extension.ts)
-├─ batiment/  #batiment/…  report < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.  [debt: An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.]
+├─ batiment/  #batiment/…  report < effects < roles < scopes < environments < structure < context  The language- and tool-agnostic architectural model: walks the project, reads its metafiles and builds scopes, environments, namespaces, domains, roles and their boundaries from the facts it receives.  [debt: An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.]
 │  ├─ context  The context port a host answers with root and scope facts, and the driver running discovery and each scope's walk over its answers.
+│  ├─ effects  The effect model: the level scale and its purposes, ranks of units and their members, and the charges a use costs against a ceiling.
 │  ├─ environments  Declare environment presets, their registrations and placements, and resolve the environment of each file they cover.
 │  ├─ report  The structure report's diagnostics and their codes, shared by every batiment domain.
 │  ├─ roles  Declare role contracts.

@@ -168,6 +168,34 @@ describe("project map", () => {
     );
   });
 
+  test("lists and describes the configured effect levels", async () => {
+    const { project } = await syncProject(
+      createTemporaryProject({
+        "package.json": '{ "name": "project", "type": "module" }',
+        "engrenage.config.ts": `export default {
+        preset: "library",
+        agents: { preferred: ["claude"] },
+        structure: { effects: { levels: [
+          "pure",
+          { name: "logging", purpose: "Write logs only." },
+          "confined",
+          "observing",
+          "effectful",
+        ] } },
+      };`,
+        "src/feature/index.ts": "",
+      }),
+    );
+
+    const overview = project.read(overviewFile);
+
+    expect(overview).toContain(
+      "Effect levels, purest first: `pure` < `logging` < `confined` < `observing` < `effectful`.",
+    );
+
+    expect(overview).toContain("- `logging`: Write logs only.");
+  });
+
   test("renders companions and barrel options", async () => {
     const { project } = await syncProject(
       createTemporaryProject({

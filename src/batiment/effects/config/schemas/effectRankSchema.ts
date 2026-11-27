@@ -1,9 +1,9 @@
 import { object, record, string, union } from "valibot";
 
-export const effectModuleSchema = union([
+export const effectRankSchema = union([
   string(),
   object({
-    default: string(),
+    level: string(),
     symbols: record(string(), string()),
   }),
 ]);

@@ -40,7 +40,6 @@ export default defineConvention({
 
           if (
             level !== undefined &&
-            levels.includes(level) &&
             levels.indexOf(level) <= levels.indexOf(ceiling)
           ) {
             return;

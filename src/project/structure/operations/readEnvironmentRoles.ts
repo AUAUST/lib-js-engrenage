@@ -24,15 +24,13 @@ async function createEnvironmentRoles(
 
   const [
     defaults,
-    { effects },
+    effects,
     { verbatimModuleSyntax: typeImports },
-    defaultModules,
     { published },
   ] = await Promise.all([
     listDefaultRoles(config, environment, environments),
-    config.resolve("structure.options"),
+    config.resolve("effects"),
     config.resolve("typescript.options"),
-    config.resolve("effectModules"),
     config.resolve("traits"),
   ]);
 
@@ -51,7 +49,6 @@ async function createEnvironmentRoles(
       layoutRoles: layout?.nature === "recursive" ? layout.roles : [],
     }),
     effects,
-    defaultModules,
     typeImports,
     published,
   };

@@ -185,7 +185,7 @@ describe("import effects", () => {
     ).toHaveLength(1);
 
     const inserted = await createLinter({
-      effects: 'levels: ["pure", "logging", "confined", "observing", "effectful"]',
+      effects: 'levels: ["pure", { name: "logging", purpose: "Write logs." }, "confined", "observing", "effectful"]',
       roles: [
         createRolePreset({
           name: "logging",
@@ -268,7 +268,7 @@ describe("import effects", () => {
 
     const configured = await createLinter({
       roles,
-      effects: 'modules: { "my-db": { default: "effectful", symbols: { default: "pure", readFileSync: "observing" } } }',
+      effects: 'modules: { "my-db": { level: "effectful", symbols: { default: "pure", readFileSync: "observing" } } }',
     });
 
     expect(

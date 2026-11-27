@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
+import { noEffects } from "#batiment/effects/constants";
 import { listNamespaceRoles, resolveRoles } from "#batiment/roles/index";
 import {
   actions,
@@ -21,11 +22,7 @@ describe("listNamespaceRoles", () => {
         roles: [index({ purpose: "The group." })],
         defaults: [],
       }),
-      effects: {
-        levels: undefined,
-        modules: undefined,
-        fallback: undefined,
-      },
+      effects: noEffects,
       typeImports: true,
       published: true,
     });

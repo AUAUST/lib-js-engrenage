@@ -1,11 +1,9 @@
-import type { EffectModules } from "#batiment/roles/types/EffectModules";
+import type { ResolvedEffects } from "#batiment/effects/index";
 import type { Role } from "#batiment/roles/types/Role";
-import type { RoleEffects } from "#batiment/roles/types/RoleEffects";
 
 export interface NamespaceRoles {
   readonly roles: readonly Role[];
-  readonly effects: RoleEffects;
-  readonly defaultModules?: EffectModules;
+  readonly effects: ResolvedEffects;
   readonly typeImports: boolean;
   readonly published: boolean;
 }

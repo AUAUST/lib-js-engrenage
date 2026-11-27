@@ -98,8 +98,8 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 | `rules` | ESLint rules lint runs on the files of a role, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tooling` |
 | `presets` | Presets of the domain's declarations, one per module. |  |  | values `named-match`, types `none` | confined |  | `src` |
 | `config/definers` | The domain's `define…Config` definer. | `define<Domain>Config.ts`, `defineConfig.ts` |  | values `named-match`, types `named-match` | effectful |  | `src` |
-| `config/declarers` | Functions creating option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
 | `config/schemas` | Validation schemas of the option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
+| `config/declarers` | Functions creating option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
 | `config/sections` | Section values the domain contributes to the loaded config. |  |  | values `named-match`, types `named-match` | effectful |  | `src` |
 | `testutils` | Reusable test utilities. |  |  | values `named-match`, types `named-match` | effectful |  | `tests` |
 | `fixtures` | Static test inputs. |  |  |  | pure |  | `tests` |

@@ -10,17 +10,20 @@ export interface StructureInput {
    */
   effects?: ({
     /**
-     * Effect levels, purest first, compared by index. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add levels anywhere around them.
+     * Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.
      * @default `pure`, `confined`, `observing`, `effectful`
      */
-    levels?: (string[] | undefined)
+    levels?: ((string | {
+      name: string
+      purpose: string
+    })[] | undefined)
     /**
-     * Levels of external modules, as a record of specifier glob to entry. An entry is a level or `{ default: level, symbols: { [exportName]: level } }`; `symbols.default` ranks the default export. Configured entries override the shipped table, then `fallback` ranks unknown modules. Namespace imports take the highest entry level.
+     * Levels of external modules, as a record of specifier glob to entry. An entry is a level or `{ level, symbols: { [exportName]: level } }`; `symbols.default` ranks the default export. An export takes the level of the first entry listing it in `symbols`, configured entries before the shipped table, else the level of the first entry matching its module, an exact specifier before any glob, else `fallback`. Namespace imports take the highest level their module's entries state.
      * @default none, so only the shipped table applies
      */
     modules?: ({
       [k: string]: (string | {
-        default: string
+        level: string
         symbols: {
           [k: string]: string
         }

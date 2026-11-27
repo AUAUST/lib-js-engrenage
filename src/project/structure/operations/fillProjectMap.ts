@@ -14,11 +14,19 @@ export async function fillProjectMap(
     );
   }
 
-  const [{ structure }, tree, grants, roles, patterns] = await Promise.all([
+  const [
+    { structure },
+    tree,
+    grants,
+    roles,
+    effects,
+    patterns,
+  ] = await Promise.all([
     listMappedEnvironments(config),
     config.resolve("scopes"),
     config.resolve("importGrants"),
     config.resolve("environmentRoles"),
+    config.resolve("effects"),
     resolveTestPatterns(config),
   ]);
 
@@ -27,6 +35,7 @@ export async function fillProjectMap(
     tree,
     grants,
     roles,
+    effects,
     patterns,
     directory,
   });

@@ -2,12 +2,12 @@ import { describe, expect, test } from "vitest";
 
 import { keys } from "@auaust/toolkit/object";
 
+import { resolveEffects, type EffectLevel } from "#batiment/effects/index";
 import {
   createRolePreset,
   getIndexFile,
   resolveRoles,
   type Role,
-  type RoleEffects,
 } from "#batiment/roles/index";
 import {
   adapters,
@@ -20,13 +20,13 @@ import {
 
 function resolve({
   roles,
-  effects = {},
+  levels,
   scopes,
   published = true,
   typeImports = true,
 }: {
   roles: readonly Role[];
-  effects?: Partial<RoleEffects>;
+  levels?: readonly EffectLevel[];
   scopes?: readonly string[];
   published?: boolean;
   typeImports?: boolean;
@@ -34,12 +34,7 @@ function resolve({
   return resolveRoles({
     namespace: "src",
     roles,
-    effects: {
-      levels: undefined,
-      modules: undefined,
-      fallback: undefined,
-      ...effects,
-    },
+    effects: resolveEffects({ levels }),
     typeImports,
     published,
     ...(scopes === undefined ? {} : { scopes }),
@@ -188,9 +183,13 @@ describe("resolveRoles", () => {
   test("ranks roles against the effect levels", () => {
     const resolved = resolve({
       roles: [utils({ effects: "logging" }), adapters()],
-      effects: {
-        levels: ["pure", "logging", "confined", "observing", "effectful"],
-      },
+      levels: [
+        "pure",
+        { name: "logging", purpose: "Write logs." },
+        "confined",
+        "observing",
+        "effectful",
+      ],
     });
 
     expect(resolved.roles.utils).toMatchObject({
@@ -208,32 +207,5 @@ describe("resolveRoles", () => {
     expect(() => {
       resolve({ roles: [utils({ effects: "shaky" })] });
     }).toThrow("shaky");
-
-    expect(() => {
-      resolve({
-        roles: [],
-        effects: { fallback: "shaky" },
-      });
-    }).toThrow("shaky");
-
-    for (const entry of [
-      {
-        default: "shaky",
-        symbols: { read: "pure" },
-      },
-      {
-        default: "pure",
-        symbols: { read: "shaky" },
-      },
-    ]) {
-      expect(() => {
-        return resolve({
-          roles: [],
-          effects: {
-            modules: { custom: entry },
-          },
-        });
-      }).toThrow("shaky");
-    }
   });
 });

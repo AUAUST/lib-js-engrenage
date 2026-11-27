@@ -8,8 +8,13 @@ import {
 } from "typescript";
 import type { Rule } from "eslint";
 
+import {
+  highestLevel,
+  rankMember,
+  rankUnit,
+  type ResolvedEffects,
+} from "#batiment/effects/index";
 import { entryRoleName } from "#batiment/roles/constants";
-import { rankModule, type ResolvedEffects } from "#batiment/roles/index";
 import { relativeWithin } from "#foundation/filesystem/index";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 import type { EntityIndex } from "#batiment/structure/index";
@@ -76,6 +81,18 @@ export function collectEffectCharges({
     return target.declarations?.[0]?.getSourceFile();
   }
 
+  function rankImport(specifier: string, imported: string | undefined) {
+    if (imported !== undefined) {
+      return rankMember(effects, specifier, imported);
+    }
+
+    const { level, members } = rankUnit(effects, specifier);
+
+    return level === undefined
+      ? undefined
+      : highestLevel(effects.levels, [level, ...members.values()]);
+  }
+
   function collect({
     node,
     specifier,
@@ -100,7 +117,7 @@ export function collectEffectCharges({
       program.isSourceFileFromExternalLibrary(file) ||
       file.fileName.includes("/node_modules/")
     ) {
-      const level = rankModule(effects, specifier, imported);
+      const level = rankImport(specifier, imported);
 
       if (level !== undefined) {
         charge({

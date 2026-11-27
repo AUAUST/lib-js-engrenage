@@ -26,7 +26,7 @@ export { listModuleExtensions } from "#project/structure/utils/listModuleExtensi
 export { aliasesSection } from "#project/structure/config/sections/aliasesSection";
 export { aliasScopesSection } from "#project/structure/config/sections/aliasScopesSection";
 export { contextSection } from "#project/structure/config/sections/contextSection";
-export { effectModulesSection } from "#project/structure/config/sections/effectModulesSection";
+export { effectsSection } from "#project/structure/config/sections/effectsSection";
 export { entitiesSection } from "#project/structure/config/sections/entitiesSection";
 export { environmentRolesSection } from "#project/structure/config/sections/environmentRolesSection";
 export { filesSection } from "#project/structure/config/sections/filesSection";

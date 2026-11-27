@@ -7,7 +7,7 @@
   "node:cluster": "effectful",
   "node:console": "observing",
   "node:crypto": {
-    "default": "confined",
+    "level": "confined",
     "symbols": {
       "constants": "pure",
       "generateKey": "observing",
@@ -35,7 +35,7 @@
   "node:domain": "effectful",
   "node:events": "confined",
   "node:fs": {
-    "default": "effectful",
+    "level": "effectful",
     "symbols": {
       "access": "observing",
       "accessSync": "observing",
@@ -72,7 +72,7 @@
     }
   },
   "node:fs/promises": {
-    "default": "effectful",
+    "level": "effectful",
     "symbols": {
       "access": "observing",
       "constants": "pure",
@@ -93,7 +93,7 @@
   "node:inspector": "effectful",
   "node:inspector/promises": "effectful",
   "node:module": {
-    "default": "effectful",
+    "level": "effectful",
     "symbols": {
       "builtinModules": "pure",
       "findPackageJSON": "observing",
@@ -106,7 +106,7 @@
   },
   "node:net": "effectful",
   "node:os": {
-    "default": "observing",
+    "level": "observing",
     "symbols": {
       "constants": "pure",
       "devNull": "pure",
@@ -119,7 +119,7 @@
   "node:path/win32": "pure",
   "node:perf_hooks": "effectful",
   "node:process": {
-    "default": "effectful",
+    "level": "effectful",
     "symbols": {
       "arch": "observing",
       "argv": "observing",
@@ -168,14 +168,14 @@
   "node:trace_events": "effectful",
   "node:tty": "effectful",
   "node:url": {
-    "default": "pure",
+    "level": "pure",
     "symbols": {
       "URL": "confined",
       "URLSearchParams": "confined"
     }
   },
   "node:util": {
-    "default": "pure",
+    "level": "pure",
     "symbols": {
       "debug": "observing",
       "debuglog": "observing",

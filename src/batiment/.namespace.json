@@ -3,6 +3,7 @@
   "debt": "An architectural model standing apart from the tools engrenage orchestrates, hosted here by an earlier decision outside engrenage's Compass.",
   "layers": [
     "report",
+    "effects",
     "roles",
     "scopes",
     "environments",

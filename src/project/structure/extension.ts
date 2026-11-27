@@ -3,7 +3,7 @@ import type { Extension } from "#project/config/index";
 
 /**
  * Owns the `layouts` slot and the `structure`, `structure.options`,
- * `structure.context`, `aliases`, `aliases.scopes`, `effectModules`, `entities`,
+ * `structure.context`, `aliases`, `aliases.scopes`, `effects`, `entities`,
  * `environmentRoles`, `files`, `importGrants`, `importResolver` and `src.exports`
  * config keys. Contributes the project map and environment map agent fillers, the
  * project map rule files, the `batiment map --check` gate step run for agents
@@ -68,13 +68,13 @@ export default {
           return aliasScopesSection;
         },
       },
-      "effectModules": {
+      "effects": {
         async load() {
           const {
-            effectModulesSection,
-          } = await import("#project/structure/config/sections/effectModulesSection");
+            effectsSection,
+          } = await import("#project/structure/config/sections/effectsSection");
 
-          return effectModulesSection;
+          return effectsSection;
         },
       },
       "entities": {

@@ -1,13 +1,10 @@
 import { isDeepStrictEqual } from "node:util";
 
 import { toArray } from "@auaust/toolkit/array";
-import { entries } from "@auaust/toolkit/object";
+import { entries, getOwn } from "@auaust/toolkit/object";
 
-import {
-  defaultEffectLevels,
-  effectLevelPurposes,
-} from "#batiment/roles/constants";
 import { renderPurpose } from "#batiment/structure/utils/renderPurpose";
+import type { ResolvedEffects } from "#batiment/effects/index";
 import type {
   ResolvedRoleContract,
   ResolvedRoles,
@@ -54,6 +51,7 @@ function renderExports({
 export function renderProjectMapRoles(
   structure: ResolvedStructure,
   roles: Readonly<Partial<Record<string, ResolvedRoles>>>,
+  { levels, purposes }: ResolvedEffects,
 ): string[] {
   const rows: RoleRow[] = [];
 
@@ -90,10 +88,16 @@ export function renderProjectMapRoles(
     "",
     "## Roles",
     "",
-    `Effect levels, purest first: ${defaultEffectLevels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import each other, and domains only with \`import type\`. Other domains import a role's modules one by one only when it is \`public\`, otherwise only through its domain's index. They import a \`collected\` role's modules inside sub-domains too, past their parent domains' surfaces, and a \`modules\` role's directly; no index lists them.`,
+    `Effect levels, purest first: ${levels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import each other, and domains only with \`import type\`. Other domains import a role's modules one by one only when it is \`public\`, otherwise only through its domain's index. They import a \`collected\` role's modules inside sub-domains too, past their parent domains' surfaces, and a \`modules\` role's directly; no index lists them.`,
     "",
-    ...defaultEffectLevels.map((level) => {
-      return `- ${code(level)}: ${effectLevelPurposes[level]}`;
+    ...levels.map((level) => {
+      const purpose = getOwn(purposes, level);
+
+      if (purpose === undefined) {
+        throw new Error(`The effect level ${level} has no purpose`);
+      }
+
+      return `- ${code(level)}: ${purpose}`;
     }),
     "",
     "| Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |",
