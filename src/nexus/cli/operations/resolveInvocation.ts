@@ -1,8 +1,9 @@
 import { isFunction } from "@auaust/toolkit";
 import { freeze, keys, record } from "@auaust/toolkit/object";
 
-import { helpCommandName } from "#nexus/cli/constants";
+import { helpCommandName, runPhases } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
+import { createPhaseTimer } from "#nexus/cli/operations/createPhaseTimer";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { loadCommandLayer } from "#nexus/cli/operations/loadCommandLayer";
@@ -19,6 +20,8 @@ import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
 import type { Resolution } from "#nexus/cli/types/Resolution";
 
 type GivenValues = ReadonlyMap<OptionDeclaration, unknown>;
+
+type PhaseTimer = ReturnType<typeof createPhaseTimer>;
 
 interface Layers {
   readonly options: readonly OptionDeclaration[];
@@ -212,22 +215,10 @@ function findHelpTarget(
   return { path: freeze(path), declaration };
 }
 
-/**
- * Resolves `args`, the arguments after a program's name, against `program`
- * without loading any action: routes them to a command, each option binding to
- * the command it follows and every argument after a forwarding command's name
- * reaching it raw; loads the layers of each command on the path; then parses
- * and validates each option and argument, the run options at any level of the
- * path. A root group reserves the `help` command, whose arguments name the path
- * of the command whose help it requests. Resolves to the invocation, a request
- * for help or the version, or every usage error found, an unknown command or
- * option suggesting the closest known name, and one below the root of a help
- * path naming the group it was looked up in; a path stopping at a group without
- * an action that names no command fails with that group's help.
- */
-export async function resolveInvocation(
+async function resolvePath(
   { root, scenarios }: ProgramDeclaration,
   args: readonly string[],
+  timer: PhaseTimer,
 ): Promise<Resolution> {
   const runOptions = createRunOptions(keys(scenarios));
   const runValues = new Map<OptionDeclaration, unknown>();
@@ -240,7 +231,9 @@ export async function resolveInvocation(
       | undefined,
     help?: Extract<Resolution, { kind: "failure" }>["help"],
   ): Resolution {
-    checkConflicts(runOptions, runValues, errors);
+    timer.time(runPhases.validation, () => {
+      checkConflicts(runOptions, runValues, errors);
+    });
 
     const values = readRunOptions(runOptions, runValues);
 
@@ -275,18 +268,24 @@ export async function resolveInvocation(
       });
     }
 
-    const layers = await loadLayers(declaration, path);
+    const current = declaration;
 
-    const level = parseCommandTokens(
-      declaration,
-      {
-        options: layers.options,
-        runOptions,
-        runValues,
-      },
-      rest,
-      errors,
-    );
+    const layers = await timer.timeAsync(runPhases.layers, () => {
+      return loadLayers(current, path);
+    });
+
+    const level = timer.time(runPhases.routing, () => {
+      return parseCommandTokens(
+        current,
+        {
+          options: layers.options,
+          runOptions,
+          runValues,
+        },
+        rest,
+        errors,
+      );
+    });
 
     if (level.request === "help") {
       return {
@@ -313,11 +312,9 @@ export async function resolveInvocation(
       declaration.subcommands.length > 0 &&
       level.positionals[0] === helpCommandName
     ) {
-      const target = findHelpTarget(
-        declaration,
-        level.positionals.slice(1),
-        errors,
-      );
+      const target = timer.time(runPhases.routing, () => {
+        return findHelpTarget(current, level.positionals.slice(1), errors);
+      });
 
       if (target === undefined || errors.length > 0) {
         return finish(undefined);
@@ -330,8 +327,10 @@ export async function resolveInvocation(
       };
     }
 
-    checkRequired(layers.options, level.given, errors);
-    checkConflicts(layers.options, level.given, errors);
+    timer.time(runPhases.validation, () => {
+      checkRequired(layers.options, level.given, errors);
+      checkConflicts(layers.options, level.given, errors);
+    });
 
     if (level.route !== undefined) {
       names.push(level.route.declaration.name);
@@ -362,31 +361,64 @@ export async function resolveInvocation(
       return finish(undefined);
     }
 
-    const argumentValues = readCommandArguments(
-      declaration,
-      path,
-      layers.choices,
-      level.positionals,
-      errors,
-    );
+    const parameters = timer.time(runPhases.validation, () => {
+      const argumentValues = readCommandArguments(
+        current,
+        path,
+        layers.choices,
+        level.positionals,
+        errors,
+      );
 
-    if (errors.length > 0) {
+      return errors.length > 0
+        ? undefined
+        : createParameters(
+            current,
+            path,
+            layers.options,
+            level.given,
+            argumentValues,
+            errors,
+          );
+    });
+
+    if (parameters === undefined) {
       return finish(undefined);
     }
-
-    const parameters = createParameters(
-      declaration,
-      path,
-      layers.options,
-      level.given,
-      argumentValues,
-      errors,
-    );
 
     return finish({
       path,
       declaration,
       parameters: freeze([...parameters]),
     });
+  }
+}
+
+/**
+ * Resolves `args`, the arguments after a program's name, against `program`
+ * without loading any action: routes them to a command, each option binding to
+ * the command it follows and every argument after a forwarding command's name
+ * reaching it raw; loads the layers of each command on the path; then parses and
+ * validates each option and argument, the run options at any level of the path.
+ * A root group reserves the `help` command, whose arguments name the path of
+ * the command whose help it requests. Resolves to the invocation, a request for
+ * help or the version, or every usage error found, an unknown command or option
+ * suggesting the closest known name, and one below the root of a help path naming
+ * the group it was looked up in; a path stopping at a group without an action
+ * that names no command fails with that group's help. Records the time spent
+ * routing, loading layers and validating as one measure each in the performance
+ * timeline, behind `scope` when given.
+ */
+export async function resolveInvocation(
+  program: ProgramDeclaration,
+  args: readonly string[],
+  { scope }: { scope?: string } = {},
+): Promise<Resolution> {
+  const timer = createPhaseTimer(scope);
+
+  try {
+    return await resolvePath(program, args, timer);
+  } finally {
+    timer.measure();
   }
 }

@@ -10,8 +10,8 @@ function listOthers(flag: VerbosityFlag): VerbosityFlag[] {
 
 /**
  * Declares the run options every command of a program but a forwarding one
- * accepts: the verbosity flags, each conflicting with the others, and `--output`
- * naming one of `scenarios`.
+ * accepts: the verbosity flags, each conflicting with the others, `--output`
+ * naming one of `scenarios`, and `--timings`.
  *
  * @pure
  */
@@ -47,6 +47,11 @@ export function createRunOptions(scenarios: readonly string[]) {
       description: "print for the output scenario <scenario> instead of the detected one",
       placeholder: "scenario",
       choices: scenarios,
+    }),
+    option({
+      name: "timings",
+      type: "boolean",
+      description: "print how long the run's phases took, at any verbosity but --silent",
     }),
   ] as const;
 }

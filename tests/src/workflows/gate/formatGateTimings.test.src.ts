@@ -1,8 +1,5 @@
 import { expect, test } from "vitest";
 
-import { isObject } from "@auaust/toolkit";
-
-import { renderDenseEntry } from "#nexus/reports/index";
 import { formatGateTimings } from "#workflows/gate/index";
 
 const timings = {
@@ -58,48 +55,4 @@ test("prints the total alone for a run reusing an earlier one", () => {
       },
     ),
   ).toBe("Duration 120ms");
-});
-
-test("lists each group with its steps below it, then the total, when detailed", () => {
-  const details = formatGateTimings(
-    {
-      ...timings,
-      groups: timings.groups.filter(({ name }) => name !== "tree"),
-    },
-    {
-      detailed: true,
-    },
-  );
-
-  expect(isObject(details) && renderDenseEntry(details).join("\n")).toBe(
-    [
-      "Durations",
-      "  fixes           450ms",
-      "    prettier      450ms",
-      "  checks          2.35s",
-      "    typecheck     2.35s",
-      "    sync --check  1.00s",
-      "  total           3.10s",
-    ].join("\n"),
-  );
-});
-
-test("prints no detail for a run whose groups ran no step", () => {
-  expect(
-    formatGateTimings(
-      {
-        groups: [
-          {
-            name: "local",
-            duration: 0,
-            steps: [],
-          },
-        ],
-        duration: 12,
-      },
-      {
-        detailed: true,
-      },
-    ),
-  ).toBeUndefined();
 });

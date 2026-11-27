@@ -3,7 +3,6 @@ import { dirname } from "node:path";
 
 import { map } from "@auaust/toolkit/array";
 import { sum } from "@auaust/toolkit/math";
-import { measureAsync } from "@auaust/toolkit/time";
 
 import { readTextFile, resolveWithin } from "#foundation/filesystem/index";
 import { LockTimeoutError } from "#foundation/processes/errors/LockTimeoutError";
@@ -21,6 +20,7 @@ import { gateBookkeepingGroups } from "#workflows/gate/constants";
 import { checkProject } from "#workflows/gate/operations/checkProject";
 import { checkVerifiedTree } from "#workflows/gate/operations/checkVerifiedTree";
 import { listStageSteps } from "#workflows/gate/operations/listStageSteps";
+import { measureGateTask } from "#workflows/gate/operations/measureGateTask";
 import { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 import { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";
 import { runSteps } from "#workflows/gate/operations/runSteps";
@@ -200,7 +200,9 @@ async function verify(
     const {
       result: initial,
       duration,
-    } = await measureAsync(readTreeIdentity, config, mode);
+    } = await measureGateTask([gateBookkeepingGroups.stamp, "lookup"], () => {
+      return readTreeIdentity(config, mode);
+    });
 
     groups.push({
       name: gateBookkeepingGroups.stamp,
@@ -271,7 +273,10 @@ async function verify(
     name: string,
     task: () => Promise<Result>,
   ): Promise<Result> {
-    const { result, duration } = await measureAsync(task);
+    const {
+      result,
+      duration,
+    } = await measureGateTask([gateBookkeepingGroups.tree, name], task);
 
     tree.push({ name, duration });
 
@@ -383,7 +388,7 @@ export async function runGate(
       async () => {
         const groups: GateGroupTiming[] = [];
 
-        const { result, duration } = await measureAsync(() => {
+        const { result, duration } = await measureGateTask([], () => {
           return mode === "all"
             ? checkProject(config, groups)
             : verify(config, mode, audience, groups);

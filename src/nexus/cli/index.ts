@@ -23,6 +23,7 @@ export { helpEntry } from "#nexus/cli/utils/helpEntry";
 export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
 export { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 export { suggestName } from "#nexus/cli/utils/suggestName";
+export { timingsEntry } from "#nexus/cli/utils/timingsEntry";
 export { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 // @end
 

@@ -6,8 +6,7 @@ import type { GateStepTiming } from "#workflows/gate/types/GateStepTiming";
 export interface GateGroupTiming {
   readonly name: string;
   /**
-   * In milliseconds, the wall time of a group whose steps ran concurrently,
-   * otherwise the sum of its steps' durations.
+   * The group's wall time, in milliseconds.
    */
   readonly duration: number;
   readonly steps: readonly GateStepTiming[];

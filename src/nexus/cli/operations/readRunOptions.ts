@@ -11,7 +11,9 @@ import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
  * @pure
  */
 export function readRunOptions(
-  [silent, quiet, verbose, debug, output]: ReturnType<typeof createRunOptions>,
+  [silent, quiet, verbose, debug, output, timings]: ReturnType<
+    typeof createRunOptions
+  >,
   values: ReadonlyMap<OptionDeclaration, unknown>,
 ): RunOptionValues {
   const scenario = values.get(output);
@@ -22,5 +24,6 @@ export function readRunOptions(
     verbose: values.has(verbose) ? true : undefined,
     debug: values.has(debug) ? true : undefined,
     output: isString(scenario) ? scenario : undefined,
+    timings: values.has(timings) ? true : undefined,
   });
 }

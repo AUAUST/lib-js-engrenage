@@ -10,3 +10,14 @@ export const verbosityFlags = {
   verbose: "info",
   debug: "debug",
 } as const satisfies Record<string, Verbosity>;
+
+export const runPhases = {
+  startup: "startup",
+  routing: "routing",
+  layers: "layer loading",
+  validation: "validation",
+  action: "action loading",
+  execution: "execution",
+} as const;
+
+export const phaseSeparator = ":";

@@ -1,4 +1,6 @@
+import { runPhases } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
+import { createPhaseTimer } from "#nexus/cli/operations/createPhaseTimer";
 import { describeHelp } from "#nexus/cli/operations/describeHelp";
 import { getRunContext } from "#nexus/cli/operations/getRunContext";
 import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
@@ -43,19 +45,10 @@ async function loadAction(
   return run;
 }
 
-/**
- * Runs `resolution`, what a run's arguments resolve to against `program`, within
- * the caller's run context: prints the help or version it requests through the
- * run's reporter, or loads the command's action and runs it, a chaining command's
- * receiving every invocation. Never exits the process.
- *
- * @throws {CommandUsageError} Every usage error the resolution holds, joined in
- * one when several, after the help of a group it names no command of.
- * @throws {unknown} What the action throws.
- */
-export async function executeProgram(
+async function execute(
   program: ProgramDeclaration,
   resolution: RunResolution,
+  timer: ReturnType<typeof createPhaseTimer>,
 ): Promise<void> {
   const { reporter } = getRunContext();
 
@@ -69,9 +62,9 @@ export async function executeProgram(
     }
 
     case "help": {
-      return void reporter.log(
-        helpEntry(await describeHelp(program, resolution)),
-      );
+      return timer.timeAsync(runPhases.execution, async () => {
+        reporter.log(helpEntry(await describeHelp(program, resolution)));
+      });
     }
 
     case "version": {
@@ -79,15 +72,48 @@ export async function executeProgram(
     }
 
     case "invocation": {
-      const run = await loadAction(resolution.declaration);
+      const run = await timer.timeAsync(runPhases.action, () => {
+        return loadAction(resolution.declaration);
+      });
 
-      return void (await run(...resolution.parameters));
+      return timer.timeAsync(runPhases.execution, async () => {
+        await run(...resolution.parameters);
+      });
     }
 
     case "chain": {
-      const run = await loadAction(resolution.declaration);
+      const run = await timer.timeAsync(runPhases.action, () => {
+        return loadAction(resolution.declaration);
+      });
 
-      return void (await run(resolution.invocations));
+      return timer.timeAsync(runPhases.execution, async () => {
+        await run(resolution.invocations);
+      });
     }
+  }
+}
+
+/**
+ * Runs `resolution`, what a run's arguments resolve to against `program`,
+ * within the caller's run context: prints the help or version it requests
+ * through the run's reporter, or loads the command's action and runs it, a
+ * chaining command's receiving every invocation; records the time spent loading
+ * the action and executing as one measure each in the performance timeline.
+ * Never exits the process.
+ *
+ * @throws {CommandUsageError} Every usage error the resolution holds, joined in
+ * one when several, after the help of a group it names no command of.
+ * @throws {unknown} What the action throws.
+ */
+export async function executeProgram(
+  program: ProgramDeclaration,
+  resolution: RunResolution,
+): Promise<void> {
+  const timer = createPhaseTimer();
+
+  try {
+    await execute(program, resolution, timer);
+  } finally {
+    timer.measure();
   }
 }

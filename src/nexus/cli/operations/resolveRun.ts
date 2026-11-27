@@ -74,6 +74,21 @@ function agreeRunOptions(
   }
 }
 
+async function measureInvocation(
+  program: ProgramDeclaration,
+  args: readonly string[],
+  position: number,
+): Promise<Resolution> {
+  const scope = `invocation ${position}`;
+  const start = performance.now();
+
+  try {
+    return await resolveInvocation(program, args, { scope });
+  } finally {
+    performance.measure(scope, { start, end: performance.now() });
+  }
+}
+
 function describePath(root: CommandDeclaration, path: CommandPath): string {
   return join([root.name, ...path], " ");
 }
@@ -146,15 +161,21 @@ function checkChain(
  * another given in an earlier invocation, or an `--output` disagreeing with an
  * earlier one, failing it. A chaining command resolves to its invocations, even
  * one alone. With several invocations, each usage error names the invocation
- * holding it, and the resolution carries the first one's path.
+ * holding it, and the resolution carries the first one's path. With several
+ * invocations, each one's resolution is measured in the performance timeline as
+ * `invocation <n>`, holding the measures of its phases.
  */
 export async function resolveRun(
   program: ProgramDeclaration,
   args: readonly string[],
 ): Promise<RunResolution> {
+  const split = splitInvocations(args);
+
   const resolutions = await Promise.all(
-    splitInvocations(args).map((invocation) => {
-      return resolveInvocation(program, invocation);
+    split.map((invocation, index) => {
+      return split.length === 1
+        ? resolveInvocation(program, invocation)
+        : measureInvocation(program, invocation, index + 1);
     }),
   );
 

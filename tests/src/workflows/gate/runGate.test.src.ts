@@ -51,6 +51,15 @@ describe("runGate", { timeout: binaryTimeout }, () => {
       ["staging", "identity", "verification", "stamp"],
     );
 
+    expect(
+      performance.getEntriesByName("gate:checks:typecheck"),
+    ).not.toHaveLength(0);
+
+    expect(performance.getEntriesByName("gate").at(-1)?.duration).toBeCloseTo(
+      timings.duration,
+      0,
+    );
+
     expect(project.read("src/index.ts")).toBe(
       "export const value: number = 2;\n",
     );

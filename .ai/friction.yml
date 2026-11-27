@@ -30,6 +30,7 @@ taps:
   - {id: FR-59f2d0, at: 2026-11-27T14:08:57Z, note: countDeclarations is not defined in every hook while createCommandDefinition.ts was mid-edit}
   - {id: FR-a80e57, at: 2026-11-27T15:13:58Z, note: also broke the analyser and main session metalbrain calls}
   - {id: FR-a80e57, at: 2026-11-27T17:32:06Z, note: BL-454c9e removed collectListArgument; hooks failed open until the tree was whole}
+  - {id: FR-46be1a, at: 2026-11-27T17:58:37Z, note: one missing ID suppresses the found entries too; git log -S finds the closing commit}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1386,3 +1387,8 @@ entries:
     tried: pending add … --next add … in one call
     stopped: neither record written, no error; ran each add alone
     created: 2026-11-27T16:24:08Z
+  - id: FR-2861a2
+    subject: vitest fake performance.measure
+    tried: gate durations read from performance.measure entries
+    stopped: faked measure returns a fixed 100ms entry; computed durations from performance.now instead
+    created: 2026-11-27T17:58:24Z

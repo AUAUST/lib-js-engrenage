@@ -35,12 +35,6 @@ export default command({
       description: "check the whole project without fixing anything: every step and the configured commands",
       conflicts: ["staged", "worktree", "everyone", "message"],
     }),
-    option({
-      name: "timings",
-      type: "boolean",
-      description: "list the duration of every stage and step instead of the one-line total",
-      conflicts: ["message"],
-    }),
   ],
   action() {
     return import("#bin/engrenage/actions/gate");

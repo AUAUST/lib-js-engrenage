@@ -16,6 +16,8 @@ describe("declarations from another module instance", () => {
 
     const action = vi.fn();
 
+    vi.spyOn(process.stderr, "write").mockImplementation(() => true);
+
     const declared = program({
       root: command({
         name: "program",

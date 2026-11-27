@@ -1,6 +1,6 @@
 import { keys } from "@auaust/toolkit/object";
 
-import { verbosityFlags } from "#nexus/cli/constants";
+import { runPhases, verbosityFlags } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
 import { executeProgram } from "#nexus/cli/operations/executeProgram";
@@ -8,6 +8,7 @@ import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { resolveRun } from "#nexus/cli/operations/resolveRun";
 import { runContext } from "#nexus/cli/operations/runContext";
+import { timingsEntry } from "#nexus/cli/utils/timingsEntry";
 import { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
 import {
   createReporter,
@@ -44,6 +45,18 @@ function timeCompletions(printer: Printer): Printer {
   }
 
   return { print };
+}
+
+function readRunTimings(
+  startup: PerformanceMeasure,
+  started: number,
+): PerformanceEntry[] {
+  const entries = [
+    ...performance.getEntriesByType("mark"),
+    ...performance.getEntriesByType("measure"),
+  ];
+
+  return [startup, ...entries.filter(({ startTime }) => startTime >= started)];
 }
 
 function createPendingPrinter(): Printer & {
@@ -180,13 +193,21 @@ function reportFailure(
  * `--output` names, else the first of its scenarios one of its detectors names,
  * through the printer the resolved command binds to it, else the one the program
  * declares, loaded once the run resolves, before any action loads, and holding
- * the entries reported until then.
+ * the entries reported until then. Once the run ends unaborted, it reports the
+ * marks and measures of the performance timeline since it started, behind the
+ * time from process start to the run's, as a table: with `--timings` at any
+ * verbosity but `silent`, otherwise as a debug report; it measures its own
+ * phases, each invocation's routing, layer loading and validation, then the
+ * action's loading and execution.
  */
 export async function runProgram(
   program: ProgramDeclaration,
   argv?: readonly string[],
   { signal, onError, resolveDebug, explain }: RunSettings = {},
 ): Promise<void> {
+  const startup = performance.measure(runPhases.startup);
+  const started = performance.now();
+
   dropClosedOutput(process.stdout);
   dropClosedOutput(process.stderr);
 
@@ -208,6 +229,10 @@ export async function runProgram(
 
   let path: CommandPath | undefined;
 
+  let printer: Printer | undefined;
+
+  let timed = false;
+
   async function settle(
     runOptions: RunOptionValues | undefined,
     bindings: ScenarioPrinters | undefined,
@@ -218,7 +243,9 @@ export async function runProgram(
       })
       .at(-1);
 
-    const printer = await loadScenarioPrinter(
+    timed = runOptions?.timings === true;
+
+    printer = await loadScenarioPrinter(
       runOptions?.output ?? detectScenario(detectors, scenarios),
       { scenarios, bindings },
     );
@@ -227,6 +254,16 @@ export async function runProgram(
   }
 
   const runReporter = createReporter(output);
+
+  function reportTimings() {
+    const entry = timingsEntry(readRunTimings(startup, started));
+
+    if (timed && printer !== undefined && getVerbosity() !== "silent") {
+      printer.print(entry, "debug");
+    } else {
+      runReporter.debug(entry);
+    }
+  }
 
   const { signal: runSignal, stopListening } = listenForAborts(signal);
 
@@ -276,5 +313,9 @@ export async function runProgram(
     await (onError === undefined ? report() : onError(error, { path, report }));
   } finally {
     stopListening();
+  }
+
+  if (!runSignal.aborted) {
+    reportTimings();
   }
 }

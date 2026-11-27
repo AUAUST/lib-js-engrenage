@@ -6,6 +6,7 @@ export { gateClaudeStop } from "#workflows/gate/operations/gateClaudeStop";
 export { listCommandSteps } from "#workflows/gate/operations/listCommandSteps";
 export { listRelatedRecords } from "#workflows/gate/operations/listRelatedRecords";
 export { listStageSteps } from "#workflows/gate/operations/listStageSteps";
+export { measureGateTask } from "#workflows/gate/operations/measureGateTask";
 export { readTreeIdentity } from "#workflows/gate/operations/readTreeIdentity";
 export { runGate } from "#workflows/gate/operations/runGate";
 export { runGenerateStage } from "#workflows/gate/operations/runGenerateStage";

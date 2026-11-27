@@ -54,3 +54,8 @@ entries:
     need: measure what each role ceiling needs
     instead: temporary createRolePreset patch plus a scratch JSON aggregator
     created: 2026-11-27T04:37:27Z
+  - id: MI-1d23dd
+    subject: measureAsync recording a performance measure
+    need: time gate tasks into the performance timeline
+    instead: measureGateTask in src/workflows/gate/operations/measureGateTask.ts
+    created: 2026-11-27T17:58:24Z

@@ -24,6 +24,21 @@ function createGroupProgram(name: string, action: () => void) {
   });
 }
 
+function createStepProgram(action: (steps: readonly [string][]) => void) {
+  return declareProgram({
+    root: command({
+      name: "program",
+      chain: true,
+      arguments: [argument({ name: "step" })],
+      action: () => Promise.resolve(action),
+      parse(step, _invocation) {
+        return [step];
+      },
+    }),
+    scenarios: getReporter().scenarios,
+  });
+}
+
 function run(program: ProgramDeclaration, ...args: string[]) {
   return runProgram(program, ["node", "program", ...args]);
 }
@@ -241,18 +256,7 @@ describe("runProgram", () => {
   test("rejects verbosity flags set by two chained invocations", async () => {
     const action = vi.fn<(steps: readonly [string][]) => void>();
 
-    const program = declareProgram({
-      root: command({
-        name: "program",
-        chain: true,
-        arguments: [argument({ name: "step" })],
-        action: () => Promise.resolve(action),
-        parse(step, _invocation) {
-          return [step];
-        },
-      }),
-      scenarios: getReporter().scenarios,
-    });
+    const program = createStepProgram(action);
 
     await run(program, "a", "--quiet", "--next", "b", "--verbose");
 
@@ -261,6 +265,82 @@ describe("runProgram", () => {
     );
 
     expect(action).not.toHaveBeenCalled();
+  });
+
+  describe("timings", () => {
+    function createTimedProgram() {
+      return createGroupProgram("timed", () => {
+        const start = performance.now();
+
+        performance.measure("work:step", { start });
+        performance.measure("work", { start });
+
+        getRunContext().reporter.complete("done");
+      });
+    }
+
+    function readTimings() {
+      return getReporter().messages.filter(({ text }) => {
+        return text === "Timings" || text.startsWith("  ");
+      });
+    }
+
+    test("prints each phase and the action's own measures under --quiet with --timings", async () => {
+      await run(createTimedProgram(), "timed", "--quiet", "--timings");
+
+      const rows = readTimings().map(({ text }) => {
+        return text.trim().split(/\s{2,}/u)[0];
+      });
+
+      expect(rows).toEqual([
+        "Timings",
+        "startup",
+        "layer loading",
+        "routing",
+        "validation",
+        "action loading",
+        "execution",
+        "work",
+        "step",
+      ]);
+
+      expect(
+        readTimings().find(({ text }) => {
+          return text.trimStart().startsWith("step");
+        })?.text,
+      ).toMatch(/^ {4}step/u);
+    });
+
+    test("prints them at debug alone, and never under --silent", async () => {
+      await run(createTimedProgram(), "timed");
+
+      expect(readTimings()).toEqual([]);
+
+      await run(createTimedProgram(), "timed", "--debug");
+
+      expect(readTimings()[0]).toMatchObject({
+        level: "debug",
+        text: "Timings",
+      });
+
+      const before = getReporter().messages.length;
+
+      await run(createTimedProgram(), "timed", "--silent", "--timings");
+
+      expect(getReporter().messages).toHaveLength(before);
+    });
+
+    test("names each chained invocation's phases after it", async () => {
+      const action = vi.fn<(steps: readonly [string][]) => void>();
+
+      const program = createStepProgram(action);
+
+      await run(program, "a", "--timings", "--next", "b");
+
+      expect(printed()).toMatch(
+        /^ {2}invocation 2 .*\n {4}layer loading .*\n {4}routing /mu,
+      );
+    });
   });
 
   describe("chaining", () => {

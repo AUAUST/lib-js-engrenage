@@ -1,8 +1,7 @@
 import { iterable } from "@auaust/toolkit";
 import { filter, map } from "@auaust/toolkit/array";
-import { sum } from "@auaust/toolkit/math";
-import { measureAsync } from "@auaust/toolkit/time";
 
+import { measureGateTask } from "#workflows/gate/operations/measureGateTask";
 import type { GateResult } from "#project/gate/index";
 import type { Files } from "#types/Files";
 import type { GateStep } from "#workflows/gate/apis/GateStep";
@@ -34,14 +33,14 @@ async function settleStep(
 }
 
 async function runStep(
+  group: string,
   step: GateStep,
   files: Files,
   removed: Files,
 ): Promise<StepOutcome> {
-  const {
-    result,
-    duration,
-  } = await measureAsync(settleStep, step, files, removed);
+  const { result, duration } = await measureGateTask([group, step.name], () => {
+    return settleStep(step, files, removed);
+  });
 
   const name = result.name ?? step.name;
 
@@ -82,17 +81,20 @@ async function runSequentially(
   files: Files,
   removed: Files,
 ): Promise<StepsOutcome> {
-  const outcomes: StepOutcome[] = [];
+  const {
+    result: outcomes,
+    duration,
+  } = await measureGateTask([group], async () => {
+    const ran: StepOutcome[] = [];
 
-  for (const step of steps) {
-    outcomes.push(await runStep(step, files, removed));
-  }
+    for (const step of steps) {
+      ran.push(await runStep(group, step, files, removed));
+    }
 
-  return collectOutcomes(
-    group,
-    outcomes,
-    sum(...map(outcomes, ({ timing }) => timing.duration)),
-  );
+    return ran;
+  });
+
+  return collectOutcomes(group, outcomes, duration);
 }
 
 async function runConcurrently(
@@ -101,10 +103,10 @@ async function runConcurrently(
   files: Files,
   removed: Files,
 ): Promise<StepsOutcome> {
-  const { result: outcomes, duration } = await measureAsync(() => {
+  const { result: outcomes, duration } = await measureGateTask([group], () => {
     return Promise.all(
       iterable.map(steps, (step) => {
-        return runStep(step, files, removed);
+        return runStep(group, step, files, removed);
       }),
     );
   });
@@ -114,7 +116,8 @@ async function runConcurrently(
 
 /**
  * Runs `steps` as the `group` its outcome's timing names, one after another
- * unless `concurrent`.
+ * unless `concurrent`, measuring the group and each step in the performance
+ * timeline as `gate:<group>` and `gate:<group>:<step>`.
  */
 export function runSteps(
   steps: readonly GateStep[],
