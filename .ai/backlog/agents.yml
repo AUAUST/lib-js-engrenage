@@ -219,10 +219,3 @@ entries:
       - .claude/rules/modules.md:21
     want: the bundled-dependency rule naming only packages still bundled
     created: 2026-11-27T17:21:42Z
-  - id: BL-c2027e
-    title: The thoroughness hook allows the tool call it warns about, skipping Claude Code's permission prompt
-    sites:
-      - bin/metalbrain/hook/claude/actions/thoroughness.ts:34
-    why: "its PreToolUse output sets `permissionDecision: allow` beside the warning context."
-    want: a warning leaving the permission decision to Claude Code.
-    created: 2026-11-27T19:07:37Z
