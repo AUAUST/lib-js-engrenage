@@ -45,7 +45,7 @@ describe("engrenage sync with an external target", () => {
 
       const { stdout } = await engrenage(...args);
 
-      expect(stdout).toContain('"external-fixture"');
+      expect(stdout).toMatch(/\(choices: [^)]*\bexternal-fixture\b/u);
       expect(stdout).toContain("--external-fixture-create");
     },
   );

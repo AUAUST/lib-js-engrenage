@@ -1,8 +1,13 @@
 import { onTestFinished } from "vitest";
 
-import { createProgram, type CommandDeclaration } from "#nexus/cli/index";
+import { program, type CommandDeclaration } from "#nexus/cli/index";
+import { executeProgram } from "#nexus/cli/operations/executeProgram";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { createTestReporter } from "#tests/utils/createTestReporter";
+
+function settleNothing(): Promise<void> {
+  return Promise.resolve();
+}
 
 export async function runDefinition(
   declaration: CommandDeclaration,
@@ -16,7 +21,7 @@ export async function runDefinition(
   });
 
   await runContext.run({ signal: controller.signal, reporter }, () => {
-    return createProgram(declaration).parseAsync(args, { from: "user" });
+    return executeProgram(program({ root: declaration }), args, settleNothing);
   });
 
   return reporter;

@@ -34,6 +34,11 @@ interface ResolutionFailure {
    */
   readonly path: CommandPath;
   readonly errors: readonly CommandUsageError[];
+  /**
+   * The help to print with the errors: a group's own, when the path stops at it
+   * without naming a command.
+   */
+  readonly help?: Pick<ResolvedHelp, "path" | "declaration">;
   readonly runOptions: RunOptionValues;
 }
 

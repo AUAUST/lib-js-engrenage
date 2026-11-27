@@ -66,7 +66,7 @@ test(
       "--import",
       `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
       getExecutable(),
-      "--help",
+      "--version",
     ]);
 
     const urls = stderr.split("\n");

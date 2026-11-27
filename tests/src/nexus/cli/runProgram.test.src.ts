@@ -1,11 +1,13 @@
 import { describe, expect, test, vi } from "vitest";
-import type { Command } from "@commander-js/extra-typings";
 
 import {
   argument,
   command,
+  CommandUsageError,
   createProgram as createDefinedProgram,
+  program as declareProgram,
   getRunContext,
+  type ProgramDeclaration,
 } from "#nexus/cli/index";
 import { runProgram } from "#nexus/cli/operations/runProgram";
 import { useFailingProgram } from "#tests/utils/useFailingProgram";
@@ -13,18 +15,17 @@ import { useFailingProgram } from "#tests/utils/useFailingProgram";
 const { getReporter, createProgram, printed } = useFailingProgram();
 
 function createGroupProgram(name: string, action: () => void) {
-  return createDefinedProgram(
-    command({
+  return declareProgram({
+    root: command({
       name: "program",
       subcommands: [command({ name, action: () => Promise.resolve(action) })],
     }),
-  );
-}
-
-function run(program: Command, ...args: string[]) {
-  return runProgram(program, ["node", "program", ...args], {
     scenarios: getReporter().scenarios,
   });
+}
+
+function run(program: ProgramDeclaration, ...args: string[]) {
+  return runProgram(program, ["node", "program", ...args]);
 }
 
 describe("runProgram", () => {
@@ -49,7 +50,6 @@ describe("runProgram", () => {
     vi.stubEnv("PROGRAM_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      scenarios: getReporter().scenarios,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -60,7 +60,6 @@ describe("runProgram", () => {
     vi.stubEnv("ENGRENAGE_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      scenarios: getReporter().scenarios,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -70,11 +69,51 @@ describe("runProgram", () => {
 
   test("leads its error with the explanation it is given", async () => {
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      scenarios: getReporter().scenarios,
       explain: () => "the fix",
     });
 
     expect(printed()).toContain("the fix\nCaused by: outer");
+  });
+
+  test("prints a usage error alone and loads no action", async () => {
+    const action = vi.fn(() => Promise.resolve(() => {}));
+
+    const program = declareProgram({
+      root: command({
+        name: "program",
+        subcommands: [command({ name: "loaded", action })],
+      }),
+      scenarios: getReporter().scenarios,
+    });
+
+    await run(program, "loaded", "--nope");
+
+    expect(printed()).toBe("unknown option '--nope'");
+    expect(action).not.toHaveBeenCalled();
+    expect(process.exitCode).toBe(1);
+  });
+
+  test("hands a usage error to onError, setting no exit code", async () => {
+    const onError = vi.fn();
+
+    await runProgram(createProgram(), ["node", "program", "nope"], {
+      onError,
+    });
+
+    expect(onError).toHaveBeenCalledWith(
+      new CommandUsageError("unknown command 'nope'"),
+    );
+
+    expect(process.exitCode).toBeUndefined();
+  });
+
+  test("prints a group's help when no command is named", async () => {
+    await run(createProgram());
+
+    expect(getReporter().messages[0]).toMatchObject({ level: "error" });
+    expect(printed()).toContain("failing");
+    expect(printed()).toContain("no command given");
+    expect(process.exitCode).toBe(1);
   });
 
   test("prints nothing for a failing command under --silent", async () => {
@@ -129,8 +168,20 @@ describe("runProgram", () => {
       .mockImplementation(() => true);
 
     const program = () => {
-      return createGroupProgram("progress", () => {
-        getRunContext().reporter.info("progressing");
+      return declareProgram({
+        root: command({
+          name: "program",
+          subcommands: [
+            command({
+              name: "progress",
+              action: () => {
+                return Promise.resolve(() => {
+                  getRunContext().reporter.info("progressing");
+                });
+              },
+            }),
+          ],
+        }),
       });
     };
 
@@ -197,7 +248,11 @@ describe("runProgram", () => {
       }),
     );
 
-    await run(program, "a", "--quiet", "--next", "b", "--verbose");
+    await runProgram(
+      program,
+      ["node", "program", "a", "--quiet", "--next", "b", "--verbose"],
+      { scenarios: getReporter().scenarios },
+    );
 
     expect(printed()).toContain(
       "invocation 2: option '--quiet' cannot be used with option '--verbose'",

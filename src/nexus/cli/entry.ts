@@ -13,6 +13,7 @@ export {
   nexusDetectors,
   nexusScenarios,
   option,
+  program,
   runInvocations,
   runProgram,
 } from "#nexus/cli/index";
@@ -40,7 +41,9 @@ export type {
   OptionDeclaration,
   ParsingCommandDeclaration,
   PrinterLoader,
+  ProgramDeclaration,
   RunContext,
+  RunSettings,
   ScenarioDetector,
   ScenarioPrinters,
 } from "#nexus/cli/index";

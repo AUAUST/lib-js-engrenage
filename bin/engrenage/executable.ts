@@ -13,7 +13,7 @@ if (
 
 // @debt each bin repeats the compile-cache preamble and the program loading around `runExecutable`, which jscpd reports as a clone of `bin/batiment/executable.ts`
 const [
-  { createProgram },
+  { program },
   { runEngrenageProgram },
   { launch, runExecutable },
 ] = await Promise.all([
@@ -26,6 +26,6 @@ await launch(async () => {
   await runExecutable(import.meta.url, async () => {
     const { default: engrenage } = await import("#bin/engrenage/index");
 
-    await runEngrenageProgram(createProgram(engrenage));
+    await runEngrenageProgram(program({ root: engrenage }));
   });
 });

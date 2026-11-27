@@ -1,10 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import type { Command } from "@commander-js/extra-typings";
 
-import {
-  command,
-  createProgram as createDefinedProgram,
-} from "#nexus/cli/index";
+import { command, program, type ProgramDeclaration } from "#nexus/cli/index";
+import { nexusScenarios } from "#nexus/scenarios/index";
 import { loadConfig } from "#project/config/index";
 import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -54,16 +51,15 @@ const succeeding = command({
 
 const { getReporter, createProgram, printed } = useFailingProgram();
 
-function createSyncProgram() {
-  return createDefinedProgram(
-    command({ name: "program", subcommands: [sync] }),
-  );
+function createSyncProgram(scenarios = nexusScenarios) {
+  return program({
+    root: command({ name: "program", subcommands: [sync] }),
+    scenarios,
+  });
 }
 
-function run(program: Command, ...args: string[]) {
-  return runEngrenageProgram(program, ["node", "program", ...args], {
-    scenarios: getReporter().scenarios,
-  });
+function run(declared: ProgramDeclaration, ...args: string[]) {
+  return runEngrenageProgram(declared, ["node", "program", ...args]);
 }
 
 afterEach(() => {
@@ -149,7 +145,7 @@ describe("runEngrenageProgram", () => {
       }).root,
     );
 
-    await run(createSyncProgram(), "sync");
+    await run(createSyncProgram(getReporter().scenarios), "sync");
 
     expect(printed()).toContain("Invalid");
     expect(printed()).not.toContain("    at ");
@@ -168,11 +164,11 @@ describe("runEngrenageProgram", () => {
     } = await import("#tools/nexus/index");
 
     await runFreshProgram(
-      createDefinedProgram(
-        command({ name: "program", subcommands: [succeeding] }),
-      ),
+      program({
+        root: command({ name: "program", subcommands: [succeeding] }),
+        scenarios: getReporter().scenarios,
+      }),
       ["node", "program", "succeeding"],
-      { scenarios: getReporter().scenarios },
     );
 
     expect(getReporter().messages).toEqual([]);
@@ -192,9 +188,7 @@ describe("runEngrenageProgram", () => {
       runEngrenageProgram: runFreshProgram,
     } = await import("#tools/nexus/index");
 
-    await runFreshProgram(createProgram(), ["node", "program", "failing"], {
-      scenarios: getReporter().scenarios,
-    });
+    await runFreshProgram(createProgram(), ["node", "program", "failing"]);
 
     expect(printed()).toContain("    at ");
   });

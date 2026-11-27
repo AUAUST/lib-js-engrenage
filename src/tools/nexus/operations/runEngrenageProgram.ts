@@ -2,10 +2,6 @@ import { runProgram } from "#nexus/cli/index";
 import { debugEnvironmentVariable } from "#tools/nexus/constants";
 import { explainStaleBarrel } from "#tools/nexus/operations/explainStaleBarrel";
 import type { Reporter } from "#nexus/reports/index";
-import type {
-  ScenarioDetector,
-  ScenarioPrinters,
-} from "#nexus/scenarios/index";
 
 // @debt resolves the config again after a failure instead of reading the config the failing command already resolved
 async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
@@ -23,15 +19,13 @@ async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
 export function runEngrenageProgram(
   program: Parameters<typeof runProgram>[0],
   argv?: readonly string[],
-  options: {
-    signal?: AbortSignal;
-    scenarios?: ScenarioPrinters;
-    detectors?: readonly ScenarioDetector[];
-    onError?(error: unknown): void;
-  } = {},
+  settings: Omit<
+    NonNullable<Parameters<typeof runProgram>[2]>,
+    "debugVariable" | "resolveDebug" | "explain"
+  > = {},
 ): Promise<void> {
   return runProgram(program, argv, {
-    ...options,
+    ...settings,
     debugVariable: debugEnvironmentVariable,
     resolveDebug: resolveConfiguredDebug,
     explain: explainStaleBarrel,

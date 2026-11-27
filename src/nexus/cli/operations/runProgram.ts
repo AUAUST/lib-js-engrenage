@@ -1,4 +1,5 @@
 import {
+  Command,
   CommanderError,
   type CommandUnknownOpts,
 } from "@commander-js/extra-typings";
@@ -10,6 +11,7 @@ import { hasOwn, keys } from "@auaust/toolkit/object";
 import { verbosityFlags } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { dropClosedOutput } from "#nexus/cli/operations/dropClosedOutput";
+import { executeProgram } from "#nexus/cli/operations/executeProgram";
 import { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
 import { listVerbosityFlags } from "#nexus/cli/operations/listVerbosityFlags";
 import { outputSettling } from "#nexus/cli/operations/outputSettling";
@@ -34,6 +36,10 @@ import {
   type ScenarioDetector,
   type ScenarioPrinters,
 } from "#nexus/scenarios/index";
+import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
+import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
+import type { RunSettings } from "#nexus/cli/types/RunSettings";
+import type { VerbosityFlag } from "#nexus/cli/types/VerbosityFlag";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
@@ -115,22 +121,151 @@ async function isDebugResolved(
   }
 }
 
-/**
- * Runs a program within its run context: aborts it on SIGHUP, SIGINT and
- * SIGTERM, hands the printer of its output scenario every entry the verbosity
- * its flags set shows, else `debug` when `debugVariable` is on, else `default`,
- * each completion line with the run's total time, and on failure prints its
- * error, led by what `explain` returns for it, with its stack at `debug`, which
- * `resolveDebug` also sets when no flag does. The scenario is the one `--output`
- * names, else the first of `scenarios` one of `detectors` names; its printer is
- * the one the running command binds to it, else the one `scenarios` declares,
- * loaded once every invocation of the command parses, before its action loads,
- * and holding the entries reported until then; an `--output` naming none of
- * `scenarios` fails as a usage error.
- */
-export async function runProgram(
+function listenForAborts(signal: AbortSignal | undefined): {
+  signal: AbortSignal;
+  stopListening(): void;
+} {
+  const controller = new AbortController();
+
+  function stopListening() {
+    for (const aborting of abortingSignals) {
+      process.off(aborting, abort);
+    }
+  }
+
+  function abort(received: NodeJS.Signals) {
+    controller.abort();
+    stopListening();
+
+    process.kill(process.pid, received);
+  }
+
+  for (const aborting of abortingSignals) {
+    process.once(aborting, abort);
+  }
+
+  return {
+    signal: signal === undefined
+      ? controller.signal
+      : AbortSignal.any([controller.signal, signal]),
+    stopListening,
+  };
+}
+
+// @debt `resolveDebug` raises the level only once the run fails, so a configured debug never shows the debug reports printed before
+/** @effectful */
+function reportFailure(
+  error: unknown,
+  {
+    reporter,
+    debug,
+    debugVariable,
+    explain,
+  }: {
+    reporter: Reporter;
+    debug: boolean;
+    debugVariable: string | undefined;
+    explain: ((error: unknown) => string | undefined) | undefined;
+  },
+): void {
+  process.exitCode = 1;
+
+  if (error instanceof CommandUsageError) {
+    return void reporter.error(error.message);
+  }
+
+  reportCommandError(error, {
+    reporter,
+    debug,
+    debugVariable,
+    explanation: explain?.(error),
+  });
+}
+
+async function runDeclaredProgram(
+  program: ProgramDeclaration,
+  argv: readonly string[] | undefined,
+  { signal, onError, debugVariable, resolveDebug, explain }: RunSettings,
+): Promise<void> {
+  const { scenarios, detectors } = program;
+
+  let flag: VerbosityFlag | undefined;
+
+  let unflagged: Verbosity = (
+    debugVariable !== undefined && isDebugEnvironment(debugVariable)
+  )
+    ? "debug"
+    : "default";
+
+  function getVerbosity(): Verbosity {
+    return flag === undefined ? unflagged : verbosityFlags[flag];
+  }
+
+  const output = createPendingPrinter();
+
+  async function settle(
+    runOptions: RunOptionValues | undefined,
+    bindings: ScenarioPrinters | undefined,
+  ): Promise<void> {
+    flag = keys(verbosityFlags)
+      .filter((name) => {
+        return runOptions?.[name] === true;
+      })
+      .at(-1);
+
+    const printer = await loadScenarioPrinter(
+      runOptions?.output ?? detectScenario(detectors, scenarios),
+      { scenarios, bindings },
+    );
+
+    output.settle(timeCompletions(filterReports(printer, getVerbosity)));
+  }
+
+  const runReporter = createReporter(output);
+
+  const { signal: runSignal, stopListening } = listenForAborts(signal);
+
+  try {
+    await runContext.run({ signal: runSignal, reporter: runReporter }, () => {
+      return executeProgram(program, (argv ?? process.argv).slice(2), settle);
+    });
+  } catch (error) {
+    if (runSignal.aborted) {
+      return;
+    }
+
+    if (!output.settled) {
+      await settle(undefined, undefined);
+    }
+
+    if (onError !== undefined) {
+      return void onError(error);
+    }
+
+    if (
+      flag === undefined &&
+      unflagged !== "debug" &&
+      !(error instanceof CommandUsageError) &&
+      (await isDebugResolved(resolveDebug, runReporter))
+    ) {
+      unflagged = "debug";
+    }
+
+    reportFailure(error, {
+      reporter: runReporter,
+      debug: getVerbosity() === "debug",
+      debugVariable,
+      explain,
+    });
+  } finally {
+    stopListening();
+  }
+}
+
+// @debt the Commander path stays until every program runs on the engine
+async function runCommanderProgram(
   program: CommandUnknownOpts,
-  argv?: readonly string[],
+  argv: readonly string[] | undefined,
   {
     signal,
     scenarios = nexusScenarios,
@@ -139,19 +274,11 @@ export async function runProgram(
     debugVariable,
     resolveDebug,
     explain,
-  }: {
-    signal?: AbortSignal;
+  }: RunSettings & {
     scenarios?: ScenarioPrinters;
     detectors?: readonly ScenarioDetector[];
-    onError?(error: unknown): void;
-    debugVariable?: string;
-    resolveDebug?(reporter: Reporter): Promise<boolean>;
-    explain?(error: unknown): string | undefined;
-  } = {},
+  },
 ): Promise<void> {
-  dropClosedOutput(process.stdout);
-  dropClosedOutput(process.stderr);
-
   let running: CommandUnknownOpts | null = program;
 
   let unflagged: Verbosity = (
@@ -215,28 +342,7 @@ export async function runProgram(
     timeCompletions(filterReports(output, getVerbosity)),
   );
 
-  const controller = new AbortController();
-
-  const runSignal = signal === undefined
-    ? controller.signal
-    : AbortSignal.any([controller.signal, signal]);
-
-  function stopListening() {
-    for (const aborting of abortingSignals) {
-      process.off(aborting, abort);
-    }
-  }
-
-  function abort(received: NodeJS.Signals) {
-    controller.abort();
-    stopListening();
-
-    process.kill(process.pid, received);
-  }
-
-  for (const aborting of abortingSignals) {
-    process.once(aborting, abort);
-  }
+  const { signal: runSignal, stopListening } = listenForAborts(signal);
 
   if (onError !== undefined) {
     overrideExits(program);
@@ -270,7 +376,6 @@ export async function runProgram(
       return;
     }
 
-    // @debt `resolveDebug` raises the level only once the run fails, so a configured debug never shows the debug reports printed before
     if (
       getFlag() === undefined &&
       unflagged !== "debug" &&
@@ -279,17 +384,49 @@ export async function runProgram(
       unflagged = "debug";
     }
 
-    reportCommandError(error, {
+    reportFailure(error, {
       reporter: runReporter,
       debug: getVerbosity() === "debug",
       debugVariable,
-      explanation: explain?.(error),
+      explain,
     });
-
-    process.exitCode = 1;
   } finally {
     stopListening();
   }
 
   await settleUnbound();
+}
+
+/**
+ * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
+ * hands the printer of its output scenario every entry the verbosity its run
+ * options set shows, else `debug` when `debugVariable` is on, else `default`,
+ * each completion line with the run's total time, and on failure sets the exit
+ * code to 1 and prints its error, a usage error alone, any other led by what
+ * `explain` returns for it, with its stack at `debug`, which `resolveDebug` also
+ * sets when no flag does; the failure handler, when given, receives the error
+ * instead of any of this. A declared program runs on nexus's engine, printing
+ * for the scenario `--output` names, else the first of its scenarios one of its
+ * detectors names, through the printer the resolved command binds to it, else
+ * the one the program declares, loaded once the run resolves, before any action
+ * loads, and holding the entries reported until then. A Commander program prints
+ * for `scenarios` and `detectors` alike, reporting an `--output` naming none of
+ * `scenarios` as a usage error, and lets Commander print its usage errors and
+ * exit unless the failure handler is given.
+ */
+// @debt `scenarios` and `detectors` apply only to a Commander program, a declared one carrying its own, until every program runs on the engine
+export async function runProgram(
+  program: ProgramDeclaration | CommandUnknownOpts,
+  argv?: readonly string[],
+  settings: RunSettings & {
+    scenarios?: ScenarioPrinters;
+    detectors?: readonly ScenarioDetector[];
+  } = {},
+): Promise<void> {
+  dropClosedOutput(process.stdout);
+  dropClosedOutput(process.stderr);
+
+  await (program instanceof Command
+    ? runCommanderProgram(program, argv, settings)
+    : runDeclaredProgram(program, argv, settings));
 }

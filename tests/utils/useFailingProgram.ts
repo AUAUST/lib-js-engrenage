@@ -1,9 +1,6 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
-import {
-  command,
-  createProgram as createDefinedProgram,
-} from "#nexus/cli/index";
+import { command, program } from "#nexus/cli/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -38,9 +35,10 @@ export function useFailingProgram() {
   }
 
   function createProgram() {
-    return createDefinedProgram(
-      command({ name: "program", subcommands: [failing] }),
-    );
+    return program({
+      root: command({ name: "program", subcommands: [failing] }),
+      scenarios: reporter.scenarios,
+    });
   }
 
   function printed() {

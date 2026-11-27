@@ -178,7 +178,13 @@ function createParameters(
 function rejectCommand(
   declaration: CommandDeclaration,
   name: string,
-  isRoot: boolean,
+  {
+    isRoot,
+    group,
+  }: {
+    isRoot: boolean;
+    group?: readonly string[];
+  },
 ): CommandUsageError {
   const known = declaration.kind === "parsing"
     ? declaration.subcommands.flatMap((subcommand) => {
@@ -187,7 +193,7 @@ function rejectCommand(
     : [];
 
   return new CommandUsageError(
-    `unknown command '${name}'${suggestName(name, isRoot ? [...known, helpCommandName] : known)}`,
+    `unknown command '${name}'${group === undefined ? "" : ` in '${group.join(" ")}'`}${suggestName(name, isRoot ? [...known, helpCommandName] : known)}`,
   );
 }
 
@@ -208,7 +214,10 @@ function findHelpTarget(
 
     if (subcommand === undefined) {
       return void errors.push(
-        rejectCommand(declaration, name, path.length === 0),
+        rejectCommand(declaration, name, {
+          isRoot: path.length === 0,
+          ...(path.length > 0 && { group: [root.name, ...path] }),
+        }),
       );
     }
 
@@ -229,7 +238,9 @@ function findHelpTarget(
  * A root group reserves the `help` command, whose arguments name the path of the
  * command whose help it requests. Resolves to the invocation, a request for help
  * or the version, or every usage error found, worded as Commander words them, an
- * unknown command or option suggesting the closest known name.
+ * unknown command or option suggesting the closest known name, and one below the
+ * root of a help path naming the group it was looked up in; a path stopping at
+ * a group without an action that names no command fails with that group's help.
  */
 export async function resolveInvocation(
   { root, scenarios }: ProgramDeclaration,
@@ -244,6 +255,7 @@ export async function resolveInvocation(
     invocation:
       | Omit<Extract<Resolution, { kind: "invocation" }>, "kind" | "runOptions">
       | undefined,
+    help?: Extract<Resolution, { kind: "failure" }>["help"],
   ): Resolution {
     checkConflicts(runOptions, runValues, errors);
 
@@ -254,6 +266,7 @@ export async function resolveInvocation(
         kind: "failure",
         path: freeze([...names]),
         errors: freeze(errors),
+        ...(help !== undefined && { help }),
         runOptions: values,
       };
     }
@@ -348,13 +361,19 @@ export async function resolveInvocation(
     if (declaration.action === undefined) {
       const [name] = level.positionals;
 
-      if (!level.blocked) {
-        errors.push(
-          name === undefined
-            ? new CommandUsageError("no command given")
-            : rejectCommand(declaration, name, names.length === 0),
-        );
+      if (level.blocked) {
+        return finish(undefined);
       }
+
+      if (name === undefined) {
+        errors.push(new CommandUsageError("no command given"));
+
+        return finish(undefined, { path, declaration });
+      }
+
+      errors.push(
+        rejectCommand(declaration, name, { isRoot: names.length === 0 }),
+      );
 
       return finish(undefined);
     }

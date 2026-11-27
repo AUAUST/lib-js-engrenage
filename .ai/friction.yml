@@ -1375,3 +1375,8 @@ entries:
     tried: returning undefined from a map callback
     stopped: autofix rewrote it to bare return, which array-callback-return rejects; moved the callback into a named function
     created: 2026-11-27T15:45:30Z
+  - id: FR-106aef
+    subject: thrown-errors lint flags onError mention
+    tried: documenting runProgram onError in JSDoc
+    stopped: rule matches any "Error" substring; reworded as failure handler
+    created: 2026-11-27T16:22:10Z
