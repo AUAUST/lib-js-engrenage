@@ -5,12 +5,6 @@ entries:
     why: user batches instruction changes at plan end
     owner: "#1003"
     created: 2026-11-27T13:17:32Z
-  - id: PD-3a573a
-    subject: Commander path removal sites
-    what: remove runCommanderProgram, instanceof dispatch, scenarios/detectors settings in runProgram and runEngrenageProgram, readOutputFlag, overrideExits, listVerbosityFlags, rejectVerbosityConflict
-    why: dual path kept until every program is on the engine (#1020)
-    owner: "#1024"
-    created: 2026-11-27T16:23:42Z
   - id: PD-8cc38d
     subject: chain generalization sites
     what: "replace checkChain in src/nexus/cli/operations/resolveRun.ts and the chain kind in RunResolution; keep agreeRunOptions and invocation N: naming"

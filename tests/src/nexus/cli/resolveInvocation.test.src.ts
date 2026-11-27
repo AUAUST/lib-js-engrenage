@@ -9,7 +9,6 @@ import {
   resolveInvocation,
   type CommandDeclaration,
 } from "#nexus/cli/index";
-import { runDefinition } from "#tests/utils/runDefinition";
 
 import engrenage from "#bin/engrenage/index";
 import codegen from "#scripts/codegen/index";
@@ -155,40 +154,5 @@ describe("resolveInvocation", () => {
       path: ["rules"],
       parameters: [{ check: false }],
     });
-  });
-
-  test("binds an option to the command it follows on Commander", async () => {
-    const action = vi.fn<(values: { check: boolean }) => void>();
-
-    const group = command({
-      name: "group",
-      options: [
-        option({
-          name: "check",
-          type: "boolean",
-          default: false,
-        }),
-      ],
-      subcommands: [
-        command({
-          name: "leaf",
-          options: [
-            option({
-              name: "check",
-              type: "boolean",
-              default: false,
-            }),
-          ],
-          action: () => Promise.resolve(action),
-        }),
-      ],
-      action: () => {
-        return Promise.resolve(vi.fn<(values: { check: boolean }) => void>());
-      },
-    });
-
-    await runDefinition(group, "leaf", "--check");
-
-    expect(action).toHaveBeenCalledWith({ check: true });
   });
 });

@@ -4,7 +4,6 @@ export {
   collectListArgument,
   command,
   CommandUsageError,
-  createProgram,
   detectPrinter,
   findRunContext,
   forwardingCommand,

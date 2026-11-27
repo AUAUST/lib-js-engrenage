@@ -25,7 +25,6 @@ const allowedPrefixes = [
   "#workflows/cli/",
   "#nexus/cli/",
   "#tools/nexus/",
-  "@commander-js/extra-typings",
 ];
 
 const runtimeImport = /^(?:import|export)\s+(?!type\b)[^;]*?\bfrom\s+"(?<specifier>[^"]+)"|\bimport\("(?<loaded>[^"]+)"\)/gmv;
@@ -104,7 +103,7 @@ function listOutsideImports(
   return { visited, outside: [...outside] };
 }
 
-test("the hook's module graph loads only its domain, the cli domains, Commander and Node builtins", () => {
+test("the hook's module graph loads only its domain, the cli domains and Node builtins", () => {
   const { visited, outside } = listOutsideImports(
     [
       fileURLToPath(

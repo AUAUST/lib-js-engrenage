@@ -1,7 +1,7 @@
 import { assign } from "@auaust/toolkit/object";
 
 import { resolve } from "#foundation/filesystem/index";
-// @debt reads the run context through the whole `nexus/cli` surface, loading Commander into every config load outside a run
+// @debt reads the run context through the whole `nexus/cli` surface, loading the command engine into every config load outside a run
 import { findRunContext } from "#nexus/cli/index";
 import { createConsoleReporter, type Reporter } from "#nexus/reports/index";
 import { createProjectConfig } from "#project/config/operations/createProjectConfig";

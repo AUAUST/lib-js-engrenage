@@ -94,7 +94,6 @@ cli:
     - BL-62e56b
     - BL-39182b
     - BL-97905e
-    - BL-9c8fb3
     - BL-dc8e50
     - BL-e63aac
     - BL-ab1893
@@ -401,6 +400,7 @@ tests:
     - BL-a279d0
     - BL-0f2376
     - BL-c2ca61
+    - BL-4aef2d
 toolkit:
   purpose: Upstream @auaust/toolkit decisions that may affect engrenage.
   entries:

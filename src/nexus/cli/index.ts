@@ -1,6 +1,5 @@
 export { argument } from "#nexus/cli/operations/argument";
 export { command } from "#nexus/cli/operations/command";
-export { createProgram } from "#nexus/cli/operations/createProgram";
 export { describeHelp } from "#nexus/cli/operations/describeHelp";
 export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
@@ -27,13 +26,11 @@ export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
 export { splitInvocations } from "#nexus/cli/utils/splitInvocations";
 export { suggestName } from "#nexus/cli/utils/suggestName";
 export { toDebugVariable } from "#nexus/cli/utils/toDebugVariable";
-export { toUsageError } from "#nexus/cli/utils/toUsageError";
 // @end
 
 // @barrel types
 export type * from "#nexus/cli/types/ArgumentDeclaration";
 export type * from "#nexus/cli/types/CommandDeclaration";
-export type * from "#nexus/cli/types/CommandDefinition";
 export type * from "#nexus/cli/types/CommandInvocation";
 export type * from "#nexus/cli/types/CommandPath";
 export type * from "#nexus/cli/types/CommandTokens";

@@ -1,6 +1,5 @@
 purpose: Command definitions, registration and program runs.
 taps:
-  - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
   - {id: BL-39182b, at: 2026-11-26T17:04:02Z, note: "jscpd:new over the #945 range lists the metalbrain close/show, issue claim/publish/release and codegen editions/schemas actions for it"}
   - {id: BL-26fcd2, at: 2026-11-27T15:20:40Z, note: "after 0ce9d1a2f, codegen rules --check exits 0 with no diff on a clean tree; not checked against a stale output"}
 entries:
@@ -20,21 +19,11 @@ entries:
     want: a run-scoped config loader in the run context.
     created: 2026-11-22T00:00:00Z
   - id: BL-97905e
-    title: The run context and abort signal stay optional
+    title: The abort signal stops a run only where its action checks it
     sites:
-      - src/nexus/cli/operations/createCommandDefinition.ts:105
-      - src/nexus/cli/operations/createCommandDefinition.ts:106
-    why: tests run commands outside `runProgram`; past the check, prompts, config loads and writes ignore the abort signal.
-    want: the context required through `getRunContext`; the signal honoured by prompts, loads and writes.
-    created: 2026-11-22T00:00:00Z
-  - id: BL-9c8fb3
-    title: Program wiring leans on Commander internals and copies
-    sites:
-      - src/nexus/cli/operations/createProgram.ts:8
-      - src/nexus/cli/utils/toUsageError.ts:5
-    why: "the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text"
-    want: extensions applied at the root; messages without the prefix
-    done: "Tracked by #1015 (own engine)"
+      - src/nexus/cli/operations/executeProgram.ts:45
+    why: past the check before an action loads, prompts, config loads and writes ignore the abort signal
+    want: the signal honoured by prompts, loads and writes
     created: 2026-11-22T00:00:00Z
   - id: BL-dc8e50
     title: Tool runs and linked runs resolve against the wrong base

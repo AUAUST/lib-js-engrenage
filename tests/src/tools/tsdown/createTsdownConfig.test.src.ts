@@ -247,7 +247,7 @@ describe("createTsdownConfig", () => {
       manifest: {
         inlinedDependencies: {
           "@auaust/toolkit": "0.5.1",
-          "commander": "15.0.0",
+          "@octokit/core": "7.0.8",
         },
       },
     });
@@ -260,7 +260,7 @@ describe("createTsdownConfig", () => {
       }),
     ).toMatchObject({
       deps: {
-        onlyBundle: ["@auaust/toolkit", "commander"],
+        onlyBundle: ["@auaust/toolkit", "@octokit/core"],
       },
     });
 

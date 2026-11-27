@@ -1,4 +1,8 @@
-import { runProgram } from "#nexus/cli/index";
+import {
+  runProgram,
+  type ProgramDeclaration,
+  type RunSettings,
+} from "#nexus/cli/index";
 import { explainStaleBarrel } from "#tools/nexus/operations/explainStaleBarrel";
 import type { Reporter } from "#nexus/reports/index";
 
@@ -17,12 +21,9 @@ async function resolveConfiguredDebug(reporter: Reporter): Promise<boolean> {
  * barrel leading its error.
  */
 export function runEngrenageProgram(
-  program: Parameters<typeof runProgram>[0],
+  program: ProgramDeclaration,
   argv?: readonly string[],
-  settings: Omit<
-    NonNullable<Parameters<typeof runProgram>[2]>,
-    "resolveDebug" | "explain"
-  > = {},
+  settings: Omit<RunSettings, "resolveDebug" | "explain"> = {},
 ): Promise<void> {
   return runProgram(program, argv, {
     ...settings,
