@@ -1,39 +1,34 @@
-import { Argument } from "@commander-js/extra-typings";
+import { argument, command, option } from "#nexus/cli/index";
 
-import { map } from "@auaust/toolkit/iterable";
-import { record } from "@auaust/toolkit/object";
-
-import { defineLazyCommand } from "#nexus/cli/index";
-
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
-      )
-      .addArgument(
-        new Argument(
-          "[targets...]",
-          "targets to sync, plus every fill target (all by default)",
-        ),
-      )
-      .option("--check", "report outdated files without writing them", false);
-  },
-  extend() {
-    return import("#bin/engrenage/actions/syncOptions");
-  },
+export default command({
+  name: "sync",
+  description: "Update the existing project files that engrenage derives from the config. `engrenage init` creates missing ones.",
+  arguments: [
+    argument({
+      name: "targets",
+      description: "targets to sync, plus every fill target (all by default)",
+      optional: true,
+      variadic: true,
+      choices() {
+        return import("#bin/engrenage/actions/syncTargets");
+      },
+    }),
+  ],
+  options: [
+    option({
+      name: "check",
+      type: "boolean",
+      description: "report outdated files without writing them",
+      default: false,
+    }),
+    () => {
+      return import("#bin/engrenage/actions/syncOptions");
+    },
+  ],
   action() {
     return import("#bin/engrenage/actions/sync");
   },
-  parse(targets, { check }, command) {
-    const values = record(
-      map(command.options, (option) => {
-        const name = option.attributeName();
-
-        return [name, command.getOptionValue(name)];
-      }),
-    );
-
-    return [targets, { check, values }];
+  parse(targets, { check }, { options }) {
+    return [targets, { check, values: options }];
   },
 });

@@ -1,12 +1,9 @@
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import upgrade from "#bin/engrenage/pnpm/upgrade";
 
-export default defineGroup({
-  configure(command) {
-    return command.description("Manage the pnpm version of the project.");
-  },
-  commands: {
-    upgrade,
-  },
+export default command({
+  name: "pnpm",
+  description: "Manage the pnpm version of the project.",
+  subcommands: [upgrade],
 });

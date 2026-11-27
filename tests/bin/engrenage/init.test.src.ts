@@ -11,7 +11,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { scratchpadPlaceholder } from "#metalbrain/backlog/constants";
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -57,8 +57,9 @@ function createProject(files: Record<string, string>) {
   return project;
 }
 
-const program = defineGroup({
-  commands: { init, sync },
+const program = command({
+  name: "program",
+  subcommands: [init, sync],
 });
 
 let messages: Awaited<

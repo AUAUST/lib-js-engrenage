@@ -1,6 +1,6 @@
 import type { Command, CommandUnknownOpts } from "@commander-js/extra-typings";
 
-import { createCommandDefinition } from "#nexus/cli/operations/createCommandDefinition";
+import { createConfiguredDefinition } from "#nexus/cli/operations/createConfiguredDefinition";
 import type { Loadable } from "#foundation/modules/index";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 import type { CommandParameters } from "#nexus/cli/types/CommandParameters";
@@ -64,7 +64,7 @@ export function defineLazyCommand({
   printers?: ScenarioPrinters;
   parse?(...parameters: unknown[]): readonly unknown[];
 }): CommandDefinition {
-  return createCommandDefinition({
+  return createConfiguredDefinition({
     configure,
     load: action,
     extend,

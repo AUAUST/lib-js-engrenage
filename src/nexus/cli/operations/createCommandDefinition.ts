@@ -1,13 +1,8 @@
-import {
-  Command,
-  CommanderError,
-  type CommandUnknownOpts,
-} from "@commander-js/extra-typings";
+import { Command, CommanderError } from "@commander-js/extra-typings";
 
-import { isArray, isFunction } from "@auaust/toolkit";
+import { isArray } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
-import { loadLazy } from "#foundation/modules/index";
 import {
   commandExtension,
   commandRegistration,
@@ -15,7 +10,7 @@ import {
 } from "#nexus/cli/constants";
 import { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 import { addRunOptions } from "#nexus/cli/operations/addRunOptions";
-import { configureCommand } from "#nexus/cli/operations/configureCommand";
+import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
 import { outputSettling } from "#nexus/cli/operations/outputSettling";
 import { rejectVerbosityConflict } from "#nexus/cli/operations/rejectVerbosityConflict";
 import { runContext } from "#nexus/cli/operations/runContext";
@@ -24,52 +19,13 @@ import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 import type { InvocationFailure } from "#nexus/cli/types/InvocationFailure";
 import type { ScenarioPrinters } from "#nexus/scenarios/index";
 
-type ParseParameters = (...parameters: unknown[]) => readonly unknown[];
-
-async function loadFunction(
-  load: () => unknown,
-  name: string,
-  kind: "action" | "extension",
-): Promise<(...parameters: unknown[]) => unknown> {
-  const loaded = await loadLazy<unknown>({ load });
-
-  if (!isFunction(loaded)) {
-    throw new TypeError(
-      `The ${kind} of the ${name} command loads neither a function nor a module whose default or only export is one`,
-    );
-  }
-
-  return loaded;
-}
+type ParseParameters = (
+  parameters: readonly unknown[],
+  command: Command,
+) => readonly unknown[];
 
 function countDeclarations(command: Command): number {
   return command.registeredArguments.length + command.options.length;
-}
-
-function createExtension(
-  extend: () => Promise<unknown>,
-): (command: Command) => Promise<void> {
-  const extensions = new WeakMap<Command, Promise<void>>();
-
-  return (command) => {
-    let extension = extensions.get(command);
-
-    if (extension === undefined) {
-      extension = (async () => {
-        const extendCommand = await loadFunction(
-          extend,
-          command.name(),
-          "extension",
-        );
-
-        await extendCommand(command);
-      })();
-
-      extensions.set(command, extension);
-    }
-
-    return extension;
-  };
 }
 
 function splitInvocations(args: readonly string[]): string[][] {
@@ -134,19 +90,17 @@ function rejectEmptyVariadics(command: Command): void {
 function mountParameters(
   command: Command,
   {
-    configure,
+    declare,
     parse,
   }: {
-    configure: ((command: Command) => CommandUnknownOpts) | undefined;
+    declare: ((command: Command) => void) | undefined;
     parse: ParseParameters | undefined;
   },
   receive: (parameters: readonly unknown[]) => Promise<void> | void,
 ): void {
   const declared = countDeclarations(command);
 
-  if (configure !== undefined) {
-    configureCommand(command, configure);
-  }
+  declare?.(command);
 
   const bare = countDeclarations(command) === declared;
 
@@ -154,7 +108,7 @@ function mountParameters(
     rejectEmptyVariadics(command);
 
     if (parse !== undefined) {
-      return receive(parse(...parameters));
+      return receive(parse(parameters, command));
     }
 
     return receive(bare ? [] : parameters);
@@ -163,22 +117,20 @@ function mountParameters(
 
 /** @pure */
 export function createCommandDefinition({
-  configure,
+  declare,
   load,
-  extend,
+  extension,
   parse,
   printers,
   chain = false,
 }: {
-  configure: ((command: Command) => CommandUnknownOpts) | undefined;
+  declare: ((command: Command) => void) | undefined;
   load(): unknown;
-  extend: (() => Promise<unknown>) | undefined;
+  extension: ((command: Command) => Promise<void>) | undefined;
   parse: ParseParameters | undefined;
   printers: ScenarioPrinters | undefined;
   chain?: boolean;
 }): CommandDefinition {
-  const extension = extend === undefined ? undefined : createExtension(extend);
-
   /** @effectful */
   async function parseInvocation(
     command: Command,
@@ -188,7 +140,7 @@ export function createCommandDefinition({
 
     let parsed: readonly unknown[] | undefined;
 
-    mountParameters(twin, { configure, parse }, (parameters) => {
+    mountParameters(twin, { declare, parse }, (parameters) => {
       parsed = parameters;
     });
 
@@ -284,14 +236,18 @@ export function createCommandDefinition({
         );
       }
 
-      mountParameters(command, { configure, parse }, async (parameters) => {
+      mountParameters(command, { declare, parse }, async (parameters) => {
         const invocations = chain
           ? await parseChain(command, parameters, rest)
           : undefined;
 
         await outputSettling.getStore()?.(printers);
 
-        const action = await loadFunction(load, command.name(), "action");
+        const action = await loadCommandFunction(
+          load,
+          command.name(),
+          "action",
+        );
 
         // @debt Tests run commands outside runProgram, so the run context stays optional here instead of required through getRunContext.
         // @debt Past this check, an aborted run stops only where its action checks the signal; prompts, config loads and writes ignore it.

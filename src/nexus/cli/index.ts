@@ -1,12 +1,15 @@
+export { argument } from "#nexus/cli/operations/argument";
+export { command } from "#nexus/cli/operations/command";
 export { createProgram } from "#nexus/cli/operations/createProgram";
 export { defineChainedCommand } from "#nexus/cli/operations/defineChainedCommand";
 export { defineCommand } from "#nexus/cli/operations/defineCommand";
-export { defineForwardingCommand } from "#nexus/cli/operations/defineForwardingCommand";
 export { defineGroup } from "#nexus/cli/operations/defineGroup";
 export { defineLazyCommand } from "#nexus/cli/operations/defineLazyCommand";
 export { findRunContext } from "#nexus/cli/operations/findRunContext";
+export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
+export { option } from "#nexus/cli/operations/option";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 export { runInvocations } from "#nexus/cli/operations/runInvocations";
 export { runProgram } from "#nexus/cli/operations/runProgram";
@@ -23,11 +26,21 @@ export { toUsageError } from "#nexus/cli/utils/toUsageError";
 // @end
 
 // @barrel types
+export type * from "#nexus/cli/types/ArgumentDeclaration";
+export type * from "#nexus/cli/types/CommandDeclaration";
 export type * from "#nexus/cli/types/CommandDefinition";
+export type * from "#nexus/cli/types/CommandInvocation";
 export type * from "#nexus/cli/types/CommandParameters";
+export type * from "#nexus/cli/types/CommandPath";
+export type * from "#nexus/cli/types/DeclaredParameters";
 export type * from "#nexus/cli/types/DefaultActionParameters";
 export type * from "#nexus/cli/types/ExtendCommand";
+export type * from "#nexus/cli/types/ForwardingCommandDeclaration";
+export type * from "#nexus/cli/types/GroupEntry";
 export type * from "#nexus/cli/types/InvocationFailure";
+export type * from "#nexus/cli/types/LayerLoader";
+export type * from "#nexus/cli/types/OptionDeclaration";
+export type * from "#nexus/cli/types/ParsingCommandDeclaration";
 export type * from "#nexus/cli/types/RunContext";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end

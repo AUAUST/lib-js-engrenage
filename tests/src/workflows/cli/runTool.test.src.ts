@@ -41,7 +41,7 @@ test("loads the config with the run's reporter", async () => {
   vi.mocked(resolveBinary).mockResolvedValue(project.resolve("tool.mjs"));
 
   const reporter = await runDefinition(
-    defineToolCommand({ packageName: "eslint" }),
+    defineToolCommand({ name: "eslint", packageName: "eslint" }),
   );
 
   const [loaded] = vi.mocked(loadValidatedConfig).mock.results;

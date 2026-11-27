@@ -1,5 +1,3 @@
-import { Option } from "@commander-js/extra-typings";
-
 import { flatMap, map } from "@auaust/toolkit/array";
 import { entries } from "@auaust/toolkit/object";
 
@@ -24,7 +22,8 @@ export async function listSyncOptions(config: LoadedConfig): Promise<{
         return {
           target: name,
           flag,
-          option: new Option(`--${name}-${flag}`, description),
+          name: `${name}-${flag}`,
+          description,
         };
       });
     },

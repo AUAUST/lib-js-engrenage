@@ -1,7 +1,9 @@
-import type { Option } from "@commander-js/extra-typings";
-
 export interface SyncOption {
   readonly target: string;
   readonly flag: string;
-  readonly option: Option;
+  /**
+   * The option's name, its long flag: `<target>-<flag>`.
+   */
+  readonly name: string;
+  readonly description: string;
 }

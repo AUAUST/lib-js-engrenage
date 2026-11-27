@@ -10,12 +10,8 @@ export function readSyncFlags(
 ): SyncTargetFlags {
   const flags: Record<string, Record<string, boolean>> = {};
 
-  for (const { target, flag, option } of options) {
-    const value = validate(
-      optional(boolean()),
-      values[option.attributeName()],
-      `--${option.name()}`,
-    );
+  for (const { target, flag, name } of options) {
+    const value = validate(optional(boolean()), values[name], `--${name}`);
 
     if (value !== undefined) {
       flags[target] = {

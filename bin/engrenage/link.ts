@@ -1,23 +1,34 @@
-import { defineLazyCommand } from "#nexus/cli/index";
+import { argument, command, option } from "#nexus/cli/index";
 
-export default defineLazyCommand({
-  configure(command) {
-    return command
-      .description(
-        "Link a registered repository's installed package to its local checkout without changing tracked files, or list the links with their state.",
-      )
-      .argument("[repository]", "registered short name of the repository")
-      .argument("[directory]", "the repository's local checkout")
-      .option(
-        "--remove <repository>",
-        "restore the installed package of a linked repository",
-      )
-      .option(
-        "--restore",
-        "repoint every recorded link at its checkout, after an install",
-        false,
-      );
-  },
+export default command({
+  name: "link",
+  description: "Link a registered repository's installed package to its local checkout without changing tracked files, or list the links with their state.",
+  arguments: [
+    argument({
+      name: "repository",
+      description: "registered short name of the repository",
+      optional: true,
+    }),
+    argument({
+      name: "directory",
+      description: "the repository's local checkout",
+      optional: true,
+    }),
+  ],
+  options: [
+    option({
+      name: "remove",
+      type: "string",
+      placeholder: "repository",
+      description: "restore the installed package of a linked repository",
+    }),
+    option({
+      name: "restore",
+      type: "boolean",
+      description: "repoint every recorded link at its checkout, after an install",
+      default: false,
+    }),
+  ],
   action() {
     return import("#bin/engrenage/actions/link");
   },

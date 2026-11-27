@@ -27,6 +27,7 @@ taps:
   - {id: FR-169e5d, at: 2026-11-27T04:44:14Z, note: pnpm exec eslint crashes on typescriptOptionsSchema}
   - {id: FR-20c216, at: 2026-11-27T11:46:38Z, note: zsh `=` word in echo separator}
   - {id: FR-990e2d, at: 2026-11-27T13:28:18Z, note: engrenage sync needs filled barrels}
+  - {id: FR-59f2d0, at: 2026-11-27T14:08:57Z, note: countDeclarations is not defined in every hook while createCommandDefinition.ts was mid-edit}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1348,3 +1349,8 @@ entries:
     tried: "backlog show/search during #1006 edits"
     stopped: runProgram imports unexported detectScenario; read .ai yml directly
     created: 2026-11-27T13:25:09Z
+  - id: FR-fd84f8
+    subject: grep is ugrep, rejects unescaped (
+    tried: grep -rE with "\.option(" patterns
+    stopped: mismatched ( error; switched to grep -rF
+    created: 2026-11-27T13:47:59Z

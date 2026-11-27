@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import type { Command } from "@commander-js/extra-typings";
 
 import {
+  command,
   createProgram as createDefinedProgram,
   defineCommand,
   defineGroup,
@@ -55,10 +56,7 @@ const { getReporter, createProgram, printed } = useFailingProgram();
 
 function createSyncProgram() {
   return createDefinedProgram(
-    "program",
-    defineGroup({
-      commands: { sync },
-    }),
+    command({ name: "program", subcommands: [sync] }),
   );
 }
 

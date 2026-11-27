@@ -12,6 +12,7 @@ function defineFakeCommand(
   message?: string,
 ) {
   return defineToolCommand({
+    name: "fake",
     // @ts-expect-error
     packageName: "fake-tool",
     binary: "fake",
@@ -163,7 +164,7 @@ describe("defineToolCommand", () => {
     const controller = new AbortController();
 
     const running = runProgram(
-      createProgram("program", commands.fake),
+      createProgram(commands.fake),
       ["node", "program"],
       { signal: controller.signal },
     );

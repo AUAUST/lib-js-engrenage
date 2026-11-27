@@ -1,4 +1,4 @@
-import { defineGroup } from "#nexus/cli/index";
+import { command } from "#nexus/cli/index";
 
 import eslint from "#bin/engrenage/eslint";
 import eslintFix from "#bin/engrenage/eslintFix";
@@ -23,55 +23,32 @@ import vitestDist from "#bin/engrenage/vitestDist";
 import vitestWatch from "#bin/engrenage/vitestWatch";
 import packageJson from "#package.json" with { type: "json" };
 
-export default defineGroup({
-  configure(command) {
-    return command
-      .description(packageJson.description)
-      .version(packageJson.version)
-      .enablePositionalOptions();
-  },
-  commands: {
-    "init": init,
-    "sync": sync,
-    "gate": gate,
-    "pnpm": pnpm,
-    "link": link,
-    "tsc": {
-      command: tsc,
-      aliases: ["typecheck"],
-    },
-    "tsc:dist": {
-      command: tscDist,
-      aliases: ["typecheck:dist"],
-    },
-    "vitest": vitest,
-    "vitest:watch": vitestWatch,
-    "vitest:coverage": vitestCoverage,
-    "vitest:dist": vitestDist,
-    "tsdown": tsdown,
-    "vite": vite,
-    "eslint": {
-      command: eslint,
-      aliases: ["lint"],
-    },
-    "eslint:fix": {
-      command: eslintFix,
-      aliases: ["lint:fix"],
-    },
-    "eslint:suppress": {
-      command: eslintSuppress,
-      aliases: ["lint:suppress"],
-    },
-    "jscpd": jscpd,
-    "jscpd:new": jscpdNew,
-    "prettier": {
-      command: prettier,
-      aliases: ["format"],
-    },
-    "prettier:check": prettierCheck,
-    "prettier:all": {
-      command: prettierAll,
-      aliases: ["format:all"],
-    },
-  },
+export default command({
+  name: "engrenage",
+  description: packageJson.description,
+  version: packageJson.version,
+  positionalOptions: true,
+  subcommands: [
+    init,
+    sync,
+    gate,
+    pnpm,
+    link,
+    tsc,
+    tscDist,
+    vitest,
+    vitestWatch,
+    vitestCoverage,
+    vitestDist,
+    tsdown,
+    vite,
+    eslint,
+    eslintFix,
+    eslintSuppress,
+    jscpd,
+    jscpdNew,
+    prettier,
+    prettierCheck,
+    prettierAll,
+  ],
 });

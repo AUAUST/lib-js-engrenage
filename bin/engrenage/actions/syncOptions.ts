@@ -1,27 +1,23 @@
-import type { CommandUnknownOpts } from "@commander-js/extra-typings";
-
-import { getRunContext } from "#nexus/cli/index";
+import {
+  getRunContext,
+  option,
+  type OptionDeclaration,
+} from "#nexus/cli/index";
 import { listSyncOptions } from "#project/sync/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 
-export default async function (command: CommandUnknownOpts): Promise<void> {
-  const argument = command.registeredArguments.find((candidate) => {
-    return candidate.name() === "targets";
-  });
-
-  if (argument === undefined) {
-    throw new Error(`The ${command.name()} command has no targets argument`);
-  }
-
-  const { targets, options } = await listSyncOptions(
+export default async function (): Promise<readonly OptionDeclaration[]> {
+  const { options } = await listSyncOptions(
     await loadValidatedConfig(undefined, {
       reporter: getRunContext().reporter,
     }),
   );
 
-  argument.choices(targets);
-
-  for (const { option } of options) {
-    command.addOption(option);
-  }
+  return options.map(({ name, description }) => {
+    return option({
+      name,
+      type: "boolean",
+      description,
+    });
+  });
 }

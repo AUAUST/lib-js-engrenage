@@ -1,30 +1,34 @@
-import type { Command } from "@commander-js/extra-typings";
-
 import { loadLazy, type Loadable } from "#foundation/modules/index";
 import {
-  defineForwardingCommand,
-  type CommandDefinition,
+  forwardingCommand,
+  type ForwardingCommandDeclaration,
 } from "#nexus/cli/index";
 import type { KnownPackageName } from "#types/KnownPackageName";
 import type { ToolAction } from "#workflows/cli/types/ToolAction";
 
 export function defineToolCommand({
+  name,
+  aliases = [],
+  description,
   packageName,
   binary = packageName,
   message,
   root = false,
-  configure,
   action,
 }: {
+  name: string;
+  aliases?: readonly string[];
+  description?: string;
   packageName: KnownPackageName;
   binary?: string;
   message?: string;
   root?: boolean;
-  configure?(command: Command): Command;
   action?(): Promise<Loadable<ToolAction>>;
-}): CommandDefinition {
-  return defineForwardingCommand({
-    ...(configure === undefined ? {} : { configure }),
+}): ForwardingCommandDeclaration {
+  return forwardingCommand({
+    name,
+    aliases,
+    ...(description !== undefined && { description }),
     async action() {
       const [loaded, { runTool }] = await Promise.all([
         action === undefined ? undefined : loadLazy({ load: action }),
