@@ -4,8 +4,6 @@ import type { Command } from "@commander-js/extra-typings";
 import {
   command,
   createProgram as createDefinedProgram,
-  defineCommand,
-  defineGroup,
 } from "#nexus/cli/index";
 import { loadConfig } from "#project/config/index";
 import { workflowTimeout } from "#tests/constants";
@@ -49,8 +47,9 @@ vi.mock(
   },
 );
 
-const succeeding = defineCommand({
-  action() {},
+const succeeding = command({
+  name: "succeeding",
+  action: () => Promise.resolve(() => {}),
 });
 
 const { getReporter, createProgram, printed } = useFailingProgram();
@@ -170,10 +169,7 @@ describe("runEngrenageProgram", () => {
 
     await runFreshProgram(
       createDefinedProgram(
-        "program",
-        defineGroup({
-          commands: { succeeding },
-        }),
+        command({ name: "program", subcommands: [succeeding] }),
       ),
       ["node", "program", "succeeding"],
       { scenarios: getReporter().scenarios },

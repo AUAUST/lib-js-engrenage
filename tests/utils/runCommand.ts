@@ -1,22 +1,13 @@
-import {
-  command,
-  defineGroup,
-  type CommandDeclaration,
-  type CommandDefinition,
-} from "#nexus/cli/index";
+import { command, type CommandDeclaration } from "#nexus/cli/index";
 import { runDefinition } from "#tests/utils/runDefinition";
 
 export function runCommand(
   name: string,
-  definition: CommandDefinition | CommandDeclaration,
+  declaration: CommandDeclaration,
   ...args: string[]
 ): ReturnType<typeof runDefinition> {
   return runDefinition(
-    "kind" in definition
-      ? command({ name: "program", subcommands: [definition] })
-      : defineGroup({
-          commands: { [name]: definition },
-        }),
+    command({ name: "program", subcommands: [declaration] }),
     name,
     ...args,
   );

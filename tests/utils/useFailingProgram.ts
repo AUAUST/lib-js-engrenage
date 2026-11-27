@@ -1,17 +1,19 @@
 import { afterEach, beforeEach, vi } from "vitest";
 
 import {
+  command,
   createProgram as createDefinedProgram,
-  defineCommand,
-  defineGroup,
 } from "#nexus/cli/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 
-const failing = defineCommand({
+const failing = command({
+  name: "failing",
   action() {
-    throw new Error("outer", { cause: new Error("inner") });
+    return Promise.resolve(() => {
+      throw new Error("outer", { cause: new Error("inner") });
+    });
   },
 });
 
@@ -37,10 +39,7 @@ export function useFailingProgram() {
 
   function createProgram() {
     return createDefinedProgram(
-      "program",
-      defineGroup({
-        commands: { failing },
-      }),
+      command({ name: "program", subcommands: [failing] }),
     );
   }
 

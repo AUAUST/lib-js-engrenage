@@ -1,9 +1,8 @@
 import { afterEach, describe, expect, onTestFinished, test, vi } from "vitest";
 
 import {
+  command,
   createProgram,
-  defineCommand,
-  defineGroup,
   getRunContext,
   runProgram,
 } from "#nexus/cli/index";
@@ -43,16 +42,19 @@ function createScenarios(recordAs: (scenario: string) => () => Printer) {
 
 function createReportingProgram(printers?: ScenarioPrinters) {
   return createProgram(
-    "program",
-    defineGroup({
-      commands: {
-        report: defineCommand({
+    command({
+      name: "program",
+      subcommands: [
+        command({
+          name: "report",
           action() {
-            getRunContext().reporter.log("result");
+            return Promise.resolve(() => {
+              getRunContext().reporter.log("result");
+            });
           },
           ...(printers !== undefined && { printers }),
         }),
-      },
+      ],
     }),
   );
 }
@@ -119,9 +121,11 @@ describe("runProgram scenarios", () => {
     const action = vi.fn();
 
     const program = createProgram(
-      "program",
-      defineGroup({
-        commands: { report: defineCommand({ action }) },
+      command({
+        name: "program",
+        subcommands: [
+          command({ name: "report", action: () => Promise.resolve(action) }),
+        ],
       }),
     );
 

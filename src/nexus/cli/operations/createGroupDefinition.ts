@@ -9,7 +9,6 @@ import {
 } from "#nexus/cli/constants";
 import { addRunOptions } from "#nexus/cli/operations/addRunOptions";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
-import type { GroupEntry } from "#nexus/cli/types/GroupEntry";
 
 type Extensions = ReadonlyMap<CommandUnknownOpts, () => Promise<void>>;
 
@@ -105,23 +104,28 @@ export function createGroupDefinition({
   commands,
   command: own,
 }: {
-  declare: ((command: Command) => void) | undefined;
-  commands: Readonly<Record<string, GroupEntry>>;
+  declare(command: Command): void;
+  commands: Readonly<
+    Record<
+      string,
+      {
+        readonly command: CommandDefinition;
+        readonly aliases: readonly string[];
+      }
+    >
+  >;
   command: CommandDefinition | undefined;
 }): CommandDefinition {
   return freeze({
     /** @effectful */
     [commandRegistration](command: Command) {
-      declare?.(command);
+      declare(command);
 
       const extensions = new Map<CommandUnknownOpts, () => Promise<void>>();
 
-      for (const [name, entry] of entries(commands)) {
-        const {
-          command: definition,
-          aliases = [],
-        } = "command" in entry ? entry : { command: entry };
-
+      for (const [name, { command: definition, aliases }] of entries(
+        commands,
+      )) {
         const subcommand = new Command(name).aliases(aliases);
 
         definition[commandRegistration](subcommand);

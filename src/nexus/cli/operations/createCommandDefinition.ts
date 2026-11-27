@@ -24,10 +24,6 @@ type ParseParameters = (
   command: Command,
 ) => readonly unknown[];
 
-function countDeclarations(command: Command): number {
-  return command.registeredArguments.length + command.options.length;
-}
-
 function splitInvocations(args: readonly string[]): string[][] {
   const invocations: string[][] = [[]];
 
@@ -93,25 +89,17 @@ function mountParameters(
     declare,
     parse,
   }: {
-    declare: ((command: Command) => void) | undefined;
-    parse: ParseParameters | undefined;
+    declare(command: Command): void;
+    parse: ParseParameters;
   },
   receive: (parameters: readonly unknown[]) => Promise<void> | void,
 ): void {
-  const declared = countDeclarations(command);
-
-  declare?.(command);
-
-  const bare = countDeclarations(command) === declared;
+  declare(command);
 
   command.action((...parameters) => {
     rejectEmptyVariadics(command);
 
-    if (parse !== undefined) {
-      return receive(parse(parameters, command));
-    }
-
-    return receive(bare ? [] : parameters);
+    return receive(parse(parameters, command));
   });
 }
 
@@ -124,10 +112,10 @@ export function createCommandDefinition({
   printers,
   chain = false,
 }: {
-  declare: ((command: Command) => void) | undefined;
+  declare(command: Command): void;
   load(): unknown;
   extension: ((command: Command) => Promise<void>) | undefined;
-  parse: ParseParameters | undefined;
+  parse: ParseParameters;
   printers: ScenarioPrinters | undefined;
   chain?: boolean;
 }): CommandDefinition {

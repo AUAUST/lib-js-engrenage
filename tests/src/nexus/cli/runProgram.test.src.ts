@@ -2,16 +2,24 @@ import { describe, expect, test, vi } from "vitest";
 import type { Command } from "@commander-js/extra-typings";
 
 import {
+  argument,
+  command,
   createProgram as createDefinedProgram,
-  defineChainedCommand,
-  defineCommand,
-  defineGroup,
   getRunContext,
 } from "#nexus/cli/index";
 import { runProgram } from "#nexus/cli/operations/runProgram";
 import { useFailingProgram } from "#tests/utils/useFailingProgram";
 
 const { getReporter, createProgram, printed } = useFailingProgram();
+
+function createGroupProgram(name: string, action: () => void) {
+  return createDefinedProgram(
+    command({
+      name: "program",
+      subcommands: [command({ name, action: () => Promise.resolve(action) })],
+    }),
+  );
+}
 
 function run(program: Command, ...args: string[]) {
   return runProgram(program, ["node", "program", ...args], {
@@ -77,19 +85,10 @@ describe("runProgram", () => {
   });
 
   test("prints a warning but not the result under --quiet", async () => {
-    const program = createDefinedProgram(
-      "program",
-      defineGroup({
-        commands: {
-          reporting: defineCommand({
-            action() {
-              getRunContext().reporter.warn("warning");
-              getRunContext().reporter.log("result");
-            },
-          }),
-        },
-      }),
-    );
+    const program = createGroupProgram("reporting", () => {
+      getRunContext().reporter.warn("warning");
+      getRunContext().reporter.log("result");
+    });
 
     await run(program, "reporting", "--quiet");
 
@@ -97,19 +96,10 @@ describe("runProgram", () => {
   });
 
   test("prints the completion line with the run's total time under --quiet", async () => {
-    const program = createDefinedProgram(
-      "program",
-      defineGroup({
-        commands: {
-          completing: defineCommand({
-            action() {
-              getRunContext().reporter.log("result");
-              getRunContext().reporter.complete("done");
-            },
-          }),
-        },
-      }),
-    );
+    const program = createGroupProgram("completing", () => {
+      getRunContext().reporter.log("result");
+      getRunContext().reporter.complete("done");
+    });
 
     await run(program, "completing", "--quiet");
 
@@ -139,18 +129,9 @@ describe("runProgram", () => {
       .mockImplementation(() => true);
 
     const program = () => {
-      return createDefinedProgram(
-        "program",
-        defineGroup({
-          commands: {
-            progress: defineCommand({
-              action() {
-                getRunContext().reporter.info("progressing");
-              },
-            }),
-          },
-        }),
-      );
+      return createGroupProgram("progress", () => {
+        getRunContext().reporter.info("progressing");
+      });
     };
 
     await runProgram(program(), ["node", "program", "progress"]);
@@ -168,23 +149,23 @@ describe("runProgram", () => {
       .mockImplementation(() => true);
 
     const program = createDefinedProgram(
-      "program",
-      defineGroup({
-        commands: {
-          progress: defineChainedCommand({
-            configure(command) {
-              return command.argument("<step>");
-            },
+      command({
+        name: "program",
+        subcommands: [
+          command({
+            name: "progress",
+            chain: true,
+            arguments: [argument({ name: "step" })],
             action() {
               return Promise.resolve((steps: readonly [string][]) => {
                 getRunContext().reporter.info(`progressing ${steps.join(" ")}`);
               });
             },
-            parse(step) {
+            parse(step, _invocation) {
               return [step];
             },
           }),
-        },
+        ],
       }),
     );
 
@@ -202,18 +183,15 @@ describe("runProgram", () => {
   });
 
   test("rejects verbosity flags set by two chained invocations", async () => {
-    const action = vi.fn();
+    const action = vi.fn<(steps: readonly [string][]) => void>();
 
     const program = createDefinedProgram(
-      "program",
-      defineChainedCommand({
-        configure(command) {
-          return command.argument("<step>");
-        },
-        action() {
-          return Promise.resolve(action);
-        },
-        parse(step) {
+      command({
+        name: "program",
+        chain: true,
+        arguments: [argument({ name: "step" })],
+        action: () => Promise.resolve(action),
+        parse(step, _invocation) {
           return [step];
         },
       }),

@@ -3,6 +3,7 @@ taps:
   - {id: BL-c24c01, at: 2026-11-25T18:41:10Z, note: "Cross-directory imports of one namespace taken up by #932"}
   - {id: BL-f9a67b, at: 2026-11-25T18:41:11Z, note: "Owns ordering runtimes like layers (core < adapters < rendering), left out of #932"}
   - {id: BL-f9a67b, at: 2026-11-25T19:55:17Z, note: "Source namespace hard-coded as src: resolveScopeExports.ts:10, aliasesSection.ts:55, createTsdownConfig.ts:142, produceTsconfigInclude.ts:45, syncPackageJson.ts:71; #933 weighs directory nodes instead"}
+  - {id: BL-a4b87d, at: 2026-11-27T15:20:38Z, note: scripts/codegen/actions/all.ts now repeats the order for bare codegen (0ce9d1a2f)}
 entries:
   - id: BL-8a4f63
     title: Naming rules of the roles are broken by many modules (#141 findings).

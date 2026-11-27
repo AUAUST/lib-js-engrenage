@@ -1,27 +1,31 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { createProgram, defineGroup } from "@auaust/engrenage/future/nexus/cli";
+import { command, createProgram } from "@auaust/engrenage/future/nexus/cli";
 
-describe("definitions from another module instance", () => {
-  test("a group defined through a second import runs its commands", async () => {
+describe("declarations from another module instance", () => {
+  test("a group declared through a second import runs its commands", async () => {
     vi.resetModules();
 
     const second = await import("@auaust/engrenage/future/nexus/cli");
 
-    expect(second.defineGroup).not.toBe(defineGroup);
+    expect(second.command).not.toBe(command);
 
     const action = vi.fn();
 
     const program = createProgram(
-      "program",
-      defineGroup({
-        commands: {
-          group: second.defineGroup({
-            commands: {
-              leaf: second.defineCommand({ action }),
-            },
+      command({
+        name: "program",
+        subcommands: [
+          second.command({
+            name: "group",
+            subcommands: [
+              second.command({
+                name: "leaf",
+                action: () => Promise.resolve(action),
+              }),
+            ],
           }),
-        },
+        ],
       }),
     );
 

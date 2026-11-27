@@ -1,34 +1,36 @@
 import { expect, test, vi } from "vitest";
 
 import {
+  argument,
   collectListArgument,
+  command,
   createProgram,
-  defineCommand,
-  defineGroup,
 } from "#nexus/cli/index";
+import { captureCommandOutput } from "#tests/utils/captureCommandOutput";
 
 async function parse(...args: string[]): Promise<unknown> {
   const action = vi.fn();
 
   const program = createProgram(
-    "program",
-    defineGroup({
-      commands: {
-        command: defineCommand({
-          configure(command) {
-            return command.argument("<refs...>", "", collectListArgument);
-          },
-          action,
+    command({
+      name: "program",
+      subcommands: [
+        command({
+          name: "command",
+          arguments: [
+            argument({
+              name: "refs",
+              variadic: true,
+              reduce: collectListArgument,
+            }),
+          ],
+          action: () => Promise.resolve(action),
         }),
-      },
+      ],
     }),
   );
 
-  for (const command of [program, ...program.commands]) {
-    command.exitOverride().configureOutput({
-      outputError() {},
-    });
-  }
+  captureCommandOutput(program, []);
 
   await program.parseAsync(["command", ...args], { from: "user" });
 

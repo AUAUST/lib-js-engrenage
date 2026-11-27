@@ -2,14 +2,14 @@ purpose: Command definitions, registration and program runs.
 taps:
   - {id: BL-9c8fb3, at: 2026-11-25T09:49:58Z, note: Chaining (#910) overrides parseOptions and parses twins under stand-in parents in createCommandDefinition.ts}
   - {id: BL-39182b, at: 2026-11-26T17:04:02Z, note: "jscpd:new over the #945 range lists the metalbrain close/show, issue claim/publish/release and codegen editions/schemas actions for it"}
+  - {id: BL-26fcd2, at: 2026-11-27T15:20:40Z, note: "after 0ce9d1a2f, codegen rules --check exits 0 with no diff on a clean tree; not checked against a stale output"}
 entries:
   - id: BL-62e56b
-    title: Command mounting re-derives state Commander hides
+    title: A failing run resolves the config again
     sites:
-      - src/nexus/cli/operations/configureCommand.ts:3
-      - src/tools/nexus/operations/runEngrenageProgram.ts:8
-    why: Commander exposes no action getter, so mounting wraps action to detect a call; a failing run resolves the config again
-    want: No action wrapping to detect a call; the failing command config reused
+      - src/tools/nexus/operations/runEngrenageProgram.ts:10
+    why: runEngrenageProgram resolves the config again to read debug once a command fails
+    want: The failing command config reused
     done: "Tracked by #1015 (own engine)"
     created: 2026-11-22T00:00:00Z
   - id: BL-39182b
@@ -30,11 +30,10 @@ entries:
   - id: BL-9c8fb3
     title: Program wiring leans on Commander internals and copies
     sites:
-      - src/nexus/cli/operations/createProgram.ts:7
+      - src/nexus/cli/operations/createProgram.ts:8
       - src/nexus/cli/utils/toUsageError.ts:5
-      - src/nexus/cli/operations/defineCommand.ts:1
-    why: "the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text; `defineCommand` and `defineLazyCommand` clone each other (jscpd)."
-    want: extensions applied at the root; messages without the prefix; one command definer
+    why: "the root definition's `commandExtension` never runs, so tests wrap commands in a group; the `error: ` prefix Commander adds is stripped by text"
+    want: extensions applied at the root; messages without the prefix
     done: "Tracked by #1015 (own engine)"
     created: 2026-11-22T00:00:00Z
   - id: BL-dc8e50
@@ -65,15 +64,6 @@ entries:
     want: A decision on how a split CLI finds its host, or which commands stay in engrenage
     done: "Planning item of #1003, moved from #966"
     created: 2026-11-26T11:19:47Z
-  - id: BL-c7380b
-    title: Commands an extension registers after program creation miss the run options
-    sites:
-      - src/nexus/cli/operations/createProgram.ts:1
-      - src/nexus/cli/operations/defineGroup.ts:1
-    why: createProgram adds --debug and --verbose to the commands present at creation, so commands mounted later by an extension likely refuse them; likely, not run
-    want: Every mounted command takes the run options
-    done: "Resolved by #1015: run options belong to the engine"
-    created: 2026-11-26T12:03:38Z
   - id: BL-b46a5f
     title: A command defined through another nexus/cli module instance cannot read the run context
     sites:
