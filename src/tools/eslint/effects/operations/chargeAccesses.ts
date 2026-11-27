@@ -1,9 +1,8 @@
 import type { Scope, SourceCode } from "eslint";
 
 import { accessesOf } from "#tools/eslint/effects/utils/accessesOf";
-import type { EffectHint } from "#tools/eslint/effects/types/EffectHint";
+import type { HintedUnit } from "#tools/eslint/effects/types/HintedUnit";
 import type { PendingCharge } from "#tools/eslint/effects/types/PendingCharge";
-import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 
 /**
@@ -20,9 +19,7 @@ export function chargeAccesses(
     members: readonly string[],
     invoked: boolean,
     site: SyntaxNode,
-  ) =>
-    | (RankedUnit & { binding: string; hint: EffectHint | undefined })
-    | undefined,
+  ) => HintedUnit | undefined,
 ) {
   for (const access of accessesOf(sourceCode, variables)) {
     const ranked = rank(access.members, access.invoked, access.site);

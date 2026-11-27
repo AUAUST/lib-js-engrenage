@@ -724,6 +724,22 @@ describe("import effects", () => {
         'export function read() {\n  process.env.X = "1";\n}\n',
         "effectful",
       ],
+      [
+        read,
+        'import { env } from "node:process";\n\nexport function read() {\n  env.X = "1";\n}\n',
+        "effectful",
+      ],
+      [read, "export function read() {\n  undeclared.x = 1;\n}\n", "effectful"],
+      [
+        printed,
+        "export class print {\n  x = 0;\n\n  set() {\n    this.x = 1;\n  }\n}\n",
+        "confined",
+      ],
+      [
+        printed,
+        "export class print {\n  static x = 0;\n\n  static set() {\n    this.x = 1;\n  }\n}\n",
+        "confined",
+      ],
       [computed, "globalThis.x = 1;\n", "effectful"],
     ] as const) {
       expect(await lint(file, source)).toEqual([

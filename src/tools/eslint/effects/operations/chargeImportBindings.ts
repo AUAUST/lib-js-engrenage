@@ -5,19 +5,13 @@ import { typeNodeTypes } from "#tools/eslint/effects/constants";
 import { chargeAccesses } from "#tools/eslint/effects/operations/chargeAccesses";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 import type { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
-import type { EffectHint } from "#tools/eslint/effects/types/EffectHint";
+import type { HintedUnit } from "#tools/eslint/effects/types/HintedUnit";
 import type { PendingCharge } from "#tools/eslint/effects/types/PendingCharge";
-import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 
 type ImportNode = Parameters<
   NonNullable<Rule.RuleListener["ImportDeclaration"]>
 >[0];
-
-type HintedUnit = RankedUnit & {
-  binding: string;
-  hint: EffectHint | undefined;
-};
 
 /**
  * Passes to `append` what each use of a binding `declaration` imports charges:

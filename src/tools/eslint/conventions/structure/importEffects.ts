@@ -18,7 +18,7 @@ export default defineEffectConvention({
     write: "A module of {{role}} writes `{{binding}}`, changing {{unit}} ({{level}}){{through}} during {{position}}, above {{bound}}; change only state costing {{ceiling}} or purer there, or move the write.",
     declare: "A module of {{role}} tags a function or class {{level}}, above its invocation ceiling ({{ceiling}}); tag it {{ceiling}} or purer, or move it to a role allowing {{level}}.",
   },
-  create(context, { role, ceilings, exceeds, exceeding }) {
+  create(context, { role, ceilings, exceeds, exceeding, bound }) {
     function charge(found: EffectCharge) {
       const cost = found.hint === undefined ? exceeding(found) : undefined;
 
@@ -34,7 +34,6 @@ export default defineEffectConvention({
         binding,
         sideEffect,
         through,
-        declared,
       } = found;
 
       const level = cost.level ?? "unranked";
@@ -61,9 +60,7 @@ export default defineEffectConvention({
           unit,
           level,
           through: through === undefined ? "" : ` through \`${through}\``,
-          bound: declared === undefined
-            ? `its ${position} ceiling (${cost.ceiling})`
-            : `the level its effect doc tag declares (${cost.ceiling})`,
+          bound: bound(found, cost.ceiling),
         },
       });
     }

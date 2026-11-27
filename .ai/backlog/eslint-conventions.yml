@@ -176,3 +176,11 @@ entries:
     why: "#989's drop suggestion rides the ceiling report, which a pure target never triggers under the default scale"
     want: A side-effect import of a non-erased module ranked pure by its role is reported as droppable, erased and string-ranked externals excluded
     created: 2026-11-27T03:28:43Z
+  - id: BL-92f66c
+    title: defineEffectConvention sits in the operations role and the domain surface, while its sibling convention definers live in utils
+    sites:
+      - src/tools/eslint/operations/defineEffectConvention.ts:28
+      - src/tools/eslint/utils/defineBoundaryConvention.ts:11
+    why: tagged @confined, the utils contract; operations is effectful logic; its index export only serves conventions inside the domain
+    want: one role for convention definers, the export dropped from tools/eslint/index if unused outside
+    created: 2026-11-27T05:01:41Z

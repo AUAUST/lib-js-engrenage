@@ -19,13 +19,7 @@ export default defineEffectConvention({
     pass: "A module of {{role}} passes `{{binding}}` from {{unit}} without invoking it, and invoking it costs {{level}}, above {{bound}}; if what receives it invokes it, move this code to a role whose invocation ceiling allows {{level}}, else pass {{ceiling}} or purer code.",
     hidden: "A module of {{role}} writes `{{binding}}`, through {{unit}}, which a call result or a reassignment hides; changing state outside its module there costs {{level}}, above {{bound}}; write through the parameter, binding or `const` alias naming the state, or a fresh value, so its owner shows.",
   },
-  create(context, { role, exceeding }) {
-    function bound({ position, declared }: EffectCharge, ceiling: string) {
-      return declared === undefined
-        ? `its ${position} ceiling (${ceiling})`
-        : `the level its effect doc tag declares (${ceiling})`;
-    }
-
+  create(context, { role, exceeding, bound }) {
     function charge(found: EffectCharge) {
       const { hint, node, operation, unit, binding, through } = found;
 

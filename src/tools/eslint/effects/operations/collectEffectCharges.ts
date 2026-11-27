@@ -148,7 +148,7 @@ export function collectEffectCharges({
     sideEffect?: boolean;
   }) {
     if (loaded !== undefined) {
-      appendEntry(runs, runner, {
+      append(runner, {
         node,
         operation: "evaluate",
         binding: specifier,
@@ -257,7 +257,7 @@ export function collectEffectCharges({
         const ranked = rankBinding(exported, specifier, [exported.name]);
 
         if (ranked !== undefined) {
-          appendEntry(runs, runner, {
+          append(runner, {
             node: expression,
             operation: "invoke",
             binding: exported.name,

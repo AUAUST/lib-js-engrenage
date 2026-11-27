@@ -19,9 +19,10 @@ import type { Convention } from "#tools/eslint/ports/Convention";
 /**
  * Creates a convention judging the effect charges of each file of a ranked role:
  * `create` receives the file's role, its ceilings, `exceeds`, whether a level
- * lies above a ceiling, and `exceeding`, the cost of a charge above the ceiling
- * it is judged against, at the invocation level its `declared` tag states when
- * it has one, and returns what judges each charge and each effect doc tag.
+ * lies above a ceiling, `exceeding`, the cost of a charge above the ceiling it
+ * is judged against, at the invocation level its `declared` tag states when it
+ * has one, and `bound`, how a message names that ceiling, and returns what judges
+ * each charge and each effect doc tag.
  *
  * @confined
  */
@@ -43,6 +44,7 @@ export function defineEffectConvention({
       ceilings: EffectCeilings;
       exceeds(level: string | undefined, ceiling: string): boolean;
       exceeding(charge: EffectCharge): EffectCost | undefined;
+      bound(charge: EffectCharge, ceiling: string): string;
     },
   ): {
     charge(found: EffectCharge): void;
@@ -114,11 +116,21 @@ export function defineEffectConvention({
               : undefined;
           }
 
+          function bound(
+            { position, declared }: EffectCharge,
+            ceiling: string,
+          ) {
+            return declared === undefined
+              ? `its ${position} ceiling (${ceiling})`
+              : `the level its effect doc tag declares (${ceiling})`;
+          }
+
           const { charge, declare } = create(context, {
             role,
             ceilings,
             exceeds,
             exceeding,
+            bound,
           });
 
           const host = environment === undefined

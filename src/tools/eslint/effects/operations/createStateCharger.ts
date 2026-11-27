@@ -1,7 +1,5 @@
 import type { Scope, SourceCode } from "eslint";
 
-import { isObject } from "@auaust/toolkit";
-
 import {
   freshTypes,
   reassignableKinds,
@@ -175,6 +173,7 @@ export function createStateCharger({
         "value" in ancestor &&
         ancestor.value === (ancestors[index + 1] ?? receiver)
       ) {
+        // @debt `this` in an arrow function an instance field holds counts as the field's own, though the arrow runs as a method does, on a received instance
         return "static" in ancestor && ancestor.static ? "unit-private" : "own";
       }
     }
@@ -183,28 +182,18 @@ export function createStateCharger({
   }
 
   function pathRoot(expression: SyntaxNode): SyntaxNode | undefined {
-    let node = expression;
+    let node = unwrapExpression(expression);
 
-    for (;;) {
-      if (node.type === "Identifier" || node.type === "ThisExpression") {
-        return node;
-      }
-
-      if (
-        node.type === "MemberExpression" &&
-        (!node.computed || node.property.type === "Literal")
-      ) {
-        node = node.object;
-      } else if (
-        wrapperTypes.has(node.type) &&
-        "expression" in node &&
-        isObject(node.expression)
-      ) {
-        node = node.expression;
-      } else {
-        return;
-      }
+    while (
+      node.type === "MemberExpression" &&
+      (!node.computed || node.property.type === "Literal")
+    ) {
+      node = unwrapExpression(node.object);
     }
+
+    return node.type === "Identifier" || node.type === "ThisExpression"
+      ? node
+      : undefined;
   }
 
   function aliasedOf(variable: Scope.Variable): SyntaxNode | undefined {

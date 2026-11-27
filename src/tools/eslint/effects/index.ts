@@ -12,6 +12,7 @@ export { createStateCharger } from "#tools/eslint/effects/operations/createState
 export type * from "#tools/eslint/effects/types/EffectCharge";
 export type * from "#tools/eslint/effects/types/EffectDeclaration";
 export type * from "#tools/eslint/effects/types/EffectHint";
+export type * from "#tools/eslint/effects/types/HintedUnit";
 export type * from "#tools/eslint/effects/types/LocalCall";
 export type * from "#tools/eslint/effects/types/PendingCharge";
 export type * from "#tools/eslint/effects/types/RankedUnit";
