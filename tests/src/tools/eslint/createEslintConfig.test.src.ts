@@ -1514,6 +1514,8 @@ export async function run(): Promise<unknown> {
           rules: {
             "@typescript-eslint/no-unsafe-member-access": "error",
             "import-x/no-unresolved": "error",
+            "auaust/import-effects": "off",
+            "auaust/role-exports": "off",
           },
         },
       ],
