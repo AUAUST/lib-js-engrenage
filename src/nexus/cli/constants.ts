@@ -14,6 +14,8 @@ export const commandForwarding = Symbol.for(
 
 export const invocationSeparator = "--next";
 
+export const helpCommandName = "help";
+
 export const verbosityFlags = {
   silent: "silent",
   quiet: "important",

@@ -1,14 +1,17 @@
 import { isFunction, isString } from "@auaust/toolkit";
 import { freeze, keys, record } from "@auaust/toolkit/object";
 
+import { helpCommandName } from "#nexus/cli/constants";
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { createRunOptions } from "#nexus/cli/operations/createRunOptions";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
-import { loadCommandFunction } from "#nexus/cli/operations/loadCommandFunction";
+import { loadCommandLayer } from "#nexus/cli/operations/loadCommandLayer";
 import { parseCommandTokens } from "#nexus/cli/operations/parseCommandTokens";
 import { readCommandArguments } from "#nexus/cli/operations/readCommandArguments";
+import { findSubcommand } from "#nexus/cli/utils/findSubcommand";
+import { suggestName } from "#nexus/cli/utils/suggestName";
+import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
-import type { LayerLoader } from "#nexus/cli/types/LayerLoader";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
 import type { ProgramDeclaration } from "#nexus/cli/types/ProgramDeclaration";
@@ -24,17 +27,6 @@ interface Layers {
   readonly choices: readonly (readonly string[] | undefined)[];
 }
 
-async function loadLayer<Value>(
-  loader: LayerLoader<Value>,
-  path: CommandPath,
-  name: string,
-  kind: string,
-): Promise<Value> {
-  const resolve = await loadCommandFunction(loader, name, kind);
-
-  return resolve(path);
-}
-
 async function loadLayers(
   declaration: ParsingCommandDeclaration,
   path: CommandPath,
@@ -43,14 +35,14 @@ async function loadLayers(
     Promise.all(
       declaration.options.map((entry) => {
         return isFunction(entry)
-          ? loadLayer(entry, path, declaration.name, "options")
+          ? loadCommandLayer(entry, path, declaration.name, "options")
           : [entry];
       }),
     ),
     Promise.all(
       declaration.arguments.map(({ choices }) => {
         return isFunction(choices)
-          ? loadLayer(choices, path, declaration.name, "choices")
+          ? loadCommandLayer(choices, path, declaration.name, "choices")
           : choices;
       }),
     ),
@@ -183,14 +175,61 @@ function createParameters(
   }
 }
 
+function rejectCommand(
+  declaration: CommandDeclaration,
+  name: string,
+  isRoot: boolean,
+): CommandUsageError {
+  const known = declaration.kind === "parsing"
+    ? declaration.subcommands.flatMap((subcommand) => {
+        return [subcommand.name, ...subcommand.aliases];
+      })
+    : [];
+
+  return new CommandUsageError(
+    `unknown command '${name}'${suggestName(name, isRoot ? [...known, helpCommandName] : known)}`,
+  );
+}
+
+/** @confined */
+function findHelpTarget(
+  root: ParsingCommandDeclaration,
+  names: readonly string[],
+  errors: CommandUsageError[],
+):
+  | Pick<Extract<Resolution, { kind: "help" }>, "path" | "declaration">
+  | undefined {
+  const path: string[] = [];
+
+  let declaration: CommandDeclaration = root;
+
+  for (const name of names) {
+    const subcommand = findSubcommand(declaration, name);
+
+    if (subcommand === undefined) {
+      return void errors.push(
+        rejectCommand(declaration, name, path.length === 0),
+      );
+    }
+
+    path.push(subcommand.name);
+
+    declaration = subcommand;
+  }
+
+  return { path: freeze(path), declaration };
+}
+
 /**
  * Resolves `args`, the arguments after a program's name, against `program`
  * without loading any action: routes them to a command, each option binding to
  * the command it follows and every argument after a forwarding command's name
  * reaching it raw; loads the layers of each command on the path; then parses and
  * validates each option and argument, the run options at any level of the path.
- * Resolves to the invocation, a request for help or the version, or every usage
- * error found, worded as Commander words them.
+ * A root group reserves the `help` command, whose arguments name the path of the
+ * command whose help it requests. Resolves to the invocation, a request for help
+ * or the version, or every usage error found, worded as Commander words them, an
+ * unknown command or option suggesting the closest known name.
  */
 export async function resolveInvocation(
   { root, scenarios }: ProgramDeclaration,
@@ -270,6 +309,30 @@ export async function resolveInvocation(
       };
     }
 
+    if (
+      names.length === 0 &&
+      level.route === undefined &&
+      !level.blocked &&
+      declaration.subcommands.length > 0 &&
+      level.positionals[0] === helpCommandName
+    ) {
+      const target = findHelpTarget(
+        declaration,
+        level.positionals.slice(1),
+        errors,
+      );
+
+      if (target === undefined || errors.length > 0) {
+        return finish(undefined);
+      }
+
+      return {
+        kind: "help",
+        ...target,
+        runOptions: readRunOptions(runOptions, runValues),
+      };
+    }
+
     checkRequired(layers.options, level.given, errors);
     checkConflicts(layers.options, level.given, errors);
 
@@ -287,11 +350,9 @@ export async function resolveInvocation(
 
       if (!level.blocked) {
         errors.push(
-          new CommandUsageError(
-            name === undefined
-              ? "no command given"
-              : `unknown command '${name}'`,
-          ),
+          name === undefined
+            ? new CommandUsageError("no command given")
+            : rejectCommand(declaration, name, names.length === 0),
         );
       }
 

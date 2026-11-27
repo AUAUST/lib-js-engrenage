@@ -6,13 +6,12 @@ import {
   commandExtension,
   commandForwarding,
   commandRegistration,
+  helpCommandName,
 } from "#nexus/cli/constants";
 import { addRunOptions } from "#nexus/cli/operations/addRunOptions";
 import type { CommandDefinition } from "#nexus/cli/types/CommandDefinition";
 
 type Extensions = ReadonlyMap<CommandUnknownOpts, () => Promise<void>>;
-
-const helpCommandName = "help";
 
 function describePath(command: CommandUnknownOpts): string {
   const names: string[] = [];

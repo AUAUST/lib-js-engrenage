@@ -1,6 +1,7 @@
 export { argument } from "#nexus/cli/operations/argument";
 export { command } from "#nexus/cli/operations/command";
 export { createProgram } from "#nexus/cli/operations/createProgram";
+export { describeHelp } from "#nexus/cli/operations/describeHelp";
 export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
@@ -20,6 +21,10 @@ export { InvocationsError } from "#nexus/cli/errors/InvocationsError";
 // @barrel utils
 export { collectArgument } from "#nexus/cli/utils/collectArgument";
 export { collectListArgument } from "#nexus/cli/utils/collectListArgument";
+export { findSubcommand } from "#nexus/cli/utils/findSubcommand";
+export { helpEntry } from "#nexus/cli/utils/helpEntry";
+export { splitHelpFacts } from "#nexus/cli/utils/splitHelpFacts";
+export { suggestName } from "#nexus/cli/utils/suggestName";
 export { toUsageError } from "#nexus/cli/utils/toUsageError";
 // @end
 
@@ -32,6 +37,12 @@ export type * from "#nexus/cli/types/CommandPath";
 export type * from "#nexus/cli/types/CommandTokens";
 export type * from "#nexus/cli/types/DeclaredParameters";
 export type * from "#nexus/cli/types/ForwardingCommandDeclaration";
+export type * from "#nexus/cli/types/HelpArgument";
+export type * from "#nexus/cli/types/HelpContract";
+export type * from "#nexus/cli/types/HelpFacts";
+export type * from "#nexus/cli/types/HelpListing";
+export type * from "#nexus/cli/types/HelpMount";
+export type * from "#nexus/cli/types/HelpOption";
 export type * from "#nexus/cli/types/InvocationFailure";
 export type * from "#nexus/cli/types/LayerLoader";
 export type * from "#nexus/cli/types/OptionDeclaration";

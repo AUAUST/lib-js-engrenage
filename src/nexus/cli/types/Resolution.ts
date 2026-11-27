@@ -1,7 +1,6 @@
 import type { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
 import type { CommandPath } from "#nexus/cli/types/CommandPath";
-import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
 import type { RunOptionValues } from "#nexus/cli/types/RunOptionValues";
 
 interface ResolvedInvocation {
@@ -18,7 +17,7 @@ interface ResolvedInvocation {
 interface ResolvedHelp {
   readonly kind: "help";
   readonly path: CommandPath;
-  readonly declaration: ParsingCommandDeclaration;
+  readonly declaration: CommandDeclaration;
   readonly runOptions: RunOptionValues;
 }
 

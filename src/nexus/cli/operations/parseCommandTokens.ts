@@ -1,11 +1,12 @@
 import { parseArgs, type ParseArgsOptionsConfig } from "node:util";
 
-import { record } from "@auaust/toolkit/object";
+import { keys, record } from "@auaust/toolkit/object";
 
 import { CommandUsageError } from "#nexus/cli/errors/CommandUsageError";
 import { describeOptionFlags } from "#nexus/cli/operations/describeOptionFlags";
 import { parseUsageValue } from "#nexus/cli/operations/parseUsageValue";
-import type { CommandDeclaration } from "#nexus/cli/types/CommandDeclaration";
+import { findSubcommand } from "#nexus/cli/utils/findSubcommand";
+import { suggestName } from "#nexus/cli/utils/suggestName";
 import type { CommandTokens } from "#nexus/cli/types/CommandTokens";
 import type { OptionDeclaration } from "#nexus/cli/types/OptionDeclaration";
 import type { ParsingCommandDeclaration } from "#nexus/cli/types/ParsingCommandDeclaration";
@@ -59,13 +60,19 @@ function createParseConfig(
   };
 }
 
-function findSubcommand(
-  { subcommands }: ParsingCommandDeclaration,
-  name: string,
-): CommandDeclaration | undefined {
-  return subcommands.find((subcommand) => {
-    return subcommand.name === name || subcommand.aliases.includes(name);
-  });
+function suggestOption(
+  flag: string,
+  declaration: ParsingCommandDeclaration,
+  known: ReadonlyMap<string, OptionDeclaration>,
+): string {
+  return flag.startsWith("--")
+    ? suggestName(
+        flag,
+        keys(createParseConfig(declaration, known)).map((name) => {
+          return `--${name}`;
+        }),
+      )
+    : "";
 }
 
 /**
@@ -173,7 +180,9 @@ export function parseCommandTokens(
 
       errors.push(
         new CommandUsageError(
-          `unknown option '${token.inlineValue === true ? raw : token.rawName}'`,
+          token.inlineValue === true
+            ? `unknown option '${raw}'`
+            : `unknown option '${token.rawName}'${suggestOption(token.rawName, declaration, known)}`,
         ),
       );
 

@@ -11,3 +11,15 @@ entries:
     why: resolver (#1018) returns failure no command given; matters once programs switch
     owner: "#1020"
     created: 2026-11-27T15:46:28Z
+  - id: PD-509a4b
+    subject: help chaining line names old --next syntax
+    what: rewrite the chaining line and --next option row in src/nexus/cli/utils/helpEntry.ts for full-path segments
+    why: help (#1019) describes per-command chain syntax
+    owner: "#1021"
+    created: 2026-11-27T16:05:42Z
+  - id: PD-8367a9
+    subject: help wording and group help on the engine
+    what: unknown command in a help path names its group like Commander ('in metalbrain backlog'); help reserved at the root only, group help dropped; move Commander help tests
+    why: help (#1019) built on engine path only
+    owner: "#1020"
+    created: 2026-11-27T16:05:42Z
