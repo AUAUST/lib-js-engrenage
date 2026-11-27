@@ -46,6 +46,38 @@ function indexOptions(
   return known;
 }
 
+type ParseToken = NonNullable<ReturnType<typeof parseArgs>["tokens"]>[number];
+
+function findNegativeArguments(
+  args: readonly string[],
+  tokens: readonly ParseToken[],
+  known: ReadonlyMap<string, OptionDeclaration>,
+): ReadonlySet<number> {
+  const numbers = new Set<number>();
+
+  for (const token of tokens) {
+    if (
+      token.kind === "option" &&
+      negativeNumber.test(args[token.index] ?? "") &&
+      !isDeclaredFlag(known.get(token.name), token)
+    ) {
+      numbers.add(token.index);
+    }
+  }
+
+  return numbers;
+}
+
+function isDeclaredFlag(
+  option: OptionDeclaration | undefined,
+  token: Extract<ParseToken, { kind: "option" }>,
+): boolean {
+  return (
+    option !== undefined &&
+    !(option.type === "boolean" && token.inlineValue === true)
+  );
+}
+
 function createParseConfig(
   declaration: ParsingCommandDeclaration,
   known: ReadonlyMap<string, OptionDeclaration>,
@@ -108,7 +140,6 @@ export function parseCommandTokens(
   const isGroup = declaration.subcommands.length > 0;
   const given = new Map<OptionDeclaration, unknown>();
   const positionals: string[] = [];
-  const negatives = new Set<number>();
 
   let blocked = false;
 
@@ -119,6 +150,12 @@ export function parseCommandTokens(
     allowPositionals: true,
     tokens: true,
   });
+
+  const numbers = isGroup
+    ? new Set<number>()
+    : findNegativeArguments(args, tokens, known);
+
+  let lastNumber: number | undefined;
 
   for (const token of tokens) {
     if (token.kind === "option-terminator") {
@@ -147,6 +184,15 @@ export function parseCommandTokens(
       continue;
     }
 
+    if (numbers.has(token.index)) {
+      if (lastNumber !== token.index) {
+        lastNumber = token.index;
+        positionals.push(args[token.index] ?? token.rawName);
+      }
+
+      continue;
+    }
+
     if (token.name === "help") {
       return {
         request: "help",
@@ -166,20 +212,9 @@ export function parseCommandTokens(
     }
 
     const option = known.get(token.name);
-    const raw = args[token.index] ?? token.rawName;
 
-    if (
-      option === undefined ||
-      (option.type === "boolean" && token.inlineValue === true)
-    ) {
-      if (!isGroup && negativeNumber.test(raw)) {
-        if (!negatives.has(token.index)) {
-          negatives.add(token.index);
-          positionals.push(raw);
-        }
-
-        continue;
-      }
+    if (option === undefined || !isDeclaredFlag(option, token)) {
+      const raw = args[token.index] ?? token.rawName;
 
       errors.push(
         new CommandUsageError(

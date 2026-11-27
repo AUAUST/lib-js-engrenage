@@ -155,4 +155,52 @@ describe("resolveInvocation", () => {
       parameters: [{ check: false }],
     });
   });
+
+  test("takes a negative number as one argument unless every flag it spans is declared", async () => {
+    const leaf = command({
+      name: "leaf",
+      arguments: [
+        argument({
+          name: "values",
+          variadic: true,
+          optional: true,
+        }),
+      ],
+      options: [
+        option({
+          name: "one",
+          type: "boolean",
+          short: "1",
+        }),
+        option({
+          name: "two",
+          type: "boolean",
+          short: "2",
+        }),
+        option({
+          name: "exponent",
+          type: "boolean",
+          short: "e",
+        }),
+      ],
+      action: vi.fn<() => Promise<() => void>>(),
+    });
+
+    await expect(resolve(leaf, "-13", "-1e5")).resolves.toMatchObject({
+      kind: "invocation",
+      parameters: [
+        ["-13", "-1e5"],
+        {
+          one: undefined,
+          two: undefined,
+          exponent: undefined,
+        },
+      ],
+    });
+
+    await expect(resolve(leaf, "-12")).resolves.toMatchObject({
+      kind: "invocation",
+      parameters: [[], { one: true, two: true }],
+    });
+  });
 });

@@ -87,10 +87,3 @@ entries:
     why: batiment mpa suggested map on Commander, prints none now; map --check=x suggested --check, now only unknown option '--check=x'
     want: Suggestions catching transpositions and a boolean flag given an inline value
     created: 2026-11-27T17:01:18Z
-  - id: BL-142c18
-    title: A negative number spanning an option short flag both sets that option and becomes an argument
-    sites:
-      - src/nexus/cli/operations/parseCommandTokens.ts:20
-    why: parseArgs splits `-12` into `-1 -2`; with `-1` declared, the option is set and `-12` is also pushed as a positional; `-1e5` likewise sets a declared `-e`
-    want: "one rule: a leaf takes the whole token as an argument, or every flag in it as options"
-    created: 2026-11-27T17:21:51Z
