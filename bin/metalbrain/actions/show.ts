@@ -50,7 +50,5 @@ export default async function (
     };
   });
 
-  for (const line of formatRecordDetailTree(records)) {
-    reporter.log(line);
-  }
+  reporter.log(formatRecordDetailTree(records));
 }

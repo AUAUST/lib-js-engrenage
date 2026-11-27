@@ -1,39 +1,74 @@
-import type { ReportData, Reporter } from "#nexus/reports/index";
+import {
+  createReporter,
+  readReportText,
+  renderDenseEntry,
+  type Printer,
+  type ReportData,
+  type ReportEntry,
+  type Reporter,
+  type ReportKind,
+} from "#nexus/reports/index";
 
 interface ReportedMessage {
-  readonly level: keyof Reporter;
+  readonly level: ReportKind;
   readonly text: string;
   readonly data: ReportData | undefined;
 }
 
-export function createTestReporter(): Reporter & {
-  readonly messages: readonly ReportedMessage[];
-  readonly warnings: readonly string[];
-} {
-  const messages: ReportedMessage[] = [];
-  const warnings: string[] = [];
+function readData(entry: ReportEntry): ReportData | undefined {
+  if (entry.kind !== "line") {
+    return;
+  }
 
-  function record(level: keyof Reporter) {
-    return (text: string, data?: ReportData) => {
-      messages.push({
-        level,
-        text,
-        data,
-      });
+  const { source, fix } = entry;
 
-      if (level === "warn") {
-        warnings.push(text);
-      }
-    };
+  if (source === undefined && fix === undefined) {
+    return;
   }
 
   return {
+    ...(source !== undefined && { source }),
+    ...(fix !== undefined && { fix: readReportText(fix) }),
+  };
+}
+
+export function createTestReporter(): Reporter & {
+  readonly printer: Printer;
+  readonly entries: readonly ReportEntry[];
+  readonly messages: readonly ReportedMessage[];
+  readonly warnings: readonly string[];
+} {
+  const entries: ReportEntry[] = [];
+  const messages: ReportedMessage[] = [];
+  const warnings: string[] = [];
+
+  const printer: Printer = {
+    print(entry, level) {
+      entries.push(entry);
+
+      const texts = entry.kind === "line"
+        ? [readReportText(entry.text)]
+        : renderDenseEntry(entry);
+
+      for (const text of texts) {
+        messages.push({
+          level,
+          text,
+          data: readData(entry),
+        });
+
+        if (level === "warn") {
+          warnings.push(text);
+        }
+      }
+    },
+  };
+
+  return {
+    ...createReporter(printer),
+    printer,
+    entries,
     messages,
     warnings,
-    error: record("error"),
-    warn: record("warn"),
-    info: record("info"),
-    log: record("log"),
-    debug: record("debug"),
   };
 }

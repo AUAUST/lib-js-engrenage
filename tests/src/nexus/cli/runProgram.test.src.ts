@@ -15,7 +15,7 @@ const { getReporter, createProgram, printed } = useFailingProgram();
 
 function run(program: Command, ...args: string[]) {
   return runProgram(program, ["node", "program", ...args], {
-    reporter: getReporter(),
+    printer: getReporter().printer,
   });
 }
 
@@ -41,7 +41,7 @@ describe("runProgram", () => {
     vi.stubEnv("PROGRAM_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      reporter: getReporter(),
+      printer: getReporter().printer,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -52,7 +52,7 @@ describe("runProgram", () => {
     vi.stubEnv("ENGRENAGE_DEBUG", "1");
 
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      reporter: getReporter(),
+      printer: getReporter().printer,
       debugVariable: "PROGRAM_DEBUG",
     });
 
@@ -62,7 +62,7 @@ describe("runProgram", () => {
 
   test("leads its error with the explanation it is given", async () => {
     await runProgram(createProgram(), ["node", "program", "failing"], {
-      reporter: getReporter(),
+      printer: getReporter().printer,
       explain: () => "the fix",
     });
 
@@ -94,6 +94,32 @@ describe("runProgram", () => {
     await run(program, "reporting", "--quiet");
 
     expect(getReporter().messages.map(({ text }) => text)).toEqual(["warning"]);
+  });
+
+  test("prints the completion line with the run's total time under --quiet", async () => {
+    const program = createDefinedProgram(
+      "program",
+      defineGroup({
+        commands: {
+          completing: defineCommand({
+            action() {
+              getRunContext().reporter.log("result");
+              getRunContext().reporter.complete("done");
+            },
+          }),
+        },
+      }),
+    );
+
+    await run(program, "completing", "--quiet");
+
+    expect(getReporter().entries).toEqual([
+      {
+        kind: "completion",
+        text: "done",
+        duration: expect.any(Number),
+      },
+    ]);
   });
 
   test.each([

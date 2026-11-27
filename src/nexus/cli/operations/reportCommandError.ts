@@ -1,6 +1,6 @@
 import { join } from "@auaust/toolkit/array";
 
-import type { Reporter } from "#nexus/reports/index";
+import { stackEntry, type Reporter } from "#nexus/reports/index";
 
 function describe(value: unknown): string {
   return value instanceof Error ? value.message : String(value);
@@ -51,6 +51,6 @@ export function reportCommandError(
   reporter.error(join(lines, "\n"));
 
   if (error instanceof Error && error.stack !== undefined) {
-    reporter.debug(error.stack);
+    reporter.debug(stackEntry(error.stack));
   }
 }

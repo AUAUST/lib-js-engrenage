@@ -12,8 +12,10 @@ import { reportCommandError } from "#nexus/cli/operations/reportCommandError";
 import { runContext } from "#nexus/cli/operations/runContext";
 import { toUsageError } from "#nexus/cli/utils/toUsageError";
 import {
-  createConsoleReporter,
+  createReporter,
+  densePrinter,
   filterReports,
+  type Printer,
   type Reporter,
   type Verbosity,
 } from "#nexus/reports/index";
@@ -26,6 +28,20 @@ function overrideExits(command: CommandUnknownOpts): void {
   for (const subcommand of command.commands) {
     overrideExits(subcommand);
   }
+}
+
+// @debt the completion line's total reads the clock since process start until the run's own timings measure it
+function timeCompletions(printer: Printer): Printer {
+  function print(...[entry, kind]: Parameters<Printer["print"]>) {
+    printer.print(
+      entry.kind === "completion" && entry.duration === undefined
+        ? { ...entry, duration: performance.now() }
+        : entry,
+      kind,
+    );
+  }
+
+  return { print };
 }
 
 async function isDebugResolved(
@@ -41,24 +57,25 @@ async function isDebugResolved(
 
 /**
  * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
- * filters every report by the verbosity its flags set, else `debug` when
- * `debugVariable` is on, else `default`, and on failure prints its error, led by
- * what `explain` returns for it, with its stack at `debug`, which `resolveDebug`
- * also sets when no flag does.
+ * hands `printer`, `densePrinter` by default, every entry the verbosity its
+ * flags set shows, else `debug` when `debugVariable` is on, else `default`,
+ * each completion line with the run's total time, and on failure prints its
+ * error, led by what `explain` returns for it, with its stack at `debug`, which
+ * `resolveDebug` also sets when no flag does.
  */
 export async function runProgram(
   program: CommandUnknownOpts,
   argv?: readonly string[],
   {
     signal,
-    reporter,
+    printer = densePrinter,
     onError,
     debugVariable,
     resolveDebug,
     explain,
   }: {
     signal?: AbortSignal;
-    reporter?: Reporter;
+    printer?: Printer;
     onError?(error: unknown): void;
     debugVariable?: string;
     resolveDebug?(reporter: Reporter): Promise<boolean>;
@@ -92,9 +109,9 @@ export async function runProgram(
     return flag === undefined ? unflagged : verbosityFlags[flag];
   }
 
-  const runReporter = reporter === undefined
-    ? createConsoleReporter({ verbosity: getVerbosity })
-    : filterReports(reporter, getVerbosity);
+  const runReporter = createReporter(
+    timeCompletions(filterReports(printer, getVerbosity)),
+  );
 
   const controller = new AbortController();
 

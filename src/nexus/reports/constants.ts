@@ -12,6 +12,7 @@ export const verbosityLevels = [
 export const reportLevels = {
   error: "important",
   warn: "important",
+  complete: "important",
   log: "default",
   info: "info",
   debug: "debug",

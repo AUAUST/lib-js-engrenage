@@ -65,6 +65,7 @@ export { createEntityIndex } from "#batiment/structure/utils/createEntityIndex";
 export { createMirrorClassifier } from "#batiment/structure/utils/createMirrorClassifier";
 export { createRootFileLocator } from "#batiment/structure/utils/createRootFileLocator";
 export { createStructureEntity } from "#batiment/structure/utils/createStructureEntity";
+export { createStructureTree } from "#batiment/structure/utils/createStructureTree";
 export { extendEntityLineage } from "#batiment/structure/utils/extendEntityLineage";
 export { extendRoleLocation } from "#batiment/structure/utils/extendRoleLocation";
 export { findStructureAliases } from "#batiment/structure/utils/findStructureAliases";
@@ -117,7 +118,6 @@ export { renderPurpose } from "#batiment/structure/utils/renderPurpose";
 export { renderStructure } from "#batiment/structure/utils/renderStructure";
 export { renderStructureDiagnostic } from "#batiment/structure/utils/renderStructureDiagnostic";
 export { renderStructureLabel } from "#batiment/structure/utils/renderStructureLabel";
-export { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
 export { resolveDomainEntries } from "#batiment/structure/utils/resolveDomainEntries";
 export { resolveNamespaceGrants } from "#batiment/structure/utils/resolveNamespaceGrants";
 // @end

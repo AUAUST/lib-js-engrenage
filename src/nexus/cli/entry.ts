@@ -13,6 +13,17 @@ export {
   runInvocations,
   runProgram,
 } from "#nexus/cli/index";
+export {
+  completionEntry,
+  densePrinter,
+  lineEntry,
+  listEntry,
+  stackEntry,
+  styled,
+  tableEntry,
+  titleEntry,
+  treeEntry,
+} from "#nexus/cli/index";
 export type {
   CommandDefinition,
   CommandParameters,
@@ -20,4 +31,27 @@ export type {
   ExtendCommand,
   InvocationFailure,
   RunContext,
+} from "#nexus/cli/index";
+export type {
+  CompletionEntry,
+  LineEntry,
+  ListEntry,
+  Printer,
+  Report,
+  ReportContent,
+  ReportData,
+  ReportEntry,
+  Reporter,
+  ReportKind,
+  ReportSpan,
+  ReportText,
+  SpanStyle,
+  StackEntry,
+  StyledSpan,
+  TableColumn,
+  TableEntry,
+  TableRow,
+  TitleEntry,
+  TreeEntry,
+  TreeNode,
 } from "#nexus/cli/index";

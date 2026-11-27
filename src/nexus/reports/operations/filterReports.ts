@@ -1,47 +1,23 @@
 import { reportLevels } from "#nexus/reports/constants";
 import { isReportShown } from "#nexus/reports/utils/isReportShown";
-import type { Reporter } from "#nexus/reports/ports/Reporter";
+import type { Printer } from "#nexus/reports/ports/Printer";
 import type { Verbosity } from "#nexus/reports/types/Verbosity";
 
 /**
- * Wraps `reporter` so it receives only the reports `verbosity` shows,
- * read at each report.
+ * Wraps `printer` so it receives only the entries `verbosity` shows,
+ * read at each entry.
  *
  * @pure
  */
 export function filterReports(
-  reporter: Reporter,
+  printer: Printer,
   verbosity: () => Verbosity,
-): Reporter {
-  function isShown(method: keyof Reporter) {
-    return isReportShown(reportLevels[method], verbosity());
+): Printer {
+  function print(...[entry, kind]: Parameters<Printer["print"]>) {
+    if (isReportShown(reportLevels[kind], verbosity())) {
+      printer.print(entry, kind);
+    }
   }
 
-  return {
-    error(text, data) {
-      if (isShown("error")) {
-        reporter.error(text, data);
-      }
-    },
-    warn(text, data) {
-      if (isShown("warn")) {
-        reporter.warn(text, data);
-      }
-    },
-    info(text, data) {
-      if (isShown("info")) {
-        reporter.info(text, data);
-      }
-    },
-    log(text, data) {
-      if (isShown("log")) {
-        reporter.log(text, data);
-      }
-    },
-    debug(text, data) {
-      if (isShown("debug")) {
-        reporter.debug(text, data);
-      }
-    },
-  };
+  return { print };
 }

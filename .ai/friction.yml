@@ -1332,3 +1332,8 @@ entries:
     tried: "dispatch ready #1010 under #1003"
     stopped: dispatch gate refused; rolling wave blocked, asked user
     created: 2026-11-27T12:00:19Z
+  - id: FR-7db798
+    subject: engrenage sync stale barrel
+    tried: sync after deleting a barrelled util
+    stopped: sync loads the stale barrel and crashes; edited the barrel line by hand
+    created: 2026-11-27T12:41:41Z

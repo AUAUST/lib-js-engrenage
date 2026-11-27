@@ -64,7 +64,7 @@ function createSyncProgram() {
 
 function run(program: Command, ...args: string[]) {
   return runEngrenageProgram(program, ["node", "program", ...args], {
-    reporter: getReporter(),
+    printer: getReporter().printer,
   });
 }
 
@@ -177,7 +177,7 @@ describe("runEngrenageProgram", () => {
         }),
       ),
       ["node", "program", "succeeding"],
-      { reporter: getReporter() },
+      { printer: getReporter().printer },
     );
 
     expect(getReporter().messages).toEqual([]);
@@ -198,7 +198,7 @@ describe("runEngrenageProgram", () => {
     } = await import("#tools/nexus/index");
 
     await runFreshProgram(createProgram(), ["node", "program", "failing"], {
-      reporter: getReporter(),
+      printer: getReporter().printer,
     });
 
     expect(printed()).toContain("    at ");

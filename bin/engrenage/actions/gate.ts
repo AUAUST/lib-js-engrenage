@@ -91,7 +91,7 @@ export default async function ({
   });
 
   if (printReport(report)) {
-    reporter.log(formatGateCoverage(report.checked));
+    reporter.complete(formatGateCoverage(report.checked));
   }
 
   const timings = formatGateTimings(report.timings, {

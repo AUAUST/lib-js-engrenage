@@ -6,7 +6,11 @@ export function addRunOptions(command: CommandUnknownOpts): void {
     "print nothing; the exit code carries the outcome",
   );
 
-  command.option("--quiet", "print only errors and warnings");
+  command.option(
+    "--quiet",
+    "print only errors, warnings and the completion line",
+  );
+
   command.option("--verbose", "also print progress and details");
 
   command.option(

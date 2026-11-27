@@ -5,8 +5,8 @@ import {
   renderStructureDiagnostic,
 } from "#batiment/structure/index";
 import {
-  formatReport,
-  type ReportData,
+  createReporter,
+  renderDenseEntry,
   type Reporter,
 } from "#nexus/reports/index";
 import {
@@ -19,19 +19,13 @@ import type { LoadedConfig } from "#project/config/index";
 import type { GateResult } from "#project/gate/index";
 
 function createRecordingReporter(problems: string[]): Reporter {
-  function record(text: string, data?: ReportData) {
-    problems.push(formatReport(text, data));
-  }
-
-  function ignore() {}
-
-  return {
-    error: record,
-    warn: record,
-    info: ignore,
-    log: ignore,
-    debug: ignore,
-  };
+  return createReporter({
+    print(entry, kind) {
+      if (kind === "error" || kind === "warn") {
+        problems.push(...renderDenseEntry(entry));
+      }
+    },
+  });
 }
 
 export async function runSyncCheck(config: LoadedConfig): Promise<GateResult> {

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { formatReport } from "#nexus/reports/index";
+import { lineEntry, renderDenseEntry } from "#nexus/reports/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
@@ -242,7 +242,9 @@ describe("syncPackageJson", () => {
 
     const warnings = reporter.messages
       .filter(({ level }) => level === "warn")
-      .map(({ text, data }) => formatReport(text, data));
+      .map(({ text, data }) => {
+        return renderDenseEntry(lineEntry(text, data)).join("\n");
+      });
 
     expect(warnings).toEqual([
       expect.stringMatching(

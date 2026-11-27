@@ -26,7 +26,5 @@ export default async function (
       return { ...entry, kind };
     });
 
-  for (const line of formatRecordTree(records)) {
-    reporter.log(line);
-  }
+  reporter.log(formatRecordTree(records));
 }

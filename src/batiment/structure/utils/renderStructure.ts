@@ -1,8 +1,9 @@
 import { flatMap } from "@auaust/toolkit/array";
 import { values } from "@auaust/toolkit/object";
 
+import { createStructureTree } from "#batiment/structure/utils/createStructureTree";
 import { renderStructureDiagnostic } from "#batiment/structure/utils/renderStructureDiagnostic";
-import { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
+import { renderDenseEntry } from "#nexus/reports/index";
 import type { Alias } from "#batiment/structure/types/Alias";
 import type { ResolvedStructure } from "#batiment/structure/types/ResolvedStructure";
 
@@ -15,11 +16,13 @@ export function renderStructure(
       ? []
       : [
           ...(index === 0 ? [] : [""]),
-          ...renderStructureTree({
-            namespace,
-            aliases,
-            detailed: true,
-          }),
+          ...renderDenseEntry(
+            createStructureTree({
+              namespace,
+              aliases,
+              detailed: true,
+            }),
+          ),
           ...namespace.diagnostics
             .filter(({ code }) => code === "unreached")
             .map(renderStructureDiagnostic),

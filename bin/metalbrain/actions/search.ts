@@ -7,7 +7,9 @@ import { searchRecords, type RecordQuery } from "#metalbrain/records/index";
 import {
   CommandUsageError,
   getRunContext,
+  lineEntry,
   runInvocations,
+  type ReportContent,
 } from "#nexus/cli/index";
 import { loadValidatedConfig } from "#workflows/config/index";
 import type { Filesystem } from "#foundation/filesystem/index";
@@ -55,7 +57,7 @@ async function search(
   words: readonly string[],
   options: Readonly<Record<string, unknown>>,
   kindName: string | undefined,
-): Promise<string[]> {
+): Promise<ReportContent[]> {
   const { text, limit, offset } = options;
 
   if (!isNumber(limit) || !isNumber(offset)) {
@@ -80,18 +82,24 @@ async function search(
 
   return [
     ...(relaxed
-      ? ["No entry matches every term; entries matching any of them:"]
+      ? [
+          lineEntry(
+            "No entry matches every term; entries matching any of them:",
+          ),
+        ]
       : []),
-    ...formatRecordTree(page),
+    formatRecordTree(page),
     ...(end < entries.length
       ? [
-          `${entries.length - end} more: ${formatRerun({
-            kindName,
-            words,
-            text,
-            limit,
-            offset: end,
-          })}`,
+          lineEntry(
+            `${entries.length - end} more: ${formatRerun({
+              kindName,
+              words,
+              text,
+              limit,
+              offset: end,
+            })}`,
+          ),
         ]
       : []),
   ];
@@ -115,13 +123,13 @@ export default async function (
     },
   );
 
-  for (const [index, lines] of outputs.entries()) {
+  for (const [index, reports] of outputs.entries()) {
     if (index > 0) {
       reporter.log("");
     }
 
-    for (const line of lines) {
-      reporter.log(line);
+    for (const report of reports) {
+      reporter.log(report);
     }
   }
 }

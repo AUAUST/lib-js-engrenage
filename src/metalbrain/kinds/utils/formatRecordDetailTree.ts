@@ -1,36 +1,45 @@
 import { isArray, isString } from "@auaust/toolkit";
 
-import { paintRecordTree } from "#metalbrain/kinds/utils/paintRecordTree";
-import type { RecordTreeNode } from "#metalbrain/kinds/types/RecordTreeNode";
+import { createRecordTree } from "#metalbrain/kinds/utils/createRecordTree";
+import {
+  styled,
+  type ReportSpan,
+  type TreeEntry,
+  type TreeNode,
+} from "#nexus/reports/index";
 import type { RecordKind, SearchedRecord } from "#metalbrain/records/index";
 
 function formatValue(value: unknown): string {
   return isString(value) ? value : JSON.stringify(value);
 }
 
-function createFieldNode(key: string, value: unknown): RecordTreeNode {
+function createFieldNode(key: string, value: unknown): TreeNode {
   return isArray(value)
     ? {
-        line: `${key}:`,
+        label: `${key}:`,
         children: value.map((item) => {
-          return { line: formatValue(item), children: [] };
+          return { label: formatValue(item), children: [] };
         }),
       }
-    : { line: `${key}: ${formatValue(value)}`, children: [] };
+    : { label: `${key}: ${formatValue(value)}`, children: [] };
 }
 
 function createEntryNode(
   kind: RecordKind,
   { entry, created, taps }: SearchedRecord,
-): RecordTreeNode {
+): TreeNode {
   const { id, ...fields } = entry;
 
   const title = kind.title === undefined ? undefined : fields[kind.title];
 
-  const headline = [id, title].filter((part) => part !== undefined);
+  const headline: ReportSpan[] = [styled("identifier", formatValue(id))];
+
+  if (title !== undefined) {
+    headline.push(" ", formatValue(title));
+  }
 
   return {
-    line: headline.map(formatValue).join(" "),
+    label: headline,
     children: [
       ...Object.entries(fields)
         .filter(([key]) => key !== kind.title)
@@ -51,12 +60,12 @@ function createEntryNode(
 }
 
 /**
- * The lines painting `records` as `paintRecordTree` does, every entry headed by
+ * The tree of `records` as `createRecordTree` makes it, every entry headed by
  * its ID and its kind's title field, then each other field, its `created` and
  * its taps on a line under it, a list's items under their field.
  */
 export function formatRecordDetailTree(
   records: readonly SearchedRecord[],
-): string[] {
-  return paintRecordTree(records, createEntryNode);
+): TreeEntry {
+  return createRecordTree(records, createEntryNode);
 }

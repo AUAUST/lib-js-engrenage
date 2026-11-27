@@ -19,7 +19,5 @@ export default async function (category: string | undefined): Promise<void> {
     return { ...entry, kind: backlog };
   });
 
-  for (const line of formatRecordTree(records)) {
-    reporter.log(line);
-  }
+  reporter.log(formatRecordTree(records));
 }

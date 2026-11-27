@@ -1,8 +1,7 @@
-import { flatMap } from "@auaust/toolkit/array";
-
 import { findStructureAliases } from "#batiment/structure/utils/findStructureAliases";
 import { listNodeViolations } from "#batiment/structure/utils/listNodeViolations";
 import { renderStructureLabel } from "#batiment/structure/utils/renderStructureLabel";
+import { treeEntry, type TreeEntry, type TreeNode } from "#nexus/reports/index";
 import type { Alias } from "#batiment/structure/types/Alias";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
@@ -79,26 +78,16 @@ function listRows(node: StructureNode, options: TreeOptions): TreeRow[] {
     });
 }
 
-function renderRows(
-  node: StructureNode,
-  options: TreeOptions,
-  prefix: string,
-): string[] {
-  const rows = listRows(node, options);
-
-  return flatMap(rows, ({ line, node: child }, index) => {
-    const last = index === rows.length - 1;
-
-    return [
-      `${prefix}${last ? "└─ " : "├─ "}${line}`,
-      ...(child === undefined
-        ? []
-        : renderRows(child, options, `${prefix}${last ? "   " : "│  "}`)),
-    ];
+function listNodes(node: StructureNode, options: TreeOptions): TreeNode[] {
+  return listRows(node, options).map(({ line, node: child }) => {
+    return {
+      label: line,
+      children: child === undefined ? [] : listNodes(child, options),
+    };
   });
 }
 
-export function renderStructureTree({
+export function createStructureTree({
   namespace,
   aliases,
   globalRoles = new Map(),
@@ -108,7 +97,7 @@ export function renderStructureTree({
   aliases: readonly Alias[];
   globalRoles?: ReadonlyMap<StructureNode, readonly string[]>;
   detailed?: boolean;
-}): string[] {
+}): TreeEntry {
   const { root } = namespace;
 
   const spansDirectories = root.children.some(({ kind }) => {
@@ -124,16 +113,20 @@ export function renderStructureTree({
     globalRoles,
   };
 
-  return [
-    renderStructureLabel({
-      node: root,
-      ...options,
-      name: spansDirectories ? namespace.name : `${namespace.dirs.join("/ ")}/`,
-      extras: [
-        ...(detailed ? [`(${namespace.strictness})`] : []),
-        ...renderGlobalRoles(root, options),
-      ],
-    }),
-    ...renderRows(root, options, ""),
-  ];
+  return treeEntry([
+    {
+      label: renderStructureLabel({
+        node: root,
+        ...options,
+        name: spansDirectories
+          ? namespace.name
+          : `${namespace.dirs.join("/ ")}/`,
+        extras: [
+          ...(detailed ? [`(${namespace.strictness})`] : []),
+          ...renderGlobalRoles(root, options),
+        ],
+      }),
+      children: listNodes(root, options),
+    },
+  ]);
 }

@@ -4,8 +4,9 @@ import { capitalize } from "@auaust/toolkit/string";
 
 import { entryRoleName, indexRoleName } from "#batiment/roles/constants";
 import { listStaticFileGlobs, type ResolvedRoles } from "#batiment/roles/index";
+import { createStructureTree } from "#batiment/structure/utils/createStructureTree";
 import { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
-import { renderStructureTree } from "#batiment/structure/utils/renderStructureTree";
+import { renderDenseEntry } from "#nexus/reports/index";
 import type { Alias } from "#batiment/structure/types/Alias";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
@@ -66,11 +67,13 @@ export function renderNamespaceMap({
     }),
   );
 
-  const tree = renderStructureTree({
-    namespace,
-    aliases,
-    globalRoles,
-  });
+  const tree = renderDenseEntry(
+    createStructureTree({
+      namespace,
+      aliases,
+      globalRoles,
+    }),
+  );
 
   return [
     `# Project map: ${name}`,
