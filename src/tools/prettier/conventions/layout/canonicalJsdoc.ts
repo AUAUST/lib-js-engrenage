@@ -7,6 +7,7 @@ import {
   isJsdocComment,
   parseJsdoc,
   printJsdoc,
+  type JsdocBlock,
   type JsdocTag,
 } from "#foundation/jsdoc/index";
 import { splitDocTag, type TagDeclaration } from "#project/docs/index";
@@ -209,6 +210,14 @@ function formatTag(
   };
 }
 
+function printBlock(block: JsdocBlock): string {
+  const [tag, ...rest] = block.tags;
+
+  return block.description === "" && tag?.text === "" && rest.length === 0
+    ? `${block.indent}/** @${tag.name} */`
+    : printJsdoc(block);
+}
+
 function getRank(tags: readonly TagDeclaration[], tag: JsdocTag): number {
   const index = tags.findIndex(({ name }) => name === tag.name);
 
@@ -238,7 +247,7 @@ const canonicalJsdoc: LayoutConvention = (
     const block = parseJsdoc(source, lineStart);
     const width = printWidth - getColumns(block.indent, tabWidth) - prefixWidth;
 
-    const printed = printJsdoc({
+    const printed = printBlock({
       ...block,
       description: wrapDescription(block.description, width),
       tags: sort(

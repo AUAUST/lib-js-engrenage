@@ -433,6 +433,14 @@ describe("canonicalJsdoc", () => {
       "/**\n * @type {number}\n */\nexport const foo = 1;\n",
     ],
     [
+      "/**\n * @internal\n */\nexport const foo = 1;\n",
+      "/** @internal */\nexport const foo = 1;\n",
+    ],
+    [
+      "/**\n * Text\n * @foo\n */\nexport const foo = 1;\n",
+      "/**\n * Text\n *\n * @foo\n */\nexport const foo = 1;\n",
+    ],
+    [
       "/**\n * Foo.\n * @param value Input.\n */\nfunction foo(value: string): void {}\n",
       "/**\n * Foo.\n *\n * @param value - Input.\n */\nfunction foo(value: string): void {}\n",
     ],
