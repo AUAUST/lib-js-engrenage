@@ -86,12 +86,6 @@ entries:
     why: batiment mpa suggested map on Commander, prints none now; map --check=x suggested --check, now only unknown option '--check=x'
     want: Suggestions catching transpositions and a boolean flag given an inline value
     created: 2026-11-27T17:01:18Z
-  - id: BL-6ebbd8
-    title: Chained completion lines each carry the run's elapsed time instead of a separate total
-    sites:
-      - src/nexus/cli/operations/runProgram.ts:36
-    want: "one completion line per segment, then the run's total time, per plan #1003 Chain"
-    created: 2026-11-27T19:28:33Z
   - id: BL-ecb4e5
     title: Engrenage's executables wrap their run beyond nexus's launch
     sites:

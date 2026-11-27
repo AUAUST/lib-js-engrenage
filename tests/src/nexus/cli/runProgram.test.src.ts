@@ -11,6 +11,7 @@ import {
 } from "#nexus/cli/index";
 import { runProgram } from "#nexus/cli/operations/runProgram";
 import { useFailingProgram } from "#tests/utils/useFailingProgram";
+import type { ReportEntry } from "#nexus/reports/index";
 
 const { getReporter, createProgram, printed } = useFailingProgram();
 
@@ -33,6 +34,14 @@ function createStepProgram(action: (step: string) => void) {
     }),
     scenarios: getReporter().scenarios,
   });
+}
+
+function readDuration(entry: ReportEntry | undefined): number {
+  if (entry?.kind !== "completion" || entry.duration === undefined) {
+    throw new Error("Expected a timed completion line");
+  }
+
+  return entry.duration;
 }
 
 function run(program: ProgramDeclaration, ...args: string[]) {
@@ -227,6 +236,8 @@ describe("runProgram", () => {
     const stderr = vi
       .spyOn(process.stderr, "write")
       .mockImplementation(() => true);
+
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 
     const program = declareProgram({
       root: command({
@@ -428,6 +439,38 @@ describe("runProgram", () => {
       );
 
       expect(process.exitCode).toBe(1);
+    });
+
+    test("times each invocation's completion line on its own, then reports the run's total", async () => {
+      const { declared } = createChainProgram((note: string) => {
+        getRunContext().reporter.complete(note);
+      });
+
+      await run(declared, "add", "--text", "a", "--next", "add", "--text", "b");
+
+      const [first, second, total] = getReporter().entries;
+
+      expect(getReporter().entries).toEqual([
+        {
+          kind: "completion",
+          text: "a",
+          duration: expect.any(Number),
+        },
+        {
+          kind: "completion",
+          text: "b",
+          duration: expect.any(Number),
+        },
+        {
+          kind: "completion",
+          text: "2 invocations completed",
+          duration: expect.any(Number),
+        },
+      ]);
+
+      expect(readDuration(total)).toBeGreaterThan(
+        readDuration(first) + readDuration(second),
+      );
     });
 
     test("stops at an invocation leaving a failing exit code", async () => {

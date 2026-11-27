@@ -34,18 +34,22 @@ import type { VerbosityFlag } from "#nexus/cli/types/VerbosityFlag";
 
 const abortingSignals = ["SIGHUP", "SIGINT", "SIGTERM"] as const;
 
-// @debt the completion line's total reads the clock since process start until the run's own timings measure it
-function timeCompletions(printer: Printer): Printer {
+// @debt a run's total time reads the clock since process start until the run's own timings measure it
+function timeCompletions(printer: Printer, readStart: () => number): Printer {
   function print(...[entry, kind]: Parameters<Printer["print"]>) {
     printer.print(
       entry.kind === "completion" && entry.duration === undefined
-        ? { ...entry, duration: performance.now() }
+        ? { ...entry, duration: performance.now() - readStart() }
         : entry,
       kind,
     );
   }
 
   return { print };
+}
+
+function readProcessStart(): number {
+  return 0;
 }
 
 function readRunTimings(
@@ -195,28 +199,31 @@ function reportFailure(
 /**
  * Runs a program within its run context: aborts it on SIGHUP, SIGINT and SIGTERM,
  * hands the printer of its output scenario every entry the verbosity its run
- * options set shows, else `debug` when `<ROOT>_DEBUG`, `<ROOT>` its root's name
- * in upper case, is `1` or `true`, else `default`, each completion line with
- * the run's total time, and on failure sets the exit code to 1 and prints its
- * error, a usage error alone, any other led by what `explain` returns for it,
- * with its stack at `debug`, which `resolveDebug` also sets when no flag does;
- * the failure handler, when given, receives the error instead, with the command
- * path the run resolved to, its arguments, the run's reporter and this report to
- * run. It prints for the scenario `--output` names, else, unless the run asks
- * for help or the version, the one the deepest command of its first invocation's
- * path declares, else the first of its scenarios one of its detectors names,
- * through the printer the resolved command binds to it, else the one the program
- * declares, loaded once the run resolves, before any action loads, and holding
- * the entries reported until then. A chain runs its invocations in order, each
- * in a run context of its own whose reporter prints through the printer its
- * command binds to the run's scenario, so a memo keyed by reporter reads afresh
- * what earlier invocations wrote; the first one failing, by an error or a failing
- * exit code, stops the rest, with a warning naming it and those it skips. Once
- * the run ends unaborted, it reports the marks and measures of the performance
- * timeline since it started, behind the time from process start to the run's,
- * as a table: with `--timings` at any verbosity but `silent`, otherwise as a
- * debug report; it measures its own phases, each invocation's routing, source
- * and layer loading and validation, then the action's loading and execution.
+ * options set shows, else `debug` when `<ROOT>_DEBUG`, `<ROOT>` its root's
+ * name in upper case, is `1` or `true`, else `default`, a single invocation's
+ * completion lines with the run's total time, and on failure sets the exit
+ * code to 1 and prints its error, a usage error alone, any other led by what
+ * `explain` returns for it, with its stack at `debug`, which `resolveDebug` also
+ * sets when no flag does; the failure handler, when given, receives the error
+ * instead, with the command path the run resolved to, its arguments, the run's
+ * reporter and this report to run. It prints for the scenario `--output` names,
+ * else, unless the run asks for help or the version, the one the deepest command
+ * of its first invocation's path declares, else the first of its scenarios one
+ * of its detectors names, through the printer the resolved command binds to it,
+ * else the one the program declares, loaded once the run resolves, before any
+ * action loads, and holding the entries reported until then. A chain runs its
+ * invocations in order, each in a run context of its own whose reporter prints
+ * through the printer its command binds to the run's scenario, so a memo keyed
+ * by reporter reads afresh what earlier invocations wrote, and whose completion
+ * lines carry its own time; the first one failing, by an error or a failing
+ * exit code, stops the rest, with a warning naming it and those it skips, and a
+ * chain running every invocation ends on a completion line counting them, with
+ * the run's total time. Once the run ends unaborted, it reports the marks and
+ * measures of the performance timeline since it started, behind the time from
+ * process start to the run's, as a table: with `--timings` at any verbosity
+ * but `silent`, otherwise as a debug report; it measures its own phases, each
+ * invocation's routing, source and layer loading and validation, then the
+ * action's loading and execution.
  */
 export async function runProgram(
   program: ProgramDeclaration,
@@ -279,12 +286,14 @@ export async function runProgram(
 
     printer = await loadScenarioPrinter(scenario, { scenarios, bindings });
 
-    output.settle(timeCompletions(filterReports(printer, getVerbosity)));
+    output.settle(
+      timeCompletions(filterReports(printer, getVerbosity), readProcessStart),
+    );
   }
 
   async function createSegmentReporter(
     invocation: Resolution,
-  ): Promise<Reporter> {
+  ): Promise<{ reporter: Reporter; start(): void }> {
     if (printer === undefined || scenario === undefined) {
       throw new Error("A chain runs before its run settles its printer");
     }
@@ -295,9 +304,22 @@ export async function runProgram(
       ? printer
       : await loadScenarioPrinter(scenario, { scenarios, bindings });
 
-    return createReporter(
-      timeCompletions(filterReports(segmentPrinter, getVerbosity)),
+    let segmentStarted = performance.now();
+
+    function start() {
+      segmentStarted = performance.now();
+    }
+
+    const reporter = createReporter(
+      timeCompletions(filterReports(segmentPrinter, getVerbosity), () => {
+        return segmentStarted;
+      }),
     );
+
+    return {
+      reporter,
+      start,
+    };
   }
 
   const runReporter = createReporter(output);
@@ -319,13 +341,15 @@ export async function runProgram(
       invocations.map(async (invocation) => {
         return {
           invocation,
-          reporter: await createSegmentReporter(invocation),
+          ...(await createSegmentReporter(invocation)),
         };
       }),
     );
 
-    for (const [index, { invocation, reporter }] of segments.entries()) {
+    for (const [index, { invocation, reporter, start }] of segments.entries()) {
       const position = index + 1;
+
+      start();
 
       try {
         await runContext.run({ signal: runSignal, reporter }, () => {
@@ -347,6 +371,8 @@ export async function runProgram(
         );
       }
     }
+
+    runReporter.complete(`${invocations.length} invocations completed`);
   }
 
   try {
