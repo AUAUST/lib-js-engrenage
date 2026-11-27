@@ -14,6 +14,12 @@ const operations = createRolePreset({
   effects: { evaluation: "confined", invocation: "effectful" },
 });
 
+const observing = createRolePreset({
+  name: "observing",
+  exports: "named-match",
+  effects: { evaluation: "confined", invocation: "observing" },
+});
+
 const bootstrap = createRolePreset({
   name: "bootstrap",
   exports: "named-match",
@@ -74,7 +80,8 @@ async function createLinter({
       types: "index.d.ts",
     }),
     "node_modules/valibot/index.d.ts": "export declare function string(): void;\n",
-    "src/foundation/base/index.ts": 'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\n',
+    "src/foundation/base/index.ts": 'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\nexport { define } from "#foundation/base/operations/define";\n',
+    "src/foundation/base/operations/define.ts": "/**\n * @confined\n */\nexport function define() {}\n",
     "src/foundation/base/entry.ts": 'export * from "#foundation/base/index";\n',
     "src/foundation/base/utils/helper.ts": "export function helper() {}\n",
     "src/foundation/base/operations/act.ts": "export function act() {}\n",
@@ -331,13 +338,7 @@ describe("import effects", () => {
 
   test("judge against the invocation ceiling of a role stating its ceilings apart", async () => {
     const lint = await createLinter({
-      roles: [
-        createRolePreset({
-          name: "observing",
-          exports: "named-match",
-          effects: { evaluation: "confined", invocation: "observing" },
-        })(),
-      ],
+      roles: [observing()],
     });
 
     const read = "src/project/feature/observing/read.ts";
@@ -501,6 +502,52 @@ describe("import effects", () => {
 
     expect(
       await lint("src/project/feature/config/defineFeatureConfig.ts", run),
+    ).toEqual([]);
+  });
+
+  test("hold a tagged function's own body to its tag and charge its tag to invokers", async () => {
+    const lint = await createLinter({
+      roles: [observing()],
+    });
+
+    const read = 'import { read } from "#project/feature/observing/read";\n\n';
+
+    expect(
+      await lint(
+        handler,
+        `${read}/**\n * @pure\n */\nexport function value() {\n  return () => read();\n}\n`,
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(
+        handler,
+        `${read}/**\n * @pure\n */\nexport function value() {\n  return read();\n}\n`,
+      ),
+    ).toEqual([
+      expect.stringContaining("the level its effect doc tag declares (pure)"),
+    ]);
+
+    expect(
+      await lint(handler, importing("#foundation/base/index", "define")),
+    ).toEqual([]);
+  });
+
+  test("report a tag above its role's invocation ceiling", async () => {
+    const lint = await createLinter();
+
+    expect(
+      await lint(
+        utility,
+        "/**\n * @effectful\n */\nexport const own = () => {};\n",
+      ),
+    ).toEqual([expect.stringContaining("tags a function or class effectful")]);
+
+    expect(
+      await lint(
+        utility,
+        "/**\n * @effect pure\n */\nexport function own() {}\n",
+      ),
     ).toEqual([]);
   });
 });

@@ -2,8 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 
-async function lintDocTags(source: string) {
-  const { lint } = await createProjectLinter("export default {};\n");
+async function lintDocTags(source: string, config = "export default {};\n") {
+  const { lint } = await createProjectLinter(config);
 
   const messages = await lint("src/example.ts", "auaust/doc-tags", source);
 
@@ -79,5 +79,27 @@ describe("docs.docTags", () => {
     ].join("\n");
 
     expect(await lintDocTags(source)).toStrictEqual([]);
+  });
+
+  test("accepts an effect tag naming a configured level and reports one naming none", async () => {
+    const config = 'export default { structure: { effects: { levels: ["pure", { name: "logging", purpose: "Write logs." }, "printing", "confined", "observing", "effectful"] } } };\n';
+
+    const tagged = (body: string) => {
+      return `/**\n * ${body}\n */\nexport function f(): void {}\n`;
+    };
+
+    expect(await lintDocTags(tagged("@effect logging"), config)).toStrictEqual(
+      [],
+    );
+
+    expect(await lintDocTags(tagged("@observing"), config)).toStrictEqual([]);
+
+    const [
+      unknown,
+      ...rest
+    ] = await lintDocTags(tagged("@effect loud"), config);
+
+    expect(rest).toStrictEqual([]);
+    expect(unknown?.message).toContain("@effect");
   });
 });

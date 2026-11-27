@@ -1,4 +1,4 @@
-import { isArray, iterable } from "@auaust/toolkit";
+import { isArray, isFunction, iterable } from "@auaust/toolkit";
 import {
   difference,
   intersection,
@@ -23,9 +23,11 @@ async function collectTags(
 
   const sets = await Promise.all(
     iterable.map(contributions, async ({ entry, extension }) => {
+      const set = await loadLazy(entry);
+
       return {
         source: `${extension.name} (${entry.name})`,
-        declarations: await loadLazy(entry),
+        declarations: isFunction(set) ? await set(config) : set,
       };
     }),
   );

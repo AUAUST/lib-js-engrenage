@@ -69,7 +69,7 @@ describe("docs section", () => {
 
     const names = tags.map(({ name }) => name);
 
-    expect(names.indexOf("stable")).toBe(names.length - 2);
+    expect(names.indexOf("stable")).toBe(names.indexOf("experimental") - 1);
     expect(tags.find(({ name }) => name === "stable")?.output).toBe("internal");
   });
 

@@ -13,17 +13,20 @@ import {
   functionNodeTypes,
 } from "#tools/eslint/effects/constants";
 import { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
+import { appendEntry } from "#tools/eslint/effects/utils/appendEntry";
 import { invocationOf } from "#tools/eslint/effects/utils/invocationOf";
 import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
 import type { ResolvedEffects } from "#batiment/effects/index";
 import type { EntityIndex } from "#batiment/structure/index";
+import type { TagDeclaration } from "#project/docs/index";
 import type { EffectCharge } from "#tools/eslint/effects/types/EffectCharge";
+import type { EffectDeclaration } from "#tools/eslint/effects/types/EffectDeclaration";
 import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 import type { Directory } from "#types/Directory";
 
-type PendingCharge = Omit<EffectCharge, "position" | "through">;
+type PendingCharge = Omit<EffectCharge, "position" | "through" | "declared">;
 
 interface LocalCall {
   callee: SyntaxNode;
@@ -39,20 +42,26 @@ function isGenerator(node: SyntaxNode): boolean {
  * Collects what each use of an imported binding charges, by the position running
  * it: a charge belongs to the innermost function whose body runs it, and a local
  * function or class invoked while the module evaluates charges there what its
- * own body runs, through the local calls it makes in turn.
+ * own body runs, through the local calls it makes in turn. A function or class
+ * carrying an effect doc tag is passed to `declare`, and what its own body runs
+ * at invocation carries its tag.
  */
 export function collectEffectCharges({
   context,
   entities,
   effects,
+  tags,
   root,
   charge,
+  declare,
 }: {
   context: Rule.RuleContext;
   entities: EntityIndex;
   effects: ResolvedEffects;
+  tags: readonly TagDeclaration[];
   root: Directory;
   charge(found: EffectCharge): void;
+  declare(found: EffectDeclaration): void;
 }): Rule.RuleListener {
   const { sourceCode } = context;
   const services = sourceCode.parserServices;
@@ -64,36 +73,27 @@ export function collectEffectCharges({
   const { program, esTreeNodeToTSNodeMap } = services;
   const checker: TypeChecker = program.getTypeChecker();
 
-  const { rankModule, rankBinding } = createEffectRanker({
+  const { rankModule, rankBinding, rankDeclared } = createEffectRanker({
     program,
     checker,
     entities,
     effects,
+    tags,
     root,
   });
 
   const runs = new Map<SyntaxNode | undefined, PendingCharge[]>();
   const calls = new Map<SyntaxNode | undefined, LocalCall[]>();
 
-  function append<Value>(
-    map: Map<SyntaxNode | undefined, Value[]>,
-    runner: SyntaxNode | undefined,
-    value: Value,
-  ) {
-    const list = map.get(runner);
-
-    if (list === undefined) {
-      map.set(runner, [value]);
-    } else {
-      list.push(value);
-    }
-  }
-
   // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
   function symbolOf(node: object): Symbol | undefined {
     return checker.getSymbolAtLocation(
       esTreeNodeToTSNodeMap.get(node) as TsNode,
     );
+  }
+
+  function declaredOf(runner: SyntaxNode): string | undefined {
+    return rankDeclared(esTreeNodeToTSNodeMap.get(runner) as TsNode);
   }
 
   function moduleOf(symbol: Symbol | undefined) {
@@ -116,7 +116,7 @@ export function collectEffectCharges({
     const loaded = rankModule(symbolOf(source), specifier);
 
     if (loaded !== undefined) {
-      append(runs, runner, {
+      appendEntry(runs, runner, {
         node,
         operation: "evaluate",
         binding: specifier,
@@ -154,7 +154,7 @@ export function collectEffectCharges({
       const ranked = rank(invocation.members);
 
       if (ranked !== undefined) {
-        append(runs, invocation.runner, {
+        appendEntry(runs, invocation.runner, {
           node: invocation.site,
           operation: "invoke",
           ...ranked,
@@ -170,7 +170,7 @@ export function collectEffectCharges({
   ) {
     for (const invocation of invocationsOf(variables)) {
       if (invocation.members.length === 0) {
-        append(calls, invocation.runner, {
+        appendEntry(calls, invocation.runner, {
           callee,
           node: invocation.site,
           name,
@@ -200,6 +200,7 @@ export function collectEffectCharges({
           node,
           position: "evaluation",
           through: name,
+          declared: undefined,
         });
       }
 
@@ -280,7 +281,7 @@ export function collectEffectCharges({
         const { fallback } = effects;
 
         if (fallback !== undefined) {
-          append(runs, runner, {
+          appendEntry(runs, runner, {
             node: expression,
             operation: "evaluate",
             binding: sourceCode.getText(source),
@@ -310,7 +311,7 @@ export function collectEffectCharges({
         const ranked = rankBinding(exported, specifier, exported.name);
 
         if (ranked !== undefined) {
-          append(runs, runner, {
+          appendEntry(runs, runner, {
             node: expression,
             operation: "invoke",
             binding: exported.name,
@@ -376,13 +377,23 @@ export function collectEffectCharges({
         recordLocal(sourceCode.getDeclaredVariables(declarator), init, id.name);
       }
     },
+    ":function, ClassDeclaration, ClassExpression"(node: SyntaxNode) {
+      const level = declaredOf(node);
+
+      if (level !== undefined) {
+        declare({ node, level });
+      }
+    },
     "Program:exit"() {
       for (const [runner, ran] of runs) {
+        const declared = runner === undefined ? undefined : declaredOf(runner);
+
         for (const pending of ran) {
           charge({
             ...pending,
             position: runner === undefined ? "evaluation" : "invocation",
             through: undefined,
+            declared,
           });
         }
       }

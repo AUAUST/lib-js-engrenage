@@ -1,7 +1,9 @@
 // @barrel utils
 export { createTagPreset } from "#project/docs/utils/createTagPreset";
 export { listConventionalTags } from "#project/docs/utils/listConventionalTags";
+export { listEffectTags } from "#project/docs/utils/listEffectTags";
 export { readDocTag } from "#project/docs/utils/readDocTag";
+export { readEffectLevel } from "#project/docs/utils/readEffectLevel";
 export { splitDocTag } from "#project/docs/utils/splitDocTag";
 // @end
 
@@ -54,6 +56,7 @@ export type * from "#project/docs/types/DocTag";
 export type * from "#project/docs/types/SourceDeclaration";
 export type * from "#project/docs/types/TagDeclaration";
 export type * from "#project/docs/types/TagPreset";
+export type * from "#project/docs/types/TagSet";
 // @end
 
 // @barrel ports

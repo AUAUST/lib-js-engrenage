@@ -5,6 +5,7 @@ import {
   type Program,
   type SourceFile,
   type Symbol,
+  type Node as TsNode,
   type TypeChecker,
 } from "typescript";
 
@@ -14,25 +15,30 @@ import {
   type ResolvedEffects,
 } from "#batiment/effects/index";
 import { relativeWithin } from "#foundation/filesystem/index";
+import { readDeclaredLevel } from "#tools/eslint/effects/utils/readDeclaredLevel";
 import type { EntityIndex } from "#batiment/structure/index";
+import type { TagDeclaration } from "#project/docs/index";
 import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
 import type { Directory } from "#types/Directory";
 
 /**
  * Ranks the modules and bindings a file imports: an internal one by its entity's
- * ceilings, an external one by the configured and shipped ranks.
+ * ceilings, a binding its effect doc tag invokes at, an external one by the
+ * configured and shipped ranks.
  */
 export function createEffectRanker({
   program,
   checker,
   entities,
   effects,
+  tags,
   root,
 }: {
   program: Program;
   checker: TypeChecker;
   entities: EntityIndex;
   effects: ResolvedEffects;
+  tags: readonly TagDeclaration[];
   root: Directory;
 }) {
   function isExternal(file: SourceFile) {
@@ -41,6 +47,19 @@ export function createEffectRanker({
       program.isSourceFileFromExternalLibrary(file) ||
       file.fileName.includes("/node_modules/")
     );
+  }
+
+  const declaredLevels = new Map<TsNode, string | undefined>();
+
+  /**
+   * The invocation level the effect doc tag of `declaration` declares, read once.
+   */
+  function rankDeclared(declaration: TsNode): string | undefined {
+    if (!declaredLevels.has(declaration)) {
+      declaredLevels.set(declaration, readDeclaredLevel(declaration, tags));
+    }
+
+    return declaredLevels.get(declaration);
   }
 
   function rankInternal(file: SourceFile): RankedUnit | undefined {
@@ -69,7 +88,7 @@ export function createEffectRanker({
     };
   }
 
-  function declaringFile(symbol: Symbol | undefined) {
+  function declarationOf(symbol: Symbol | undefined) {
     if (symbol === undefined) {
       return;
     }
@@ -86,7 +105,7 @@ export function createEffectRanker({
     }
 
     // @debt Only the first declaration ranks a merged symbol; declarations spread over several files may rank differently.
-    return target.declarations?.[0]?.getSourceFile();
+    return target.declarations?.[0];
   }
 
   /**
@@ -126,14 +145,24 @@ export function createEffectRanker({
     specifier: string,
     imported: string,
   ): RankedUnit | undefined {
-    const file = declaringFile(symbol);
+    const declaration = declarationOf(symbol);
 
-    if (file === undefined) {
+    if (declaration === undefined) {
       return;
     }
 
+    const file = declaration.getSourceFile();
+
     if (!isExternal(file)) {
-      return rankInternal(file);
+      const ranked = rankInternal(file);
+      const declared = rankDeclared(declaration);
+
+      return ranked === undefined || declared === undefined
+        ? ranked
+        : {
+            unit: ranked.unit,
+            target: { ...ranked.target, invocation: declared },
+          };
     }
 
     const invocation = rankMember(effects, specifier, imported);
@@ -149,5 +178,9 @@ export function createEffectRanker({
         };
   }
 
-  return { rankModule, rankBinding };
+  return {
+    rankModule,
+    rankBinding,
+    rankDeclared,
+  };
 }

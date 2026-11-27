@@ -46,3 +46,8 @@ entries:
     need: type syntax nodes from getAncestors in effect charges
     instead: Parameters<SourceCode["getAncestors"]>[0] in src/tools/eslint/effects/types/EffectCharge.ts
     created: 2026-11-27T00:46:32Z
+  - id: MI-32b0eb
+    subject: Map append to list entry
+    need: group effect charges by runner
+    instead: appendEntry in src/tools/eslint/effects/utils/appendEntry.ts
+    created: 2026-11-27T01:22:14Z
