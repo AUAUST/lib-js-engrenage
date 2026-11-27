@@ -4,22 +4,22 @@ entries:
     title: A tap whose entry another branch closed fails the record check after a union merge, and no command removes it
     sites:
       - src/metalbrain/records/operations/findRecordViolations.ts:67
-      - bin/metalbrain/tap.ts:5
+      - bin/metalbrain/logs/index.ts:53
     want: A merge leaves no orphan tap, or a command removes orphan taps
     done: An orphan tap after a union merge no longer needs a hand edit
     created: 2026-11-25T02:49:45Z
   - id: BL-3aa775
     title: Debt is recorded only as code markers, so no command lists every debt whatever its origin
     sites:
-      - bin/metalbrain/debt.ts:1
+      - bin/metalbrain/index.ts:55
     why: the Compass plan (#916) makes debt one concept, in code markers and namespace and domain metafiles alike
     want: metalbrain debt lists debt from every source that states it
     created: 2026-11-25T11:21:49Z
   - id: BL-0429eb
     title: Backlog add and update repeat the sites, why, want and done option declarations
     sites:
-      - bin/metalbrain/backlog/add.ts:12
-      - bin/metalbrain/backlog/update.ts:15
+      - bin/metalbrain/backlog/index.ts:69
+      - bin/metalbrain/backlog/index.ts:128
     why: jscpd flags the two option blocks
     want: one declaration of the shared entry-field options both commands use
     created: 2026-11-27T17:31:54Z

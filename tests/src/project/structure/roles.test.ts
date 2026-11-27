@@ -51,7 +51,6 @@ describe("roles", () => {
     expect(keys(roles.bin?.roles ?? {})).toEqual([
       "index",
       "executable",
-      "commands",
       "actions",
     ]);
   });

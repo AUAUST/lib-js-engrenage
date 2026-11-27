@@ -3,9 +3,9 @@ import { parse } from "yaml";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -21,13 +21,13 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
 
   mockCwd(project.root);
 
-  await runCommand("sync", sync, "pnpm", "--check");
+  await runDefinition(engrenage, "sync", "pnpm", "--check");
 
   expect(process.exitCode).toBe(1);
 
   process.exitCode = undefined;
 
-  await runCommand("sync", sync, "pnpm");
+  await runDefinition(engrenage, "sync", "pnpm");
 
   expect(parse(project.read("pnpm-workspace.yaml"))).toEqual({
     allowBuilds: {
@@ -39,7 +39,7 @@ test("sync adds missing shared workspace settings and keeps explicit denials", a
     verifyDepsBeforeRun: "error",
   });
 
-  await runCommand("sync", sync, "pnpm", "--check");
+  await runDefinition(engrenage, "sync", "pnpm", "--check");
 
   expect(process.exitCode).toBeUndefined();
 });
@@ -54,11 +54,11 @@ test("sync keeps the stale-install policy a project sets", async () => {
 
   mockCwd(project.root);
 
-  await runCommand("sync", sync, "pnpm", "--check");
+  await runDefinition(engrenage, "sync", "pnpm", "--check");
 
   expect(process.exitCode).toBeUndefined();
 
-  await runCommand("sync", sync, "pnpm");
+  await runDefinition(engrenage, "sync", "pnpm");
 
   expect(parse(project.read("pnpm-workspace.yaml"))).toMatchObject({
     verifyDepsBeforeRun: "install",

@@ -63,7 +63,7 @@ export interface AuaustRules {
   "auaust/documented"?: Rule<[]>;
   /**
    * A domain holds only roles, sub-domains and namespaces, and a namespace only
-   * domains and namespaces; a command group also holds command modules.
+   * domains and namespaces.
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
@@ -125,7 +125,7 @@ export interface AuaustRules {
   /**
    * A domain index or an enabled role barrel only re-exports: it declares no local
    * value, except a SCREAMING_CASE constant of metadata, and default-exports no
-   * expression; the index.ts of a command group declares its command.
+   * expression; the index.ts of a command group declares its commands.
    */
   "auaust/index-declarations"?: Rule<[]>;
   /**

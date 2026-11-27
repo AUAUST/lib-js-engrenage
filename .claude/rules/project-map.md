@@ -107,5 +107,4 @@ Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `e
 | `fixtures` | Static test inputs. |  |  |  | pure |  | `tests` |
 | `testsetup` | Test runner setup file. | `setup.ts` |  |  | effectful |  | `tests` |
 | `executable` | A program's executable: it loads the program's root group and runs it. | `executable.ts` |  |  | effectful |  | `bin`, `scripts` |
-| `commands` | One command's description, arguments and options, and the glue to its action. | `*.ts` |  | values `default`, types `none` | evaluation confined, invocation effectful |  | `bin`, `scripts` |
 | `actions` | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |  |  | values `default`, types `none` | evaluation confined, invocation effectful |  | `bin`, `scripts` |

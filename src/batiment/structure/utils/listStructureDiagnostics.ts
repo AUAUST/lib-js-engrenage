@@ -3,7 +3,6 @@ import { flatMap } from "@auaust/toolkit/array";
 import { collectStructureNodes } from "#batiment/structure/utils/collectStructureNodes";
 import { listSharedPathDiagnostics } from "#batiment/structure/utils/listSharedPathDiagnostics";
 import { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
-import { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
 import type { StructureDiagnostic } from "#batiment/report/index";
 import type { NamespaceStructure } from "#batiment/structure/types/NamespaceStructure";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
@@ -39,19 +38,15 @@ function listNodeErrors(
         files: violation.files,
       };
     }),
-    ...(node.twin === undefined
-      ? []
-      : [
-          {
-            ...located,
-            code: "twin" as const,
-            message: renderCommandGroupTwin({
-              path: node.path,
-              twin: node.twin,
-            }),
-            files: [node.twin],
-          },
-        ]),
+    ...(node.modules ?? []).map((module) => {
+      return {
+        ...located,
+        path: module,
+        code: "command-group-module" as const,
+        message: "sits in a command group outside its roles: declare its commands in the group's index and move the rest into a role.",
+        files: [module],
+      };
+    }),
   ];
 }
 

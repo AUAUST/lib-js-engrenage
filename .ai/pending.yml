@@ -11,3 +11,9 @@ entries:
     why: "transitional same-command batch from #1021"
     owner: "#1016"
     created: 2026-11-27T16:35:22Z
+  - id: PD-64cbc9
+    subject: source loading phase
+    what: add sources phase to runPhases; wrap source loads in timer.timeAsync in resolveInvocation resolvePath
+    why: "sources land with #1008"
+    owner: "#1008"
+    created: 2026-11-27T17:59:46Z

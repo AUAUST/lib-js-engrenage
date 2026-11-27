@@ -7,19 +7,18 @@ export default defineConvention({
   rule: ({ entities }) => {
     return defineStructureRule({
       entities,
-      description: "A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces; a command group also holds command modules.",
+      description: "A domain holds only roles, sub-domains and namespaces, and a namespace only domains and namespaces.",
       messages: {
         domain: "A domain holds only role directories, sub-domains and the files of its roles; move this file into the role directory it belongs to.",
         namespace: "A namespace holds only domains and namespaces; move this file into a domain.",
       },
-      create(context, { kind, group, fileRole }) {
+      create(context, { kind, fileRole }) {
         return {
           Program(program) {
             if (
               (kind === "domain" ||
                 kind === "namespace" ||
                 kind === "directory") &&
-              !group &&
               fileRole === undefined
             ) {
               context.report({

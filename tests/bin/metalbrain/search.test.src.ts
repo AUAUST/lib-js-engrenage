@@ -1,13 +1,12 @@
 import { describe, expect, test } from "vitest";
 
-import { defineLogGroup } from "#bin/metalbrain/logs/index";
+import { defineLogGroup, search } from "#bin/metalbrain/logs/index";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runCommand } from "#tests/utils/runCommand";
 
 import backlog from "#bin/metalbrain/backlog/index";
-import search from "#bin/metalbrain/search";
 
 const cli = "purpose: Commands.\nentries:\n  - id: BL-0c1100\n    title: Output to a closed pipe crashes\n  - id: BL-0c1200\n    title: Program wiring copies internals\n";
 

@@ -88,6 +88,7 @@ export { isPlaced } from "#batiment/structure/utils/isPlaced";
 export { isPublicRole } from "#batiment/structure/utils/isPublicRole";
 export { isViolatingNode } from "#batiment/structure/utils/isViolatingNode";
 export { listBlockingDiagnostics } from "#batiment/structure/utils/listBlockingDiagnostics";
+export { listCommandGroupModules } from "#batiment/structure/utils/listCommandGroupModules";
 export { listDeclaredOptionPaths } from "#batiment/structure/utils/listDeclaredOptionPaths";
 export { listDirectoriesRootDiagnostics } from "#batiment/structure/utils/listDirectoriesRootDiagnostics";
 export { listDirectoryLineages } from "#batiment/structure/utils/listDirectoryLineages";
@@ -98,6 +99,7 @@ export { listNamedFileRoles } from "#batiment/structure/utils/listNamedFileRoles
 export { listNamespaceDirectories } from "#batiment/structure/utils/listNamespaceDirectories";
 export { listNodeViolations } from "#batiment/structure/utils/listNodeViolations";
 export { listSharedPathDiagnostics } from "#batiment/structure/utils/listSharedPathDiagnostics";
+export { listStrayFiles } from "#batiment/structure/utils/listStrayFiles";
 export { listStructureDiagnostics } from "#batiment/structure/utils/listStructureDiagnostics";
 export { listStructureRoles } from "#batiment/structure/utils/listStructureRoles";
 export { listTestsRootDiagnostics } from "#batiment/structure/utils/listTestsRootDiagnostics";
@@ -106,7 +108,6 @@ export { loosenStructureNode } from "#batiment/structure/utils/loosenStructureNo
 export { matchFileRole } from "#batiment/structure/utils/matchFileRole";
 export { mergeStructureMetadata } from "#batiment/structure/utils/mergeStructureMetadata";
 export { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
-export { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
 export { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
 export { renderEffectCeilings } from "#batiment/structure/utils/renderEffectCeilings";
 export { renderImportCycle } from "#batiment/structure/utils/renderImportCycle";

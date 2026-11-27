@@ -1,23 +1,17 @@
-import { basename, extname, join, matchesGlob } from "node:path";
+import { join, matchesGlob } from "node:path";
 
-import { entries, freeze, hasOwn, keys, values } from "@auaust/toolkit/object";
+import { entries, freeze, hasOwn, keys } from "@auaust/toolkit/object";
 
 import { assignRoleFiles } from "#batiment/context/operations/assignRoleFiles";
-import {
-  listReexportModes,
-  listStaticFileGlobs,
-  type ResolvedRoles,
-} from "#batiment/roles/index";
-import {
-  domainMetadataFile,
-  namespaceMetadataFile,
-} from "#batiment/scopes/constants";
+import { listReexportModes, type ResolvedRoles } from "#batiment/roles/index";
 import { defaultReexport } from "#batiment/structure/constants";
 import {
   constrainsFileRole,
   getStructureCardinality,
   groupRoleFiles,
+  listCommandGroupModules,
   listNamedFileRoles,
+  listStrayFiles,
   type StructureNode,
   type StructureOptions,
 } from "#batiment/structure/index";
@@ -207,26 +201,11 @@ export function createStructureDomainResolver({
       return !unknown.includes(role);
     });
 
-    const fileGlobs = values(contracts).flatMap(({ file }) => {
-      return listStaticFileGlobs(file);
-    });
+    const listed = await assignRoleFiles(filesystem, path, roles);
 
-    // @debt `assignRoleFiles` computes the same static file globs again; it could return them with its assignments
-    const assigned = group
-      ? []
-      : await assignRoleFiles(filesystem, path, roles);
-
-    const strays = assigned
-      .map(([file]) => file)
-      .filter((file) => {
-        const name = basename(file);
-
-        return (
-          name !== namespaceMetadataFile &&
-          name !== domainMetadataFile &&
-          !fileGlobs.some((glob) => matchesGlob(name, glob))
-        );
-      });
+    const assigned = group ? [] : listed;
+    const strays = listStrayFiles(listed);
+    const modules = group ? listCommandGroupModules(strays, indexFile) : [];
 
     const owned = listNamedFileRoles(
       keys(contracts),
@@ -238,14 +217,12 @@ export function createStructureDomainResolver({
 
     const roleFiles = groupRoleFiles(assigned);
 
-    const twin = `${path}${extname(indexFile)}`;
-
     const isPublic = await resolvePublic(path, metadata.public);
 
     return {
       ...(group ? { group: true as const } : {}),
-      ...(group && (await filesystem.exists(twin)) ? { twin } : {}),
       ...(strays.length === 0 ? {} : { strays }),
+      ...(modules.length === 0 ? {} : { modules }),
       ...cardinality,
       ...(keys(roleFiles).length === 0 ? {} : { roleFiles }),
       public: isPublic,

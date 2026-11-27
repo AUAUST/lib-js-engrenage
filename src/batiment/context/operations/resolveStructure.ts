@@ -264,6 +264,7 @@ function freezeNode(node: StructureNode): StructureNode {
     node.layers,
     node.mirror,
     node.strays,
+    node.modules,
     node.roleFiles,
     node.fileNames,
     node.cardinality,

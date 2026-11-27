@@ -4,7 +4,6 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import eslint from "#bin/engrenage/eslint";
 import engrenage from "#bin/engrenage/index";
 
 function createProject() {
@@ -39,7 +38,7 @@ describe("engrenage eslint", () => {
   test("runs without a cache", async () => {
     const project = createProject();
 
-    await runDefinition(eslint, "src");
+    await runDefinition(engrenage, "eslint", "src");
 
     expect(readRecordedArgs(project)).toEqual([
       "--flag",

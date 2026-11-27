@@ -8,6 +8,6 @@ export function isViolatingNode(
   return (
     (strictness === "strict" && node.kind === "unclassified") ||
     node.cardinality !== undefined ||
-    node.twin !== undefined
+    node.modules !== undefined
   );
 }

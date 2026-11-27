@@ -5,9 +5,9 @@ import { loadConfig } from "#project/config/operations/loadConfig";
 import { runSync } from "#project/sync/index";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 const hostIgnores = [
   "/shopify.app*.toml",
@@ -73,7 +73,7 @@ describe("shopify-app", () => {
   test("syncs the extension workspaces", async () => {
     const project = createApp();
 
-    await runCommand("sync", sync, "workspaces", "pnpm");
+    await runDefinition(engrenage, "sync", "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/*\n",
@@ -184,7 +184,7 @@ describe("shopify-app", () => {
 `,
     });
 
-    await runCommand("sync", sync, "workspaces", "pnpm");
+    await runDefinition(engrenage, "sync", "workspaces", "pnpm");
 
     expect(JSON.parse(project.read("extensions/a/package.json")).name).toBe(
       "@scope/a",

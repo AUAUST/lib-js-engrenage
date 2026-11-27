@@ -11,9 +11,9 @@ import { buildLibraryCode } from "#tests/utils/buildLibraryCode";
 import { createProjectLinter } from "#tests/utils/createProjectLinter";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 const placeholder = "{dir}";
 
@@ -64,7 +64,7 @@ describe("workspaces", () => {
   test("syncs the workspace files of two globs, and a check reports drift", async () => {
     const project = createProject();
 
-    await runCommand("sync", sync, "workspaces", "pnpm");
+    await runDefinition(engrenage, "sync", "workspaces", "pnpm");
 
     expect(project.read("pnpm-workspace.yaml")).toContain(
       "packages:\n  - extensions/action-*\n  - extensions/functions-*\n",
@@ -107,7 +107,7 @@ describe("workspaces", () => {
       existsSync(project.resolve("extensions/action-b/tsconfig.json")),
     ).toBe(false);
 
-    await runCommand("sync", sync, "workspaces", "pnpm", "--check");
+    await runDefinition(engrenage, "sync", "workspaces", "pnpm", "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
@@ -127,7 +127,7 @@ describe("workspaces", () => {
       }),
     );
 
-    await runCommand("sync", sync, "workspaces");
+    await runDefinition(engrenage, "sync", "workspaces");
 
     expect(
       JSON.parse(project.read("extensions/action-a/package.json"))
@@ -148,7 +148,7 @@ describe("workspaces", () => {
 
     mockCwd(project.root);
 
-    await runCommand("sync", sync, "barrels");
+    await runDefinition(engrenage, "sync", "barrels");
 
     expect(
       existsSync(project.resolve("extensions/action-b/src/greet/index.ts")),
@@ -163,7 +163,7 @@ describe("workspaces", () => {
       JSON.stringify({ name: "@scope/renamed" }),
     );
 
-    await runCommand("sync", sync, "workspaces");
+    await runDefinition(engrenage, "sync", "workspaces");
 
     expect(
       JSON.parse(project.read("extensions/action-b/package.json")).name,
@@ -185,7 +185,7 @@ describe("workspaces", () => {
       }),
     );
 
-    await runCommand("sync", sync, "package", "workspaces");
+    await runDefinition(engrenage, "sync", "package", "workspaces");
 
     function readRuntime(file: string) {
       return JSON.parse(project.read(file)).devEngines.runtime.version;
@@ -204,7 +204,7 @@ describe("workspaces", () => {
 
     const {
       messages,
-    } = await runCommand("sync", sync, "workspaces", "--check");
+    } = await runDefinition(engrenage, "sync", "workspaces", "--check");
 
     expect(process.exitCode).toBe(1);
 

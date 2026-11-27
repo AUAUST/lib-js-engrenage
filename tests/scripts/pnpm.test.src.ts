@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { runContext } from "#nexus/cli/operations/runContext";
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
-import { runDefinition } from "#tests/utils/runDefinition";
+import { createTestReporter } from "#tests/utils/createTestReporter";
 import { resolveLatestPnpm } from "#tools/pnpm/operations/resolveLatestPnpm";
 
-import pnpm from "#scripts/pnpm";
+import checkPnpm from "#scripts/actions/pnpm";
 
 vi.mock("#tools/pnpm/operations/resolveLatestPnpm");
 
@@ -40,7 +41,14 @@ describe("support pnpm", () => {
     async (_gap, newest, level, fails) => {
       vi.mocked(resolveLatestPnpm).mockResolvedValue(newest);
 
-      const { messages } = await runDefinition(pnpm, "--check");
+      const reporter = createTestReporter();
+
+      await runContext.run(
+        { signal: new AbortController().signal, reporter },
+        () => checkPnpm({ check: true }),
+      );
+
+      const { messages } = reporter;
 
       expect(messages.map((message) => message.level)).toStrictEqual([level]);
       expect(process.exitCode === 1).toBe(fails);

@@ -8,7 +8,6 @@ export type * from "#project/roles/ports/RolePresetEntry";
 // @barrel presets
 export { actions } from "#project/roles/presets/actions";
 export { adapters } from "#project/roles/presets/adapters";
-export { commands } from "#project/roles/presets/commands";
 export { components } from "#project/roles/presets/components";
 export { constants } from "#project/roles/presets/constants";
 export { contexts } from "#project/roles/presets/contexts";

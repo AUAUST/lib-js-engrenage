@@ -6,7 +6,7 @@ import { linkPackage } from "#tests/utils/linkPackage";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import eslintFix from "#bin/engrenage/eslintFix";
+import engrenage from "#bin/engrenage/index";
 
 const suppressed = {
   "no-debugger": {
@@ -40,7 +40,7 @@ test(
 
     mockCwd(project.resolve("sub"));
 
-    await runDefinition(eslintFix, "../a.ts");
+    await runDefinition(engrenage, "eslint:fix", "../a.ts");
 
     expect(JSON.parse(project.read("eslint-suppressions.json"))).toEqual({
       "sub/b.ts": suppressed,

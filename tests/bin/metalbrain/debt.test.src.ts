@@ -5,7 +5,7 @@ import { getFixture } from "#tests/utils/getFixture";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import debt from "#bin/metalbrain/debt";
+import metalbrain from "#bin/metalbrain/index";
 
 beforeEach(() => {
   mockCwd(getFixture("debt"));
@@ -17,7 +17,7 @@ afterEach(() => {
 
 describe("metalbrain debt", { timeout: binaryTimeout }, () => {
   test("prints one line per marker, ignoring malformed markers", async () => {
-    const { messages } = await runDefinition(debt);
+    const { messages } = await runDefinition(metalbrain, "debt");
 
     expect(messages).toStrictEqual([
       {
@@ -31,7 +31,7 @@ describe("metalbrain debt", { timeout: binaryTimeout }, () => {
   });
 
   test("states the markers as data", async () => {
-    const { entries } = await runDefinition(debt);
+    const { entries } = await runDefinition(metalbrain, "debt");
 
     expect(entries).toMatchObject([
       {

@@ -13,7 +13,7 @@ import type { Globs } from "#types/Globs";
 /**
  * One directory of an environment's structure, with its classification and the
  * options its declaration or inference sets; violations sit on the node holding
- * them, as `cardinality`, `twin` or, for an unclassified node, `reason`.
+ * them, as `cardinality`, `modules` or, for an unclassified node, `reason`.
  *
  * @experimental
  */
@@ -44,7 +44,7 @@ export interface StructureNode {
   readonly strays?: readonly Directory[];
   readonly roleFiles?: Readonly<Record<string, readonly File[]>>;
   readonly cardinality?: readonly CardinalityViolation[];
-  readonly twin?: File;
+  readonly modules?: readonly File[];
   readonly fileNames?: Readonly<Record<string, Globs>>;
   readonly children: readonly StructureNode[];
 }

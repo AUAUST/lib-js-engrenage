@@ -4,13 +4,7 @@ import { keys } from "@auaust/toolkit/object";
 
 import { noEffects } from "#batiment/effects/constants";
 import { listNamespaceRoles, resolveRoles } from "#batiment/roles/index";
-import {
-  actions,
-  commands,
-  executable,
-  index,
-  utils,
-} from "#project/roles/index";
+import { actions, executable, index, utils } from "#project/roles/index";
 
 describe("listNamespaceRoles", () => {
   test("lets a listed role replace the layout's role of the same name", () => {
@@ -18,7 +12,7 @@ describe("listNamespaceRoles", () => {
       namespace: "scripts",
       roles: listNamespaceRoles({
         namespace: "scripts",
-        layoutRoles: [index(), executable(), commands(), actions()],
+        layoutRoles: [index(), executable(), actions()],
         roles: [index({ purpose: "The group." })],
         defaults: [],
       }),
@@ -29,12 +23,7 @@ describe("listNamespaceRoles", () => {
 
     expect(resolved.roles.index?.purpose).toBe("The group.");
 
-    expect(keys(resolved.roles)).toEqual([
-      "index",
-      "executable",
-      "commands",
-      "actions",
-    ]);
+    expect(keys(resolved.roles)).toEqual(["index", "executable", "actions"]);
   });
 
   test("lets a listed role replace the default of its name", () => {

@@ -17,9 +17,7 @@ async function createLinter() {
     "engrenage.config.ts": 'export default { preset: "library" };\n',
     "scripts/index.ts": "export default 1;\n",
     "scripts/executable.ts": "await Promise.resolve();\n",
-    "scripts/pnpm.ts": command,
     "scripts/codegen/index.ts": "export default 1;\n",
-    "scripts/codegen/apis.ts": command,
     "scripts/codegen/actions/apis.ts": command,
     "scripts/codegen/operations/generateThing.ts": "export const generateThing = 1;\n",
   });
@@ -53,7 +51,7 @@ async function createLinter() {
 }
 
 describe("command trees", () => {
-  test("accept default-exported commands, groups and actions", async () => {
+  test("accept default-exported groups and actions", async () => {
     const { project, lint } = await createLinter();
 
     const config = await loadConfig(project.root);
@@ -64,7 +62,6 @@ describe("command trees", () => {
 
     for (const file of [
       "scripts/index.ts",
-      "scripts/pnpm.ts",
       "scripts/codegen/index.ts",
       "scripts/codegen/actions/apis.ts",
     ]) {
@@ -72,11 +69,11 @@ describe("command trees", () => {
     }
   });
 
-  test("require a command module to default-export its command", async () => {
+  test("reject a module beside a group's index", async () => {
     const { lint } = await createLinter();
 
-    expect(
-      await lint("scripts/codegen/apis.ts", "export const apis = 1;\n"),
-    ).toEqual(["auaust/role-exports"]);
+    for (const file of ["scripts/pnpm.ts", "scripts/codegen/apis.ts"]) {
+      expect(await lint(file, command)).toEqual(["auaust/domain-content"]);
+    }
   });
 });

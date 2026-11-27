@@ -11,7 +11,7 @@ import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import { reportAgentChecks } from "#tools/metalbrain/operations/reportAgentChecks";
 import { runEngrenageProgram } from "#tools/nexus/index";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 vi.mock(
   import("#foundation/processes/operations/spawnProcess"),
@@ -53,7 +53,7 @@ const { getReporter, createProgram, printed } = useFailingProgram();
 
 function createSyncProgram(scenarios = nexusScenarios) {
   return program({
-    root: command({ name: "program", subcommands: [sync] }),
+    root: engrenage,
     scenarios,
   });
 }

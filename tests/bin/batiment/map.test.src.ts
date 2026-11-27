@@ -4,7 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import map from "#bin/batiment/map";
+import batiment from "#bin/batiment/index";
 
 const files = {
   "package.json": '{ "name": "project", "type": "module" }',
@@ -38,7 +38,7 @@ describe("batiment map", () => {
       '{ src: { strictness: "loose", structure: { domains: { feature: { purpose: "A configured feature." } } } } }',
     );
 
-    const { messages } = await runDefinition(map);
+    const { messages } = await runDefinition(batiment, "map");
 
     expect(messages.slice(0, 3)).toStrictEqual([
       {
@@ -62,7 +62,7 @@ describe("batiment map", () => {
   test("warns on a domain without a purpose without failing the check", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    const { warnings } = await runDefinition(map, "--check");
+    const { warnings } = await runDefinition(batiment, "map", "--check");
 
     expect(warnings).toContain(
       "src/feature has no purpose: set one on its `domains` entry.",
@@ -74,7 +74,7 @@ describe("batiment map", () => {
   test("states the report's facts and diagnostics as data", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    const { entries } = await runDefinition(map);
+    const { entries } = await runDefinition(batiment, "map");
 
     const data = entries.find((entry) => {
       return entry.kind === "data";
@@ -104,7 +104,7 @@ describe("batiment map", () => {
       '{ src: { strictness: "loose", structure: { purpose: "The code.", domains: { feature: { purpose: "A configured feature." }, mystery: { purpose: "Additional fixture files." } } } }, tooling: { structure: { purpose: "The config." } } }',
     );
 
-    const { warnings } = await runDefinition(map, "--check");
+    const { warnings } = await runDefinition(batiment, "map", "--check");
 
     expect(warnings).toStrictEqual([]);
   });
@@ -112,7 +112,7 @@ describe("batiment map", () => {
   test("fails the check on an unclassified directory of a strict environment", async () => {
     createProject("{}");
 
-    await runDefinition(map, "--check");
+    await runDefinition(batiment, "map", "--check");
 
     expect(process.exitCode).toBe(1);
   });
@@ -120,24 +120,30 @@ describe("batiment map", () => {
   test("passes the check on the same directory under loose", async () => {
     createProject('{ src: { strictness: "loose" } }');
 
-    await runDefinition(map, "--check");
+    await runDefinition(batiment, "map", "--check");
 
     expect(process.exitCode).toBeUndefined();
   });
 
   test.each([
-    ["fails", { "scripts/bar.ts": "" }, 1],
-    ["passes", {}, undefined],
+    ["fails", "beside the root group's index", { "scripts/bar.ts": "" }, 1],
+    ["fails", "beside a nested group's index", { "scripts/bar/baz.ts": "" }, 1],
+    [
+      "passes",
+      "in a group's actions",
+      { "scripts/bar/actions/baz.ts": "" },
+      undefined,
+    ],
   ] as const)(
-    "%s the check on a module beside a command group of its name",
-    async (_verdict, extra, exitCode) => {
+    "%s the check on a module %s",
+    async (_verdict, _place, extra, exitCode) => {
       createProject('{ src: { strictness: "loose" } }', {
         "scripts/index.ts": "",
         "scripts/bar/index.ts": "",
         ...extra,
       });
 
-      await runDefinition(map, "--check");
+      await runDefinition(batiment, "map", "--check");
 
       expect(process.exitCode).toBe(exitCode);
     },
@@ -149,7 +155,7 @@ describe("batiment map", () => {
       "tests/src/ghost/y.test.ts": "",
     });
 
-    await runDefinition(map, "--check");
+    await runDefinition(batiment, "map", "--check");
 
     expect(process.exitCode).toBe(1);
   });

@@ -8,7 +8,7 @@ import type { ValueOrigin } from "#foundation/options/index";
 const separators = {
   "unclassified": "  ",
   "cardinality": "  ",
-  "twin": "  ",
+  "command-group-module": "  ",
   "unreached": "  ",
   "missing-purpose": " ",
   "import-cycle": "  ",

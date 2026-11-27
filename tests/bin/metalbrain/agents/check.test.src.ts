@@ -4,7 +4,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { runDefinition } from "#tests/utils/runDefinition";
 
-import check from "#bin/metalbrain/agents/check";
+import agents from "#bin/metalbrain/agents/index";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -20,7 +20,7 @@ test("logs a configured finding without --verbose", async () => {
     }).root,
   );
 
-  const { messages } = await runDefinition(check);
+  const { messages } = await runDefinition(agents, "check");
 
   expect(messages).toContainEqual({
     level: "log",

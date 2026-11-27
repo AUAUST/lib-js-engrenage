@@ -12,7 +12,7 @@ import { runDefinition } from "#tests/utils/runDefinition";
 import { withSourceRuntime } from "#tests/utils/withSourceRuntime";
 import { syncTsconfigFiles } from "#tools/typescript/setup/syncTsconfigFiles";
 
-import tsc from "#bin/engrenage/tsc";
+import engrenage from "#bin/engrenage/index";
 
 vi.mock(import("node:child_process"), { spy: true });
 
@@ -192,7 +192,7 @@ describe(
       symlinkSync(repositoryModules, project.resolve("node_modules"));
       mockCwd(project.root);
 
-      await runDefinition(tsc);
+      await runDefinition(engrenage, "tsc");
     }
 
     test("passes when every referenced environment checks", async () => {

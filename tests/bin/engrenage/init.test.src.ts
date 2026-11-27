@@ -11,7 +11,6 @@ import { keys } from "@auaust/toolkit/object";
 
 import { spawnProcess } from "#foundation/processes/operations/spawnProcess";
 import { scratchpadPlaceholder } from "#metalbrain/backlog/constants";
-import { command } from "#nexus/cli/index";
 import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
 import { workflowTimeout } from "#tests/constants";
@@ -24,8 +23,7 @@ import type { Prompter } from "#project/steps/index";
 
 import * as prompts from "#workflows/init/operations/createPrompter";
 
-import init from "#bin/engrenage/init";
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 import manifest from "#package.json" with { type: "json" };
 
 vi.setConfig({ testTimeout: workflowTimeout });
@@ -60,17 +58,12 @@ function createProject(files: Record<string, string>) {
   return project;
 }
 
-const program = command({
-  name: "program",
-  subcommands: [init, sync],
-});
-
 let messages: Awaited<
   ReturnType<typeof runDefinition>
 >["messages"][number][] = [];
 
 async function run(...args: string[]) {
-  const reporter = await runDefinition(program, ...args);
+  const reporter = await runDefinition(engrenage, ...args);
 
   messages.push(...reporter.messages);
 }

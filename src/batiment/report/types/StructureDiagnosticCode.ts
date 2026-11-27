@@ -1,6 +1,6 @@
 /**
  * What a structure diagnostic reports: an unclassified directory under `strict`,
- * a role cardinality violation, a module beside the command group of its name, a
+ * a role cardinality violation, a module of a command group outside its roles, a
  * declaration the walk never reaches, a domain without purpose, an import cycle,
  * or a walk finding: a metafile unreadable, invalid, misplaced or conflicting
  * with another metafile or the config, `children` set on the root of a namespace
@@ -25,7 +25,7 @@
 export type StructureDiagnosticCode =
   | "unclassified"
   | "cardinality"
-  | "twin"
+  | "command-group-module"
   | "unreached"
   | "missing-purpose"
   | "import-cycle"

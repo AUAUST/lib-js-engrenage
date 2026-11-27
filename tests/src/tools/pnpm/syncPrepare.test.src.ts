@@ -2,9 +2,9 @@ import { afterEach, expect, test, vi } from "vitest";
 
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -24,7 +24,7 @@ async function syncPrepare(scripts: Record<string, string>, config = "{}") {
 
   mockCwd(project.root);
 
-  await runCommand("sync", sync, "prepare");
+  await runDefinition(engrenage, "sync", "prepare");
 
   const { scripts: synced } = JSON.parse(project.read("package.json")) as {
     scripts: Record<string, string>;

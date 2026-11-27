@@ -6,9 +6,9 @@ import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import sync from "#bin/engrenage/sync";
+import engrenage from "#bin/engrenage/index";
 
 const emptyBlock = [
   "<!-- @reference ./.claude/shared.md -->",
@@ -43,7 +43,7 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 
-    await runCommand("sync", sync);
+    await runDefinition(engrenage, "sync");
 
     expect(project.read("AGENTS.md")).toContain("## Shared section");
 
@@ -51,7 +51,7 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
       '"editor.formatOnSave": true',
     );
 
-    const { messages } = await runCommand("sync", sync, "--check");
+    const { messages } = await runDefinition(engrenage, "sync", "--check");
 
     expect(process.exitCode).toBeUndefined();
 
@@ -67,9 +67,9 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
   test("reports the agent findings of a check to the run's reporter", async () => {
     createProject();
 
-    await runCommand("sync", sync);
+    await runDefinition(engrenage, "sync");
 
-    const { messages } = await runCommand("sync", sync, "--check");
+    const { messages } = await runDefinition(engrenage, "sync", "--check");
 
     const findings = messages.filter(({ text }) => {
       return text.startsWith("claude · ");
@@ -83,7 +83,9 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
   test("checks only the selected targets and the fill targets without writing", async () => {
     const project = createProject();
 
-    const { messages } = await runCommand("sync", sync, "vscode", "--check");
+    const {
+      messages,
+    } = await runDefinition(engrenage, "sync", "vscode", "--check");
 
     expect(process.exitCode).toBe(1);
 
@@ -104,11 +106,11 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
 
     mockCwd(project.root);
 
-    await runCommand("sync", sync, "vscode");
+    await runDefinition(engrenage, "sync", "vscode");
 
     expect(existsSync(project.resolve(".vscode/settings.json"))).toBe(false);
 
-    await runCommand("sync", sync, "vscode", "--vscode-settings");
+    await runDefinition(engrenage, "sync", "vscode", "--vscode-settings");
 
     expect(JSON.parse(project.read(".vscode/settings.json"))).toMatchObject({
       "editor.formatOnSave": true,
@@ -133,7 +135,7 @@ describe("engrenage sync", { timeout: workflowTimeout }, () => {
 
     mockCwd(project.root);
 
-    await runCommand("sync", sync);
+    await runDefinition(engrenage, "sync");
 
     expect(existsSync(project.resolve("tsconfig.json"))).toBe(true);
     expect(project.read(".gitignore")).toContain("/dist");

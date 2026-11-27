@@ -23,6 +23,8 @@ import {
   createMirrorClassifier,
   getStructureLayer,
   groupRoleFiles,
+  listCommandGroupModules,
+  listStrayFiles,
   listStructureRoles,
   listTestsRootDiagnostics,
   loosenStructureNode,
@@ -226,9 +228,11 @@ export async function resolveNamespaceStructure({
 
       const rootRoles = directoryRolesFor(scopes);
 
-      const roleFiles = groupRoleFiles(
-        await assignRoleFiles(filesystem, directory, rootRoles),
-      );
+      const assigned = await assignRoleFiles(filesystem, directory, rootRoles);
+
+      const roleFiles = groupRoleFiles(assigned);
+
+      const strays = group ? listStrayFiles(assigned) : [];
 
       return {
         directory,
@@ -237,6 +241,7 @@ export async function resolveNamespaceStructure({
         domainResolver,
         children,
         roleFiles,
+        strays,
       };
     }),
   );
@@ -278,6 +283,8 @@ export async function resolveNamespaceStructure({
   }
 
   const rootRoleFiles = spansDirectories ? {} : (walked[0]?.roleFiles ?? {});
+  const rootStrays = flat(walked.map((each) => each.strays));
+  const rootModules = listCommandGroupModules(rootStrays, indexFile);
 
   const resolvedRoot: StructureNode = freeze({
     path: namespaceRoot,
@@ -287,6 +294,8 @@ export async function resolveNamespaceStructure({
     ...(group ? { group: true as const } : {}),
     ...describeNamespace(rootDeclaration),
     ...(keys(rootRoleFiles).length === 0 ? {} : { roleFiles: rootRoleFiles }),
+    ...(rootStrays.length === 0 ? {} : { strays: rootStrays }),
+    ...(rootModules.length === 0 ? {} : { modules: rootModules }),
     children: spansDirectories
       ? walked.map((each): StructureNode => {
           const directoryName = posix.relative(scope, each.directory);

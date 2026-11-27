@@ -3,9 +3,9 @@ import { describe, expect, test } from "vitest";
 import { binaryTimeout } from "#tests/utils/binaryTimeout";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
-import { runCommand } from "#tests/utils/runCommand";
+import { runDefinition } from "#tests/utils/runDefinition";
 
-import show from "#bin/metalbrain/show";
+import metalbrain from "#bin/metalbrain/index";
 
 function createProject() {
   const project = createTemporaryProject({
@@ -27,7 +27,7 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
   test("prints a renamed entry given its former ID, naming its new ID", async () => {
     createProject();
 
-    const { messages } = await runCommand("show", show, "261122-8ede");
+    const { messages } = await runDefinition(metalbrain, "show", "261122-8ede");
 
     expect(messages.map(({ text }) => text)).toEqual([
       "261122-8ede is now BL-3fa9c1",
@@ -42,7 +42,7 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
 
     const {
       messages,
-    } = await runCommand("show", show, "BL-3fa9c1", "FR-08d2e7");
+    } = await runDefinition(metalbrain, "show", "BL-3fa9c1", "FR-08d2e7");
 
     expect(messages.map(({ text }) => text)).toEqual([
       "backlog:",
@@ -60,7 +60,7 @@ describe("metalbrain show", { timeout: binaryTimeout }, () => {
 
     const {
       messages,
-    } = await runCommand("show", show, "FR-08d2e7,", " BL-3fa9c1");
+    } = await runDefinition(metalbrain, "show", "FR-08d2e7,", " BL-3fa9c1");
 
     expect(messages.map(({ text }) => text)).toEqual([
       "friction:",

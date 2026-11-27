@@ -6,7 +6,7 @@ paths:
 # Project map: bin
 
 ```
-bin/  The `engrenage`, `metalbrain` and `batiment` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains.  (global roles: executable.ts *.ts)
+bin/  The `engrenage`, `metalbrain` and `batiment` CLIs: Node programs published with the package and run in the user's project, each command thin over `src` domains.  (global roles: executable.ts)
 ├─ batiment  Batiment commands: walk the project structure and report how batiment classifies it.  [debt: Ships batiment's CLI inside engrenage, by an earlier decision outside engrenage's Compass.]
 ├─ engrenage{pnpm}  Project tooling commands.
 │  └─ pnpm  Package manager maintenance commands.
@@ -25,4 +25,4 @@ bin/  The `engrenage`, `metalbrain` and `batiment` CLIs: Node programs published
       └─ walk  Check a walked issue tree.
 ```
 
-Commands: one directory per command group, whose `index.ts` names its subcommands and their aliases; the root group's `executable.ts` runs it; each other module is one command.
+Commands: one directory per command group, whose `index.ts` declares its commands, each loading its own action module from `actions/`, and may mount commands another group's `index.ts` exports; the root group's `executable.ts` runs it; a group holds no other module.
