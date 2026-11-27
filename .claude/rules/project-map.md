@@ -69,7 +69,7 @@ The matrix states top-level namespace grants; domain and role boundaries still a
 
 ## Roles
 
-Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role with a level imports at runtime only roles of its level or a purer one. Global roles import each other, and domains only with `import type`. Other domains import a role's modules one by one only when it is `public`, otherwise only through its domain's index. They import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces, and a `modules` role's directly; no index lists them.
+Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A role's level caps both what its modules do while they evaluate and what their exports do once invoked, unless it states its `evaluation` and `invocation` ceilings apart. A role with an invocation ceiling imports at runtime only roles whose invocation ceiling is that level or a purer one. Global roles import each other, and domains only with `import type`. Other domains import a role's modules one by one only when it is `public`, otherwise only through its domain's index. They import a `collected` role's modules inside sub-domains too, past their parent domains' surfaces, and a `modules` role's directly; no index lists them.
 
 - `pure`: Compute from arguments only, without observable changes.
 - `confined`: Mutate caller-owned values or maintain a private memo cache.
@@ -78,7 +78,7 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 
 | Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `index` | The domain's public surface. | `index.ts` |  |  |  |  | `src`, `tests`, `bin`, `scripts`, `tooling` |
+| `index` | The domain's public surface. | `index.ts` |  |  | evaluation pure |  | `src`, `tests`, `bin`, `scripts`, `tooling` |
 | `constants` | Deeply read-only constants of the domain. | `constants.ts` |  | `subpath` | pure | public | `src`, `tests`, `scripts`, `tooling` |
 | `declarations` | Ambient type declarations. | `*.d.ts` |  |  |  |  | `src`, `tests`, `scripts`, `tooling` |
 | `types` | Types only, one per module. |  |  | values `none`, types `named-match` |  | type-only | `src`, `tests`, `scripts`, `tooling` |
@@ -87,7 +87,7 @@ Effect levels, purest first: `pure` < `confined` < `observing` < `effectful`. A 
 | `ports` | Interfaces other domains implement, definers' included, importable module by module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
 | `adapters` | Implementations of other domains' ports, importable module by module. |  |  | values `named-match`, types `named-match` | effectful | public | `src`, `tests`, `scripts`, `tooling` |
 | `operations` | Effectful logic of the domain. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tests`, `scripts`, `tooling` |
-| `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  |  |  | `src` |
+| `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  | evaluation pure |  | `src` |
 | `apis` | Interfaces of the objects the domain creates and hands out, one per module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
 | `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | effectful | public, collected | `src` |
 | `utils` | Confined functions, one per module. |  |  | values `named-match`, types `none` | confined |  | `src`, `scripts`, `tooling` |

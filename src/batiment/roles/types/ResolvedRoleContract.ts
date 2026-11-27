@@ -1,3 +1,4 @@
+import type { EffectCeilings } from "#batiment/effects/index";
 import type { roleSurfaces } from "#batiment/roles/constants";
 import type { ReexportMode } from "#batiment/roles/types/ReexportMode";
 import type { ResolvedRoleExports } from "#batiment/roles/types/ResolvedRoleExports";
@@ -31,7 +32,7 @@ export interface ResolvedRoleContract {
   readonly typeOnly: boolean;
   readonly unique: boolean;
   readonly required: boolean;
-  readonly effects: string | undefined;
+  readonly effects: EffectCeilings;
   readonly purpose: string | undefined;
   readonly debt: string | undefined;
   readonly rules: RoleRules | undefined;

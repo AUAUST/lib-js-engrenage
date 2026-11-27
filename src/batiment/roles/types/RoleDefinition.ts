@@ -3,6 +3,7 @@ import type { RoleInput } from "#batiment/roles/types/RoleInput";
 
 export interface RoleDefinition extends Omit<
   ResolvedRoleContract,
+  | "effects"
   | "exports"
   | "reexport"
   | "nesting"
@@ -18,6 +19,7 @@ export interface RoleDefinition extends Omit<
   | "unique"
   | "required"
 > {
+  readonly effects: RoleInput["effects"];
   readonly exports: RoleInput["exports"];
   readonly reexport: RoleInput["reexport"];
   readonly nesting: ResolvedRoleContract["nesting"] | undefined;

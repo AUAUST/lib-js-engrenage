@@ -31,7 +31,7 @@ function contract(
     required: false,
     purpose: undefined,
     debt: undefined,
-    effects: undefined,
+    effects: { evaluation: undefined, invocation: undefined },
     rules: undefined,
     ...overrides,
   };

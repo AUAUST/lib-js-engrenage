@@ -1,4 +1,5 @@
 import { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
+import { renderEffectCeilings } from "#batiment/structure/utils/renderEffectCeilings";
 import type { StructureNode } from "#batiment/structure/types/StructureNode";
 
 function members(node: StructureNode): StructureNode[] {
@@ -46,7 +47,11 @@ function describeKind(
   detailed: boolean,
   groupLabel: string | undefined,
 ): string | undefined {
-  const effects = node.effects === undefined ? "" : ` (${node.effects})`;
+  const level = node.effects === undefined
+    ? undefined
+    : renderEffectCeilings(node.effects);
+
+  const effects = level === undefined ? "" : ` (${level})`;
 
   const kinds = {
     namespace: undefined,

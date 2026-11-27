@@ -155,3 +155,10 @@ entries:
     why: it uses createRequire and compares directories
     want: it resolves through the import graph role rules now receive
     created: 2026-11-26T15:21:30Z
+  - id: BL-ca3f37
+    title: import-effects reports nothing when a ranked utils module imports a module of an unranked directory role
+    sites:
+      - tests/src/tools/eslint/importEffects.test.ts:211
+    why: In the importEffects fixture, utils/own.ts importing trace from a logging role without effects gives no message, while the rule description says an unranked role is imported at runtime only by unranked roles
+    want: Either the charge reaches the judge as unranked, or the description states why it is exempt
+    created: 2026-11-27T00:15:37Z

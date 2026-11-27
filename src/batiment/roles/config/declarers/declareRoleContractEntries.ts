@@ -11,6 +11,7 @@ import {
   type GenericSchema,
 } from "valibot";
 
+import { effectCeilingsSchema } from "#batiment/effects/index";
 import { reexportSchema } from "#batiment/roles/config/schemas/reexportSchema";
 import { roleExportsSchema } from "#batiment/roles/config/schemas/roleExportsSchema";
 import { roleGlobsSchema } from "#batiment/roles/config/schemas/roleGlobsSchema";
@@ -27,7 +28,7 @@ function describedDefault(value: unknown) {
   return unset(describeDefault({ value }));
 }
 
-// @debt `exports`, `reexport`, `surface`, `typeOnly`, `aliases` and `effects` describe JavaScript modules, not a language-agnostic role, until the language port splits them out (#740, #684)
+// @debt `exports`, `reexport`, `surface`, `typeOnly` and `aliases` describe JavaScript modules, not a language-agnostic role, until the language port splits them out (#740, #684)
 export function declareRoleContractEntries<Nested>(
   nested: GenericSchema<Nested>,
 ) {
@@ -113,13 +114,11 @@ export function declareRoleContractEntries<Nested>(
       description: "Directory names read as this role (`helpers` read as `utils`).",
       optional: { value: undefined },
     }),
-    effects: declare(string(), {
-      description: (
-        "The effect level of the role, a name of `structure.effects.levels`. " +
-        "A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, " +
-        "and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. " +
-        "Type-only imports are exempt."
-      ),
+    effects: declare(effectCeilingsSchema, {
+      description: [
+        "The effect ceilings of the role, each a name of `structure.effects.levels`: `{ evaluation, invocation }`, what its modules may do while they evaluate and once what they export is invoked, or a single level setting both; an unset ceiling leaves that position unranked.",
+        "A module of a role with an invocation ceiling imports at runtime only bindings declared in roles of that invocation level or purer, and external modules ranked likewise; a role without one imports anything and is imported at runtime only by such roles. Type-only imports are exempt.",
+      ],
       optional: { value: undefined },
     }),
     discovered: declare(boolean(), {

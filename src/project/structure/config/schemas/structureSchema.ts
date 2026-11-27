@@ -11,6 +11,7 @@ export const structureSchema = declareObject(
           description: "Effect levels, purest first, compared by index, each a default level's name or `{ name, purpose }`, the purpose project maps describe it by. They must contain `pure`, `confined`, `observing` and `effectful` in that order and may add custom levels, each with its purpose, anywhere around them.",
           optional: unset("`pure`, `confined`, `observing`, `effectful`"),
         }),
+        // @debt the `modules` ranks, keyed by import specifier and ranking exports, describe JavaScript modules, unlike the level scale and the role ceilings, until the language port splits them out (#740, #684)
         modules: declare(effectRanksSchema, {
           description: "Levels of external modules, as a record of specifier glob to entry. An entry is a level or `{ level, symbols: { [exportName]: level } }`; `symbols.default` ranks the default export. An export takes the level of the first entry listing it in `symbols`, configured entries before the shipped table, else the level of the first entry matching its module, an exact specifier before any glob, else `fallback`. Namespace imports take the highest level their module's entries state.",
           optional: unset("none, so only the shipped table applies"),

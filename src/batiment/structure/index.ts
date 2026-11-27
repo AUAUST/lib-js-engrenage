@@ -105,6 +105,7 @@ export { mergeStructureMetadata } from "#batiment/structure/utils/mergeStructure
 export { renderCardinalityViolation } from "#batiment/structure/utils/renderCardinalityViolation";
 export { renderCommandGroupTwin } from "#batiment/structure/utils/renderCommandGroupTwin";
 export { renderDebtNote } from "#batiment/structure/utils/renderDebtNote";
+export { renderEffectCeilings } from "#batiment/structure/utils/renderEffectCeilings";
 export { renderImportCycle } from "#batiment/structure/utils/renderImportCycle";
 export { renderImportCycles } from "#batiment/structure/utils/renderImportCycles";
 export { renderNamespaceMap } from "#batiment/structure/utils/renderNamespaceMap";

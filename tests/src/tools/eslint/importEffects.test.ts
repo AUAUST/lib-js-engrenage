@@ -208,6 +208,37 @@ describe("import effects", () => {
     ).rejects.toThrow("effect levels");
   });
 
+  test("judge against the invocation ceiling of a role stating its ceilings apart", async () => {
+    const lint = await createLinter({
+      roles: [
+        createRolePreset({
+          name: "observing",
+          exports: "named-match",
+          effects: { evaluation: "pure", invocation: "observing" },
+        })(),
+      ],
+    });
+
+    const read = "src/project/feature/observing/read.ts";
+
+    expect(
+      await lint(read, importing("#foundation/base/index", "helper")),
+    ).toEqual([]);
+
+    const [
+      message,
+    ] = await lint(read, importing("#foundation/base/index", "act"));
+
+    expect(message).toContain("(observing)");
+
+    const [unranked] = await lint(
+      utility,
+      'import * as base from "#foundation/base/index";\n\nexport const run = base;\n',
+    );
+
+    expect(unranked).toContain("(unranked)");
+  });
+
   test("rank external modules by configured entry, with an opt-in fallback", async () => {
     const ranked = await createLinter({
       effects: 'modules: { "my-db": "effectful" }',

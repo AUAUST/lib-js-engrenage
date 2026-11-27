@@ -18,7 +18,7 @@ export default defineConvention({
       messages: {
         effects: "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
       },
-      create(context, { namespace, role, effects: roleLevel }) {
+      create(context, { namespace, role, effects: ceilings }) {
         const environmentRoles = namespace === undefined
           ? undefined
           : getOwn(roles, namespace);
@@ -26,14 +26,14 @@ export default defineConvention({
         if (
           environmentRoles === undefined ||
           role === undefined ||
-          roleLevel === undefined
+          ceilings?.invocation === undefined
         ) {
           return {};
         }
 
         const { effects } = environmentRoles;
         const { levels } = effects;
-        const unitCeiling = roleLevel;
+        const unitCeiling = ceilings.invocation;
 
         function judge({ node, binding, target, level }: EffectCharge) {
           const ceiling = unitCeiling;

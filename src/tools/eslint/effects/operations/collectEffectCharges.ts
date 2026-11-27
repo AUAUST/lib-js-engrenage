@@ -151,7 +151,7 @@ export function collectEffectCharges({
         ? relativePath
         : `${declaring.role} (${relativePath})`,
       // @debt A value declared in a local ambient `declare module` resolves to the unranked `declarations` role, so a ranked importer of that module is reported as importing an unranked target.
-      level: declaring.effects,
+      level: declaring.effects?.invocation,
     });
   }
 

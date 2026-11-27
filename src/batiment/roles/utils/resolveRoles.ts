@@ -48,13 +48,12 @@ export function resolveRoles({
       continue;
     }
 
-    if (
-      contract.effects !== undefined &&
-      !effects.levels.includes(contract.effects)
-    ) {
-      throw new Error(
-        `The role ${name} is ranked ${contract.effects}, which is not one of the effect levels of ${namespace}: ${effects.levels.join(", ")}`,
-      );
+    for (const [position, level] of entries(contract.effects)) {
+      if (level !== undefined && !effects.levels.includes(level)) {
+        throw new Error(
+          `The role ${name} is ranked ${level} for its ${position}, which is not one of the effect levels of ${namespace}: ${effects.levels.join(", ")}`,
+        );
+      }
     }
 
     resolved[name] = typeImports

@@ -197,18 +197,24 @@ describe("createEntityIndex", () => {
 
     expect(
       index.entityOf("src/project/feature/config/featureSchema.ts"),
-    ).toMatchObject({ role: "config/schemas", effects: "confined" });
+    ).toMatchObject({
+      role: "config/schemas",
+      effects: { evaluation: "confined", invocation: "confined" },
+    });
 
     expect(
       index.entityOf("src/project/feature/config/defineFeatureConfig.ts"),
     ).toMatchObject({
       role: "config/definers",
-      effects: "effectful",
+      effects: { evaluation: "effectful", invocation: "effectful" },
     });
 
     expect(
       index.entityOf("src/project/feature/config/helper.ts"),
-    ).toMatchObject({ role: "config", effects: "confined" });
+    ).toMatchObject({
+      role: "config",
+      effects: { evaluation: "confined", invocation: "confined" },
+    });
   });
 
   test("matches a nested role's root files against its globs with their placeholders filled for the location", async () => {

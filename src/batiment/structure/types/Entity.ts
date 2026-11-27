@@ -1,3 +1,4 @@
+import type { EffectCeilings } from "#batiment/effects/index";
 import type { ResolvedRoleContract, RoleLocation } from "#batiment/roles/index";
 import type { LineageMember } from "#batiment/structure/types/LineageMember";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
@@ -28,7 +29,7 @@ export interface Entity {
   readonly role: string | undefined;
   readonly fileRole: string | undefined;
   readonly contract: ResolvedRoleContract | undefined;
-  readonly effects: string | undefined;
+  readonly effects: EffectCeilings | undefined;
   readonly public: boolean;
   readonly variant: string | undefined;
   readonly environment: string | undefined;

@@ -144,7 +144,7 @@ describe("project map", () => {
           { name: "config", roles: [{
             name: "definers",
             file: "define<Domain>Config.ts",
-            effects: "effectful"
+            effects: { evaluation: "pure", invocation: "effectful" }
           }] }
         ] },
         tooling: { dirs: ["."], files: ["engrenage.config.ts"] },
@@ -156,7 +156,7 @@ describe("project map", () => {
     );
 
     expect(project.read(overviewFile)).toContain(
-      "| `config/definers` |  | `define<Domain>Config.ts` |  |  | effectful |",
+      "| `config/definers` |  | `define<Domain>Config.ts` |  |  | evaluation pure, invocation effectful |",
     );
 
     expect(project.read(sourceFile)).toContain(

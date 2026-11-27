@@ -97,7 +97,7 @@ describe("resolveRoles", () => {
     expect(resolved.roles.utils).toMatchObject({
       nesting: "any",
       exports: { values: "named-match", types: "named" },
-      effects: "confined",
+      effects: { evaluation: "confined", invocation: "confined" },
     });
 
     expect(resolve({ roles: [] }).roles).toEqual({});
@@ -193,11 +193,11 @@ describe("resolveRoles", () => {
     });
 
     expect(resolved.roles.utils).toMatchObject({
-      effects: "logging",
+      effects: { evaluation: "logging", invocation: "logging" },
     });
 
     expect(resolved.roles.adapters).toMatchObject({
-      effects: "effectful",
+      effects: { evaluation: "effectful", invocation: "effectful" },
     });
 
     expect(resolved.effects.levels).toContain("logging");
@@ -207,5 +207,15 @@ describe("resolveRoles", () => {
     expect(() => {
       resolve({ roles: [utils({ effects: "shaky" })] });
     }).toThrow("shaky");
+
+    expect(() => {
+      resolve({
+        roles: [
+          utils({
+            effects: { evaluation: "shaky" },
+          }),
+        ],
+      });
+    }).toThrow("ranked shaky for its evaluation");
   });
 });

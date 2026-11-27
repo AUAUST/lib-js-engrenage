@@ -104,10 +104,14 @@ export interface RoleInput {
    */
   aliases?: (string[] | undefined)
   /**
-   * The effect level of the role, a name of `structure.effects.levels`. A module of a ranked role imports at runtime only bindings declared in roles of its level or purer, and external modules ranked likewise; an unranked role imports anything and is imported at runtime only by unranked roles. Type-only imports are exempt.
+   * The effect ceilings of the role, each a name of `structure.effects.levels`: `{ evaluation, invocation }`, what its modules may do while they evaluate and once what they export is invoked, or a single level setting both; an unset ceiling leaves that position unranked.
+   * A module of a role with an invocation ceiling imports at runtime only bindings declared in roles of that invocation level or purer, and external modules ranked likewise; a role without one imports anything and is imported at runtime only by such roles. Type-only imports are exempt.
    * @default none
    */
-  effects?: (string | undefined)
+  effects?: ((string | {
+    evaluation?: (string | undefined)
+    invocation?: (string | undefined)
+  }) | undefined)
   /**
    * Whether a consumer discovers its files, so they may export defaults.
    * @default false

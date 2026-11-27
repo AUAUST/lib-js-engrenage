@@ -1,6 +1,7 @@
 import { isString } from "@auaust/toolkit";
 import { freeze } from "@auaust/toolkit/object";
 
+import { resolveEffectCeilings } from "#batiment/effects/index";
 import { roleContractDefaults } from "#batiment/roles/constants";
 import { listReexportModes } from "#batiment/roles/utils/listReexportModes";
 import { listStaticFileGlobs } from "#batiment/roles/utils/listStaticFileGlobs";
@@ -107,7 +108,7 @@ export function completeRole(
     exports: freeze(resolved),
     purpose: definition.purpose,
     debt: definition.debt,
-    effects: definition.effects,
+    effects: resolveEffectCeilings(definition.effects),
     rules: definition.rules,
     nesting: definition.nesting ?? roleContractDefaults.nesting,
     index,

@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { toArray } from "@auaust/toolkit/array";
 import { entries, getOwn } from "@auaust/toolkit/object";
 
+import { renderEffectCeilings } from "#batiment/structure/utils/renderEffectCeilings";
 import { renderPurpose } from "#batiment/structure/utils/renderPurpose";
 import type { ResolvedEffects } from "#batiment/effects/index";
 import type {
@@ -88,7 +89,7 @@ export function renderProjectMapRoles(
     "",
     "## Roles",
     "",
-    `Effect levels, purest first: ${levels.map(code).join(" < ")}. A role with a level imports at runtime only roles of its level or a purer one. Global roles import each other, and domains only with \`import type\`. Other domains import a role's modules one by one only when it is \`public\`, otherwise only through its domain's index. They import a \`collected\` role's modules inside sub-domains too, past their parent domains' surfaces, and a \`modules\` role's directly; no index lists them.`,
+    `Effect levels, purest first: ${levels.map(code).join(" < ")}. A role's level caps both what its modules do while they evaluate and what their exports do once invoked, unless it states its \`evaluation\` and \`invocation\` ceilings apart. A role with an invocation ceiling imports at runtime only roles whose invocation ceiling is that level or a purer one. Global roles import each other, and domains only with \`import type\`. Other domains import a role's modules one by one only when it is \`public\`, otherwise only through its domain's index. They import a \`collected\` role's modules inside sub-domains too, past their parent domains' surfaces, and a \`modules\` role's directly; no index lists them.`,
     "",
     ...levels.map((level) => {
       const purpose = getOwn(purposes, level);
@@ -122,7 +123,7 @@ export function renderProjectMapRoles(
 
       const purpose = renderPurpose(contract);
 
-      return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${contract.effects ?? ""} | ${imports} | ${namespaces.map(code).join(", ")} |`;
+      return `| ${code(name)} | ${purpose} | ${files} | ${companions} | ${renderExports(contract)} | ${renderEffectCeilings(contract.effects) ?? ""} | ${imports} | ${namespaces.map(code).join(", ")} |`;
     }),
   ];
 }

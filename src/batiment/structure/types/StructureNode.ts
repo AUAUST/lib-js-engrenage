@@ -1,3 +1,4 @@
+import type { EffectCeilings } from "#batiment/effects/index";
 import type { ReexportMode } from "#batiment/roles/index";
 import type { CardinalityViolation } from "#batiment/structure/types/CardinalityViolation";
 import type { StructureKind } from "#batiment/structure/types/StructureKind";
@@ -36,7 +37,7 @@ export interface StructureNode {
   readonly publicRoles?: readonly string[];
   readonly purpose?: string;
   readonly debt?: string;
-  readonly effects?: string;
+  readonly effects?: EffectCeilings;
   readonly mirror?: StructureMirror;
   readonly reason?: UnclassifiedReason;
   readonly strays?: readonly Directory[];
