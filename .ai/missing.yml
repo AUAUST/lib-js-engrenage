@@ -56,3 +56,8 @@ entries:
     need: match relative import specifiers by glob
     instead: basename glob in createEffectRanker.rankErased
     created: 2026-11-27T03:26:59Z
+  - id: MI-a3eea5
+    subject: per-role charged level report
+    need: measure what each role ceiling needs
+    instead: temporary createRolePreset patch plus a scratch JSON aggregator
+    created: 2026-11-27T04:37:27Z

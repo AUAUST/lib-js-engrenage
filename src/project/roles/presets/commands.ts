@@ -1,11 +1,13 @@
 import { createRolePreset } from "#batiment/roles/index";
 
 /**
- * Preset of the `commands` role: any `.ts` file, with one default export.
+ * Preset of the `commands` role: any `.ts` file, with one default export,
+ * evaluating at `confined` and invoking at `effectful`.
  */
 export const commands = createRolePreset({
   name: "commands",
   purpose: "One command's description, arguments and options, and the glue to its action.",
   file: ["*.ts"],
   exports: "default",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });

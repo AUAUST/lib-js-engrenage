@@ -25,6 +25,7 @@ taps:
   - {id: FR-26dc34, at: 2026-11-26T16:40:23Z, note: "bin/engrenage sync, pnpm, eslint suites too"}
   - {id: FR-675ee6, at: 2026-11-26T21:31:20Z, note: debugger dispatch on a plan issue}
   - {id: FR-0c1650, at: 2026-11-27T00:02:40Z, note: "also on moving files out of a domain: its stale barrel breaks config loading, sync and the lint hook until rewritten by hand (#995)"}
+  - {id: FR-169e5d, at: 2026-11-27T04:37:25Z, note: "also with --no-inline-config during #1000"}
 entries:
   - id: FR-bf941d
     subject: npm in the repository
@@ -1301,3 +1302,8 @@ entries:
     tried: temporarily set interscript createSourceRoles ceilings to lint it
     stopped: "denied; interscript check of #985 left unrun"
     created: 2026-11-27T01:07:18Z
+  - id: FR-14d770
+    subject: measuring role ceilings needs many lint runs
+    tried: lint with forced pure ceilings
+    stopped: no report of charged levels per role; patched createRolePreset temporarily and aggregated JSON output
+    created: 2026-11-27T04:37:19Z

@@ -90,7 +90,7 @@ Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `e
 | `operations` | Effectful logic of the domain. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src`, `tests`, `scripts`, `tooling` |
 | `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  | evaluation confined |  | `src` |
 | `apis` | Interfaces of the objects the domain creates and hands out, one per module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
-| `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | evaluation confined, invocation effectful | public, collected | `src` |
+| `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | evaluation pure, invocation effectful | public, collected | `src` |
 | `utils` | Confined functions, one per module. |  |  | values `named-match`, types `none` | confined |  | `src`, `scripts`, `tooling` |
 | `config` | Everything that configures the domain: its definer, option declarations and sections. |  |  | values `named-match`, types `named-match` |  |  | `src`, `tests` |
 | `setup` | Init steps and sync targets of the domain. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src` |
@@ -104,7 +104,7 @@ Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `e
 | `config/sections` | Section values the domain contributes to the loaded config. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src` |
 | `testutils` | Reusable test utilities. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `tests` |
 | `fixtures` | Static test inputs. |  |  |  | pure |  | `tests` |
-| `testsetup` | Test runner setup file. | `setup.ts` |  |  |  |  | `tests` |
-| `executable` | A program's executable: it loads the program's root group and runs it. | `executable.ts` |  |  |  |  | `bin`, `scripts` |
-| `commands` | One command's description, arguments and options, and the glue to its action. | `*.ts` |  | values `default`, types `none` |  |  | `bin`, `scripts` |
+| `testsetup` | Test runner setup file. | `setup.ts` |  |  | effectful |  | `tests` |
+| `executable` | A program's executable: it loads the program's root group and runs it. | `executable.ts` |  |  | effectful |  | `bin`, `scripts` |
+| `commands` | One command's description, arguments and options, and the glue to its action. | `*.ts` |  | values `default`, types `none` | evaluation confined, invocation effectful |  | `bin`, `scripts` |
 | `actions` | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |  |  | values `default`, types `none` | evaluation confined, invocation effectful |  | `bin`, `scripts` |

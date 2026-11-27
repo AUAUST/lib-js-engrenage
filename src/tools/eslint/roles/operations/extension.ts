@@ -3,7 +3,7 @@ import { createRolePreset } from "#batiment/roles/index";
 /**
  * Preset of the `extension` role: a domain's `extension.ts` default-exporting
  * its extension, collected across domains, with its imports checked by the
- * `extension-imports` rule.
+ * `extension-imports` rule, evaluating at `pure` and invoking at `effectful`.
  */
 export const extension = createRolePreset({
   name: "extension",
@@ -14,5 +14,5 @@ export const extension = createRolePreset({
   discovered: true,
   public: true,
   collected: true,
-  effects: { evaluation: "confined", invocation: "effectful" },
+  effects: { evaluation: "pure", invocation: "effectful" },
 });
