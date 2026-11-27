@@ -1,8 +1,6 @@
 import type { LoadedConfig } from "#project/config/index";
 
-/**
- * @experimental
- */
+/** @experimental */
 export interface SyncDone {
   /**
    * The config the targets ran against, its sections forgotten since the last

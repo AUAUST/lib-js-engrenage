@@ -105,6 +105,7 @@ cli:
     - BL-c7380b
     - BL-b46a5f
     - BL-26fcd2
+    - BL-6c9693
 coding-style:
   purpose: Local coding conventions and linting.
   entries:
@@ -147,6 +148,7 @@ docs:
   entries:
     - BL-aba8dc
     - BL-75bbcd
+    - BL-8b070a
 eslint-conventions:
   purpose: ESLint rules and conventions engrenage ships.
   entries:
@@ -172,6 +174,7 @@ eslint-conventions:
     - BL-2e5c48
     - BL-38bbb2
     - BL-92f66c
+    - BL-2d178d
 eslint-import-context:
   purpose: Upstream eslint-import-context dependency and type issues.
   entries:
@@ -375,6 +378,7 @@ structure:
     - BL-3d1a24
     - BL-0d5ce5
     - BL-a3d287
+    - BL-3eeda9
 sync:
   purpose: "`project/sync` target ordering and sync products."
   entries:

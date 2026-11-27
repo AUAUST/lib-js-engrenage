@@ -106,3 +106,9 @@ entries:
     why: 'Through scripts/executable.ts the flag is dropped: exit 0, files rewritten; runDefinition(rules, "--check") honors it'
     want: A subcommand option after its name reaches that subcommand from the real CLI
     created: 2026-11-26T17:23:13Z
+  - id: BL-6c9693
+    title: nexus/cli exports lack the docs auaust/documented asks for
+    sites:
+      - src/nexus/cli/index.ts:1
+    want: document createProgram, getRunContext, CommandDefinition and the 10 other flagged exports
+    created: 2026-11-27T10:22:22Z

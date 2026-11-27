@@ -6,36 +6,26 @@ function render(text: string, data?: ReportData): string {
   return `${formatReport(text, data)}\n`;
 }
 
-/**
- * @pure
- */
+/** @pure */
 export function createConsoleReporter({
   isVerbose = () => false,
 }: { isVerbose?(): boolean } = {}): Reporter {
   return {
-    /**
-     * @printing
-     */
+    /** @printing */
     error(text, data) {
       process.stderr.write(render(text, data));
     },
-    /**
-     * @printing
-     */
+    /** @printing */
     warn(text, data) {
       process.stderr.write(render(text, data));
     },
-    /**
-     * @printing
-     */
+    /** @printing */
     info(text, data) {
       if (isVerbose()) {
         process.stderr.write(render(text, data));
       }
     },
-    /**
-     * @printing
-     */
+    /** @printing */
     log(text, data) {
       process.stdout.write(render(text, data));
     },

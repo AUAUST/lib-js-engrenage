@@ -356,6 +356,7 @@ entries:
       - src/project/structure/config/sections/effectsSection.ts:17
     why: "`withBareTwins` strips `node:` from glob keys too, so `node:*` yields `*`, matching any bare specifier"
     want: Bare twins rank only Node built-in specifiers
+    done: a test covers withBareTwins on configured keys
     created: 2026-11-27T03:33:14Z
   - id: BL-a3d287
     title: Global ranks are never checked against the effect level scale
@@ -365,3 +366,9 @@ entries:
     why: A level typo in `data/effects/globals.json` or a build tool `globals`/`imports` entry ranks below every level, so lint passes it silently
     want: Global and erased-import ranks are checked against the scale as `resolveEffects` checks module ranks
     created: 2026-11-27T03:33:14Z
+  - id: BL-3eeda9
+    title: Two readers of an effect level name
+    sites:
+      - src/batiment/effects/config/schemas/effectLevelsSchema.ts:9
+      - src/batiment/effects/utils/resolveEffects.ts:18
+    created: 2026-11-27T10:22:30Z

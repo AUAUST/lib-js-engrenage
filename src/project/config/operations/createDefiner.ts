@@ -30,9 +30,7 @@ export function createDefiner<Args extends readonly unknown[], Result>(
   define: (load: () => Promise<LoadedConfig>, ...args: Args) => Result,
 ): Definer<Args, Result> {
   // @debt an unbound definer, and Prettier's `package.json` reference, load the config of `process.cwd()`, not of the project owning the tool config file
-  /**
-   * @effectful
-   */
+  /** @effectful */
   function unbound(...args: Args): Result {
     return define(() => loadConfig(), ...args);
   }
@@ -41,9 +39,7 @@ export function createDefiner<Args extends readonly unknown[], Result>(
     at(root: Directory | URL) {
       const directory = directoryOf(root);
 
-      /**
-       * @effectful
-       */
+      /** @effectful */
       function bound(...args: Args): Result {
         return define(() => loadConfig(directory), ...args);
       }

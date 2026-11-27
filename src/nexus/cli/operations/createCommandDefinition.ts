@@ -158,9 +158,7 @@ function mountParameters(
   });
 }
 
-/**
- * @pure
- */
+/** @pure */
 export function createCommandDefinition({
   configure,
   load,
@@ -176,9 +174,7 @@ export function createCommandDefinition({
 }): CommandDefinition {
   const extension = extend === undefined ? undefined : createExtension(extend);
 
-  /**
-   * @effectful
-   */
+  /** @effectful */
   async function parseInvocation(
     command: Command,
     args: readonly string[],
@@ -226,9 +222,7 @@ export function createCommandDefinition({
     return parsed;
   }
 
-  /**
-   * @effectful
-   */
+  /** @effectful */
   async function parseChain(
     command: Command,
     first: readonly unknown[],
@@ -260,9 +254,7 @@ export function createCommandDefinition({
     ...(extension !== undefined && {
       [commandExtension]: extension,
     }),
-    /**
-     * @effectful
-     */
+    /** @effectful */
     [commandRegistration](command: Command) {
       let rest: (readonly string[])[] = [];
 

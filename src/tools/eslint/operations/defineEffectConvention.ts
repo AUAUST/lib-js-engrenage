@@ -69,9 +69,7 @@ export function defineEffectConvention({
         hasSuggestions,
         description,
         messages,
-        /**
-         * @effectful
-         */
+        /** @effectful */
         create(context, { namespace, role, effects: ceilings, environment }) {
           const environmentRoles = namespace === undefined
             ? undefined

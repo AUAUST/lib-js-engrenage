@@ -1313,3 +1313,8 @@ entries:
     tried: timeout 120 node script
     stopped: hook refused; used Bash timeout parameter
     created: 2026-11-27T04:54:15Z
+  - id: FR-331b99
+    subject: stale linked engrenage build
+    tried: pnpm engrenage eslint src in interscript
+    stopped: "build guard: linked build older than sources; needs pnpm build first"
+    created: 2026-11-27T10:23:13Z

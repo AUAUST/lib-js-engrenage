@@ -1,8 +1,6 @@
 import type { StepContext } from "#project/steps/ports/StepContext";
 
-/**
- * @experimental
- */
+/** @experimental */
 export interface Step {
   /**
    * Names the step in the list of missing setup offered for review in a project

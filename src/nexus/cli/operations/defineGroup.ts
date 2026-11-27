@@ -117,9 +117,7 @@ export function defineGroup({
   command?: CommandDefinition;
 }): CommandDefinition {
   return freeze({
-    /**
-     * @effectful
-     */
+    /** @effectful */
     [commandRegistration](command: Command) {
       if (configure !== undefined) {
         configureCommand(command, configure);

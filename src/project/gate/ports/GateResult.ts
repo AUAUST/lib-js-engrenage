@@ -1,6 +1,4 @@
-/**
- * @experimental
- */
+/** @experimental */
 export interface GateResult {
   /**
    * Whether the step passed; a step that fails unexpectedly counts as not passing.

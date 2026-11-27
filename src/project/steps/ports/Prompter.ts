@@ -1,6 +1,4 @@
-/**
- * @experimental
- */
+/** @experimental */
 export interface Prompter {
   /**
    * Asks a yes-or-no question, `initial` defaulting to `true`. Resolves to

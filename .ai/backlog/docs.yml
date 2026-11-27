@@ -14,3 +14,8 @@ entries:
     why: "comment-parser only splits lines while `splitTags` re-tokenizes them; fences indented up to three spaces are not recognised, so an `@` inside starts a tag. Related: `BL-941f37`."
     want: a plain line splitter replacing comment-parser; Markdown fence rules.
     created: 2026-11-22T00:00:00Z
+  - id: BL-8b070a
+    title: Replacing docs.tags with a list drops contributed tags
+    why: project/structure contributes the effect tags; a list replaces them, so @pure becomes unknown
+    want: contributed tags survive a replacing list, or the loss is reported
+    created: 2026-11-27T10:22:11Z
