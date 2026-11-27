@@ -1,9 +1,20 @@
-import type { Rule } from "eslint";
+import type {
+  EffectOperation,
+  EffectPosition,
+  EffectTarget,
+} from "#batiment/effects/index";
+import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 
+/**
+ * An operation on `target`, the unit `unit` names, run in `position`; at
+ * evaluation, `through` names the local function whose call runs it.
+ */
 export interface EffectCharge {
-  node: Rule.Node;
-  function: Rule.Node | undefined;
+  node: SyntaxNode;
+  operation: EffectOperation;
+  position: EffectPosition;
+  target: EffectTarget;
+  unit: string;
   binding: string;
-  target: string;
-  level: string | undefined;
+  through: string | undefined;
 }

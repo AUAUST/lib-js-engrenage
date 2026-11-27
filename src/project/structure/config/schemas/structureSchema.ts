@@ -15,7 +15,7 @@ export const structureSchema = declareObject(
         }),
         // @debt the `modules` ranks, keyed by import specifier and ranking exports, describe JavaScript modules, unlike the level scale and the role ceilings, until the language port splits them out (#740, #684)
         modules: declare(effectRanksSchema, {
-          description: "Levels of external modules, as a record of specifier glob to entry. An entry is a level or `{ level, symbols: { [exportName]: level } }`; `symbols.default` ranks the default export. An export takes the level of the first entry listing it in `symbols`, configured entries before the shipped table, else the level of the first entry matching its module, an exact specifier before any glob, else `fallback`. Namespace imports take the highest level their module's entries state.",
+          description: "Levels of external modules, as a record of specifier glob to entry. An entry is a level or `{ level, evaluation?, symbols?: { [exportName]: level } }`; `symbols.default` ranks the default export. An export takes the level of the first entry listing it in `symbols`, configured entries before the shipped table, else the level of the first entry matching its module, an exact specifier before any glob, else `fallback`. A member invoked through a namespace import takes its export's level. A module evaluates at the `evaluation` of the first entry stating one, configured entries before the shipped table, else at the purest level; a module nothing ranks evaluates at `fallback`.",
           optional: unset("none, so only the shipped table applies"),
         }),
         fallback: declare(string(), {

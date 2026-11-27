@@ -1,3 +1,4 @@
+/* eslint-disable auaust/import-effects -- #986 */
 import { engrenage } from "#constants";
 import { defineGroup } from "#nexus/cli/index";
 

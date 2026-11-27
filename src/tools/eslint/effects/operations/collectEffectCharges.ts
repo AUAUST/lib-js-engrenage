@@ -1,32 +1,46 @@
-import { join } from "node:path";
-
 import {
   SymbolFlags,
   type Symbol,
   type Node as TsNode,
   type TypeChecker,
 } from "typescript";
-import type { Rule } from "eslint";
+import type { Rule, Scope } from "eslint";
+
+import { isString } from "@auaust/toolkit";
 
 import {
-  highestLevel,
-  rankMember,
-  rankUnit,
-  type ResolvedEffects,
-} from "#batiment/effects/index";
-import { entryRoleName } from "#batiment/roles/constants";
-import { relativeWithin } from "#foundation/filesystem/index";
+  classNodeTypes,
+  functionNodeTypes,
+} from "#tools/eslint/effects/constants";
+import { createEffectRanker } from "#tools/eslint/effects/operations/createEffectRanker";
+import { invocationOf } from "#tools/eslint/effects/utils/invocationOf";
+import { runnerOf } from "#tools/eslint/effects/utils/runnerOf";
 import { isTypeOnlyNode } from "#tools/eslint/utils/isTypeOnlyNode";
+import type { ResolvedEffects } from "#batiment/effects/index";
 import type { EntityIndex } from "#batiment/structure/index";
 import type { EffectCharge } from "#tools/eslint/effects/types/EffectCharge";
+import type { RankedUnit } from "#tools/eslint/effects/types/RankedUnit";
+import type { SyntaxNode } from "#tools/eslint/effects/types/SyntaxNode";
 import type { Directory } from "#types/Directory";
 
-const functionTypes: ReadonlySet<string> = new Set([
-  "FunctionDeclaration",
-  "FunctionExpression",
-  "ArrowFunctionExpression",
-]);
+type PendingCharge = Omit<EffectCharge, "position" | "through">;
 
+interface LocalCall {
+  callee: SyntaxNode;
+  node: SyntaxNode;
+  name: string;
+}
+
+function isGenerator(node: SyntaxNode): boolean {
+  return "generator" in node && node.generator === true;
+}
+
+/**
+ * Collects what each use of an imported binding charges, by the position running
+ * it: a charge belongs to the innermost function whose body runs it, and a local
+ * function or class invoked while the module evaluates charges there what its
+ * own body runs, through the local calls it makes in turn.
+ */
 export function collectEffectCharges({
   context,
   entities,
@@ -40,7 +54,8 @@ export function collectEffectCharges({
   root: Directory;
   charge(found: EffectCharge): void;
 }): Rule.RuleListener {
-  const services = context.sourceCode.parserServices;
+  const { sourceCode } = context;
+  const services = sourceCode.parserServices;
 
   if (services?.program == null || services.esTreeNodeToTSNodeMap == null) {
     return {};
@@ -49,144 +64,29 @@ export function collectEffectCharges({
   const { program, esTreeNodeToTSNodeMap } = services;
   const checker: TypeChecker = program.getTypeChecker();
 
-  function enclosingFunction(node: Rule.Node): Rule.Node | undefined {
-    for (
-      let ancestor: Rule.Node | null = node.parent;
-      ancestor != null;
-      ancestor = ancestor.parent
-    ) {
-      if (functionTypes.has(ancestor.type)) {
-        return ancestor;
-      }
+  const { rankModule, rankBinding } = createEffectRanker({
+    program,
+    checker,
+    entities,
+    effects,
+    root,
+  });
+
+  const runs = new Map<SyntaxNode | undefined, PendingCharge[]>();
+  const calls = new Map<SyntaxNode | undefined, LocalCall[]>();
+
+  function append<Value>(
+    map: Map<SyntaxNode | undefined, Value[]>,
+    runner: SyntaxNode | undefined,
+    value: Value,
+  ) {
+    const list = map.get(runner);
+
+    if (list === undefined) {
+      map.set(runner, [value]);
+    } else {
+      list.push(value);
     }
-  }
-
-  function declaringFile(symbol: Symbol | undefined) {
-    if (symbol === undefined) {
-      return;
-    }
-
-    const target = (symbol.flags & SymbolFlags.Alias) === 0
-      ? symbol
-      : checker.getAliasedSymbol(symbol);
-
-    if (
-      target.declarations?.length === 0 ||
-      (target.flags & SymbolFlags.Value) === 0
-    ) {
-      return;
-    }
-
-    // @debt Only the first declaration ranks a merged symbol; declarations spread over several files may rank differently.
-    return target.declarations?.[0]?.getSourceFile();
-  }
-
-  function rankImport(specifier: string, imported: string | undefined) {
-    if (imported !== undefined) {
-      return rankMember(effects, specifier, imported);
-    }
-
-    const { level, members } = rankUnit(effects, specifier);
-
-    return level === undefined
-      ? undefined
-      : highestLevel(effects.levels, [level, ...members.values()]);
-  }
-
-  function collect({
-    node,
-    specifier,
-    binding,
-    symbol,
-    imported,
-  }: {
-    node: Rule.Node;
-    specifier: string;
-    binding: string;
-    symbol: Symbol | undefined;
-    imported?: string;
-  }) {
-    const file = declaringFile(symbol);
-
-    if (file === undefined) {
-      return;
-    }
-
-    // @debt A `/node_modules/` substring decides what is external; a symlinked workspace package resolves to its real path and may fall through `entityOf` unranked and unreported.
-    if (
-      program.isSourceFileFromExternalLibrary(file) ||
-      file.fileName.includes("/node_modules/")
-    ) {
-      const level = rankImport(specifier, imported);
-
-      if (level !== undefined) {
-        charge({
-          node,
-          function: enclosingFunction(node),
-          binding,
-          target: `the module \`${specifier}\``,
-          level,
-        });
-      }
-
-      return;
-    }
-
-    const declaring = entities.entityOf(file.fileName);
-
-    if (declaring === undefined) {
-      return;
-    }
-
-    const relativePath = relativeWithin(
-      join(root, declaring.path),
-      file.fileName,
-    );
-
-    charge({
-      node,
-      function: enclosingFunction(node),
-      binding,
-      target: declaring.role === undefined
-        ? relativePath
-        : `${declaring.role} (${relativePath})`,
-      // @debt A value declared in a local ambient `declare module` resolves to the unranked `declarations` role, so a ranked importer of that module is reported as importing an unranked target.
-      level: declaring.effects?.invocation,
-    });
-  }
-
-  function collectExports({
-    node,
-    specifier,
-    module,
-  }: {
-    node: Rule.Node;
-    specifier: string;
-    module: Symbol;
-  }) {
-    for (const exported of checker.getExportsOfModule(module)) {
-      collect({
-        node,
-        specifier,
-        binding: exported.name,
-        imported: exported.name,
-        symbol: exported,
-      });
-    }
-  }
-
-  function entryModuleOf(symbol: Symbol | undefined) {
-    if (symbol === undefined || (symbol.flags & SymbolFlags.Alias) === 0) {
-      return;
-    }
-
-    const module = checker.getAliasedSymbol(symbol);
-    const file = module.declarations?.[0]?.getSourceFile();
-
-    return file !== undefined &&
-      entities.entityOf(file.fileName)?.role === entryRoleName
-      ? module
-      : undefined;
   }
 
   // @debt the ESTree-to-TS node map is untyped here, so nodes are cast `as TsNode` and `as never` with no stated invariant
@@ -196,112 +96,299 @@ export function collectEffectCharges({
     );
   }
 
+  function moduleOf(symbol: Symbol | undefined) {
+    return symbol !== undefined && (symbol.flags & SymbolFlags.Alias) !== 0
+      ? checker.getAliasedSymbol(symbol)
+      : symbol;
+  }
+
+  function chargeModule({
+    node,
+    source,
+    specifier,
+    runner,
+  }: {
+    node: SyntaxNode;
+    source: SyntaxNode;
+    specifier: string;
+    runner: SyntaxNode | undefined;
+  }) {
+    const loaded = rankModule(symbolOf(source), specifier);
+
+    if (loaded !== undefined) {
+      append(runs, runner, {
+        node,
+        operation: "evaluate",
+        binding: specifier,
+        ...loaded,
+      });
+    }
+  }
+
+  function* invocationsOf(variables: readonly Scope.Variable[]) {
+    for (const { references } of variables) {
+      for (const { identifier } of references) {
+        if (identifier.type === "JSXIdentifier") {
+          continue;
+        }
+
+        const invocation = invocationOf(
+          sourceCode.getAncestors(identifier),
+          identifier,
+        );
+
+        if (invocation !== undefined) {
+          yield invocation;
+        }
+      }
+    }
+  }
+
+  function chargeInvocations(
+    variables: readonly Scope.Variable[],
+    rank: (
+      members: readonly string[],
+    ) => (RankedUnit & { binding: string }) | undefined,
+  ) {
+    for (const invocation of invocationsOf(variables)) {
+      const ranked = rank(invocation.members);
+
+      if (ranked !== undefined) {
+        append(runs, invocation.runner, {
+          node: invocation.site,
+          operation: "invoke",
+          ...ranked,
+        });
+      }
+    }
+  }
+
+  function recordLocal(
+    variables: readonly Scope.Variable[],
+    callee: SyntaxNode,
+    name: string,
+  ) {
+    for (const invocation of invocationsOf(variables)) {
+      if (invocation.members.length === 0) {
+        append(calls, invocation.runner, {
+          callee,
+          node: invocation.site,
+          name,
+        });
+      }
+    }
+  }
+
+  function chargeThrough({ callee, node, name }: LocalCall) {
+    const visited = new Set<SyntaxNode>();
+    const pending = [callee];
+
+    for (
+      let runner = pending.pop();
+      runner !== undefined;
+      runner = pending.pop()
+    ) {
+      if (visited.has(runner)) {
+        continue;
+      }
+
+      visited.add(runner);
+
+      for (const ran of runs.get(runner) ?? []) {
+        charge({
+          ...ran,
+          node,
+          position: "evaluation",
+          through: name,
+        });
+      }
+
+      for (const call of calls.get(runner) ?? []) {
+        pending.push(call.callee);
+      }
+    }
+  }
+
   return {
-    ImportDeclaration(declaration) {
+    "ImportDeclaration"(declaration) {
       if (isTypeOnlyNode(declaration)) {
         return;
       }
 
       const specifier = String(declaration.source.value);
 
-      if (declaration.specifiers.length === 0) {
-        // @debt module evaluation cannot be ranked separately from imported bindings, so bare side-effect imports use the module's highest binding level
-        return void collect({
-          node: declaration,
-          specifier,
-          binding: specifier,
-          symbol: symbolOf(declaration.source),
-        });
-      }
+      chargeModule({
+        node: declaration,
+        source: declaration.source,
+        specifier,
+        runner: undefined,
+      });
 
       for (const imported of declaration.specifiers) {
         if (isTypeOnlyNode(imported)) {
           continue;
         }
 
+        const local = imported.local.name;
         const symbol = symbolOf(imported.local);
+        const variables = sourceCode.getDeclaredVariables(imported);
 
         if (imported.type === "ImportNamespaceSpecifier") {
-          const entry = entryModuleOf(symbol);
+          const module = moduleOf(symbol);
 
-          if (entry !== undefined) {
-            collectExports({
-              node: declaration,
+          chargeInvocations(variables, ([member]) => {
+            if (member === undefined || module === undefined) {
+              return;
+            }
+
+            const ranked = rankBinding(
+              checker.tryGetMemberInModuleExports(member, module),
               specifier,
-              module: entry,
-            });
+              member,
+            );
 
-            continue;
-          }
-        }
+            return ranked && { ...ranked, binding: `${local}.${member}` };
+          });
 
-        collect({
-          node: declaration,
-          specifier,
-          binding: imported.local.name,
-          ...(imported.type === "ImportSpecifier"
-            ? {
-                imported: imported.imported.type === "Identifier"
-                  ? imported.imported.name
-                  : String(imported.imported.value),
-              }
-            : imported.type === "ImportDefaultSpecifier"
-              ? { imported: "default" }
-              : {}),
-          symbol,
-        });
-      }
-    },
-    ImportExpression(expression) {
-      if (expression.source.type !== "Literal") {
-        return;
-      }
-
-      const loaded = symbolOf(expression.source);
-
-      if (loaded === undefined) {
-        return;
-      }
-
-      collectExports({
-        node: expression,
-        specifier: String(expression.source.value),
-        module: loaded,
-      });
-    },
-    ExportAllDeclaration(declaration) {
-      if (!isTypeOnlyNode(declaration)) {
-        collect({
-          node: declaration,
-          specifier: String(declaration.source.value),
-          binding: "*",
-          symbol: symbolOf(declaration.source),
-        });
-      }
-    },
-    ExportNamedDeclaration(declaration) {
-      if (declaration.source == null || isTypeOnlyNode(declaration)) {
-        return;
-      }
-
-      for (const exported of declaration.specifiers) {
-        if (isTypeOnlyNode(exported)) {
           continue;
         }
 
-        const local = exported.local.type === "Identifier"
-          ? exported.local.name
-          : String(exported.local.value);
+        const name = imported.type === "ImportDefaultSpecifier"
+          ? "default"
+          : imported.imported.type === "Identifier"
+            ? imported.imported.name
+            : String(imported.imported.value);
 
-        collect({
+        const ranked = rankBinding(symbol, specifier, name);
+
+        if (ranked !== undefined) {
+          chargeInvocations(variables, () => {
+            return { ...ranked, binding: local };
+          });
+        }
+      }
+    },
+    "ImportExpression"(expression) {
+      const runner = runnerOf([
+        ...sourceCode.getAncestors(expression),
+        expression,
+      ]);
+
+      const { source } = expression;
+
+      if (source.type !== "Literal" || !isString(source.value)) {
+        const { fallback } = effects;
+
+        if (fallback !== undefined) {
+          append(runs, runner, {
+            node: expression,
+            operation: "evaluate",
+            binding: sourceCode.getText(source),
+            unit: "a module lint cannot rank",
+            target: { evaluation: fallback, invocation: fallback },
+          });
+        }
+
+        return;
+      }
+
+      const specifier = source.value;
+      const module = symbolOf(source);
+
+      chargeModule({
+        node: expression,
+        source,
+        specifier,
+        runner,
+      });
+
+      if (module === undefined) {
+        return;
+      }
+
+      for (const exported of checker.getExportsOfModule(module)) {
+        const ranked = rankBinding(exported, specifier, exported.name);
+
+        if (ranked !== undefined) {
+          append(runs, runner, {
+            node: expression,
+            operation: "invoke",
+            binding: exported.name,
+            ...ranked,
+          });
+        }
+      }
+    },
+    "ExportAllDeclaration"(declaration) {
+      if (!isTypeOnlyNode(declaration)) {
+        chargeModule({
           node: declaration,
+          source: declaration.source,
           specifier: String(declaration.source.value),
-          binding: local,
-          imported: local,
-          symbol: checker.getExportSpecifierLocalTargetSymbol(
-            esTreeNodeToTSNodeMap.get(exported) as never,
-          ),
+          runner: undefined,
         });
+      }
+    },
+    "ExportNamedDeclaration"(declaration) {
+      if (declaration.source != null && !isTypeOnlyNode(declaration)) {
+        chargeModule({
+          node: declaration,
+          source: declaration.source,
+          specifier: String(declaration.source.value),
+          runner: undefined,
+        });
+      }
+    },
+    "FunctionDeclaration"(declaration) {
+      if (declaration.id != null && !isGenerator(declaration)) {
+        recordLocal(
+          sourceCode.getDeclaredVariables(declaration).filter(({ defs }) => {
+            return defs.some(({ type }) => {
+              return type === "FunctionName";
+            });
+          }),
+          declaration,
+          declaration.id.name,
+        );
+      }
+    },
+    "ClassDeclaration"(declaration) {
+      if (declaration.id != null) {
+        recordLocal(
+          sourceCode.getDeclaredVariables(declaration),
+          declaration,
+          declaration.id.name,
+        );
+      }
+    },
+    "VariableDeclarator"(declarator) {
+      const { id, init } = declarator;
+
+      if (
+        declarator.parent.type === "VariableDeclaration" &&
+        declarator.parent.kind === "const" &&
+        id.type === "Identifier" &&
+        init != null &&
+        (functionNodeTypes.includes(init.type) ||
+          classNodeTypes.includes(init.type)) &&
+        !isGenerator(init)
+      ) {
+        recordLocal(sourceCode.getDeclaredVariables(declarator), init, id.name);
+      }
+    },
+    "Program:exit"() {
+      for (const [runner, ran] of runs) {
+        for (const pending of ran) {
+          charge({
+            ...pending,
+            position: runner === undefined ? "evaluation" : "invocation",
+            through: undefined,
+          });
+        }
+      }
+
+      for (const call of calls.get(undefined) ?? []) {
+        chargeThrough(call);
       }
     },
   };

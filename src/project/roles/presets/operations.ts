@@ -8,5 +8,5 @@ export const operations = createRolePreset({
   name: "operations",
   purpose: "Effectful logic of the domain.",
   exports: "named-match",
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });

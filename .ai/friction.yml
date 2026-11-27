@@ -1296,3 +1296,8 @@ entries:
     tried: pnpm engrenage sync to generate a new sub-domain index.ts
     stopped: sync loads config importing the missing index; wrote the barrels by hand first
     created: 2026-11-26T23:48:41Z
+  - id: FR-19cdee
+    subject: auto mode denies editing a linked consumer checkout
+    tried: temporarily set interscript createSourceRoles ceilings to lint it
+    stopped: "denied; interscript check of #985 left unrun"
+    created: 2026-11-27T01:07:18Z

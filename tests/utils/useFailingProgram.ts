@@ -9,6 +9,7 @@ import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 
+// eslint-disable-next-line auaust/import-effects -- #986
 const failing = defineCommand({
   action() {
     throw new Error("outer", { cause: new Error("inner") });

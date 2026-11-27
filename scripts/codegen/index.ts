@@ -1,3 +1,4 @@
+/* eslint-disable auaust/import-effects -- #986 */
 import { defineCommand, defineGroup } from "#nexus/cli/index";
 
 import apis from "#scripts/codegen/apis";

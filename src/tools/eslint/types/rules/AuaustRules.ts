@@ -67,8 +67,10 @@ export interface AuaustRules {
    */
   "auaust/domain-content"?: Rule<[]>;
   /**
-   * A module of a ranked role imports at runtime only bindings declared in roles
-   * of its effect level or purer, and external modules ranked likewise.
+   * Code of a ranked role runs only what its ceilings allow where it runs:
+   * what loading a module does against its evaluation ceiling while the module
+   * evaluates, and what invoking a binding does against the ceiling of the
+   * position invoking it, inside functions its invocation ceiling.
    */
   "auaust/import-effects"?: Rule<[]>;
   /**

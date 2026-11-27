@@ -41,3 +41,8 @@ entries:
     need: codegen rules output matching lint-fixed form
     instead: regex patch in scripts/codegen/operations/createRuleDeclarations.ts
     created: 2026-11-26T17:23:22Z
+  - id: MI-754303
+    subject: ESTree node type for ESLint rules
+    need: type syntax nodes from getAncestors in effect charges
+    instead: Parameters<SourceCode["getAncestors"]>[0] in src/tools/eslint/effects/types/EffectCharge.ts
+    created: 2026-11-27T00:46:32Z

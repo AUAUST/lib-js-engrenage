@@ -79,32 +79,32 @@ Effect levels, purest first: `pure` < `printing` < `confined` < `observing` < `e
 
 | Role | Purpose | Files | Companions | Exports | Level | Imports | Namespaces |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `index` | The domain's public surface. | `index.ts` |  |  | evaluation pure |  | `src`, `tests`, `bin`, `scripts`, `tooling` |
+| `index` | The domain's public surface. | `index.ts` |  |  | evaluation confined |  | `src`, `tests`, `bin`, `scripts`, `tooling` |
 | `constants` | Deeply read-only constants of the domain. | `constants.ts` |  | `subpath` | pure | public | `src`, `tests`, `scripts`, `tooling` |
 | `declarations` | Ambient type declarations. | `*.d.ts` |  |  |  |  | `src`, `tests`, `scripts`, `tooling` |
 | `types` | Types only, one per module. |  |  | values `none`, types `named-match` |  | type-only | `src`, `tests`, `scripts`, `tooling` |
 | `errors` | Error classes, importable module by module. |  |  | values `named-match`, types `named-match` | pure | public | `src`, `tests`, `scripts`, `tooling` |
 | `enums` | Enumerations, one per module. |  |  | values `named-match`, types `named-match` | pure |  | `src`, `tests`, `scripts`, `tooling` |
 | `ports` | Interfaces other domains implement, definers' included, importable module by module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
-| `adapters` | Implementations of other domains' ports, importable module by module. |  |  | values `named-match`, types `named-match` | effectful | public | `src`, `tests`, `scripts`, `tooling` |
-| `operations` | Effectful logic of the domain. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tests`, `scripts`, `tooling` |
-| `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  | evaluation pure |  | `src` |
+| `adapters` | Implementations of other domains' ports, importable module by module. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful | public | `src`, `tests`, `scripts`, `tooling` |
+| `operations` | Effectful logic of the domain. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src`, `tests`, `scripts`, `tooling` |
+| `entrypoint` | The package entry of a public domain, re-exporting the public subset of its surface. | `entry.ts` |  |  | evaluation confined |  | `src` |
 | `apis` | Interfaces of the objects the domain creates and hands out, one per module. |  |  | values `none`, types `named-match` | pure | type-only, public | `src`, `tests`, `scripts`, `tooling` |
-| `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | effectful | public, collected | `src` |
+| `extension` | The domain's extension: data and lazy loaders, read without loading the domain. | `extension.ts` |  | values `default`, types `none` | evaluation confined, invocation effectful | public, collected | `src` |
 | `utils` | Confined functions, one per module. |  |  | values `named-match`, types `none` | confined |  | `src`, `scripts`, `tooling` |
 | `config` | Everything that configures the domain: its definer, option declarations and sections. |  |  | values `named-match`, types `named-match` |  |  | `src`, `tests` |
-| `setup` | Init steps and sync targets of the domain. |  |  | values `named-match`, types `named-match` | effectful |  | `src` |
-| `plugins` | The tool's own plugins, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tests` |
-| `conventions` | Formatting conventions, discovered by category. |  |  | values `default`, types `none`, `index` | effectful |  | `src`, `tests` |
-| `rules` | ESLint rules lint runs on the files of a role, one per module. |  |  | values `named-match`, types `named-match` | effectful |  | `src`, `tooling` |
+| `setup` | Init steps and sync targets of the domain. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src` |
+| `plugins` | The tool's own plugins, one per module. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src`, `tests` |
+| `conventions` | Formatting conventions, discovered by category. |  |  | values `default`, types `none`, `index` | evaluation confined, invocation effectful |  | `src`, `tests` |
+| `rules` | ESLint rules lint runs on the files of a role, one per module. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src`, `tooling` |
 | `presets` | Presets of the domain's declarations, one per module. |  |  | values `named-match`, types `none` | confined |  | `src` |
-| `config/definers` | The domain's `define…Config` definer. | `define<Domain>Config.ts`, `defineConfig.ts` |  | values `named-match`, types `named-match` | effectful |  | `src` |
+| `config/definers` | The domain's `define…Config` definer. | `define<Domain>Config.ts`, `defineConfig.ts` |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src` |
 | `config/schemas` | Validation schemas of the option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
 | `config/declarers` | Functions creating option declarations. |  |  | values `named-match`, types `named-match` | confined |  | `src` |
-| `config/sections` | Section values the domain contributes to the loaded config. |  |  | values `named-match`, types `named-match` | effectful |  | `src` |
-| `testutils` | Reusable test utilities. |  |  | values `named-match`, types `named-match` | effectful |  | `tests` |
+| `config/sections` | Section values the domain contributes to the loaded config. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `src` |
+| `testutils` | Reusable test utilities. |  |  | values `named-match`, types `named-match` | evaluation confined, invocation effectful |  | `tests` |
 | `fixtures` | Static test inputs. |  |  |  | pure |  | `tests` |
 | `testsetup` | Test runner setup file. | `setup.ts` |  |  |  |  | `tests` |
 | `executable` | A program's executable: it loads the program's root group and runs it. | `executable.ts` |  |  |  |  | `bin`, `scripts` |
 | `commands` | One command's description, arguments and options, and the glue to its action. | `*.ts` |  | values `default`, types `none` |  |  | `bin`, `scripts` |
-| `actions` | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |  |  | values `default`, types `none` | effectful |  | `bin`, `scripts` |
+| `actions` | The behavior of one command, without its name, aliases or argument structure, loaded when it runs. |  |  | values `default`, types `none` | evaluation confined, invocation effectful |  | `bin`, `scripts` |

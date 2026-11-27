@@ -23,15 +23,17 @@ function findRank(ranks: EffectRanks, unit: string): EffectRank | undefined {
 /**
  * Ranks `unit` from the first source ranking it, an exact key before any glob,
  * else `fallback`; each member takes the rank of the first source listing it,
- * whatever source ranks the unit.
+ * whatever source ranks the unit. A ranked unit evaluates at the first source's
+ * `evaluation` stating one, else at the purest level.
  */
 export function rankUnit(
-  { ranks, fallback }: ResolvedEffects,
+  { levels, ranks, fallback }: ResolvedEffects,
   unit: string,
 ): UnitRank {
   const members = new Map<string, string>();
 
   let level: string | undefined;
+  let evaluation: string | undefined;
 
   for (const source of ranks) {
     const rank = findRank(source, unit);
@@ -46,12 +48,24 @@ export function rankUnit(
       continue;
     }
 
-    for (const [member, memberLevel] of entries(rank.symbols)) {
+    evaluation ??= rank.evaluation;
+
+    for (const [member, memberLevel] of entries(rank.symbols ?? {})) {
       if (!members.has(member)) {
         members.set(member, memberLevel);
       }
     }
   }
 
-  return { level: level ?? fallback, members };
+  return level === undefined
+    ? {
+        level: fallback,
+        evaluation: fallback,
+        members,
+      }
+    : {
+        level,
+        evaluation: evaluation ?? levels[0],
+        members,
+      };
 }

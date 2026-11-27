@@ -103,6 +103,10 @@ describe("effect levels", () => {
         level: "pure",
         symbols: { read: "shaky" },
       },
+      {
+        level: "pure",
+        evaluation: "shaky",
+      },
     ]) {
       expect(() => {
         return resolveEffects({
@@ -172,5 +176,26 @@ describe("unit ranks", () => {
     expect(rankUnit(effects, "libs").level).toBe("effectful");
     expect(rankMember(effects, "library", "constructor")).toBe("pure");
     expect(rankMember(effects, "library", "toString")).toBe("pure");
+  });
+
+  test("evaluates a unit at the first source stating it, else at the purest level", () => {
+    const effects = resolveEffects({
+      ranks: {
+        stated: { level: "effectful" },
+        bare: "effectful",
+      },
+      defaults: {
+        stated: { level: "pure", evaluation: "observing" },
+      },
+      fallback: "confined",
+    });
+
+    expect(rankUnit(effects, "stated")).toMatchObject({
+      level: "effectful",
+      evaluation: "observing",
+    });
+
+    expect(rankUnit(effects, "bare").evaluation).toBe("pure");
+    expect(rankUnit(effects, "unknown").evaluation).toBe("confined");
   });
 });

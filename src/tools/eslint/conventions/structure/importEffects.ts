@@ -1,5 +1,6 @@
 import { getOwn } from "@auaust/toolkit/object";
 
+import { chargeEffect } from "#batiment/effects/index";
 import {
   collectEffectCharges,
   type EffectCharge,
@@ -14,9 +15,10 @@ export default defineConvention({
   rule: ({ entities, roles }, { root }) => {
     return defineStructureRule({
       entities,
-      description: "A module of a ranked role imports at runtime only bindings declared in roles of its effect level or purer, and external modules ranked likewise.",
+      description: "Code of a ranked role runs only what its ceilings allow where it runs: what loading a module does against its evaluation ceiling while the module evaluates, and what invoking a binding does against the ceiling of the position invoking it, inside functions its invocation ceiling.",
       messages: {
-        effects: "A module of {{role}} ({{level}}) imports `{{binding}}` from {{target}} ({{targetLevel}}); import only {{level}} or purer bindings, or move the code.",
+        evaluate: "A module of {{role}} loads {{unit}} ({{level}} evaluation){{through}} during {{position}}, above its {{position}} ceiling ({{ceiling}}); load only modules evaluating at {{ceiling}} or purer there, or move the import.",
+        invoke: "A module of {{role}} invokes `{{binding}}` from {{unit}} ({{level}}){{through}} during {{position}}, above its {{position}} ceiling ({{ceiling}}); invoke only {{ceiling}} or purer code there, or move the call.",
       },
       create(context, { namespace, role, effects: ceilings }) {
         const environmentRoles = namespace === undefined
@@ -26,34 +28,50 @@ export default defineConvention({
         if (
           environmentRoles === undefined ||
           role === undefined ||
-          ceilings?.invocation === undefined
+          ceilings === undefined
         ) {
           return {};
         }
 
         const { effects } = environmentRoles;
         const { levels } = effects;
-        const unitCeiling = ceilings.invocation;
+        const unitCeilings = ceilings;
 
-        function judge({ node, binding, target, level }: EffectCharge) {
-          const ceiling = unitCeiling;
+        function judge({
+          node,
+          operation,
+          position,
+          target,
+          unit,
+          binding,
+          through,
+        }: EffectCharge) {
+          const cost = chargeEffect({
+            operation,
+            target,
+            position,
+            ceilings: unitCeilings,
+          });
 
           if (
-            level !== undefined &&
-            levels.indexOf(level) <= levels.indexOf(ceiling)
+            cost === undefined ||
+            (cost.level !== undefined &&
+              levels.indexOf(cost.level) <= levels.indexOf(cost.ceiling))
           ) {
             return;
           }
 
           context.report({
             node,
-            messageId: "effects",
+            messageId: operation,
             data: {
               role,
-              level: ceiling,
+              position,
+              ceiling: cost.ceiling,
               binding,
-              target,
-              targetLevel: level ?? "unranked",
+              unit,
+              level: cost.level ?? "unranked",
+              through: through === undefined ? "" : ` through \`${through}\``,
             },
           });
         }

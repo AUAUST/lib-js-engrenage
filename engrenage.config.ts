@@ -16,7 +16,7 @@ const config = role({
       file: ["define<Domain>Config.ts", "defineConfig.ts"],
       unique: true,
       exports: "named-match",
-      effects: "effectful",
+      effects: { evaluation: "confined", invocation: "effectful" },
     },
     {
       name: "schemas",
@@ -37,7 +37,7 @@ const config = role({
       purpose: "Section values the domain contributes to the loaded config.",
       accepts: "*Section.ts",
       exports: "named-match",
-      effects: "effectful",
+      effects: { evaluation: "confined", invocation: "effectful" },
     },
   ],
 });
@@ -46,7 +46,7 @@ const setup = role({
   name: "setup",
   purpose: "Init steps and sync targets of the domain.",
   exports: "named-match",
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });
 
 const presets = role({
@@ -60,14 +60,14 @@ const plugins = role({
   name: "plugins",
   purpose: "The tool's own plugins, one per module.",
   exports: "named-match",
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });
 
 const rules = role({
   name: "rules",
   purpose: "ESLint rules lint runs on the files of a role, one per module.",
   exports: "named-match",
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });
 
 // @debt the modules are ESLint rule conventions, not formatting conventions, and the word collides with the `Conventions` of `project/format`
@@ -77,7 +77,7 @@ const conventions = role({
   categories: true,
   exports: "default",
   // @debt conventions rank effectful because they import section values, which only the creator resolves (#231)
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
   discovered: true,
   index: true,
 });

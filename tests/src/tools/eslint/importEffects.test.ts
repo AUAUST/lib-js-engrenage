@@ -11,7 +11,19 @@ import { renderCodeRoles } from "#tests/utils/renderCodeRoles";
 const operations = createRolePreset({
   name: "operations",
   exports: "named-match",
+  effects: { evaluation: "confined", invocation: "effectful" },
+});
+
+const bootstrap = createRolePreset({
+  name: "bootstrap",
+  exports: "named-match",
   effects: "effectful",
+});
+
+const handlers = createRolePreset({
+  name: "handlers",
+  exports: "named-match",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });
 
 async function createLinter({
@@ -27,7 +39,7 @@ async function createLinter({
         "#project/*": "./src/project/*.ts",
       },
     }),
-    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
+    "engrenage.config.ts": `export default { preset: "library", structure: { effects: { ${effects} } }, src: { roles: ${renderCodeRoles(entry(), operations(), bootstrap(), handlers(), ...roles)}, structure: { layers: ["foundation", "project"] } } };\n`,
     "tsconfig.json": JSON.stringify({
       compilerOptions: {
         module: "nodenext",
@@ -45,32 +57,34 @@ async function createLinter({
       types: "index.d.ts",
     }),
     "node_modules/@types/node/index.d.ts": [
-      'declare module "node:fs" { export const readFileSync: number; }',
-      'declare module "node:fs" { export const writeFileSync: number; }',
-      'declare module "node:path" { export const join: number; }',
-      'declare module "node:console" { export const log: number; }',
+      'declare module "node:fs" { export function readFileSync(): void; }',
+      'declare module "node:fs" { export function writeFileSync(): void; }',
+      'declare module "node:path" { export function join(): void; }',
+      'declare module "node:console" { export function log(): void; }',
     ].join("\n"),
     "node_modules/my-db/package.json": JSON.stringify({
       name: "my-db",
       version: "1.0.0",
       types: "index.d.ts",
     }),
-    "node_modules/my-db/index.d.ts": "export declare const connect: number;\nexport declare const readFileSync: number;\nexport default connect;\n",
+    "node_modules/my-db/index.d.ts": "export declare function connect(): void;\nexport declare function readFileSync(): void;\nexport default connect;\n",
     "node_modules/valibot/package.json": JSON.stringify({
       name: "valibot",
       version: "1.0.0",
       types: "index.d.ts",
     }),
-    "node_modules/valibot/index.d.ts": "export declare const string: number;\n",
+    "node_modules/valibot/index.d.ts": "export declare function string(): void;\n",
     "src/foundation/base/index.ts": 'export { helper } from "#foundation/base/utils/helper";\nexport { act } from "#foundation/base/operations/act";\n',
     "src/foundation/base/entry.ts": 'export * from "#foundation/base/index";\n',
-    "src/foundation/base/utils/helper.ts": "export const helper = 1;\n",
-    "src/foundation/base/operations/act.ts": "export const act = 1;\n",
+    "src/foundation/base/utils/helper.ts": "export function helper() {}\n",
+    "src/foundation/base/operations/act.ts": "export function act() {}\n",
+    "src/foundation/base/bootstrap/boot.ts": "export function boot() {}\n",
     "src/project/feature/index.ts": "export {};\n",
-    "src/project/feature/utils/own.ts": "export const own = 1;\n",
-    "src/project/feature/utils/index.ts": "export const index = 1;\n",
-    "src/project/feature/logging/trace.ts": "export const trace = 1;\n",
-    "src/project/feature/observing/read.ts": "export const read = 1;\n",
+    "src/project/feature/utils/own.ts": "export function own() {}\n",
+    "src/project/feature/utils/index.ts": "export function index() {}\n",
+    "src/project/feature/logging/trace.ts": "export function trace() {}\n",
+    "src/project/feature/observing/read.ts": "export function read() {}\n",
+    "src/project/feature/handlers/run.ts": "export function run() {}\n",
     "src/project/feature/constants.ts": "export const value = 1;\n",
     "src/project/feature/config/featureSchema.ts": "export const value = 1;\n",
     "src/project/feature/config/defineFeatureConfig.ts": "export const value = 1;\n",
@@ -112,53 +126,151 @@ const config = createRolePreset({
 
 const utility = "src/project/feature/utils/own.ts";
 const constants = "src/project/feature/constants.ts";
+const handler = "src/project/feature/handlers/run.ts";
 
 function importing(specifier: string, name: string) {
-  return `import { ${name} } from "${specifier}";\n\nexport const value = ${name};\n`;
+  return `import { ${name} } from "${specifier}";\n\nexport const value = ${name}();\n`;
 }
 
+function invoking(specifier: string, name: string) {
+  return `import { ${name} } from "${specifier}";\n\nexport function value() {\n  return ${name}();\n}\n`;
+}
+
+const act = 'import { act } from "#foundation/base/index";\n\n';
+
 describe("import effects", () => {
-  test("rank every binding a dynamic import loads", async () => {
+  test("charge an invocation to the position running it, and a read nothing", async () => {
     const lint = await createLinter();
 
-    const [message] = await lint(
-      utility,
-      'export const value = import("#foundation/base/index");\n',
-    );
+    expect(
+      await lint(handler, invoking("#foundation/base/index", "act")),
+    ).toEqual([]);
 
-    expect(message).toContain("`act`");
-    expect(message).toContain("effectful");
-  });
+    expect(await lint(handler, `${act}export const run = act;\n`)).toEqual([]);
 
-  test("rank a namespace import of an entry by the roles declaring its exports", async () => {
-    const lint = await createLinter();
+    const [
+      evaluated,
+    ] = await lint(handler, importing("#foundation/base/index", "act"));
 
-    const source = 'import * as base from "#foundation/base/entry";\n\nexport const run = base;\n';
+    expect(evaluated).toContain("`act`");
+    expect(evaluated).toContain("during evaluation");
+    expect(evaluated).toContain("(confined)");
 
-    expect(await lint("src/project/feature/operations/run.ts", source)).toEqual(
-      [],
-    );
+    const [
+      invoked,
+    ] = await lint(utility, invoking("#foundation/base/index", "act"));
 
-    const messages = await lint(utility, source);
-
-    expect(messages).toHaveLength(1);
-    expect(messages[0]).toContain("`act`");
-    expect(messages[0]).toContain("effectful");
-  });
-
-  test("follow bindings through a lower layer's index.ts and rank node builtins", async () => {
-    const lint = await createLinter();
+    expect(invoked).toContain("during invocation");
+    expect(invoked).toContain("(confined)");
 
     expect(
       await lint(utility, importing("#foundation/base/index", "helper")),
     ).toEqual([]);
+  });
 
-    const [
-      message,
-    ] = await lint(utility, importing("#foundation/base/index", "act"));
+  test("charge at evaluation what a local function called there runs", async () => {
+    const lint = await createLinter();
 
-    expect(message).toContain("confined");
-    expect(message).toContain("effectful");
+    const [message, ...rest] = await lint(
+      handler,
+      `${act}function setup() {\n  act();\n}\n\nfunction start() {\n  setup();\n}\n\nstart();\n`,
+    );
+
+    expect(rest).toEqual([]);
+    expect(message).toContain("through `start`");
+    expect(message).toContain("during evaluation");
+
+    expect(
+      await lint(
+        handler,
+        `${act}function create() {\n  return () => {\n    act();\n  };\n}\n\nexport const run = create();\n`,
+      ),
+    ).toEqual([]);
+
+    expect(
+      await lint(handler, `${act}(() => {\n  act();\n})();\n`),
+    ).toHaveLength(1);
+  });
+
+  test("charge static members to evaluation and instance members to invocation", async () => {
+    const lint = await createLinter();
+
+    const [message] = await lint(
+      handler,
+      `${act}export class Run {\n  static value = act();\n}\n`,
+    );
+
+    expect(message).toContain("during evaluation");
+
+    const instance = `${act}export class Run {\n  value = act();\n}\n`;
+
+    expect(await lint(handler, instance)).toEqual([]);
+
+    expect(await lint(utility, instance)).toEqual([
+      expect.stringContaining("during invocation"),
+    ]);
+
+    expect(
+      await lint(handler, `${instance}\nexport const run = new Run();\n`),
+    ).toEqual([expect.stringContaining("through `Run`")]);
+  });
+
+  test("charge a dynamic import by the position running it", async () => {
+    const lint = await createLinter();
+
+    const boot = "#foundation/base/bootstrap/boot";
+
+    expect(
+      await lint(
+        handler,
+        `export async function run() {\n  return import("${boot}");\n}\n`,
+      ),
+    ).toEqual([]);
+
+    const messages = await lint(
+      handler,
+      `export const run = import("${boot}");\n`,
+    );
+
+    expect(messages).toEqual([
+      expect.stringContaining("(effectful evaluation)"),
+      expect.stringContaining("`boot`"),
+    ]);
+
+    const strict = await createLinter({ effects: 'fallback: "effectful"' });
+
+    const loading = "export function run(name: string) {\n  return import(name);\n}\n";
+
+    expect(await strict(handler, loading)).toEqual([]);
+    expect(await strict(utility, loading)).toHaveLength(1);
+    expect(await lint(utility, loading)).toEqual([]);
+  });
+
+  test("charge a barrel's evaluation ceiling and rank a namespace import's members", async () => {
+    const lint = await createLinter();
+
+    for (const specifier of [
+      "#foundation/base/index",
+      "#foundation/base/entry",
+    ]) {
+      const namespace = `import * as base from "${specifier}";\n\n`;
+
+      expect(
+        await lint(utility, `${namespace}export const run = base;\n`),
+      ).toEqual([]);
+
+      expect(
+        await lint(utility, `${namespace}export const run = base.helper();\n`),
+      ).toEqual([]);
+
+      expect(
+        await lint(utility, `${namespace}export const run = base.act();\n`),
+      ).toEqual([expect.stringContaining("`base.act`")]);
+    }
+  });
+
+  test("follow bindings through a lower layer's index.ts and rank node builtins", async () => {
+    const lint = await createLinter();
 
     expect(await lint(utility, importing("node:path", "join"))).toEqual([]);
     expect(await lint(utility, importing("node:console", "log"))).toEqual([]);
@@ -166,6 +278,13 @@ describe("import effects", () => {
     expect(
       await lint(utility, importing("node:fs", "readFileSync")),
     ).toHaveLength(1);
+
+    expect(
+      await lint(
+        constants,
+        'import { writeFileSync } from "node:fs";\n\nexport const value = writeFileSync;\n',
+      ),
+    ).toEqual([]);
   });
 
   test("ranks a module named like the index file in a role without index as the role's module", async () => {
@@ -184,7 +303,7 @@ describe("import effects", () => {
 
     expect(
       await lint(constants, importing("#project/feature/utils/own", "own")),
-    ).toHaveLength(1);
+    ).toHaveLength(2);
 
     const inserted = await createLinter({
       effects: 'levels: ["pure", { name: "logging", purpose: "Write logs." }, "printing", "confined", "observing", "effectful"]',
@@ -201,7 +320,7 @@ describe("import effects", () => {
     const trace = importing("#project/feature/logging/trace", "trace");
 
     expect(await inserted(utility, trace)).toEqual([]);
-    expect(await inserted(constants, trace)).toHaveLength(1);
+    expect(await inserted(constants, trace)).toHaveLength(2);
 
     await expect(
       createLinter({
@@ -216,7 +335,7 @@ describe("import effects", () => {
         createRolePreset({
           name: "observing",
           exports: "named-match",
-          effects: { evaluation: "pure", invocation: "observing" },
+          effects: { evaluation: "confined", invocation: "observing" },
         })(),
       ],
     });
@@ -224,21 +343,14 @@ describe("import effects", () => {
     const read = "src/project/feature/observing/read.ts";
 
     expect(
-      await lint(read, importing("#foundation/base/index", "helper")),
+      await lint(read, invoking("#foundation/base/index", "helper")),
     ).toEqual([]);
 
     const [
       message,
-    ] = await lint(read, importing("#foundation/base/index", "act"));
+    ] = await lint(read, invoking("#foundation/base/index", "act"));
 
     expect(message).toContain("(observing)");
-
-    const [unranked] = await lint(
-      utility,
-      'import * as base from "#foundation/base/index";\n\nexport const run = base;\n',
-    );
-
-    expect(unranked).toContain("(unranked)");
   });
 
   test("rank external modules by configured entry, with an opt-in fallback", async () => {
@@ -250,9 +362,15 @@ describe("import effects", () => {
       1,
     );
 
-    expect(
-      await ranked(utility, importing("node:fs", "readFileSync")),
-    ).toHaveLength(1);
+    expect(await ranked(utility, 'import "my-db";\n')).toEqual([]);
+
+    const evaluating = await createLinter({
+      effects: 'modules: { "my-db": { level: "pure", evaluation: "effectful" } }',
+    });
+
+    expect(await evaluating(utility, 'import "my-db";\n')).toEqual([
+      expect.stringContaining("(effectful evaluation)"),
+    ]);
 
     const open = await createLinter();
 
@@ -263,7 +381,7 @@ describe("import effects", () => {
     });
 
     expect(await strict(utility, importing("my-db", "connect"))).toHaveLength(
-      1,
+      2,
     );
 
     const listed = await createLinter({
@@ -295,7 +413,7 @@ describe("import effects", () => {
     expect(
       await lint(
         read,
-        'import * as fs from "node:fs";\nexport const read = fs;\n',
+        'import * as fs from "node:fs";\nexport const read = fs.writeFileSync();\n',
       ),
     ).toHaveLength(1);
 
@@ -307,7 +425,7 @@ describe("import effects", () => {
     expect(
       await configured(
         constants,
-        'import value from "my-db";\nexport { value };\n',
+        'import value from "my-db";\nexport const run = value();\n',
       ),
     ).toEqual([]);
 
@@ -318,7 +436,7 @@ describe("import effects", () => {
     expect(
       await configured(
         read,
-        'import { readFileSync as renamed } from "my-db";\nexport const read = renamed;\n',
+        'import { readFileSync as renamed } from "my-db";\nexport const read = renamed();\n',
       ),
     ).toEqual([]);
 
@@ -329,46 +447,34 @@ describe("import effects", () => {
     expect(
       await configured(
         read,
-        'import * as db from "my-db";\nexport const read = db;\n',
+        'import * as db from "my-db";\nexport const read = db.connect();\n',
       ),
-    ).toHaveLength(1);
-
-    expect(
-      await configured(read, 'export { readFileSync as read } from "my-db";\n'),
-    ).toEqual([]);
-
-    expect(await configured(read, 'export * from "my-db";\n')).toHaveLength(1);
-
-    expect(
-      await configured(read, 'import "my-db";\nexport const read = 1;\n'),
     ).toHaveLength(1);
   });
 
-  test("charge side-effect imports and re-exports, and skip unresolved specifiers", async () => {
+  test("charge side-effect imports and re-exports their target's evaluation, and skip unresolved specifiers", async () => {
     const lint = await createLinter();
 
-    const act = "#foundation/base/operations/act";
+    const boot = "#foundation/base/bootstrap/boot";
 
-    expect(await lint(utility, `import "${act}";\n`)).toEqual([
-      expect.stringContaining(`\`${act}\``),
+    expect(await lint(utility, `import "${boot}";\n`)).toEqual([
+      expect.stringContaining(`(effectful evaluation)`),
     ]);
 
-    expect(await lint(utility, `export * from "${act}";\n`)).toEqual([
-      expect.stringContaining("`*`"),
-    ]);
+    expect(await lint(utility, `export * from "${boot}";\n`)).toHaveLength(1);
 
-    expect(await lint(utility, `export * as ns from "${act}";\n`)).toEqual([
-      expect.stringContaining("`*`"),
-    ]);
+    expect(
+      await lint(utility, `export * as ns from "${boot}";\n`),
+    ).toHaveLength(1);
 
-    expect(await lint(utility, `export { act } from "${act}";\n`)).toEqual([
-      expect.stringContaining("`act`"),
-    ]);
+    expect(
+      await lint(utility, `export { boot } from "${boot}";\n`),
+    ).toHaveLength(1);
 
     expect(
       await lint(
         utility,
-        'export { helper } from "#foundation/base/utils/helper";\n',
+        'export { act } from "#foundation/base/operations/act";\n',
       ),
     ).toEqual([]);
 
@@ -387,14 +493,14 @@ describe("import effects", () => {
   test("rank a file at a role's root by the nested role its name matches", async () => {
     const lint = await createLinter({ roles: [config()] });
 
-    const act = importing("#foundation/base/index", "act");
+    const run = importing("#foundation/base/index", "act");
 
     expect(
-      await lint("src/project/feature/config/featureSchema.ts", act),
+      await lint("src/project/feature/config/featureSchema.ts", run),
     ).toHaveLength(1);
 
     expect(
-      await lint("src/project/feature/config/defineFeatureConfig.ts", act),
+      await lint("src/project/feature/config/defineFeatureConfig.ts", run),
     ).toEqual([]);
   });
 });

@@ -1,9 +1,10 @@
-import { object, record, string, union } from "valibot";
+import { object, optional, record, string, union } from "valibot";
 
 export const effectRankSchema = union([
   string(),
   object({
     level: string(),
-    symbols: record(string(), string()),
+    evaluation: optional(string()),
+    symbols: optional(record(string(), string())),
   }),
 ]);

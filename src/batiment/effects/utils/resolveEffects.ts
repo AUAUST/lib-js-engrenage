@@ -76,7 +76,11 @@ export function resolveEffects({
 
       assertLevel(rank.level, `The unit ${pattern}`);
 
-      for (const level of values(rank.symbols)) {
+      if (rank.evaluation !== undefined) {
+        assertLevel(rank.evaluation, `The evaluation of ${pattern}`);
+      }
+
+      for (const level of values(rank.symbols ?? {})) {
         assertLevel(level, `A symbol of ${pattern}`);
       }
     }

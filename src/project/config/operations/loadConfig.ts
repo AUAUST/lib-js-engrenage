@@ -10,6 +10,7 @@ import { readRawConfig } from "#project/config/operations/readRawConfig";
 import type { LoadedConfig } from "#project/config/types/LoadedConfig";
 import type { Directory } from "#types/Directory";
 
+// eslint-disable-next-line auaust/import-effects -- #986
 const defaultReporter = createConsoleReporter();
 
 const loadedConfigs = new Map<

@@ -14,5 +14,5 @@ export const extension = createRolePreset({
   discovered: true,
   public: true,
   collected: true,
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });

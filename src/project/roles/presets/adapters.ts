@@ -8,6 +8,6 @@ export const adapters = createRolePreset({
   name: "adapters",
   purpose: "Implementations of other domains' ports, importable module by module.",
   exports: "named-match",
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
   public: true,
 });

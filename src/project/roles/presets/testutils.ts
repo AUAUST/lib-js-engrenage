@@ -10,5 +10,5 @@ export const testutils = createRolePreset({
   purpose: "Reusable test utilities.",
   exports: "named-match",
   // @debt make it observing once the type is added, and add mocks/other roles for genuinely impactful utils; a test utility may read the environment's mocks or context, but it must not produce side effects that'd fail in non-isolated tests.
-  effects: "effectful",
+  effects: { evaluation: "confined", invocation: "effectful" },
 });
