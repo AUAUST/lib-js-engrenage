@@ -3,8 +3,8 @@ taps:
   - {id: BL-adfd1d, at: 2026-11-26T12:00:26Z, note: "gate typecheck now runs one tsc per environment concurrently (#954), adding load beside vitest"}
   - {id: BL-adfd1d, at: 2026-11-26T12:11:13Z, note: "barrelDirective.test.src.ts timed out at 5s under gate --worktree, twice"}
   - {id: BL-adfd1d, at: 2026-11-26T17:32:15Z, note: "codegen/config resolved: whole-output test dropped for renderConfigType unit tests; apis tests (1.2 s, 1.7 s) keep measured budgets"}
-  - {id: BL-69c9a1, at: 2026-11-27T13:30:57Z, note: also runEngrenageProgram sync --check info test and runGateLocks cancelled-gate test; skipped}
-  - {id: BL-69c9a1, at: 2026-11-27T14:08:51Z, note: "Under gate load the timeout rotates through spawn-heavy files (pnpm, sync, syncDirectiveBlocks, eslintFix tests): skipping one passes it to the next"}
+  - {id: BL-adfd1d, at: 2026-11-27T14:44:18Z, note: "BL-69c9a1 sites now budget workflowTimeout (tests/constants.ts): the load-sensitive part is a file first test paying cold lazy imports and whole-project work, 5-6x slower beside other suites; gate alone passed 4/4"}
+  - {id: BL-adfd1d, at: 2026-11-27T14:55:04Z, note: also tests/src/tools/github/issues/drafts/publish.test.src.ts "still reports a body conflict when GitHub changed another section" timed out at 5s in a full suite beside a gate}
 entries:
   - id: BL-9a6dd1
     title: Test infrastructure gaps
@@ -94,11 +94,3 @@ entries:
       - tests/src/batiment/structure/entityIndex.test.src.ts:34
     want: One testutil exporting the repository root, reused by each site
     created: 2026-11-24T00:00:00Z
-  - id: BL-69c9a1
-    title: Sync --check tests exceed the 5s test timeout under gate load
-    sites:
-      - tests/src/tools/typescript/barrelDirective.test.src.ts:1
-      - tests/src/tools/typescript/syncBarrelFiles.test.src.ts:1
-    why: "FR-253f10: 4 hits; 1.5-3.2s alone, same at base; blocks commit gate"
-    want: un-skip the two tests once they pass reliably in the worktree and commit gates
-    created: 2026-11-27T12:15:17Z

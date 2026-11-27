@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { readSharedPnpmRange } from "#project/package/utils/readSharedPnpmRange";
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { readTestPnpmVersions } from "#tests/utils/readTestPnpmVersions";
@@ -33,8 +34,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-// @debt skipped whole: under gate load its spawning tests time out past 5s in turn though each passes alone (BL-69c9a1)
-describe.skip("engrenage pnpm upgrade", () => {
+describe("engrenage pnpm upgrade", { timeout: workflowTimeout }, () => {
   test("replaces the legacy declaration and the only-allow script", async () => {
     const project = createProject({
       packageManager: `pnpm@${versions.previousMajor}`,

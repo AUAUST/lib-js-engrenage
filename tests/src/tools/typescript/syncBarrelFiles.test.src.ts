@@ -6,6 +6,7 @@ import { assert, describe, expect, test } from "vitest";
 import { createRolePreset, type Role } from "#batiment/roles/index";
 import { enums, schemas, types, utils } from "#project/roles/index";
 import { runSync } from "#project/sync/index";
+import { workflowTimeout } from "#tests/constants";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
 import { expectSettledSync } from "#tests/utils/expectSettledSync";
 import { createEslintConfig } from "#tools/eslint/index";
@@ -67,9 +68,8 @@ function createSplitKit(rootEntries: Record<string, string>) {
   });
 }
 
-describe("barrels sync target", () => {
-  // @debt skipped: times out past 5s under gate load though it takes 1.5s alone (BL-69c9a1)
-  test.skip("writes an entry-only domain's entry and a root entry re-exporting it, which sync --check then accepts", async () => {
+describe("barrels sync target", { timeout: workflowTimeout }, () => {
+  test("writes an entry-only domain's entry and a root entry re-exporting it, which sync --check then accepts", async () => {
     const { project, config, sync } = createKit({
       files: {
         "src/modules/object/utils/keys.ts": "export function keys() {}\n",
@@ -97,8 +97,7 @@ export * as object from "#modules/object/entry";
     await expectSettledSync(config);
   });
 
-  // @debt skipped: times out past 5s under gate load (BL-69c9a1)
-  test.skip("writes the root entry in the first directory re-exporting only that directory's public domains, which sync --check then accepts", async () => {
+  test("writes the root entry in the first directory re-exporting only that directory's public domains, which sync --check then accepts", async () => {
     const { project, config, sync } = createSplitKit({
       "src/entry.ts": `${header}export * as object from "#modules/object/entry";
 export * as guard from "#panels/guard/entry";

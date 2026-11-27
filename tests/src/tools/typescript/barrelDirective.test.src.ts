@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import { schemas, types, utils } from "#project/roles/index";
 import { collectChanges, runSync } from "#project/sync/index";
+import { workflowTimeout } from "#tests/constants";
 import { createBarrelProject } from "#tests/utils/createBarrelProject";
 import type { Role } from "#batiment/roles/index";
 
@@ -30,9 +31,8 @@ function createKit({
   });
 }
 
-describe("barrel directive", () => {
-  // @debt skipped: times out past 5s under gate load though it takes 3.2s alone (BL-69c9a1)
-  test.skip("keeps hand-written lines beside a role's modules, and sync --check reports a module added without sync", async () => {
+describe("barrel directive", { timeout: workflowTimeout }, () => {
+  test("keeps hand-written lines beside a role's modules, and sync --check reports a module added without sync", async () => {
     const { project, config, sync } = createKit({
       files: {
         "src/modules/object/index.ts": 'export const name = "object";\n\n// @barrel utils\n// @end\n',

@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 
 import { afterEach, describe, expect, test, vi } from "vitest";
 
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -38,8 +39,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-// @debt skipped whole: under gate load its spawning tests time out past 5s in turn though each passes alone (BL-69c9a1)
-describe.skip("engrenage sync", () => {
+describe("engrenage sync", { timeout: workflowTimeout }, () => {
   test("syncs every target so a later check passes", async () => {
     const project = createProject();
 

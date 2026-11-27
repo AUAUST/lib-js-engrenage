@@ -101,11 +101,3 @@ entries:
     want: "remaining commands report through #1005 entries, split by bin"
     done: no command formats lines for reporter.log itself
     created: 2026-11-27T12:02:30Z
-  - id: BL-870fb0
-    title: Sync options type a Commander Option below the CLI layer
-    sites:
-      - src/project/sync/types/SyncOption.ts:1
-      - src/project/sync/operations/listSyncOptions.ts:1
-    want: sync declares options as data the CLI layer compiles
-    done: "Tracked by #1012"
-    created: 2026-11-27T13:25:03Z

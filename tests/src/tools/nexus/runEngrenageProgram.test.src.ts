@@ -8,6 +8,7 @@ import {
   defineGroup,
 } from "#nexus/cli/index";
 import { loadConfig } from "#project/config/index";
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -70,9 +71,8 @@ afterEach(() => {
   vi.doUnmock("#project/config/index");
 });
 
-describe("sync --check", () => {
-  // @debt exceeds its timeout under gate load, passing alone (BL-69c9a1)
-  test.skip("prints no agent finding and reports each at info", async () => {
+describe("sync --check", { timeout: workflowTimeout }, () => {
+  test("prints no agent finding and reports each at info", async () => {
     const project = createTemporaryProject({
       "package.json": "{}",
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };',

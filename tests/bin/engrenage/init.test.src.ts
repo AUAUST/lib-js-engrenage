@@ -14,6 +14,7 @@ import { scratchpadPlaceholder } from "#metalbrain/backlog/constants";
 import { command } from "#nexus/cli/index";
 import { findCurrentMonth } from "#project/baseline/index";
 import { loadConfig } from "#project/config/operations/loadConfig";
+import { workflowTimeout } from "#tests/constants";
 import { createTemporaryProject } from "#tests/utils/createTemporaryProject";
 import { linkSourcePackage } from "#tests/utils/linkSourcePackage";
 import { mockCwd } from "#tests/utils/mockCwd";
@@ -26,6 +27,8 @@ import * as prompts from "#workflows/init/operations/createPrompter";
 import init from "#bin/engrenage/init";
 import sync from "#bin/engrenage/sync";
 import manifest from "#package.json" with { type: "json" };
+
+vi.setConfig({ testTimeout: workflowTimeout });
 
 vi.mock(import("#foundation/processes/operations/spawnProcess"));
 
@@ -205,8 +208,7 @@ describe("engrenage init", () => {
     },
   );
 
-  // @debt skipped: times out past 5s under gate load though it passes alone (BL-69c9a1)
-  test.skip("fills the gaps of a configured project, installs added dependencies and syncs", async () => {
+  test("fills the gaps of a configured project, installs added dependencies and syncs", async () => {
     const project = createProject({
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
@@ -427,8 +429,7 @@ describe("engrenage init", () => {
     );
   });
 
-  // @debt skipped: times out past 5s under gate load though it passes alone (BL-69c9a1)
-  test.skip("leaves a complete project untouched", async () => {
+  test("leaves a complete project untouched", async () => {
     const project = createProject({
       "engrenage.config.ts": 'export default { agents: { preferred: ["claude"] } };\n',
       "package.json": '{\n  "name": "project",\n  "type": "module"\n}\n',
@@ -470,8 +471,7 @@ describe("engrenage init", () => {
     ]);
   });
 
-  // @debt skipped: under gate load it reads the spawns of the timed-out test before it, though it passes alone (BL-69c9a1)
-  test.skip.each([false, true])(
+  test.each([false, true])(
     "starts an uninstalled library with an existing tsconfig: %s",
     async (hasTsconfig) => {
       const project = createTemporaryProject(

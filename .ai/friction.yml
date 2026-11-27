@@ -1354,3 +1354,8 @@ entries:
     tried: grep -rE with "\.option(" patterns
     stopped: mismatched ( error; switched to grep -rF
     created: 2026-11-27T13:47:59Z
+  - id: FR-b8f39b
+    subject: gate stamp on repeated runs
+    tried: rerun gate --worktree to reproduce load timeouts
+    stopped: stamp skipped unchanged trees; varied an untracked probe test per run
+    created: 2026-11-27T14:37:54Z
