@@ -104,6 +104,7 @@ function listOutsideImports(
   return { visited, outside: [...outside] };
 }
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test("the hook's module graph loads only its domain, the cli domains and Node builtins", () => {
   const { visited, outside } = listOutsideImports(
     [
@@ -119,6 +120,7 @@ test("the hook's module graph loads only its domain, the cli domains and Node bu
   expect(visited.size).toBeGreaterThan(5);
 });
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test("the call-log and budget actions load only the hook core, the run's reporting and Node builtins", () => {
   const { outside } = listOutsideImports(
     ["postToolUse", "preToolUse", "thoroughness"].map((action) => {
@@ -198,6 +200,7 @@ test(
   binaryTimeout,
 );
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test(
   "a hook run loads no registration module but the hooks'",
   () => {

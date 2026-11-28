@@ -24,6 +24,7 @@ registerHooks({
 });
 `;
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test(
   "the conventions load without the plugins they only delegate to",
   { timeout: binaryTimeout },

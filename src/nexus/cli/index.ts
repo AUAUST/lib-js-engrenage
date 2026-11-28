@@ -8,7 +8,6 @@ export { findRunContext } from "#nexus/cli/operations/findRunContext";
 export { forwardingCommand } from "#nexus/cli/operations/forwardingCommand";
 export { getRunContext } from "#nexus/cli/operations/getRunContext";
 export { isDebugEnvironment } from "#nexus/cli/operations/isDebugEnvironment";
-export { launch } from "#nexus/cli/operations/launch";
 export { option } from "#nexus/cli/operations/option";
 export { program } from "#nexus/cli/operations/program";
 export { reportCommandError } from "#nexus/cli/operations/reportCommandError";
@@ -68,6 +67,8 @@ export type * from "#nexus/cli/types/SubcommandMatch";
 export type * from "#nexus/cli/types/UnavailableCommand";
 export type * from "#nexus/cli/types/VerbosityFlag";
 // @end
+
+export { launch, type ProgramLaunch } from "#nexus/cli/launch/index";
 
 export {
   completionEntry,

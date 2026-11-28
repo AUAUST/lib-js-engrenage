@@ -40,7 +40,8 @@ src/  foundation < nexus < batiment < metalbrain < project < tools < workflows  
 │  └─ runtimes*{hooks}  Agent runtimes: the Claude runtime's constants and transcripts, agent runs and their stats, hook settings sync and checks, dispatch environments, hook payload checks and the ports hosts fill, over the cheap hook core.
 │     └─ hooks  The cheap hook core: log each tool call with its duration, output size and dollar cost, warn subagents past their thoroughness limit and write hook outputs, loading only Node builtins and the model facts so hooks fire cheaply.
 ├─ nexus/  #nexus/…  Shared program-building tooling: command definition and grouping, program runs, reporting and interop helpers that know nothing of the project engrenage orchestrates.  [debt: A tooling area of its own, shared by engrenage, metalbrain and outside consumers, hosted here outside engrenage's Compass pending a split.]
-│  ├─ cli*  Define commands and command groups, create programs from them and run those programs with their run context, run options and error output.
+│  ├─ cli*{launch}  Define commands and command groups, create programs from them and run those programs with their run context, run options and error output.
+│  │  └─ launch  Launch a program from its executable: enable Node's module compile cache, then load the program and nexus's run engine, so the cache covers them.
 │  ├─ reports  Report typed messages to the handler the running program chooses, showing only those the run's verbosity allows.
 │  └─ scenarios  Resolve the output scenario a run prints for, from a flag or the program's ordered detectors, and load the printer bound to it.
 ├─ project/  #project/…  config < docs < baseline < format < presets < roles < steps < sync < gate < cache < tsconfig < package < environments < build < workspaces < generators < structure  Tool-agnostic project models and contract domains.

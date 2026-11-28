@@ -53,6 +53,7 @@ function runBash(command: string) {
   );
 }
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test(
   "a Bash command naming neither tool loads no check",
   { timeout: binaryTimeout },

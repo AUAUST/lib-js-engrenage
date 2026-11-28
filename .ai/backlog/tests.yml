@@ -103,3 +103,14 @@ entries:
     want: Split module loading from whole-project work in that cost, then make the operations or their fixtures cheap enough for vitest's default timeout under load
     done: No test file uses workflowTimeout
     created: 2026-11-27T15:01:19Z
+  - id: BL-9f2b2c
+    title: Tests assert on implementation, wall-clock time or printed output, failing working features
+    sites:
+      - tests/bin/engrenage/coldImports.test.ts:26
+      - tests/bin/metalbrain/executable.test.src.ts:107
+      - tests/src/project/config/lazyLoading.test.src.ts:38
+      - tests/src/tools/eslint/boundaryScaling.test.ts:71
+    why: import-graph assertions broke CI on a sound refactor (bundled dist paths differ); wall-clock budgets fail at random under load; printed-output assertions pin wording, which is outbound
+    want: agents and checks reject tests on timing, internals (imports included) and printed output, the last allowed only as explicit needles validating a fact; existing ones rewritten as behaviour tests or dropped
+    done: no such test remains and new ones are caught
+    created: 2026-11-28T02:14:50Z

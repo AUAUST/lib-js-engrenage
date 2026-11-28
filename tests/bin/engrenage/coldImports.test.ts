@@ -23,6 +23,7 @@ registerHooks({
 });
 `;
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test(
   "a command that only loads the config never imports the ESLint engine",
   { timeout: binaryTimeout },
@@ -58,6 +59,7 @@ test(
   },
 );
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 test(
   "the eager command tree never imports Git, Prettier or prompt modules",
   { timeout: binaryTimeout },

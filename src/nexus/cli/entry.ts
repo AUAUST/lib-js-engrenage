@@ -47,6 +47,7 @@ export type {
   ParsingCommandDeclaration,
   PrinterLoader,
   ProgramDeclaration,
+  ProgramLaunch,
   RunContext,
   RunFailure,
   RunSettings,

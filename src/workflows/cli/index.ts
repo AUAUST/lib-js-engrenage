@@ -1,6 +1,5 @@
 export { defineToolCommand } from "#workflows/cli/operations/defineToolCommand";
-export { launch } from "#workflows/cli/operations/launch";
-export { runExecutable } from "#workflows/cli/operations/runExecutable";
+export { loadEngrenageProgram } from "#workflows/cli/operations/loadEngrenageProgram";
 
 // @barrel ports
 export type * from "#workflows/cli/ports/CommandContribution";

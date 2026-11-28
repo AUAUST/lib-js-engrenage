@@ -1,0 +1,3 @@
+{
+  "purpose": "Launch a program from its executable: enable Node's module compile cache, then load the program and nexus's run engine, so the cache covers them."
+}

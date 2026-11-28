@@ -6,8 +6,8 @@ entries:
   - id: BL-62e56b
     title: A failing run resolves the config again
     sites:
-      - src/tools/nexus/operations/runEngrenageProgram.ts:10
-    why: runEngrenageProgram resolves the config again to read debug once a command fails
+      - src/tools/nexus/operations/resolveConfiguredDebug.ts:3
+    why: resolveConfiguredDebug resolves the config again to read debug once a command fails
     want: The failing command config reused
     done: "Tracked by #1015 (own engine)"
     created: 2026-11-22T00:00:00Z
@@ -86,15 +86,6 @@ entries:
     why: batiment mpa suggested map on Commander, prints none now; map --check=x suggested --check, now only unknown option '--check=x'
     want: Suggestions catching transpositions and a boolean flag given an inline value
     created: 2026-11-27T17:01:18Z
-  - id: BL-ecb4e5
-    title: Engrenage's executables wrap their run beyond nexus's launch
-    sites:
-      - bin/engrenage/executable.ts:21
-      - bin/metalbrain/executable.ts:27
-      - bin/batiment/executable.ts:21
-    why: "compile cache, linked checkouts, stale barrels, configured debug and hook failures live in each bin executable, so nexus launch alone cannot run these programs; scripts executables move onto launch in #1029"
-    want: each executable only hands its program to launch from nexus/cli
-    created: 2026-11-27T19:41:32Z
   - id: BL-bf599d
     title: An invalid project config warns once per failing command loader and layer, repeating the same config error
     sites:

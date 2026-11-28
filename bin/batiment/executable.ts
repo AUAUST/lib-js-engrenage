@@ -1,31 +1,14 @@
 #!/usr/bin/env node
 
-import { constants, enableCompileCache } from "node:module";
+import { launch } from "#nexus/cli/launch/index";
 
-const { directory, status } = enableCompileCache();
+// @debt runs through engrenage's program loader, reading engrenage's config, until a split CLI finds its host (BL-efac74)
+await launch(async () => {
+  const { loadEngrenageProgram } = await import("#workflows/cli/index");
 
-if (
-  status === constants.compileCacheStatus.ENABLED &&
-  directory !== undefined
-) {
-  process.env.NODE_COMPILE_CACHE = directory;
-}
+  return loadEngrenageProgram("batiment", import.meta.url, async () => {
+    const { default: root } = await import("#bin/batiment/index");
 
-// @debt runs through engrenage's launch and run wrapper, reading engrenage's config, until a split CLI finds its host (BL-efac74)
-const [
-  { program },
-  { runEngrenageProgram },
-  { launch, runExecutable },
-] = await Promise.all([
-  import("#nexus/cli/index"),
-  import("#tools/nexus/index"),
-  import("#workflows/cli/index"),
-]);
-
-await launch("batiment", async () => {
-  await runExecutable(import.meta.url, async () => {
-    const { default: batiment } = await import("#bin/batiment/index");
-
-    await runEngrenageProgram(program({ root: batiment }));
+    return { root };
   });
 });

@@ -68,6 +68,7 @@ async function timeLint(domains: number): Promise<number> {
   return duration;
 }
 
+// @debt asserts a ratio of wall-clock lint times, which load can skew (BL-9f2b2c)
 test("lint time of the import rules grows linearly with the domains", async () => {
   const small = await timeLint(10);
 

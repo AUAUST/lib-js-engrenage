@@ -1,37 +1,24 @@
 #!/usr/bin/env node
 
-import { constants, enableCompileCache } from "node:module";
-
-const { directory, status } = enableCompileCache();
-
-if (
-  status === constants.compileCacheStatus.ENABLED &&
-  directory !== undefined
-) {
-  process.env.NODE_COMPILE_CACHE = directory;
-}
-
-const [
-  { program },
-  { dataEntry, lineEntry },
-  { runEngrenageProgram },
-  { launch, runExecutable },
-] = await Promise.all([
-  import("#nexus/cli/index"),
-  import("#nexus/reports/index"),
-  import("#tools/nexus/index"),
-  import("#workflows/cli/index"),
-]);
+import { launch } from "#nexus/cli/launch/index";
 
 // @debt a hook whose program fails to load exits 1 instead of failing open with a message, since the failure handler runs only once the program loads
-await launch("metalbrain", async () => {
-  await runExecutable(import.meta.url, async () => {
-    const [{ default: metalbrain }, { default: hook }] = await Promise.all([
+await launch(async () => {
+  const { loadEngrenageProgram } = await import("#workflows/cli/index");
+
+  return loadEngrenageProgram("metalbrain", import.meta.url, async () => {
+    const [
+      { default: metalbrain },
+      { default: hook },
+      { dataEntry, lineEntry },
+    ] = await Promise.all([
       import("#bin/metalbrain/index"),
       import("#bin/metalbrain/hook/index"),
+      import("#nexus/reports/index"),
     ]);
 
-    await runEngrenageProgram(program({ root: metalbrain }), undefined, {
+    return {
+      root: metalbrain,
       async onError(error, { args, path, reporter, report }) {
         if (path?.[0] !== hook.name) {
           return report();
@@ -45,6 +32,6 @@ await launch("metalbrain", async () => {
 
         reporter.log(dataEntry(output, [lineEntry(output.systemMessage)]));
       },
-    });
+    };
   });
 });

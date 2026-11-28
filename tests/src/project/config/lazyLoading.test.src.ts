@@ -35,6 +35,7 @@ function within(files: readonly string[], directory: string, except?: string) {
   });
 }
 
+// @debt asserts which modules load, an implementation detail, instead of behaviour (BL-9f2b2c)
 describe("lazy loading", () => {
   test("loads only the extensions and constants of the domains a config reads through its registry", async () => {
     const files = await recordLoadedFiles(

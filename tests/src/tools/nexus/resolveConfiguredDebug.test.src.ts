@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { command, program, type ProgramDeclaration } from "#nexus/cli/index";
+import {
+  command,
+  program,
+  runProgram,
+  type ProgramDeclaration,
+} from "#nexus/cli/index";
 import { nexusScenarios } from "#nexus/scenarios/index";
 import { loadConfig } from "#project/config/index";
 import { workflowTimeout } from "#tests/constants";
@@ -9,7 +14,7 @@ import { createTestReporter } from "#tests/utils/createTestReporter";
 import { mockCwd } from "#tests/utils/mockCwd";
 import { useFailingProgram } from "#tests/utils/useFailingProgram";
 import { reportAgentChecks } from "#tools/metalbrain/operations/reportAgentChecks";
-import { runEngrenageProgram } from "#tools/nexus/index";
+import { resolveConfiguredDebug } from "#tools/nexus/index";
 
 import engrenage from "#bin/engrenage/index";
 
@@ -59,7 +64,31 @@ function createSyncProgram(scenarios = nexusScenarios) {
 }
 
 function run(declared: ProgramDeclaration, ...args: string[]) {
-  return runEngrenageProgram(declared, ["node", "program", ...args]);
+  return runProgram(declared, ["node", "program", ...args], {
+    resolveDebug: resolveConfiguredDebug,
+  });
+}
+
+async function loadFreshRun() {
+  vi.resetModules();
+
+  vi.doMock("#project/config/index", () => {
+    throw new Error("config modules loaded");
+  });
+
+  const [
+    { runProgram: runFresh },
+    { resolveConfiguredDebug: resolveFresh },
+  ] = await Promise.all([
+    import("#nexus/cli/index"),
+    import("#tools/nexus/index"),
+  ]);
+
+  return (declared: ProgramDeclaration, ...args: string[]) => {
+    return runFresh(declared, ["node", "program", ...args], {
+      resolveDebug: resolveFresh,
+    });
+  };
 }
 
 afterEach(() => {
@@ -84,16 +113,11 @@ describe("sync --check", { timeout: workflowTimeout }, () => {
 
     vi.spyOn(process.stdout, "write").mockImplementation(() => true);
 
-    await runEngrenageProgram(createSyncProgram(), ["node", "program", "sync"]);
+    await run(createSyncProgram(), "sync");
 
     stderr.mockClear();
 
-    await runEngrenageProgram(createSyncProgram(), [
-      "node",
-      "program",
-      "sync",
-      "--check",
-    ]);
+    await run(createSyncProgram(), "sync", "--check");
 
     expect(stderr.mock.calls.map(String).join("")).not.toContain("claude · ");
 
@@ -117,7 +141,7 @@ describe("sync --check", { timeout: workflowTimeout }, () => {
   });
 });
 
-describe("runEngrenageProgram", () => {
+describe("resolveConfiguredDebug", () => {
   test("prints the stack with debug in the config", async () => {
     mockCwd(
       createTemporaryProject({
@@ -147,22 +171,14 @@ describe("runEngrenageProgram", () => {
   });
 
   test("runs a succeeding command without loading the config modules", async () => {
-    vi.resetModules();
+    const runFresh = await loadFreshRun();
 
-    vi.doMock("#project/config/index", () => {
-      throw new Error("config modules loaded");
-    });
-
-    const {
-      runEngrenageProgram: runFreshProgram,
-    } = await import("#tools/nexus/index");
-
-    await runFreshProgram(
+    await runFresh(
       program({
         root: command({ name: "program", subcommands: [succeeding] }),
         scenarios: getReporter().scenarios,
       }),
-      ["node", "program", "succeeding"],
+      "succeeding",
     );
 
     expect(getReporter().messages).toEqual([]);
@@ -172,17 +188,9 @@ describe("runEngrenageProgram", () => {
   test("prints the stack with the environment variable without loading the config", async () => {
     vi.stubEnv("PROGRAM_DEBUG", "1");
 
-    vi.resetModules();
+    const runFresh = await loadFreshRun();
 
-    vi.doMock("#project/config/index", () => {
-      throw new Error("config modules loaded");
-    });
-
-    const {
-      runEngrenageProgram: runFreshProgram,
-    } = await import("#tools/nexus/index");
-
-    await runFreshProgram(createProgram(), ["node", "program", "failing"]);
+    await runFresh(createProgram(), "failing");
 
     expect(printed()).toContain("    at ");
   });
