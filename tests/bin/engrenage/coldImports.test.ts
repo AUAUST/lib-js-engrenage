@@ -82,3 +82,44 @@ test(
     ).toEqual([]);
   },
 );
+
+test.each(["engrenage", "metalbrain"] as const)(
+  "%s --help never validates the whole config nor imports the TypeScript compiler",
+  { timeout: binaryTimeout },
+  async (program) => {
+    const project = createTemporaryProject({
+      "package.json": JSON.stringify({
+        name: "project",
+        type: "module",
+      }),
+      "tsconfig.json": "{}\n",
+      "engrenage.config.ts": "export default {};\n",
+    });
+
+    const { stderr } = await run(
+      process.execPath,
+      [
+        "--import",
+        `data:text/javascript,${encodeURIComponent(recordResolutions)}`,
+        getExecutable(program),
+        "--help",
+      ],
+      { cwd: project.root },
+    );
+
+    const urls = stderr.split("\n");
+
+    expect(urls).toContainEqual(
+      expect.stringContaining("/src/project/config/index.ts"),
+    );
+
+    expect(
+      urls.filter((url) => {
+        return (
+          url.includes("/typescript/lib/") ||
+          url.includes("/src/project/docs/config/sections/")
+        );
+      }),
+    ).toEqual([]);
+  },
+);

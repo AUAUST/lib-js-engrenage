@@ -4,11 +4,11 @@ import {
   type OptionDeclaration,
 } from "#nexus/cli/index";
 import { listSyncOptions } from "#project/sync/index";
-import { loadValidatedConfig } from "#workflows/config/index";
+import { loadConfig } from "#workflows/config/index";
 
 export default async function (): Promise<readonly OptionDeclaration[]> {
   const { options } = await listSyncOptions(
-    await loadValidatedConfig(undefined, {
+    await loadConfig(undefined, {
       reporter: getRunContext().reporter,
     }),
   );

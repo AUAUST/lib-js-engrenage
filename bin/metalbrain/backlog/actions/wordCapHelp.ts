@@ -1,9 +1,9 @@
 import { backlog } from "#metalbrain/backlog/constants";
 import { getRunContext } from "#nexus/cli/index";
-import { loadValidatedConfig } from "#workflows/config/index";
+import { loadConfig } from "#workflows/config/index";
 
 export default async function (): Promise<string> {
-  const config = await loadValidatedConfig(process.cwd(), {
+  const config = await loadConfig(process.cwd(), {
     reporter: getRunContext().reporter,
   });
 

@@ -5,10 +5,11 @@ import { scriptEntry, scriptExecutable } from "#tools/nexus/constants";
 import type { Directories } from "#types/Directories";
 
 async function readScriptsDirectories(): Promise<Directories> {
-  const { loadValidatedConfig } = await import("#project/config/index");
+  const { loadConfig } = await import("#project/config/index");
 
-  const config = await loadValidatedConfig();
+  const config = await loadConfig();
 
+  // @debt resolves the whole `scripts` section, its globs and the project's whole structure discovery (~0.25 s here), to read the environment's directories
   const { active, dirs } = await config.resolve("scripts");
 
   return active

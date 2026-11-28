@@ -5,12 +5,9 @@ import {
 } from "#nexus/cli/index";
 
 async function mountContributions(): Promise<readonly CommandMount[]> {
-  const {
-    explainInactive,
-    loadValidatedConfig,
-  } = await import("#project/config/index");
+  const { explainInactive, loadConfig } = await import("#project/config/index");
 
-  const config = await loadValidatedConfig();
+  const config = await loadConfig();
 
   const { registry } = config.context;
 

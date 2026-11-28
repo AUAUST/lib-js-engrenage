@@ -109,3 +109,10 @@ entries:
     why: with an invalid config, engrenage sync --help prints only the config error, while engrenage --help lists sync and warns
     want: a command's help describing every fact that loads, warning for each failing layer
     created: 2026-11-27T20:59:19Z
+  - id: BL-743591
+    title: Help listing project scripts runs the whole structure discovery for one environment's directories
+    sites:
+      - src/tools/nexus/operations/scriptsSource.ts:12
+    why: engrenage --help spends ~0.25 s of ~0.52 s in structure discovery here
+    want: the scripts directories read through a discovery of the one environment, reconciled and activity-checked as full discovery does
+    created: 2026-11-28T01:45:05Z

@@ -1,17 +1,16 @@
-import { pluck } from "@auaust/toolkit/array";
-// @debt this static `typescript` import runs wherever the `tsconfig` index loads, which every config load does, so commands that never read a tsconfig (`gate`, `debt`, agent hooks) still parse the compiler (~0.2 s per process).
 import { relative, resolve } from "node:path";
 
-import {
+import type {
+  Diagnostic,
   formatDiagnostics,
+  FormatDiagnosticsHost,
   getParsedCommandLineOfConfigFile,
+  ParseConfigFileHost,
+  ParsedCommandLine,
   sys,
-  type Diagnostic,
-  type FormatDiagnosticsHost,
-  type ParseConfigFileHost,
-  type ParsedCommandLine,
 } from "typescript";
 
+import { pluck } from "@auaust/toolkit/array";
 import { once } from "@auaust/toolkit/function";
 
 import {
@@ -27,23 +26,37 @@ import type { Tsconfig } from "#project/tsconfig/types/Tsconfig";
 import type { Directory } from "#types/Directory";
 import type { File } from "#types/File";
 
-const formatHost: FormatDiagnosticsHost = {
-  getCanonicalFileName: (fileName) => fileName,
-  getCurrentDirectory: sys.getCurrentDirectory,
-  getNewLine: () => sys.newLine,
-};
-
-function toError(diagnostics: readonly Diagnostic[]): Error {
-  return new Error(formatDiagnostics(diagnostics, formatHost));
+interface Compiler {
+  readonly formatDiagnostics: typeof formatDiagnostics;
+  readonly getParsedCommandLineOfConfigFile: typeof getParsedCommandLineOfConfigFile;
+  readonly sys: typeof sys;
 }
 
-function parseTsconfig({
-  path,
-  files,
-}: {
-  path: File;
-  files: ReadonlyMap<File, string | undefined>;
-}): ParsedCommandLine {
+function toError(
+  { formatDiagnostics, sys }: Compiler,
+  diagnostics: readonly Diagnostic[],
+): Error {
+  const host: FormatDiagnosticsHost = {
+    getCanonicalFileName: (fileName) => fileName,
+    getCurrentDirectory: sys.getCurrentDirectory,
+    getNewLine: () => sys.newLine,
+  };
+
+  return new Error(formatDiagnostics(diagnostics, host));
+}
+
+function parseTsconfig(
+  compiler: Compiler,
+  {
+    path,
+    files,
+  }: {
+    path: File;
+    files: ReadonlyMap<File, string | undefined>;
+  },
+): ParsedCommandLine {
+  const { getParsedCommandLineOfConfigFile, sys } = compiler;
+
   const host: ParseConfigFileHost = {
     useCaseSensitiveFileNames: sys.useCaseSensitiveFileNames,
     getCurrentDirectory: sys.getCurrentDirectory,
@@ -51,7 +64,7 @@ function parseTsconfig({
     readFile: (file) => files.get(resolve(file)),
     fileExists: (file) => files.get(resolve(file)) !== undefined,
     onUnRecoverableConfigFileDiagnostic(diagnostic) {
-      throw toError([diagnostic]);
+      throw toError(compiler, [diagnostic]);
     },
   };
 
@@ -66,24 +79,27 @@ function parseTsconfig({
   });
 
   if (errors.length > 0) {
-    throw toError(errors);
+    throw toError(compiler, errors);
   }
 
   return parsed;
 }
 
 // @debt the TypeScript config parser reads files synchronously, so each `extends` level costs a probing parse before the real one; an async parser would read each file once
-async function loadTsconfigFiles({
-  root,
-  path,
-  filesystem,
-  content,
-}: {
-  root: Directory;
-  path: File;
-  filesystem: Filesystem;
-  content: string | undefined;
-}): Promise<ReadonlyMap<File, string | undefined>> {
+async function loadTsconfigFiles(
+  { getParsedCommandLineOfConfigFile, sys }: Compiler,
+  {
+    root,
+    path,
+    filesystem,
+    content,
+  }: {
+    root: Directory;
+    path: File;
+    filesystem: Filesystem;
+    content: string | undefined;
+  },
+): Promise<ReadonlyMap<File, string | undefined>> {
   const files = new Map<File, string | undefined>();
 
   if (content !== undefined) {
@@ -133,6 +149,21 @@ async function loadTsconfigFiles({
   }
 }
 
+async function readTsconfig(input: {
+  root: Directory;
+  path: File;
+  filesystem: Filesystem;
+  content: string | undefined;
+}): Promise<() => ParsedCommandLine> {
+  const compiler = await import("typescript");
+
+  const files = await loadTsconfigFiles(compiler, input);
+
+  return once(() => {
+    return parseTsconfig(compiler, { path: input.path, files });
+  });
+}
+
 export async function createTsconfig({
   root,
   path,
@@ -144,27 +175,21 @@ export async function createTsconfig({
   filesystem: Filesystem;
   content?: string | undefined;
 }): Promise<Tsconfig> {
-  const files = path === undefined
+  const parsed = path === undefined
     ? undefined
-    : await loadTsconfigFiles({
+    : await readTsconfig({
         root,
         path,
         filesystem,
         content,
       });
 
-  const parsed = once(() => {
-    return path === undefined || files === undefined
-      ? undefined
-      : parseTsconfig({ path, files });
-  });
-
   function compilerOptions() {
-    return parsed()?.options;
+    return parsed?.().options;
   }
 
   function references(): readonly File[] {
-    return pluck(parsed()?.projectReferences, "path") ?? [];
+    return pluck(parsed?.().projectReferences, "path") ?? [];
   }
 
   function outDir(): Directory | undefined {

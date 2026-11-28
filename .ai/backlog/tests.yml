@@ -103,3 +103,10 @@ entries:
     want: Split module loading from whole-project work in that cost, then make the operations or their fixtures cheap enough for vitest's default timeout under load
     done: No test file uses workflowTimeout
     created: 2026-11-27T15:01:19Z
+  - id: BL-b72417
+    title: searchRecords ranking time test fails under load
+    sites:
+      - tests/src/metalbrain/records/searchRecords.test.src.ts:48
+    why: asserts a 30 ms wall-clock margin; seen at ~50 ms in a loaded run, no CLI code on its path
+    want: a bound that holds under parallel test load, or a complexity check instead of wall-clock
+    created: 2026-11-28T01:45:06Z
