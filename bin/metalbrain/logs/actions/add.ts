@@ -1,5 +1,5 @@
 import { listMergeHints } from "#metalbrain/kinds/index";
-import { findLogKind } from "#metalbrain/logs/index";
+import { findLogKind } from "#metalbrain/logs/lookup/index";
 import {
   addRecord,
   pickRecordValues,

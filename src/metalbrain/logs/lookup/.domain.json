@@ -1,0 +1,3 @@
+{
+  "purpose": "Find a log kind by name from its declaration alone, so command declarations read the kinds without loading the record core."
+}

@@ -1104,3 +1104,13 @@ entries:
     need: executables only calling nexus launch
     reason: "mounted programs drop them anyway; reshapes runProgram beyond #1028"
     created: 2026-11-27T19:41:09Z
+  - id: DS-261110
+    subject: log migration sub-domain split
+    need: logs surface without record core
+    reason: src importers reach sub-domains only via parent index
+    created: 2026-11-28T02:11:32Z
+  - id: DS-97f8f5
+    subject: per-kind log add/list/update commands
+    need: log field options without path lookup
+    reason: root help stops merging shared log commands
+    created: 2026-11-28T02:11:32Z

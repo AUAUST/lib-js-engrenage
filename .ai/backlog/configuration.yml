@@ -197,3 +197,11 @@ entries:
     why: "Since #959, presets are the only path from root to workspace environments; each workspace restates environments.<name>.tsconfig"
     want: Decide whether presets carry shared tsconfig options, or state that workspaces write them
     created: 2026-11-26T14:54:38Z
+  - id: BL-750c11
+    title: Config loading imports yaml, minimatch and semver even when no workspace climb or extension range needs them
+    sites:
+      - src/project/config/operations/readRawConfig.ts:208
+      - src/project/config/utils/checkCompatibility.ts:1
+    why: "~20 ms of each config load, e.g. metalbrain --help at ~280 ms: the workspace file is parsed before checking the start directory for a config"
+    want: pnpm-workspace.yaml read only when climbing past a directory without a config, semver loaded only for an extension declaring a range
+    created: 2026-11-28T02:08:14Z

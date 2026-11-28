@@ -1,4 +1,4 @@
-import { findLogKind } from "#metalbrain/logs/index";
+import { findLogKind } from "#metalbrain/logs/lookup/index";
 import {
   option,
   type CommandPath,

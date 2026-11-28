@@ -1,3 +1,3 @@
 {
-  "purpose": "The friction, discarded, pending and missing record kinds, each one YAML file, and the migration of the legacy Markdown logs."
+  "purpose": "The friction, discarded, pending and missing record kinds, each one YAML file, and the migration of the legacy Markdown logs, over the cheap kind lookup."
 }
