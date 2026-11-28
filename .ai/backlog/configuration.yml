@@ -30,14 +30,13 @@ entries:
     want: its own `foundation` home.
     created: 2026-11-22T00:00:00Z
   - id: BL-73c8d3
-    title: Config loads do avoidable work and keep past results
+    title: Config loads keep past results
     sites:
-      - src/project/tsconfig/operations/createTsconfig.ts:2
       - src/project/config/operations/loadConfig.ts:20
       - src/project/config/operations/loadConfig.ts:110
       - src/project/config/operations/loadConfig.ts:121
-    why: the static `typescript` import costs ~0.2 s per load; `loadConfig` keeps an entry per directory forever, and a read pending at `refresh` caches the stale config; `refresh` rides on `loadConfig` for want of a module-state role.
-    want: lazy compiler import; bounded, refresh-safe caches in a module-state role (planning).
+    why: "`loadConfig` keeps an entry per directory forever, and a read pending at `refresh` caches the stale config; `refresh` rides on `loadConfig` for want of a module-state role."
+    want: bounded, refresh-safe caches in a module-state role (planning).
     created: 2026-11-22T00:00:00Z
   - id: BL-099e43
     title: Option sections and tsconfig paths are cast or unchecked

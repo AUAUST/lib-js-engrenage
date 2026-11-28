@@ -22,5 +22,6 @@ export type * from "#batiment/context/types/ScopeRegistry";
 export type * from "#batiment/context/types/WorkspaceExpectation";
 // @end
 
-// @debt `load` is exported by hand outside any barrel block, since a block lists every module of its role and the other operations must stay private
+// @debt `load` and `discoverNamespace` are exported by hand outside any barrel block, since a block lists every module of its role and the other operations must stay private
+export { discoverNamespace } from "#batiment/context/operations/discoverNamespace";
 export { load } from "#batiment/context/operations/load";

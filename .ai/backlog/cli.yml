@@ -109,10 +109,11 @@ entries:
     why: with an invalid config, engrenage sync --help prints only the config error, while engrenage --help lists sync and warns
     want: a command's help describing every fact that loads, warning for each failing layer
     created: 2026-11-27T20:59:19Z
-  - id: BL-743591
-    title: Help listing project scripts runs the whole structure discovery for one environment's directories
+  - id: BL-a84f98
+    title: Help listing project scripts still pays ~110 ms outside discovery
     sites:
-      - src/tools/nexus/operations/scriptsSource.ts:12
-    why: engrenage --help spends ~0.25 s of ~0.52 s in structure discovery here
-    want: the scripts directories read through a discovery of the one environment, reconciled and activity-checked as full discovery does
-    created: 2026-11-28T01:45:05Z
+      - src/tools/nexus/operations/scriptsSource.ts:8
+      - src/project/config/operations/readRawConfig.ts:4
+    why: "engrenage --help is ~375 ms against a 165 ms pre-nexus baseline; measured after config load: #project/environments/index barrel import ~73 ms, git ignored listing ~34 ms plus repository root ~13 ms, yaml import ~12 ms on every config load"
+    want: the scripts directories read without loading the environments barrel, and the activity check asking git only about those directories
+    created: 2026-11-28T01:58:02Z

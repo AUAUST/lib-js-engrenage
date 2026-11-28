@@ -1,7 +1,5 @@
 import { once } from "@auaust/toolkit/function";
 
-import { discoverContext } from "#batiment/context/operations/discoverContext";
-import { walkScope } from "#batiment/context/operations/walkScope";
 import type { LoadedContext } from "#batiment/context/apis/LoadedContext";
 import type { ContextPort } from "#batiment/context/ports/ContextPort";
 import type { ResolvedStructure } from "#batiment/structure/index";
@@ -12,14 +10,23 @@ export function load(
   context: ContextPort,
   filesystem: Filesystem,
 ): LoadedContext {
-  const discover = once(() => discoverContext(context, filesystem));
+  const discover = once(async () => {
+    const {
+      discoverContext,
+    } = await import("#batiment/context/operations/discoverContext");
+
+    return discoverContext(context, filesystem);
+  });
 
   const walks = new Map<Directory, Promise<ResolvedStructure>>();
 
   async function walkOnce(dir: Directory): Promise<ResolvedStructure> {
     const discovery = await discover();
 
-    const declarations = await context.scope(dir);
+    const [declarations, { walkScope }] = await Promise.all([
+      context.scope(dir),
+      import("#batiment/context/operations/walkScope"),
+    ]);
 
     return walkScope({
       dir,

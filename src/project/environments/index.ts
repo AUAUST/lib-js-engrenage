@@ -79,6 +79,7 @@ export { createEnvironmentTsconfig } from "#project/environments/operations/crea
 export { createLanguageExtensions } from "#project/environments/operations/createLanguageExtensions";
 export { createLanguageFileMatcher } from "#project/environments/operations/createLanguageFileMatcher";
 export { discoverDeclaredEnvironment } from "#project/environments/operations/discoverDeclaredEnvironment";
+export { discoverEnvironment } from "#project/environments/operations/discoverEnvironment";
 export { listEnvironmentEntries } from "#project/environments/operations/listEnvironmentEntries";
 export { listNamespaceEnvironments } from "#project/environments/operations/listNamespaceEnvironments";
 export { listPlacementGlobs } from "#project/environments/operations/listPlacementGlobs";
